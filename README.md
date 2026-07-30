@@ -10,18 +10,17 @@ surface available to third-party developers.
 
 ```text
 apps/
-  apps/
-    design/apps.pen
-    src/
-    tests/
-  browser/
-    design/browser.pen
-    src/
-    tests/
-  explorer/
-    design/explorer.pen
-    src/
-    tests/
+  design/apps.pen
+  src/
+  tests/
+browser/
+  design/browser.pen
+  src/
+  tests/
+explorer/
+  design/explorer.pen
+  src/
+  tests/
 packages/
 tooling/
 ```

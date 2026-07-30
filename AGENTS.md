@@ -17,8 +17,8 @@
 
 ## Repository scope
 
-- `apps/apps` is the bundled discovery and installation App.
-- `apps/browser` is Penkra's Browser App.
-- `apps/explorer` is Penkra's Explorer App.
+- `apps` is the bundled discovery and installation App.
+- `browser` is Penkra's Browser App.
+- `explorer` is Penkra's Explorer App.
 - The registry service, SDK implementation, Penkra host, and third-party Apps are out
   of scope for this repository.
