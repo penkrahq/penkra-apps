@@ -10,16 +10,24 @@ surface available to third-party developers.
 
 ```text
 apps/
-  catalog/
-    design/
+  apps/
+    design/apps.pen
+    src/
+    tests/
+  browser/
+    design/browser.pen
+    src/
+    tests/
+  explorer/
+    design/explorer.pen
     src/
     tests/
 packages/
 tooling/
 ```
 
-`apps/catalog` is displayed to users as **Apps**. It is the bundled discovery and
-installation experience.
+The initial first-party Apps are **Apps**, **Browser**, and **Explorer**. Each App
+keeps its design source, implementation, assets, and tests inside its own folder.
 
 The Penkra desktop host, public SDK implementation, registry service, and third-party
 App source do not live in this repository.

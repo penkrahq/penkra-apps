@@ -6,7 +6,7 @@
       "id": "bi8Au",
       "x": 0,
       "y": 0,
-      "name": "Frame",
+      "name": "Explorer / Design Seed",
       "clip": true,
       "width": 800,
       "height": 600,
@@ -14,5 +14,5 @@
       "layout": "none"
     }
   ],
-  "fileToken": "032e45d7-7286-4adc-b8bb-1abf5a0a644a"
+  "fileToken": "542ad072-e536-4f23-a2f4-4e9dd04008c9"
 }
