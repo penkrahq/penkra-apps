@@ -2,5 +2,11 @@
 
 Penkra's first-party Explorer App.
 
-Its App Bar is rendered by Penkra and configured by this App. Explorer owns everything
-inside its web content viewport.
+Canonical App ID: `app.penkra.explorer`.
+
+Explorer is the canonical file-browsing, viewing, and editing App; do not create
+parallel Files or Editor product identities without an explicit architecture change.
+
+Explorer owns its complete web surface, including whether each page renders the
+standard App Bar. It uses user-mediated web file and directory handles, not a private
+raw filesystem API.

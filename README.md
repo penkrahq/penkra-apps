@@ -21,12 +21,23 @@ explorer/
   design/explorer.pen
   src/
   tests/
+themes/
+  design/themes.pen
+  src/
+  tests/
 packages/
 tooling/
 ```
 
-The initial first-party Apps are **Apps**, **Browser**, and **Explorer**. Each App
-keeps its design source, implementation, assets, and tests inside its own folder.
+The first-party Apps are **Apps**, **Browser**, **Explorer**, and **Themes**. Each
+App keeps its design source, implementation, assets, and tests inside its own
+folder. Folders are added as their real artifacts are created; the tree above is
+the intended repository structure, not evidence that every implementation exists.
+
+Penkra owns trusted panel-tab chrome. Each App owns its entire web surface and may
+render the standard App Bar on any page using the public specification, semantic
+tokens, and optional framework adapters. The host does not insert or configure an
+App Bar for an App.
 
 The Penkra desktop host, public SDK implementation, registry service, and third-party
 App source do not live in this repository.
