@@ -1,4 +1,4 @@
-import { appAction, escapeHtml, permissionGrants, renderMarkdown } from "./ui-model.mjs";
+import { appAction, escapeHtml, permissionGrants, renderMarkdown, shouldShowOffline } from "./ui-model.mjs";
 
 const iconPaths = {
   search: '<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path>',
@@ -244,7 +244,8 @@ function emptyView(title, description) {
 }
 
 function showOffline() {
-  return Boolean(state.registryError) && state.registryApps.length === 0;
+  const installedCount = [...installedById().keys()].filter((appId) => appId !== "com.penkra.apps").length;
+  return shouldShowOffline(state.registryError, state.registryApps.length, installedCount);
 }
 
 function render() {

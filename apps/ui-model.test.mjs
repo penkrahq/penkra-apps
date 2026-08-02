@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { appAction, compareVersions, permissionGrants, renderMarkdown } from "./ui-model.mjs";
+import { appAction, compareVersions, permissionGrants, renderMarkdown, shouldShowOffline } from "./ui-model.mjs";
 
 test("selects install, update, and open actions from durable state", () => {
   const app = { id: "com.example.app", availability: "registry", latestVersion: "2.0.0" };
@@ -43,4 +43,11 @@ test("renders bounded Markdown without trusting raw HTML or unsafe links", () =>
   assert.match(html, /href="https:\/\/example.com"/);
   assert.doesNotMatch(html, /href="javascript:/);
   assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+});
+
+test("offline startup keeps installed Apps available and shows the empty offline state only without local Apps", () => {
+  assert.equal(shouldShowOffline(new Error("offline"), 0, 0), true);
+  assert.equal(shouldShowOffline(new Error("offline"), 0, 2), false);
+  assert.equal(shouldShowOffline(new Error("offline"), 3, 0), false);
+  assert.equal(shouldShowOffline(null, 0, 0), false);
 });

@@ -35,3 +35,11 @@ App Bar for an App.
 
 The Penkra desktop host, public SDK implementation, registry service, and third-party
 App source do not live in this repository.
+
+## Host dependency map
+
+The active Apps App depends only on the public App runtime plus the narrow installation
+manager binding documented in its manifest. Browser and Explorer are not dependencies of
+Apps and are not bundled. Host-native browser, file preview, editor, download, and terminal
+surfaces remain shell capabilities until their later App replacements meet parity; none is
+pruned merely because a future App folder exists.

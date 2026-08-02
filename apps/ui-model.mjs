@@ -1,5 +1,9 @@
 export const MAX_README_BYTES = 2 * 1024 * 1024;
 
+export function shouldShowOffline(registryError, registryCount, installedCount) {
+  return Boolean(registryError) && registryCount === 0 && installedCount === 0;
+}
+
 export function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, (character) => ({
     "&": "&amp;",
