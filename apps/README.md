@@ -31,6 +31,7 @@ and Thread from the calling renderer; the App supplies only the installed target
 
 - `penkra-app.json` is the validated install manifest.
 - `app.html`, `app.js`, and `styles.css` are the framework-neutral visual App.
+- `operations.html` and `operations.js` publish the Apps-local installation lifecycle operations.
 - `ui-model.mjs` owns pure action, permission, version, escaping, and Markdown behavior.
 - `INSTRUCTIONS.md` supplies general agent-facing help; operation help is generated from the
   manifest declarations.
@@ -39,5 +40,5 @@ and Thread from the calling renderer; the App supplies only the installed target
 Run the focused framework-neutral checks with:
 
 ```sh
-node --test apps/ui-model.test.mjs
+node --test apps/ui-model.test.mjs apps/operations.test.mjs
 ```
