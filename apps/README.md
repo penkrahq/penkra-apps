@@ -17,3 +17,12 @@ general filesystem, process, registry-key, or host-control authority.
 Its public installation-facing operations use App-local keys such as
 `installations.install`, `installations.update`, and `installations.uninstall`.
 The trusted host binding—not the Apps renderer or controller—verifies and mutates packages.
+
+## Package layout
+
+- `penkra-app.json` is the validated install manifest.
+- `app.html`, `app.js`, and `styles.css` are the framework-neutral visual App.
+- `operations.html` and `operations.js` register the optional controller operations.
+- `INSTRUCTIONS.md` supplies general agent-facing help; operation help is generated from the
+  manifest declarations.
+- `design/apps.pen` remains authoritative for the App's UI and lifecycle states.

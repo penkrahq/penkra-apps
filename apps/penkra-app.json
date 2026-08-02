@@ -1,0 +1,45 @@
+{
+  "manifestVersion": 1,
+  "id": "com.penkra.apps",
+  "slug": "apps",
+  "name": "Apps",
+  "summary": "Discover, install, update, and manage Apps in Penkra.",
+  "version": "0.1.0",
+  "compatibility": {
+    "penkra": ">=0.8.0"
+  },
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "entrypoints": {
+    "app": "app.html",
+    "operations": "operations.html"
+  },
+  "operations": [
+    {
+      "key": "installations.install",
+      "summary": "Install a verified registry App.",
+      "input": { "type": "object", "required": ["appId"], "properties": { "appId": { "type": "string" } }, "additionalProperties": false },
+      "output": { "type": "object" },
+      "handler": "installations.install"
+    },
+    {
+      "key": "installations.update",
+      "summary": "Update an installed registry App.",
+      "input": { "type": "object", "required": ["appId"], "properties": { "appId": { "type": "string" } }, "additionalProperties": false },
+      "output": { "type": "object" },
+      "handler": "installations.update"
+    },
+    {
+      "key": "installations.uninstall",
+      "summary": "Uninstall an App and optionally retain its local data.",
+      "input": { "type": "object", "required": ["appId", "retainData"], "properties": { "appId": { "type": "string" }, "retainData": { "type": "boolean" } }, "additionalProperties": false },
+      "output": { "type": "object" },
+      "handler": "installations.uninstall"
+    }
+  ]
+}
