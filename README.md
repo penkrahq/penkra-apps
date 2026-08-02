@@ -11,18 +11,15 @@ surface available to third-party developers.
 ```text
 apps/
   design/apps.pen
-  src/
-  tests/
+  app.html
+  app.js
+  operations.html
+  operations.js
+  penkra-app.json
 browser/
   design/browser.pen
-  src/
-  tests/
 explorer/
   design/explorer.pen
-  src/
-  tests/
-packages/
-tooling/
 ```
 
 **Apps** is the active first-party App in the current implementation pass.

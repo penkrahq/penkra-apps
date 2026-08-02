@@ -120,6 +120,7 @@ h1, h2, h3, h4, h5, h6, p, dl, dd, pre, blockquote { margin: 0; }
 .switch[aria-checked="true"] { background: var(--apps-accent); }
 .switch[aria-checked="true"] span { background: #fff; transform: translateX(16px); }
 .switch:focus-visible { box-shadow: 0 0 0 2px color-mix(in srgb, var(--apps-accent) 35%, transparent); }
+.switch:disabled { cursor: wait; opacity: .55; }
 
 .developer-info { max-width: 760px; }
 .developer-info > h2 { color: var(--apps-text); font-size: 15px; font-weight: 600; }

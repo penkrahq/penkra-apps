@@ -26,6 +26,7 @@ const state = {
   error: null,
   busyAppId: null,
   busyKind: null,
+  busyPermissionKey: null,
   history: [{ route: "launcher", appId: null, detailTab: "description", query: "" }],
   historyIndex: 0,
 };
@@ -202,7 +203,8 @@ function permissionsContent(app, permissions) {
   const currentSpace = state.installations?.spaces?.find((entry) => entry.appId === app.id && entry.spaceId === state.installations?.currentSpaceId);
   return `<div class="permission-list">${permissions.map((permission) => {
     const selected = optionalPermissionSelected(app.id, permission, currentSpace?.permissions ?? {});
-    return `<div class="permission-row"><div><strong>${escapeHtml(permissionTitle(permission.permission))}</strong><p>${escapeHtml(permission.rationale)}</p><span>${permission.required ? "Required" : "Optional"}</span></div>${permission.required ? '<span class="required-mark">Required</span>' : `<button class="switch" role="switch" aria-checked="${selected}" data-permission="${escapeHtml(permission.permission)}" aria-label="Allow ${escapeHtml(permissionTitle(permission.permission))}"><span></span></button>`}</div>`;
+    const changing = state.busyPermissionKey === `${app.id}:${permission.permission}`;
+    return `<div class="permission-row"><div><strong>${escapeHtml(permissionTitle(permission.permission))}</strong><p>${escapeHtml(permission.rationale)}</p><span>${permission.required ? "Required" : "Optional"}</span></div>${permission.required ? '<span class="required-mark">Required</span>' : `<button class="switch" role="switch" aria-checked="${selected}" data-permission="${escapeHtml(permission.permission)}" aria-label="Allow ${escapeHtml(permissionTitle(permission.permission))}" ${changing ? "disabled" : ""}><span></span></button>`}</div>`;
   }).join("")}</div>`;
 }
 
@@ -220,7 +222,8 @@ function developerContent(app, detail, version) {
 
 function actionButton(app, action, className) {
   const iconMarkup = action.kind === "busy" ? icon("spinner", "spin") : "";
-  return `<button class="install-button ${className}" data-app-action="${escapeHtml(action.kind)}" data-app-id="${escapeHtml(app.id)}" ${action.disabled ? "disabled" : ""}>${iconMarkup}<span>${escapeHtml(action.label)}</span></button>`;
+  const disabled = action.disabled || state.busyPermissionKey?.startsWith(`${app.id}:`);
+  return `<button class="install-button ${className}" data-app-action="${escapeHtml(action.kind)}" data-app-id="${escapeHtml(app.id)}" ${disabled ? "disabled" : ""}>${iconMarkup}<span>${escapeHtml(action.label)}</span></button>`;
 }
 
 function ratingBadge(app) {
@@ -321,7 +324,7 @@ async function loadRegistryDetail(app) {
 
 async function performAppAction(app, kind) {
   if (kind === "open") {
-    if (!appHost?.open || state.busyAppId) return;
+    if (!appHost?.open || state.busyAppId || state.busyPermissionKey) return;
     state.busyAppId = app.id;
     state.busyKind = kind;
     state.error = null;
@@ -339,7 +342,7 @@ async function performAppAction(app, kind) {
   }
   const detail = state.registryDetails.get(app.id);
   const version = detail?.versions?.[0];
-  if (!binding || state.busyAppId) return;
+  if (!binding || state.busyAppId || state.busyPermissionKey) return;
   if (kind !== "enable" && !version) return;
   state.busyAppId = app.id;
   state.busyKind = kind;
@@ -387,6 +390,34 @@ function optionalPermissionSelected(appId, permission, existing) {
   return existing[permission.permission] === "granted";
 }
 
+async function toggleOptionalPermission(app, permission, nextSelected) {
+  const key = `${app.id}:${permission}`;
+  if (!app.installed) {
+    state.optionalPermissions.set(key, nextSelected);
+    render();
+    return;
+  }
+  const spaceId = state.installations?.currentSpaceId;
+  if (!spaceId || !binding?.setPermission || state.busyAppId || state.busyPermissionKey) return;
+  state.busyPermissionKey = key;
+  state.error = null;
+  render();
+  try {
+    state.installations = await binding.setPermission({
+      appId: app.id,
+      spaceId,
+      permission,
+      grant: nextSelected ? "granted" : "denied",
+    });
+    state.optionalPermissions.delete(key);
+  } catch (error) {
+    state.error = errorMessage(error);
+  } finally {
+    state.busyPermissionKey = null;
+    render();
+  }
+}
+
 function permissionTitle(value) {
   const known = {
     "network-fetch": "Connect to the internet",
@@ -432,10 +463,11 @@ root.addEventListener("click", (event) => {
   if (target.dataset.permission) {
     const app = selectedApp();
     if (!app) return;
-    const key = `${app.id}:${target.dataset.permission}`;
-    state.optionalPermissions.set(key, target.getAttribute("aria-checked") !== "true");
-    render();
-    return;
+    return void toggleOptionalPermission(
+      app,
+      target.dataset.permission,
+      target.getAttribute("aria-checked") !== "true",
+    );
   }
   if (target.dataset.appAction && target.dataset.appId) {
     const app = allApps().find((entry) => entry.id === target.dataset.appId);
