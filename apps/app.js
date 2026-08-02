@@ -25,6 +25,7 @@ const state = {
   registryLoading: false,
   registryError: null,
   error: null,
+  installingAppId: null,
 };
 const root = document.querySelector("#app");
 const binding = globalThis.penkra?.installations;
@@ -82,6 +83,8 @@ function detail(app) {
   const registryDetail = state.registryDetails.get(app.id);
   const latest = registryDetail?.versions?.[0];
   const permissions = latest?.permissions ?? [];
+  const canInstall = app.availability === "registry" && latest && binding?.installRegistry && state.installations?.currentSpaceId;
+  const installing = state.installingAppId === app.id;
   const publisher = app.publisher
     ? `<p class="muted">By ${escapeHtml(app.publisher.displayName)}${app.publisher.verified ? " · Verified" : ""}</p>`
     : "";
@@ -94,10 +97,10 @@ function detail(app) {
   return `<main class="content"><section class="detail-header">${tile(app)}<div class="detail-meta"><h1>${escapeHtml(app.name)}</h1><p class="muted">${escapeHtml(app.summary)}</p></div></section>
     ${publisher}${registryFacts}
     ${state.error ? `<div class="status error">${escapeHtml(state.error)}</div>` : ""}
-    <div class="detail-actions"><button class="button" ${installed ? 'data-action="manage"' : "disabled"}>${installed ? "Manage" : app.availability === "registry" ? "Install unavailable" : "Coming later"}</button></div>
-    ${app.availability === "registry" && !installed ? '<div class="status">Installation will become available after package validation and signature verification are enabled.</div>' : ""}
+    <div class="detail-actions"><button class="button" ${installed ? 'data-action="manage"' : canInstall && !installing ? 'data-action="install"' : "disabled"}>${installed ? "Manage" : installing ? "Installing…" : app.availability === "registry" ? "Install" : "Coming later"}</button></div>
+    ${app.availability === "registry" && !state.installations?.currentSpaceId ? '<div class="status">Open Apps beside a Thread to install into its Space.</div>' : ""}
     ${help}
-    <article class="readme"><h2>Permissions</h2>${permissions.length ? `<ul>${permissions.map((permission) => `<li><strong>${escapeHtml(permission.permission)}</strong> — ${escapeHtml(permission.rationale)}${permission.required ? " (required)" : ""}</li>`).join("")}</ul>` : "<p>No permissions are declared for this version.</p>"}<h2>Privacy and data</h2><p>Each App runs in its own isolated renderer and receives separate storage for each Space.</p></article>
+    <article class="readme"><h2>Permissions</h2>${permissions.length ? `<ul>${permissions.map((permission) => `<li><label><input type="checkbox" data-install-permission="${escapeHtml(permission.permission)}" ${permission.required ? "checked disabled" : ""} /> <strong>${escapeHtml(permission.permission)}</strong> — ${escapeHtml(permission.rationale)}${permission.required ? " (required)" : " (optional)"}</label></li>`).join("")}</ul>` : "<p>No permissions are declared for this version.</p>"}<h2>Privacy and data</h2><p>Each App runs in its own isolated renderer and receives separate storage for each Space.</p></article>
   </main>`;
 }
 
@@ -178,6 +181,35 @@ root.addEventListener("click", (event) => {
   if (target.dataset.action === "back") { state.route = state.route === "manage" ? "detail" : "home"; render(); return; }
   if (target.dataset.action === "refresh") { void refresh(); return; }
   if (target.dataset.action === "manage") { state.route = "manage"; render(); return; }
+  if (target.dataset.action === "install" && binding?.installRegistry) {
+    const app = selectedApp();
+    const detail = app ? state.registryDetails.get(app.id) : null;
+    const version = detail?.versions?.[0];
+    const spaceId = state.installations?.currentSpaceId;
+    if (!app || !version || !spaceId || state.installingAppId) return;
+    const permissions = Object.fromEntries(version.permissions.map((permission) => [
+      permission.permission,
+      permission.required || Boolean(document.querySelector(`[data-install-permission="${CSS.escape(permission.permission)}"]`)?.checked)
+        ? "granted"
+        : "denied",
+    ]));
+    state.installingAppId = app.id;
+    state.error = null;
+    render();
+    void binding.installRegistry({ slug: app.slug, version: version.version, spaceId, permissions })
+      .then((snapshot) => {
+        state.installations = snapshot;
+        state.installingAppId = null;
+        state.route = "manage";
+        render();
+      })
+      .catch((error) => {
+        state.installingAppId = null;
+        state.error = error instanceof Error ? error.message : String(error);
+        render();
+      });
+    return;
+  }
   if (target.dataset.toggleSpace && binding?.setEnabled) {
     void binding.setEnabled({ appId: state.appId, spaceId: target.dataset.toggleSpace, enabled: target.getAttribute("aria-checked") !== "true" }).then((snapshot) => { state.installations = snapshot; render(); });
     return;
