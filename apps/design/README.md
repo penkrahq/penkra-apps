@@ -11,6 +11,11 @@ Current app-owned states:
 - Launcher
 - Search results
 - App detail
+- Installation progress and result
+- Installed and update management
+- Per-Space enablement
+- Uninstall and retained-data choices
+- Offline, validation, compatibility, and revocation errors
 
-Install permission prompts remain Penkra-owned system UI in `penkra/penkra.pen`. The
-public SDK binding is deferred until the platform primitives are settled.
+Package details may explain permissions inside Apps, but the final trusted installation
+confirmation remains Penkra-owned system UI in `penkra/penkra.pen` so an App cannot spoof it.

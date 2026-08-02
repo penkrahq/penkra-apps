@@ -1,8 +1,8 @@
 # Explorer
 
-Penkra's first-party Explorer App.
+Penkra's named first-party Explorer App stub. It is not currently implemented or bundled.
 
-Canonical App ID: `app.penkra.explorer`.
+Reserved canonical App ID: `com.penkra.explorer`.
 
 Explorer is the canonical file-browsing, viewing, and editing App; do not create
 parallel Files or Editor product identities without an explicit architecture change.

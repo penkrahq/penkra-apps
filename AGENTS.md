@@ -22,9 +22,10 @@
 
 ## Repository scope
 
-- `apps` is the bundled discovery and installation App.
-- `browser` is Penkra's Browser App.
-- `explorer` is Penkra's Explorer App.
-- `themes` is Penkra's Themes App.
+- `apps` is the active bundled discovery and installation App.
+- `browser` is the named, non-bundled Browser App stub for deferred implementation.
+- `explorer` is the named, non-bundled Explorer App stub for deferred implementation.
+- Themes are core Penkra Settings presets, not an App; do not recreate a `themes` package.
+- Penkra-owned immutable App IDs use the reverse `penkra.com` namespace (`com.penkra.*`).
 - The registry service, SDK implementation, Penkra host, and third-party Apps are out
   of scope for this repository.

@@ -21,18 +21,15 @@ explorer/
   design/explorer.pen
   src/
   tests/
-themes/
-  design/themes.pen
-  src/
-  tests/
 packages/
 tooling/
 ```
 
-The first-party Apps are **Apps**, **Browser**, **Explorer**, and **Themes**. Each
-App keeps its design source, implementation, assets, and tests inside its own
-folder. Folders are added as their real artifacts are created; the tree above is
-the intended repository structure, not evidence that every implementation exists.
+**Apps** is the active first-party App in the current implementation pass.
+**Browser** and **Explorer** retain named design/documentation stubs for deferred
+implementation and are not shipped merely because their folders exist. Themes are
+core Penkra Settings presets, not an App. Each App keeps its design source,
+implementation, assets, and tests inside its own folder as those artifacts become real.
 
 Penkra owns trusted panel-tab chrome. Each App owns its entire web surface and may
 render the standard App Bar on any page using the public specification, semantic
