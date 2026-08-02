@@ -1,4 +1,4 @@
-const catalog = [
+const plannedCatalog = [
   { id: "com.penkra.browser", name: "Browser", summary: "Browse and work with the web beside any Thread.", color: "#4a90e2", availability: "planned" },
   { id: "com.penkra.explorer", name: "Explorer", summary: "Inspect files and folders connected to your work.", color: "#e39a3b", availability: "planned" },
 ];
@@ -15,9 +15,21 @@ const icon = (name) => {
   return `<svg aria-hidden="true" viewBox="0 0 24 24">${paths[name]}</svg>`;
 };
 
-const state = { route: "home", appId: null, query: "", installations: null, error: null };
+const state = {
+  route: "home",
+  appId: null,
+  query: "",
+  installations: null,
+  registryApps: [],
+  registryDetails: new Map(),
+  registryLoading: false,
+  registryError: null,
+  error: null,
+};
 const root = document.querySelector("#app");
 const binding = globalThis.penkra?.installations;
+const registry = globalThis.penkra?.registry;
+let searchTimer = null;
 
 function installedCatalog() {
   return (state.installations?.installed ?? [])
@@ -27,7 +39,9 @@ function installedCatalog() {
 function allApps() {
   const installed = installedCatalog();
   const installedIds = new Set(installed.map((app) => app.id));
-  return [...installed, ...catalog.filter((app) => !installedIds.has(app.id))];
+  const remote = state.registryApps.filter((app) => !installedIds.has(app.id));
+  const knownIds = new Set([...installedIds, ...remote.map((app) => app.id)]);
+  return [...installed, ...remote, ...plannedCatalog.filter((app) => !knownIds.has(app.id))];
 }
 function selectedApp() { return allApps().find((app) => app.id === state.appId) ?? null; }
 function installedIds() { return new Set(state.installations?.installed?.map((app) => app.id) ?? []); }
@@ -51,6 +65,8 @@ function home() {
   const apps = filteredCatalog();
   return `<main class="content">
     <section class="hero"><span class="eyebrow">Discover</span><h1>Apps for your work</h1><p class="muted">Open installed Apps or find something new.</p></section>
+    ${state.registryError ? `<div class="status error">${escapeHtml(state.registryError)}</div>` : ""}
+    ${state.registryLoading ? '<div class="status">Refreshing the App catalog…</div>' : ""}
     ${state.query ? results(apps) : `<section class="launcher-grid" aria-label="Featured Apps">${apps.slice(0, 6).map((app) => `<button class="launcher" data-open="${escapeHtml(app.id)}">${tile(app)}<span class="launcher-label">${escapeHtml(app.name)}</span></button>`).join("")}</section>${results(apps)}`}
   </main>`;
 }
@@ -63,10 +79,25 @@ function results(apps) {
 
 function detail(app) {
   const installed = installedIds().has(app.id);
+  const registryDetail = state.registryDetails.get(app.id);
+  const latest = registryDetail?.versions?.[0];
+  const permissions = latest?.permissions ?? [];
+  const publisher = app.publisher
+    ? `<p class="muted">By ${escapeHtml(app.publisher.displayName)}${app.publisher.verified ? " · Verified" : ""}</p>`
+    : "";
+  const registryFacts = app.availability === "registry"
+    ? `<section class="facts"><span>Version ${escapeHtml(app.latestVersion)}</span><span>${app.installCount} installs</span><span>${app.rating === null ? "Not rated" : `${app.rating} (${app.ratingCount})`}</span></section>`
+    : "";
+  const help = registryDetail?.readme
+    ? `<article class="readme"><h2>About</h2><pre>${escapeHtml(registryDetail.readme)}</pre></article>`
+    : `<article class="readme"><h2>About</h2><p>${escapeHtml(app.summary)} Keep the App beside the Thread where you are working, and enable it only in the Spaces that need it.</p></article>`;
   return `<main class="content"><section class="detail-header">${tile(app)}<div class="detail-meta"><h1>${escapeHtml(app.name)}</h1><p class="muted">${escapeHtml(app.summary)}</p></div></section>
+    ${publisher}${registryFacts}
     ${state.error ? `<div class="status error">${escapeHtml(state.error)}</div>` : ""}
-    <div class="detail-actions"><button class="button" ${installed ? 'data-action="manage"' : "disabled"}>${installed ? "Manage" : "Coming later"}</button></div>
-    <article class="readme"><h2>About</h2><p>${escapeHtml(app.summary)} Keep the App beside the Thread where you are working, and enable it only in the Spaces that need it.</p><h2>Permissions</h2><p>Permissions are reviewed before installation and can be inspected or revoked later in Penkra Settings.</p><h2>Privacy and data</h2><p>Each App runs in its own isolated renderer and receives separate storage for each Space.</p></article>
+    <div class="detail-actions"><button class="button" ${installed ? 'data-action="manage"' : "disabled"}>${installed ? "Manage" : app.availability === "registry" ? "Install unavailable" : "Coming later"}</button></div>
+    ${app.availability === "registry" && !installed ? '<div class="status">Installation will become available after package validation and signature verification are enabled.</div>' : ""}
+    ${help}
+    <article class="readme"><h2>Permissions</h2>${permissions.length ? `<ul>${permissions.map((permission) => `<li><strong>${escapeHtml(permission.permission)}</strong> — ${escapeHtml(permission.rationale)}${permission.required ? " (required)" : ""}</li>`).join("")}</ul>` : "<p>No permissions are declared for this version.</p>"}<h2>Privacy and data</h2><p>Each App runs in its own isolated renderer and receives separate storage for each Space.</p></article>
   </main>`;
 }
 
@@ -89,13 +120,61 @@ function render() {
 async function refresh() {
   state.error = null;
   if (binding?.getState) state.installations = await binding.getState();
+  await refreshRegistry();
+  render();
+}
+
+async function refreshRegistry() {
+  if (!registry?.list) return;
+  state.registryLoading = true;
+  state.registryError = null;
+  render();
+  try {
+    const response = await registry.list({ query: state.query || undefined, limit: 30 });
+    state.registryApps = response.items.map((app) => ({
+      ...app,
+      id: app.identifier,
+      registryId: app.id,
+      name: app.displayName,
+      color: "var(--penkra-accent, #6d5dfc)",
+      availability: "registry",
+    }));
+  } catch (error) {
+    state.registryError = error instanceof Error ? error.message : String(error);
+  } finally {
+    state.registryLoading = false;
+  }
+}
+
+async function loadRegistryDetail(app) {
+  if (!registry?.get || app.availability !== "registry") return;
+  state.error = null;
+  try {
+    const detail = await registry.get({ slug: app.slug });
+    const enriched = { ...detail, readme: null };
+    const readmeId = detail.versions?.[0]?.readmeArtifactId;
+    if (readmeId && registry.getArtifact) {
+      const help = await registry.getArtifact({ id: readmeId, source: "artifact" });
+      if (help.kind === "text") enriched.readme = help.text;
+    }
+    state.registryDetails.set(app.id, enriched);
+  } catch (error) {
+    state.error = error instanceof Error ? error.message : String(error);
+  }
   render();
 }
 
 root.addEventListener("click", (event) => {
   const target = event.target.closest("button");
   if (!target) return;
-  if (target.dataset.open) { state.appId = target.dataset.open; state.route = "detail"; render(); return; }
+  if (target.dataset.open) {
+    state.appId = target.dataset.open;
+    state.route = "detail";
+    render();
+    const app = selectedApp();
+    if (app) void loadRegistryDetail(app);
+    return;
+  }
   if (target.dataset.action === "back") { state.route = state.route === "manage" ? "detail" : "home"; render(); return; }
   if (target.dataset.action === "refresh") { void refresh(); return; }
   if (target.dataset.action === "manage") { state.route = "manage"; render(); return; }
@@ -108,7 +187,18 @@ root.addEventListener("click", (event) => {
   }
 });
 
-root.addEventListener("input", (event) => { if (event.target.matches("[data-search]")) { state.query = event.target.value; state.route = "home"; render(); document.querySelector("[data-search]")?.focus(); } });
+root.addEventListener("input", (event) => {
+  if (!event.target.matches("[data-search]")) return;
+  state.query = event.target.value;
+  state.route = "home";
+  render();
+  document.querySelector("[data-search]")?.focus();
+  if (searchTimer !== null) clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchTimer = null;
+    void refreshRegistry().then(render);
+  }, 250);
+});
 globalThis.penkra?.tab?.onNavigate?.(({ route, state: nextState }) => { state.route = route === "/manage" ? "manage" : route === "/detail" ? "detail" : "home"; state.appId = nextState?.appId ?? state.appId; render(); });
 
 function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]); }

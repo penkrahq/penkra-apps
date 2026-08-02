@@ -10,13 +10,15 @@ Apps owns its complete web surface. It may render or omit the standard App Bar o
 each page through the public UI contract. Penkra owns only the trusted panel-tab
 chrome around the App.
 
-Apps uses the ordinary public runtime for rendering and isolation. Its only private
-surface is a narrow binding to the trusted installation service; it does not receive
-general filesystem, process, registry-key, or host-control authority.
+Apps uses the ordinary public runtime for rendering and isolation. Its private surfaces are
+narrow bindings to the trusted installation service and the account-authenticated registry
+client; it does not receive account cookies, signed object URLs, general filesystem, process,
+registry-key, or host-control authority.
 
-Until the registry service is available, discovery lists only the explicitly planned Browser and
-Explorer stubs and labels them as unavailable. Installed-package rows always come from the trusted
-local installation snapshot; this package does not pretend sample catalog entries are installable.
+Discovery combines validated registry responses with the trusted local installation snapshot.
+Browser and Explorer remain explicitly planned, unavailable stubs. Registry entries remain
+non-installable until package validation and signature verification are enforced by the trusted
+installer; the UI does not turn an uploaded artifact into an installable package prematurely.
 
 ## Package layout
 
