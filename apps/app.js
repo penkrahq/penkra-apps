@@ -1,10 +1,6 @@
 const catalog = [
-  { id: "com.penkra.browser", name: "Browser", summary: "Browse and work with the web beside any Thread.", color: "#4a90e2", installed: false },
-  { id: "com.penkra.explorer", name: "Explorer", summary: "Inspect files and folders connected to your work.", color: "#e39a3b", installed: false },
-  { id: "com.figma.app", name: "Figma", summary: "Create, review, and update product designs.", color: "#a259ff", installed: false },
-  { id: "com.linear.app", name: "Linear", summary: "Plan work and manage issues with your team.", color: "#5e6ad2", installed: false },
-  { id: "com.github.app", name: "GitHub", summary: "Work with repositories, issues, and pull requests.", color: "#333", installed: false },
-  { id: "com.slack.app", name: "Slack", summary: "Find and share team conversations.", color: "#36c5f0", installed: false },
+  { id: "com.penkra.browser", name: "Browser", summary: "Browse and work with the web beside any Thread.", color: "#4a90e2", availability: "planned" },
+  { id: "com.penkra.explorer", name: "Explorer", summary: "Inspect files and folders connected to your work.", color: "#e39a3b", availability: "planned" },
 ];
 
 const icon = (name) => {
@@ -19,11 +15,21 @@ const icon = (name) => {
   return `<svg aria-hidden="true" viewBox="0 0 24 24">${paths[name]}</svg>`;
 };
 
-const state = { route: "home", appId: null, query: "", installations: null, busy: false, error: null };
+const state = { route: "home", appId: null, query: "", installations: null, error: null };
 const root = document.querySelector("#app");
 const binding = globalThis.penkra?.installations;
 
-function selectedApp() { return catalog.find((app) => app.id === state.appId) ?? null; }
+function installedCatalog() {
+  return (state.installations?.installed ?? [])
+    .filter((app) => app.id !== "com.penkra.apps")
+    .map((app) => ({ ...app, color: "var(--penkra-accent, #6d5dfc)", availability: "installed" }));
+}
+function allApps() {
+  const installed = installedCatalog();
+  const installedIds = new Set(installed.map((app) => app.id));
+  return [...installed, ...catalog.filter((app) => !installedIds.has(app.id))];
+}
+function selectedApp() { return allApps().find((app) => app.id === state.appId) ?? null; }
 function installedIds() { return new Set(state.installations?.installed?.map((app) => app.id) ?? []); }
 
 function bar() {
@@ -39,40 +45,40 @@ function bar() {
 }
 
 function tile(app, className = "tile") { return `<span class="${className}" style="--tile:${app.color}">${icon("package")}</span>`; }
-function filteredCatalog() { const query = state.query.trim().toLowerCase(); return query ? catalog.filter((app) => `${app.name} ${app.summary}`.toLowerCase().includes(query)) : catalog; }
+function filteredCatalog() { const query = state.query.trim().toLowerCase(); const apps = allApps(); return query ? apps.filter((app) => `${app.name} ${app.summary}`.toLowerCase().includes(query)) : apps; }
 
 function home() {
   const apps = filteredCatalog();
   return `<main class="content">
     <section class="hero"><span class="eyebrow">Discover</span><h1>Apps for your work</h1><p class="muted">Open installed Apps or find something new.</p></section>
-    ${state.query ? results(apps) : `<section class="launcher-grid" aria-label="Featured Apps">${apps.slice(0, 6).map((app) => `<button class="launcher" data-open="${app.id}">${tile(app)}<span class="launcher-label">${app.name}</span></button>`).join("")}</section>${results(apps)}`}
+    ${state.query ? results(apps) : `<section class="launcher-grid" aria-label="Featured Apps">${apps.slice(0, 6).map((app) => `<button class="launcher" data-open="${escapeHtml(app.id)}">${tile(app)}<span class="launcher-label">${escapeHtml(app.name)}</span></button>`).join("")}</section>${results(apps)}`}
   </main>`;
 }
 
 function results(apps) {
   return `<section class="section"><div class="section-heading"><h2>${state.query ? "Search results" : "Explore Apps"}</h2><span class="muted">${apps.length}</span></div>
-    ${apps.length ? `<div class="result-list">${apps.map((app) => `<button class="result" data-open="${app.id}">${tile(app)}<span class="result-copy"><span class="result-name">${app.name}</span><span class="result-summary">${app.summary}</span></span><span class="button secondary">View</span></button>`).join("")}</div>` : `<div class="empty"><div><h2>No Apps found</h2><p class="muted">Try another name or description.</p></div></div>`}
+    ${apps.length ? `<div class="result-list">${apps.map((app) => `<button class="result" data-open="${escapeHtml(app.id)}">${tile(app)}<span class="result-copy"><span class="result-name">${escapeHtml(app.name)}</span><span class="result-summary">${escapeHtml(app.summary)}</span></span><span class="button secondary">View</span></button>`).join("")}</div>` : `<div class="empty"><div><h2>No Apps found</h2><p class="muted">Try another name or description.</p></div></div>`}
   </section>`;
 }
 
 function detail(app) {
   const installed = installedIds().has(app.id);
-  return `<main class="content"><section class="detail-header">${tile(app)}<div class="detail-meta"><h1>${app.name}</h1><p class="muted">${app.summary}</p></div></section>
+  return `<main class="content"><section class="detail-header">${tile(app)}<div class="detail-meta"><h1>${escapeHtml(app.name)}</h1><p class="muted">${escapeHtml(app.summary)}</p></div></section>
     ${state.error ? `<div class="status error">${escapeHtml(state.error)}</div>` : ""}
-    <div class="detail-actions"><button class="button" data-action="${installed ? "manage" : "install"}" ${state.busy ? "disabled" : ""}>${state.busy ? "Installing…" : installed ? "Manage" : "Install"}</button></div>
-    ${state.busy ? '<div class="progress" aria-label="Installing"><span></span></div>' : ""}
-    <article class="readme"><h2>About</h2><p>${app.summary} Keep the App beside the Thread where you are working, and enable it only in the Spaces that need it.</p><h2>Permissions</h2><p>Permissions are reviewed before installation and can be inspected or revoked later in Penkra Settings.</p><h2>Privacy and data</h2><p>Each App runs in its own isolated renderer and receives separate storage for each Space.</p></article>
+    <div class="detail-actions"><button class="button" ${installed ? 'data-action="manage"' : "disabled"}>${installed ? "Manage" : "Coming later"}</button></div>
+    <article class="readme"><h2>About</h2><p>${escapeHtml(app.summary)} Keep the App beside the Thread where you are working, and enable it only in the Spaces that need it.</p><h2>Permissions</h2><p>Permissions are reviewed before installation and can be inspected or revoked later in Penkra Settings.</p><h2>Privacy and data</h2><p>Each App runs in its own isolated renderer and receives separate storage for each Space.</p></article>
   </main>`;
 }
 
 function manage(app) {
-  const spaces = state.installations?.spaces?.filter((entry) => entry.appId === app.id) ?? [];
-  const rows = ["Personal", "Work"].map((name, index) => {
-    const spaceId = name.toLowerCase();
-    const enabled = spaces.find((entry) => entry.spaceId === spaceId)?.enabled ?? index === 0;
-    return `<div class="space-row"><div><h2>${name}</h2><p class="muted">${enabled ? "Enabled" : "Disabled"} in this Space</p></div><button class="switch" role="switch" aria-checked="${enabled}" aria-label="Enable ${app.name} in ${name}" data-toggle-space="${spaceId}"></button></div>`;
-  }).join("");
-  return `<main class="content"><section class="detail-header">${tile(app)}<div class="detail-meta"><span class="eyebrow">Installed</span><h1>${app.name}</h1><p class="muted">Manage local access and data.</p></div></section><section class="section"><h2>Spaces</h2>${rows}</section><section class="section"><h2>Installation</h2><p class="muted">Uninstall the executable package. You can retain local App data for a later reinstall.</p><div class="detail-actions"><button class="button secondary" data-action="uninstall-retain">Uninstall</button><button class="button danger" data-action="uninstall-erase">Uninstall and erase data</button></div></section></main>`;
+  const spaceId = state.installations?.currentSpaceId;
+  const enabled = spaceId
+    ? (state.installations?.spaces?.find((entry) => entry.appId === app.id && entry.spaceId === spaceId)?.enabled ?? false)
+    : false;
+  const rows = spaceId
+    ? `<div class="space-row"><div><h2>Current Space</h2><p class="muted">${enabled ? "Enabled" : "Disabled"} in this Space</p></div><button class="switch" role="switch" aria-checked="${enabled}" aria-label="Enable ${escapeHtml(app.name)} in the current Space" data-toggle-space="${escapeHtml(spaceId)}"></button></div>`
+    : '<p class="muted">Open Apps beside a Thread to manage its Space access.</p>';
+  return `<main class="content"><section class="detail-header">${tile(app)}<div class="detail-meta"><span class="eyebrow">Installed</span><h1>${escapeHtml(app.name)}</h1><p class="muted">Manage local access and data.</p></div></section><section class="section"><h2>Spaces</h2>${rows}</section><section class="section"><h2>Installation</h2><p class="muted">Uninstall the executable package. You can retain local App data for a later reinstall.</p><div class="detail-actions"><button class="button secondary" data-action="uninstall-retain">Uninstall</button><button class="button danger" data-action="uninstall-erase">Uninstall and erase data</button></div></section></main>`;
 }
 
 function render() {
@@ -86,14 +92,6 @@ async function refresh() {
   render();
 }
 
-async function install(appId) {
-  if (!binding?.install) { state.error = "The Apps installation service is unavailable in this host."; render(); return; }
-  state.busy = true; render();
-  try { state.installations = await binding.install({ appId }); }
-  catch (error) { state.error = error instanceof Error ? error.message : String(error); }
-  finally { state.busy = false; render(); }
-}
-
 root.addEventListener("click", (event) => {
   const target = event.target.closest("button");
   if (!target) return;
@@ -101,7 +99,6 @@ root.addEventListener("click", (event) => {
   if (target.dataset.action === "back") { state.route = state.route === "manage" ? "detail" : "home"; render(); return; }
   if (target.dataset.action === "refresh") { void refresh(); return; }
   if (target.dataset.action === "manage") { state.route = "manage"; render(); return; }
-  if (target.dataset.action === "install") { void install(state.appId); return; }
   if (target.dataset.toggleSpace && binding?.setEnabled) {
     void binding.setEnabled({ appId: state.appId, spaceId: target.dataset.toggleSpace, enabled: target.getAttribute("aria-checked") !== "true" }).then((snapshot) => { state.installations = snapshot; render(); });
     return;

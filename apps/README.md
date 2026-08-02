@@ -14,15 +14,14 @@ Apps uses the ordinary public runtime for rendering and isolation. Its only priv
 surface is a narrow binding to the trusted installation service; it does not receive
 general filesystem, process, registry-key, or host-control authority.
 
-Its public installation-facing operations use App-local keys such as
-`installations.install`, `installations.update`, and `installations.uninstall`.
-The trusted host binding—not the Apps renderer or controller—verifies and mutates packages.
+Until the registry service is available, discovery lists only the explicitly planned Browser and
+Explorer stubs and labels them as unavailable. Installed-package rows always come from the trusted
+local installation snapshot; this package does not pretend sample catalog entries are installable.
 
 ## Package layout
 
 - `penkra-app.json` is the validated install manifest.
 - `app.html`, `app.js`, and `styles.css` are the framework-neutral visual App.
-- `operations.html` and `operations.js` register the optional controller operations.
 - `INSTRUCTIONS.md` supplies general agent-facing help; operation help is generated from the
   manifest declarations.
 - `design/apps.pen` remains authoritative for the App's UI and lifecycle states.
