@@ -8,7 +8,13 @@ test("selects install, update, and open actions from durable state", () => {
   assert.equal(appAction(app, null, null).kind, "install");
   assert.equal(appAction(app, { version: "1.4.0" }, null).kind, "update");
   assert.equal(appAction(app, { version: "2.0.0" }, null).kind, "open");
+  assert.deepEqual(appAction(app, { version: "2.0.0" }, null, null, false), {
+    kind: "enable",
+    label: "Install",
+    disabled: false,
+  });
   assert.equal(appAction(app, null, app.id).kind, "busy");
+  assert.equal(appAction(app, null, app.id, "open").label, "Opening…");
 });
 
 test("compares stable and prerelease semantic versions", () => {

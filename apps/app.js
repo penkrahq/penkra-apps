@@ -25,6 +25,7 @@ const state = {
   registryError: null,
   error: null,
   busyAppId: null,
+  busyKind: null,
   history: [{ route: "launcher", appId: null, detailTab: "description", query: "" }],
   historyIndex: 0,
 };
@@ -32,6 +33,7 @@ const state = {
 const root = document.querySelector("#app");
 const binding = globalThis.penkra?.installations;
 const registry = globalThis.penkra?.registry;
+const appHost = globalThis.penkra?.apps;
 let searchTimer = null;
 
 function icon(name, className = "") {
@@ -44,7 +46,17 @@ function installedById() {
 
 function allApps() {
   const installed = installedById();
-  const merged = state.registryApps.map((app) => ({ ...app, installed: installed.get(app.id) ?? null }));
+  const currentSpaceId = state.installations?.currentSpaceId;
+  const enabledAppIds = new Set(
+    (state.installations?.spaces ?? [])
+      .filter((entry) => entry.spaceId === currentSpaceId && entry.enabled)
+      .map((entry) => entry.appId),
+  );
+  const inCurrentSpace = (appId) => !currentSpaceId || enabledAppIds.has(appId);
+  const merged = state.registryApps.map((app) => {
+    const local = installed.get(app.id) ?? null;
+    return { ...app, installed: local, enabled: Boolean(local && inCurrentSpace(app.id)) };
+  });
   const registryIds = new Set(merged.map((app) => app.id));
   for (const app of installed.values()) {
     if (!registryIds.has(app.id) && app.id !== "com.penkra.apps") {
@@ -54,6 +66,7 @@ function allApps() {
         latestVersion: app.version,
         availability: "installed",
         installed: app,
+        enabled: inCurrentSpace(app.id),
         publisher: null,
         rating: null,
         ratingCount: 0,
@@ -143,7 +156,7 @@ function searchView() {
 }
 
 function resultRow(app) {
-  const action = appAction(app, app.installed, state.busyAppId);
+  const action = appAction(app, app.installed, state.busyAppId, state.busyKind, app.enabled);
   return `<article class="result-row">
     <button class="result-main" data-open-detail="${escapeHtml(app.id)}" aria-label="View ${escapeHtml(app.name)} details">
       ${appIcon(app, "row")}
@@ -156,7 +169,7 @@ function resultRow(app) {
 function detailView(app) {
   const detail = state.registryDetails.get(app.id);
   const version = detail?.versions?.[0];
-  const action = appAction(app, app.installed, state.busyAppId);
+  const action = appAction(app, app.installed, state.busyAppId, state.busyKind, app.enabled);
   return `<main class="panel-content detail-view">
     <section class="detail-head">
       ${appIcon(app, "detail")}
@@ -308,18 +321,36 @@ async function loadRegistryDetail(app) {
 
 async function performAppAction(app, kind) {
   if (kind === "open") {
-    state.error = "Opening an installed App from Apps requires the host navigation bridge.";
+    if (!appHost?.open || state.busyAppId) return;
+    state.busyAppId = app.id;
+    state.busyKind = kind;
+    state.error = null;
     render();
+    try {
+      await appHost.open({ appId: app.id });
+    } catch (error) {
+      state.error = errorMessage(error);
+    } finally {
+      state.busyAppId = null;
+      state.busyKind = null;
+      render();
+    }
     return;
   }
   const detail = state.registryDetails.get(app.id);
   const version = detail?.versions?.[0];
-  if (!version || !binding || state.busyAppId) return;
+  if (!binding || state.busyAppId) return;
+  if (kind !== "enable" && !version) return;
   state.busyAppId = app.id;
+  state.busyKind = kind;
   state.error = null;
   render();
   try {
-    if (kind === "install" && binding.installRegistry) {
+    if (kind === "enable" && binding.setEnabled) {
+      const spaceId = state.installations?.currentSpaceId;
+      if (!spaceId) throw new Error("Open Apps beside a Thread to install into its Space.");
+      state.installations = await binding.setEnabled({ appId: app.id, spaceId, enabled: true });
+    } else if (kind === "install" && binding.installRegistry) {
       const spaceId = state.installations?.currentSpaceId;
       if (!spaceId) throw new Error("Open Apps beside a Thread to install into its Space.");
       state.installations = await binding.installRegistry({
@@ -340,6 +371,7 @@ async function performAppAction(app, kind) {
     state.error = errorMessage(error);
   } finally {
     state.busyAppId = null;
+    state.busyKind = null;
     render();
   }
 }

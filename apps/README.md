@@ -24,6 +24,9 @@ explicitly planned, unavailable stubs. Registry entries remain non-installable u
 validation and signature verification are enforced by the trusted installer; the UI does not turn
 an uploaded artifact into an installable package prematurely.
 
+The Open action uses a user-initiated Apps-only host bridge. The host derives the originating Space
+and Thread from the calling renderer; the App supplies only the installed target App ID.
+
 ## Package layout
 
 - `penkra-app.json` is the validated install manifest.

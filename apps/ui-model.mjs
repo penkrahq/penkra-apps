@@ -22,9 +22,13 @@ export function compareVersions(left, right) {
   return a.prerelease.localeCompare(b.prerelease, undefined, { numeric: true });
 }
 
-export function appAction(app, installedApp, busyAppId) {
-  if (busyAppId === app.id) return { kind: "busy", label: "Installing…", disabled: true };
+export function appAction(app, installedApp, busyAppId, busyKind = "install", enabled = true) {
+  if (busyAppId === app.id) {
+    const labels = { install: "Installing…", enable: "Installing…", update: "Updating…", open: "Opening…" };
+    return { kind: "busy", label: labels[busyKind] ?? "Working…", disabled: true };
+  }
   if (installedApp) {
+    if (!enabled) return { kind: "enable", label: "Install", disabled: false };
     if (app.latestVersion && compareVersions(app.latestVersion, installedApp.version) > 0) {
       return { kind: "update", label: "Update", disabled: false };
     }
