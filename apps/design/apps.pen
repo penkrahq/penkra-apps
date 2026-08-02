@@ -1,5 +1,5 @@
 {
-  "version": "2.14",
+  "version": "2.15",
   "children": [
     {
       "type": "frame",
@@ -15,6 +15,7 @@
         "bottom": 1
       },
       "strokeAlignment": "inner",
+      "strokeLinejoin": "round",
       "layout": "none",
       "children": [
         {
@@ -459,6 +460,7 @@
         "bottom": 1
       },
       "strokeAlignment": "inner",
+      "strokeLinejoin": "round",
       "layout": "none",
       "children": [
         {
@@ -997,6 +999,7 @@
         "bottom": 1
       },
       "strokeAlignment": "inner",
+      "strokeLinejoin": "round",
       "layout": "none",
       "children": [
         {
@@ -1352,6 +1355,7 @@
         "bottom": 1
       },
       "strokeAlignment": "inner",
+      "strokeLinejoin": "round",
       "layout": "none",
       "children": [
         {
@@ -1736,141 +1740,179 @@
           "children": [
             {
               "type": "frame",
-              "id": "QKUC7",
+              "id": "oshR1",
               "x": 0,
               "y": 0,
               "name": "App Content / Figma Detail",
               "width": 420,
               "height": 868,
               "layout": "vertical",
-              "gap": 20,
+              "gap": 18,
               "padding": 24,
               "children": [
                 {
-                  "id": "o8lTmq",
+                  "id": "uA5fq",
                   "type": "ref",
                   "ref": "TqrqT",
                   "name": "Back"
                 },
                 {
                   "type": "frame",
-                  "id": "B7kBhh",
+                  "id": "Trlkw",
                   "name": "Head",
                   "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 16,
+                  "gap": 14,
+                  "alignItems": "center",
                   "children": [
                     {
-                      "id": "ikLuU",
+                      "id": "wZcoZ",
                       "type": "ref",
                       "ref": "ttiNQ",
                       "name": "Icon",
-                      "width": 64,
-                      "height": 64,
-                      "cornerRadius": 16,
-                      "fill": "#A259FF",
-                      "descendants": {
-                        "uzuYH": {
-                          "icon": "layout-panel-left",
-                          "width": 28,
-                          "height": 28
-                        }
-                      }
+                      "width": 56,
+                      "height": 56,
+                      "fill": "#A259FF"
                     },
                     {
                       "type": "frame",
-                      "id": "tkabZ",
-                      "name": "Texts",
+                      "id": "mDo9r",
+                      "name": "Copy",
                       "width": "fill_container",
                       "layout": "vertical",
-                      "gap": 4,
+                      "gap": 3,
                       "children": [
                         {
                           "type": "text",
-                          "id": "XDToQ",
+                          "id": "oHIfU",
                           "name": "Name",
                           "fill": "$text-primary",
                           "content": "Figma",
                           "fontFamily": "$font-body",
-                          "fontSize": 22,
+                          "fontSize": 20,
                           "fontWeight": "700"
                         },
                         {
                           "type": "text",
-                          "id": "vlN5y",
+                          "id": "Tc4PQ",
                           "name": "Publisher",
                           "fill": "$text-tertiary",
-                          "content": "by Penkra",
+                          "content": "by Penkra · 4.9 ★ · Design",
                           "fontFamily": "$font-body",
-                          "fontSize": 12,
+                          "fontSize": 11,
                           "fontWeight": "normal"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "cCyHC",
-                          "name": "Meta",
-                          "gap": 8,
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "id": "BeSRf",
-                              "type": "ref",
-                              "ref": "pchfI",
-                              "name": "Rating",
-                              "descendants": {
-                                "Ijevc": {
-                                  "content": "4.9"
-                                }
-                              }
-                            },
-                            {
-                              "type": "text",
-                              "id": "K313n",
-                              "name": "Dot",
-                              "fill": "$text-tertiary",
-                              "content": "·",
-                              "fontFamily": "$font-body",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "text",
-                              "id": "Gv5hU",
-                              "name": "Category",
-                              "fill": "$text-tertiary",
-                              "content": "Design",
-                              "fontFamily": "$font-body",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
                         }
                       ]
                     },
                     {
-                      "id": "y18oUX",
+                      "id": "fKXVP",
                       "type": "ref",
                       "ref": "N76BG",
-                      "name": "Install Button"
+                      "name": "Install"
                     }
                   ]
                 },
                 {
                   "type": "text",
-                  "id": "Q72XJ",
+                  "id": "Hj0YF",
                   "name": "Description",
                   "fill": "$text-secondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
                   "content": "Bring your team's Figma files into a thread. Search projects, preview frames, and attach designs for review without switching context.",
-                  "lineHeight": 1.5,
                   "fontFamily": "$font-body",
                   "fontSize": 13,
                   "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
-                  "id": "Fespj",
+                  "id": "wUfc3",
+                  "name": "README",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "I3kP8",
+                      "name": "Heading Row",
+                      "width": "fill_container",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "LRFgf",
+                          "name": "Heading",
+                          "fill": "$text-secondary",
+                          "content": "About this app",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "sDowf",
+                          "name": "Source",
+                          "fill": "$text-tertiary",
+                          "content": "README",
+                          "fontFamily": "$font-body",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fSiEQ",
+                      "name": "README Card",
+                      "width": "fill_container",
+                      "fill": "$card-fill",
+                      "cornerRadius": 10,
+                      "stroke": "$card-stroke",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "layout": "vertical",
+                      "gap": 9,
+                      "padding": 14,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UsQne",
+                          "name": "Title",
+                          "fill": "$text-primary",
+                          "content": "Figma for Penkra",
+                          "fontFamily": "$font-body",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "o584U",
+                          "name": "Body",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Find files, preview frames, and attach selected designs directly to a Penkra thread. Access stays scoped to the account and files you authorize.",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "yG3uP",
+                          "name": "Link",
+                          "fill": "$accent-blue",
+                          "content": "Read full README",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q3HGN",
                   "name": "Permissions",
                   "width": "fill_container",
                   "layout": "vertical",
@@ -1878,7 +1920,7 @@
                   "children": [
                     {
                       "type": "text",
-                      "id": "LUfUU",
+                      "id": "CxG81",
                       "name": "Heading",
                       "fill": "$text-secondary",
                       "content": "Permissions",
@@ -1887,7 +1929,7 @@
                       "fontWeight": "600"
                     },
                     {
-                      "id": "jMWcv",
+                      "id": "qcn2F",
                       "type": "ref",
                       "ref": "rBxDq",
                       "name": "Required",
@@ -1897,29 +1939,2183 @@
                           "content": "Access your Figma account"
                         },
                         "paYfi": {
-                          "enabled": false
+                          "opacity": 0
                         },
                         "v9F4g": {
-                          "content": "\"Read your files and comments to show them in threads.\""
+                          "content": "Required. Files and accounts you share with this app."
                         }
                       }
                     },
                     {
-                      "id": "eaH68",
+                      "id": "VGIzb",
                       "type": "ref",
                       "ref": "rBxDq",
                       "name": "Optional",
                       "width": "fill_container",
                       "descendants": {
                         "Q0gmR": {
-                          "content": "Read the conversation you're in"
+                          "content": "Read conversations you choose"
                         },
                         "v9F4g": {
-                          "content": "\"Attach the current thread when you share a file.\""
+                          "content": "Optional. Only conversations shared through Penkra."
                         }
                       }
                     }
                   ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JW9DH",
+                  "name": "Information",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "borNy",
+                      "name": "Heading",
+                      "fill": "$text-secondary",
+                      "content": "Information",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "x8iHqY",
+                      "name": "Version",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "BjAfs",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "Version",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ZpMpm",
+                          "name": "Value",
+                          "fill": "$text-secondary",
+                          "content": "1.4.0",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "U1UuC7",
+                      "name": "Download",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "y2asB",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "Download",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "lTmeZ",
+                          "name": "Value",
+                          "fill": "$text-secondary",
+                          "content": "18.2 MB",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "KS22o",
+      "x": 7200,
+      "y": 0,
+      "name": "Button / Secondary",
+      "reusable": true,
+      "height": 28,
+      "fill": "$card-fill",
+      "cornerRadius": 999,
+      "stroke": "$card-stroke",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "padding": [
+        0,
+        14
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "TPIi2",
+          "name": "Label",
+          "fill": "$text-primary",
+          "content": "Open",
+          "fontFamily": "$font-body",
+          "fontSize": 12,
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "m9M6Bk",
+      "x": 7200,
+      "y": 52,
+      "name": "Status Banner / App",
+      "reusable": true,
+      "width": 372,
+      "fill": "$card-fill",
+      "cornerRadius": 10,
+      "stroke": "$card-stroke",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "gap": 10,
+      "padding": 12,
+      "children": [
+        {
+          "type": "frame",
+          "id": "tDjrP",
+          "name": "Icon Container",
+          "width": 28,
+          "height": 28,
+          "fill": "$color-background-panel",
+          "cornerRadius": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "B7P51S",
+              "name": "Icon",
+              "width": 15,
+              "height": 15,
+              "icon": "wifi-off",
+              "library": "lucide",
+              "fill": "$text-secondary"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "e99Fg2",
+          "name": "Copy",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 3,
+          "children": [
+            {
+              "type": "text",
+              "id": "Thm7y",
+              "name": "Title",
+              "fill": "$text-primary",
+              "content": "Apps are offline",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Po6KN",
+              "name": "Message",
+              "fill": "$text-tertiary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Check your connection and try again. Installed apps remain available.",
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "t7Nnm",
+      "x": 7200,
+      "y": 150,
+      "name": "Progress / App",
+      "reusable": true,
+      "width": 372,
+      "layout": "vertical",
+      "gap": 8,
+      "children": [
+        {
+          "type": "frame",
+          "id": "zMeeu",
+          "name": "Labels",
+          "width": "fill_container",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "NiVWj",
+              "name": "Title",
+              "fill": "$text-primary",
+              "content": "Installing Figma",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "YI8fK",
+              "name": "Value",
+              "fill": "$text-tertiary",
+              "content": "62%",
+              "fontFamily": "$font-body",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "VEpiu",
+          "name": "Track",
+          "width": "fill_container",
+          "height": 4,
+          "fill": "$card-fill",
+          "cornerRadius": 999,
+          "children": [
+            {
+              "type": "frame",
+              "id": "VfIjG",
+              "name": "Fill",
+              "width": 230,
+              "height": "fill_container",
+              "fill": "$accent-blue",
+              "cornerRadius": 999
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "SQWsR",
+      "x": 7200,
+      "y": 220,
+      "name": "Space Row / Enablement",
+      "reusable": true,
+      "width": 372,
+      "height": 44,
+      "gap": 10,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "pB3yX",
+          "name": "Space Icon",
+          "width": 28,
+          "height": 28,
+          "fill": "$color-background-panel",
+          "cornerRadius": 8,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "nZcvf",
+              "name": "Icon",
+              "width": 15,
+              "height": 15,
+              "icon": "user",
+              "library": "lucide",
+              "fill": "$text-secondary"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "uSlxp",
+          "name": "Copy",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "ckV0x",
+              "name": "Name",
+              "fill": "$text-primary",
+              "content": "Personal",
+              "fontFamily": "$font-body",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "o6Vh2G",
+              "name": "Status",
+              "fill": "$text-tertiary",
+              "content": "Enabled",
+              "fontFamily": "$font-body",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "flLZn",
+          "name": "Toggle",
+          "theme": {
+            "state": "selected"
+          },
+          "width": 36,
+          "height": 20,
+          "fill": "$switch-bg",
+          "cornerRadius": 999,
+          "padding": [
+            2,
+            "$switch-pad-right",
+            2,
+            "$switch-pad-left"
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "ellipse",
+              "id": "gRlZ6",
+              "name": "Thumb",
+              "fill": "#FFFFFF",
+              "width": 16,
+              "height": 16
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "a6EFE3",
+      "x": 7572,
+      "y": 0,
+      "name": "Apps / Install Review",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "uooBn",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "f4LOTD",
+          "name": "App Content / Install Review",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "id": "G30gc5",
+              "type": "ref",
+              "ref": "TqrqT",
+              "name": "Back"
+            },
+            {
+              "type": "frame",
+              "id": "EwOYu",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RVSE4",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Review install",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "y0DZ2f",
+                  "name": "Subtitle",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Figma will be installed for this Penkra account. Choose where it can run before continuing.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "UalLs",
+              "name": "App Summary",
+              "width": "fill_container",
+              "fill": "$card-fill",
+              "cornerRadius": 10,
+              "stroke": "$card-stroke",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 12,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "h54fe4",
+                  "type": "ref",
+                  "ref": "ttiNQ",
+                  "name": "Icon",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#A259FF"
+                },
+                {
+                  "type": "frame",
+                  "id": "g8RfZc",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PbKXq",
+                      "name": "Name",
+                      "fill": "$text-primary",
+                      "content": "Figma",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "u8Mjv",
+                      "name": "Meta",
+                      "fill": "$text-tertiary",
+                      "content": "Penkra · Version 1.4.0 · 18.2 MB",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xXxrz",
+              "name": "Spaces",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "dKV06",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "Enable in Spaces",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "id": "f4pnJ",
+                  "type": "ref",
+                  "ref": "SQWsR",
+                  "name": "Personal",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "qeLAh",
+                  "type": "ref",
+                  "ref": "SQWsR",
+                  "name": "Work",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ckV0x": {
+                      "content": "Work"
+                    },
+                    "o6Vh2G": {
+                      "content": "Not enabled"
+                    },
+                    "flLZn": {
+                      "theme": {
+                        "state": "default"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "AUW24",
+              "name": "Permissions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "T8dm7",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "Permissions",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "id": "O0mdXK",
+                  "type": "ref",
+                  "ref": "rBxDq",
+                  "name": "Internet",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q0gmR": {
+                      "content": "Connect to the internet"
+                    },
+                    "v9F4g": {
+                      "content": "Required to connect to Figma."
+                    }
+                  }
+                },
+                {
+                  "id": "EHTjr",
+                  "type": "ref",
+                  "ref": "rBxDq",
+                  "name": "Files",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q0gmR": {
+                      "content": "Read files you choose"
+                    },
+                    "paYfi": {
+                      "opacity": 0
+                    },
+                    "v9F4g": {
+                      "content": "Only files selected through Penkra's file picker."
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o8IF39",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "U1Mdq",
+                  "type": "ref",
+                  "ref": "N76BG",
+                  "name": "Install",
+                  "width": "fill_container",
+                  "height": 34
+                },
+                {
+                  "type": "text",
+                  "id": "wKNgQ",
+                  "name": "Notice",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Installing confirms you trust this publisher and grants the permissions above.",
+                  "textAlign": "center",
+                  "fontFamily": "$font-body",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "mfrul",
+      "x": 7992,
+      "y": 0,
+      "name": "Apps / Installing",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "o25ZOA",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "zbxPU",
+          "name": "App Content / Installing",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 24,
+          "children": [
+            {
+              "id": "UhFRT",
+              "type": "ref",
+              "ref": "TqrqT",
+              "name": "Back"
+            },
+            {
+              "type": "frame",
+              "id": "z5vUe",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ZtZRF",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Installing Figma",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "IiPrA",
+                  "name": "Subtitle",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Penkra is verifying the signed package before enabling it.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TMZ8D",
+              "name": "Install Card",
+              "width": "fill_container",
+              "fill": "$card-fill",
+              "cornerRadius": 10,
+              "stroke": "$card-stroke",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "aIrWI",
+                  "name": "App",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "JV7Wb",
+                      "type": "ref",
+                      "ref": "ttiNQ",
+                      "name": "Icon",
+                      "width": 44,
+                      "height": 44,
+                      "fill": "#A259FF"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "f4S6w",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Q2p3x",
+                          "name": "Name",
+                          "fill": "$text-primary",
+                          "content": "Figma",
+                          "fontFamily": "$font-body",
+                          "fontSize": 15,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "KUsQ2",
+                          "name": "Meta",
+                          "fill": "$text-tertiary",
+                          "content": "Version 1.4.0 · 18.2 MB",
+                          "fontFamily": "$font-body",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "dVnVD",
+                  "type": "ref",
+                  "ref": "t7Nnm",
+                  "name": "Progress",
+                  "width": "fill_container"
+                },
+                {
+                  "type": "frame",
+                  "id": "C5iJ32",
+                  "name": "Steps",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "mrYzy",
+                      "name": "Downloaded",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "G1DgQ",
+                          "name": "Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "circle-check",
+                          "library": "lucide",
+                          "fill": "$accent-blue"
+                        },
+                        {
+                          "type": "text",
+                          "id": "pqd03",
+                          "name": "Label",
+                          "fill": "$text-secondary",
+                          "content": "Package downloaded",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HLk8N",
+                      "name": "Verifying",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "RmKfF",
+                          "name": "Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "loader-circle",
+                          "library": "lucide",
+                          "fill": "$accent-blue"
+                        },
+                        {
+                          "type": "text",
+                          "id": "W7JEYc",
+                          "name": "Label",
+                          "fill": "$text-primary",
+                          "content": "Verifying signature",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dKUa5",
+                      "name": "Pending",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "MkpS8",
+                          "name": "Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "circle",
+                          "library": "lucide",
+                          "fill": "$text-tertiary"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dLxyD",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "Enabling in Personal",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "E2Njzp",
+              "name": "Actions",
+              "width": "fill_container",
+              "children": [
+                {
+                  "id": "APyGB",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Cancel",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Cancel"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "uudyK",
+      "x": 8412,
+      "y": 0,
+      "name": "Apps / Installed Management",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "B2gEt",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "IjNPf",
+          "name": "App Content / Installed Management",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "id": "NvkSO",
+              "type": "ref",
+              "ref": "TqrqT",
+              "name": "Back"
+            },
+            {
+              "type": "frame",
+              "id": "K19NpB",
+              "name": "Head",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Sbp0h",
+                  "type": "ref",
+                  "ref": "ttiNQ",
+                  "name": "Icon",
+                  "width": 56,
+                  "height": 56,
+                  "fill": "#A259FF"
+                },
+                {
+                  "type": "frame",
+                  "id": "VosMx",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kELpi",
+                      "name": "Name",
+                      "fill": "$text-primary",
+                      "content": "Figma",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mT57M",
+                      "name": "Meta",
+                      "fill": "$text-tertiary",
+                      "content": "Installed · Version 1.4.0",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "R1gQg",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Open",
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Open"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "X2BVJu",
+              "name": "Update Available",
+              "width": "fill_container",
+              "fill": "$card-fill",
+              "cornerRadius": 10,
+              "stroke": "$card-stroke",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 10,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "n94CWa",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "k3ncBA",
+                      "name": "Title",
+                      "fill": "$text-primary",
+                      "content": "Version 1.5.0 is available",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "WlVNG",
+                      "name": "Meta",
+                      "fill": "$text-tertiary",
+                      "content": "No new permissions requested",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "Twea9",
+                  "type": "ref",
+                  "ref": "N76BG",
+                  "name": "Update",
+                  "descendants": {
+                    "N6r5t": {
+                      "content": "Update"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F8sHbC",
+              "name": "Spaces",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JfKn8",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "Available in Spaces",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "id": "RHxkf",
+                  "type": "ref",
+                  "ref": "SQWsR",
+                  "name": "Personal",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "Cri3R",
+                  "type": "ref",
+                  "ref": "SQWsR",
+                  "name": "Work",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ckV0x": {
+                      "content": "Work"
+                    },
+                    "o6Vh2G": {
+                      "content": "Not enabled"
+                    },
+                    "flLZn": {
+                      "theme": {
+                        "state": "default"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "J6yIxk",
+              "name": "Permissions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "k0JJY",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "Permissions",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "id": "g3Xmwd",
+                  "type": "ref",
+                  "ref": "rBxDq",
+                  "name": "Internet",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q0gmR": {
+                      "content": "Connect to the internet"
+                    },
+                    "v9F4g": {
+                      "content": "Required to connect to Figma."
+                    }
+                  }
+                },
+                {
+                  "id": "HCwgm",
+                  "type": "ref",
+                  "ref": "rBxDq",
+                  "name": "Conversations",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q0gmR": {
+                      "content": "Read conversations you choose"
+                    },
+                    "v9F4g": {
+                      "content": "Optional. Only conversations shared through Penkra."
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VgeiF",
+              "name": "Danger Zone",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "PA5by",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "App data",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "RJcHb",
+                  "name": "Body",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Uninstalling removes the app but keeps its local data unless you explicitly remove it.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "id": "M7S9Uv",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Uninstall",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Uninstall"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "IP2JW",
+      "x": 8832,
+      "y": 0,
+      "name": "Apps / Update Review",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "X61Dt",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "kxfHM",
+          "name": "App Content / Update Review",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "id": "E2u9sE",
+              "type": "ref",
+              "ref": "TqrqT",
+              "name": "Back"
+            },
+            {
+              "type": "frame",
+              "id": "BwZSi",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "U8Fp9",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Review update",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "ktEGe",
+                  "name": "Subtitle",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Figma 1.5.0 adds one permission. Existing access remains unchanged.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "X3m9u",
+              "name": "Version",
+              "width": "fill_container",
+              "fill": "$card-fill",
+              "cornerRadius": 10,
+              "stroke": "$card-stroke",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 12,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ep4Fg",
+                  "type": "ref",
+                  "ref": "ttiNQ",
+                  "name": "Icon",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#A259FF"
+                },
+                {
+                  "type": "frame",
+                  "id": "fB71E",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gE412",
+                      "name": "Name",
+                      "fill": "$text-primary",
+                      "content": "Figma",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "o05ft5",
+                      "name": "Meta",
+                      "fill": "$text-tertiary",
+                      "content": "1.4.0 → 1.5.0 · 20.4 MB",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "x5NhY",
+              "name": "Changes",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "pjWjf",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "What's new",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "s6zDw",
+                  "name": "Body",
+                  "fill": "$text-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Open selected design files in a focused review tab and keep comments synchronized.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "U3RjXt",
+              "name": "New Permission",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "wny3y",
+                  "name": "Label",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "E8ywD",
+                      "name": "Heading",
+                      "fill": "$text-secondary",
+                      "content": "New permission",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zVDLm",
+                      "name": "Badge",
+                      "fill": "$accent-blue",
+                      "cornerRadius": 999,
+                      "padding": [
+                        2,
+                        7
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MHuTL",
+                          "name": "Text",
+                          "fill": "#FFFFFF",
+                          "content": "Required",
+                          "fontFamily": "$font-body",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "c26k5v",
+                  "type": "ref",
+                  "ref": "rBxDq",
+                  "name": "New File Permission",
+                  "width": "fill_container",
+                  "descendants": {
+                    "Q0gmR": {
+                      "content": "Write to files you choose"
+                    },
+                    "paYfi": {
+                      "opacity": 0
+                    },
+                    "v9F4g": {
+                      "content": "Save exported frames only to a location you select."
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "rbniO",
+              "type": "ref",
+              "ref": "m9M6Bk",
+              "name": "Existing Access",
+              "width": "fill_container",
+              "descendants": {
+                "B7P51S": {
+                  "icon": "shield-check"
+                },
+                "Thm7y": {
+                  "content": "Existing permissions remain active"
+                },
+                "Po6KN": {
+                  "content": "Declining this update keeps version 1.4.0 installed."
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "rPlm0",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "ClXzF",
+                  "type": "ref",
+                  "ref": "N76BG",
+                  "name": "Update",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "N6r5t": {
+                      "content": "Update Figma"
+                    }
+                  }
+                },
+                {
+                  "id": "tfk7D",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Not Now",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Not now"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Ql3Dm",
+      "x": 9252,
+      "y": 0,
+      "name": "Apps / Uninstall and Data",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "EU26C",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "NJDZd",
+          "name": "App Content / Uninstall and Data",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "id": "g8a0Q",
+              "type": "ref",
+              "ref": "TqrqT",
+              "name": "Back"
+            },
+            {
+              "type": "frame",
+              "id": "qXDL7",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bNhbm",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Uninstall Figma?",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "sc5pH",
+                  "name": "Subtitle",
+                  "fill": "$text-tertiary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "The app will close in every tab and be removed from all Spaces.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "T7HTqI",
+              "name": "App Summary",
+              "width": "fill_container",
+              "fill": "$card-fill",
+              "cornerRadius": 10,
+              "stroke": "$card-stroke",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 12,
+              "padding": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "xMeew",
+                  "type": "ref",
+                  "ref": "ttiNQ",
+                  "name": "Icon",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#A259FF"
+                },
+                {
+                  "type": "frame",
+                  "id": "Ljeq4",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "e1iwL",
+                      "name": "Name",
+                      "fill": "$text-primary",
+                      "content": "Figma",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "i5MMNE",
+                      "name": "Meta",
+                      "fill": "$text-tertiary",
+                      "content": "Installed in Personal · 64 MB local data",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "iAlMD",
+              "name": "Data Choice",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TNnGr",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "Local app data",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "fahlL",
+                  "name": "Keep Data",
+                  "width": "fill_container",
+                  "fill": "$card-fill",
+                  "cornerRadius": 10,
+                  "stroke": "$accent-blue",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "gap": 10,
+                  "padding": 14,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "x6ES0t",
+                      "name": "Selected",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "circle-dot",
+                      "library": "lucide",
+                      "fill": "$accent-blue"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YxSYn",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "bl7na",
+                          "name": "Title",
+                          "fill": "$text-primary",
+                          "content": "Keep local data",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "RFnld",
+                          "name": "Body",
+                          "fill": "$text-tertiary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Reinstall later without losing the app's documents, settings, or cache.",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Mbgr8",
+                  "name": "Remove Data",
+                  "width": "fill_container",
+                  "fill": "$card-fill",
+                  "cornerRadius": 10,
+                  "stroke": "$card-stroke",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "gap": 10,
+                  "padding": 14,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "hT3EG",
+                      "name": "Unselected",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "circle",
+                      "library": "lucide",
+                      "fill": "$text-tertiary"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "aciP6",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "b0VDd",
+                          "name": "Title",
+                          "fill": "$text-primary",
+                          "content": "Remove local data",
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "c2SJp",
+                          "name": "Body",
+                          "fill": "$text-tertiary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Permanently delete 64 MB stored by this app on this device.",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "v4vPjL",
+              "type": "ref",
+              "ref": "m9M6Bk",
+              "name": "Account Note",
+              "width": "fill_container",
+              "descendants": {
+                "B7P51S": {
+                  "icon": "cloud"
+                },
+                "Thm7y": {
+                  "content": "Your account record is retained"
+                },
+                "Po6KN": {
+                  "content": "The Apps catalog remembers that you installed Figma; local app data remains device-specific."
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "r1isN",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "h4AUN",
+                  "type": "ref",
+                  "ref": "N76BG",
+                  "name": "Uninstall",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "#D84A4A",
+                  "descendants": {
+                    "N6r5t": {
+                      "content": "Uninstall Figma"
+                    }
+                  }
+                },
+                {
+                  "id": "P6h0Ek",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Cancel",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Cancel"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "x8ncv",
+      "x": 9672,
+      "y": 0,
+      "name": "Apps / Offline Catalog",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "p48XTY",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "JpWR6",
+          "name": "App Content / Offline Catalog",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "zecG7",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "XEDbq",
+                  "name": "Title",
+                  "fill": "$text-primary",
+                  "content": "Apps",
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "E1cZbl",
+                  "name": "Subtitle",
+                  "fill": "$text-tertiary",
+                  "content": "Discover and manage apps for Penkra.",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "id": "LlPkL",
+              "type": "ref",
+              "ref": "m9M6Bk",
+              "name": "Offline",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "V5UVsm",
+              "name": "Installed",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "HfRJ7",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "Installed on this device",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "id": "ld9Dr",
+                  "type": "ref",
+                  "ref": "CbULj",
+                  "name": "Browser",
+                  "width": "fill_container"
+                },
+                {
+                  "id": "jXali",
+                  "type": "ref",
+                  "ref": "CbULj",
+                  "name": "Figma",
+                  "width": "fill_container",
+                  "descendants": {
+                    "d2r2O": {
+                      "fill": "#A259FF"
+                    },
+                    "rdVQI": {
+                      "content": "Figma"
+                    },
+                    "wpYza": {
+                      "content": "Browse designs and attach selected files to a thread."
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "Z8oNi",
+              "type": "ref",
+              "ref": "KS22o",
+              "name": "Retry",
+              "width": "fill_container",
+              "height": 34,
+              "descendants": {
+                "TPIi2": {
+                  "content": "Try again"
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "P4ebJ",
+              "name": "Footnote",
+              "fill": "$text-tertiary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "You can keep using installed apps while the catalog is unavailable. Installs and updates require a connection.",
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "HGnB0",
+      "x": 10092,
+      "y": 0,
+      "name": "Apps / Revoked App",
+      "clip": true,
+      "width": 420,
+      "height": 868,
+      "fill": "$color-background-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "ZJvxm",
+          "type": "ref",
+          "ref": "YhnGg",
+          "name": "Host App Bar Preview",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "hGZEV",
+          "name": "App Content / Revoked App",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 24,
+          "children": [
+            {
+              "id": "EwMUf",
+              "type": "ref",
+              "ref": "TqrqT",
+              "name": "Back"
+            },
+            {
+              "type": "frame",
+              "id": "m9e03",
+              "name": "Head",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "aDV4w",
+                  "type": "ref",
+                  "ref": "ttiNQ",
+                  "name": "Icon",
+                  "width": 56,
+                  "height": 56,
+                  "fill": "#A259FF",
+                  "opacity": 0.55
+                },
+                {
+                  "type": "frame",
+                  "id": "p5luk",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "h517j",
+                      "name": "Name",
+                      "fill": "$text-primary",
+                      "content": "Figma",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "jE2lI",
+                      "name": "Meta",
+                      "fill": "#D96B6B",
+                      "content": "Unavailable · Publisher version revoked",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "i0aP7",
+              "type": "ref",
+              "ref": "m9M6Bk",
+              "name": "Revocation",
+              "width": "fill_container",
+              "stroke": "#D96B6B",
+              "descendants": {
+                "B7P51S": {
+                  "icon": "shield-alert",
+                  "fill": "#D96B6B"
+                },
+                "Thm7y": {
+                  "content": "This version can no longer run"
+                },
+                "Po6KN": {
+                  "content": "Penkra revoked Figma 1.4.0 after its package failed a security requirement. Its tabs have been stopped."
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "BrDHd",
+              "name": "What Happens",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Krj1K",
+                  "name": "Heading",
+                  "fill": "$text-secondary",
+                  "content": "What happens now",
+                  "fontFamily": "$font-body",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "Ypv8C",
+                  "name": "Local Data",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "OHYFt",
+                      "name": "Icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "hard-drive",
+                      "library": "lucide",
+                      "fill": "$text-secondary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "keOSb",
+                      "name": "Body",
+                      "fill": "$text-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Local app data stays on this device until you remove it.",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rD8Qi",
+                  "name": "Permissions",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "TcoM1",
+                      "name": "Icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "shield-off",
+                      "library": "lucide",
+                      "fill": "$text-secondary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "x4yGE",
+                      "name": "Body",
+                      "fill": "$text-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "All app permissions and operations are disabled.",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zmzKo",
+                  "name": "Update",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "rA0TZ",
+                      "name": "Icon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "refresh-cw",
+                      "library": "lucide",
+                      "fill": "$text-secondary"
+                    },
+                    {
+                      "type": "text",
+                      "id": "lj2E0",
+                      "name": "Body",
+                      "fill": "$text-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "A safe replacement can be installed when the publisher releases one.",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "H0DTdu",
+              "name": "Actions",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "O6rw7r",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Check Again",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Check for a safe version"
+                    }
+                  }
+                },
+                {
+                  "id": "WOEf3",
+                  "type": "ref",
+                  "ref": "KS22o",
+                  "name": "Remove",
+                  "width": "fill_container",
+                  "height": 34,
+                  "descendants": {
+                    "TPIi2": {
+                      "content": "Remove app"
+                    }
+                  }
                 }
               ]
             }
