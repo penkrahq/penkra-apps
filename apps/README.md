@@ -16,14 +16,25 @@ client; it does not receive account cookies, signed object URLs, general filesys
 registry-key, or host-control authority.
 
 Discovery combines validated registry responses with the trusted local installation snapshot.
-Browser and Explorer remain explicitly planned, unavailable stubs. Registry entries remain
-non-installable until package validation and signature verification are enforced by the trusted
-installer; the UI does not turn an uploaded artifact into an installable package prematurely.
+The App presents one launcher, a state-aware search list, and one detail surface with Description,
+Permissions, and Developer tabs. Description renders the complete bounded registry `README.md` as
+sanitized Markdown; raw HTML and unsafe links are never trusted. Install and update use the compact
+stateful action control rather than separate review or progress screens. Browser and Explorer remain
+explicitly planned, unavailable stubs. Registry entries remain non-installable until package
+validation and signature verification are enforced by the trusted installer; the UI does not turn
+an uploaded artifact into an installable package prematurely.
 
 ## Package layout
 
 - `penkra-app.json` is the validated install manifest.
 - `app.html`, `app.js`, and `styles.css` are the framework-neutral visual App.
+- `ui-model.mjs` owns pure action, permission, version, escaping, and Markdown behavior.
 - `INSTRUCTIONS.md` supplies general agent-facing help; operation help is generated from the
   manifest declarations.
 - `design/apps.pen` remains authoritative for the App's UI and lifecycle states.
+
+Run the focused framework-neutral checks with:
+
+```sh
+node --test apps/ui-model.test.mjs
+```
