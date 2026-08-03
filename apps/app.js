@@ -42,7 +42,12 @@ function icon(name, className = "") {
 }
 
 function installedById() {
-  return new Map((state.installations?.installed ?? []).map((app) => [app.id, app]));
+  const currentSpaceId = state.installations?.currentSpaceId;
+  return new Map(
+    (state.installations?.installed ?? [])
+      .filter((app) => !currentSpaceId || app.spaceId === currentSpaceId)
+      .map((app) => [app.id, app]),
+  );
 }
 
 function allApps() {
@@ -364,11 +369,16 @@ async function performAppAction(app, kind) {
         permissions: grantsFor(app, version.permissions, {}),
       });
     } else if (kind === "update" && binding.updateRegistry) {
-      const enabledSpaces = (state.installations?.spaces ?? []).filter((entry) => entry.appId === app.id && entry.enabled);
+      const spaceId = state.installations?.currentSpaceId;
+      if (!spaceId) throw new Error("Open Apps beside a Thread to update in its Space.");
+      const space = (state.installations?.spaces ?? []).find(
+        (entry) => entry.appId === app.id && entry.spaceId === spaceId,
+      );
       state.installations = await binding.updateRegistry({
         slug: app.slug,
         version: version.version,
-        permissionsBySpace: Object.fromEntries(enabledSpaces.map((space) => [space.spaceId, grantsFor(app, version.permissions, space.permissions)])),
+        spaceId,
+        permissions: grantsFor(app, version.permissions, space?.permissions ?? {}),
       });
     }
   } catch (error) {

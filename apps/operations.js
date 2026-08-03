@@ -5,7 +5,17 @@ export function registerAppsOperations(runtime) {
     throw new Error("The Apps operation runtime is unavailable.");
   }
   const registrations = [
+    runtime.operations.handle("listings.open", async (input, context) => {
+      const appId = requireCanonicalAppId(requireString(requireRecord(input), "appId"));
+      if (context.tab) {
+        await context.tab.navigate({ route: "/detail", state: { appId } });
+        return { appId, tabId: context.tab.id };
+      }
+      const tab = await context.tabs.open({ route: "/detail", state: { appId } });
+      return { appId, tabId: tab.id };
+    }),
     runtime.operations.handle("installations.install", async (input, context) => {
+      assertInstallationCaller(context);
       const value = requireRecord(input);
       const snapshot = await runtime.installations.installRegistry({
         slug: requireString(value, "slug"),
@@ -17,25 +27,30 @@ export function registerAppsOperations(runtime) {
       return result(installed.id, context.invocation.spaceId, "installed", installed.version);
     }),
     runtime.operations.handle("installations.update", async (input, context) => {
+      assertInstallationCaller(context);
       const value = requireRecord(input);
       const snapshot = await runtime.installations.updateRegistry({
         slug: requireString(value, "slug"),
         version: requireString(value, "version"),
-        permissionsBySpace: requirePermissionsBySpace(value.permissionsBySpace),
+        spaceId: context.invocation.spaceId,
+        permissions: requirePermissions(value.permissions),
       });
       const installed = requireInstalledBySlug(snapshot, value.slug);
       return result(installed.id, context.invocation.spaceId, "updated", installed.version);
     }),
     runtime.operations.handle("installations.uninstall", async (input, context) => {
+      assertInstallationCaller(context);
       const value = requireRecord(input);
       const appId = requireManagedAppId(value);
       await runtime.installations.uninstall({
         appId,
+        spaceId: context.invocation.spaceId,
         retainData: requireBoolean(value, "retainData"),
       });
       return result(appId, context.invocation.spaceId, "uninstalled");
     }),
     runtime.operations.handle("installations.enable", async (input, context) => {
+      assertInstallationCaller(context);
       const appId = requireManagedAppId(requireRecord(input));
       const snapshot = await runtime.installations.setEnabled({
         appId,
@@ -46,6 +61,7 @@ export function registerAppsOperations(runtime) {
       return result(appId, context.invocation.spaceId, "enabled", installed.version);
     }),
     runtime.operations.handle("installations.disable", async (input, context) => {
+      assertInstallationCaller(context);
       const appId = requireManagedAppId(requireRecord(input));
       const snapshot = await runtime.installations.setEnabled({
         appId,
@@ -56,6 +72,7 @@ export function registerAppsOperations(runtime) {
       return result(appId, context.invocation.spaceId, "disabled", installed.version);
     }),
     runtime.operations.handle("installations.remove-data", async (input, context) => {
+      assertInstallationCaller(context);
       const appId = requireManagedAppId(requireRecord(input));
       await runtime.installations.removeData({
         appId,
@@ -65,6 +82,14 @@ export function registerAppsOperations(runtime) {
     }),
   ];
   return () => registrations.forEach((unregister) => unregister());
+}
+
+function assertInstallationCaller(context) {
+  if (context?.caller?.kind === "app") {
+    const error = new Error("Apps cannot change installations on behalf of another App.");
+    error.code = "CALLER_NOT_ALLOWED";
+    throw error;
+  }
 }
 
 function requireRecord(value) {
@@ -92,6 +117,13 @@ function requireManagedAppId(value) {
   return appId;
 }
 
+function requireCanonicalAppId(value) {
+  if (!/^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9-]*){2,}$/.test(value)) {
+    throw new TypeError("appId must be a canonical reverse-domain App ID.");
+  }
+  return value;
+}
+
 function requirePermissions(value) {
   const permissions = requireRecord(value);
   return Object.fromEntries(Object.entries(permissions).map(([name, grant]) => {
@@ -102,22 +134,22 @@ function requirePermissions(value) {
   }));
 }
 
-function requirePermissionsBySpace(value) {
-  const bySpace = requireRecord(value);
-  return Object.fromEntries(Object.entries(bySpace).map(([spaceId, permissions]) => {
-    if (!spaceId) throw new TypeError("Space IDs must be non-empty strings.");
-    return [spaceId, requirePermissions(permissions)];
-  }));
-}
-
 function requireInstalledBySlug(snapshot, slug) {
-  const installed = snapshot.installed.find((candidate) => candidate.slug === slug);
+  const installed = snapshot.installed.find(
+    (candidate) =>
+      candidate.slug === slug &&
+      (!snapshot.currentSpaceId || candidate.spaceId === snapshot.currentSpaceId),
+  );
   if (!installed) throw new Error(`${slug} is not installed.`);
   return installed;
 }
 
 function requireInstalledById(snapshot, appId) {
-  const installed = snapshot.installed.find((candidate) => candidate.id === appId);
+  const installed = snapshot.installed.find(
+    (candidate) =>
+      candidate.id === appId &&
+      (!snapshot.currentSpaceId || candidate.spaceId === snapshot.currentSpaceId),
+  );
   if (!installed) throw new Error(`${appId} is not installed.`);
   return installed;
 }

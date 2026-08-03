@@ -1,0 +1,157 @@
+{
+  "manifestVersion": 1,
+  "id": "com.penkra.browser",
+  "slug": "browser",
+  "name": "Browser",
+  "summary": "Browse the web in isolated pages that agents and people can use together.",
+  "version": "0.1.0",
+  "compatibility": { "penkra": ">=0.8.0" },
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
+  "entrypoints": { "app": "app.html", "operations": "operations.html" },
+  "permissions": [
+    {
+      "name": "browser-session",
+      "required": true,
+      "reason": "Browser uses Penkra's isolated hosted pages for navigation and automation."
+    }
+  ],
+  "operations": [
+    {
+      "key": "pages.open",
+      "summary": "Open a URL in a Browser tab.",
+      "input": {
+        "type": "object",
+        "properties": { "url": { "type": "string", "minLength": 1 } },
+        "required": ["url"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "handler": "pages.open"
+    },
+    {
+      "key": "pages.navigate",
+      "summary": "Navigate a page in the explicitly targeted Browser tab.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "minLength": 1 },
+          "pageId": { "type": "string", "minLength": 1 }
+        },
+        "required": ["url"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "handler": "pages.navigate"
+    },
+    {
+      "key": "pages.evaluate",
+      "summary": "Evaluate a bounded JavaScript expression in a page in the targeted Browser tab.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "pageId": { "type": "string", "minLength": 1 },
+          "expression": { "type": "string", "minLength": 1, "maxLength": 100000 }
+        },
+        "required": ["pageId", "expression"],
+        "additionalProperties": false
+      },
+      "output": {},
+      "handler": "pages.evaluate"
+    },
+    {
+      "key": "pages.screenshot",
+      "summary": "Capture a page in the explicitly targeted Browser tab.",
+      "input": {
+        "type": "object",
+        "properties": { "pageId": { "type": "string", "minLength": 1 } },
+        "required": ["pageId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": { "dataUrl": { "type": "string", "minLength": 1 } },
+        "required": ["dataUrl"],
+        "additionalProperties": false
+      },
+      "handler": "pages.screenshot"
+    },
+    {
+      "key": "pages.snapshot",
+      "summary": "Read the visible document and interactive element summary from a targeted page.",
+      "input": {
+        "type": "object",
+        "properties": { "pageId": { "type": "string", "minLength": 1 } },
+        "required": ["pageId"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "handler": "pages.snapshot"
+    },
+    {
+      "key": "pages.click",
+      "summary": "Click an element matched by a CSS selector in a targeted page.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "pageId": { "type": "string", "minLength": 1 },
+          "selector": { "type": "string", "minLength": 1, "maxLength": 4096 }
+        },
+        "required": ["pageId", "selector"],
+        "additionalProperties": false
+      },
+      "output": {},
+      "handler": "pages.click"
+    },
+    {
+      "key": "pages.type",
+      "summary": "Replace a targeted text control's contents and emit input events.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "pageId": { "type": "string", "minLength": 1 },
+          "selector": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "text": { "type": "string", "maxLength": 100000 }
+        },
+        "required": ["pageId", "selector", "text"],
+        "additionalProperties": false
+      },
+      "output": {},
+      "handler": "pages.type"
+    },
+    {
+      "key": "pages.scroll",
+      "summary": "Scroll a targeted page by an exact pixel delta.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "pageId": { "type": "string", "minLength": 1 },
+          "deltaX": { "type": "number", "default": 0 },
+          "deltaY": { "type": "number" }
+        },
+        "required": ["pageId", "deltaY"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "handler": "pages.scroll"
+    },
+    {
+      "key": "pages.wait",
+      "summary": "Wait until a CSS selector exists in a targeted page.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "pageId": { "type": "string", "minLength": 1 },
+          "selector": { "type": "string", "minLength": 1, "maxLength": 4096 },
+          "timeoutMs": { "type": "integer", "minimum": 1, "maximum": 30000, "default": 10000 }
+        },
+        "required": ["pageId", "selector"],
+        "additionalProperties": false
+      },
+      "output": {},
+      "handler": "pages.wait"
+    }
+  ],
+  "contributions": {
+    "handlers": [{ "intent": "open-url", "operation": "pages.open", "schemes": ["http", "https"] }]
+  }
+}

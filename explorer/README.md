@@ -1,6 +1,7 @@
 # Explorer
 
-Penkra's named first-party Explorer App stub. It is not currently implemented or bundled.
+Penkra's active first-party file browsing and preview App. Its implementation uses the ordinary
+isolated App runtime and public scoped-file service.
 
 Reserved canonical App ID: `com.penkra.explorer`.
 
@@ -10,3 +11,12 @@ parallel Files or Editor product identities without an explicit architecture cha
 Explorer owns its complete web surface, including whether each page renders the
 standard App Bar. It uses user-mediated web file and directory handles, not a private
 raw filesystem API.
+
+Host paths never enter the renderer; durable access is represented by Space- and App-scoped
+opaque handles. The authoritative design is [`design/explorer.pen`](./design/explorer.pen).
+
+## Local verification
+
+```sh
+node --test explorer-model.test.mjs operations.test.mjs
+```

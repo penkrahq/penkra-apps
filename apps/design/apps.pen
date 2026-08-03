@@ -8,7 +8,7 @@
       "y": 400,
       "name": "Components",
       "width": 2200,
-      "height": 1600,
+      "height": 1900,
       "fill": "$color-background-panel",
       "stroke": "$color-border",
       "strokeWidth": {
@@ -41,6 +41,66 @@
               "icon": "package",
               "library": "lucide",
               "fill": "#FFFFFF"
+            },
+            {
+              "type": "frame",
+              "id": "ia8SN",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 26,
+              "name": "Developer Badge",
+              "enabled": false,
+              "width": 16,
+              "height": 16,
+              "fill": "$accent-blue",
+              "cornerRadius": 999,
+              "stroke": "$card-fill",
+              "strokeWidth": 2,
+              "strokeAlignment": "outer",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "xefYl",
+                  "name": "Icon",
+                  "width": 10,
+                  "height": 10,
+                  "icon": "badge-check",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rwz1H",
+              "layoutPosition": "absolute",
+              "x": 26,
+              "y": 26,
+              "name": "Removed Badge",
+              "enabled": false,
+              "width": 16,
+              "height": 16,
+              "fill": "#D96B6B",
+              "cornerRadius": 999,
+              "stroke": "$card-fill",
+              "strokeWidth": 2,
+              "strokeAlignment": "outer",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "N85ty",
+                  "name": "Icon",
+                  "width": 10,
+                  "height": 10,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
             }
           ]
         },
@@ -124,22 +184,42 @@
           "x": 700,
           "y": 210,
           "name": "Button / Install",
+          "theme": {
+            "state": "default"
+          },
           "reusable": true,
-          "height": 28,
-          "fill": "$accent-blue",
+          "height": 26,
+          "fill": "$btn-install-bg",
           "cornerRadius": 999,
+          "stroke": "$btn-install-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "outer",
+          "gap": 4,
           "padding": [
             0,
-            14
+            6
           ],
           "justifyContent": "center",
           "alignItems": "center",
           "children": [
             {
+              "type": "icon",
+              "id": "J3ahHo",
+              "x": 0,
+              "y": 0,
+              "name": "Loading Spinner — rotates in code",
+              "enabled": "$button-loading-visible",
+              "width": 13,
+              "height": 13,
+              "icon": "loader-circle",
+              "library": "lucide",
+              "fill": "$btn-install-text"
+            },
+            {
               "type": "text",
               "id": "N6r5t",
               "name": "Label",
-              "fill": "#FFFFFF",
+              "fill": "$btn-install-text",
               "content": "Install",
               "fontFamily": "$font-body",
               "fontSize": 12,
@@ -402,6 +482,344 @@
           "fontFamily": "$font-body",
           "fontSize": 18,
           "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "mrWzD",
+          "x": 64,
+          "y": 650,
+          "name": "Feature Row Header / Shared",
+          "reusable": true,
+          "width": 2000,
+          "fill": "$card-fill",
+          "cornerRadius": 6,
+          "stroke": "$card-stroke",
+          "strokeWidth": 2,
+          "layout": "vertical",
+          "padding": [
+            20,
+            28
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Z5in9M",
+              "name": "Title",
+              "fill": "$text-primary",
+              "content": "Feature Row Title",
+              "fontFamily": "$font-body",
+              "fontSize": 32,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "P4YM0J",
+          "x": 64,
+          "y": 850,
+          "name": "Apps Panel Structure / Shared",
+          "theme": {
+            "mode": "dark"
+          },
+          "reusable": true,
+          "clip": true,
+          "width": 720,
+          "height": 868,
+          "fill": "$color-background-surface",
+          "stroke": "$card-stroke",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "YVC4b",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Fixed Host App Bar",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "kGAhc",
+              "name": "Fluid Panel Body",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "D0RsA",
+                  "name": "Context Header Region",
+                  "width": "fill_container",
+                  "height": 88,
+                  "fill": "$color-background-control-opaque",
+                  "cornerRadius": 8,
+                  "stroke": "$card-stroke",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qFwH5",
+                      "name": "Region Label",
+                      "fill": "$text-secondary",
+                      "content": "CONTEXT HEADER · fixed to content flow",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hv3Rk",
+                  "name": "Scrollable Content Region",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$color-background-control-opaque",
+                  "cornerRadius": 8,
+                  "stroke": "$card-stroke",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "A4UI7p",
+                      "name": "Region Label",
+                      "fill": "$text-secondary",
+                      "content": "SCROLLABLE CONTENT · fills available width and height",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "mveYA",
+                  "name": "Action Region",
+                  "width": "fill_container",
+                  "height": 72,
+                  "fill": "$color-background-control-opaque",
+                  "cornerRadius": 8,
+                  "stroke": "$card-stroke",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    16
+                  ],
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "S5w6e",
+                      "name": "Region Label",
+                      "fill": "$text-secondary",
+                      "content": "ACTIONS · flow or pin by feature need",
+                      "fontFamily": "$font-body",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "oosI7",
+          "x": 64,
+          "y": 800,
+          "name": "Structural Components Label",
+          "fill": "$text-secondary",
+          "content": "Responsive Structural Components",
+          "fontFamily": "$font-body",
+          "fontSize": 14,
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "GTiX8",
+          "x": 700,
+          "y": 298,
+          "name": "Install Button States — component + stories",
+          "width": 500,
+          "height": 120,
+          "fill": "$color-background-surface",
+          "cornerRadius": 12,
+          "stroke": "$card-stroke",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 14,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "Aubcd",
+              "name": "Install Button Stories",
+              "width": "fill_container",
+              "gap": 24,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gTdKo",
+                  "name": "default",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "T5bq8",
+                      "name": "Label",
+                      "fill": "$text-tertiary",
+                      "content": "default",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "f2rqgZ",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install — default",
+                      "theme": {
+                        "state": "default"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gW1tU",
+                  "name": "hover",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "c3UdhV",
+                      "name": "Label",
+                      "fill": "$text-tertiary",
+                      "content": "hover",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "sBFPx",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install — hover",
+                      "theme": {
+                        "state": "hover"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "R8bXmP",
+                  "name": "active",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "J8cxE6",
+                      "name": "Label",
+                      "fill": "$text-tertiary",
+                      "content": "active",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "kQEPO",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install — active",
+                      "theme": {
+                        "state": "active"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "J9xF7u",
+                  "name": "disabled",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AivfV",
+                      "name": "Label",
+                      "fill": "$text-tertiary",
+                      "content": "disabled",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "tl1GM",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install — disabled",
+                      "theme": {
+                        "state": "disabled"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "bSyKZ",
+                  "name": "loading",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vwPO8",
+                      "name": "Label",
+                      "fill": "$text-tertiary",
+                      "content": "loading",
+                      "fontFamily": "$font-body",
+                      "fontSize": 11,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "id": "o9kUw9",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install — loading",
+                      "theme": {
+                        "state": "loading"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1347,51 +1765,21 @@
       "x": 0,
       "y": 2600,
       "name": "Features / Apps",
-      "width": 2200,
-      "height": 1300,
-      "fill": "$color-background-panel",
-      "stroke": "$color-border",
-      "strokeWidth": {
-        "bottom": 1
-      },
-      "strokeAlignment": "inner",
-      "strokeLinejoin": "round",
+      "width": 3024,
+      "height": 5440,
       "layout": "none",
       "children": [
         {
           "type": "frame",
-          "id": "hkOaU",
-          "x": 40,
-          "y": 72,
-          "name": "Section Marker",
-          "width": 8,
-          "height": 44,
-          "fill": "#F97316",
-          "cornerRadius": 4
-        },
-        {
-          "type": "text",
-          "id": "M05Ry",
-          "x": 64,
-          "y": 64,
-          "name": "Section Label",
-          "fill": "$text-primary",
-          "content": "Apps",
-          "fontFamily": "$font-body",
-          "fontSize": 56,
-          "fontWeight": "600"
-        },
-        {
-          "type": "frame",
           "id": "ErQyB",
-          "x": 64,
-          "y": 180,
-          "name": "Apps / Launcher",
+          "x": 0,
+          "y": 1360,
+          "name": "Structure — Launcher",
           "theme": {
             "mode": "dark"
           },
           "clip": true,
-          "width": 420,
+          "width": 720,
           "height": 868,
           "fill": "$color-background-surface",
           "layout": "vertical",
@@ -1582,14 +1970,14 @@
         {
           "type": "frame",
           "id": "jbsCn",
-          "x": 548,
-          "y": 180,
-          "name": "Apps / Search Results",
+          "x": 768,
+          "y": 1360,
+          "name": "Structure — Search Results",
           "theme": {
             "mode": "dark"
           },
           "clip": true,
-          "width": 420,
+          "width": 720,
           "height": 868,
           "fill": "$color-background-surface",
           "layout": "vertical",
@@ -1726,56 +2114,56 @@
         {
           "type": "frame",
           "id": "EWIli",
-          "x": 1032,
-          "y": 180,
-          "name": "Apps / Figma Detail",
+          "x": 1536,
+          "y": 1360,
+          "name": "Structure — App Detail",
           "theme": {
             "mode": "dark"
           },
           "clip": true,
-          "width": 420,
+          "width": 720,
           "height": 868,
           "fill": "$color-background-surface",
-          "layout": "none",
+          "layout": "vertical",
           "children": [
             {
+              "id": "E0VjA",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Host App Bar Preview",
+              "width": "fill_container"
+            },
+            {
               "type": "frame",
-              "id": "oshR1",
-              "x": 0,
-              "y": 0,
+              "id": "KMYY7",
               "name": "App Content / Figma Detail",
-              "width": 420,
-              "height": 868,
+              "width": "fill_container",
+              "height": "fill_container",
               "layout": "vertical",
               "gap": 18,
               "padding": 24,
               "children": [
                 {
-                  "id": "uA5fq",
-                  "type": "ref",
-                  "ref": "TqrqT",
-                  "name": "Back"
-                },
-                {
                   "type": "frame",
-                  "id": "Trlkw",
+                  "id": "Y0C80q",
                   "name": "Head",
                   "width": "fill_container",
                   "gap": 14,
                   "alignItems": "center",
                   "children": [
                     {
-                      "id": "wZcoZ",
+                      "id": "j2ozk",
                       "type": "ref",
                       "ref": "ttiNQ",
                       "name": "Icon",
-                      "width": 56,
-                      "height": 56,
-                      "fill": "#A259FF"
+                      "width": 72,
+                      "height": 72,
+                      "fill": "#A259FF",
+                      "cornerRadius": 16
                     },
                     {
                       "type": "frame",
-                      "id": "mDo9r",
+                      "id": "uLVTO",
                       "name": "Copy",
                       "width": "fill_container",
                       "layout": "vertical",
@@ -1783,7 +2171,7 @@
                       "children": [
                         {
                           "type": "text",
-                          "id": "oHIfU",
+                          "id": "sGZhb",
                           "name": "Name",
                           "fill": "$text-primary",
                           "content": "Figma",
@@ -1792,19 +2180,61 @@
                           "fontWeight": "700"
                         },
                         {
-                          "type": "text",
-                          "id": "Tc4PQ",
+                          "type": "frame",
+                          "id": "FLdoO",
                           "name": "Publisher",
-                          "fill": "$text-tertiary",
-                          "content": "by Penkra · 4.9 ★ · Design",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "YQnRk",
+                              "name": "Publisher Name",
+                              "fill": "$text-tertiary",
+                              "content": "Penkra",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "b9BMF",
+                              "name": "Separator",
+                              "fill": "$text-tertiary",
+                              "content": "·",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "id": "qt5zs",
+                              "type": "ref",
+                              "ref": "pchfI",
+                              "name": "Rating",
+                              "descendants": {
+                                "Ijevc": {
+                                  "content": "4.9"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "DOL9Q",
+                          "name": "Summary",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Bring your team's Figma files into a thread.",
                           "fontFamily": "$font-body",
-                          "fontSize": 11,
+                          "fontSize": 12,
                           "fontWeight": "normal"
                         }
                       ]
                     },
                     {
-                      "id": "fKXVP",
+                      "id": "mq0ay",
                       "type": "ref",
                       "ref": "N76BG",
                       "name": "Install"
@@ -1812,99 +2242,104 @@
                   ]
                 },
                 {
-                  "type": "text",
-                  "id": "Hj0YF",
-                  "name": "Description",
-                  "fill": "$text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Bring your team's Figma files into a thread. Search projects, preview frames, and attach designs for review without switching context.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                },
-                {
                   "type": "frame",
-                  "id": "wUfc3",
-                  "name": "README",
+                  "id": "V6tcJ2",
+                  "name": "Tabs",
                   "width": "fill_container",
                   "layout": "vertical",
-                  "gap": 8,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "I3kP8",
-                      "name": "Heading Row",
+                      "id": "vxXcm",
+                      "name": "Tab Items",
                       "width": "fill_container",
-                      "alignItems": "center",
                       "children": [
                         {
-                          "type": "text",
-                          "id": "LRFgf",
-                          "name": "Heading",
-                          "fill": "$text-secondary",
-                          "content": "About this app",
-                          "fontFamily": "$font-body",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "sDowf",
-                          "name": "Source",
-                          "fill": "$text-tertiary",
-                          "content": "README",
-                          "fontFamily": "$font-body",
-                          "fontSize": 10,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "fSiEQ",
-                      "name": "README Card",
-                      "width": "fill_container",
-                      "fill": "$card-fill",
-                      "cornerRadius": 10,
-                      "stroke": "$card-stroke",
-                      "strokeWidth": 1,
-                      "strokeAlignment": "inner",
-                      "layout": "vertical",
-                      "gap": 9,
-                      "padding": 14,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "UsQne",
-                          "name": "Title",
-                          "fill": "$text-primary",
-                          "content": "Figma for Penkra",
-                          "fontFamily": "$font-body",
-                          "fontSize": 14,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "o584U",
-                          "name": "Body",
-                          "fill": "$text-secondary",
-                          "textGrowth": "fixed-width",
+                          "type": "frame",
+                          "id": "SfD7F",
+                          "name": "Description",
                           "width": "fill_container",
-                          "content": "Find files, preview frames, and attach selected designs directly to a Penkra thread. Access stays scoped to the account and files you authorize.",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Q95ak",
+                              "name": "Label",
+                              "fill": "$text-primary",
+                              "content": "Description",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "zZC11",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$text-primary"
+                            }
+                          ]
                         },
                         {
-                          "type": "text",
-                          "id": "yG3uP",
-                          "name": "Link",
-                          "fill": "$accent-blue",
-                          "content": "Read full README",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "600"
+                          "type": "frame",
+                          "id": "RfwE9",
+                          "name": "Permissions",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "u1y9xe",
+                              "name": "Label",
+                              "fill": "$text-tertiary",
+                              "content": "Permissions",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Nsofc",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$card-stroke"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lHe8n",
+                          "name": "Developer",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "lTeVN",
+                              "name": "Label",
+                              "fill": "$text-tertiary",
+                              "content": "Developer",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "fnvqK",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$card-stroke"
+                            }
+                          ]
                         }
                       ]
                     }
@@ -1912,24 +2347,564 @@
                 },
                 {
                   "type": "frame",
-                  "id": "Q3HGN",
-                  "name": "Permissions",
+                  "id": "dCEgl",
+                  "name": "Tab Content — Description",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "q3xMS1",
+                      "name": "README / Full",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "p4fUV",
+                          "name": "README Intro",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Bring your team’s Figma files into Penkra so designs, comments, and implementation work stay connected to the Thread where the work happens.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "oUmtg",
+                          "name": "README Heading — Connect",
+                          "fill": "$text-primary",
+                          "content": "Connect Figma to Penkra",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "n4phkP",
+                          "name": "README Connect Copy",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Sign in with your Figma account and choose the teams and files this App can access. You can change or revoke access at any time.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GWQH5",
+                          "name": "README Heading — Features",
+                          "fill": "$text-primary",
+                          "content": "What you can do",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "LjgHm",
+                          "name": "README Feature List",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "• Find authorized files and projects\n• Preview frames without leaving Penkra\n• Attach selected designs to a Thread\n• Keep access scoped to the Space where Figma is enabled",
+                          "lineHeight": 1.55,
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "i0p7lf",
+                          "name": "README Heading — Workflow",
+                          "fill": "$text-primary",
+                          "content": "How it works",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gqBuL",
+                          "name": "README Workflow",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "1. Open Figma beside a Thread.\n2. Connect or choose an authorized account.\n3. Select a file or frame.\n4. Attach it to the Thread or invoke a published operation.",
+                          "lineHeight": 1.55,
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ccLOd",
+                          "name": "README Heading — Privacy",
+                          "fill": "$text-primary",
+                          "content": "Permissions and privacy",
+                          "fontFamily": "$font-body",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "W7iFT",
+                          "name": "README Privacy Copy",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "The App can access only the Figma account and files you authorize. Review the Permissions tab before installing for the complete access list.",
+                          "lineHeight": 1.5,
+                          "fontFamily": "$font-body",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "I8ZKjJ",
+          "type": "ref",
+          "ref": "mrWzD",
+          "name": "Feature Group Header — Apps",
+          "x": 0,
+          "y": 0,
+          "width": 3024,
+          "descendants": {
+            "Z5in9M": {
+              "content": "Apps — Resizable Side Panel · Structure Only"
+            }
+          }
+        },
+        {
+          "type": "text",
+          "id": "lkiH2",
+          "x": 28,
+          "y": 96,
+          "name": "Responsive Structure Guidance",
+          "fill": "$text-secondary",
+          "textGrowth": "fixed-width",
+          "width": 2968,
+          "content": "Width-agnostic specimens: fixed host chrome, fluid content regions, and vertical flow only. Breakpoint-specific density and copy are intentionally left open.",
+          "fontFamily": "$font-body",
+          "fontSize": 18,
+          "fontWeight": "normal"
+        },
+        {
+          "id": "HNeSr",
+          "type": "ref",
+          "ref": "mrWzD",
+          "name": "Feature Row — Discovery and Detail",
+          "x": 0,
+          "y": 1240,
+          "width": 2256,
+          "descendants": {
+            "Z5in9M": {
+              "content": "Discovery and Detail — launcher, search, selected app"
+            }
+          }
+        },
+        {
+          "id": "ilO9i",
+          "type": "ref",
+          "ref": "mrWzD",
+          "name": "Feature Row — App Detail States",
+          "x": 0,
+          "y": 3400,
+          "width": 2256,
+          "descendants": {
+            "Z5in9M": {
+              "content": "App Detail States — permissions and developer tools"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "KrZgA",
+          "x": 768,
+          "y": 2308,
+          "name": "Structure — Catalog Unavailable",
+          "theme": {
+            "mode": "dark"
+          },
+          "clip": true,
+          "width": 720,
+          "height": 868,
+          "fill": "$color-background-surface",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "W99OBA",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Host App Bar Preview",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "Z8MSa4",
+              "name": "App Content / Catalog Unavailable",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 24,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "P1lphR",
+                  "type": "ref",
+                  "ref": "rjwgI",
+                  "name": "Catalog Unavailable",
+                  "width": 320
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fllLw",
+          "type": "ref",
+          "ref": "mrWzD",
+          "name": "Feature Row — Responsive Panel Structure",
+          "x": 0,
+          "y": 160,
+          "width": 2056,
+          "descendants": {
+            "Z5in9M": {
+              "content": "Responsive Panel Structure — narrow, standard, expanded"
+            }
+          }
+        },
+        {
+          "id": "ESDoS",
+          "type": "ref",
+          "ref": "P4YM0J",
+          "name": "Structure — Narrow Panel",
+          "x": 0,
+          "y": 280,
+          "width": 420
+        },
+        {
+          "id": "w1eAgq",
+          "type": "ref",
+          "ref": "P4YM0J",
+          "name": "Structure — Standard Panel",
+          "x": 468,
+          "y": 280,
+          "width": 640
+        },
+        {
+          "id": "khWtp",
+          "type": "ref",
+          "ref": "P4YM0J",
+          "name": "Structure — Expanded Panel",
+          "x": 1156,
+          "y": 280,
+          "width": 900
+        },
+        {
+          "type": "frame",
+          "id": "W3YUF",
+          "x": 1536,
+          "y": 2308,
+          "name": "Structure — App Detail (Offline)",
+          "theme": {
+            "mode": "dark"
+          },
+          "clip": true,
+          "width": 720,
+          "height": 868,
+          "fill": "$color-background-surface",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "JBN8S",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Host App Bar Preview",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "v0CHYc",
+              "name": "App Content / App Detail (Offline)",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 24,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "CqyW7",
+                  "type": "ref",
+                  "ref": "rjwgI",
+                  "name": "Catalog Unavailable",
+                  "width": 320
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Z26jPn",
+          "x": 1536,
+          "y": 3559,
+          "name": "Structure — App Detail (Permissions)",
+          "theme": {
+            "mode": "dark"
+          },
+          "clip": true,
+          "width": 720,
+          "height": 868,
+          "fill": "$color-background-surface",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "Q05xe",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Host App Bar Preview",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "XsAUi",
+              "name": "App Content / Figma Detail",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JKPyI",
+                  "name": "Head",
+                  "width": "fill_container",
+                  "gap": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "E2rp4C",
+                      "type": "ref",
+                      "ref": "ttiNQ",
+                      "name": "Icon",
+                      "width": 72,
+                      "height": 72,
+                      "fill": "#A259FF",
+                      "cornerRadius": 16
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L3xea",
+                      "name": "Copy",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "vmDc4",
+                          "name": "Name",
+                          "fill": "$text-primary",
+                          "content": "Figma",
+                          "fontFamily": "$font-body",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JL7f3",
+                          "name": "Publisher",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "m8dMtK",
+                              "name": "Publisher Name",
+                              "fill": "$text-tertiary",
+                              "content": "Penkra",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "H9AFc9",
+                              "name": "Separator",
+                              "fill": "$text-tertiary",
+                              "content": "·",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "id": "KOwsq",
+                              "type": "ref",
+                              "ref": "pchfI",
+                              "name": "Rating",
+                              "descendants": {
+                                "Ijevc": {
+                                  "content": "4.9"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "cSfMF",
+                          "name": "Summary",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Bring your team's Figma files into a thread.",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "dXxbF",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GiIoM",
+                  "name": "Tabs",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "NwAP7",
+                      "name": "Tab Items",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "k257pp",
+                          "name": "Description",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Ss73O",
+                              "name": "Label",
+                              "fill": "$text-tertiary",
+                              "content": "Description",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "v16LYb",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$card-stroke"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SiW0E",
+                          "name": "Permissions",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "zlEuk",
+                              "name": "Label",
+                              "fill": "$text-primary",
+                              "content": "Permissions",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "RAMav",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$text-primary"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fzrim",
+                          "name": "Developer",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "G9n9T",
+                              "name": "Label",
+                              "fill": "$text-tertiary",
+                              "content": "Developer",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "FIJyR",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$card-stroke"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pOJJs",
+                  "name": "Tab Content — Permissions",
                   "width": "fill_container",
                   "layout": "vertical",
                   "gap": 2,
                   "children": [
                     {
-                      "type": "text",
-                      "id": "CxG81",
-                      "name": "Heading",
-                      "fill": "$text-secondary",
-                      "content": "Permissions",
-                      "fontFamily": "$font-body",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "id": "qcn2F",
+                      "id": "UFvxa",
                       "type": "ref",
                       "ref": "rBxDq",
                       "name": "Required",
@@ -1947,7 +2922,7 @@
                       }
                     },
                     {
-                      "id": "VGIzb",
+                      "id": "uNjWu",
                       "type": "ref",
                       "ref": "rBxDq",
                       "name": "Optional",
@@ -1962,34 +2937,408 @@
                       }
                     }
                   ]
-                },
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PWqjG",
+          "x": 1536,
+          "y": 4507,
+          "name": "Structure — App Detail (Developer)",
+          "theme": {
+            "mode": "dark"
+          },
+          "clip": true,
+          "width": 720,
+          "height": 868,
+          "fill": "$color-background-surface",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "h4J2LE",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Host App Bar Preview",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "JYp6Y",
+              "name": "App Content / Figma Detail",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": 24,
+              "children": [
                 {
                   "type": "frame",
-                  "id": "JW9DH",
-                  "name": "Information",
+                  "id": "PWaj9",
+                  "name": "Head",
                   "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 8,
+                  "gap": 14,
+                  "alignItems": "center",
                   "children": [
                     {
-                      "type": "text",
-                      "id": "borNy",
-                      "name": "Heading",
-                      "fill": "$text-secondary",
-                      "content": "Information",
-                      "fontFamily": "$font-body",
-                      "fontSize": 13,
-                      "fontWeight": "600"
+                      "id": "NocS2",
+                      "type": "ref",
+                      "ref": "ttiNQ",
+                      "name": "Icon",
+                      "width": 72,
+                      "height": 72,
+                      "fill": "#A259FF",
+                      "cornerRadius": 16
                     },
                     {
                       "type": "frame",
-                      "id": "x8iHqY",
-                      "name": "Version",
+                      "id": "XxgYQ",
+                      "name": "Copy",
                       "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 3,
                       "children": [
                         {
                           "type": "text",
-                          "id": "BjAfs",
+                          "id": "nPYHN",
+                          "name": "Name",
+                          "fill": "$text-primary",
+                          "content": "Figma",
+                          "fontFamily": "$font-body",
+                          "fontSize": 20,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Gffsq",
+                          "name": "Publisher",
+                          "gap": 6,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "qZxrG",
+                              "name": "Publisher Name",
+                              "fill": "$text-tertiary",
+                              "content": "Penkra",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "l7uza",
+                              "name": "Separator",
+                              "fill": "$text-tertiary",
+                              "content": "·",
+                              "fontFamily": "$font-body",
+                              "fontSize": 11,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "id": "igRIN",
+                              "type": "ref",
+                              "ref": "pchfI",
+                              "name": "Rating",
+                              "descendants": {
+                                "Ijevc": {
+                                  "content": "4.9"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "OS08t",
+                          "name": "Summary",
+                          "fill": "$text-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Bring your team's Figma files into a thread.",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "LcX0X",
+                      "type": "ref",
+                      "ref": "N76BG",
+                      "name": "Install"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "QolWX",
+                  "name": "Tabs",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "v3B4J",
+                      "name": "Tab Items",
+                      "width": "fill_container",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "e5DbtE",
+                          "name": "Description",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "S94fn",
+                              "name": "Label",
+                              "fill": "$text-tertiary",
+                              "content": "Description",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "UbYQW",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$card-stroke"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vzM7k",
+                          "name": "Permissions",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "P0oDjg",
+                              "name": "Label",
+                              "fill": "$text-tertiary",
+                              "content": "Permissions",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "hM9te",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$card-stroke"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XlpC3",
+                          "name": "Developer",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZaG9o",
+                              "name": "Label",
+                              "fill": "$text-primary",
+                              "content": "Developer",
+                              "fontFamily": "$font-body",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "kUQ2E",
+                              "name": "Underline",
+                              "width": "fill_container",
+                              "height": 2,
+                              "fill": "$text-primary"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "amiL5",
+                  "name": "Tab Content — Developer",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "eqKen",
+                      "name": "Developer Information Heading",
+                      "fill": "$text-primary",
+                      "content": "Developer information",
+                      "fontFamily": "$font-body",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "sOwdX",
+                      "name": "Developer Information Description",
+                      "fill": "$text-tertiary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Publisher and package details supplied with this App version.",
+                      "fontFamily": "$font-body",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Ybmpq",
+                      "name": "Developer Detail — Developer",
+                      "width": "fill_container",
+                      "stroke": "$card-stroke",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "padding": [
+                        8,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "n3QN5s",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "Developer",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "kNuMP",
+                          "name": "Value",
+                          "fill": "$text-secondary",
+                          "content": "Penkra",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "NthSM",
+                      "name": "Developer Detail — Website",
+                      "width": "fill_container",
+                      "stroke": "$card-stroke",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "padding": [
+                        8,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eIpcR",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "Website",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q9DI0",
+                          "name": "Value",
+                          "fill": "$text-secondary",
+                          "content": "figma.com",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FoCjn",
+                      "name": "Developer Detail — App ID",
+                      "width": "fill_container",
+                      "stroke": "$card-stroke",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "padding": [
+                        8,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "T3jQK",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "App ID",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "A145Wk",
+                          "name": "Value",
+                          "fill": "$text-secondary",
+                          "content": "com.figma.desktop",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "juxzj",
+                      "name": "Developer Detail — Version",
+                      "width": "fill_container",
+                      "stroke": "$card-stroke",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "padding": [
+                        8,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "P5Ki8",
                           "name": "Label",
                           "fill": "$text-tertiary",
                           "content": "Version",
@@ -1999,7 +3348,7 @@
                         },
                         {
                           "type": "text",
-                          "id": "ZpMpm",
+                          "id": "tFEnz",
                           "name": "Value",
                           "fill": "$text-secondary",
                           "content": "1.4.0",
@@ -2011,23 +3360,33 @@
                     },
                     {
                       "type": "frame",
-                      "id": "U1UuC7",
-                      "name": "Download",
+                      "id": "y9f9R",
+                      "name": "Developer Detail — Package size",
                       "width": "fill_container",
+                      "stroke": "$card-stroke",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "padding": [
+                        8,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
                       "children": [
                         {
                           "type": "text",
-                          "id": "y2asB",
+                          "id": "Nj5zU",
                           "name": "Label",
                           "fill": "$text-tertiary",
-                          "content": "Download",
+                          "content": "Package size",
                           "fontFamily": "$font-body",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         },
                         {
                           "type": "text",
-                          "id": "lTmeZ",
+                          "id": "DyRU9",
                           "name": "Value",
                           "fill": "$text-secondary",
                           "content": "18.2 MB",
@@ -2036,8 +3395,121 @@
                           "fontWeight": "normal"
                         }
                       ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O2a3NE",
+                      "name": "Developer Detail — Updated",
+                      "width": "fill_container",
+                      "stroke": "$card-stroke",
+                      "strokeWidth": {
+                        "bottom": 1
+                      },
+                      "padding": [
+                        8,
+                        0
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d9vXD6",
+                          "name": "Label",
+                          "fill": "$text-tertiary",
+                          "content": "Updated",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "c1bPm",
+                          "name": "Value",
+                          "fill": "$text-secondary",
+                          "content": "July 28, 2026",
+                          "fontFamily": "$font-body",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
                     }
                   ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kay6U",
+          "type": "ref",
+          "ref": "mrWzD",
+          "name": "Feature Row — Empty States",
+          "x": 0,
+          "y": 2228,
+          "width": 2256,
+          "descendants": {
+            "Z5in9M": {
+              "content": "Empty States — catalog unavailable and no search matches"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "jPaLD",
+          "x": 0,
+          "y": 2308,
+          "name": "Structure — Search Results (No Matches)",
+          "theme": {
+            "mode": "dark"
+          },
+          "clip": true,
+          "width": 720,
+          "height": 868,
+          "fill": "$color-background-surface",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "aY4Ri",
+              "type": "ref",
+              "ref": "YhnGg",
+              "name": "Host App Bar Preview",
+              "width": "fill_container",
+              "descendants": {
+                "SUaFg": {
+                  "content": "figmaa"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "Y1ef4h",
+              "name": "App Content / Search Results (No Matches)",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 20,
+              "padding": 24,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "E9WyR8",
+                  "type": "ref",
+                  "ref": "rjwgI",
+                  "name": "No Search Results",
+                  "width": 320,
+                  "descendants": {
+                    "pDpT4": {
+                      "icon": "search-x"
+                    },
+                    "j8vYS": {
+                      "content": "No apps found"
+                    },
+                    "v4Hz2": {
+                      "content": "No apps match “figmaa”. Try a different search."
+                    }
+                  }
                 }
               ]
             }
@@ -2074,79 +3546,6 @@
           "fontFamily": "$font-body",
           "fontSize": 12,
           "fontWeight": "600"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "m9M6Bk",
-      "x": 7200,
-      "y": 52,
-      "name": "Status Banner / App",
-      "reusable": true,
-      "width": 372,
-      "fill": "$card-fill",
-      "cornerRadius": 10,
-      "stroke": "$card-stroke",
-      "strokeWidth": 1,
-      "strokeAlignment": "inner",
-      "gap": 10,
-      "padding": 12,
-      "children": [
-        {
-          "type": "frame",
-          "id": "tDjrP",
-          "name": "Icon Container",
-          "width": 28,
-          "height": 28,
-          "fill": "$color-background-panel",
-          "cornerRadius": 8,
-          "justifyContent": "center",
-          "alignItems": "center",
-          "children": [
-            {
-              "type": "icon",
-              "id": "B7P51S",
-              "name": "Icon",
-              "width": 15,
-              "height": 15,
-              "icon": "wifi-off",
-              "library": "lucide",
-              "fill": "$text-secondary"
-            }
-          ]
-        },
-        {
-          "type": "frame",
-          "id": "e99Fg2",
-          "name": "Copy",
-          "width": "fill_container",
-          "layout": "vertical",
-          "gap": 3,
-          "children": [
-            {
-              "type": "text",
-              "id": "Thm7y",
-              "name": "Title",
-              "fill": "$text-primary",
-              "content": "Apps are offline",
-              "fontFamily": "$font-body",
-              "fontSize": 13,
-              "fontWeight": "600"
-            },
-            {
-              "type": "text",
-              "id": "Po6KN",
-              "name": "Message",
-              "fill": "$text-tertiary",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "Check your connection and try again. Installed apps remain available.",
-              "fontFamily": "$font-body",
-              "fontSize": 12,
-              "fontWeight": "normal"
-            }
-          ]
         }
       ]
     },
@@ -2310,1814 +3709,77 @@
     },
     {
       "type": "frame",
-      "id": "a6EFE3",
-      "x": 7572,
-      "y": 0,
-      "name": "Apps / Install Review",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
+      "id": "rjwgI",
+      "x": 7200,
+      "y": 52,
+      "name": "Empty State / Shared",
+      "reusable": true,
+      "width": 320,
       "layout": "vertical",
+      "gap": 12,
+      "padding": [
+        24,
+        16
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
       "children": [
         {
-          "id": "uooBn",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
-        },
-        {
           "type": "frame",
-          "id": "f4LOTD",
-          "name": "App Content / Install Review",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": 24,
+          "id": "cP082",
+          "name": "Icon Container",
+          "width": 30,
+          "height": 30,
+          "justifyContent": "center",
+          "alignItems": "center",
           "children": [
             {
-              "id": "G30gc5",
-              "type": "ref",
-              "ref": "TqrqT",
-              "name": "Back"
-            },
-            {
-              "type": "frame",
-              "id": "EwOYu",
-              "name": "Heading",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 6,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "RVSE4",
-                  "name": "Title",
-                  "fill": "$text-primary",
-                  "content": "Review install",
-                  "fontFamily": "$font-body",
-                  "fontSize": 22,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "y0DZ2f",
-                  "name": "Subtitle",
-                  "fill": "$text-tertiary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Figma will be installed for this Penkra account. Choose where it can run before continuing.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "UalLs",
-              "name": "App Summary",
-              "width": "fill_container",
-              "fill": "$card-fill",
-              "cornerRadius": 10,
-              "stroke": "$card-stroke",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 12,
-              "padding": 14,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "h54fe4",
-                  "type": "ref",
-                  "ref": "ttiNQ",
-                  "name": "Icon",
-                  "width": 44,
-                  "height": 44,
-                  "fill": "#A259FF"
-                },
-                {
-                  "type": "frame",
-                  "id": "g8RfZc",
-                  "name": "Copy",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 2,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "PbKXq",
-                      "name": "Name",
-                      "fill": "$text-primary",
-                      "content": "Figma",
-                      "fontFamily": "$font-body",
-                      "fontSize": 15,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "u8Mjv",
-                      "name": "Meta",
-                      "fill": "$text-tertiary",
-                      "content": "Penkra · Version 1.4.0 · 18.2 MB",
-                      "fontFamily": "$font-body",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "xXxrz",
-              "name": "Spaces",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 2,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "dKV06",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "Enable in Spaces",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "id": "f4pnJ",
-                  "type": "ref",
-                  "ref": "SQWsR",
-                  "name": "Personal",
-                  "width": "fill_container"
-                },
-                {
-                  "id": "qeLAh",
-                  "type": "ref",
-                  "ref": "SQWsR",
-                  "name": "Work",
-                  "width": "fill_container",
-                  "descendants": {
-                    "ckV0x": {
-                      "content": "Work"
-                    },
-                    "o6Vh2G": {
-                      "content": "Not enabled"
-                    },
-                    "flLZn": {
-                      "theme": {
-                        "state": "default"
-                      }
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "AUW24",
-              "name": "Permissions",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 2,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "T8dm7",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "Permissions",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "id": "O0mdXK",
-                  "type": "ref",
-                  "ref": "rBxDq",
-                  "name": "Internet",
-                  "width": "fill_container",
-                  "descendants": {
-                    "Q0gmR": {
-                      "content": "Connect to the internet"
-                    },
-                    "v9F4g": {
-                      "content": "Required to connect to Figma."
-                    }
-                  }
-                },
-                {
-                  "id": "EHTjr",
-                  "type": "ref",
-                  "ref": "rBxDq",
-                  "name": "Files",
-                  "width": "fill_container",
-                  "descendants": {
-                    "Q0gmR": {
-                      "content": "Read files you choose"
-                    },
-                    "paYfi": {
-                      "opacity": 0
-                    },
-                    "v9F4g": {
-                      "content": "Only files selected through Penkra's file picker."
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "o8IF39",
-              "name": "Actions",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "id": "U1Mdq",
-                  "type": "ref",
-                  "ref": "N76BG",
-                  "name": "Install",
-                  "width": "fill_container",
-                  "height": 34
-                },
-                {
-                  "type": "text",
-                  "id": "wKNgQ",
-                  "name": "Notice",
-                  "fill": "$text-tertiary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Installing confirms you trust this publisher and grants the permissions above.",
-                  "textAlign": "center",
-                  "fontFamily": "$font-body",
-                  "fontSize": 11,
-                  "fontWeight": "normal"
-                }
-              ]
+              "type": "icon",
+              "id": "pDpT4",
+              "name": "Icon",
+              "width": 24,
+              "height": 24,
+              "icon": "wifi-off",
+              "library": "lucide",
+              "fill": "$text-secondary"
             }
           ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "mfrul",
-      "x": 7992,
-      "y": 0,
-      "name": "Apps / Installing",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "o25ZOA",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
         },
         {
           "type": "frame",
-          "id": "zbxPU",
-          "name": "App Content / Installing",
+          "id": "fnCjo",
+          "name": "Message",
           "width": "fill_container",
-          "height": "fill_container",
           "layout": "vertical",
-          "gap": 24,
-          "padding": 24,
+          "gap": 5,
+          "alignItems": "center",
           "children": [
             {
-              "id": "UhFRT",
-              "type": "ref",
-              "ref": "TqrqT",
-              "name": "Back"
-            },
-            {
-              "type": "frame",
-              "id": "z5vUe",
-              "name": "Heading",
+              "type": "text",
+              "id": "j8vYS",
+              "name": "Title",
+              "fill": "$text-primary",
+              "textGrowth": "fixed-width",
               "width": "fill_container",
-              "layout": "vertical",
-              "gap": 6,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "ZtZRF",
-                  "name": "Title",
-                  "fill": "$text-primary",
-                  "content": "Installing Figma",
-                  "fontFamily": "$font-body",
-                  "fontSize": 22,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "IiPrA",
-                  "name": "Subtitle",
-                  "fill": "$text-tertiary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Penkra is verifying the signed package before enabling it.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "TMZ8D",
-              "name": "Install Card",
-              "width": "fill_container",
-              "fill": "$card-fill",
-              "cornerRadius": 10,
-              "stroke": "$card-stroke",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "layout": "vertical",
-              "gap": 18,
-              "padding": 16,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "aIrWI",
-                  "name": "App",
-                  "width": "fill_container",
-                  "gap": 12,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "id": "JV7Wb",
-                      "type": "ref",
-                      "ref": "ttiNQ",
-                      "name": "Icon",
-                      "width": 44,
-                      "height": 44,
-                      "fill": "#A259FF"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "f4S6w",
-                      "name": "Copy",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 2,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "Q2p3x",
-                          "name": "Name",
-                          "fill": "$text-primary",
-                          "content": "Figma",
-                          "fontFamily": "$font-body",
-                          "fontSize": 15,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "KUsQ2",
-                          "name": "Meta",
-                          "fill": "$text-tertiary",
-                          "content": "Version 1.4.0 · 18.2 MB",
-                          "fontFamily": "$font-body",
-                          "fontSize": 11,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "id": "dVnVD",
-                  "type": "ref",
-                  "ref": "t7Nnm",
-                  "name": "Progress",
-                  "width": "fill_container"
-                },
-                {
-                  "type": "frame",
-                  "id": "C5iJ32",
-                  "name": "Steps",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 10,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "mrYzy",
-                      "name": "Downloaded",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "G1DgQ",
-                          "name": "Icon",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "circle-check",
-                          "library": "lucide",
-                          "fill": "$accent-blue"
-                        },
-                        {
-                          "type": "text",
-                          "id": "pqd03",
-                          "name": "Label",
-                          "fill": "$text-secondary",
-                          "content": "Package downloaded",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "HLk8N",
-                      "name": "Verifying",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "RmKfF",
-                          "name": "Icon",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "loader-circle",
-                          "library": "lucide",
-                          "fill": "$accent-blue"
-                        },
-                        {
-                          "type": "text",
-                          "id": "W7JEYc",
-                          "name": "Label",
-                          "fill": "$text-primary",
-                          "content": "Verifying signature",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "dKUa5",
-                      "name": "Pending",
-                      "width": "fill_container",
-                      "gap": 8,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "icon",
-                          "id": "MkpS8",
-                          "name": "Icon",
-                          "width": 14,
-                          "height": 14,
-                          "icon": "circle",
-                          "library": "lucide",
-                          "fill": "$text-tertiary"
-                        },
-                        {
-                          "type": "text",
-                          "id": "dLxyD",
-                          "name": "Label",
-                          "fill": "$text-tertiary",
-                          "content": "Enabling in Personal",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "E2Njzp",
-              "name": "Actions",
-              "width": "fill_container",
-              "children": [
-                {
-                  "id": "APyGB",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Cancel",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Cancel"
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "uudyK",
-      "x": 8412,
-      "y": 0,
-      "name": "Apps / Installed Management",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "B2gEt",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
-        },
-        {
-          "type": "frame",
-          "id": "IjNPf",
-          "name": "App Content / Installed Management",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": 24,
-          "children": [
-            {
-              "id": "NvkSO",
-              "type": "ref",
-              "ref": "TqrqT",
-              "name": "Back"
-            },
-            {
-              "type": "frame",
-              "id": "K19NpB",
-              "name": "Head",
-              "width": "fill_container",
-              "gap": 14,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "Sbp0h",
-                  "type": "ref",
-                  "ref": "ttiNQ",
-                  "name": "Icon",
-                  "width": 56,
-                  "height": 56,
-                  "fill": "#A259FF"
-                },
-                {
-                  "type": "frame",
-                  "id": "VosMx",
-                  "name": "Copy",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 3,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "kELpi",
-                      "name": "Name",
-                      "fill": "$text-primary",
-                      "content": "Figma",
-                      "fontFamily": "$font-body",
-                      "fontSize": 20,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "mT57M",
-                      "name": "Meta",
-                      "fill": "$text-tertiary",
-                      "content": "Installed · Version 1.4.0",
-                      "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "id": "R1gQg",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Open",
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Open"
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "X2BVJu",
-              "name": "Update Available",
-              "width": "fill_container",
-              "fill": "$card-fill",
-              "cornerRadius": 10,
-              "stroke": "$card-stroke",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 10,
-              "padding": 12,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "n94CWa",
-                  "name": "Copy",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 3,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "k3ncBA",
-                      "name": "Title",
-                      "fill": "$text-primary",
-                      "content": "Version 1.5.0 is available",
-                      "fontFamily": "$font-body",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "WlVNG",
-                      "name": "Meta",
-                      "fill": "$text-tertiary",
-                      "content": "No new permissions requested",
-                      "fontFamily": "$font-body",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "id": "Twea9",
-                  "type": "ref",
-                  "ref": "N76BG",
-                  "name": "Update",
-                  "descendants": {
-                    "N6r5t": {
-                      "content": "Update"
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "F8sHbC",
-              "name": "Spaces",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 2,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "JfKn8",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "Available in Spaces",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "id": "RHxkf",
-                  "type": "ref",
-                  "ref": "SQWsR",
-                  "name": "Personal",
-                  "width": "fill_container"
-                },
-                {
-                  "id": "Cri3R",
-                  "type": "ref",
-                  "ref": "SQWsR",
-                  "name": "Work",
-                  "width": "fill_container",
-                  "descendants": {
-                    "ckV0x": {
-                      "content": "Work"
-                    },
-                    "o6Vh2G": {
-                      "content": "Not enabled"
-                    },
-                    "flLZn": {
-                      "theme": {
-                        "state": "default"
-                      }
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "J6yIxk",
-              "name": "Permissions",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 2,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "k0JJY",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "Permissions",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "id": "g3Xmwd",
-                  "type": "ref",
-                  "ref": "rBxDq",
-                  "name": "Internet",
-                  "width": "fill_container",
-                  "descendants": {
-                    "Q0gmR": {
-                      "content": "Connect to the internet"
-                    },
-                    "v9F4g": {
-                      "content": "Required to connect to Figma."
-                    }
-                  }
-                },
-                {
-                  "id": "HCwgm",
-                  "type": "ref",
-                  "ref": "rBxDq",
-                  "name": "Conversations",
-                  "width": "fill_container",
-                  "descendants": {
-                    "Q0gmR": {
-                      "content": "Read conversations you choose"
-                    },
-                    "v9F4g": {
-                      "content": "Optional. Only conversations shared through Penkra."
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "VgeiF",
-              "name": "Danger Zone",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "PA5by",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "App data",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "RJcHb",
-                  "name": "Body",
-                  "fill": "$text-tertiary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Uninstalling removes the app but keeps its local data unless you explicitly remove it.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                },
-                {
-                  "id": "M7S9Uv",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Uninstall",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Uninstall"
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "IP2JW",
-      "x": 8832,
-      "y": 0,
-      "name": "Apps / Update Review",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "X61Dt",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
-        },
-        {
-          "type": "frame",
-          "id": "kxfHM",
-          "name": "App Content / Update Review",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": 24,
-          "children": [
-            {
-              "id": "E2u9sE",
-              "type": "ref",
-              "ref": "TqrqT",
-              "name": "Back"
-            },
-            {
-              "type": "frame",
-              "id": "BwZSi",
-              "name": "Heading",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 6,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "U8Fp9",
-                  "name": "Title",
-                  "fill": "$text-primary",
-                  "content": "Review update",
-                  "fontFamily": "$font-body",
-                  "fontSize": 22,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "ktEGe",
-                  "name": "Subtitle",
-                  "fill": "$text-tertiary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Figma 1.5.0 adds one permission. Existing access remains unchanged.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "X3m9u",
-              "name": "Version",
-              "width": "fill_container",
-              "fill": "$card-fill",
-              "cornerRadius": 10,
-              "stroke": "$card-stroke",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 12,
-              "padding": 14,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "ep4Fg",
-                  "type": "ref",
-                  "ref": "ttiNQ",
-                  "name": "Icon",
-                  "width": 44,
-                  "height": 44,
-                  "fill": "#A259FF"
-                },
-                {
-                  "type": "frame",
-                  "id": "fB71E",
-                  "name": "Copy",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 2,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "gE412",
-                      "name": "Name",
-                      "fill": "$text-primary",
-                      "content": "Figma",
-                      "fontFamily": "$font-body",
-                      "fontSize": 15,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "o05ft5",
-                      "name": "Meta",
-                      "fill": "$text-tertiary",
-                      "content": "1.4.0 → 1.5.0 · 20.4 MB",
-                      "fontFamily": "$font-body",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "x5NhY",
-              "name": "Changes",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "pjWjf",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "What's new",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "text",
-                  "id": "s6zDw",
-                  "name": "Body",
-                  "fill": "$text-secondary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "Open selected design files in a focused review tab and keep comments synchronized.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 12,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "U3RjXt",
-              "name": "New Permission",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 4,
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "wny3y",
-                  "name": "Label",
-                  "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "E8ywD",
-                      "name": "Heading",
-                      "fill": "$text-secondary",
-                      "content": "New permission",
-                      "fontFamily": "$font-body",
-                      "fontSize": 13,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "zVDLm",
-                      "name": "Badge",
-                      "fill": "$accent-blue",
-                      "cornerRadius": 999,
-                      "padding": [
-                        2,
-                        7
-                      ],
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "MHuTL",
-                          "name": "Text",
-                          "fill": "#FFFFFF",
-                          "content": "Required",
-                          "fontFamily": "$font-body",
-                          "fontSize": 10,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "id": "c26k5v",
-                  "type": "ref",
-                  "ref": "rBxDq",
-                  "name": "New File Permission",
-                  "width": "fill_container",
-                  "descendants": {
-                    "Q0gmR": {
-                      "content": "Write to files you choose"
-                    },
-                    "paYfi": {
-                      "opacity": 0
-                    },
-                    "v9F4g": {
-                      "content": "Save exported frames only to a location you select."
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "id": "rbniO",
-              "type": "ref",
-              "ref": "m9M6Bk",
-              "name": "Existing Access",
-              "width": "fill_container",
-              "descendants": {
-                "B7P51S": {
-                  "icon": "shield-check"
-                },
-                "Thm7y": {
-                  "content": "Existing permissions remain active"
-                },
-                "Po6KN": {
-                  "content": "Declining this update keeps version 1.4.0 installed."
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "rPlm0",
-              "name": "Actions",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "id": "ClXzF",
-                  "type": "ref",
-                  "ref": "N76BG",
-                  "name": "Update",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "N6r5t": {
-                      "content": "Update Figma"
-                    }
-                  }
-                },
-                {
-                  "id": "tfk7D",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Not Now",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Not now"
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "Ql3Dm",
-      "x": 9252,
-      "y": 0,
-      "name": "Apps / Uninstall and Data",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "EU26C",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
-        },
-        {
-          "type": "frame",
-          "id": "NJDZd",
-          "name": "App Content / Uninstall and Data",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": 24,
-          "children": [
-            {
-              "id": "g8a0Q",
-              "type": "ref",
-              "ref": "TqrqT",
-              "name": "Back"
-            },
-            {
-              "type": "frame",
-              "id": "qXDL7",
-              "name": "Heading",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 6,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "bNhbm",
-                  "name": "Title",
-                  "fill": "$text-primary",
-                  "content": "Uninstall Figma?",
-                  "fontFamily": "$font-body",
-                  "fontSize": 22,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "sc5pH",
-                  "name": "Subtitle",
-                  "fill": "$text-tertiary",
-                  "textGrowth": "fixed-width",
-                  "width": "fill_container",
-                  "content": "The app will close in every tab and be removed from all Spaces.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "T7HTqI",
-              "name": "App Summary",
-              "width": "fill_container",
-              "fill": "$card-fill",
-              "cornerRadius": 10,
-              "stroke": "$card-stroke",
-              "strokeWidth": 1,
-              "strokeAlignment": "inner",
-              "gap": 12,
-              "padding": 14,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "xMeew",
-                  "type": "ref",
-                  "ref": "ttiNQ",
-                  "name": "Icon",
-                  "width": 44,
-                  "height": 44,
-                  "fill": "#A259FF"
-                },
-                {
-                  "type": "frame",
-                  "id": "Ljeq4",
-                  "name": "Copy",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 2,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "e1iwL",
-                      "name": "Name",
-                      "fill": "$text-primary",
-                      "content": "Figma",
-                      "fontFamily": "$font-body",
-                      "fontSize": 15,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "i5MMNE",
-                      "name": "Meta",
-                      "fill": "$text-tertiary",
-                      "content": "Installed in Personal · 64 MB local data",
-                      "fontFamily": "$font-body",
-                      "fontSize": 11,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "iAlMD",
-              "name": "Data Choice",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 10,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "TNnGr",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "Local app data",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "frame",
-                  "id": "fahlL",
-                  "name": "Keep Data",
-                  "width": "fill_container",
-                  "fill": "$card-fill",
-                  "cornerRadius": 10,
-                  "stroke": "$accent-blue",
-                  "strokeWidth": 1,
-                  "strokeAlignment": "inner",
-                  "gap": 10,
-                  "padding": 14,
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "x6ES0t",
-                      "name": "Selected",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "circle-dot",
-                      "library": "lucide",
-                      "fill": "$accent-blue"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "YxSYn",
-                      "name": "Copy",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 3,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "bl7na",
-                          "name": "Title",
-                          "fill": "$text-primary",
-                          "content": "Keep local data",
-                          "fontFamily": "$font-body",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "RFnld",
-                          "name": "Body",
-                          "fill": "$text-tertiary",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Reinstall later without losing the app's documents, settings, or cache.",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Mbgr8",
-                  "name": "Remove Data",
-                  "width": "fill_container",
-                  "fill": "$card-fill",
-                  "cornerRadius": 10,
-                  "stroke": "$card-stroke",
-                  "strokeWidth": 1,
-                  "strokeAlignment": "inner",
-                  "gap": 10,
-                  "padding": 14,
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "hT3EG",
-                      "name": "Unselected",
-                      "width": 16,
-                      "height": 16,
-                      "icon": "circle",
-                      "library": "lucide",
-                      "fill": "$text-tertiary"
-                    },
-                    {
-                      "type": "frame",
-                      "id": "aciP6",
-                      "name": "Copy",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 3,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "b0VDd",
-                          "name": "Title",
-                          "fill": "$text-primary",
-                          "content": "Remove local data",
-                          "fontFamily": "$font-body",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        },
-                        {
-                          "type": "text",
-                          "id": "c2SJp",
-                          "name": "Body",
-                          "fill": "$text-tertiary",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Permanently delete 64 MB stored by this app on this device.",
-                          "fontFamily": "$font-body",
-                          "fontSize": 12,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "v4vPjL",
-              "type": "ref",
-              "ref": "m9M6Bk",
-              "name": "Account Note",
-              "width": "fill_container",
-              "descendants": {
-                "B7P51S": {
-                  "icon": "cloud"
-                },
-                "Thm7y": {
-                  "content": "Your account record is retained"
-                },
-                "Po6KN": {
-                  "content": "The Apps catalog remembers that you installed Figma; local app data remains device-specific."
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "r1isN",
-              "name": "Actions",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "id": "h4AUN",
-                  "type": "ref",
-                  "ref": "N76BG",
-                  "name": "Uninstall",
-                  "width": "fill_container",
-                  "height": 34,
-                  "fill": "#D84A4A",
-                  "descendants": {
-                    "N6r5t": {
-                      "content": "Uninstall Figma"
-                    }
-                  }
-                },
-                {
-                  "id": "P6h0Ek",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Cancel",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Cancel"
-                    }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "x8ncv",
-      "x": 9672,
-      "y": 0,
-      "name": "Apps / Offline Catalog",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "p48XTY",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
-        },
-        {
-          "type": "frame",
-          "id": "JpWR6",
-          "name": "App Content / Offline Catalog",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": 24,
-          "children": [
-            {
-              "type": "frame",
-              "id": "zecG7",
-              "name": "Heading",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 6,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "XEDbq",
-                  "name": "Title",
-                  "fill": "$text-primary",
-                  "content": "Apps",
-                  "fontFamily": "$font-body",
-                  "fontSize": 22,
-                  "fontWeight": "700"
-                },
-                {
-                  "type": "text",
-                  "id": "E1cZbl",
-                  "name": "Subtitle",
-                  "fill": "$text-tertiary",
-                  "content": "Discover and manage apps for Penkra.",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "normal"
-                }
-              ]
-            },
-            {
-              "id": "LlPkL",
-              "type": "ref",
-              "ref": "m9M6Bk",
-              "name": "Offline",
-              "width": "fill_container"
-            },
-            {
-              "type": "frame",
-              "id": "V5UVsm",
-              "name": "Installed",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "HfRJ7",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "Installed on this device",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "id": "ld9Dr",
-                  "type": "ref",
-                  "ref": "CbULj",
-                  "name": "Browser",
-                  "width": "fill_container"
-                },
-                {
-                  "id": "jXali",
-                  "type": "ref",
-                  "ref": "CbULj",
-                  "name": "Figma",
-                  "width": "fill_container",
-                  "descendants": {
-                    "d2r2O": {
-                      "fill": "#A259FF"
-                    },
-                    "rdVQI": {
-                      "content": "Figma"
-                    },
-                    "wpYza": {
-                      "content": "Browse designs and attach selected files to a thread."
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "id": "Z8oNi",
-              "type": "ref",
-              "ref": "KS22o",
-              "name": "Retry",
-              "width": "fill_container",
-              "height": 34,
-              "descendants": {
-                "TPIi2": {
-                  "content": "Try again"
-                }
-              }
+              "content": "No Apps available",
+              "textAlign": "center",
+              "fontFamily": "$font-body",
+              "fontSize": 14,
+              "fontWeight": "600"
             },
             {
               "type": "text",
-              "id": "P4ebJ",
-              "name": "Footnote",
-              "fill": "$text-tertiary",
+              "id": "v4Hz2",
+              "name": "Description",
+              "fill": "$text-secondary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "You can keep using installed apps while the catalog is unavailable. Installs and updates require a connection.",
+              "content": "Refresh when you are connected to load the catalog.",
+              "lineHeight": 1.35,
               "textAlign": "center",
               "fontFamily": "$font-body",
-              "fontSize": 11,
+              "fontSize": 12,
               "fontWeight": "normal"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "HGnB0",
-      "x": 10092,
-      "y": 0,
-      "name": "Apps / Revoked App",
-      "clip": true,
-      "width": 420,
-      "height": 868,
-      "fill": "$color-background-surface",
-      "layout": "vertical",
-      "children": [
-        {
-          "id": "ZJvxm",
-          "type": "ref",
-          "ref": "YhnGg",
-          "name": "Host App Bar Preview",
-          "width": "fill_container"
-        },
-        {
-          "type": "frame",
-          "id": "hGZEV",
-          "name": "App Content / Revoked App",
-          "width": "fill_container",
-          "height": "fill_container",
-          "layout": "vertical",
-          "gap": 20,
-          "padding": 24,
-          "children": [
-            {
-              "id": "EwMUf",
-              "type": "ref",
-              "ref": "TqrqT",
-              "name": "Back"
-            },
-            {
-              "type": "frame",
-              "id": "m9e03",
-              "name": "Head",
-              "width": "fill_container",
-              "gap": 14,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "aDV4w",
-                  "type": "ref",
-                  "ref": "ttiNQ",
-                  "name": "Icon",
-                  "width": 56,
-                  "height": 56,
-                  "fill": "#A259FF",
-                  "opacity": 0.55
-                },
-                {
-                  "type": "frame",
-                  "id": "p5luk",
-                  "name": "Copy",
-                  "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 3,
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "h517j",
-                      "name": "Name",
-                      "fill": "$text-primary",
-                      "content": "Figma",
-                      "fontFamily": "$font-body",
-                      "fontSize": 20,
-                      "fontWeight": "700"
-                    },
-                    {
-                      "type": "text",
-                      "id": "jE2lI",
-                      "name": "Meta",
-                      "fill": "#D96B6B",
-                      "content": "Unavailable · Publisher version revoked",
-                      "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "600"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "id": "i0aP7",
-              "type": "ref",
-              "ref": "m9M6Bk",
-              "name": "Revocation",
-              "width": "fill_container",
-              "stroke": "#D96B6B",
-              "descendants": {
-                "B7P51S": {
-                  "icon": "shield-alert",
-                  "fill": "#D96B6B"
-                },
-                "Thm7y": {
-                  "content": "This version can no longer run"
-                },
-                "Po6KN": {
-                  "content": "Penkra revoked Figma 1.4.0 after its package failed a security requirement. Its tabs have been stopped."
-                }
-              }
-            },
-            {
-              "type": "frame",
-              "id": "BrDHd",
-              "name": "What Happens",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 10,
-              "children": [
-                {
-                  "type": "text",
-                  "id": "Krj1K",
-                  "name": "Heading",
-                  "fill": "$text-secondary",
-                  "content": "What happens now",
-                  "fontFamily": "$font-body",
-                  "fontSize": 13,
-                  "fontWeight": "600"
-                },
-                {
-                  "type": "frame",
-                  "id": "Ypv8C",
-                  "name": "Local Data",
-                  "width": "fill_container",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "OHYFt",
-                      "name": "Icon",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "hard-drive",
-                      "library": "lucide",
-                      "fill": "$text-secondary"
-                    },
-                    {
-                      "type": "text",
-                      "id": "keOSb",
-                      "name": "Body",
-                      "fill": "$text-secondary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "Local app data stays on this device until you remove it.",
-                      "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "rD8Qi",
-                  "name": "Permissions",
-                  "width": "fill_container",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "TcoM1",
-                      "name": "Icon",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "shield-off",
-                      "library": "lucide",
-                      "fill": "$text-secondary"
-                    },
-                    {
-                      "type": "text",
-                      "id": "x4yGE",
-                      "name": "Body",
-                      "fill": "$text-secondary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "All app permissions and operations are disabled.",
-                      "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "zmzKo",
-                  "name": "Update",
-                  "width": "fill_container",
-                  "gap": 8,
-                  "children": [
-                    {
-                      "type": "icon",
-                      "id": "rA0TZ",
-                      "name": "Icon",
-                      "width": 14,
-                      "height": 14,
-                      "icon": "refresh-cw",
-                      "library": "lucide",
-                      "fill": "$text-secondary"
-                    },
-                    {
-                      "type": "text",
-                      "id": "lj2E0",
-                      "name": "Body",
-                      "fill": "$text-secondary",
-                      "textGrowth": "fixed-width",
-                      "width": "fill_container",
-                      "content": "A safe replacement can be installed when the publisher releases one.",
-                      "fontFamily": "$font-body",
-                      "fontSize": 12,
-                      "fontWeight": "normal"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "H0DTdu",
-              "name": "Actions",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "children": [
-                {
-                  "id": "O6rw7r",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Check Again",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Check for a safe version"
-                    }
-                  }
-                },
-                {
-                  "id": "WOEf3",
-                  "type": "ref",
-                  "ref": "KS22o",
-                  "name": "Remove",
-                  "width": "fill_container",
-                  "height": 34,
-                  "descendants": {
-                    "TPIi2": {
-                      "content": "Remove app"
-                    }
-                  }
-                }
-              ]
             }
           ]
         }
@@ -4135,7 +3797,8 @@
       "active",
       "disabled",
       "focus",
-      "selected"
+      "selected",
+      "loading"
     ]
   },
   "variables": {
@@ -4447,6 +4110,194 @@
           "value": 2,
           "theme": {
             "state": "selected"
+          }
+        }
+      ]
+    },
+    "btn-install-bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5BAFFF",
+          "theme": {
+            "mode": "dark",
+            "state": "default"
+          }
+        },
+        {
+          "value": "#79BFFF",
+          "theme": {
+            "mode": "dark",
+            "state": "hover"
+          }
+        },
+        {
+          "value": "#339CFF",
+          "theme": {
+            "mode": "dark",
+            "state": "active"
+          }
+        },
+        {
+          "value": "#FFFFFF0E",
+          "theme": {
+            "mode": "dark",
+            "state": "disabled"
+          }
+        },
+        {
+          "value": "#FFFFFF0E",
+          "theme": {
+            "mode": "dark",
+            "state": "loading"
+          }
+        },
+        {
+          "value": "#339CFF",
+          "theme": {
+            "mode": "light",
+            "state": "default"
+          }
+        },
+        {
+          "value": "#1F8FEF",
+          "theme": {
+            "mode": "light",
+            "state": "hover"
+          }
+        },
+        {
+          "value": "#147BCA",
+          "theme": {
+            "mode": "light",
+            "state": "active"
+          }
+        },
+        {
+          "value": "#1A1C1F05",
+          "theme": {
+            "mode": "light",
+            "state": "disabled"
+          }
+        },
+        {
+          "value": "#1A1C1F05",
+          "theme": {
+            "mode": "light",
+            "state": "loading"
+          }
+        }
+      ]
+    },
+    "btn-install-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#00000000",
+          "theme": {
+            "state": "default"
+          }
+        },
+        {
+          "value": "#00000000",
+          "theme": {
+            "state": "hover"
+          }
+        },
+        {
+          "value": "#00000000",
+          "theme": {
+            "state": "active"
+          }
+        },
+        {
+          "value": "$color-border",
+          "theme": {
+            "state": "disabled"
+          }
+        },
+        {
+          "value": "#FFFFFF1E",
+          "theme": {
+            "mode": "dark",
+            "state": "loading"
+          }
+        },
+        {
+          "value": "#1A1C1F0F",
+          "theme": {
+            "mode": "light",
+            "state": "loading"
+          }
+        }
+      ]
+    },
+    "btn-install-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "state": "default"
+          }
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "state": "hover"
+          }
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "state": "active"
+          }
+        },
+        {
+          "value": "$text-tertiary",
+          "theme": {
+            "state": "disabled"
+          }
+        },
+        {
+          "value": "$text-secondary",
+          "theme": {
+            "state": "loading"
+          }
+        }
+      ]
+    },
+    "button-loading-visible": {
+      "type": "boolean",
+      "value": [
+        {
+          "value": false,
+          "theme": {
+            "state": "default"
+          }
+        },
+        {
+          "value": false,
+          "theme": {
+            "state": "hover"
+          }
+        },
+        {
+          "value": false,
+          "theme": {
+            "state": "active"
+          }
+        },
+        {
+          "value": false,
+          "theme": {
+            "state": "disabled"
+          }
+        },
+        {
+          "value": true,
+          "theme": {
+            "state": "loading"
           }
         }
       ]

@@ -1,45 +1,108 @@
 # Penkra Apps
 
-First-party Apps developed and shipped by Penkra.
+**First-party Apps built for the Penkra workspace.**
 
-Each App is an independent web application with its own manifest, source, tests,
-assets, version, and Pencil design source. Apps use the same public runtime and SDK
-surface available to third-party developers.
+<p align="center">
+  <img src="docs/readme-assets/DSDog.png" alt="Installed first-party Apps in Penkra's right panel" width="420" />
+</p>
 
-## Repository structure
+Penkra Apps are small, self-contained web applications that run inside Penkra's right panel. Each App gets its own isolated tab and can connect to your agent threads to read, write, and act on your behalf — with explicit permissions you control.
+
+This repository contains the three Apps that ship with Penkra.
+
+## The Apps
+
+### Apps — App Manager
+
+<p align="center">
+  <img src="docs/readme-assets/ErQyB.png" alt="Apps launcher" width="49%" />
+  <img src="docs/readme-assets/EWIli.png" alt="Figma App detail view" width="49%" />
+</p>
+
+The Apps App is how you discover, install, and manage other Apps in Penkra. It connects to the App registry and gives you a launcher to browse what's available, a search to find specific Apps, and detail views where you can inspect an App's description, permissions, and developer info before installing.
+
+Once installed, Apps appear in your panel tab strip and are ready to use.
+
+### Browser — Web browsing
+
+![Browser App displaying penkra.com](docs/readme-assets/Gjw2I.png)
+
+The Browser App gives you scoped web browsing sessions inside Penkra. You can navigate to any website, follow links, and download files — and agent threads can interact with the browser on your behalf when you allow it.
+
+The Browser uses Penkra's public scoped-browser-session service, so browsing activity stays contained and permissions are explicit.
+
+### Explorer — File browsing
+
+![Explorer App showing a scoped workspace file tree](docs/readme-assets/s2U5q5.png)
+
+The Explorer App lets you browse, search, preview, and open files on your system. It uses user-mediated web file handles rather than raw filesystem access, so you stay in control of what the App (and any connected agent thread) can see.
+
+You can preview files directly in the panel or open them with the appropriate tool.
+
+## How Apps work
+
+Every App is an independent web application with its own source, manifest, tests, and design file. Apps run in isolation — each one gets its own tab in Penkra's right panel and communicates with the host through a public SDK.
+
+Key concepts:
+
+- **Manifests** (`penkra-app.json`) declare what the App needs — its ID, name, permissions, and entry points
+- **Scoped services** give Apps access to specific capabilities (browser sessions, file handles) without broad system access
+- **Permissions** are explicit and user-controlled — Apps cannot access capabilities they haven't been granted
+- **Isolation** means one App cannot see or interfere with another App's state
+
+Penkra owns the trusted panel tab strip. Each App owns its complete web surface and may render the standard App Bar on any page using the public specification.
+
+![App detail permissions with required and optional access](docs/readme-assets/Z26jPn.png)
+
+## For developers
+
+### Tech stack
+
+Apps are built with vanilla JavaScript — no framework dependency. This keeps them lightweight and ensures they work with the public runtime available to any third-party developer.
+
+| Component | Technology |
+|-----------|-----------|
+| UI | Vanilla HTML/CSS/JS |
+| Design | Pencil (`.pen` files) |
+| Testing | Node.js native test runner |
+| Manifests | `penkra-app.json` |
+
+### Repository structure
 
 ```text
-apps/
-  design/apps.pen
-  app.html
-  app.js
-  operations.html
-  operations.js
-  penkra-app.json
-browser/
-  design/browser.pen
-explorer/
-  design/explorer.pen
+penkra-apps/
+├── apps/
+│   ├── app.html            # App entry point
+│   ├── app.js              # App logic
+│   ├── styles.css          # App styles
+│   ├── operations.html     # Operations entry point
+│   ├── operations.js       # Operations logic
+│   ├── penkra-app.json     # App manifest
+│   ├── INSTRUCTIONS.md     # Agent instructions
+│   ├── ui-model.mjs        # Pure logic (framework-free)
+│   └── design/apps.pen     # Pencil design source
+├── browser/
+│   ├── app.html, app.js, styles.css
+│   ├── operations.html, operations.js
+│   ├── penkra-app.json
+│   ├── browser-model.mjs
+│   └── design/browser.pen
+└── explorer/
+    ├── app.html, app.js, styles.css
+    ├── operations.html, operations.js
+    ├── penkra-app.json
+    ├── explorer-model.mjs
+    └── design/explorer.pen
 ```
 
-**Apps** is the active first-party App in the current implementation pass.
-**Browser** and **Explorer** retain named design/documentation stubs for deferred
-implementation and are not shipped merely because their folders exist. Themes are
-core Penkra Settings presets, not an App. Each App keeps its design source,
-implementation, assets, and tests inside its own folder as those artifacts become real.
+### Design system
 
-Penkra owns trusted panel-tab chrome. Each App owns its entire web surface and may
-render the standard App Bar on any page using the public specification, semantic
-tokens, and optional framework adapters. The host does not insert or configure an
-App Bar for an App.
+Each App has an authoritative Pencil file in its `design/` directory. Pencil is the source of truth for that App's UI, states, language, and visual composition. Do not build UI that isn't in the corresponding Pencil design.
 
-The Penkra desktop host, public SDK implementation, registry service, and third-party
-App source do not live in this repository.
+### Building your own App
 
-## Host dependency map
+Third-party developers can build Apps using the public Penkra SDK. Every App runs in the same isolated environment as the first-party Apps — there are no hidden privileges.
 
-The active Apps App depends only on the public App runtime plus the narrow installation
-manager binding documented in its manifest. Browser and Explorer are not dependencies of
-Apps and are not bundled. Host-native browser, file preview, editor, download, and terminal
-surfaces remain shell capabilities until their later App replacements meet parity; none is
-pruned merely because a future App folder exists.
+- App SDK and development guide: see the main [Penkra repository](../penkra)
+- App IDs use the reverse `penkra.com` namespace: `com.penkra.*`
+- Each App keeps its design, implementation, assets, and tests in its own folder

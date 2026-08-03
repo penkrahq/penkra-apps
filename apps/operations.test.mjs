@@ -28,8 +28,13 @@ function harness(overrides = {}) {
     calls,
     handlers,
     unregister,
-    invoke: (key, input, spaceId = "personal") =>
-      handlers.get(key)(input, { invocation: { spaceId } }),
+    invoke: (key, input, spaceId = "personal", callerKind = "agent", context = {}) =>
+      handlers.get(key)(input, {
+        invocation: { spaceId },
+        caller: { kind: callerKind },
+        tabs: { open: async () => ({ id: "apps-tab" }) },
+        ...context,
+      }),
   };
 }
 
@@ -52,6 +57,33 @@ test("routes current-Space lifecycle operations through the trusted bridge", asy
   ]);
   app.unregister();
   assert.equal(app.handlers.size, 0);
+});
+
+test("opens a canonical listing without mutating installations", async () => {
+  const app = harness();
+  assert.deepEqual(await app.invoke("listings.open", { appId: "com.acme.canvas" }), {
+    appId: "com.acme.canvas",
+    tabId: "apps-tab",
+  });
+  await assert.rejects(
+    app.invoke("listings.open", { appId: "not-a-canonical-id" }),
+    /canonical reverse-domain/,
+  );
+  assert.deepEqual(app.calls, []);
+});
+
+test("rejects installation mutations from another App", async () => {
+  const app = harness();
+  await assert.rejects(
+    app.invoke(
+      "installations.disable",
+      { appId: "com.example.canvas" },
+      "personal",
+      "app",
+    ),
+    /cannot change installations/,
+  );
+  assert.deepEqual(app.calls, []);
 });
 
 test("requires explicit update grants and rejects self-management", async () => {
