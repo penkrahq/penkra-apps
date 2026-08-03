@@ -4,6 +4,10 @@ export function shouldShowOffline(registryError, registryCount, installedCount) 
   return Boolean(registryError) && registryCount === 0 && installedCount === 0;
 }
 
+export function launcherApps(apps) {
+  return apps.filter((app) => Boolean(app.installed && app.enabled));
+}
+
 export function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, (character) => ({
     "&": "&amp;",

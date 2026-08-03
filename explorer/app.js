@@ -299,7 +299,7 @@ function searchRows() {
 function preview() {
   if (state.loading) return mainState("refresh", "Loading Explorer", "Restoring scoped file access.", true);
   if (state.error) return mainState("warning", "Couldn’t open this item", state.error);
-  if (!state.handle) return mainState("folder", "No workspace is open", "Choose a folder to browse and preview its files.");
+  if (!state.handle) return `<main class="preview-pane centered"><div class="main-state"><img class="app-logo" src="assets/logo.svg" alt="" /><strong>No workspace is open</strong><span>Choose a folder to browse and preview its files.</span></div></main>`;
   if (!state.selected) return mainState("file", "Select a file", "Choose a file from the tree to view it.");
   if (state.selected.kind === "directory") {
     const entries = state.directoryCache.get(state.selected.relativePath) ?? [];

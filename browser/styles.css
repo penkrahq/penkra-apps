@@ -47,7 +47,7 @@ button { border: 0; }
 .more-menu button:disabled { color: var(--tertiary); opacity: .55; }
 .viewport { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: var(--canvas); }
 .start, .status { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; color: var(--muted); }
-.start .globe { width: 48px; height: 48px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 50%; color: var(--accent); font-size: 24px; }
+.start .app-logo { width: 52px; height: 52px; }
 .start strong, .status strong { color: var(--text); }
 .start p, .status p { max-width: 360px; margin: 0; font-size: 12px; line-height: 1.5; }
 .status.error strong { color: #ff6363; }

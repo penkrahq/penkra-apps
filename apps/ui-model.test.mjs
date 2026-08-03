@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { appAction, compareVersions, permissionGrants, renderMarkdown, shouldShowOffline } from "./ui-model.mjs";
+import {
+  appAction,
+  compareVersions,
+  launcherApps,
+  permissionGrants,
+  renderMarkdown,
+  shouldShowOffline,
+} from "./ui-model.mjs";
 
 test("selects install, update, and open actions from durable state", () => {
   const app = { id: "com.example.app", availability: "registry", latestVersion: "2.0.0" };
@@ -50,4 +57,22 @@ test("offline startup keeps installed Apps available and shows the empty offline
   assert.equal(shouldShowOffline(new Error("offline"), 0, 2), false);
   assert.equal(shouldShowOffline(new Error("offline"), 3, 0), false);
   assert.equal(shouldShowOffline(null, 0, 0), false);
+});
+
+test("launcher contains only Apps installed and enabled in the current Space", () => {
+  const installedEnabled = {
+    id: "com.example.ready",
+    installed: { version: "1.0.0" },
+    enabled: true,
+  };
+  const installedDisabled = {
+    id: "com.example.disabled",
+    installed: { version: "1.0.0" },
+    enabled: false,
+  };
+  const registryOnly = { id: "com.example.registry", installed: null, enabled: false };
+
+  assert.deepEqual(launcherApps([installedEnabled, installedDisabled, registryOnly]), [
+    installedEnabled,
+  ]);
 });

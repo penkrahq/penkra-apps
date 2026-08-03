@@ -46,7 +46,7 @@ function render() {
     </header>
     <main class="viewport" id="viewport">
       ${page?.isLoading ? '<div class="loading-line"></div>' : ""}
-      ${!page || page.url === "about:blank" ? '<div class="start"><div class="globe">◎</div><strong>Browse the web</strong><p>Enter an address or search above. Pages stay isolated inside this Browser tab.</p></div>' : ""}
+      ${!page || page.url === "about:blank" ? '<div class="start"><img class="app-logo" src="assets/logo.svg" alt="" /><strong>Browse the web</strong><p>Enter an address or search above. Pages stay isolated inside this Browser tab.</p></div>' : ""}
       ${page?.lastError ? `<div class="status error"><strong>Couldn’t load this page</strong><p>${escapeHtml(page.lastError)}</p></div>` : ""}
     </main>
   </div>`;

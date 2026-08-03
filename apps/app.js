@@ -1,4 +1,11 @@
-import { appAction, escapeHtml, permissionGrants, renderMarkdown, shouldShowOffline } from "./ui-model.mjs";
+import {
+  appAction,
+  escapeHtml,
+  launcherApps,
+  permissionGrants,
+  renderMarkdown,
+  shouldShowOffline,
+} from "./ui-model.mjs";
 
 const iconPaths = {
   search: '<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path>',
@@ -145,7 +152,7 @@ function appIcon(app, size = "regular") {
 
 function launcherView() {
   if (showOffline()) return offlineView();
-  const apps = allApps().slice(0, 9);
+  const apps = launcherApps(allApps()).slice(0, 9);
   if (!apps.length && state.registryLoading) return loadingView("Loading Apps…");
   return `<main class="panel-content launcher-view">
     ${apps.length ? `<section class="launcher-grid" aria-label="Apps">${apps.map((app) => `<button class="launcher-item" data-launch="${escapeHtml(app.id)}">${appIcon(app, "launcher")}<span>${escapeHtml(app.name)}</span></button>`).join("")}</section>` : emptyView("No Apps available", "Refresh when you are connected to load the catalog.")}
@@ -464,8 +471,7 @@ root.addEventListener("click", (event) => {
   if (target.dataset.launch) {
     const app = allApps().find((entry) => entry.id === target.dataset.launch);
     if (!app) return;
-    navigate({ route: "detail", appId: app.id, detailTab: "description" });
-    return void loadRegistryDetail(app);
+    return void performAppAction(app, "open");
   }
   if (target.dataset.detailTab) {
     navigate({ detailTab: target.dataset.detailTab }, { replace: true });
