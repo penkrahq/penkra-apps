@@ -148,7 +148,8 @@ function appIcon(app, size = "regular") {
   const content = source
     ? `<img src="${escapeHtml(source)}" alt="" />`
     : icon("package");
-  return `<span class="app-icon app-icon-${size}" style="--app-icon-color:${app.color ?? "var(--apps-accent)"}">${content}</span>`;
+  const artworkClass = source ? " app-icon-has-artwork" : "";
+  return `<span class="app-icon app-icon-${size}${artworkClass}" style="--app-icon-color:${app.color ?? "var(--apps-accent)"}">${content}</span>`;
 }
 
 function launcherView() {
