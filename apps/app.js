@@ -1,5 +1,6 @@
 import {
   appAction,
+  appIconSource,
   escapeHtml,
   launcherApps,
   permissionGrants,
@@ -143,7 +144,7 @@ function appBar() {
 }
 
 function appIcon(app, size = "regular") {
-  const source = state.iconUrls.get(app.id);
+  const source = appIconSource(app, state.iconUrls.get(app.id));
   const content = source
     ? `<img src="${escapeHtml(source)}" alt="" />`
     : icon("package");

@@ -3,12 +3,24 @@ import test from "node:test";
 
 import {
   appAction,
+  appIconSource,
   compareVersions,
   launcherApps,
   permissionGrants,
   renderMarkdown,
   shouldShowOffline,
 } from "./ui-model.mjs";
+
+test("prefers the verified installed-package icon and falls back to registry artwork", () => {
+  assert.equal(
+    appIconSource({ installed: { iconDataUrl: "data:image/svg+xml,installed" } }, "https://registry/icon.svg"),
+    "data:image/svg+xml,installed",
+  );
+  assert.equal(
+    appIconSource({ installed: { iconDataUrl: null } }, "https://registry/icon.svg"),
+    "https://registry/icon.svg",
+  );
+});
 
 test("selects install, update, and open actions from durable state", () => {
   const app = { id: "com.example.app", availability: "registry", latestVersion: "2.0.0" };

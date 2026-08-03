@@ -8,6 +8,10 @@ export function launcherApps(apps) {
   return apps.filter((app) => Boolean(app.installed && app.enabled));
 }
 
+export function appIconSource(app, registryIconUrl = null) {
+  return app.installed?.iconDataUrl ?? registryIconUrl;
+}
+
 export function escapeHtml(value) {
   return String(value).replace(/[&<>'"]/g, (character) => ({
     "&": "&amp;",
