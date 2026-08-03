@@ -3,16 +3,3408 @@
   "children": [
     {
       "type": "frame",
-      "id": "bi8Au",
+      "id": "e3YxQ",
       "x": 0,
       "y": 0,
-      "name": "Browser / Design Seed",
+      "name": "Components Banner",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 4200,
+      "height": 220,
+      "fill": "$color-background-panel",
+      "layout": "vertical",
+      "gap": 10,
+      "padding": [
+        56,
+        64
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "mvlUL",
+          "name": "Eyebrow",
+          "fill": "$color-accent",
+          "content": "BROWSER APP",
+          "fontFamily": "$font-ui",
+          "fontSize": 12,
+          "fontWeight": "600",
+          "letterSpacing": 1.4
+        },
+        {
+          "type": "text",
+          "id": "wPPfb",
+          "name": "Title",
+          "fill": "$color-text-primary",
+          "content": "Components",
+          "fontFamily": "$font-ui",
+          "fontSize": 40,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "GVzwy",
+          "name": "Description",
+          "fill": "$color-text-secondary",
+          "content": "App-owned page tabs, navigation, address, page status, downloads, and browser states.",
+          "fontFamily": "$font-ui",
+          "fontSize": 15,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "nu8eP",
+      "x": 0,
+      "y": 280,
+      "name": "Foundations",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 4200,
+      "height": 280,
+      "fill": "$color-background-canvas",
+      "gap": 40,
+      "padding": [
+        44,
+        64
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "EImf5",
+          "name": "Canvas Token",
+          "width": 150,
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "kMmwc",
+              "name": "Canvas Swatch",
+              "fill": "$color-background-canvas",
+              "width": 150,
+              "height": 96,
+              "stroke": "$color-border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "RCzjD",
+              "name": "Canvas Label",
+              "fill": "$color-text-secondary",
+              "content": "Canvas",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "whNTi",
+          "name": "Panel Token",
+          "width": 150,
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "rj1Zy",
+              "name": "Panel Swatch",
+              "fill": "$color-background-panel",
+              "width": 150,
+              "height": 96,
+              "stroke": "$color-border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "qUpz4",
+              "name": "Panel Label",
+              "fill": "$color-text-secondary",
+              "content": "Panel",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "f9tMdf",
+          "name": "Control Token",
+          "width": 150,
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "aHLSo",
+              "name": "Control Swatch",
+              "fill": "$color-background-control",
+              "width": 150,
+              "height": 96,
+              "stroke": "$color-border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "sCKEt",
+              "name": "Control Label",
+              "fill": "$color-text-secondary",
+              "content": "Control",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wY60Z",
+          "name": "Hover Token",
+          "width": 150,
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "IO2Om",
+              "name": "Hover Swatch",
+              "fill": "$color-background-hover",
+              "width": 150,
+              "height": 96,
+              "stroke": "$color-border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "dvTJn",
+              "name": "Hover Label",
+              "fill": "$color-text-secondary",
+              "content": "Hover",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "r587jo",
+          "name": "Selected Token",
+          "width": 150,
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "dIrx6",
+              "name": "Selected Swatch",
+              "fill": "$color-background-selected",
+              "width": 150,
+              "height": 96,
+              "stroke": "$color-border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "ay9Y9",
+              "name": "Selected Label",
+              "fill": "$color-text-secondary",
+              "content": "Selected",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "bSIhu",
+          "name": "Accent Token",
+          "width": 150,
+          "layout": "vertical",
+          "gap": 10,
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "jacsJ",
+              "name": "Accent Swatch",
+              "fill": "$color-accent",
+              "width": 150,
+              "height": 96,
+              "stroke": "$color-border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "NqRAe",
+              "name": "Accent Label",
+              "fill": "$color-text-secondary",
+              "content": "Accent",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rQqcG",
+      "x": 0,
+      "y": 620,
+      "name": "Components / Primitives",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 4200,
+      "height": 360,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "kAbMa",
+          "layoutPosition": "absolute",
+          "x": 64,
+          "y": 64,
+          "name": "Browser Action Specimen",
+          "width": 28,
+          "height": 28,
+          "children": [
+            {
+              "type": "frame",
+              "id": "QFtP8",
+              "name": "Browser Action / Shared",
+              "reusable": true,
+              "width": 28,
+              "height": 28,
+              "fill": "#00000000",
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "D1Wlyh",
+                  "name": "Icon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "arrow-left",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "g75mf8",
+          "layoutPosition": "absolute",
+          "x": 160,
+          "y": 62,
+          "name": "Page Tab Specimen",
+          "width": 180,
+          "height": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "bUWEI",
+              "name": "Page Tab / Shared",
+              "reusable": true,
+              "width": 180,
+              "height": 32,
+              "fill": "$color-background-raised",
+              "cornerRadius": 8,
+              "gap": 8,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "kr0oV",
+                  "name": "Favicon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "globe",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "i6im6M",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "KqaGB",
+                  "name": "Close",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xbGS1",
+          "layoutPosition": "absolute",
+          "x": 420,
+          "y": 64,
+          "name": "Address Field Specimen",
+          "width": 420,
+          "height": 28,
+          "children": [
+            {
+              "type": "frame",
+              "id": "P1K94",
+              "name": "Address Field / Shared",
+              "reusable": true,
+              "width": 420,
+              "height": 28,
+              "fill": "$color-background-control",
+              "cornerRadius": 8,
+              "gap": 7,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Ox4bu",
+                  "name": "Security",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "sliders-horizontal",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "text",
+                  "id": "OF83F",
+                  "name": "Value",
+                  "fill": "$color-text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "app.penkra.com",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "C7rf6",
+                  "name": "Go",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "arrow-up-right",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M9A3y",
+          "layoutPosition": "absolute",
+          "x": 920,
+          "y": 36,
+          "name": "Browser State Specimen",
+          "width": 420,
+          "height": 160,
+          "children": [
+            {
+              "type": "frame",
+              "id": "czL9q",
+              "name": "Browser State / Shared",
+              "reusable": true,
+              "width": 420,
+              "height": 160,
+              "layout": "vertical",
+              "gap": 10,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Nel9p",
+                  "name": "Icon Box",
+                  "width": 34,
+                  "height": 34,
+                  "fill": "$color-background-raised",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "i6vWZ",
+                      "name": "Icon",
+                      "width": 16,
+                      "height": 16,
+                      "icon": "globe",
+                      "library": "lucide",
+                      "fill": "$color-text-secondary"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "fJ89o",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Open a page",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "PgQP3",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "Enter an address or search the web.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "kEaJb",
+          "layoutPosition": "absolute",
+          "x": 1420,
+          "y": 64,
+          "name": "Download Row Specimen",
+          "width": 320,
+          "height": 52,
+          "children": [
+            {
+              "type": "frame",
+              "id": "OlRSd",
+              "name": "Download Row / Shared",
+              "reusable": true,
+              "width": 320,
+              "height": 52,
+              "fill": "$color-background-panel",
+              "cornerRadius": 8,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "r609qq",
+                  "name": "File Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "file-down",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "frame",
+                  "id": "CofEb",
+                  "name": "Information",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "smC5J",
+                      "name": "File Name",
+                      "fill": "$color-text-primary",
+                      "content": "penkra-guide.pdf",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "x0k94",
+                      "name": "Status",
+                      "fill": "$color-text-secondary",
+                      "content": "2.4 MB · Complete",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "icon",
+                  "id": "K1sdj",
+                  "name": "Open",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "arrow-up-right",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "qD5oy",
+          "layoutPosition": "absolute",
+          "x": 1820,
+          "y": 64,
+          "name": "Find Bar Specimen",
+          "width": 280,
+          "height": 36,
+          "children": [
+            {
+              "type": "frame",
+              "id": "lXOwx",
+              "name": "Find Bar / Shared",
+              "reusable": true,
+              "width": 280,
+              "height": 36,
+              "fill": "$color-background-panel",
+              "cornerRadius": 8,
+              "stroke": "$color-border",
+              "strokeWidth": 1,
+              "gap": 6,
+              "padding": [
+                0,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "WqhSV",
+                  "name": "Query",
+                  "fill": "$color-text-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "automation",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "izBlb",
+                  "name": "Count",
+                  "fill": "$color-text-secondary",
+                  "content": "1 / 4",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "icon",
+                  "id": "E75KbV",
+                  "name": "Previous",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "chevron-up",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "icon",
+                  "id": "SYUpx",
+                  "name": "Next",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "chevron-down",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "icon",
+                  "id": "M0Q2l",
+                  "name": "Close",
+                  "width": 13,
+                  "height": 13,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Jx5j0",
+      "x": 0,
+      "y": 1040,
+      "name": "Components / Composed",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 4200,
+      "height": 500,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "wMwO3",
+          "layoutPosition": "absolute",
+          "x": 64,
+          "y": 64,
+          "name": "Page Tabs Specimen",
+          "width": 960,
+          "height": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "pPDtI",
+              "name": "Page Tabs / Shared",
+              "reusable": true,
+              "width": 960,
+              "height": 40,
+              "fill": "$color-background-panel",
+              "stroke": "$color-border",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "gap": 6,
+              "padding": [
+                4,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yWFnc",
+                  "name": "Tabs",
+                  "slot": [
+                    "bUWEI"
+                  ],
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "XTbqe",
+                      "type": "ref",
+                      "ref": "bUWEI",
+                      "name": "Active Tab"
+                    }
+                  ]
+                },
+                {
+                  "id": "rezML",
+                  "type": "ref",
+                  "ref": "QFtP8",
+                  "name": "New Tab",
+                  "descendants": {
+                    "D1Wlyh": {
+                      "icon": "plus"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lhYsp",
+          "layoutPosition": "absolute",
+          "x": 64,
+          "y": 160,
+          "name": "Browser App Bar Specimen",
+          "width": 960,
+          "height": 46,
+          "children": [
+            {
+              "type": "frame",
+              "id": "goLCr",
+              "name": "Browser App Bar / Shared",
+              "reusable": true,
+              "width": 960,
+              "height": 46,
+              "fill": "$color-background-panel",
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "eZR8t",
+                  "name": "Bar Row",
+                  "width": "fill_container",
+                  "height": 45,
+                  "gap": 8,
+                  "padding": [
+                    0,
+                    8
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "zTZfv",
+                      "name": "Leading",
+                      "slot": [
+                        "QFtP8"
+                      ],
+                      "gap": 2,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "vyPEO",
+                          "type": "ref",
+                          "ref": "QFtP8",
+                          "name": "Back",
+                          "descendants": {
+                            "D1Wlyh": {
+                              "icon": "arrow-left"
+                            }
+                          }
+                        },
+                        {
+                          "id": "zxfbp",
+                          "type": "ref",
+                          "ref": "QFtP8",
+                          "name": "Forward",
+                          "descendants": {
+                            "D1Wlyh": {
+                              "icon": "arrow-right"
+                            }
+                          }
+                        },
+                        {
+                          "id": "YSmAO",
+                          "type": "ref",
+                          "ref": "QFtP8",
+                          "name": "Reload",
+                          "descendants": {
+                            "D1Wlyh": {
+                              "icon": "rotate-cw"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "K3l60f",
+                      "name": "Center",
+                      "slot": [
+                        "P1K94"
+                      ],
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "QWHH9",
+                          "type": "ref",
+                          "ref": "P1K94",
+                          "name": "Address",
+                          "width": 700
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HTCEs",
+                      "name": "Trailing",
+                      "slot": [
+                        "QFtP8"
+                      ],
+                      "gap": 2,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "o9sWxD",
+                          "type": "ref",
+                          "ref": "QFtP8",
+                          "name": "Find",
+                          "descendants": {
+                            "D1Wlyh": {
+                              "icon": "search"
+                            }
+                          }
+                        },
+                        {
+                          "id": "P2fHt3",
+                          "type": "ref",
+                          "ref": "QFtP8",
+                          "name": "Downloads",
+                          "descendants": {
+                            "D1Wlyh": {
+                              "icon": "download"
+                            }
+                          }
+                        },
+                        {
+                          "id": "n6MmU",
+                          "type": "ref",
+                          "ref": "QFtP8",
+                          "name": "More",
+                          "descendants": {
+                            "D1Wlyh": {
+                              "icon": "more-vertical"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "XRbyY",
+                  "name": "Divider",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$color-border"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "HJi3y",
+      "x": 0,
+      "y": 1600,
+      "name": "Feature Screens Banner",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 3540,
+      "height": 180,
+      "fill": "$color-background-panel",
+      "layout": "vertical",
+      "gap": 8,
+      "padding": [
+        42,
+        64
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "LPekZ",
+          "name": "Title",
+          "fill": "$color-text-primary",
+          "content": "Browser feature screens",
+          "fontFamily": "$font-ui",
+          "fontSize": 30,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "sD1jR",
+          "name": "Description",
+          "fill": "$color-text-secondary",
+          "content": "The Browser App owns page tabs, the App Bar, navigation state, page content, downloads, and recovery.",
+          "fontFamily": "$font-ui",
+          "fontSize": 14,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Gjw2I",
+      "x": 0,
+      "y": 1840,
+      "name": "Browser / Active Page",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
-      "width": 800,
-      "height": 600,
-      "fill": "#FFFFFF",
-      "layout": "none"
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "HWGbO",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Penkra"
+            }
+          }
+        },
+        {
+          "id": "b0oSR",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "penkra.com"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "sppNt",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Web Page",
+          "width": 1100,
+          "height": 634,
+          "fill": "#F7F7F8",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "QakBc",
+              "name": "Website Header",
+              "width": "fill_container",
+              "height": 58,
+              "stroke": "#DCDCE1",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "padding": [
+                0,
+                46
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ba1q5",
+                  "name": "Brand",
+                  "fill": "#17171A",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "Q1sKjh",
+                  "name": "Navigation",
+                  "width": "fill_container",
+                  "gap": 28,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g3DoeZ",
+                      "name": "Product",
+                      "fill": "#5F6068",
+                      "content": "Product",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fUyUy",
+                      "name": "Developers",
+                      "fill": "#5F6068",
+                      "content": "Developers",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SNRY1",
+                      "name": "Download",
+                      "fill": "#5F6068",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tDr8N",
+              "name": "Website Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                78,
+                120
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bqP60",
+                  "name": "Eyebrow",
+                  "fill": "#4E83FF",
+                  "content": "PENKRA FOR DESKTOP",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "kTshG",
+                  "name": "Heading",
+                  "fill": "#17171A",
+                  "content": "Work with every agent\nin one place.",
+                  "lineHeight": 1.1,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 40,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "TrMsQ",
+                  "name": "Body",
+                  "fill": "#5F6068",
+                  "content": "A local-first workspace for projects, threads, Apps, and the agents that move work forward.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "YYNUE",
+                  "name": "Download Button",
+                  "width": 130,
+                  "height": 36,
+                  "fill": "#17171A",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "g35ZGy",
+                      "name": "Label",
+                      "fill": "#FFFFFF",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "V07Rx",
+      "x": 1180,
+      "y": 1840,
+      "name": "Browser / Multiple Page Tabs",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "type": "frame",
+          "id": "eEdP1",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "Page Tabs",
+          "width": 1100,
+          "height": 40,
+          "fill": "$color-background-panel",
+          "stroke": "$color-border",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 6,
+          "padding": [
+            4,
+            8
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cfYq7",
+              "name": "Tabs",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 6,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ydh9T",
+                  "type": "ref",
+                  "ref": "bUWEI",
+                  "name": "Penkra Tab",
+                  "descendants": {
+                    "i6im6M": {
+                      "content": "Penkra"
+                    }
+                  }
+                },
+                {
+                  "id": "bJatj",
+                  "type": "ref",
+                  "ref": "bUWEI",
+                  "name": "Active App SDK Tab",
+                  "descendants": {
+                    "i6im6M": {
+                      "content": "App SDK"
+                    }
+                  }
+                },
+                {
+                  "id": "JErZF",
+                  "type": "ref",
+                  "ref": "bUWEI",
+                  "name": "GitHub Tab",
+                  "descendants": {
+                    "i6im6M": {
+                      "content": "GitHub"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "l5y8i",
+              "type": "ref",
+              "ref": "QFtP8",
+              "name": "New Tab",
+              "descendants": {
+                "D1Wlyh": {
+                  "icon": "plus"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "mxEhB",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "docs.penkra.com/apps"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "p9Ltz",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Web Page",
+          "width": 1100,
+          "height": 634,
+          "fill": "#F7F7F8",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "oL3P2",
+              "name": "Website Header",
+              "width": "fill_container",
+              "height": 58,
+              "stroke": "#DCDCE1",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "padding": [
+                0,
+                46
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Nhjsj",
+                  "name": "Brand",
+                  "fill": "#17171A",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "LUOKr",
+                  "name": "Navigation",
+                  "width": "fill_container",
+                  "gap": 28,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "zgWUY",
+                      "name": "Product",
+                      "fill": "#5F6068",
+                      "content": "Product",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vWKFs",
+                      "name": "Developers",
+                      "fill": "#5F6068",
+                      "content": "Developers",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "l0y9Tu",
+                      "name": "Download",
+                      "fill": "#5F6068",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bi5HU",
+              "name": "Website Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                78,
+                120
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ALaZv",
+                  "name": "Eyebrow",
+                  "fill": "#4E83FF",
+                  "content": "PENKRA FOR DESKTOP",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "ASpDc",
+                  "name": "Heading",
+                  "fill": "#17171A",
+                  "content": "Work with every agent\nin one place.",
+                  "lineHeight": 1.1,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 40,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "PByFQ",
+                  "name": "Body",
+                  "fill": "#5F6068",
+                  "content": "A local-first workspace for projects, threads, Apps, and the agents that move work forward.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "gh5zP",
+      "x": 2360,
+      "y": 1840,
+      "name": "Browser / New Tab",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "gWoDv",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "New Tab"
+            }
+          }
+        },
+        {
+          "id": "CMbBd",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "Search or enter address"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "VXKW1",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Page State",
+          "width": 1100,
+          "height": 634,
+          "layout": "vertical",
+          "gap": 10,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "m7TQ8A",
+              "name": "Icon Box",
+              "width": 38,
+              "height": 38,
+              "fill": "$color-background-raised",
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "kDn8V",
+                  "name": "Icon",
+                  "width": 17,
+                  "height": 17,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "QQY4N",
+              "name": "Title",
+              "fill": "$color-text-primary",
+              "content": "Search or enter an address",
+              "fontFamily": "$font-ui",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "jZVxc",
+              "name": "Body",
+              "fill": "$color-text-secondary",
+              "content": "Navigation stays inside this Browser tab.",
+              "fontFamily": "$font-ui",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "st1PW",
+      "x": 0,
+      "y": 2640,
+      "name": "Browser / Address Focused",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "A3aE15",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Penkra Documentation"
+            }
+          }
+        },
+        {
+          "id": "uNTuO",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "docs.penkra.com"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "BlRsa",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Web Page",
+          "width": 1100,
+          "height": 634,
+          "fill": "#F7F7F8",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "u7IVT",
+              "name": "Website Header",
+              "width": "fill_container",
+              "height": 58,
+              "stroke": "#DCDCE1",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "padding": [
+                0,
+                46
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "qkfEO",
+                  "name": "Brand",
+                  "fill": "#17171A",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "AVxAF",
+                  "name": "Navigation",
+                  "width": "fill_container",
+                  "gap": 28,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qmrtF",
+                      "name": "Product",
+                      "fill": "#5F6068",
+                      "content": "Product",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "h4lgo",
+                      "name": "Developers",
+                      "fill": "#5F6068",
+                      "content": "Developers",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "owAot",
+                      "name": "Download",
+                      "fill": "#5F6068",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uTQxz",
+              "name": "Website Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                78,
+                120
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zANIL",
+                  "name": "Eyebrow",
+                  "fill": "#4E83FF",
+                  "content": "PENKRA FOR DESKTOP",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "TKHsP",
+                  "name": "Heading",
+                  "fill": "#17171A",
+                  "content": "Work with every agent\nin one place.",
+                  "lineHeight": 1.1,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 40,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "r92tc",
+                  "name": "Body",
+                  "fill": "#5F6068",
+                  "content": "A local-first workspace for projects, threads, Apps, and the agents that move work forward.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "XtxXQ",
+                  "name": "Download Button",
+                  "width": 130,
+                  "height": 36,
+                  "fill": "#17171A",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RKBVv",
+                      "name": "Label",
+                      "fill": "#FFFFFF",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ecm0F",
+          "layoutPosition": "absolute",
+          "x": 185,
+          "y": 78,
+          "name": "Address Suggestions",
+          "width": 730,
+          "height": 164,
+          "fill": "$color-background-panel",
+          "cornerRadius": 8,
+          "stroke": "$color-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 2,
+          "padding": 6,
+          "children": [
+            {
+              "type": "frame",
+              "id": "EMqmh",
+              "name": "docs.penkra.com Suggestion",
+              "width": "fill_container",
+              "height": 48,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "z5hvt",
+                  "name": "Icon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "globe",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "frame",
+                  "id": "T1dzG",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "resUY",
+                      "name": "Primary",
+                      "fill": "$color-text-primary",
+                      "content": "docs.penkra.com",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "U2kW2R",
+                      "name": "Secondary",
+                      "fill": "$color-text-secondary",
+                      "content": "Penkra documentation",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Jv2s8",
+              "name": "penkra.com Suggestion",
+              "width": "fill_container",
+              "height": 48,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "dVWEb",
+                  "name": "Icon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "history",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "frame",
+                  "id": "HwE2M",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "L3xNp",
+                      "name": "Primary",
+                      "fill": "$color-text-primary",
+                      "content": "penkra.com",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fTXPt",
+                      "name": "Secondary",
+                      "fill": "$color-text-secondary",
+                      "content": "Recent",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MjNK1",
+              "name": "penkra app sdk Suggestion",
+              "width": "fill_container",
+              "height": 48,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "YxCJ0",
+                  "name": "Icon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "search",
+                  "library": "lucide",
+                  "fill": "$color-text-secondary"
+                },
+                {
+                  "type": "frame",
+                  "id": "uICQV",
+                  "name": "Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gUJC1",
+                      "name": "Primary",
+                      "fill": "$color-text-primary",
+                      "content": "penkra app sdk",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "O9p3PN",
+                      "name": "Secondary",
+                      "fill": "$color-text-secondary",
+                      "content": "Search",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "otCdg",
+      "x": 1180,
+      "y": 2640,
+      "name": "Browser / Find in Page",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "igJfr",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Penkra"
+            }
+          }
+        },
+        {
+          "id": "fD1sU",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "penkra.com"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "tiV4H",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Web Page",
+          "width": 1100,
+          "height": 634,
+          "fill": "#F7F7F8",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "tiBlh",
+              "name": "Website Header",
+              "width": "fill_container",
+              "height": 58,
+              "stroke": "#DCDCE1",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "padding": [
+                0,
+                46
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "diUll",
+                  "name": "Brand",
+                  "fill": "#17171A",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "Q6fGp",
+                  "name": "Navigation",
+                  "width": "fill_container",
+                  "gap": 28,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "v8Gt9",
+                      "name": "Product",
+                      "fill": "#5F6068",
+                      "content": "Product",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VgMq6",
+                      "name": "Developers",
+                      "fill": "#5F6068",
+                      "content": "Developers",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "YBucv",
+                      "name": "Download",
+                      "fill": "#5F6068",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rW8dJ",
+              "name": "Website Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                78,
+                120
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "JzzIp",
+                  "name": "Eyebrow",
+                  "fill": "#4E83FF",
+                  "content": "PENKRA FOR DESKTOP",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "q2DEeK",
+                  "name": "Heading",
+                  "fill": "#17171A",
+                  "content": "Work with every agent\nin one place.",
+                  "lineHeight": 1.1,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 40,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "b2OdL",
+                  "name": "Body",
+                  "fill": "#5F6068",
+                  "content": "A local-first workspace for projects, threads, Apps, and the agents that move work forward.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "G1HL7b",
+                  "name": "Download Button",
+                  "width": 130,
+                  "height": 36,
+                  "fill": "#17171A",
+                  "cornerRadius": 8,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XauHJ",
+                      "name": "Label",
+                      "fill": "#FFFFFF",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "brDHY",
+          "type": "ref",
+          "ref": "lXOwx",
+          "name": "Find Bar",
+          "layoutPosition": "absolute",
+          "x": 800,
+          "y": 94
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rtD0X",
+      "x": 2360,
+      "y": 2640,
+      "name": "Browser / Downloading",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "V5eHC",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Downloads"
+            }
+          }
+        },
+        {
+          "id": "pK4Sm",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "releases.penkra.com"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "Lyb4F",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Web Page",
+          "width": 1100,
+          "height": 634,
+          "fill": "#F7F7F8",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "DaKuW",
+              "name": "Website Header",
+              "width": "fill_container",
+              "height": 58,
+              "stroke": "#DCDCE1",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "padding": [
+                0,
+                46
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "y37YA",
+                  "name": "Brand",
+                  "fill": "#17171A",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "mZ3n6",
+                  "name": "Navigation",
+                  "width": "fill_container",
+                  "gap": 28,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "M0EViR",
+                      "name": "Product",
+                      "fill": "#5F6068",
+                      "content": "Product",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "XxQDn",
+                      "name": "Developers",
+                      "fill": "#5F6068",
+                      "content": "Developers",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dL8bn",
+                      "name": "Download",
+                      "fill": "#5F6068",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "L5zVSz",
+              "name": "Website Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                78,
+                120
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "m5dqLt",
+                  "name": "Eyebrow",
+                  "fill": "#4E83FF",
+                  "content": "PENKRA FOR DESKTOP",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "NvDSW",
+                  "name": "Heading",
+                  "fill": "#17171A",
+                  "content": "Work with every agent\nin one place.",
+                  "lineHeight": 1.1,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 40,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "V0L8J",
+                  "name": "Body",
+                  "fill": "#5F6068",
+                  "content": "A local-first workspace for projects, threads, Apps, and the agents that move work forward.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "NBjtl",
+          "layoutPosition": "absolute",
+          "x": 744,
+          "y": 88,
+          "name": "Downloads Popover",
+          "width": 340,
+          "height": 92,
+          "fill": "$color-background-panel",
+          "cornerRadius": 8,
+          "stroke": "$color-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 10,
+          "children": [
+            {
+              "type": "text",
+              "id": "kWniE",
+              "name": "Title",
+              "fill": "$color-text-primary",
+              "content": "Downloads",
+              "fontFamily": "$font-ui",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "id": "C6xsLW",
+              "type": "ref",
+              "ref": "OlRSd",
+              "name": "Completed Download",
+              "width": 320,
+              "height": 52
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DrXEM",
+      "x": 0,
+      "y": 3440,
+      "name": "Browser / Loading",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "Qusl3",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Documentation"
+            }
+          }
+        },
+        {
+          "id": "iop0F",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "docs.penkra.com/guides"
+            }
+          }
+        },
+        {
+          "type": "rectangle",
+          "id": "AFhaD",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Loading Progress",
+          "fill": "$color-accent",
+          "width": 420,
+          "height": 2
+        },
+        {
+          "type": "frame",
+          "id": "ogXBD",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 88,
+          "name": "Page State",
+          "width": 1100,
+          "height": 632,
+          "layout": "vertical",
+          "gap": 10,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "OUBHf",
+              "name": "Icon Box",
+              "width": 38,
+              "height": 38,
+              "fill": "$color-background-raised",
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Jr4n0",
+                  "name": "Icon",
+                  "width": 17,
+                  "height": 17,
+                  "icon": "loader-circle",
+                  "library": "lucide",
+                  "fill": "$color-accent"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "oX1Jb",
+              "name": "Title",
+              "fill": "$color-text-primary",
+              "content": "Loading docs.penkra.com",
+              "fontFamily": "$font-ui",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "pJSm3",
+              "name": "Body",
+              "fill": "$color-text-secondary",
+              "content": "The page remains in this tab while navigation completes.",
+              "fontFamily": "$font-ui",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Qf2fw",
+      "x": 1180,
+      "y": 3440,
+      "name": "Browser / Offline",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "JbXQx",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Penkra"
+            }
+          }
+        },
+        {
+          "id": "h7wCw",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "penkra.com"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "bsu4Q",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Page State",
+          "width": 1100,
+          "height": 634,
+          "layout": "vertical",
+          "gap": 10,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "cL52d",
+              "name": "Icon Box",
+              "width": 38,
+              "height": 38,
+              "fill": "$color-background-raised",
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "UgLTE",
+                  "name": "Icon",
+                  "width": 17,
+                  "height": 17,
+                  "icon": "wifi-off",
+                  "library": "lucide",
+                  "fill": "$color-error"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "USIqz",
+              "name": "Title",
+              "fill": "$color-text-primary",
+              "content": "No internet connection",
+              "fontFamily": "$font-ui",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "mg7Ok",
+              "name": "Body",
+              "fill": "$color-text-secondary",
+              "content": "Check your connection, then reload this page.",
+              "fontFamily": "$font-ui",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "OVNbm",
+      "x": 2360,
+      "y": 3440,
+      "name": "Browser / Page Load Error",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "XGKwn",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Page unavailable"
+            }
+          }
+        },
+        {
+          "id": "EaqOZ",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "example.invalid"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "ZrHTS",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Page State",
+          "width": 1100,
+          "height": 634,
+          "layout": "vertical",
+          "gap": 10,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "TSJ5w",
+              "name": "Icon Box",
+              "width": 38,
+              "height": 38,
+              "fill": "$color-background-raised",
+              "cornerRadius": 8,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "X7dqPv",
+                  "name": "Icon",
+                  "width": 17,
+                  "height": 17,
+                  "icon": "triangle-alert",
+                  "library": "lucide",
+                  "fill": "$color-error"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "dnC8O",
+              "name": "Title",
+              "fill": "$color-text-primary",
+              "content": "Could not load this page",
+              "fontFamily": "$font-ui",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "EqDD2",
+              "name": "Body",
+              "fill": "$color-text-secondary",
+              "content": "The address may be unavailable or the connection was interrupted.",
+              "fontFamily": "$font-ui",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "bg1vn",
+      "x": 0,
+      "y": 4240,
+      "name": "Browser / Active Page / Light",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 1100,
+      "height": 720,
+      "fill": "$color-background-canvas",
+      "layout": "none",
+      "children": [
+        {
+          "id": "gUFsh",
+          "type": "ref",
+          "ref": "pPDtI",
+          "name": "Page Tabs",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "width": 1100,
+          "descendants": {
+            "XTbqe/i6im6M": {
+              "content": "Penkra"
+            }
+          }
+        },
+        {
+          "id": "e9LPJ",
+          "type": "ref",
+          "ref": "goLCr",
+          "name": "App Bar",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 40,
+          "width": 1100,
+          "descendants": {
+            "QWHH9/OF83F": {
+              "content": "penkra.com"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "BmpRU",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 86,
+          "name": "Web Page",
+          "width": 1100,
+          "height": 634,
+          "fill": "#F7F7F8",
+          "layout": "vertical",
+          "children": [
+            {
+              "type": "frame",
+              "id": "uots3",
+              "name": "Website Header",
+              "width": "fill_container",
+              "height": 58,
+              "stroke": "#DCDCE1",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "padding": [
+                0,
+                46
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KKdlE",
+                  "name": "Brand",
+                  "fill": "#17171A",
+                  "content": "Penkra",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "L5t4cR",
+                  "name": "Navigation",
+                  "width": "fill_container",
+                  "gap": 28,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JVw8N",
+                      "name": "Product",
+                      "fill": "#5F6068",
+                      "content": "Product",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "YiNvD",
+                      "name": "Developers",
+                      "fill": "#5F6068",
+                      "content": "Developers",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kLPTP",
+                      "name": "Download",
+                      "fill": "#5F6068",
+                      "content": "Download",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "O05FA9",
+              "name": "Website Content",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": [
+                78,
+                120
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "C86Bg",
+                  "name": "Eyebrow",
+                  "fill": "#4E83FF",
+                  "content": "PENKRA FOR DESKTOP",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 11,
+                  "fontWeight": "600",
+                  "letterSpacing": 1.3
+                },
+                {
+                  "type": "text",
+                  "id": "g8rID3",
+                  "name": "Heading",
+                  "fill": "#17171A",
+                  "content": "Work with every agent\nin one place.",
+                  "lineHeight": 1.1,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 40,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "sIEnK",
+                  "name": "Body",
+                  "fill": "#5F6068",
+                  "content": "A local-first workspace for projects, threads, Apps, and the agents that move work forward.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$font-ui",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YijwP",
+      "x": 1180,
+      "y": 4240,
+      "name": "Browser / Interaction Contract",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 2280,
+      "height": 640,
+      "fill": "$color-background-canvas",
+      "layout": "vertical",
+      "gap": 18,
+      "padding": [
+        48,
+        64
+      ],
+      "children": [
+        {
+          "type": "text",
+          "id": "Nx0Re",
+          "name": "Title",
+          "fill": "$color-text-primary",
+          "content": "Browser interaction contract",
+          "fontFamily": "$font-ui",
+          "fontSize": 24,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "b32tfm",
+          "name": "Description",
+          "fill": "$color-text-secondary",
+          "content": "The Browser App owns visible controls; Penkra owns the isolated page-session service and host placement.",
+          "fontFamily": "$font-ui",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "yP2Pt",
+          "name": "Page tabs Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "XGhy3",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "HU6aW",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kupJT",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Page tabs",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "IT7Se",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "New, close, select, and recover page sessions without changing Penkra App tabs.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M7Rag",
+          "name": "App Bar Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "M9KiEN",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "fA6aj",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Y8bQRK",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "App Bar",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Mr1ko",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "Back, forward, reload or stop, address navigation, find, downloads, and overflow actions.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "nzn2M",
+          "name": "Visible session Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "TOVwI",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "opfqQ",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NJyvn",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Visible session",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "pgSLw",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "The page a person sees is the same session available to authorized agent operations.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ztj7q",
+          "name": "Navigation Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "R4YHK",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "B1lKJu",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "mQ3Nm",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Navigation",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "L8jhVO",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "URL entry, links, redirects, history, reload, and errors remain scoped to the selected Browser page tab.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "DRcgR",
+          "name": "Automation Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "KbVcG",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "I323eh",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "y4SAuI",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Automation",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "P6o6sk",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "Snapshot, scoped evaluation, click, type, scroll, wait, screenshot, and permitted network events target an explicit Browser tab.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "g6nWWz",
+          "name": "Isolation Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "G6DzE",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "t74J2",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uGG0m",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Isolation",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Oy5jT",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "No iframe or renderer webview. The host service owns Electron page contents, partitioning, and bounds.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "qyUl3",
+          "name": "Downloads Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "SCLYy",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "e51yQf",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "nWsk6",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Downloads",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "p6uAt",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "User-requested downloads show progress and completion in the Browser App; file access remains permission-scoped.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Mld0p",
+          "name": "Recovery Rule",
+          "gap": 14,
+          "children": [
+            {
+              "type": "icon",
+              "id": "FZQLx",
+              "name": "Check",
+              "width": 15,
+              "height": 15,
+              "icon": "check",
+              "library": "lucide",
+              "fill": "$color-accent"
+            },
+            {
+              "type": "frame",
+              "id": "Xroq9",
+              "name": "Copy",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NpAr7",
+                  "name": "Title",
+                  "fill": "$color-text-primary",
+                  "content": "Recovery",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "O6eV0",
+                  "name": "Body",
+                  "fill": "$color-text-secondary",
+                  "content": "Loading, offline, load failure, crashed page, and restored page sessions have explicit states.",
+                  "fontFamily": "$font-ui",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
-  "fileToken": "a1908555-880f-42d6-86c1-cd24183d622f"
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "color-background-panel": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#151517",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DCDCE1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2C2C31",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-background-hover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E7E7EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#29292E",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-background-selected": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E5EDFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#25304A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-background-raised": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F1F1F3",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#1B1B1E",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-background-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7F7F8",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#101012",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-background-control": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#EFEFF2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#202024",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-text-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#17171A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#F4F4F5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-text-secondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5F6068",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#A4A4AC",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "color-accent": {
+      "type": "color",
+      "value": "#4E83FF"
+    },
+    "color-error": {
+      "type": "color",
+      "value": "#F26B6B"
+    },
+    "font-ui": {
+      "type": "string",
+      "value": "Inter"
+    }
+  },
+  "fileToken": "fff0ee3f-c101-4fd3-a737-d860a063fe63"
 }
