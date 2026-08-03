@@ -8,6 +8,11 @@ export function launcherApps(apps) {
   return apps.filter((app) => Boolean(app.installed && app.enabled));
 }
 
+export function launcherContextMenuItems(app) {
+  if (!app?.installed || app.id === "com.penkra.apps") return [];
+  return [{ id: "uninstall", label: "Uninstall", destructive: true }];
+}
+
 export function appIconSource(app, registryIconUrl = null) {
   return app.installed?.iconDataUrl ?? registryIconUrl;
 }

@@ -3,6 +3,7 @@ import {
   appIconSource,
   escapeHtml,
   launcherApps,
+  launcherContextMenuItems,
   permissionGrants,
   renderMarkdown,
   shouldShowOffline,
@@ -399,6 +400,28 @@ async function performAppAction(app, kind) {
   }
 }
 
+async function uninstallLauncherApp(app) {
+  const spaceId = state.installations?.currentSpaceId;
+  if (!spaceId || !binding?.uninstall || state.busyAppId || state.busyPermissionKey) return;
+  state.busyAppId = app.id;
+  state.busyKind = "uninstall";
+  state.error = null;
+  render();
+  try {
+    state.installations = await binding.uninstall({
+      appId: app.id,
+      spaceId,
+      retainData: true,
+    });
+  } catch (error) {
+    state.error = errorMessage(error);
+  } finally {
+    state.busyAppId = null;
+    state.busyKind = null;
+    render();
+  }
+}
+
 function grantsFor(app, permissions, existing) {
   return permissionGrants(permissions, existing, Object.fromEntries(permissions.map((permission) => [permission.permission, optionalPermissionSelected(app.id, permission, existing)])));
 }
@@ -507,6 +530,18 @@ root.addEventListener("input", (event) => {
     searchTimer = null;
     void refreshRegistry().then(render);
   }, 250);
+});
+
+root.addEventListener("contextmenu", (event) => {
+  const target = event.target.closest?.("[data-launch]");
+  if (!target) return;
+  const app = allApps().find((entry) => entry.id === target.dataset.launch);
+  const items = launcherContextMenuItems(app);
+  if (!app || !items.length || !globalThis.penkra?.contextMenu?.show) return;
+  event.preventDefault();
+  void globalThis.penkra.contextMenu.show(items).then((action) => {
+    if (action === "uninstall") return uninstallLauncherApp(app);
+  });
 });
 
 globalThis.penkra?.tab?.onNavigate?.(({ route, state: nextState }) => {

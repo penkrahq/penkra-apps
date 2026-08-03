@@ -27,6 +27,11 @@ an uploaded artifact into an installable package prematurely.
 The Open action uses a user-initiated Apps-only host bridge. The host derives the originating Space
 and Thread from the calling renderer; the App supplies only the installed target App ID.
 
+Launcher tiles expose a platform-native right-click menu. Uninstall removes the App from the
+current Space while retaining its App data, so a later reinstall can restore that state. Apps never
+offers self-uninstall, and desktop bootstrap preserves the user's uninstall choice for bundled Apps
+instead of reinstalling them on the next launch.
+
 ## Package layout
 
 - `penkra-app.json` is the validated install manifest.

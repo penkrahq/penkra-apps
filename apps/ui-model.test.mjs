@@ -6,6 +6,7 @@ import {
   appIconSource,
   compareVersions,
   launcherApps,
+  launcherContextMenuItems,
   permissionGrants,
   renderMarkdown,
   shouldShowOffline,
@@ -87,4 +88,16 @@ test("launcher contains only Apps installed and enabled in the current Space", (
   assert.deepEqual(launcherApps([installedEnabled, installedDisabled, registryOnly]), [
     installedEnabled,
   ]);
+});
+
+test("launcher context menus uninstall installed Apps but never Apps itself", () => {
+  assert.deepEqual(
+    launcherContextMenuItems({ id: "com.penkra.explorer", installed: { version: "1.0.0" } }),
+    [{ id: "uninstall", label: "Uninstall", destructive: true }],
+  );
+  assert.deepEqual(
+    launcherContextMenuItems({ id: "com.penkra.apps", installed: { version: "1.0.0" } }),
+    [],
+  );
+  assert.deepEqual(launcherContextMenuItems({ id: "com.penkra.browser", installed: null }), []);
 });
