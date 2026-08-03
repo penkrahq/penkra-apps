@@ -356,15 +356,21 @@ async function performAppAction(app, kind) {
     }
     return;
   }
-  const detail = state.registryDetails.get(app.id);
-  const version = detail?.versions?.[0];
   if (!binding || state.busyAppId || state.busyPermissionKey) return;
-  if (kind !== "enable" && !version) return;
   state.busyAppId = app.id;
   state.busyKind = kind;
   state.error = null;
   render();
   try {
+    let detail = state.registryDetails.get(app.id);
+    if (kind !== "enable" && !detail && app.availability === "registry") {
+      await loadRegistryDetail(app);
+      detail = state.registryDetails.get(app.id);
+    }
+    const version = detail?.versions?.[0];
+    if (kind !== "enable" && !version) {
+      throw new Error(`No installable version is available for ${app.name}.`);
+    }
     if (kind === "enable" && binding.setEnabled) {
       const spaceId = state.installations?.currentSpaceId;
       if (!spaceId) throw new Error("Open Apps beside a Thread to install into its Space.");

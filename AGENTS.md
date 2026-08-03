@@ -22,7 +22,7 @@
 
 ## Repository scope
 
-- `apps` is the active bundled discovery and installation App.
+- `apps` is the required registry-published discovery and installation App.
 - `explorer` is an active first-party App built on the public scoped-file service.
 - `browser` is an active first-party App built on the public scoped-browser-session service.
 - Themes are core Penkra Settings presets, not an App; do not recreate a `themes` package.

@@ -1,6 +1,6 @@
 # Apps
 
-The bundled Penkra App for discovering, inspecting, installing, and restoring Apps.
+The required Penkra-published App for discovering, inspecting, installing, and restoring Apps.
 
 The package slug and user-facing name are **Apps**.
 
@@ -29,7 +29,8 @@ and Thread from the calling renderer; the App supplies only the installed target
 
 Launcher tiles expose a platform-native right-click menu. Uninstall removes the App from the
 current Space while retaining its App data, so a later reinstall can restore that state. Apps never
-offers self-uninstall, and desktop bootstrap preserves the user's uninstall choice for bundled Apps
+does not offer self-uninstall, and Space bootstrap installs it through the same verified registry
+path as every other registry App. Optional default Apps preserve the user's uninstall choice
 instead of reinstalling them on the next launch.
 
 ## Package layout
