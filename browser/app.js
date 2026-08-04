@@ -111,27 +111,6 @@ runtime.browser.onState((next) => { state = next; render(); });
 runtime.tab.handle("pages.open", async (input) => runtime.browser.open(normalizeAddress(input.url)));
 runtime.tab.handle("pages.navigate", async (input) => runtime.browser.navigate({ url: normalizeAddress(input.url), ...(input.pageId ? { pageId: input.pageId } : {}) }));
 runtime.tab.handle("pages.evaluate", async (input) => runtime.browser.evaluate(input));
-runtime.tab.handle("pages.screenshot", async (input) => runtime.browser.capture(input.pageId));
-runtime.tab.handle("pages.snapshot", async (input) => runtime.browser.evaluate({
-  pageId: input.pageId,
-  expression: `(() => ({ title: document.title, url: location.href, text: (document.body?.innerText ?? "").slice(0, 50000), interactive: [...document.querySelectorAll("a,button,input,textarea,select,[role=button]")].slice(0, 500).map((element, index) => ({ index, tag: element.tagName.toLowerCase(), text: (element.innerText || element.getAttribute("aria-label") || element.getAttribute("placeholder") || "").trim().slice(0, 500), id: element.id || null, name: element.getAttribute("name") })) }))()`,
-}));
-runtime.tab.handle("pages.click", async (input) => runtime.browser.evaluate({
-  pageId: input.pageId,
-  expression: `(() => { const element = document.querySelector(${JSON.stringify(input.selector)}); if (!element) throw new Error("Selector did not match an element."); element.click(); return true; })()`,
-}));
-runtime.tab.handle("pages.type", async (input) => runtime.browser.evaluate({
-  pageId: input.pageId,
-  expression: `(() => { const element = document.querySelector(${JSON.stringify(input.selector)}); if (!(element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement)) throw new Error("Selector must match a text control."); const setter = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(element), "value")?.set; setter?.call(element, ${JSON.stringify(input.text)}); element.dispatchEvent(new Event("input", { bubbles: true })); element.dispatchEvent(new Event("change", { bubbles: true })); element.focus(); return true; })()`,
-}));
-runtime.tab.handle("pages.scroll", async (input) => runtime.browser.evaluate({
-  pageId: input.pageId,
-  expression: `(() => { window.scrollBy({ left: ${Number(input.deltaX ?? 0)}, top: ${Number(input.deltaY)}, behavior: "instant" }); return { x: scrollX, y: scrollY }; })()`,
-}));
-runtime.tab.handle("pages.wait", async (input) => runtime.browser.evaluate({
-  pageId: input.pageId,
-  expression: `new Promise((resolve, reject) => { const selector = ${JSON.stringify(input.selector)}; const deadline = Date.now() + ${Number(input.timeoutMs ?? 10000)}; const check = () => { if (document.querySelector(selector)) resolve(true); else if (Date.now() >= deadline) reject(new Error("Timed out waiting for selector.")); else setTimeout(check, 50); }; check(); })`,
-}));
 runtime.tab.onNavigate(async ({ state: navigationState }) => {
   if (navigationState?.url) await runtime.browser.open(normalizeAddress(navigationState.url));
 });

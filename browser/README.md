@@ -12,6 +12,9 @@ Browser is an ordinary App. Navigation, downloads, file handoff, networking, and
 external opening use public web or Penkra permission contracts rather than a private
 first-party Browser API. The public `penkra.browser` service is permission-bound,
 framework-neutral, and available to any reviewed App that declares `browser-session`.
+Agent observation is not implemented by Browser and is not part of that App permission. Penkra's
+trusted, provider-neutral tab observer targets Browser's active hosted page just as it targets an
+ordinary App renderer.
 
 Run the package checks with:
 
