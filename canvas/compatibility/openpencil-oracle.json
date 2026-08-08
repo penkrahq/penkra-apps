@@ -1,0 +1,80 @@
+{
+  "openPencil": {
+    "repository": "https://github.com/open-pencil/open-pencil",
+    "commit": "e6ba419ed199aabfb7899bfb02da412e201b009c"
+  },
+  "documents": [
+    {
+      "label": "OpenPencil public 2.8 button",
+      "sha256": "e5d870352242cd37f5ebe7f1bfa10d94791e7ac3cf2a56a827e5cdb1fb25c35f",
+      "version": "2.8",
+      "sourceNodes": 4,
+      "graphNodes": 6,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Button/Large/Default", "children": 1 }]
+    },
+    {
+      "label": "OpenPencil public 2.8 table",
+      "sha256": "1cab7d61d757977389c9c39c4bb291b298b4e1603faad6c76c45509f16e86035",
+      "version": "2.8",
+      "sourceNodes": 59,
+      "graphNodes": 61,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Step 2 Frame", "children": 1 }]
+    },
+    {
+      "label": "synthetic unknown-content 2.15",
+      "sha256": "6053bb8b7477c55c2da918130bcedce5d7be9585bc1cddd3b93d6399f027151d",
+      "version": "2.15",
+      "sourceNodes": 2,
+      "graphNodes": 4,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Known frame", "children": 1 }]
+    },
+    {
+      "label": "synthetic unknown-properties 2.15",
+      "sha256": "5df8501946b4587f1fc663866b9faaf26f068f61847d8350919652301d180689",
+      "version": "2.15",
+      "sourceNodes": 2,
+      "graphNodes": 4,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Known frame", "children": 1 }]
+    },
+    {
+      "label": "Canvas current Pencil design",
+      "sha256": "ece5117ce01aea79271d19d1ca87573dfa7cb447f4b69b8cdb598b8b6db8f0b8",
+      "version": "2.15",
+      "sourceNodes": 2340,
+      "graphNodes": 2526,
+      "missingSourceIds": [],
+      "pages": [{ "name": "00 — Canvas Design Index", "children": 8 }]
+    },
+    {
+      "label": "Apps current Pencil design",
+      "sha256": "9799d92525dc5883f20318c98051318fcfe91a2ab96ca7b2b2835620dd2f8d64",
+      "version": "2.15",
+      "sourceNodes": 334,
+      "graphNodes": 981,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Components", "children": 10 }]
+    },
+    {
+      "label": "Browser current Pencil design",
+      "sha256": "0fc1c13f95bea5e06211639f3ad6c8dd52044f6b46724c2c43621b1ae58b6385",
+      "version": "2.15",
+      "sourceNodes": 271,
+      "graphNodes": 579,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Components Banner", "children": 16 }]
+    },
+    {
+      "label": "Explorer current Pencil design",
+      "sha256": "31957b0d10100ab6afb1f103f322114986e89414600132bd25a70c39776114dd",
+      "version": "2.15",
+      "sourceNodes": 449,
+      "graphNodes": 985,
+      "missingSourceIds": [],
+      "pages": [{ "name": "Components Banner", "children": 20 }]
+    }
+  ]
+}

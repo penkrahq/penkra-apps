@@ -1,0 +1,26 @@
+{
+  "version": "2.15",
+  "futureDocumentField": {
+    "mustSurvive": true,
+    "nested": [1, { "opaque": "value" }]
+  },
+  "children": [
+    {
+      "id": "known-frame",
+      "type": "frame",
+      "name": "Known frame",
+      "width": 320,
+      "height": 180,
+      "futureNodeField": { "mode": "preserve-verbatim" },
+      "children": [
+        {
+          "id": "future-node",
+          "type": "future_vector_mesh",
+          "name": "Unsupported but valid future node",
+          "controlPoints": [[0, 0], [1, 1]],
+          "futurePaint": { "type": "spectral", "bands": [0.2, 0.8] }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@penkra/canvas-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun scripts/build.mjs",
+    "test": "node --test src/*.test.mjs compatibility/pen-corpus.test.mjs collaboration/pen-yjs-model.test.mjs"
+  },
+  "dependencies": {
+    "@penkra/canvas-collaboration-research": "file:./collaboration",
+    "canvaskit-wasm": "0.40.0",
+    "vue": "3.5.18",
+    "y-indexeddb": "9.0.12",
+    "yjs": "13.6.30"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@penkra/canvas-collaboration-research",
+  "private": true,
+  "type": "module",
+  "exports": "./pen-yjs-model.mjs",
+  "scripts": {
+    "test": "node --test pen-yjs-model.test.mjs"
+  },
+  "peerDependencies": {
+    "yjs": "13.6.30"
+  }
+}

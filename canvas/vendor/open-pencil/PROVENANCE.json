@@ -1,0 +1,17 @@
+{
+  "repository": "https://github.com/open-pencil/open-pencil",
+  "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
+  "engineSha256": "47b9215866a1f6fc1c93f5ce9eb3f0804b53641c26cd272ef0c3d3cca00388d9",
+  "exports": [
+    "computeBounds",
+    "computeAllLayouts",
+    "createEditor",
+    "getCanvasKit",
+    "parsePenFile",
+    "provideEditor",
+    "useCanvas",
+    "useCanvasInput",
+    "useTextEdit"
+  ],
+  "excludedDependency": "expr-eval"
+}

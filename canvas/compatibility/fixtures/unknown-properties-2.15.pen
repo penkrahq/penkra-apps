@@ -1,0 +1,32 @@
+{
+  "version": "2.15",
+  "futureDocumentField": {
+    "mustSurvive": true
+  },
+  "children": [
+    {
+      "id": "known-frame",
+      "type": "frame",
+      "name": "Known frame",
+      "x": 0,
+      "y": 0,
+      "width": 320,
+      "height": 180,
+      "fill": "#ffffff",
+      "futureNodeField": { "mode": "preserve-verbatim" },
+      "children": [
+        {
+          "id": "known-rectangle",
+          "type": "rectangle",
+          "name": "Known rectangle",
+          "x": 24,
+          "y": 24,
+          "width": 96,
+          "height": 64,
+          "fill": "#3366ff",
+          "futurePaint": { "type": "spectral", "bands": [0.2, 0.8] }
+        }
+      ]
+    }
+  ]
+}

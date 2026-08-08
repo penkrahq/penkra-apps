@@ -3,3 +3,6 @@ dist/
 .DS_Store
 *.local
 */design/qa/
+canvas/build/
+canvas/app.js
+canvas/operations.js
