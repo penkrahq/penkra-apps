@@ -4,7 +4,7 @@
   "slug": "browser",
   "name": "Browser",
   "summary": "Browse the web in isolated pages that agents and people can use together.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "compatibility": { "penkra": ">=0.8.0" },
   "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
   "entrypoints": { "app": "app.html", "operations": "operations.html" },
