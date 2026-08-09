@@ -64,6 +64,7 @@ for (const dependency of ["yjs", "y-indexeddb", "lib0", "canvaskit-wasm", "vue"]
   );
 }
 await cp(new URL("licenses/OpenPencil-LICENSE.txt", root), new URL("licenses/OpenPencil-LICENSE.txt", output));
+await cp(new URL("licenses/Inter-OFL.txt", root), new URL("licenses/Inter-OFL.txt", output));
 
 const manifest = new URL("penkra-app.json", root);
 try {

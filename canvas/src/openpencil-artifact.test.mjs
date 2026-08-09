@@ -19,6 +19,17 @@ test("published OpenPencil packages and expr-eval are outside the dependency gra
   assert.doesNotMatch(engine, /(?:from|require\()["']expr-eval/u);
 });
 
+test("redistributed fonts and CanvasKit retain their license notices", async () => {
+  const buildScript = await readFile(new URL("scripts/build.mjs", root), "utf8");
+  const notices = await readFile(new URL("THIRD_PARTY_NOTICES.md", root), "utf8");
+  const interLicense = await readFile(new URL("licenses/Inter-OFL.txt", root), "utf8");
+
+  assert.match(buildScript, /licenses\/Inter-OFL\.txt/u);
+  assert.match(notices, /CanvasKit WASM 0\.40\.0 under the BSD 3-Clause license/u);
+  assert.match(notices, /Inter font files under the SIL Open Font License 1\.1/u);
+  assert.match(interLicense, /SIL OPEN FONT LICENSE Version 1\.1/u);
+});
+
 function matches(source, value) {
   return source.split(value).length - 1;
 }

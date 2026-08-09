@@ -3,13 +3,11 @@
 Canvas is Penkra's Account-scoped collaborative editor for cloud-hosted design
 documents. Its first supported interchange format is `.pen`.
 
-## Design workflow
+## Design authority
 
-1. Use [`DESIGN_SPEC.md`](./DESIGN_SPEC.md) as the detailed design brief.
-2. Build and revise the UI in [`design/canvas.pen`](./design/canvas.pen).
-3. Treat the approved Pencil file as authoritative for UI hierarchy, language,
-   states, and visual composition.
-4. Keep implementation behavior and language reconciled with that design.
+[`design/canvas.pen`](./design/canvas.pen) is the approved and authoritative source for Canvas UI
+hierarchy, language, states, and visual composition. Keep implementation behavior and copy
+reconciled with that file; historical design briefs live only in Git history.
 
 Platform architecture and implementation work remain tracked in the client
 workspace's authoritative `TODO.md`, not in this App directory.
