@@ -1,5 +1,10 @@
 # Penkra Apps
 
+Each App in this repository has an independent manifest version and App Registry release. Penkra
+desktop versions, tags, and GitHub Releases do not version or publish these Apps. The
+`compatibility.penkra` field in each App manifest expresses compatibility only; it does not couple
+the two release tracks.
+
 **First-party Apps built for the Penkra workspace.**
 
 <p align="center">
@@ -8,7 +13,7 @@
 
 Penkra Apps are small, self-contained web applications that run inside Penkra's right panel. Each App gets its own isolated tab and can connect to your agent threads to read, write, and act on your behalf — with explicit permissions you control.
 
-This repository contains the three Apps that ship with Penkra.
+This repository contains the four first-party Apps built for Penkra.
 
 ## The Apps
 
@@ -38,6 +43,13 @@ The Browser uses Penkra's public scoped-browser-session service, so browsing act
 The Explorer App lets you browse, search, preview, and open files on your system. It uses user-mediated web file handles rather than raw filesystem access, so you stay in control of what the App (and any connected agent thread) can see.
 
 You can preview files directly in the panel or open them with the appropriate tool.
+
+### Canvas — Collaborative design editor
+
+Canvas is an Account-scoped collaborative editor for cloud-hosted design documents. It supports
+loss-preserving `.pen` import and export, realtime and offline editing, sharing, and typed agent
+operations through Penkra's public App runtime. Its approved Pencil design, runtime source,
+compatibility corpus, collaboration tests, and package build all live under `canvas/`.
 
 ## How Apps work
 
@@ -87,6 +99,15 @@ penkra-apps/
 │   ├── penkra-app.json
 │   ├── browser-model.mjs
 │   └── design/browser.pen
+├── canvas/
+│   ├── app.html, app.js, styles.css
+│   ├── operations.html, operations.js
+│   ├── penkra-app.json
+│   ├── src/                 # Runtime, API, document, and operation models
+│   ├── compatibility/       # Loss-preservation corpus and differential checks
+│   ├── collaboration/       # Yjs convergence and recovery tests
+│   ├── RESEARCH.md           # Standards and upstream audit
+│   └── design/canvas.pen     # Approved UI/UX authority
 └── explorer/
     ├── app.html, app.js, styles.css
     ├── operations.html, operations.js

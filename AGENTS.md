@@ -11,6 +11,13 @@
 - `TODO.md` at the client workspace root is authoritative for the active SDK and
   platform contract. Do not create a second repository-local product plan.
 
+## Penkra Dev Thread Boundary
+
+- A Penkra (Dev) Thread may be used to drive work on any App, but messages sent to it must read like normal user requests about the desired product behavior.
+- Do not pass platform or harness administration through the Thread. Environment variables, sideload registration, Penkra process management, repository setup, release mechanics, and QA harness preparation are responsibilities of the supervising developer in the owning repository.
+- For agent-driven App QA, give the Thread the user-visible problem or outcome and let its agent discover the code-level work. The supervising developer separately starts the clean host, loads the App under development, observes the live App UI, and checks the result.
+- A Thread agent's claim, source diff, build, or automated test is not live QA. The supervising developer must verify the affected behavior in the running App before treating it as fixed.
+
 ## Design source of truth
 
 - Each App has one authoritative `.pen` file in its own `design/` directory.
@@ -25,7 +32,15 @@
 - `apps` is the required registry-published discovery and installation App.
 - `explorer` is an active first-party App built on the public scoped-file service.
 - `browser` is an active first-party App built on the public scoped-browser-session service.
+- `canvas` is an active first-party App built on the public account-data and App operation services.
 - Themes are core Penkra Settings presets, not an App; do not recreate a `themes` package.
 - Penkra-owned immutable App IDs use the reverse `penkra.com` namespace (`com.penkra.*`).
 - The registry service, SDK implementation, Penkra host, and third-party Apps are out
   of scope for this repository.
+
+## Version authority
+
+- Every App is versioned independently through its own `penkra-app.json` manifest and is published independently through the App Registry.
+- Never infer, bump, tag, publish, or coordinate an App version from a Penkra desktop version or release. A Penkra desktop tag does not release any App in this repository.
+- Never infer or bump the Penkra desktop version from an App change. The App manifest's `compatibility.penkra` range is the only version relationship between an App package and the desktop product.
+- Approval of a desktop release is not approval to change or publish an App version, and approval of one App release is not approval for another App.
