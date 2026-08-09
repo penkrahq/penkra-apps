@@ -1,11 +1,36 @@
 export const MAX_README_BYTES = 2 * 1024 * 1024;
 
+export function clearRegistryCaches({ registryDetails, readmes, iconUrls }) {
+  registryDetails.clear();
+  readmes.clear();
+  iconUrls.clear();
+}
+
 export function shouldShowOffline(registryError, registryCount, installedCount) {
   return Boolean(registryError) && registryCount === 0 && installedCount === 0;
 }
 
 export function launcherApps(apps) {
   return apps.filter((app) => Boolean(app.installed && app.enabled));
+}
+
+export function isSideloadedApp(app) {
+  return app?.installed?.source === "sideload";
+}
+
+export function launcherPermissionReview(app, updates = []) {
+  if (!app?.installed || !app.enabled) return null;
+  const update = updates.find((candidate) => candidate.appId === app.id);
+  if (!update || update.installedVersion !== app.installed.version) return null;
+  return compareVersions(update.availableVersion, app.installed.version) > 0 ? update : null;
+}
+
+export function registryVersionForApp(app, detail, updates = []) {
+  const review = launcherPermissionReview(app, updates);
+  if (review) {
+    return detail?.versions?.find((version) => version.version === review.availableVersion) ?? null;
+  }
+  return detail?.versions?.[0] ?? null;
 }
 
 export function launcherContextMenuItems(app) {

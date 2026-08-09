@@ -19,17 +19,17 @@ Discovery combines validated registry responses with the trusted local installat
 The App presents one launcher, a state-aware search list, and one detail surface with Description,
 Permissions, and Developer tabs. Description renders the complete bounded registry `README.md` as
 sanitized Markdown; raw HTML and unsafe links are never trusted. Install and update use the compact
-stateful action control rather than separate review or progress screens. Browser and Explorer remain
-explicitly planned, unavailable stubs. Registry entries remain non-installable until package
-validation and signature verification are enforced by the trusted installer; the UI does not turn
-an uploaded artifact into an installable package prematurely.
+stateful action control rather than separate review or progress screens. Apps, Explorer, Browser,
+and Canvas are active independently versioned first-party Apps. A registry release becomes
+installable only after the trusted installer verifies its package, signatures, compatibility, and
+current security policy.
 
 The Open action uses a user-initiated Apps-only host bridge. The host derives the originating Space
 and Thread from the calling renderer; the App supplies only the installed target App ID.
 
 Launcher tiles expose a platform-native right-click menu. Uninstall removes the App from the
-current Space while retaining its App data, so a later reinstall can restore that state. Apps never
-does not offer self-uninstall, and Space bootstrap installs it through the same verified registry
+current Space while retaining its App data, so a later reinstall can restore that state. Apps does
+not offer self-uninstall, and Space bootstrap installs it through the same verified registry
 path as every other registry App. Optional default Apps preserve the user's uninstall choice
 instead of reinstalling them on the next launch.
 

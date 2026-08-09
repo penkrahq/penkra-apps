@@ -24,4 +24,11 @@ test("keeps navigation and stateful controls keyboard and screen-reader accessib
   assert.match(app, /role="tab" aria-selected=/);
   assert.match(app, /role="switch" aria-checked=/);
   assert.match(app, /role="alert"/);
+  assert.match(app, /data-review-update=/);
+  assert.match(app, /aria-label="Review permissions for/);
+  assert.match(app, /title="Sideloaded"/);
+  assert.match(app, /— Sideloaded/);
+  assert.match(app, /binding\?\.onState/);
+  assert.match(styles, /background:\s*var\(--apps-text\)/);
+  assert.match(styles, /color:\s*var\(--apps-bg\)/);
 });

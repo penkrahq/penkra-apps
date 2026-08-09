@@ -4,13 +4,29 @@ import test from "node:test";
 import {
   appAction,
   appIconSource,
+  clearRegistryCaches,
   compareVersions,
   launcherApps,
   launcherContextMenuItems,
+  launcherPermissionReview,
+  isSideloadedApp,
   permissionGrants,
+  registryVersionForApp,
   renderMarkdown,
   shouldShowOffline,
 } from "./ui-model.mjs";
+
+test("registry refresh invalidates cached release metadata and artifacts", () => {
+  const registryDetails = new Map([["com.penkra.canvas", { latestVersion: "0.1.0" }]]);
+  const readmes = new Map([["com.penkra.canvas", "old README"]]);
+  const iconUrls = new Map([["com.penkra.canvas", "data:image/svg+xml,old"]]);
+
+  clearRegistryCaches({ registryDetails, readmes, iconUrls });
+
+  assert.equal(registryDetails.size, 0);
+  assert.equal(readmes.size, 0);
+  assert.equal(iconUrls.size, 0);
+});
 
 test("prefers the verified installed-package icon and falls back to registry artwork", () => {
   assert.equal(
@@ -90,6 +106,12 @@ test("launcher contains only Apps installed and enabled in the current Space", (
   ]);
 });
 
+test("launcher derives sideload status only from the trusted installed package source", () => {
+  assert.equal(isSideloadedApp({ installed: { source: "sideload" } }), true);
+  assert.equal(isSideloadedApp({ installed: { source: "registry" } }), false);
+  assert.equal(isSideloadedApp({ source: "sideload", installed: null }), false);
+});
+
 test("launcher context menus uninstall installed Apps but never Apps itself", () => {
   assert.deepEqual(
     launcherContextMenuItems({ id: "com.penkra.explorer", installed: { version: "1.0.0" } }),
@@ -100,4 +122,48 @@ test("launcher context menus uninstall installed Apps but never Apps itself", ()
     [],
   );
   assert.deepEqual(launcherContextMenuItems({ id: "com.penkra.browser", installed: null }), []);
+});
+
+test("launcher permission review follows the trusted compatible-update snapshot", () => {
+  const app = {
+    id: "com.example.canvas",
+    installed: { version: "1.0.0" },
+    enabled: true,
+  };
+  const update = {
+    appId: app.id,
+    installedVersion: "1.0.0",
+    availableVersion: "1.2.0",
+    permissions: ["network-fetch"],
+  };
+  assert.deepEqual(launcherPermissionReview(app, [update]), update);
+  assert.equal(launcherPermissionReview({ ...app, enabled: false }, [update]), null);
+  assert.equal(
+    launcherPermissionReview({ ...app, installed: { version: "1.2.0" } }, [update]),
+    null,
+  );
+  assert.equal(launcherPermissionReview(app, []), null);
+});
+
+test("permission review selects the exact compatible version chosen by the host", () => {
+  const app = {
+    id: "com.example.canvas",
+    installed: { version: "1.0.0" },
+    enabled: true,
+  };
+  const detail = {
+    versions: [
+      { version: "2.0.0", compatibilityRange: ">=9.0.0" },
+      { version: "1.2.0", compatibilityRange: ">=0.8.0" },
+    ],
+  };
+  assert.equal(
+    registryVersionForApp(app, detail, [{
+      appId: app.id,
+      installedVersion: "1.0.0",
+      availableVersion: "1.2.0",
+      permissions: ["network-fetch"],
+    }]).version,
+    "1.2.0",
+  );
 });

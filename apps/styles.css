@@ -40,11 +40,20 @@ h1, h2, h3, h4, h5, h6, p, dl, dd, pre, blockquote { margin: 0; }
 .panel-content { min-height: 0; flex: 1; overflow-y: auto; padding: 24px; scrollbar-color: var(--apps-border) transparent; }
 .launcher-view { display: flex; flex-direction: column; }
 .launcher-grid { display: grid; grid-template-columns: repeat(3, minmax(72px, 116px)); justify-content: center; gap: 26px 12px; }
+.launcher-entry { position: relative; display: grid; min-width: 0; place-items: center; }
 .launcher-item { display: flex; min-width: 0; padding: 0; flex-direction: column; align-items: center; gap: 8px; border: 0; border-radius: 8px; outline: none; background: transparent; color: var(--apps-secondary); cursor: pointer; }
 .launcher-item:hover, .launcher-item:focus-visible { color: var(--apps-text); }
 .launcher-item:focus-visible { outline: 1px solid color-mix(in srgb, var(--apps-accent) 72%, transparent); outline-offset: 5px; }
 .launcher-item:hover .app-icon, .launcher-item:focus-visible .app-icon { filter: brightness(1.1); transform: translateY(-1px); }
 .launcher-item > span:last-child { display: block; width: 100%; overflow: hidden; font-size: 12px; font-weight: 500; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.launcher-review-button { position: absolute; top: -7px; left: calc(50% + 7px); display: grid; width: 24px; height: 24px; padding: 0; place-items: center; border: 0; outline: none; background: transparent; cursor: pointer; }
+.launcher-review-button > span { display: grid; width: 18px; height: 18px; place-items: center; border: 1px solid var(--apps-border); border-radius: 999px; background: var(--apps-text); color: var(--apps-bg); }
+.launcher-review-button:hover > span, .launcher-review-button:focus-visible > span { transform: translateY(-1px); }
+.launcher-review-button:focus-visible > span { outline: 1px solid var(--apps-text); outline-offset: 2px; }
+.launcher-review-button svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.launcher-sideload-badge { position: absolute; top: -7px; left: calc(50% + 7px); display: grid; width: 24px; height: 24px; place-items: center; pointer-events: none; }
+.launcher-sideload-badge > span { display: grid; width: 18px; height: 18px; place-items: center; border: 1px solid var(--apps-bg); border-radius: 999px; background: var(--apps-accent); color: #fff; }
+.launcher-sideload-badge svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 .app-icon { display: grid; flex: none; overflow: hidden; place-items: center; background: var(--app-icon-color, var(--apps-accent)); transition: filter 120ms ease, transform 120ms ease; }
 .app-icon-has-artwork { background: transparent; }

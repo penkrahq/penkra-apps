@@ -1,10 +1,14 @@
 import {
   appAction,
   appIconSource,
+  clearRegistryCaches,
   escapeHtml,
   launcherApps,
   launcherContextMenuItems,
+  launcherPermissionReview,
+  isSideloadedApp,
   permissionGrants,
+  registryVersionForApp,
   renderMarkdown,
   shouldShowOffline,
 } from "./ui-model.mjs";
@@ -17,6 +21,8 @@ const iconPaths = {
   package: '<path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z"></path><path d="m4.5 7.7 7.5 4.2 7.5-4.2M12 12v9"></path>',
   offline: '<path d="m2 2 20 20"></path><path d="M8.5 8.5a5 5 0 0 1 7 0"></path><path d="M5 5a10 10 0 0 1 14 0"></path><path d="M12 18h.01"></path>',
   spinner: '<path d="M21 12a9 9 0 1 1-6.22-8.56"></path>',
+  updateReview: '<path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path>',
+  sideloaded: '<path d="m8 9-4 3 4 3"></path><path d="m16 9 4 3-4 3"></path><path d="m14 5-4 14"></path>',
 };
 
 const state = {
@@ -158,8 +164,21 @@ function launcherView() {
   const apps = launcherApps(allApps()).slice(0, 9);
   if (!apps.length && state.registryLoading) return loadingView("Loading Apps…");
   return `<main class="panel-content launcher-view">
-    ${apps.length ? `<section class="launcher-grid" aria-label="Apps">${apps.map((app) => `<button class="launcher-item" data-launch="${escapeHtml(app.id)}">${appIcon(app, "launcher")}<span>${escapeHtml(app.name)}</span></button>`).join("")}</section>` : emptyView("No Apps available", "Refresh when you are connected to load the catalog.")}
+    ${apps.length ? `<section class="launcher-grid" aria-label="Apps">${apps.map(launcherItem).join("")}</section>` : emptyView("No Apps available", "Refresh when you are connected to load the catalog.")}
   </main>`;
+}
+
+function launcherItem(app) {
+  const review = launcherPermissionReview(app, state.installations?.permissionReviewUpdates);
+  const sideloaded = isSideloadedApp(app);
+  const reviewButton = review
+    ? `<button class="launcher-review-button" data-review-update="${escapeHtml(app.id)}" aria-label="Review permissions for ${escapeHtml(app.name)} update"><span>${icon("updateReview")}</span></button>`
+    : "";
+  const sideloadBadge = sideloaded
+    ? `<span class="launcher-sideload-badge" title="Sideloaded" aria-hidden="true"><span>${icon("sideloaded")}</span></span>`
+    : "";
+  const accessibleName = sideloaded ? `${app.name} — Sideloaded` : app.name;
+  return `<div class="launcher-entry"><button class="launcher-item" data-launch="${escapeHtml(app.id)}" aria-label="${escapeHtml(accessibleName)}">${appIcon(app, "launcher")}<span>${escapeHtml(app.name)}</span></button>${reviewButton}${sideloadBadge}</div>`;
 }
 
 function searchView() {
@@ -184,8 +203,14 @@ function resultRow(app) {
 
 function detailView(app) {
   const detail = state.registryDetails.get(app.id);
-  const version = detail?.versions?.[0];
-  const action = appAction(app, app.installed, state.busyAppId, state.busyKind, app.enabled);
+  const version = registryVersionForApp(app, detail, state.installations?.permissionReviewUpdates);
+  const action = appAction(
+    version ? { ...app, latestVersion: version.version } : app,
+    app.installed,
+    state.busyAppId,
+    state.busyKind,
+    app.enabled,
+  );
   return `<main class="panel-content detail-view">
     <section class="detail-head">
       ${appIcon(app, "detail")}
@@ -280,6 +305,7 @@ function render() {
 async function refresh() {
   state.error = null;
   if (binding?.getState) state.installations = await binding.getState();
+  clearRegistryCaches(state);
   await refreshRegistry();
   const app = selectedApp();
   if (state.route === "detail" && app?.availability === "registry" && !state.registryDetails.has(app.id)) {
@@ -367,7 +393,7 @@ async function performAppAction(app, kind) {
       await loadRegistryDetail(app);
       detail = state.registryDetails.get(app.id);
     }
-    const version = detail?.versions?.[0];
+    const version = registryVersionForApp(app, detail, state.installations?.permissionReviewUpdates);
     if (kind !== "enable" && !version) {
       throw new Error(`No installable version is available for ${app.name}.`);
     }
@@ -493,6 +519,12 @@ root.addEventListener("click", (event) => {
   if (target.dataset.action === "back") return moveHistory(-1);
   if (target.dataset.action === "forward") return moveHistory(1);
   if (target.dataset.action === "refresh") return void refresh();
+  if (target.dataset.reviewUpdate) {
+    const app = allApps().find((entry) => entry.id === target.dataset.reviewUpdate);
+    if (!app) return;
+    navigate({ route: "detail", appId: app.id, detailTab: "permissions" });
+    return void loadRegistryDetail(app);
+  }
   if (target.dataset.openDetail) {
     const app = allApps().find((entry) => entry.id === target.dataset.openDetail);
     if (!app) return;
@@ -560,6 +592,12 @@ globalThis.penkra?.tab?.onNavigate?.(({ route, state: nextState }) => {
   });
   const app = selectedApp();
   if (app && nextRoute === "detail") void loadRegistryDetail(app);
+});
+
+binding?.onState?.((snapshot) => {
+  if (!snapshot || typeof snapshot !== "object") return;
+  state.installations = snapshot;
+  render();
 });
 
 void refresh().catch((error) => {
