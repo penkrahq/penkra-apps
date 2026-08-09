@@ -2,6 +2,7 @@ import {
   escapeHtml,
   extensionOf,
   joinRelative,
+  looksLikeText,
   matchesQuery,
   parentRelative,
   previewKind,
@@ -53,6 +54,7 @@ const root = document.querySelector("#app");
 let unwatch = null;
 let objectUrl = null;
 let searchSequence = 0;
+let activationSequence = 0;
 let refreshTimer = null;
 
 function icon(name, className = "") {
@@ -77,6 +79,7 @@ function pushHistory(path) {
 
 async function activateHandle(handle) {
   if (!handle) return;
+  const sequence = ++activationSequence;
   unwatch?.();
   unwatch = null;
   cleanupObjectUrl();
@@ -94,19 +97,30 @@ async function activateHandle(handle) {
   });
   render();
   try {
-    state.root = await runtime.files.stat(handle.id);
+    const nextRoot = await runtime.files.stat(handle.id);
+    if (sequence !== activationSequence) return;
+    state.root = nextRoot;
     if (state.root.kind === "directory") {
       state.expanded.add("");
       await loadDirectory("");
-      unwatch = await runtime.files.watch(handle.id, undefined, () => scheduleRefresh());
+      if (sequence !== activationSequence) return;
+      const nextUnwatch = await runtime.files.watch(handle.id, undefined, () => scheduleRefresh());
+      if (sequence !== activationSequence) {
+        nextUnwatch?.();
+        return;
+      }
+      unwatch = nextUnwatch;
     } else {
       state.selected = state.root;
       pushHistory("");
       await loadPreview(state.root);
     }
   } catch (error) {
+    if (sequence !== activationSequence) return;
+    console.error("[explorer] Could not activate scoped resource.", error);
     state.error = friendlyError(error, "Explorer could not open this location.");
   } finally {
+    if (sequence !== activationSequence) return;
     state.loading = false;
     render();
   }
@@ -126,8 +140,11 @@ async function refreshAll() {
 }
 
 async function loadDirectory(path, refresh = false) {
-  if (!state.handle || (!refresh && state.directoryCache.has(path))) return;
-  const entries = sortEntries(await runtime.files.listDirectory(state.handle.id, path || undefined));
+  const handle = state.handle;
+  const sequence = activationSequence;
+  if (!handle || (!refresh && state.directoryCache.has(path))) return;
+  const entries = sortEntries(await runtime.files.listDirectory(handle.id, path || undefined));
+  if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
   state.directoryCache.set(path, entries);
 }
 
@@ -165,29 +182,46 @@ async function moveHistory(delta) {
 }
 
 async function loadPreview(entry) {
-  cleanupObjectUrl();
-  const kind = previewKind(entry);
+  const handle = state.handle;
+  const sequence = activationSequence;
+  if (!handle) return;
+  let kind = previewKind(entry);
+  if (kind === "unsupported") {
+    const sample = await runtime.files.readBinary({
+      handleId: handle.id,
+      relativePath: entry.relativePath || undefined,
+      offset: 0,
+      length: 64 * 1024,
+    });
+    if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
+    if (looksLikeText(sample.bytes, sample.bytes.byteLength < sample.totalBytes)) kind = "text";
+  }
   if (kind === "text" || kind === "markdown") {
-    const source = await runtime.files.readText(state.handle.id, entry.relativePath || undefined);
+    const source = await runtime.files.readText(handle.id, entry.relativePath || undefined);
+    if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
+    cleanupObjectUrl();
     state.preview = { kind, source };
     return;
   }
   if (kind === "image" || kind === "pdf") {
-    const bytes = await readAllBinary(entry.relativePath);
+    const bytes = await readAllBinary(handle, entry.relativePath);
+    if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
+    cleanupObjectUrl();
     const mime = mimeFor(entry.name);
     objectUrl = URL.createObjectURL(new Blob([bytes], { type: mime }));
     state.preview = { kind, url: objectUrl };
     return;
   }
+  cleanupObjectUrl();
   state.preview = { kind: "unsupported" };
 }
 
-async function readAllBinary(relativePath) {
+async function readAllBinary(handle, relativePath) {
   const chunks = [];
   let offset = 0;
   let total = 0;
   do {
-    const result = await runtime.files.readBinary({ handleId: state.handle.id, relativePath, offset });
+    const result = await runtime.files.readBinary({ handleId: handle.id, relativePath, offset });
     chunks.push(result.bytes);
     offset += result.bytes.byteLength;
     total = result.totalBytes;
@@ -339,7 +373,11 @@ function render() {
 
 function friendlyError(error, fallback) {
   const message = error instanceof Error ? error.message : String(error ?? "");
-  if (/revok|handle|access|permission/i.test(message)) return "Choose this folder again to restore access.";
+  if (/revok|handle|access|permission/i.test(message)) {
+    return state.handle?.kind === "file"
+      ? "Open this file again to restore access."
+      : "Choose this folder again to restore access.";
+  }
   return message || fallback;
 }
 
@@ -400,13 +438,16 @@ root.addEventListener("submit", (event) => {
 });
 
 runtime.tab.onNavigate(async ({ route, state: navigationState }) => {
-  if (route !== "/open" || !navigationState?.handleId) return;
+  if (route !== "/open" || !navigationState?.id) return;
   await activateHandle(navigationState);
 });
 
 async function bootstrap() {
+  const sequence = activationSequence;
   try {
-    state.handles = await runtime.files.list();
+    const handles = await runtime.files.list();
+    if (sequence !== activationSequence) return;
+    state.handles = handles;
     const initial = state.handles.find((handle) => handle.kind === "directory") ?? state.handles[0];
     if (initial) await activateHandle(initial);
     else { state.loading = false; render(); }

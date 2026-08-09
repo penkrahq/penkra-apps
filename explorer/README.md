@@ -12,8 +12,9 @@ Explorer owns its complete web surface, including whether each page renders the
 standard App Bar. It uses user-mediated web file and directory handles, not a private
 raw filesystem API.
 
-Host paths never enter the renderer; durable access is represented by Space- and App-scoped
-opaque handles. The authoritative design is [`design/explorer.pen`](./design/explorer.pen).
+Host paths never enter the renderer; durable access is represented by device-local, App-scoped
+opaque handles that work across the App's installed Spaces and tabs. The authoritative design is
+[`design/explorer.pen`](./design/explorer.pen).
 
 ## Local verification
 

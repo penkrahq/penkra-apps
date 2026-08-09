@@ -18,6 +18,17 @@ export function previewKind(entry) {
   return "unsupported";
 }
 
+export function looksLikeText(bytes, truncated = false) {
+  if (!(bytes instanceof Uint8Array)) return false;
+  if (bytes.includes(0)) return false;
+  try {
+    new TextDecoder("utf-8", { fatal: true }).decode(bytes, { stream: truncated });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function joinRelative(...parts) {
   return parts.flatMap((part) => String(part ?? "").split(/[\\/]+/)).filter((part) => part && part !== ".").join("/");
 }

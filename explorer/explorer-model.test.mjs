@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { escapeHtml, joinRelative, matchesQuery, parentRelative, previewKind, renderMarkdown, sortEntries } from "./explorer-model.mjs";
+import { escapeHtml, joinRelative, looksLikeText, matchesQuery, parentRelative, previewKind, renderMarkdown, sortEntries } from "./explorer-model.mjs";
 
 test("normalizes scoped relative paths without inventing an absolute path", () => {
   assert.equal(joinRelative("docs/", "/guides", "intro.md"), "docs/guides/intro.md");
@@ -16,7 +16,16 @@ test("classifies supported preview surfaces", () => {
   assert.equal(previewKind({ kind: "file", name: "README.md" }), "markdown");
   assert.equal(previewKind({ kind: "file", name: "diagram.webp" }), "image");
   assert.equal(previewKind({ kind: "file", name: "brief.pdf" }), "pdf");
+  assert.equal(previewKind({ kind: "file", name: ".env" }), "unsupported");
+  assert.equal(previewKind({ kind: "file", name: "Dockerfile" }), "unsupported");
   assert.equal(previewKind({ kind: "file", name: "archive.pkg" }), "unsupported");
+});
+
+test("detects extensionless UTF-8 text without treating binary data as source", () => {
+  assert.equal(looksLikeText(new TextEncoder().encode("hello\nworld\n")), true);
+  assert.equal(looksLikeText(new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0, 0xff])), false);
+  assert.equal(looksLikeText(new Uint8Array([0xc3, 0x28])), false);
+  assert.equal(looksLikeText(new Uint8Array([0x61, 0xe2]), true), true);
 });
 
 test("fuzzy search considers both file name and relative path", () => {
