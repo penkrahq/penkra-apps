@@ -496,8 +496,9 @@ async function toggleOptionalPermission(app, permission, nextSelected) {
 function permissionTitle(value) {
   const known = {
     "network-fetch": "Connect to the internet",
-    "raw-socket": "Open network sockets",
-    "process-spawn": "Run approved processes",
+    "browser-session": "Host isolated browser pages",
+    "simulator-session": "Run simulated devices",
+    "account-data": "Use this App's Penkra Account data",
   };
   if (known[value]) return known[value];
   return String(value).split("-").map((part) => part ? `${part[0].toUpperCase()}${part.slice(1)}` : "").join(" ");

@@ -62,13 +62,13 @@ test("compares stable and prerelease semantic versions", () => {
 test("required permissions stay granted while optional selections remain explicit", () => {
   const permissions = [
     { permission: "network-fetch", required: true },
-    { permission: "raw-socket", required: false },
-    { permission: "process-spawn", required: false },
+    { permission: "browser-session", required: false },
+    { permission: "simulator-session", required: false },
   ];
-  assert.deepEqual(permissionGrants(permissions, { "raw-socket": "granted" }, { "process-spawn": false }), {
+  assert.deepEqual(permissionGrants(permissions, { "browser-session": "granted" }, { "simulator-session": false }), {
     "network-fetch": "granted",
-    "raw-socket": "granted",
-    "process-spawn": "denied",
+    "browser-session": "granted",
+    "simulator-session": "denied",
   });
 });
 
