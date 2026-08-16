@@ -1,7 +1,6 @@
 import {
   escapeHtml,
   extensionOf,
-  joinRelative,
   looksLikeText,
   matchesQuery,
   parentRelative,
@@ -9,9 +8,22 @@ import {
   renderMarkdown,
   sortEntries,
 } from "./explorer-model.mjs";
+import {
+  chooseExplorerRoot,
+  createDirectory,
+  forgetExplorerRoot,
+  listDirectory,
+  readEntry,
+  rememberExplorerRoot,
+  restoreExplorerRoot,
+  statEntry,
+  writeTextEntry,
+} from "./explorer-files.mjs";
 
 const runtime = globalThis.penkra;
-if (!runtime?.files || !runtime?.tab) throw new Error("Explorer requires the Penkra App runtime.");
+if (!runtime?.tab || !globalThis.showDirectoryPicker) {
+  throw new Error("Explorer requires the Penkra App runtime and File System Access API.");
+}
 
 const icons = {
   back: '<path d="m15 18-6-6 6-6"/>',
@@ -31,7 +43,6 @@ const icons = {
 };
 
 const state = {
-  handles: [],
   handle: null,
   root: null,
   directoryCache: new Map(),
@@ -51,11 +62,9 @@ const state = {
 };
 
 const root = document.querySelector("#app");
-let unwatch = null;
 let objectUrl = null;
 let searchSequence = 0;
 let activationSequence = 0;
-let refreshTimer = null;
 
 function icon(name, className = "") {
   return `<svg class="${className}" aria-hidden="true" viewBox="0 0 24 24">${icons[name]}</svg>`;
@@ -80,8 +89,6 @@ function pushHistory(path) {
 async function activateHandle(handle) {
   if (!handle) return;
   const sequence = ++activationSequence;
-  unwatch?.();
-  unwatch = null;
   cleanupObjectUrl();
   Object.assign(state, {
     handle,
@@ -97,19 +104,12 @@ async function activateHandle(handle) {
   });
   render();
   try {
-    const nextRoot = await runtime.files.stat(handle.id);
+    const nextRoot = await statEntry(handle);
     if (sequence !== activationSequence) return;
     state.root = nextRoot;
     if (state.root.kind === "directory") {
       state.expanded.add("");
       await loadDirectory("");
-      if (sequence !== activationSequence) return;
-      const nextUnwatch = await runtime.files.watch(handle.id, undefined, () => scheduleRefresh());
-      if (sequence !== activationSequence) {
-        nextUnwatch?.();
-        return;
-      }
-      unwatch = nextUnwatch;
     } else {
       state.selected = state.root;
       pushHistory("");
@@ -126,11 +126,6 @@ async function activateHandle(handle) {
   }
 }
 
-function scheduleRefresh() {
-  clearTimeout(refreshTimer);
-  refreshTimer = setTimeout(() => void refreshAll(), 120);
-}
-
 async function refreshAll() {
   if (!state.handle || state.root?.kind !== "directory") return;
   const paths = [...state.directoryCache.keys()];
@@ -143,8 +138,8 @@ async function loadDirectory(path, refresh = false) {
   const handle = state.handle;
   const sequence = activationSequence;
   if (!handle || (!refresh && state.directoryCache.has(path))) return;
-  const entries = sortEntries(await runtime.files.listDirectory(handle.id, path || undefined));
-  if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
+  const entries = sortEntries(await listDirectory(handle, path));
+  if (sequence !== activationSequence || handle !== state.handle) return;
   state.directoryCache.set(path, entries);
 }
 
@@ -166,7 +161,7 @@ async function selectEntry(entry, recordHistory = true) {
 async function selectPath(path, recordHistory = false) {
   if (!state.handle) return;
   try {
-    const entry = await runtime.files.stat(state.handle.id, path || undefined);
+    const entry = await statEntry(state.handle, path);
     await selectEntry(entry, recordHistory);
   } catch (error) {
     state.error = friendlyError(error, "This item is no longer available.");
@@ -187,25 +182,23 @@ async function loadPreview(entry) {
   if (!handle) return;
   let kind = previewKind(entry);
   if (kind === "unsupported") {
-    const sample = await runtime.files.readBinary({
-      handleId: handle.id,
-      relativePath: entry.relativePath || undefined,
-      offset: 0,
-      length: 64 * 1024,
-    });
-    if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
-    if (looksLikeText(sample.bytes, sample.bytes.byteLength < sample.totalBytes)) kind = "text";
+    const file = await readEntry(handle, entry.relativePath);
+    const bytes = new Uint8Array(await file.slice(0, 64 * 1024).arrayBuffer());
+    if (sequence !== activationSequence || handle !== state.handle) return;
+    if (looksLikeText(bytes, bytes.byteLength < file.size)) kind = "text";
   }
   if (kind === "text" || kind === "markdown") {
-    const source = await runtime.files.readText(handle.id, entry.relativePath || undefined);
-    if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
+    const source = await (await readEntry(handle, entry.relativePath)).text();
+    if (sequence !== activationSequence || handle !== state.handle) return;
     cleanupObjectUrl();
     state.preview = { kind, source };
     return;
   }
   if (kind === "image" || kind === "pdf") {
-    const bytes = await readAllBinary(handle, entry.relativePath);
-    if (sequence !== activationSequence || handle.id !== state.handle?.id) return;
+    const file = await readEntry(handle, entry.relativePath);
+    if (file.size > 64 * 1024 * 1024) throw new Error("Preview exceeds Explorer's 64 MB limit.");
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (sequence !== activationSequence || handle !== state.handle) return;
     cleanupObjectUrl();
     const mime = mimeFor(entry.name);
     objectUrl = URL.createObjectURL(new Blob([bytes], { type: mime }));
@@ -214,27 +207,6 @@ async function loadPreview(entry) {
   }
   cleanupObjectUrl();
   state.preview = { kind: "unsupported" };
-}
-
-async function readAllBinary(handle, relativePath) {
-  const chunks = [];
-  let offset = 0;
-  let total = 0;
-  do {
-    const result = await runtime.files.readBinary({ handleId: handle.id, relativePath, offset });
-    chunks.push(result.bytes);
-    offset += result.bytes.byteLength;
-    total = result.totalBytes;
-    if (offset > 64 * 1024 * 1024) throw new Error("Preview exceeds Explorer's 64 MB limit.");
-    if (result.complete) break;
-  } while (offset < total);
-  const merged = new Uint8Array(offset);
-  let cursor = 0;
-  for (const chunk of chunks) {
-    merged.set(chunk, cursor);
-    cursor += chunk.byteLength;
-  }
-  return merged;
 }
 
 function mimeFor(name) {
@@ -346,7 +318,7 @@ function previewHeader() {
   const markdown = state.preview?.kind === "markdown";
   return `<header class="preview-header"><div class="file-path">${escapeHtml(state.selected.relativePath || state.selected.name)}</div>
     <div class="preview-actions">${markdown ? `<div class="view-switch"><button data-mode="source" class="${state.markdownMode === "source" ? "is-active" : ""}">Source</button><button data-mode="preview" class="${state.markdownMode === "preview" ? "is-active" : ""}">Preview</button></div>` : ""}
-    <button class="text-button" data-action="open-system" ${runtime.open ? "" : "disabled"}>Open With</button></div></header>`;
+    </div></header>`;
 }
 
 function previewBody() {
@@ -382,9 +354,9 @@ function friendlyError(error, fallback) {
 }
 
 async function chooseFolder() {
-  const handle = await runtime.files.pick("directory");
+  const handle = await chooseExplorerRoot();
   if (!handle) return;
-  state.handles = await runtime.files.list();
+  await rememberExplorerRoot(handle);
   await activateHandle(handle);
 }
 
@@ -392,7 +364,7 @@ async function createFolder(form) {
   const name = String(new FormData(form).get("name") ?? "").trim();
   if (!name || name.includes("/") || name.includes("\\")) return;
   const base = state.selected?.kind === "directory" ? state.selected.relativePath : parentRelative(currentPath());
-  await runtime.files.createDirectory(state.handle.id, joinRelative(base, name));
+  await createDirectory(state.handle, base, name);
   state.newFolder = false;
   await loadDirectory(base, true);
   render();
@@ -410,12 +382,11 @@ root.addEventListener("click", (event) => {
   if (action === "cancel-new-folder") { state.newFolder = false; render(); }
   if (action === "menu") { state.menuOpen = !state.menuOpen; render(); }
   if (action === "refresh") { state.menuOpen = false; void refreshAll(); }
-  if (action === "forget" && state.handle) void runtime.files.revoke(state.handle.id).then(async () => { state.handles = await runtime.files.list(); const next = state.handles.find((handle) => handle.kind === "directory") ?? null; if (next) await activateHandle(next); else { state.handle = null; state.root = null; state.selected = null; render(); } });
+  if (action === "forget" && state.handle) void forgetExplorerRoot().then(() => { state.handle = null; state.root = null; state.selected = null; render(); });
   if (action === "save" && state.selected) {
     const source = root.querySelector("[data-source]")?.value ?? "";
-    void runtime.files.writeText(state.handle.id, source, state.selected.relativePath || undefined).then(() => { state.preview = { ...state.preview, source }; render(); });
+    void writeTextEntry(state.handle, state.selected.relativePath, source).then(() => { state.preview = { ...state.preview, source }; render(); });
   }
-  if (action === "open-system" && state.selected && runtime.open) void runtime.open({ handleId: state.handle.id, relativePath: state.selected.relativePath, with: "system" });
   if (button.dataset.mode) { state.markdownMode = button.dataset.mode; render(); }
   if (button.dataset.path !== undefined) {
     const path = button.dataset.path;
@@ -437,18 +408,11 @@ root.addEventListener("submit", (event) => {
   void createFolder(event.target);
 });
 
-runtime.tab.onNavigate(async ({ route, state: navigationState }) => {
-  if (route !== "/open" || !navigationState?.id) return;
-  await activateHandle(navigationState);
-});
-
 async function bootstrap() {
   const sequence = activationSequence;
   try {
-    const handles = await runtime.files.list();
+    const initial = await restoreExplorerRoot();
     if (sequence !== activationSequence) return;
-    state.handles = handles;
-    const initial = state.handles.find((handle) => handle.kind === "directory") ?? state.handles[0];
     if (initial) await activateHandle(initial);
     else { state.loading = false; render(); }
   } catch (error) {

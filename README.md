@@ -58,8 +58,12 @@ Every App is an independent web application with its own source, manifest, tests
 Key concepts:
 
 - **Manifests** (`penkra-app.json`) declare what the App needs — its ID, name, permissions, and entry points
-- **Scoped services** give Apps access to specific capabilities (browser sessions, file handles) without broad system access
-- **Permissions** are explicit and user-controlled — Apps cannot access capabilities they haven't been granted
+- **Scoped services** give Apps explicit access to hosted capabilities such as account data,
+  browser sessions, and simulators without broad system access
+- **Native file pickers** use the browser-standard File System Access API; the user's selection is
+  the authorization boundary, with no separate Penkra filesystem vocabulary
+- **Permissions** are explicit and user-controlled — Apps cannot access host capabilities they
+  haven't been granted
 - **Isolation** means one App cannot see or interfere with another App's state
 
 Penkra owns the trusted panel tab strip. Each App owns its complete web surface and may render the standard App Bar on any page using the public specification.
