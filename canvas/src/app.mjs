@@ -4,6 +4,11 @@ import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
 import { analyzeOpenPencilCompatibility, isOpenPencilEditableNode } from "./openpencil-engine.mjs";
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
+import {
+  choosePenDocument,
+  readDroppedPenDocument,
+  savePenDocument,
+} from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
 import {
   ACCESS_REMOVED_HEADING,
@@ -53,6 +58,7 @@ const state = {
   loading: true,
   error: null,
   document: null,
+  assets: new Map(),
   model: null,
   selectedId: null,
   sync: "saved",
@@ -215,27 +221,22 @@ async function createBlankDocument(title = "Untitled") {
 }
 
 async function importFromHandle() {
-  const handle = await runtime.files.pick("file");
-  if (!handle) return;
-  const text = await runtime.files.readText(handle.id);
-  await importDocument(text, handle.name.replace(/\.pen$/iu, ""));
+  const imported = await choosePenDocument();
+  if (!imported) return;
+  await importDocument(imported.source, imported.fallbackTitle, imported.assets);
 }
 
-async function importDocument(text, fallbackTitle = "Imported design") {
-  let source;
-  try {
-    source = JSON.parse(text);
-  } catch {
-    throw new Error("This file is not valid JSON and could not be imported as a .pen document.");
-  }
-  if (!source || typeof source !== "object" || !Array.isArray(source.children)) {
-    throw new Error("This file does not contain a supported .pen document structure.");
-  }
+async function importDocument(source, fallbackTitle = "Imported design", assets = []) {
   const model = createDocumentModel(source);
   const title = typeof source.name === "string" && source.name.trim() ? source.name : fallbackTitle;
+  let document = null;
   try {
-    const document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
+    document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
+    for (const asset of assets) await api.uploadAsset(document.id, asset);
     await navigateToDocument(document.id);
+  } catch (error) {
+    if (document) await api.deleteDocument(document.id).catch(() => undefined);
+    throw error;
   } finally {
     model.doc.destroy();
   }
@@ -253,7 +254,14 @@ async function openDocument(documentId) {
   render();
   try {
     const payload = await api.getDocument(documentId);
+    const assets = await Promise.all(
+      (payload.assets ?? []).map(async (asset) => [
+        asset.path,
+        { ...asset, bytes: await api.readAsset(documentId, asset) },
+      ]),
+    );
     state.document = payload;
+    state.assets = new Map(assets);
     state.accessRemoved = false;
     state.model = restoreDocumentModel(payload);
     const serverStateVector = Y.encodeStateVector(state.model.doc);
@@ -291,7 +299,7 @@ async function openDocument(documentId) {
     state.unsubscribe = await api.subscribe(
       documentId,
       (event) => {
-        if (event.event === "canvas:update" && event.payload?.update) {
+        if (event.event === "project:update" && event.payload?.update) {
           state.lastSequence = Math.max(state.lastSequence, Number(event.payload.sequence ?? 0));
           applyRemoteUpdate(state.model, event.payload.update);
           state.engineDocumentDirty = true;
@@ -327,6 +335,7 @@ function closeDocument() {
   state.unsubscribe = null;
   if (state.model && state.updateListener) state.model.doc.off("update", state.updateListener);
   state.updateListener = null;
+  state.assets = new Map();
   state.persistence?.destroy();
   state.undo?.destroy();
   state.model?.doc.destroy();
@@ -550,7 +559,7 @@ function renderEditor() {
     return `<main class="shell empty"><div>${icon("file")}<h2>${ACCESS_REMOVED_HEADING}</h2><p>${ACCESS_REMOVED_MESSAGE}</p><div class="library-actions"><button class="button primary" data-action="back">Back to files</button></div></div></main>${renderToast()}`;
   }
   const nodes = listNodes(state.model);
-  state.compatibilityIssues = analyzeOpenPencilCompatibility(materialize(state.model));
+  state.compatibilityIssues = analyzeOpenPencilCompatibility(materialize(state.model), state.assets);
   const selected = nodes.find(({ node }) => node.id === state.selectedId)?.node ?? null;
   const unsupported = state.compatibilityIssues;
   const visiblePresence = visiblePresenceCount(state.realtimeConnection, state.presence);
@@ -592,6 +601,7 @@ function mountEditorSurface() {
   const documentId = state.document.id;
   try {
     const surface = mountOpenPencilSurface(host, materialize(state.model), {
+      assets: state.assets,
       selectedId: state.selectedId,
       viewport: state.engineViewport,
       getViewportInsets: () => visibleViewportInsets(host),
@@ -725,9 +735,11 @@ function bindLibrary() {
   dropTarget?.addEventListener("dragover", (event) => { event.preventDefault(); });
   dropTarget?.addEventListener("drop", (event) => {
     event.preventDefault();
-    const file = event.dataTransfer?.files?.[0];
-    if (!file) return;
-    void act(async () => importDocument(await file.text(), file.name.replace(/\.pen$/iu, "")));
+    void act(async () => {
+      const imported = await readDroppedPenDocument(event.dataTransfer);
+      if (!imported) return;
+      await importDocument(imported.source, imported.fallbackTitle, imported.assets);
+    });
   });
 }
 
@@ -1111,17 +1123,11 @@ async function downloadDocument() {
   if (!state.model) return;
   assertExportAllowed(state.accessRemoved);
   await revalidateExportAccess();
-  const directory = await runtime.files.pick("directory");
-  if (!directory) return;
   assertExportAllowed(state.accessRemoved);
   await revalidateExportAccess();
   assertExportAllowed(state.accessRemoved);
   const filename = safeDocumentName(state.document.title);
-  await runtime.files.writeText(
-    directory.id,
-    JSON.stringify(materialize(state.model), null, 2),
-    filename,
-  );
+  if (!(await savePenDocument(materialize(state.model), filename))) return;
   state.dialog = null;
   setToast(`Downloaded ${filename}.`);
   render();

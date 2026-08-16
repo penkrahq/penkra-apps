@@ -11,6 +11,7 @@
   --tertiary: var(--penkra-color-text-tertiary, light-dark(#8b8b8b, #777));
   --border: var(--penkra-color-border, light-dark(#dedede, #333));
   --accent: var(--penkra-color-accent, #4d7cff);
+  --canvas-background: var(--penkra-color-background, light-dark(#f7f7f8, #101012));
   --danger: light-dark(#b42318, #ff8a80);
   background: var(--bg);
   color: var(--text);
@@ -97,8 +98,8 @@ h1, h2, h3, p { margin: 0; }
 .layer-row.selected { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text); }
 .layer-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .layer-type { width: 15px; color: var(--tertiary); font-size: 10px; text-align: center; }
-.viewport { position: relative; min-width: 0; min-height: 0; overflow: hidden; overscroll-behavior: none; touch-action: none; background-color: light-dark(#e5e5e5, #202020); }
-.openpencil-host { position: absolute; inset: 0; overflow: hidden; }
+.viewport { position: relative; min-width: 0; min-height: 0; overflow: hidden; overscroll-behavior: none; touch-action: none; background-color: var(--canvas-background); }
+.openpencil-host { position: absolute; inset: 0; overflow: hidden; background-color: var(--canvas-background); transition: background-color 1ms linear; }
 .openpencil-surface { width: 100%; height: 100%; display: block; outline: none; }
 .openpencil-surface:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .engine-loading, .engine-error { position: absolute; z-index: 1; inset: 0; display: grid; place-content: center; gap: 6px; color: var(--secondary); font-size: 12px; text-align: center; }

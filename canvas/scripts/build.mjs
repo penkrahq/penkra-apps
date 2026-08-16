@@ -57,7 +57,7 @@ await cp(
 for (const font of ["Inter-Regular.ttf", "Inter-Medium.ttf", "Inter-SemiBold.ttf", "Inter-Bold.ttf", "Inter-ExtraBold.ttf"]) {
   await cp(new URL(`vendor/open-pencil/fonts/${font}`, root), new URL(font, output));
 }
-for (const dependency of ["yjs", "y-indexeddb", "lib0", "canvaskit-wasm", "vue"]) {
+for (const dependency of ["yjs", "y-indexeddb", "lib0", "canvaskit-wasm", "lucide", "vue"]) {
   await cp(
     new URL(`node_modules/${dependency}/LICENSE`, root),
     new URL(`licenses/${dependency}-LICENSE.txt`, output),

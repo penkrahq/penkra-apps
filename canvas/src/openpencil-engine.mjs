@@ -4,6 +4,7 @@ import {
   createEditor,
   parsePenFile,
 } from "../vendor/open-pencil/engine.mjs";
+import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",
@@ -11,6 +12,7 @@ const VISUAL_NODE_TYPES = new Set([
   "ellipse",
   "text",
   "icon_font",
+  "icon",
   "path",
   "ref",
 ]);
@@ -46,15 +48,17 @@ const TRACKED_SCENE_PROPERTIES = new Set([
 ]);
 
 export function createOpenPencilEditor(document, options = {}) {
-  const graph = createOpenPencilGraph(document);
+  const graph = createOpenPencilGraph(document, options.assets);
   return createEditor({
     graph,
     getViewportSize: options.getViewportSize,
   });
 }
 
-export function createOpenPencilGraph(document) {
-  const graph = parsePenFile(JSON.stringify(document));
+export function createOpenPencilGraph(document, assets = new Map()) {
+  const renderDocument = prepareOpenPencilRenderDocument(document).document;
+  const graph = parsePenFile(JSON.stringify(renderDocument));
+  applyImageAssets(graph, document, assets);
   walkPenNodes(document.children, (sourceNode) => {
     if (isOpenPencilEditableNode(sourceNode)) return;
     if (graph.getNode(sourceNode.id)) graph.updateNode(sourceNode.id, { locked: true });
@@ -63,19 +67,52 @@ export function createOpenPencilGraph(document) {
   return graph;
 }
 
-export function refreshOpenPencilEditor(editor, document, selectedId = null) {
+export function refreshOpenPencilEditor(editor, document, selectedId = null, assets = new Map()) {
   const viewport = {
     panX: editor.state.panX,
     panY: editor.state.panY,
     zoom: editor.state.zoom,
   };
-  editor.replaceGraph(createOpenPencilGraph(document));
+  editor.replaceGraph(createOpenPencilGraph(document, assets));
   editor.state.panX = viewport.panX;
   editor.state.panY = viewport.panY;
   editor.state.zoom = viewport.zoom;
   if (selectedId && editor.graph.getNode(selectedId)) editor.select([selectedId]);
   editor.requestRender();
   return editor;
+}
+
+function applyImageAssets(graph, document, assets) {
+  walkPenNodes(document.children, (sourceNode) => {
+    const sourceFills = Array.isArray(sourceNode.fill) ? sourceNode.fill : [sourceNode.fill];
+    if (!sourceFills.some((fill) => fill?.type === "image")) return;
+    const sceneNode = graph.getNode(sourceNode.id);
+    if (!sceneNode) return;
+    const fills = sourceFills.map((fill, index) => {
+      if (fill?.type !== "image") return sceneNode.fills[index];
+      const asset = assets.get(fill.url);
+      if (!asset) return sceneNode.fills[index];
+      graph.images.set(asset.sha256, asset.bytes);
+      return {
+        type: "IMAGE",
+        imageHash: asset.sha256,
+        imageScaleMode: imageScaleMode(fill.mode),
+        // Skia modulates shader output by the paint color. Keep image pixels
+        // fully visible instead of multiplying them by transparent black.
+        color: { r: 1, g: 1, b: 1, a: 1 },
+        opacity: 1,
+        visible: fill.enabled !== false,
+      };
+    });
+    graph.updateNode(sourceNode.id, { fills });
+  });
+}
+
+function imageScaleMode(mode) {
+  if (mode === "fit") return "FIT";
+  if (mode === "stretch") return "STRETCH";
+  if (mode === "tile") return "TILE";
+  return "FILL";
 }
 
 export function fitOpenPencilDesign(editor, viewport) {
@@ -111,8 +148,8 @@ export function fitOpenPencilDesign(editor, viewport) {
   };
 }
 
-export function analyzeOpenPencilCompatibility(document) {
-  const issues = [];
+export function analyzeOpenPencilCompatibility(document, assets = new Map()) {
+  const issues = [...prepareOpenPencilRenderDocument(document).issues];
   walkPenNodes(document.children, (node) => {
     if (node.type === "prompt") return;
     if (!VISUAL_NODE_TYPES.has(node.type)) {
@@ -123,7 +160,8 @@ export function analyzeOpenPencilCompatibility(document) {
       });
     }
     for (const fill of Array.isArray(node.fill) ? node.fill : node.fill ? [node.fill] : []) {
-      if (typeof fill === "object" && fill.type && fill.type !== "solid") {
+      const representedImage = fill?.type === "image" && assets.has(fill.url);
+      if (typeof fill === "object" && fill.type && fill.type !== "solid" && !representedImage) {
         issues.push({
           nodeId: node.id,
           kind: "fill",

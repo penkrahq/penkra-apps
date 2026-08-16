@@ -71197,10 +71197,13 @@ function makeImageFillLocalMatrix(r4, fill3, node, imgW, imgH) {
   let sx, sy, sw, sh;
   if (scaleMode === "FIT") {
     const scale = Math.min(node.width / imgW, node.height / imgH);
-    sw = imgW;
-    sh = imgH;
-    sx = -(node.width / scale - imgW) / 2;
-    sy = -(node.height / scale - imgH) / 2;
+    return r4.ck.Matrix.multiply(
+      r4.ck.Matrix.translated(
+        (node.width - imgW * scale) / 2,
+        (node.height - imgH * scale) / 2
+      ),
+      r4.ck.Matrix.scaled(scale, scale)
+    );
   } else {
     const scale = Math.max(node.width / imgW, node.height / imgH);
     sw = node.width / scale;
@@ -71235,7 +71238,8 @@ function applyImageFill(r4, fill3, node, graph) {
     r4.fillPaint.setShader(shader2);
     return true;
   }
-  const shader = img.makeShaderOptions(r4.ck.TileMode.Clamp, r4.ck.TileMode.Clamp, r4.ck.FilterMode.Linear, r4.ck.MipmapMode.Linear, localMatrix);
+  const tileMode = scaleMode === "FIT" ? r4.ck.TileMode.Decal : r4.ck.TileMode.Clamp;
+  const shader = img.makeShaderOptions(tileMode, tileMode, r4.ck.FilterMode.Linear, r4.ck.MipmapMode.Linear, localMatrix);
   r4.fillPaint.setShader(shader);
   return true;
 }

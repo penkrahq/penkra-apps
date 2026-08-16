@@ -17,6 +17,7 @@ import {
   sceneNodePropertySnapshot,
   sceneNodeToPenNode,
 } from "./openpencil-engine.mjs";
+import { bindCanvasThemeBackground } from "./canvas-theme.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
@@ -30,7 +31,9 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   let sourceDocument = document;
   const editor = createOpenPencilEditor(document, {
     getViewportSize: () => ({ width: element.clientWidth, height: element.clientHeight }),
+    assets: callbacks.assets,
   });
+  const unbindCanvasTheme = bindCanvasThemeBackground(editor, element);
   let sceneValues = captureSceneValues(editor);
   if (callbacks.viewport) {
     editor.state.panX = callbacks.viewport.panX;
@@ -151,13 +154,14 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       refreshingDocument = true;
       try {
         sourceDocument = nextDocument;
-        refreshOpenPencilEditor(editor, nextDocument, selectedId);
+        refreshOpenPencilEditor(editor, nextDocument, selectedId, callbacks.assets);
         sceneValues = captureSceneValues(editor);
       } finally {
         refreshingDocument = false;
       }
     },
     unmount() {
+      unbindCanvasTheme();
       for (const dispose of disposers) dispose?.();
       app.unmount();
     },

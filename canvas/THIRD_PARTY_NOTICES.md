@@ -17,6 +17,11 @@ Canvas bundles these MIT-licensed projects:
 
 Canvas also bundles:
 
+- Lucide 1.31.0 under the ISC license — Copyright 2026 Lucide Icons and Contributors.
+  Some icons are derived from Feather Icons under the MIT license.
+  <https://github.com/lucide-icons/lucide>
+- The Phosphor Icons 2.1.1 push-pin vector under the MIT license — Copyright 2020
+  Phosphor Icons. <https://github.com/phosphor-icons/core>
 - CanvasKit WASM 0.40.0 under the BSD 3-Clause license — Copyright 2018 Google LLC.
   <https://skia.org/docs/user/modules/canvaskit/>
 - Inter font files under the SIL Open Font License 1.1 — Copyright 2016 The Inter Project

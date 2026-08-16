@@ -5,6 +5,7 @@ import test from "node:test";
 import {
   analyzeOpenPencilCompatibility,
   createOpenPencilEditor,
+  createOpenPencilGraph,
   fitOpenPencilDesign,
   refreshOpenPencilEditor,
   sceneEventToPenMutations,
@@ -12,6 +13,38 @@ import {
   sceneNodeToPenNode,
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
+
+test("binds imported image bytes to their lossless Pencil URL fill", () => {
+  const bytes = new Uint8Array([1, 2, 3]);
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "hero",
+      type: "frame",
+      width: 320,
+      height: 180,
+      fill: { type: "image", url: "assets/hero.png", mode: "fit" },
+      children: [],
+    }],
+  };
+
+  const graph = createOpenPencilGraph(source, new Map([
+    ["assets/hero.png", { sha256: "a".repeat(64), bytes }],
+  ]));
+
+  assert.deepEqual(graph.images.get("a".repeat(64)), bytes);
+  assert.equal(graph.getNode("hero").fills[0].type, "IMAGE");
+  assert.equal(graph.getNode("hero").fills[0].imageHash, "a".repeat(64));
+  assert.equal(graph.getNode("hero").fills[0].imageScaleMode, "FIT");
+  assert.deepEqual(graph.getNode("hero").fills[0].color, { r: 1, g: 1, b: 1, a: 1 });
+  assert.equal(source.children[0].fill.url, "assets/hero.png");
+  assert.deepEqual(
+    analyzeOpenPencilCompatibility(source, new Map([
+      ["assets/hero.png", { sha256: "a".repeat(64), bytes }],
+    ])),
+    [],
+  );
+});
 
 test("OpenPencil computes nested auto-layout instead of collapsing children at the origin", () => {
   const editor = createOpenPencilEditor({
@@ -35,6 +68,35 @@ test("OpenPencil computes nested auto-layout instead of collapsing children at t
   assert.equal(editor.graph.getNode("phone").layoutMode, "VERTICAL");
   assert.equal(heading.y, 24);
   assert.ok(body.y > heading.y, `expected body (${body.y}) below heading (${heading.y})`);
+});
+
+test("OpenPencil resolves Pencil-style numeric variables before layout", () => {
+  const source = {
+    version: "2.17",
+    themes: { state: ["default", "open"] },
+    variables: {
+      "folder-content-gap": {
+        type: "number",
+        value: [
+          { value: 0, theme: { state: "default" } },
+          { value: 2, theme: { state: "open" } },
+        ],
+      },
+    },
+    children: [{
+      id: "folder",
+      type: "frame",
+      layout: "vertical",
+      gap: "$folder-content-gap",
+      theme: { state: "open" },
+      children: [],
+    }],
+  };
+
+  const editor = createOpenPencilEditor(source);
+
+  assert.equal(editor.graph.getNode("folder").itemSpacing, 2);
+  assert.equal(source.children[0].gap, "$folder-content-gap");
 });
 
 test("scene edits translate to lossless Penkra mutations", () => {
