@@ -32,6 +32,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   const editor = createOpenPencilEditor(document, {
     getViewportSize: () => ({ width: element.clientWidth, height: element.clientHeight }),
     assets: callbacks.assets,
+    preparedDocument: callbacks.preparedDocument,
   });
   const unbindCanvasTheme = bindCanvasThemeBackground(editor, element);
   let sceneValues = captureSceneValues(editor);
@@ -119,7 +120,14 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const canvas = useCanvas(canvasRef, editor, {
         showRulers: true,
         onReady: () => {
-          if (!callbacks.viewport) fitDesignInView();
+          if (!callbacks.viewport) {
+            if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
+              editor.select([callbacks.selectedId]);
+              editor.zoomToSelection();
+            } else {
+              fitDesignInView();
+            }
+          }
           callbacks.onReady?.();
         },
       });
@@ -150,11 +158,17 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   return {
     editor,
     fitDesignInView,
-    replaceDocument(nextDocument, selectedId) {
+    replaceDocument(nextDocument, selectedId, preparedDocument = null) {
       refreshingDocument = true;
       try {
         sourceDocument = nextDocument;
-        refreshOpenPencilEditor(editor, nextDocument, selectedId, callbacks.assets);
+        refreshOpenPencilEditor(
+          editor,
+          nextDocument,
+          selectedId,
+          callbacks.assets,
+          preparedDocument,
+        );
         sceneValues = captureSceneValues(editor);
       } finally {
         refreshingDocument = false;

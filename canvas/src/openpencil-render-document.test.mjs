@@ -168,3 +168,114 @@ test("converts the supported filled Phosphor pin to a render-only filled path", 
   assert.equal(result.document.children[0].stroke, undefined);
   assert.deepEqual(result.issues, []);
 });
+
+test("normalizes Pencil 2.17 frame defaults, sizing, alignment, and strokes", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      justifyContent: "space_between",
+      stroke: "#123456",
+      strokeWidth: { bottom: 2 },
+      strokeAlignment: "inner",
+      strokeLinejoin: "round",
+      children: [{ id: "label", type: "text", content: "Label" }],
+    }],
+  };
+  const before = structuredClone(source);
+
+  const result = prepareOpenPencilRenderDocument(source);
+  const row = result.document.children[0];
+
+  assert.equal(row.layout, "horizontal");
+  assert.equal(row.width, "hug_content");
+  assert.equal(row.height, "hug_content");
+  assert.equal(row.justifyContent, "space-between");
+  assert.deepEqual(row.stroke, {
+    fill: "#123456",
+    thickness: { bottom: 2 },
+    align: "inside",
+    join: "round",
+    cap: undefined,
+  });
+  assert.deepEqual(result.issues, []);
+  assert.deepEqual(source, before);
+});
+
+test("materializes component instances before resolving descendant themes and icons", () => {
+  const source = {
+    version: "2.17",
+    themes: { mode: ["light", "dark"] },
+    variables: {
+      text: {
+        type: "color",
+        value: [
+          { value: "#111111", theme: { mode: "light" } },
+          { value: "#eeeeee", theme: { mode: "dark" } },
+        ],
+      },
+    },
+    children: [
+      {
+        id: "button",
+        type: "frame",
+        reusable: true,
+        children: [
+          { id: "label", type: "text", content: "Continue", fill: "$text" },
+          { id: "glyph", type: "icon", library: "lucide", icon: "chevron-right", fill: "$text" },
+        ],
+      },
+      {
+        id: "instance",
+        type: "ref",
+        ref: "button",
+        descendants: {
+          label: { content: "Open", fontWeight: 700, theme: { mode: "dark" } },
+          glyph: { icon: "chevron-down", theme: { mode: "dark" } },
+        },
+      },
+    ],
+  };
+  const before = structuredClone(source);
+
+  const result = prepareOpenPencilRenderDocument(source);
+  const instance = result.document.children[1];
+  const [label, glyph] = instance.children;
+
+  assert.equal(instance.type, "frame");
+  assert.equal(instance.id, "instance");
+  assert.equal(instance.reusable, false);
+  assert.equal(label.id, "instance::label");
+  assert.equal(label.content, "Open");
+  assert.equal(label.fontWeight, 700);
+  assert.equal(label.fill, "#eeeeee");
+  assert.equal(glyph.id, "instance::glyph");
+  assert.equal(glyph.type, "path");
+  assert.match(glyph.geometry, /m6 9 6 6 6-6/);
+  assert.deepEqual(result.issues, []);
+  assert.deepEqual(source, before);
+});
+
+test("falls back to the variable's default value for an unmodeled theme state", () => {
+  const source = {
+    themes: { state: ["default", "focus"] },
+    variables: {
+      visible: {
+        type: "boolean",
+        value: [{ value: true, theme: { state: "default" } }],
+      },
+    },
+    children: [{
+      id: "focused",
+      type: "frame",
+      theme: { state: "focus" },
+      enabled: "$visible",
+    }],
+  };
+
+  const result = prepareOpenPencilRenderDocument(source);
+
+  assert.equal(result.document.children[0].enabled, true);
+  assert.deepEqual(result.issues, []);
+});

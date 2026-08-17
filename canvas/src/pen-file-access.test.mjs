@@ -2,9 +2,11 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  choosePenDocument,
   collectImageReferences,
   parsePenSource,
   readPenDocument,
+  savePenDocument,
 } from "./pen-file-access.mjs";
 
 test("collects only explicit Pencil image fill URLs once", () => {
@@ -26,18 +28,16 @@ test("collects only explicit Pencil image fill URLs once", () => {
 
 test("reads every referenced asset relative to the chosen .pen file", async () => {
   const png = new Uint8Array([1, 2, 3]);
-  const assets = directory("assets", {
-    "hero.png": fileHandle("hero.png", png, "image/png"),
-  });
-  const design = directory("design", {
-    "sample.pen": fileHandle("sample.pen", new TextEncoder().encode(JSON.stringify({
+  const files = fileService({
+    "design/sample.pen": JSON.stringify({
       children: [{ id: "frame", type: "frame", fill: { type: "image", url: "../assets/hero.png" } }],
-    })), "application/json"),
+    }),
+    "assets/hero.png": png,
   });
-  const root = directory("project", { assets, design });
-  root.resolve = async () => ["design", "sample.pen"];
+  const root = { id: "root", kind: "directory", name: "project" };
+  const document = { kind: "file", name: "sample.pen", relativePath: "design/sample.pen" };
 
-  const result = await readPenDocument(root, design.children["sample.pen"]);
+  const result = await readPenDocument(files, root, document);
 
   assert.equal(result.fallbackTitle, "sample");
   assert.equal(result.assets[0].path, "../assets/hero.png");
@@ -46,47 +46,76 @@ test("reads every referenced asset relative to the chosen .pen file", async () =
 });
 
 test("fails the import when a referenced asset is missing", async () => {
-  const handle = fileHandle("sample.pen", new TextEncoder().encode(JSON.stringify({
-    children: [{ id: "frame", type: "frame", fill: { type: "image", url: "missing.png" } }],
-  })), "application/json");
-  const root = directory("project", { "sample.pen": handle });
-  root.resolve = async () => ["sample.pen"];
+  const files = fileService({
+    "sample.pen": JSON.stringify({
+      children: [{ id: "frame", type: "frame", fill: { type: "image", url: "missing.png" } }],
+    }),
+  });
+  const root = { id: "root", kind: "directory", name: "project" };
+  const document = { kind: "file", name: "sample.pen", relativePath: "sample.pen" };
 
-  await assert.rejects(readPenDocument(root, handle), /Referenced asset missing\.png is missing/);
+  await assert.rejects(readPenDocument(files, root, document), /Referenced asset missing\.png is missing/);
+});
+
+test("imports the only top-level .pen file through Runtime v2 scoped files", async () => {
+  const files = fileService({
+    "sample.pen": JSON.stringify({ name: "Sample", children: [] }),
+    "notes.txt": "not a design",
+  });
+
+  const result = await choosePenDocument(files);
+
+  assert.equal(result.source.name, "Sample");
+  assert.equal(result.fallbackTitle, "sample");
+  assert.deepEqual(files.picks, ["directory"]);
+});
+
+test("requires an unambiguous top-level .pen document", async () => {
+  const files = fileService({ "one.pen": '{"children":[]}', "two.pen": '{"children":[]}' });
+  await assert.rejects(choosePenDocument(files), /exactly one \.pen document/);
+});
+
+test("exports through a user-selected Runtime v2 directory handle", async () => {
+  const files = fileService({});
+  assert.equal(await savePenDocument({ children: [] }, "sample.pen", files), true);
+  assert.equal(files.writes[0].relativePath, "sample.pen");
+  assert.deepEqual(JSON.parse(files.writes[0].source), { children: [] });
 });
 
 test("rejects non-document JSON", () => {
   assert.throws(() => parsePenSource("{}"), /supported \.pen document structure/);
 });
 
-function fileHandle(name, bytes, type) {
+function fileService(initial) {
+  const values = new Map(Object.entries(initial).map(([path, value]) => [
+    path,
+    typeof value === "string" ? new TextEncoder().encode(value) : value,
+  ]));
   return {
-    kind: "file",
-    name,
-    async getFile() {
-      return {
-        type,
-        async text() { return new TextDecoder().decode(bytes); },
-        async arrayBuffer() { return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength); },
-      };
+    picks: [],
+    writes: [],
+    async pick(kind) {
+      this.picks.push(kind);
+      return { id: "root", kind: "directory", name: "project" };
     },
-  };
-}
-
-function directory(name, children) {
-  return {
-    kind: "directory",
-    name,
-    children,
-    async getDirectoryHandle(child) {
-      const handle = children[child];
-      if (handle?.kind === "directory") return handle;
-      throw new DOMException("Missing", "NotFoundError");
+    async listDirectory() {
+      return [...values.keys()].filter((path) => !path.includes("/")).map((path) => ({
+        kind: "file", name: path, relativePath: path, size: values.get(path).byteLength,
+      }));
     },
-    async getFileHandle(child) {
-      const handle = children[child];
-      if (handle?.kind === "file") return handle;
-      throw new DOMException("Missing", "NotFoundError");
+    async readText(_handleId, relativePath) {
+      const bytes = values.get(relativePath);
+      if (!bytes) throw new Error("missing");
+      return new TextDecoder().decode(bytes);
+    },
+    async readBinary({ relativePath, offset = 0, length }) {
+      const bytes = values.get(relativePath);
+      if (!bytes) throw new Error("missing");
+      const chunk = bytes.slice(offset, offset + length);
+      return { bytes: chunk, totalBytes: bytes.byteLength, complete: offset + chunk.byteLength >= bytes.byteLength };
+    },
+    async writeText(handleId, source, relativePath) {
+      this.writes.push({ handleId, source, relativePath });
     },
   };
 }

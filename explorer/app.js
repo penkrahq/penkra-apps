@@ -21,9 +21,7 @@ import {
 } from "./explorer-files.mjs";
 
 const runtime = globalThis.penkra;
-if (!runtime?.tab || !globalThis.showDirectoryPicker) {
-  throw new Error("Explorer requires the Penkra App runtime and File System Access API.");
-}
+if (!runtime?.files || !runtime?.tab) throw new Error("Explorer requires the Penkra App runtime.");
 
 const icons = {
   back: '<path d="m15 18-6-6 6-6"/>',
@@ -382,7 +380,7 @@ root.addEventListener("click", (event) => {
   if (action === "cancel-new-folder") { state.newFolder = false; render(); }
   if (action === "menu") { state.menuOpen = !state.menuOpen; render(); }
   if (action === "refresh") { state.menuOpen = false; void refreshAll(); }
-  if (action === "forget" && state.handle) void forgetExplorerRoot().then(() => { state.handle = null; state.root = null; state.selected = null; render(); });
+  if (action === "forget" && state.handle) void forgetExplorerRoot(state.handle).then(() => { state.handle = null; state.root = null; state.selected = null; render(); });
   if (action === "save" && state.selected) {
     const source = root.querySelector("[data-source]")?.value ?? "";
     void writeTextEntry(state.handle, state.selected.relativePath, source).then(() => { state.preview = { ...state.preview, source }; render(); });
@@ -406,6 +404,11 @@ root.addEventListener("submit", (event) => {
   if (!event.target.matches("[data-new-folder]")) return;
   event.preventDefault();
   void createFolder(event.target);
+});
+
+runtime.tab.onNavigate(async ({ route, state: navigationState }) => {
+  if (route !== "/open" || !navigationState?.id) return;
+  await activateHandle(navigationState);
 });
 
 async function bootstrap() {

@@ -125,12 +125,12 @@ runtime.operations.handle("sharing.remove", async ({ documentId, grantId }) =>
 
 runtime.operations.handle("selection.set", async ({ nodeId }, context) => {
   if (!context.tab) throw new Error("selection.set requires an explicit Canvas tabId.");
-  await context.tab.invoke("selection.set", { nodeId });
+  await context.tab.invoke({ operation: "selection.set", input: { nodeId } });
   return { tabId: context.tab.id, nodeId };
 });
 
 runtime.operations.handle("viewport.focus", async ({ nodeId }, context) => {
   if (!context.tab) throw new Error("viewport.focus requires an explicit Canvas tabId.");
-  await context.tab.invoke("viewport.focus", { nodeId });
+  await context.tab.invoke({ operation: "viewport.focus", input: { nodeId } });
   return { tabId: context.tab.id, nodeId };
 });

@@ -7,6 +7,7 @@ import {
   disconnectedSyncStatus,
   isTransportFailure,
   normalizePresenceCount,
+  realtimeStateAfterSignal,
   visiblePresenceCount,
 } from "./collaboration-status.mjs";
 
@@ -35,4 +36,11 @@ test("connection loss distinguishes reconnecting transport from offline editing"
     sync: "offline",
     message: "Offline — changes stay on this device",
   });
+});
+
+test("only realtime transport signals change realtime connection state", () => {
+  assert.equal(realtimeStateAfterSignal(REALTIME_RECONNECTING, REALTIME_CONNECTED), REALTIME_CONNECTED);
+  assert.equal(realtimeStateAfterSignal(REALTIME_CONNECTED, REALTIME_RECONNECTING), REALTIME_RECONNECTING);
+  assert.equal(realtimeStateAfterSignal(REALTIME_CONNECTED, "request-failure"), REALTIME_CONNECTED);
+  assert.equal(realtimeStateAfterSignal(REALTIME_CONNECTED, "browser-offline"), REALTIME_CONNECTED);
 });

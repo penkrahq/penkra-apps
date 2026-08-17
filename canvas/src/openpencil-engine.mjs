@@ -48,32 +48,91 @@ const TRACKED_SCENE_PROPERTIES = new Set([
 ]);
 
 export function createOpenPencilEditor(document, options = {}) {
-  const graph = createOpenPencilGraph(document, options.assets);
+  const graph = createOpenPencilGraph(document, options.assets, options.preparedDocument);
   return createEditor({
     graph,
     getViewportSize: options.getViewportSize,
   });
 }
 
-export function createOpenPencilGraph(document, assets = new Map()) {
-  const renderDocument = prepareOpenPencilRenderDocument(document).document;
-  const graph = parsePenFile(JSON.stringify(renderDocument));
-  applyImageAssets(graph, document, assets);
-  walkPenNodes(document.children, (sourceNode) => {
-    if (isOpenPencilEditableNode(sourceNode)) return;
-    if (graph.getNode(sourceNode.id)) graph.updateNode(sourceNode.id, { locked: true });
+export function createOpenPencilGraph(document, assets = new Map(), preparedDocument = null) {
+  const startedAt = performance.now();
+  const renderDocument = measureGraphPhase(
+    "engine.graph.prepare",
+    () => (preparedDocument ?? prepareOpenPencilRenderDocument(document)).document,
+  );
+  const graph = measureGraphPhase(
+    "engine.graph.parse",
+    () => parsePenFile(JSON.stringify(renderDocument)),
+  );
+  measureGraphPhase("engine.graph.adapt", () => {
+    applyPencilSceneProperties(graph, renderDocument);
+    applyImageAssets(graph, renderDocument, assets);
+    walkPenNodes(document.children, (sourceNode) => {
+      if (isOpenPencilEditableNode(sourceNode)) return;
+      if (graph.getNode(sourceNode.id)) graph.updateNode(sourceNode.id, { locked: true });
+    });
+  }, { graphNodes: graph.nodes.size });
+  measureGraphPhase("engine.graph.layout", () => {
+    for (const page of graph.getPages()) computeAllLayouts(graph, page.id);
+  }, { graphNodes: graph.nodes.size });
+  recordGraphPerformance("engine.graph.total", performance.now() - startedAt, {
+    graphNodes: graph.nodes.size,
   });
-  for (const page of graph.getPages()) computeAllLayouts(graph, page.id);
   return graph;
 }
 
-export function refreshOpenPencilEditor(editor, document, selectedId = null, assets = new Map()) {
+function measureGraphPhase(name, operation, detail = {}) {
+  const monitor = globalThis.__penkraPerformance?.canvas;
+  return monitor?.measure ? monitor.measure(name, operation, detail) : operation();
+}
+
+function recordGraphPerformance(name, durationMs, detail = {}) {
+  globalThis.__penkraPerformance?.canvas?.record(name, durationMs, detail);
+}
+
+function applyPencilSceneProperties(graph, document) {
+  walkPenNodes(document.children, (sourceNode) => {
+    const sceneNode = graph.getNode(sourceNode.id);
+    if (!sceneNode) return;
+    const changes = {};
+    if (sourceNode.layoutPosition === "absolute") changes.layoutPositioning = "ABSOLUTE";
+    if (sourceNode.type === "text" && sourceNode.textGrowth === "fixed-width-height") {
+      changes.textAutoResize = "NONE";
+    }
+    if (sourceNode.type === "ellipse" && (
+      sourceNode.innerRadius !== undefined
+      || sourceNode.startAngle !== undefined
+      || sourceNode.sweepAngle !== undefined
+    )) {
+      const start = degreesToRadians(sourceNode.startAngle ?? 0);
+      changes.arcData = {
+        startingAngle: start,
+        endingAngle: start + degreesToRadians(sourceNode.sweepAngle ?? 360),
+        innerRadius: sourceNode.innerRadius ?? 0,
+      };
+    }
+    if (Object.keys(changes).length > 0) graph.updateNode(sourceNode.id, changes);
+  });
+}
+
+function degreesToRadians(value) {
+  return Number(value) * Math.PI / 180;
+}
+
+export function refreshOpenPencilEditor(
+  editor,
+  document,
+  selectedId = null,
+  assets = new Map(),
+  preparedDocument = null,
+) {
   const viewport = {
     panX: editor.state.panX,
     panY: editor.state.panY,
     zoom: editor.state.zoom,
   };
-  editor.replaceGraph(createOpenPencilGraph(document, assets));
+  editor.replaceGraph(createOpenPencilGraph(document, assets, preparedDocument));
   editor.state.panX = viewport.panX;
   editor.state.panY = viewport.panY;
   editor.state.zoom = viewport.zoom;
@@ -148,8 +207,8 @@ export function fitOpenPencilDesign(editor, viewport) {
   };
 }
 
-export function analyzeOpenPencilCompatibility(document, assets = new Map()) {
-  const issues = [...prepareOpenPencilRenderDocument(document).issues];
+export function analyzeOpenPencilCompatibility(document, assets = new Map(), preparedDocument = null) {
+  const issues = [...(preparedDocument ?? prepareOpenPencilRenderDocument(document)).issues];
   walkPenNodes(document.children, (node) => {
     if (node.type === "prompt") return;
     if (!VISUAL_NODE_TYPES.has(node.type)) {

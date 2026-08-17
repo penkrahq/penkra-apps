@@ -70,6 +70,62 @@ test("OpenPencil computes nested auto-layout instead of collapsing children at t
   assert.ok(body.y > heading.y, `expected body (${body.y}) below heading (${heading.y})`);
 });
 
+test("auto-sized text keeps hug-content flex layouts compact", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{
+      id: "menu-item",
+      type: "frame",
+      layout: "horizontal",
+      padding: [6, 10],
+      gap: 6,
+      children: [
+        { id: "icon", type: "rectangle", width: 14, height: 14 },
+        { id: "label", type: "text", content: "Apps", fontSize: 13 },
+      ],
+    }],
+  });
+  const item = editor.graph.getNode("menu-item");
+  const label = editor.graph.getNode("label");
+
+  assert.equal(label.textAutoResize, "WIDTH_AND_HEIGHT");
+  assert.ok(label.width < 100, `expected compact text width, got ${label.width}`);
+  assert.ok(item.width < 150, `expected compact hug width, got ${item.width}`);
+});
+
+test("stored Pencil sizing fallbacks and fill-width text survive import", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{
+      id: "overlay-list",
+      type: "frame",
+      width: "fill_container(608)",
+      layout: "vertical",
+      children: [{
+        id: "row",
+        type: "frame",
+        width: "fill_container",
+        height: 40,
+        layout: "horizontal",
+        padding: [0, 10],
+        children: [{
+          id: "label",
+          type: "text",
+          width: "fill_container",
+          textGrowth: "fixed-width",
+          content: "Connection",
+          fontSize: 13,
+        }],
+      }],
+    }],
+  });
+
+  assert.equal(editor.graph.getNode("overlay-list").width, 608);
+  assert.equal(editor.graph.getNode("row").width, 608);
+  assert.equal(editor.graph.getNode("label").width, 588);
+  assert.equal(editor.graph.getNode("label").height, 19);
+});
+
 test("OpenPencil resolves Pencil-style numeric variables before layout", () => {
   const source = {
     version: "2.17",
@@ -97,6 +153,133 @@ test("OpenPencil resolves Pencil-style numeric variables before layout", () => {
 
   assert.equal(editor.graph.getNode("folder").itemSpacing, 2);
   assert.equal(source.children[0].gap, "$folder-content-gap");
+});
+
+test("Pencil 2.17 scene properties survive normalization into the render graph", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 300,
+      height: 100,
+      stroke: "#123456",
+      strokeWidth: 2,
+      strokeAlignment: "inner",
+      children: [
+        {
+          id: "overlay",
+          type: "frame",
+          layoutPosition: "absolute",
+          x: 12,
+          y: 8,
+          width: 40,
+          height: 30,
+        },
+        {
+          id: "fixed-text",
+          type: "text",
+          content: "Fixed",
+          width: 80,
+          height: 20,
+          textGrowth: "fixed-width-height",
+        },
+        {
+          id: "arc",
+          type: "ellipse",
+          width: 20,
+          height: 20,
+          innerRadius: 0.8,
+          startAngle: 90,
+          sweepAngle: -180,
+        },
+        {
+          id: "path",
+          type: "path",
+          width: 200,
+          height: 100,
+          geometry: "M 10 20 L 60 70",
+          viewBox: [0, 0, 100, 100],
+          stroke: "#ffffff",
+        },
+      ],
+    }],
+  };
+
+  const graph = createOpenPencilGraph(source);
+  const row = graph.getNode("row");
+  const overlay = graph.getNode("overlay");
+  const textNode = graph.getNode("fixed-text");
+  const arc = graph.getNode("arc");
+  const path = graph.getNode("path");
+
+  assert.equal(row.layoutMode, "HORIZONTAL");
+  assert.equal(row.strokes.length, 1);
+  assert.equal(row.strokes[0].weight, 2);
+  assert.equal(row.strokes[0].align, "INSIDE");
+  assert.equal(overlay.layoutPositioning, "ABSOLUTE");
+  assert.equal(textNode.textAutoResize, "NONE");
+  assert.ok(Math.abs(arc.arcData.startingAngle - Math.PI / 2) < 1e-9);
+  assert.ok(Math.abs(arc.arcData.endingAngle + Math.PI / 2) < 1e-9);
+  assert.equal(arc.arcData.innerRadius, 0.8);
+  assert.deepEqual(
+    path.vectorNetwork.vertices.map(({ x, y }) => [x, y]),
+    [[20, 20], [120, 70]],
+  );
+  assert.deepEqual(source.children[0].strokeWidth, 2);
+});
+
+test("empty Pencil slots stay visually empty without changing the source", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "app-owned",
+      type: "frame",
+      width: 320,
+      height: 180,
+      slot: [],
+    }],
+  };
+
+  const graph = createOpenPencilGraph(source);
+  assert.deepEqual(graph.getNode("app-owned").fills, []);
+  assert.deepEqual(source.children[0].slot, []);
+  assert.equal(source.children[0].fill, undefined);
+});
+
+test("Pencil alpha colors are applied once and survive SVG export", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "alpha-frame",
+      type: "frame",
+      width: 100,
+      height: 40,
+      fill: "#FFFFFF0A",
+      stroke: "#FF000080",
+      strokeWidth: 1,
+    }],
+  };
+
+  const editor = createOpenPencilEditor(source);
+  const node = editor.graph.getNode("alpha-frame");
+  const svg = editor.copySelectionAsSVG(["alpha-frame"]);
+
+  assert.ok(Math.abs(node.fills[0].opacity - 10 / 255) < 1e-9);
+  assert.equal(node.fills[0].color.a, 1);
+  assert.ok(Math.abs(node.strokes[0].opacity - 128 / 255) < 1e-9);
+  assert.equal(node.strokes[0].color.a, 1);
+  assert.match(svg, /fill="#FFFFFF0A"/u);
+  assert.match(svg, /stroke="#FF000080"/u);
+});
+
+test("fill-less Pencil frames stay transparent", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{ id: "overlay", type: "frame", width: 320, height: 180 }],
+  });
+
+  assert.deepEqual(graph.getNode("overlay").fills, []);
 });
 
 test("scene edits translate to lossless Penkra mutations", () => {

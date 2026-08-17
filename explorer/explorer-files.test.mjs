@@ -4,114 +4,74 @@ import test from "node:test";
 import {
   chooseExplorerRoot,
   createDirectory,
+  forgetExplorerRoot,
   listDirectory,
   readEntry,
   restoreExplorerRoot,
   writeTextEntry,
 } from "./explorer-files.mjs";
 
-function fileHandle(name, source = "hello") {
-  const writes = [];
+function fakeFiles() {
+  const calls = [];
   return {
-    kind: "file",
-    name,
-    writes,
-    async getFile() {
-      return { name, size: source.length, lastModified: 0, text: async () => source };
+    calls,
+    async pick(kind) {
+      calls.push(["pick", kind]);
+      return { id: "root", kind: "directory", name: "Workspace" };
     },
-    async createWritable() {
-      return {
-        write: async (value) => writes.push(value),
-        close: async () => writes.push("closed"),
-        abort: async () => writes.push("aborted"),
-      };
+    async list() {
+      return [{ id: "root", kind: "directory", name: "Workspace" }];
+    },
+    async revoke(id) {
+      calls.push(["revoke", id]);
+    },
+    async listDirectory(id, path) {
+      calls.push(["listDirectory", id, path]);
+      return [];
+    },
+    async stat() {
+      return { kind: "file", name: "README.md", relativePath: "README.md", size: 5 };
+    },
+    async readBinary({ offset }) {
+      return { bytes: new TextEncoder().encode("hello").slice(offset), totalBytes: 5, complete: true };
+    },
+    async writeText(id, source, path) {
+      calls.push(["writeText", id, source, path]);
+    },
+    async createDirectory(id, path) {
+      calls.push(["createDirectory", id, path]);
     },
   };
 }
 
-function directoryHandle(name, values = {}) {
-  return {
-    kind: "directory",
-    name,
-    values,
-    async *entries() { yield* Object.entries(values); },
-    async getDirectoryHandle(child, options) {
-      if (!values[child] && options?.create) values[child] = directoryHandle(child);
-      const result = values[child];
-      if (result?.kind !== "directory") throw new DOMException("Missing", "NotFoundError");
-      return result;
-    },
-  };
-}
-
-test("the native directory picker is the only root authority", async () => {
-  const root = directoryHandle("Designs");
-  const original = globalThis.showDirectoryPicker;
-  globalThis.showDirectoryPicker = async (options) => {
-    assert.deepEqual(options, { mode: "readwrite" });
-    return root;
-  };
-  try {
-    assert.equal(await chooseExplorerRoot(), root);
-  } finally {
-    globalThis.showDirectoryPicker = original;
-  }
+test("chooses, restores, and revokes Runtime v2 handles", async () => {
+  const files = fakeFiles();
+  const selected = await chooseExplorerRoot(files);
+  assert.equal(selected.id, "root");
+  assert.equal((await restoreExplorerRoot(files)).id, "root");
+  await forgetExplorerRoot(selected, files);
+  assert.deepEqual(files.calls.slice(0, 2), [["pick", "directory"], ["revoke", "root"]]);
 });
 
-test("picker cancellation is a no-op and not a fallback", async () => {
-  const original = globalThis.showDirectoryPicker;
-  globalThis.showDirectoryPicker = async () => { throw new DOMException("Cancelled", "AbortError"); };
-  try {
-    assert.equal(await chooseExplorerRoot(), null);
-  } finally {
-    globalThis.showDirectoryPicker = original;
-  }
+test("routes directory and editing work through the scoped service", async () => {
+  const files = fakeFiles();
+  const root = { id: "root", kind: "directory", name: "Workspace" };
+  await listDirectory(root, "docs", files);
+  await writeTextEntry(root, "README.md", "next", files);
+  await createDirectory(root, "docs", "notes", files);
+  assert.deepEqual(files.calls, [
+    ["listDirectory", "root", "docs"],
+    ["writeText", "root", "next", "README.md"],
+    ["createDirectory", "root", "docs/notes"],
+  ]);
 });
 
-test("native handles provide deterministic traversal, reads, writes, and folder creation", async () => {
-  const note = fileHandle("note.txt");
-  const root = directoryHandle("Designs", { docs: directoryHandle("docs", { "note.txt": note }) });
-  assert.deepEqual(await listDirectory(root, "docs"), [{
-    kind: "file",
-    name: "note.txt",
-    relativePath: "docs/note.txt",
-    size: 5,
-    modifiedAt: "1970-01-01T00:00:00.000Z",
-  }]);
-  assert.equal(await (await readEntry(root, "docs/note.txt")).text(), "hello");
-  await writeTextEntry(root, "docs/note.txt", "updated");
-  assert.deepEqual(note.writes, ["updated", "closed"]);
-  await createDirectory(root, "docs", "new-folder");
-  assert.equal(root.values.docs.values["new-folder"].kind, "directory");
-  await assert.rejects(readEntry(root, "../secret"), /Invalid relative file path/);
-});
-
-test("restoration returns only a still-granted native handle", async () => {
-  const original = globalThis.indexedDB;
-  const granted = { queryPermission: async () => "granted" };
-  globalThis.indexedDB = {
-    open() {
-      const request = {};
-      queueMicrotask(() => {
-        const transaction = {
-          objectStore: () => ({
-            get: () => {
-              const get = {};
-              queueMicrotask(() => { get.result = granted; get.onsuccess(); });
-              return get;
-            },
-          }),
-        };
-        request.result = { transaction: () => transaction, close: () => undefined };
-        request.onsuccess();
-        setTimeout(() => transaction.oncomplete(), 0);
-      });
-      return request;
-    },
-  };
-  try {
-    assert.equal(await restoreExplorerRoot(), granted);
-  } finally {
-    globalThis.indexedDB = original;
-  }
+test("reads a file through bounded binary chunks", async () => {
+  const files = fakeFiles();
+  const blob = await readEntry(
+    { id: "root", kind: "directory", name: "Workspace" },
+    "README.md",
+    files,
+  );
+  assert.equal(await blob.text(), "hello");
 });

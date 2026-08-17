@@ -1,11 +1,11 @@
 {
-  "manifestVersion": 1,
+  "manifestVersion": 2,
   "id": "com.penkra.canvas",
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, import, edit, and share Account-owned collaborative design documents.",
-  "version": "0.1.2",
-  "compatibility": { "penkra": ">=0.9.1" },
+  "version": "0.2.15",
+  "compatibility": { "penkra": ">=0.11.0" },
   "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
   "entrypoints": { "app": "app.html", "operations": "operations.html" },
   "permissions": [

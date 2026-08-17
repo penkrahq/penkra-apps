@@ -13,6 +13,7 @@ import {
 import { base64ToBytes, bytesToBase64 } from "./codec.mjs";
 
 export const LOCAL_ORIGIN = Symbol("canvas-local");
+export const ENGINE_ORIGIN = Symbol("canvas-engine");
 export const REMOTE_ORIGIN = Symbol("canvas-remote");
 
 export function createDocumentModel(source) {
@@ -21,7 +22,7 @@ export function createDocumentModel(source) {
 
 export function createUndoManager(model) {
   return new Y.UndoManager(model.nodes, {
-    trackedOrigins: new Set([LOCAL_ORIGIN]),
+    trackedOrigins: new Set([LOCAL_ORIGIN, ENGINE_ORIGIN]),
     captureTimeout: 500,
   });
 }
@@ -76,7 +77,10 @@ export function materialize(model) {
 }
 
 export function listNodes(model) {
-  const document = materialize(model);
+  return listDocumentNodes(materialize(model));
+}
+
+export function listDocumentNodes(document) {
   const output = [];
   const visit = (nodes = [], depth = 0, parentId = null) => {
     nodes.forEach((node, index) => {

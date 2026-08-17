@@ -1,86 +1,59 @@
-const PEN_FILE_TYPES = [{
-  description: "Pencil document",
-  accept: { "application/json": [".pen"] },
-}];
+const BINARY_CHUNK_BYTES = 1024 * 1024;
 
-export async function choosePenDocument() {
-  try {
-    const root = await globalThis.showDirectoryPicker({ mode: "read" });
-    const [handle] = await globalThis.showOpenFilePicker({
-      startIn: root,
-      multiple: false,
-      types: PEN_FILE_TYPES,
-      excludeAcceptAllOption: true,
-    });
-    if (!handle) return null;
-    return readPenDocument(root, handle);
-  } catch (error) {
-    if (error?.name === "AbortError") return null;
-    throw error;
-  }
+export async function choosePenDocument(files = runtimeFiles()) {
+  const root = await files.pick("directory");
+  if (!root) return null;
+  const entries = await files.listDirectory(root.id);
+  const documents = entries.filter((entry) => entry.kind === "file" && entry.name.toLowerCase().endsWith(".pen"));
+  if (documents.length === 0) throw new Error("The selected folder does not contain a .pen document.");
+  if (documents.length > 1) throw new Error("Choose a folder containing exactly one .pen document.");
+  return readPenDocument(files, root, documents[0]);
 }
 
-export async function readDroppedPenDocument(dataTransfer) {
+export async function readDroppedPenDocument(dataTransfer, files = runtimeFiles()) {
   const item = [...(dataTransfer?.items ?? [])].find((candidate) => candidate.kind === "file");
-  if (!item?.getAsFileSystemHandle) {
-    throw new Error("This browser cannot grant a standard filesystem handle for the dropped file.");
+  const file = item?.getAsFile?.();
+  if (!file || !file.name.toLowerCase().endsWith(".pen")) throw new Error("Drop one .pen file to import it.");
+  const source = parsePenSource(await file.text());
+  if (collectImageReferences(source).length === 0) {
+    return { source, assets: [], fallbackTitle: file.name.replace(/\.pen$/iu, "") };
   }
-  const handle = await item.getAsFileSystemHandle();
-  if (!handle || handle.kind !== "file") throw new Error("Drop one .pen file to import it.");
-  try {
-    const root = await globalThis.showDirectoryPicker({ mode: "read" });
-    return readPenDocument(root, handle);
-  } catch (error) {
-    if (error?.name === "AbortError") return null;
-    throw error;
-  }
+  const root = await files.pick("directory");
+  if (!root) return null;
+  const entries = await files.listDirectory(root.id);
+  const document = entries.find((entry) => entry.kind === "file" && entry.name === file.name);
+  if (!document) throw new Error(`The selected folder does not contain ${file.name}.`);
+  return readPenDocument(files, root, document);
 }
 
-export async function readPenDocument(root, handle) {
-  if (!handle.name.toLowerCase().endsWith(".pen")) throw new Error("Choose a .pen file.");
-  const relative = await root.resolve(handle);
-  if (!relative) throw new Error("The .pen file must be inside the selected folder.");
-  const source = parsePenSource(await (await handle.getFile()).text());
-  const base = relative.slice(0, -1);
+export async function readPenDocument(files, root, document) {
+  if (root?.kind !== "directory" || !root.id) throw new Error("Choose the folder containing the .pen file.");
+  if (document?.kind !== "file" || !document.name.toLowerCase().endsWith(".pen")) throw new Error("Choose a .pen file.");
+  const relative = document.relativePath || document.name;
+  const source = parsePenSource(await files.readText(root.id, relative));
+  const base = relative.split("/").slice(0, -1);
   const assets = [];
   for (const reference of collectImageReferences(source)) {
-    const logicalPath = resolveReference(base, reference);
-    const file = await fileAt(root, logicalPath, reference);
-    const bytes = new Uint8Array(await file.arrayBuffer());
+    const logicalPath = resolveReference(base, reference).join("/");
+    const bytes = await readBinaryFile(files, root.id, logicalPath, reference);
     assets.push({
       path: reference,
       bytes,
-      mimeType: file.type || mimeTypeFor(reference),
+      mimeType: mimeTypeFor(reference),
       sha256: await sha256(bytes),
     });
   }
   return {
     source,
     assets,
-    fallbackTitle: handle.name.replace(/\.pen$/iu, ""),
+    fallbackTitle: document.name.replace(/\.pen$/iu, ""),
   };
 }
 
-export async function savePenDocument(source, suggestedName) {
-  let handle;
-  try {
-    handle = await globalThis.showSaveFilePicker({
-      suggestedName,
-      types: PEN_FILE_TYPES,
-      excludeAcceptAllOption: true,
-    });
-  } catch (error) {
-    if (error?.name === "AbortError") return false;
-    throw error;
-  }
-  const writable = await handle.createWritable();
-  try {
-    await writable.write(JSON.stringify(source, null, 2));
-    await writable.close();
-  } catch (error) {
-    await writable.abort().catch(() => undefined);
-    throw error;
-  }
+export async function savePenDocument(source, suggestedName, files = runtimeFiles()) {
+  const root = await files.pick("directory");
+  if (!root) return false;
+  await files.writeText(root.id, JSON.stringify(source, null, 2), suggestedName);
   return true;
 }
 
@@ -159,15 +132,34 @@ function validateReference(reference) {
   }
 }
 
-async function fileAt(root, parts, reference) {
-  let directory = root;
-  for (const part of parts.slice(0, -1)) directory = await directory.getDirectoryHandle(part);
+async function readBinaryFile(files, handleId, relativePath, reference) {
+  const chunks = [];
+  let offset = 0;
+  let totalBytes = null;
   try {
-    return await (await directory.getFileHandle(parts.at(-1))).getFile();
+    while (totalBytes === null || offset < totalBytes) {
+      const result = await files.readBinary({ handleId, relativePath, offset, length: BINARY_CHUNK_BYTES });
+      const bytes = result.bytes instanceof Uint8Array ? result.bytes : new Uint8Array(result.bytes);
+      totalBytes = result.totalBytes;
+      chunks.push(bytes);
+      offset += bytes.byteLength;
+      if (result.complete) break;
+      if (bytes.byteLength === 0) throw new Error(`Could not finish reading referenced asset ${reference}.`);
+    }
   } catch (error) {
-    if (error?.name === "NotFoundError") throw new Error(`Referenced asset ${reference} is missing.`);
-    throw error;
+    if (error?.message?.includes(`referenced asset ${reference}`)) throw error;
+    throw new Error(`Referenced asset ${reference} is missing.`);
   }
+  const output = new Uint8Array(chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0));
+  let cursor = 0;
+  for (const chunk of chunks) { output.set(chunk, cursor); cursor += chunk.byteLength; }
+  return output;
+}
+
+function runtimeFiles() {
+  const files = globalThis.penkra?.files;
+  if (!files) throw new Error("Canvas requires Penkra's scoped file service.");
+  return files;
 }
 
 async function sha256(bytes) {

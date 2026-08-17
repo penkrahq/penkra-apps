@@ -1,11 +1,47 @@
 {
-  "manifestVersion": 1,
+  "manifestVersion": 2,
   "id": "com.penkra.explorer",
   "slug": "explorer",
   "name": "Explorer",
   "summary": "Browse, search, preview, and manage files through scoped Penkra access.",
-  "version": "0.1.3",
-  "compatibility": { "penkra": ">=0.8.0" },
+  "version": "0.2.0",
+  "compatibility": { "penkra": ">=0.11.0" },
   "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
-  "entrypoints": { "app": "app.html", "operations": "operations.html" }
+  "entrypoints": { "app": "app.html", "operations": "operations.html" },
+  "operations": [
+    {
+      "key": "resources.open",
+      "summary": "Open a scoped file or directory handle in Explorer.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "handleId": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["file", "directory"] },
+          "name": { "type": "string", "minLength": 1 }
+        },
+        "required": ["handleId", "kind", "name"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": { "tabId": { "type": "string", "minLength": 1 } },
+        "required": ["tabId"],
+        "additionalProperties": false
+      },
+      "handler": "resources.open"
+    }
+  ],
+  "contributions": {
+    "handlers": [
+      {
+        "intent": "open-file",
+        "operation": "resources.open",
+        "extensions": [
+          ".css", ".gif", ".html", ".jpeg", ".jpg", ".js", ".json", ".md", ".mjs",
+          ".pdf", ".png", ".svg", ".toml", ".ts", ".tsx", ".txt", ".webp", ".yaml", ".yml"
+        ]
+      },
+      { "intent": "open-directory", "operation": "resources.open" }
+    ]
+  }
 }

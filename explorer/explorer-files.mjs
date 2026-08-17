@@ -1,151 +1,66 @@
-const DATABASE_NAME = "penkra-explorer";
-const STORE_NAME = "handles";
-const ROOT_KEY = "root";
+const BINARY_CHUNK_BYTES = 1024 * 1024;
+const MAX_PREVIEW_BYTES = 64 * 1024 * 1024;
 
-export async function chooseExplorerRoot() {
-  try {
-    return await globalThis.showDirectoryPicker({ mode: "readwrite" });
-  } catch (error) {
-    if (error?.name === "AbortError") return null;
-    throw error;
-  }
+export async function chooseExplorerRoot(files = runtimeFiles()) {
+  return files.pick("directory");
 }
 
-export async function restoreExplorerRoot() {
-  const handle = await readStoredRoot();
-  if (!handle) return null;
-  return (await handle.queryPermission({ mode: "readwrite" })) === "granted" ? handle : null;
+export async function restoreExplorerRoot(files = runtimeFiles()) {
+  const handles = await files.list();
+  return handles.find((handle) => handle.kind === "directory") ?? handles[0] ?? null;
 }
 
-export function rememberExplorerRoot(handle) {
-  return withStore("readwrite", (store) => requestResult(store.put(handle, ROOT_KEY)));
+export async function rememberExplorerRoot() {
+  // Runtime v2 handles already survive iframe reloads for the current desktop session.
 }
 
-export function forgetExplorerRoot() {
-  return withStore("readwrite", (store) => requestResult(store.delete(ROOT_KEY)));
+export async function forgetExplorerRoot(handle, files = runtimeFiles()) {
+  if (handle?.id) await files.revoke(handle.id);
 }
 
-export async function listDirectory(root, relativePath = "") {
-  const directory = await directoryAt(root, relativePath);
-  const entries = [];
-  for await (const [name, handle] of directory.entries()) {
-    entries.push(await describeHandle(handle, join(relativePath, name)));
-  }
-  return entries;
+export function listDirectory(root, relativePath = "", files = runtimeFiles()) {
+  return files.listDirectory(root.id, relativePath || undefined);
 }
 
-export async function statEntry(root, relativePath = "") {
-  if (!relativePath) return describeHandle(root, "");
-  const handle = await entryAt(root, relativePath);
-  return describeHandle(handle, relativePath);
+export function statEntry(root, relativePath = "", files = runtimeFiles()) {
+  return files.stat(root.id, relativePath || undefined);
 }
 
-export async function readEntry(root, relativePath) {
-  const handle = await entryAt(root, relativePath);
-  if (handle.kind !== "file") throw new TypeError(`${relativePath} is not a file.`);
-  return handle.getFile();
+export async function readEntry(root, relativePath, files = runtimeFiles()) {
+  const metadata = await files.stat(root.id, relativePath || undefined);
+  if (metadata.kind !== "file") throw new TypeError(`${relativePath} is not a file.`);
+  if (metadata.size > MAX_PREVIEW_BYTES) throw new Error("Preview exceeds Explorer's 64 MB limit.");
+  const chunks = [];
+  let offset = 0;
+  do {
+    const result = await files.readBinary({
+      handleId: root.id,
+      relativePath: relativePath || undefined,
+      offset,
+      length: BINARY_CHUNK_BYTES,
+    });
+    chunks.push(result.bytes);
+    offset += result.bytes.byteLength;
+    if (result.complete) break;
+    if (result.bytes.byteLength === 0) throw new Error("Explorer could not finish reading this file.");
+  } while (offset <= MAX_PREVIEW_BYTES);
+  return new Blob(chunks);
 }
 
-export async function writeTextEntry(root, relativePath, source) {
-  const handle = await entryAt(root, relativePath);
-  if (handle.kind !== "file") throw new TypeError(`${relativePath} is not a file.`);
-  const writable = await handle.createWritable();
-  try {
-    await writable.write(source);
-    await writable.close();
-  } catch (error) {
-    await writable.abort().catch(() => undefined);
-    throw error;
-  }
+export function writeTextEntry(root, relativePath, source, files = runtimeFiles()) {
+  return files.writeText(root.id, source, relativePath || undefined);
 }
 
-export async function createDirectory(root, parentPath, name) {
-  const parent = await directoryAt(root, parentPath);
-  await parent.getDirectoryHandle(name, { create: true });
-}
-
-async function directoryAt(root, relativePath) {
-  let directory = root;
-  for (const segment of segments(relativePath)) {
-    directory = await directory.getDirectoryHandle(segment);
-  }
-  return directory;
-}
-
-async function entryAt(root, relativePath) {
-  const parts = segments(relativePath);
-  const name = parts.pop();
-  if (!name) return root;
-  const parent = await directoryAt(root, parts.join("/"));
-  for await (const [candidate, handle] of parent.entries()) {
-    if (candidate === name) return handle;
-  }
-  throw new DOMException(`${relativePath} does not exist.`, "NotFoundError");
-}
-
-async function describeHandle(handle, relativePath) {
-  if (handle.kind === "directory") {
-    return { kind: "directory", name: handle.name, relativePath, size: null, modifiedAt: null };
-  }
-  const file = await handle.getFile();
-  return {
-    kind: "file",
-    name: handle.name,
-    relativePath,
-    size: file.size,
-    modifiedAt: new Date(file.lastModified).toISOString(),
-  };
-}
-
-function segments(relativePath) {
-  if (!relativePath) return [];
-  const parts = relativePath.split("/");
-  if (parts.some((part) => !part || part === "." || part === ".." || part.includes("\\"))) {
-    throw new TypeError("Invalid relative file path.");
-  }
-  return parts;
+export function createDirectory(root, parentPath, name, files = runtimeFiles()) {
+  return files.createDirectory(root.id, join(parentPath, name));
 }
 
 function join(parent, name) {
   return parent ? `${parent}/${name}` : name;
 }
 
-async function readStoredRoot() {
-  return withStore("readonly", (store) => requestResult(store.get(ROOT_KEY)));
-}
-
-function withStore(mode, operation) {
-  return new Promise((resolve, reject) => {
-    const open = indexedDB.open(DATABASE_NAME, 1);
-    open.onupgradeneeded = () => open.result.createObjectStore(STORE_NAME);
-    open.onerror = () => reject(open.error);
-    open.onsuccess = () => {
-      const database = open.result;
-      const transaction = database.transaction(STORE_NAME, mode);
-      let value;
-      Promise.resolve(operation(transaction.objectStore(STORE_NAME))).then(
-        (result) => { value = result; },
-        (error) => { transaction.abort(); reject(error); },
-      );
-      transaction.oncomplete = () => {
-        database.close();
-        resolve(value);
-      };
-      transaction.onerror = () => {
-        database.close();
-        reject(transaction.error);
-      };
-      transaction.onabort = () => {
-        database.close();
-        reject(transaction.error);
-      };
-    };
-  });
-}
-
-function requestResult(request) {
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+function runtimeFiles() {
+  const files = globalThis.penkra?.files;
+  if (!files) throw new Error("Explorer requires Penkra's scoped file service.");
+  return files;
 }

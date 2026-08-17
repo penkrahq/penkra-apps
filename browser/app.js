@@ -1,4 +1,8 @@
 import { displayAddress, normalizeAddress, pageLabel } from "./browser-model.mjs";
+import {
+  browserSurfaceInsets,
+  browserSurfaceInsetsSignature,
+} from "./browser-surface.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.browser) throw new Error("Browser requires Penkra's hosted browser service.");
@@ -11,6 +15,7 @@ let findResult = { activeMatchOrdinal: 0, matches: 0 };
 let addressDraft = "";
 let findDraft = "";
 let resizeObserver;
+let lastSurfaceLayoutSignature;
 
 const activePage = () => state.pages.find((page) => page.id === state.activePageId) ?? null;
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
@@ -62,15 +67,22 @@ function observeViewport() {
   const sync = () => {
     const page = activePage();
     if (!viewport || !page || page.url === "about:blank" || page.lastError) {
-      void runtime.browser.setViewport(null);
+      publishSurfaceLayout(null);
       return;
     }
     const bounds = viewport.getBoundingClientRect();
-    void runtime.browser.setViewport({ x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height });
+    publishSurfaceLayout(browserSurfaceInsets(bounds, window.innerWidth, window.innerHeight));
   };
   resizeObserver = new ResizeObserver(sync);
   if (viewport) resizeObserver.observe(viewport);
   requestAnimationFrame(sync);
+}
+
+function publishSurfaceLayout(insets) {
+  const signature = browserSurfaceInsetsSignature(insets);
+  if (signature === lastSurfaceLayoutSignature) return;
+  lastSurfaceLayoutSignature = signature;
+  void runtime.browser.setSurfaceLayout(insets);
 }
 
 async function run(action, data) {

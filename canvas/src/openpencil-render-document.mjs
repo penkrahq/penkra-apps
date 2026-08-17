@@ -29,7 +29,8 @@ const VARIABLE_PROPERTIES = new Set([
 ]);
 
 export function prepareOpenPencilRenderDocument(source) {
-  const document = structuredClone(source);
+  const materialized = materializePencilInstances(source);
+  const document = materialized.document;
   const variables = source?.variables && typeof source.variables === "object"
     ? source.variables
     : {};
@@ -38,7 +39,7 @@ export function prepareOpenPencilRenderDocument(source) {
       .filter(([, values]) => Array.isArray(values) && typeof values[0] === "string")
       .map(([axis, values]) => [axis, values[0]]),
   );
-  const issues = [];
+  const issues = [...materialized.issues];
 
   const resolveReference = (reference, theme, trail = []) => {
     const name = reference.slice(1);
@@ -93,11 +94,218 @@ export function prepareOpenPencilRenderDocument(source) {
       object[property] = resolveValue(value, property, theme, nodeId);
     }
     if (object.type === "icon") adaptIcon(object, issues, nodeId);
+    normalizePencilNode(object, issues, nodeId);
     return object;
   };
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
   return { document, issues };
+}
+
+function materializePencilInstances(source) {
+  const document = structuredClone(source);
+  const components = new Map();
+  const issues = [];
+
+  const index = (node) => {
+    if (node?.reusable && typeof node.id === "string") {
+      components.set(node.id, structuredClone(node));
+    }
+    for (const child of node?.children ?? []) index(child);
+  };
+  for (const node of document.children ?? []) index(node);
+
+  const markSourceIds = (node) => {
+    if (!node || typeof node !== "object") return;
+    node.__penSourceId = node.id;
+    for (const child of node.children ?? []) markSourceIds(child);
+  };
+
+  const mergeOverride = (target, override) => {
+    for (const [key, value] of Object.entries(override)) {
+      if (key === "theme" && isRecord(value)) {
+        target.theme = { ...(isRecord(target.theme) ? target.theme : {}), ...structuredClone(value) };
+      } else {
+        target[key] = structuredClone(value);
+      }
+    }
+  };
+
+  const findDescendant = (root, sourceId) => {
+    for (const child of root.children ?? []) {
+      if (child.__penSourceId === sourceId) return child;
+      const nested = findDescendant(child, sourceId);
+      if (nested) return nested;
+    }
+    return null;
+  };
+
+  const findPath = (root, path) => {
+    let current = root;
+    for (const segment of path.split("/")) {
+      current = findDescendant(current, segment);
+      if (!current) return null;
+    }
+    return current;
+  };
+
+  const findParentOf = (root, sourceId) => {
+    for (let index = 0; index < (root.children ?? []).length; index += 1) {
+      const child = root.children[index];
+      if (child.__penSourceId === sourceId) return { parent: root, index };
+      const nested = findParentOf(child, sourceId);
+      if (nested) return nested;
+    }
+    return null;
+  };
+
+  const replacePath = (root, path, replacement) => {
+    const parts = path.split("/");
+    const leaf = parts.pop();
+    const parent = parts.length > 0 ? findPath(root, parts.join("/")) : root;
+    if (!parent) return false;
+    const location = findParentOf(parent, leaf);
+    if (!location) return false;
+    const next = structuredClone(replacement);
+    markSourceIds(next);
+    location.parent.children[location.index] = next;
+    return true;
+  };
+
+  const assignRenderIds = (node, rootId, path = []) => {
+    if (path.length > 0) node.id = `${rootId}::${path.join("::")}`;
+    const counts = new Map();
+    for (const child of node.children ?? []) {
+      const sourceId = child.__penSourceId ?? child.id ?? "node";
+      const count = counts.get(sourceId) ?? 0;
+      counts.set(sourceId, count + 1);
+      assignRenderIds(child, rootId, [...path, count === 0 ? sourceId : `${sourceId}-${count}`]);
+    }
+  };
+
+  const expand = (node, stack = []) => {
+    if (!node || typeof node !== "object") return node;
+    if (node.type !== "ref") {
+      node.__penSourceId ??= node.id;
+      node.children = (node.children ?? []).map((child) => expand(child, stack));
+      return node;
+    }
+
+    const component = components.get(node.ref);
+    if (!component || stack.includes(node.ref)) {
+      issues.push({
+        nodeId: node.id,
+        kind: "component",
+        message: component
+          ? `Component cycle ${[...stack, node.ref].join(" → ")} is preserved but cannot be rendered.`
+          : `Component ${node.ref ?? "(missing)"} was not found.`,
+      });
+      return node;
+    }
+
+    const instance = structuredClone(component);
+    markSourceIds(instance);
+    instance.children = (instance.children ?? []).map((child) => expand(child, [...stack, node.ref]));
+    const rootOverrides = Object.fromEntries(
+      Object.entries(node).filter(([key]) => !["type", "ref", "descendants", "children"].includes(key)),
+    );
+    mergeOverride(instance, rootOverrides);
+    instance.id = node.id;
+    instance.__penSourceId = node.__penSourceId ?? node.id;
+    instance.reusable = false;
+
+    for (const [path, override] of Object.entries(node.descendants ?? {})) {
+      if (override?.type) {
+        if (!replacePath(instance, path, override)) {
+          issues.push(componentOverrideIssue(node.id, path));
+        }
+        continue;
+      }
+      const target = findPath(instance, path);
+      if (!target) {
+        issues.push(componentOverrideIssue(node.id, path));
+        continue;
+      }
+      mergeOverride(target, override);
+      if (override?.children) {
+        target.children = target.children.map((child) => expand(child, [...stack, node.ref]));
+      }
+    }
+
+    instance.children = (instance.children ?? []).map((child) => expand(child, [...stack, node.ref]));
+    assignRenderIds(instance, node.id);
+    return instance;
+  };
+
+  document.children = (document.children ?? []).map((node) => expand(node));
+  const stripSourceIds = (node) => {
+    delete node.__penSourceId;
+    for (const child of node.children ?? []) stripSourceIds(child);
+  };
+  for (const node of document.children) stripSourceIds(node);
+  return { document, issues };
+}
+
+function componentOverrideIssue(nodeId, path) {
+  return {
+    nodeId,
+    kind: "component",
+    message: `Component descendant ${path} was not found while rendering instance ${nodeId}.`,
+  };
+}
+
+function normalizePencilNode(node, issues, nodeId) {
+  if (!node || typeof node !== "object" || !node.type) return;
+  node.width = normalizePencilSize(node.width);
+  node.height = normalizePencilSize(node.height);
+
+  if (node.type === "frame") {
+    node.layout ??= "horizontal";
+    node.width ??= "hug_content";
+    node.height ??= "hug_content";
+  }
+  if (node.justifyContent === "space_between") node.justifyContent = "space-between";
+  if (node.justifyContent === "space_around") {
+    node.justifyContent = "space-between";
+    issues.push({
+      nodeId,
+      kind: "layout",
+      message: "space_around is approximated with space_between by the current Canvas renderer.",
+    });
+  }
+  if (node.textAlign === "justify") node.textAlign = "justified";
+  if (node.textAlignVertical === "middle") node.textAlignVertical = "center";
+
+  if (node.stroke !== undefined && !isOpenPencilStroke(node.stroke)) {
+    const fills = Array.isArray(node.stroke) ? node.stroke : [node.stroke];
+    const fill = fills.find((candidate) => candidate?.enabled !== false);
+    const color = typeof fill === "string" ? fill : fill?.color;
+    if (typeof color === "string") {
+      node.stroke = {
+        fill: color,
+        thickness: node.strokeWidth ?? 1,
+        align: ({ inner: "inside", outer: "outside" })[node.strokeAlignment] ?? "center",
+        join: node.strokeLinejoin,
+        cap: node.strokeLinecap,
+      };
+    } else {
+      issues.push({
+        nodeId,
+        kind: "stroke",
+        message: "This stroke fill is preserved but is not represented by the current Canvas renderer.",
+      });
+      delete node.stroke;
+    }
+  }
+}
+
+function normalizePencilSize(value) {
+  if (typeof value !== "string") return value;
+  return /^fit_content(?:\([^)]*\))?$/.test(value) ? "hug_content" : value;
+}
+
+function isOpenPencilStroke(value) {
+  return isRecord(value) && Object.hasOwn(value, "fill") && Object.hasOwn(value, "thickness");
 }
 
 function adaptIcon(node, issues, nodeId) {
@@ -138,8 +346,10 @@ function selectVariableValue(value, theme) {
   let selected;
   let found = false;
   let specificity = -1;
+  let fallback;
   for (const entry of value) {
     if (!entry || typeof entry !== "object" || !("value" in entry)) continue;
+    fallback ??= entry.value;
     const conditions = isRecord(entry.theme) ? Object.entries(entry.theme) : [];
     if (!conditions.every(([axis, mode]) => theme[axis] === mode)) continue;
     if (conditions.length > specificity) {
@@ -148,9 +358,9 @@ function selectVariableValue(value, theme) {
       specificity = conditions.length;
     }
   }
-  return !found
-    ? { ok: false, reason: "Variable has no value compatible with the active node theme." }
-    : { ok: true, value: selected };
+  if (found) return { ok: true, value: selected };
+  if (fallback !== undefined) return { ok: true, value: fallback };
+  return { ok: false, reason: "Variable has no values." };
 }
 
 function isVariableReference(value, property) {

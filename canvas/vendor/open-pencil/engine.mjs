@@ -84,7 +84,7 @@ var globalThis_;
 var init_globalThis = __esm(() => {
   globalThis_ = typeof globalThis === "object" && globalThis || typeof window === "object" && window || typeof self === "object" && self || typeof global === "object" && global || function() {
     return this;
-  }() || Function("return this")();
+  }() || {};
 });
 
 // node_modules/.bun/es-toolkit@1.46.1/node_modules/es-toolkit/dist/predicate/isBuffer.mjs
@@ -39914,6 +39914,9 @@ function derivedGrowingLeafFitsParent(graph, parent, child, axis) {
   return sizesFitParent(parent, children.length, sizes, axis);
 }
 function configureTextLeafWithoutMeasurer(yogaChild, child, parent, fixedDerivedMainAxis) {
+  if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
+    yogaChild.setFlexGrow(child.layoutGrow);
+  }
   const hasStoredSize = child.width > 0 && child.height > 0 && !(child.width === 100 && child.height === 100);
   if (child.textAutoResize === "WIDTH_AND_HEIGHT") {
     if (hasStoredSize) {
@@ -39931,7 +39934,7 @@ function configureTextLeafWithoutMeasurer(yogaChild, child, parent, fixedDerived
   const isRow = parent.layoutMode === "HORIZONTAL";
   const measurementWidth = fixedDerivedMainAxis ? child.figmaDerivedLayout?.width ?? child.width : child.width;
   const stretches = child.layoutAlignSelf === "STRETCH" || child.layoutAlignSelf === "AUTO" && parent.counterAxisAlign === "STRETCH";
-  if (!(!isRow && stretches) && !fixedDerivedMainAxis)
+  if (child.layoutGrow <= 0 && !(!isRow && stretches) && !fixedDerivedMainAxis)
     yogaChild.setWidth(child.width);
   if (hasStoredSize)
     yogaChild.setHeight(child.height);
@@ -54384,7 +54387,139 @@ function compileSchemaJS(schema) {
 }
 function compileSchema(schema) {
   let result = { ByteBuffer };
-  new Function("exports", compileSchemaJS(schema))(result);
+  let definitions = Object.fromEntries(schema.definitions.map((definition) => [definition.name, definition]));
+  for (let definition of schema.definitions) {
+    if (definition.kind !== "ENUM")
+      continue;
+    let values = {};
+    for (let field of definition.fields) {
+      values[field.name] = field.value;
+      values[field.value] = field.name;
+    }
+    result[definition.name] = values;
+  }
+  let readValue = (field, bb) => {
+    switch (field.type) {
+      case "bool": return !!bb.readByte();
+      case "byte": return bb.readByte();
+      case "int": return bb.readVarInt();
+      case "uint": return bb.readVarUint();
+      case "float": return bb.readVarFloat();
+      case "string": return bb.readString();
+      case "int64": return bb.readVarInt64();
+      case "uint64": return bb.readVarUint64();
+      default: {
+        let type = definitions[field.type];
+        if (!type)
+          throw new Error("Invalid type " + quote(field.type) + " for field " + quote(field.name));
+        return type.kind === "ENUM"
+          ? result[type.name][bb.readVarUint()]
+          : result["decode" + type.name](bb);
+      }
+    }
+  };
+  let writeValue = (field, value, bb) => {
+    switch (field.type) {
+      case "bool": bb.writeByte(value); break;
+      case "byte": bb.writeByte(value); break;
+      case "int": bb.writeVarInt(value); break;
+      case "uint": bb.writeVarUint(value); break;
+      case "float": bb.writeVarFloat(value); break;
+      case "string": bb.writeString(value); break;
+      case "int64": bb.writeVarInt64(value); break;
+      case "uint64": bb.writeVarUint64(value); break;
+      default: {
+        let type = definitions[field.type];
+        if (!type)
+          throw new Error("Invalid type " + quote(field.type) + " for field " + quote(field.name));
+        if (type.kind === "ENUM") {
+          let encoded = result[type.name][value];
+          if (encoded === void 0)
+            throw new Error("Invalid value " + JSON.stringify(value) + " for enum " + quote(type.name));
+          bb.writeVarUint(encoded);
+        } else {
+          result["encode" + type.name](value, bb);
+        }
+      }
+    }
+  };
+  let decodeField = (field, bb, output) => {
+    if (field.isArray) {
+      if (field.type === "byte") {
+        let value = bb.readByteArray();
+        if (!field.isDeprecated)
+          output[field.name] = value;
+        return;
+      }
+      let length = bb.readVarUint();
+      let values = field.isDeprecated ? null : Array(length);
+      for (let i2 = 0; i2 < length; i2++) {
+        let value = readValue(field, bb);
+        if (values)
+          values[i2] = value;
+      }
+      if (values)
+        output[field.name] = values;
+      return;
+    }
+    let value = readValue(field, bb);
+    if (!field.isDeprecated)
+      output[field.name] = value;
+  };
+  for (let definition of schema.definitions) {
+    if (definition.kind === "ENUM")
+      continue;
+    let fieldsByValue = new Map(definition.fields.map((field) => [field.value, field]));
+    result["decode" + definition.name] = (buffer) => {
+      let bb = buffer instanceof ByteBuffer ? buffer : new ByteBuffer(buffer);
+      let output = {};
+      if (definition.kind === "MESSAGE") {
+        while (true) {
+          let fieldValue = bb.readVarUint();
+          if (fieldValue === 0)
+            return output;
+          let field = fieldsByValue.get(fieldValue);
+          if (!field)
+            throw new Error("Attempted to parse invalid message");
+          decodeField(field, bb, output);
+        }
+      }
+      for (let field of definition.fields)
+        decodeField(field, bb, output);
+      return output;
+    };
+    result["encode" + definition.name] = (message, buffer) => {
+      let isTopLevel = !buffer;
+      let bb = buffer ?? new ByteBuffer();
+      for (let field of definition.fields) {
+        if (field.isDeprecated)
+          continue;
+        let value = message[field.name];
+        if (value == null) {
+          if (definition.kind === "STRUCT")
+            throw new Error("Missing required field " + quote(field.name));
+          continue;
+        }
+        if (definition.kind === "MESSAGE")
+          bb.writeVarUint(field.value);
+        if (field.isArray) {
+          if (field.type === "byte") {
+            bb.writeByteArray(value);
+          } else {
+            bb.writeVarUint(value.length);
+            for (let item of value)
+              writeValue(field, item, bb);
+          }
+        } else {
+          writeValue(field, value, bb);
+        }
+      }
+      if (definition.kind === "MESSAGE")
+        bb.writeVarUint(0);
+      if (isTopLevel)
+        return bb.toUint8Array();
+    };
+  }
   return result;
 }
 var types = [
@@ -73720,7 +73855,7 @@ function formatColor(color, opacity = 1, colorSpace = getDefaultRenderColorSpace
   if (colorSpace === "display-p3") {
     return colorToDisplayCss(alphaColor, { colorSpace });
   }
-  return colorToHex(alphaColor);
+  return colorToHex8(alphaColor);
 }
 function createGradientDef(fill3, node, ctx) {
   const stops = fill3.gradientStops;
@@ -74130,11 +74265,9 @@ function buildSVGStrokeAttrs(visibleStrokes, colorSpace) {
     return {};
   const stroke = visibleStrokes[0];
   const attrs = {
-    stroke: formatColor(stroke.color, 1, colorSpace),
+    stroke: formatColor(stroke.color, stroke.opacity, colorSpace),
     "stroke-width": round2(stroke.weight)
   };
-  if (stroke.opacity < 1)
-    attrs["stroke-opacity"] = round2(stroke.opacity);
   if (stroke.cap && stroke.cap !== "NONE") {
     attrs["stroke-linecap"] = SVG_STROKE_CAP[stroke.cap] ?? "butt";
   }
@@ -83889,8 +84022,9 @@ function convertFill(fill3, ctx, node) {
   const fills = Array.isArray(fill3) ? fill3 : [fill3];
   return fills.map((item, index) => {
     const visible = typeof item === "string" ? true : item.enabled !== false;
-    const color = parseFillColor(item, ctx);
-    const result = { type: "SOLID", visible, opacity: color.a, color };
+    const parsedColor = parseFillColor(item, ctx);
+    const color = { ...parsedColor, a: 1 };
+    const result = { type: "SOLID", visible, opacity: parsedColor.a, color };
     if (node)
       bindIfVar(node, `fills[${index}]`, typeof item === "string" ? item : item.color, ctx);
     return result;
@@ -83902,7 +84036,8 @@ function strokeWeight(stroke) {
 function convertStroke(stroke, ctx, node) {
   if (!stroke?.fill)
     return [];
-  const color = isVarRef(stroke.fill) ? ctx.resolveColor(stroke.fill) : parseColor2(stroke.fill);
+  const parsedColor = isVarRef(stroke.fill) ? ctx.resolveColor(stroke.fill) : parseColor2(stroke.fill);
+  const color = { ...parsedColor, a: 1 };
   let align = "CENTER";
   if (stroke.align === "inside")
     align = "INSIDE";
@@ -83911,7 +84046,7 @@ function convertStroke(stroke, ctx, node) {
   const result = {
     visible: true,
     color,
-    opacity: color.a,
+    opacity: parsedColor.a,
     weight: strokeWeight(stroke),
     align,
     dashPattern: []
@@ -83984,10 +84119,18 @@ function applyPadding2(node, padding, ctx) {
     return;
   const resolve2 = (v) => typeof v === "string" ? isVarRef(v) && ctx ? ctx.resolveNumber(v) : Number(v) || 0 : v;
   if (Array.isArray(padding)) {
-    node.paddingTop = resolve2(padding[0] ?? 0);
-    node.paddingRight = resolve2(padding[1] ?? 0);
-    node.paddingBottom = resolve2(padding[2] ?? 0);
-    node.paddingLeft = resolve2(padding[3] ?? 0);
+    const values = padding.map((value) => resolve2(value ?? 0));
+    const [top, right, bottom, left] = values.length === 1
+      ? [values[0], values[0], values[0], values[0]]
+      : values.length === 2
+        ? [values[0], values[1], values[0], values[1]]
+        : values.length === 3
+          ? [values[0], values[1], values[2], values[1]]
+          : [values[0] ?? 0, values[1] ?? 0, values[2] ?? 0, values[3] ?? 0];
+    node.paddingTop = top;
+    node.paddingRight = right;
+    node.paddingBottom = bottom;
+    node.paddingLeft = left;
     return;
   }
   const resolved = resolve2(padding);
@@ -84001,10 +84144,16 @@ function parseSize(value, fallback, ctx) {
     return { value: fallback, sizing: "FIXED" };
   if (typeof value === "number")
     return { value, sizing: "FIXED" };
-  if (value === "fill_container")
-    return { value: fallback, sizing: "FILL" };
-  if (value === "hug_content")
-    return { value: fallback, sizing: "HUG" };
+  const fillMatch = typeof value === "string" ? /^fill_container(?:\(([^)]*)\))?$/.exec(value) : null;
+  if (fillMatch) {
+    const stored = Number(fillMatch[1]);
+    return { value: Number.isFinite(stored) ? stored : fallback, sizing: "FILL" };
+  }
+  const hugMatch = typeof value === "string" ? /^(?:hug_content|fit_content)(?:\(([^)]*)\))?$/.exec(value) : null;
+  if (hugMatch) {
+    const stored = Number(hugMatch[1]);
+    return { value: Number.isFinite(stored) ? stored : fallback, sizing: "HUG" };
+  }
   if (isVarRef(value) && ctx)
     return { value: ctx.resolveNumber(value), sizing: "FIXED" };
   const parsed = Number(value);
@@ -84089,9 +84238,29 @@ function mapNodeType2(pen) {
 }
 
 // packages/pen/src/read.ts
-function scaleVectorNetwork2(vn3, targetW, targetH) {
+function scaleVectorNetwork2(vn3, targetW, targetH, viewBox) {
   if (vn3.vertices.length === 0)
     return;
+  if (Array.isArray(viewBox) && viewBox.length === 4 && viewBox[2] !== 0 && viewBox[3] !== 0) {
+    const [viewX, viewY, viewWidth, viewHeight] = viewBox;
+    const viewScaleX = targetW / viewWidth;
+    const viewScaleY = targetH / viewHeight;
+    for (const vertex of vn3.vertices) {
+      vertex.x = (vertex.x - viewX) * viewScaleX;
+      vertex.y = (vertex.y - viewY) * viewScaleY;
+    }
+    for (const segment of vn3.segments) {
+      segment.tangentStart = {
+        x: segment.tangentStart.x * viewScaleX,
+        y: segment.tangentStart.y * viewScaleY
+      };
+      segment.tangentEnd = {
+        x: segment.tangentEnd.x * viewScaleX,
+        y: segment.tangentEnd.y * viewScaleY
+      };
+    }
+    return;
+  }
   let minX = Infinity;
   let maxX = -Infinity;
   let minY = Infinity;
@@ -84170,6 +84339,24 @@ function applyTextProps(node, pen, ctx) {
   if (pen.fontFamily && isVarRef(pen.fontFamily)) {
     bindIfVar(node, "fontFamily", pen.fontFamily, ctx);
   }
+}
+function estimatePenTextWidth(text, fontSize, letterSpacing = 0) {
+  let em = 0;
+  for (const character of Array.from(text)) {
+    if (/\s/u.test(character))
+      em += 0.28;
+    else if (/[ijlI.,'!|:;]/u.test(character))
+      em += 0.28;
+    else if (/[MW@%&]/u.test(character))
+      em += 0.85;
+    else if (/[A-Z]/u.test(character))
+      em += 0.62;
+    else if (/[0-9]/u.test(character))
+      em += 0.56;
+    else
+      em += 0.52;
+  }
+  return em * fontSize + Math.max(0, Array.from(text).length - 1) * letterSpacing;
 }
 function resolveSizing(pen, ctx) {
   const isTextLike = pen.type === "text" || pen.type === "icon_font";
@@ -84274,6 +84461,8 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
   const node = graph4.createNode(mapNodeType2(pen), parentId, overrides);
   if (pen.fill !== undefined)
     node.fills = convertFill(pen.fill, ctx, node);
+  else if (pen.type === "frame" || pen.type === "ref")
+    node.fills = [];
   if (pen.stroke)
     node.strokes = convertStroke(pen.stroke, ctx, node);
   node.effects = convertEffects2(pen.effect);
@@ -84281,16 +84470,17 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
   applyPadding2(node, pen.padding, ctx);
   if (isTextLike) {
     applyTextProps(node, pen, ctx);
-    if (parentLayout2 === "NONE" && pen.width === undefined && !pen.textGrowth) {
-      node.textAutoResize = "NONE";
-      node.width = node.text.length * node.fontSize * 0.65;
+    if (pen.height === undefined) {
       node.height = node.fontSize * (node.lineHeight ? node.lineHeight / node.fontSize : 1.2);
+    }
+    if (pen.width === undefined && !pen.textGrowth) {
+      node.width = estimatePenTextWidth(node.text, node.fontSize, node.letterSpacing ?? 0);
     }
   }
   if (pen.type === "path" && pen.geometry) {
     const vectorNetwork = parseSVGPath(pen.geometry);
     node.vectorNetwork = vectorNetwork;
-    scaleVectorNetwork2(vectorNetwork, node.width, node.height);
+    scaleVectorNetwork2(vectorNetwork, node.width, node.height, pen.viewBox);
   }
   if (parentLayout2 !== "NONE") {
     const parentVertical = parentLayout2 === "VERTICAL";
@@ -87954,7 +88144,84 @@ function drawFigmaDerivedText(r4, canvas, node) {
 function drawVisibleFills(r4, node, graph4, draw) {
   paintFills(r4, node.fills, node, graph4, draw);
 }
+function viewportExcludesBounds(viewport, bounds) {
+  return bounds.minX > viewport.x + viewport.w || bounds.minY > viewport.y + viewport.h || bounds.maxX < viewport.x || bounds.maxY < viewport.y;
+}
+function collectSubtreeCullBounds(graph4, nodeId2, cache, countCache) {
+  const node = graph4.getNode(nodeId2);
+  if (!node?.visible || node.internalOnly)
+    return null;
+  let bounds = nodeVisualBounds(node, (id) => graph4.getAbsolutePosition(id));
+  let subtreeNodeCount = 1;
+  const isClippableContainer = node.type === "FRAME" || node.type === "COMPONENT" || node.type === "INSTANCE";
+  let childClip = null;
+  if (isClippableContainer && node.clipsContent) {
+    const abs = graph4.getAbsolutePosition(node.id);
+    childClip = {
+      minX: abs.x,
+      minY: abs.y,
+      maxX: abs.x + node.width,
+      maxY: abs.y + node.height
+    };
+  }
+  for (const childId of node.childIds) {
+    let childBounds = collectSubtreeCullBounds(graph4, childId, cache, countCache);
+    subtreeNodeCount += countCache.get(childId) ?? 0;
+    if (childBounds && childClip)
+      childBounds = intersectVisualBounds(childBounds, childClip);
+    bounds = unionVisualBounds(bounds, childBounds);
+  }
+  if (bounds)
+    cache.set(nodeId2, bounds);
+  countCache.set(nodeId2, subtreeNodeCount);
+  return bounds;
+}
+function prepareSubtreeCullBounds(r4, graph4, sceneVersion) {
+  if (r4.subtreeCullBoundsGraph === graph4 && r4.subtreeCullBoundsSceneVersion === sceneVersion && r4.subtreeCullBoundsPositionPreviewVersion === graph4.positionPreviewVersion)
+    return;
+  r4.subtreeCullBounds.clear();
+  r4.subtreeNodeCounts.clear();
+  const pageNode = graph4.getNode(r4.pageId ?? graph4.rootId);
+  if (pageNode) {
+    for (const childId of pageNode.childIds)
+      collectSubtreeCullBounds(graph4, childId, r4.subtreeCullBounds, r4.subtreeNodeCounts);
+  }
+  r4.subtreeCullBoundsGraph = graph4;
+  r4.subtreeCullBoundsSceneVersion = sceneVersion;
+  r4.subtreeCullBoundsPositionPreviewVersion = graph4.positionPreviewVersion;
+}
+function shouldCullSubpixelDetail(r4, node) {
+  if (!r4.largeSceneDetailCulling || r4.zoom >= 0.25 || node.childIds.length > 0)
+    return false;
+  const screenWidth = Math.abs(node.width * r4.zoom);
+  const screenHeight = Math.abs(node.height * r4.zoom);
+  if (node.type === "TEXT") {
+    const textHeight = Math.abs((node.fontSize || node.height) * r4.zoom);
+    return textHeight < 1.25;
+  }
+  return screenWidth * screenHeight < 0.35;
+}
+function shouldRenderSubtreeDetail(r4, node) {
+  if (!r4.largeSceneDetailCulling || r4.zoom >= 0.25 || node.childIds.length === 0)
+    return true;
+  const screenWidth = Math.abs(node.width * r4.zoom);
+  const screenHeight = Math.abs(node.height * r4.zoom);
+  if (screenWidth === 0 || screenHeight === 0)
+    return true;
+  const screenArea = screenWidth * screenHeight;
+  const descendantCount = Math.max(1, (r4.subtreeNodeCounts.get(node.id) ?? 1) - 1);
+  if (descendantCount >= 32 && screenArea / descendantCount < 0.75)
+    return false;
+  const minimumScreenDimension = r4.zoom < 0.1 ? 6 : 2;
+  const minimumScreenArea = r4.zoom < 0.1 ? 36 : 8;
+  return screenWidth >= minimumScreenDimension && screenHeight >= minimumScreenDimension && screenArea >= minimumScreenArea;
+}
 function isCulled(r4, node, absX, absY) {
+  if (shouldCullSubpixelDetail(r4, node))
+    return true;
+  const subtreeBounds = r4.subtreeCullBounds.get(node.id);
+  if (subtreeBounds)
+    return viewportExcludesBounds(r4.worldViewport, subtreeBounds);
   const canCull = node.childIds.length === 0 || (node.type === "FRAME" || node.type === "COMPONENT" || node.type === "INSTANCE") && node.clipsContent;
   if (!canCull)
     return false;
@@ -88080,7 +88347,11 @@ function renderNode2(r4, canvas, graph4, nodeId2, overlays, parentAbsX = 0, pare
   applyNodeTransforms(r4, canvas, node, nodeId2, overlays);
   renderNodeContent(r4, canvas, graph4, node, nodeId2, overlays);
   drawLayoutGrids(r4, canvas, node);
-  renderChildren(r4, canvas, graph4, node, overlays, absX, absY);
+  if (shouldRenderSubtreeDetail(r4, node)) {
+    renderChildren(r4, canvas, graph4, node, overlays, absX, absY);
+  } else {
+    r4._culledCount += node.childIds.length;
+  }
   if (layerBlur) {
     canvas.restore();
     r4.effectLayerPaint.setImageFilter(null);
@@ -89271,6 +89542,8 @@ function ensureSubtreePictureCacheScope(r4, graph4, sceneVersion) {
   r4.subtreePictureCacheFontGeneration = r4.fontGeneration;
 }
 function cachedSubtreePicture(r4, graph4, childId, sceneVersion) {
+  if (graph4.nodes.size > MAX_RETAINED_SCENE_NODES)
+    return null;
   ensureSubtreePictureCacheScope(r4, graph4, sceneVersion);
   const cached = r4.subtreePictureCache.get(childId);
   if (cached && cached.pageId === r4.pageId && cached.sceneVersion === sceneVersion && cached.positionPreviewVersion === graph4.positionPreviewVersion && cached.fontGeneration === r4.fontGeneration) {
@@ -89534,6 +89807,7 @@ function scenePictureMissReason(r4, graph4, overlays, sceneVersion, hasPositionP
 function canUseScenePicture(r4, graph4, sceneVersion, hasVolatileOverlays) {
   return !hasVolatileOverlays && !!r4.scenePicture && graph4.positionPreviewVersion === r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion && r4.fontGeneration === r4.scenePictureFontGeneration && r4.pageId === r4.scenePicturePageId;
 }
+var MAX_RETAINED_SCENE_NODES = 1e4;
 var now3 = typeof performance !== "undefined" ? () => performance.now() : () => 0;
 function measure(fn5) {
   const start = now3();
@@ -89548,6 +89822,9 @@ function render(r4, graph4, selectedIds, overlays = {}, sceneVersion = -1, layer
   p4.setScenePictureRecordTime(0);
   p4.setFlushTime(0);
   graph4.clearAbsPosCache();
+  r4.largeSceneDetailCulling = graph4.nodes.size > MAX_RETAINED_SCENE_NODES;
+  if (r4.largeSceneDetailCulling)
+    prepareSubtreeCullBounds(r4, graph4, sceneVersion);
   const canvas = r4.surface.getCanvas();
   if (layer === "overlays") {
     canvas.clear(r4.ck.Color4f(0, 0, 0, 0));
@@ -89563,18 +89840,23 @@ function render(r4, graph4, selectedIds, overlays = {}, sceneVersion = -1, layer
   updateSceneBackingPreviewState(r4, layer);
   const hasPositionPreview = graph4.positionPreviewVersion !== r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion;
   const hasVolatileOverlays = hasPositionPreview || hasVolatileOverlay(overlays);
-  const canUsePicture = canUseScenePicture(r4, graph4, sceneVersion, hasVolatileOverlays);
-  const cacheMissReason = scenePictureMissReason(r4, graph4, overlays, sceneVersion, hasPositionPreview);
+  const retainFullScene = graph4.nodes.size <= MAX_RETAINED_SCENE_NODES;
+  if (!retainFullScene && r4.scenePicture) {
+    r4.scenePicture.delete();
+    r4.scenePicture = null;
+  }
+  const canUsePicture = retainFullScene && canUseScenePicture(r4, graph4, sceneVersion, hasVolatileOverlays);
+  const cacheMissReason = retainFullScene ? scenePictureMissReason(r4, graph4, overlays, sceneVersion, hasPositionPreview) : "large-scene";
   if (layer !== "overlays") {
     canvas.save();
     canvas.scale(r4.dpr, r4.dpr);
     p4.beginPhase("render:scene");
-    if (layer === "scene" && !hasVolatileOverlays && renderSceneBacking(r4, canvas, graph4, sceneVersion)) {
+    if (layer === "scene" && retainFullScene && !hasVolatileOverlays && renderSceneBacking(r4, canvas, graph4, sceneVersion)) {
       p4.setScenePictureMode("hit", "backing");
     } else {
       canvas.translate(r4.panX, r4.panY);
       canvas.scale(r4.zoom, r4.zoom);
-      renderSceneContent(r4, canvas, graph4, overlays, sceneVersion, canUsePicture, cacheMissReason, hasVolatileOverlays);
+      renderSceneContent(r4, canvas, graph4, overlays, sceneVersion, canUsePicture, cacheMissReason, hasVolatileOverlays, retainFullScene);
     }
     p4.endPhase("render:scene");
     canvas.restore();
@@ -89620,7 +89902,7 @@ function render(r4, graph4, selectedIds, overlays = {}, sceneVersion = -1, layer
   p4.setNodeCounts(r4._nodeCount, r4._culledCount);
   p4.endFrame();
 }
-function renderSceneContent(r4, canvas, graph4, overlays, sceneVersion, canUsePicture, cacheMissReason, hasVolatileOverlays) {
+function renderSceneContent(r4, canvas, graph4, overlays, sceneVersion, canUsePicture, cacheMissReason, hasVolatileOverlays, retainFullScene) {
   const p4 = r4.profiler;
   if (canUsePicture) {
     p4.setScenePictureMode("hit");
@@ -89631,8 +89913,8 @@ function renderSceneContent(r4, canvas, graph4, overlays, sceneVersion, canUsePi
       p4.setScenePictureDrawTime(duration);
     }
     p4.endPhase("render:drawPicture");
-  } else if (hasVolatileOverlays) {
-    p4.setScenePictureMode("volatile", cacheMissReason);
+  } else if (hasVolatileOverlays || !retainFullScene) {
+    p4.setScenePictureMode(hasVolatileOverlays ? "volatile" : "direct", cacheMissReason);
     r4._nodeCount = 0;
     r4._culledCount = 0;
     p4.beginPhase("render:volatile");
@@ -89734,6 +90016,12 @@ class SkiaRenderer {
   subtreePictureCacheSceneVersion = -1;
   subtreePictureCachePositionPreviewVersion = -1;
   subtreePictureCacheFontGeneration = -1;
+  subtreeCullBounds = new Map;
+  subtreeNodeCounts = new Map;
+  subtreeCullBoundsGraph = null;
+  subtreeCullBoundsSceneVersion = -1;
+  subtreeCullBoundsPositionPreviewVersion = -1;
+  largeSceneDetailCulling = false;
   labelCache = new LabelCache;
   profiler;
   panX = 0;
@@ -90578,13 +90866,17 @@ function createCanvasSurfaceManager({ editor, canvasRef, options, getCanvasKit: 
     getRenderer: () => state.renderer
   };
 }
-function useCanvasSurfaceLifecycle({ canvasRef, surface, setCanvasKit, getCanvasKitValue, lifecycle, onReady }) {
+function useCanvasSurfaceLifecycle({ canvasRef, surface, setCanvasKit, getCanvasKitValue, lifecycle, editor, onReady }) {
   useCanvasKitLoader({
     canvasRef,
     lifecycle,
     setCanvasKit,
     createSurface: surface.createSurface,
-    loadFonts: () => surface.getRenderer()?.loadFonts(surface.renderNow),
+    loadFonts: async () => {
+      await surface.getRenderer()?.loadFonts(surface.renderNow);
+      for (const page of editor.graph.getPages())
+        computeAllLayouts(editor.graph, page.id);
+    },
     renderNow: surface.renderNow,
     onReady
   });
@@ -90648,6 +90940,7 @@ function useCanvas(canvasRef, editor, options) {
     canvasRef,
     surface,
     lifecycle,
+    editor,
     getCanvasKitValue: () => ck,
     setCanvasKit: (value) => {
       ck = value;

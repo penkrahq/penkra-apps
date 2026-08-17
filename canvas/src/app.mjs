@@ -4,12 +4,14 @@ import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
 import { analyzeOpenPencilCompatibility, isOpenPencilEditableNode } from "./openpencil-engine.mjs";
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
+import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import {
   choosePenDocument,
   readDroppedPenDocument,
   savePenDocument,
 } from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
+import { createPerformanceMonitor } from "./performance-monitor.mjs";
 import {
   ACCESS_REMOVED_HEADING,
   ACCESS_REMOVED_MESSAGE,
@@ -27,9 +29,11 @@ import {
   disconnectedSyncStatus,
   isTransportFailure,
   normalizePresenceCount,
+  realtimeStateAfterSignal,
   visiblePresenceCount,
 } from "./collaboration-status.mjs";
 import {
+  ENGINE_ORIGIN,
   LOCAL_ORIGIN,
   REMOTE_ORIGIN,
   Y,
@@ -38,7 +42,7 @@ import {
   createUndoManager,
   encodeState,
   encodeUpdate,
-  listNodes,
+  listDocumentNodes,
   materialize,
   mutate,
   reconcileDocumentPayload,
@@ -50,6 +54,7 @@ const root = document.querySelector("#app");
 if (!runtime || !root) throw new Error("Canvas requires the Penkra App runtime.");
 
 const api = createCanvasApi(runtime);
+const performanceMonitor = createPerformanceMonitor();
 const state = {
   route: "library",
   libraryFilter: "all",
@@ -91,7 +96,14 @@ const state = {
   engineViewport: null,
   engineReady: false,
   engineDocumentDirty: false,
+  engineDocumentDirtyReason: null,
   compatibilityIssues: [],
+  compatibilityNodeIds: new Set(),
+  compatibilityDocument: null,
+  materializedDocument: null,
+  preparedRenderDocument: null,
+  documentNodes: null,
+  documentNodeById: null,
   assetPanel: "file",
   inspectorTab: "design",
 };
@@ -105,7 +117,7 @@ const routes = createRouteCoordinator({
 
 runtime.tab.onNavigate((input) => routes.handleHostNavigation(input));
 runtime.tab.handle("selection.set", async ({ nodeId }) => {
-  if (!state.model || !listNodes(state.model).some(({ node }) => node.id === nodeId)) {
+  if (!state.model || !currentDocumentNode(nodeId)) {
     throw new Error(`Canvas node ${nodeId} was not found in this tab.`);
   }
   state.selectedId = nodeId;
@@ -115,7 +127,7 @@ runtime.tab.handle("selection.set", async ({ nodeId }) => {
   return { selected: true };
 });
 runtime.tab.handle("viewport.focus", async ({ nodeId }) => {
-  if (!state.model || !listNodes(state.model).some(({ node }) => node.id === nodeId)) {
+  if (!state.model || !currentDocumentNode(nodeId)) {
     throw new Error(`Canvas node ${nodeId} was not found in this tab.`);
   }
   state.selectedId = nodeId;
@@ -138,7 +150,7 @@ window.addEventListener("online", () => {
 });
 window.addEventListener("offline", () => {
   if (!state.document) return;
-  state.realtimeConnection = REALTIME_RECONNECTING;
+  state.realtimeConnection = realtimeStateAfterSignal(state.realtimeConnection, "browser-offline");
   state.presence = null;
   applyDisconnectedState();
 });
@@ -264,6 +276,7 @@ async function openDocument(documentId) {
     state.assets = new Map(assets);
     state.accessRemoved = false;
     state.model = restoreDocumentModel(payload);
+    invalidateDocumentProjection();
     const serverStateVector = Y.encodeStateVector(state.model.doc);
     state.persistence = new IndexeddbPersistence(`penkra-canvas:${documentId}`, state.model.doc);
     await state.persistence.whenSynced;
@@ -279,11 +292,15 @@ async function openDocument(documentId) {
       payload.snapshot.throughSequence,
       ...(payload.updates ?? []).map((update) => update.sequence),
     );
-    state.selectedId = listNodes(state.model)[0]?.node.id ?? null;
+    state.selectedId = currentDocumentNodes()[0]?.node.id ?? null;
     state.updateListener = (update, origin) => {
+      invalidateDocumentProjection();
       if (origin === REMOTE_ORIGIN) return;
       queueUpdate(documentId, update);
-      state.engineDocumentDirty = true;
+      state.engineDocumentDirty = origin !== ENGINE_ORIGIN;
+      state.engineDocumentDirtyReason = state.engineDocumentDirty
+        ? origin === LOCAL_ORIGIN ? "local-model-update" : "unclassified-model-update"
+        : null;
       state.updatesSinceSnapshot += 1;
       if (state.realtimeConnection === REALTIME_CONNECTED) {
         setSync(navigator.onLine ? "saving" : "offline", navigator.onLine ? "Saving…" : "Offline — changes stay on this device");
@@ -303,6 +320,7 @@ async function openDocument(documentId) {
           state.lastSequence = Math.max(state.lastSequence, Number(event.payload.sequence ?? 0));
           applyRemoteUpdate(state.model, event.payload.update);
           state.engineDocumentDirty = true;
+          state.engineDocumentDirtyReason = "realtime-remote-update";
           render();
         }
         if (event.event === "presence") {
@@ -357,7 +375,14 @@ function closeDocument() {
   state.engineViewport = null;
   state.engineReady = false;
   state.engineDocumentDirty = false;
+  state.engineDocumentDirtyReason = null;
   state.compatibilityIssues = [];
+  state.compatibilityNodeIds = new Set();
+  state.compatibilityDocument = null;
+  state.materializedDocument = null;
+  state.preparedRenderDocument = null;
+  state.documentNodes = null;
+  state.documentNodeById = null;
   state.fieldDrafts.clear();
   state.fieldErrors.clear();
   state.accessRemoved = false;
@@ -377,6 +402,7 @@ async function reconcileFromServer(documentId) {
       state.document = { ...state.document, ...payload };
       if (state.lastSequence > previousSequence) {
         state.engineDocumentDirty = true;
+        state.engineDocumentDirtyReason = "server-reconcile";
         render();
       }
       return true;
@@ -387,9 +413,16 @@ async function reconcileFromServer(documentId) {
         return false;
       }
       if (isTransportFailure(error)) {
-        state.realtimeConnection = REALTIME_RECONNECTING;
+        state.realtimeConnection = realtimeStateAfterSignal(
+          state.realtimeConnection,
+          "request-failure",
+        );
         state.presence = null;
-        applyDisconnectedState();
+        setSync(
+          navigator.onLine ? "error" : "offline",
+          navigator.onLine ? "Couldn’t sync — retrying" : "Offline — changes stay on this device",
+        );
+        render();
         setTimeout(() => void reconcileFromServer(documentId), 3_000);
         return false;
       }
@@ -428,7 +461,7 @@ async function flushPending() {
       await api.createSnapshot(documentId, {
         throughSequence: state.lastSequence,
         state: encodeState(state.model),
-        source: materialize(state.model),
+        source: currentMaterializedDocument(),
       });
       state.updatesSinceSnapshot = 0;
     }
@@ -443,9 +476,15 @@ async function flushPending() {
       return;
     }
     if (isTransportFailure(error)) {
-      state.realtimeConnection = REALTIME_RECONNECTING;
+      state.realtimeConnection = realtimeStateAfterSignal(
+        state.realtimeConnection,
+        "request-failure",
+      );
       state.presence = null;
-      applyDisconnectedState(false);
+      setSync(
+        navigator.onLine ? "error" : "offline",
+        navigator.onLine ? "Couldn’t save — retrying" : "Offline — changes stay on this device",
+      );
       setTimeout(() => void flushPending(), 3_000);
       return;
     }
@@ -459,7 +498,10 @@ async function flushPending() {
 
 async function handleRealtimeConnectionChange(documentId, connectionState) {
   if (state.document?.id !== documentId) return;
-  state.realtimeConnection = connectionState;
+  state.realtimeConnection = realtimeStateAfterSignal(
+    state.realtimeConnection,
+    connectionState,
+  );
   if (connectionState !== REALTIME_CONNECTED) {
     state.presence = null;
     applyDisconnectedState();
@@ -487,7 +529,57 @@ function setSync(sync, syncMessage) {
   state.syncMessage = syncMessage;
 }
 
+function invalidateDocumentProjection() {
+  state.materializedDocument = null;
+  state.preparedRenderDocument = null;
+  state.documentNodes = null;
+  state.documentNodeById = null;
+}
+
+function currentPreparedRenderDocument() {
+  if (!state.preparedRenderDocument) {
+    state.preparedRenderDocument = performanceMonitor.measure(
+      "document.prepare-render",
+      () => prepareOpenPencilRenderDocument(currentMaterializedDocument()),
+      { documentId: state.document?.id, nodes: state.documentNodes?.length ?? 0 },
+    );
+  }
+  return state.preparedRenderDocument;
+}
+
+function currentMaterializedDocument() {
+  if (!state.materializedDocument) {
+    state.materializedDocument = performanceMonitor.measure(
+      "document.materialize",
+      () => materialize(state.model),
+      { documentId: state.document?.id },
+    );
+  }
+  return state.materializedDocument;
+}
+
+function currentDocumentNodes() {
+  if (!state.documentNodes) {
+    state.documentNodes = performanceMonitor.measure(
+      "document.index",
+      () => listDocumentNodes(currentMaterializedDocument()),
+      { documentId: state.document?.id },
+    );
+    state.documentNodeById = new Map(
+      state.documentNodes.map(({ node }) => [node.id, node]),
+    );
+  }
+  return state.documentNodes;
+}
+
+function currentDocumentNode(nodeId) {
+  if (!nodeId) return null;
+  currentDocumentNodes();
+  return state.documentNodeById.get(nodeId) ?? null;
+}
+
 function render() {
+  const renderStartedAt = performance.now();
   const retainedHost = state.route === "editor" && state.document && state.engineSurface
     ? root.querySelector('[data-role="openpencil-surface"]')
     : null;
@@ -512,13 +604,30 @@ function render() {
     bindEditor();
     if (retainedHost) {
       if (state.engineDocumentDirty) {
-        state.engineSurface.replaceDocument(materialize(state.model), state.selectedId);
+        performanceMonitor.measure(
+          "engine.replace-document",
+          () => state.engineSurface.replaceDocument(
+            currentMaterializedDocument(),
+            state.selectedId,
+            currentPreparedRenderDocument(),
+          ),
+          {
+            documentId: state.document.id,
+            nodes: state.documentNodes?.length ?? 0,
+            reason: state.engineDocumentDirtyReason ?? "unknown",
+          },
+        );
         state.engineDocumentDirty = false;
+        state.engineDocumentDirtyReason = null;
       }
     } else mountEditorSurface();
   }
   else bindLibrary();
   focusRequestedControl();
+  performanceMonitor.record("ui.render", performance.now() - renderStartedAt, {
+    route: state.route,
+    nodes: state.documentNodes?.length ?? 0,
+  });
 }
 
 function renderLibrary() {
@@ -558,13 +667,27 @@ function renderEditor() {
   if (state.accessRemoved) {
     return `<main class="shell empty"><div>${icon("file")}<h2>${ACCESS_REMOVED_HEADING}</h2><p>${ACCESS_REMOVED_MESSAGE}</p><div class="library-actions"><button class="button primary" data-action="back">Back to files</button></div></div></main>${renderToast()}`;
   }
-  const nodes = listNodes(state.model);
-  state.compatibilityIssues = analyzeOpenPencilCompatibility(materialize(state.model), state.assets);
-  const selected = nodes.find(({ node }) => node.id === state.selectedId)?.node ?? null;
+  const document = currentMaterializedDocument();
+  const nodes = currentDocumentNodes();
+  if (state.compatibilityDocument !== document) {
+    state.compatibilityIssues = performanceMonitor.measure(
+      "document.compatibility",
+      () => analyzeOpenPencilCompatibility(
+        document,
+        state.assets,
+        currentPreparedRenderDocument(),
+      ),
+      { documentId: state.document.id, nodes: nodes.length },
+    );
+    state.compatibilityNodeIds = new Set(state.compatibilityIssues.map((issue) => issue.nodeId));
+    state.compatibilityDocument = document;
+  }
+  const selected = currentDocumentNode(state.selectedId);
   const unsupported = state.compatibilityIssues;
   const visiblePresence = visiblePresenceCount(state.realtimeConnection, state.presence);
   const presenceNoun = visiblePresence === 1 ? "person" : "people";
   const panelClass = state.activePanel ? `show-${state.activePanel}` : "show-none";
+  const panelVisibilityClass = `${state.layersOpen ? "layers-open" : "layers-closed"} ${state.inspectorOpen ? "inspector-open" : "inspector-closed"}`;
   const closedPanelClass = state.layersOpen && state.inspectorOpen ? "" : " has-closed-panel";
   return `<main class="shell editor${closedPanelClass}">
     <header class="editor-header">
@@ -577,11 +700,11 @@ function renderEditor() {
       ${state.document.access === "owner" ? `<button class="button" data-action="share">Share</button>` : ""}
       <button class="icon-button" data-action="menu" aria-label="Document actions">${icon("more")}</button>
     </header>
-    <div class="editor-body ${panelClass}">
-      ${state.layersOpen ? `<aside class="side-panel layers">
+    <div class="editor-body ${panelClass} ${panelVisibilityClass}">
+      <aside class="side-panel layers" ${state.layersOpen ? "" : "hidden"}>
         <div class="panel-tabs"><button class="${state.assetPanel === "file" ? "active" : ""}" data-asset-panel="file">File</button><button class="${state.assetPanel === "assets" ? "active" : ""}" data-asset-panel="assets">Assets</button><button class="icon-button panel-close" data-action="close-layers" aria-label="Close layers">${icon("close")}</button></div>
         <div class="panel-scroll">${state.assetPanel === "file" ? `<section class="layer-section"><h3>Pages</h3><button class="page-row active">Page 1</button></section><section class="layer-section"><h3>Layers</h3><div role="tree" aria-label="Document layers">${nodes.map(layerRow).join("")}</div></section>` : `<div class="inspector-empty">Reusable components and document assets appear here.</div>`}</div>
-      </aside>` : ""}
+      </aside>
       <section class="viewport" data-role="viewport" data-tool="${state.activeTool}" tabindex="0" aria-label="Canvas viewport">
         <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading">Rendering design…</div></div>
         ${state.realtimeConnection === REALTIME_RECONNECTING && navigator.onLine ? `<div class="connection-banner">${icon("refresh")}<span>Reconnecting and merging changes</span></div>` : ""}
@@ -589,7 +712,7 @@ function renderEditor() {
         <div class="zoom-controls" aria-label="Canvas zoom"><button class="tool" data-action="zoom-out" aria-label="Zoom out">−</button><button class="zoom-label" data-action="fit" aria-label="Fit design in view">${Math.round((state.engineViewport?.zoom ?? 1) * 100)}%</button><button class="tool" data-action="zoom-in" aria-label="Zoom in">+</button></div>
         <div class="tool-palette" aria-label="Canvas tools"><button class="tool ${state.activeTool === "select" ? "active" : ""}" data-tool="SELECT" aria-label="Select tool" title="Select (V)">${icon("cursor")}</button><button class="tool ${state.activeTool === "hand" ? "active" : ""}" data-tool="HAND" aria-label="Pan canvas" title="Pan canvas (H or Space)">${icon("hand")}</button><span class="tool-separator"></span><button class="tool" data-tool="FRAME" aria-label="Frame tool" title="Frame (F)">${icon("frame")}</button><button class="tool" data-tool="RECTANGLE" aria-label="Rectangle tool" title="Rectangle (R)">${icon("rectangle")}</button><button class="tool" data-tool="ELLIPSE" aria-label="Ellipse tool" title="Ellipse (O)">${icon("ellipse")}</button><button class="tool" data-tool="TEXT" aria-label="Text tool" title="Text (T)">${icon("text")}</button></div>
       </section>
-      ${state.inspectorOpen ? `<aside class="side-panel inspector"><div class="panel-tabs"><button class="${state.inspectorTab === "design" ? "active" : ""}" data-inspector-tab="design">Design</button><button class="${state.inspectorTab === "code" ? "active" : ""}" data-inspector-tab="code">Code</button><button class="icon-button panel-close" data-action="close-inspector" aria-label="Close inspector">${icon("close")}</button></div><div class="panel-scroll">${state.inspectorTab === "design" ? renderInspector(selected) : renderCodeInspector(selected)}</div></aside>` : ""}
+      <aside class="side-panel inspector" ${state.inspectorOpen ? "" : "hidden"}><div class="panel-tabs"><button class="${state.inspectorTab === "design" ? "active" : ""}" data-inspector-tab="design">Design</button><button class="${state.inspectorTab === "code" ? "active" : ""}" data-inspector-tab="code">Code</button><button class="icon-button panel-close" data-action="close-inspector" aria-label="Close inspector">${icon("close")}</button></div><div class="panel-scroll">${state.inspectorTab === "design" ? renderInspector(selected) : renderCodeInspector(selected)}</div></aside>
     </div>
   </main>${renderDialog()}${renderToast()}`;
 }
@@ -600,8 +723,10 @@ function mountEditorSurface() {
   if (!host) return;
   const documentId = state.document.id;
   try {
-    const surface = mountOpenPencilSurface(host, materialize(state.model), {
+    let surface;
+    surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentMaterializedDocument(), {
       assets: state.assets,
+      preparedDocument: currentPreparedRenderDocument(),
       selectedId: state.selectedId,
       viewport: state.engineViewport,
       getViewportInsets: () => visibleViewportInsets(host),
@@ -613,7 +738,7 @@ function mountEditorSurface() {
       onSelection: ([nodeId]) => {
         if (state.document?.id !== documentId || nodeId === state.selectedId) return;
         state.selectedId = nodeId ?? null;
-        render();
+        renderSelection();
       },
       onViewport: (viewport) => {
         if (state.document?.id !== documentId) return;
@@ -623,7 +748,7 @@ function mountEditorSurface() {
       },
       onTool: (tool) => {
         state.activeTool = tool.toLowerCase();
-        root.querySelectorAll("[data-tool]").forEach((button) => {
+        root.querySelectorAll("button[data-tool]").forEach((button) => {
           button.classList.toggle("active", button.dataset.tool === tool);
         });
       },
@@ -633,9 +758,10 @@ function mountEditorSurface() {
         state.engineReady = false;
         host.innerHTML = `<div class="engine-error"><strong>Canvas could not render this design.</strong><span>${escapeHtml(message(error))}</span></div>`;
       },
-    });
+    }), { documentId, nodes: state.documentNodes?.length ?? 0 });
     state.engineSurface = surface;
     state.engineDocumentDirty = false;
+    state.engineDocumentDirtyReason = null;
   } catch (error) {
     host.innerHTML = `<div class="engine-error"><strong>Canvas could not render this design.</strong><span>${escapeHtml(message(error))}</span></div>`;
   }
@@ -664,21 +790,21 @@ function queueEngineMutations(documentId, surface, mutations) {
     if (!batch || batch.surface !== surface) return;
     pendingEngineBatch = null;
     if (state.engineSurface !== surface || state.document?.id !== documentId || !state.model) return;
-    const existing = new Set(listNodes(state.model).map(({ node }) => node.id));
+    const existing = new Set(currentDocumentNodes().map(({ node }) => node.id));
     state.model.doc.transact(() => {
       for (const mutation of batch.mutations) {
         if (mutation.kind === "insert-node" && existing.has(mutation.node.id)) continue;
         if (mutation.kind !== "insert-node" && !existing.has(mutation.nodeId)) continue;
-        mutate(state.model, mutation, LOCAL_ORIGIN);
+        mutate(state.model, mutation, ENGINE_ORIGIN);
         if (mutation.kind === "insert-node") existing.add(mutation.node.id);
         if (mutation.kind === "delete-node") existing.delete(mutation.nodeId);
       }
-    }, LOCAL_ORIGIN);
+    }, ENGINE_ORIGIN);
   });
 }
 
 function layerRow({ node, depth }) {
-  const issue = state.compatibilityIssues.some((item) => item.nodeId === node.id);
+  const issue = state.compatibilityNodeIds.has(node.id);
   return `<button class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"><span class="layer-type">${node.type === "text" ? "T" : node.type === "frame" ? "□" : "◇"}</span><span>${escapeHtml(node.name ?? node.content ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</button>`;
 }
 
@@ -693,8 +819,54 @@ function renderInspector(node) {
   <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("gap", node.gap ?? 0, "number", false, node.id)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, node.id)}</div></section>
   <section class="section"><h3>Appearance</h3><div class="field-grid">${field("fill", fillValue(node.fill), "text", true, node.id)}${field("opacity", node.opacity ?? 1, "number", false, node.id)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, node.id)}</div></section>
   ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, node.id)}${field("fontSize", node.fontSize ?? 16, "number", false, node.id)}${field("fontWeight", node.fontWeight ?? 400, "number", false, node.id)}</div></section>` : ""}
-  ${state.compatibilityIssues.some((item) => item.nodeId === node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved in the .pen source but is not represented faithfully. Review compatibility for details.</p></section>` : ""}
+  ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved in the .pen source but is not represented faithfully. Review compatibility for details.</p></section>` : ""}
   <div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`;
+}
+
+function renderSelection() {
+  const startedAt = performance.now();
+  const previous = root.querySelector(".layer-row.selected");
+  previous?.classList.remove("selected");
+  previous?.setAttribute("aria-selected", "false");
+  if (state.selectedId) {
+    const selected = root.querySelector(`[data-node-id="${CSS.escape(state.selectedId)}"]`);
+    selected?.classList.add("selected");
+    selected?.setAttribute("aria-selected", "true");
+  }
+  const inspector = root.querySelector(".side-panel.inspector .panel-scroll");
+  if (inspector) {
+    const node = currentDocumentNode(state.selectedId);
+    inspector.innerHTML = state.inspectorTab === "design"
+      ? renderInspector(node)
+      : renderCodeInspector(node);
+    bindInspectorControls();
+  }
+  performanceMonitor.record("ui.selection", performance.now() - startedAt, {
+    documentId: state.document?.id,
+    nodeId: state.selectedId,
+  });
+}
+
+function syncPanelVisibility() {
+  const startedAt = performance.now();
+  const editor = root.querySelector(".shell.editor");
+  const body = root.querySelector(".editor-body");
+  editor?.classList.toggle("has-closed-panel", !(state.layersOpen && state.inspectorOpen));
+  if (body) {
+    body.classList.remove("show-layers", "show-inspector", "show-none", "layers-open", "layers-closed", "inspector-open", "inspector-closed");
+    body.classList.add(state.activePanel ? `show-${state.activePanel}` : "show-none");
+    body.classList.add(state.layersOpen ? "layers-open" : "layers-closed");
+    body.classList.add(state.inspectorOpen ? "inspector-open" : "inspector-closed");
+  }
+  root.querySelector(".side-panel.layers")?.toggleAttribute("hidden", !state.layersOpen);
+  root.querySelector(".side-panel.inspector")?.toggleAttribute("hidden", !state.inspectorOpen);
+  root.querySelectorAll("[data-panel]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.panel === state.activePanel);
+  });
+  performanceMonitor.record("ui.panel", performance.now() - startedAt, {
+    documentId: state.document?.id,
+    panel: state.activePanel,
+  });
 }
 
 function renderCodeInspector(node) {
@@ -752,7 +924,7 @@ function bindEditor() {
     const panel = button.dataset.panel;
     state.activePanel = panel;
     state[`${panel}Open`] = true;
-    render();
+    syncPanelVisibility();
   }));
   root.querySelectorAll("[data-asset-panel]").forEach((button) => button.addEventListener("click", () => {
     state.assetPanel = button.dataset.assetPanel;
@@ -765,12 +937,12 @@ function bindEditor() {
   root.querySelector('[data-action="close-layers"]')?.addEventListener("click", () => {
     state.layersOpen = false;
     if (state.activePanel === "layers") state.activePanel = null;
-    render();
+    syncPanelVisibility();
   });
   root.querySelector('[data-action="close-inspector"]')?.addEventListener("click", () => {
     state.inspectorOpen = false;
     if (state.activePanel === "inspector") state.activePanel = null;
-    render();
+    syncPanelVisibility();
   });
   root.querySelector('[data-role="title"]')?.addEventListener("change", (event) => void act(async () => {
     const title = event.target.value.trim();
@@ -780,37 +952,30 @@ function bindEditor() {
     setToast("Document renamed.");
     render();
   }));
-  root.querySelectorAll("[data-node-id]").forEach((element) => element.addEventListener("click", (event) => {
+  root.querySelector('[role="tree"]')?.addEventListener("click", (event) => {
+    const element = event.target.closest("[data-node-id]");
+    if (!element) return;
     event.stopPropagation();
     state.selectedId = element.dataset.nodeId;
     if (innerWidth < 960) {
       state.activePanel = "inspector";
       state.inspectorOpen = true;
     }
-    render();
-  }));
-  root.querySelectorAll("[data-property]").forEach((input) => {
-    input.addEventListener("input", () => {
-      if (!state.selectedId) return;
-      state.fieldDrafts.set(`${state.selectedId}:${input.dataset.property}`, input.value);
-    });
-    input.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape" || !state.selectedId) return;
-      const key = `${state.selectedId}:${input.dataset.property}`;
-      state.fieldDrafts.delete(key);
-      state.fieldErrors.delete(key);
-      render();
-    });
-    input.addEventListener("change", () => commitInspectorField(input));
+    renderSelection();
+    if (innerWidth < 960) syncPanelVisibility();
   });
-  root.querySelector('[data-action="delete-node"]')?.addEventListener("click", () => {
-    if (!state.selectedId) return;
-    mutate(state.model, { kind: "delete-node", nodeId: state.selectedId }, LOCAL_ORIGIN);
-    state.selectedId = null;
-    render();
+  root.querySelector('[role="tree"]')?.addEventListener("dblclick", (event) => {
+    const element = event.target.closest("[data-node-id]");
+    if (!element) return;
+    event.stopPropagation();
+    const nodeId = element.dataset.nodeId;
+    state.selectedId = nodeId;
+    renderSelection();
+    requestAnimationFrame(() => focusNodeInViewport(nodeId));
   });
-  root.querySelectorAll("[data-tool]").forEach((button) => button.addEventListener("click", () => {
-    state.engineSurface?.editor.setActiveTool(button.dataset.tool);
+  bindInspectorControls();
+  root.querySelectorAll("button[data-tool]").forEach((button) => button.addEventListener("click", () => {
+    state.engineSurface?.editor.setTool(button.dataset.tool);
   }));
   root.querySelector('[data-action="zoom-in"]')?.addEventListener("click", () => {
     const editor = state.engineSurface?.editor;
@@ -850,6 +1015,29 @@ function bindEditor() {
   root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
   root.querySelector('[data-action="confirm-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
   root.querySelector('[data-action="confirm-remove-collaborator"]')?.addEventListener("click", () => void confirmDestructiveAction());
+}
+
+function bindInspectorControls() {
+  root.querySelectorAll("[data-property]").forEach((input) => {
+    input.addEventListener("input", () => {
+      if (!state.selectedId) return;
+      state.fieldDrafts.set(`${state.selectedId}:${input.dataset.property}`, input.value);
+    });
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !state.selectedId) return;
+      const key = `${state.selectedId}:${input.dataset.property}`;
+      state.fieldDrafts.delete(key);
+      state.fieldErrors.delete(key);
+      render();
+    });
+    input.addEventListener("change", () => commitInspectorField(input));
+  });
+  root.querySelector('[data-action="delete-node"]')?.addEventListener("click", () => {
+    if (!state.selectedId) return;
+    mutate(state.model, { kind: "delete-node", nodeId: state.selectedId }, LOCAL_ORIGIN);
+    state.selectedId = null;
+    render();
+  });
 }
 
 function handleAccessRemoved() {
@@ -944,7 +1132,7 @@ function handleKeyboardShortcut(event) {
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key) && state.selectedId) {
     event.preventDefault();
     const amount = event.shiftKey ? 10 : 1;
-    const node = listNodes(state.model).find((item) => item.node.id === state.selectedId)?.node;
+    const node = currentDocumentNode(state.selectedId);
     if (!node) return;
     const horizontal = event.key === "ArrowLeft" ? -amount : event.key === "ArrowRight" ? amount : 0;
     const vertical = event.key === "ArrowUp" ? -amount : event.key === "ArrowDown" ? amount : 0;
@@ -972,7 +1160,7 @@ function releaseSpacePan() {
 }
 
 function duplicateSelectedNode() {
-  const item = listNodes(state.model).find(({ node }) => node.id === state.selectedId);
+  const item = currentDocumentNodes().find(({ node }) => node.id === state.selectedId);
   if (!item) return;
   const clone = structuredClone(item.node);
   const replaceIds = (node) => {
@@ -1127,7 +1315,7 @@ async function downloadDocument() {
   await revalidateExportAccess();
   assertExportAllowed(state.accessRemoved);
   const filename = safeDocumentName(state.document.title);
-  if (!(await savePenDocument(materialize(state.model), filename))) return;
+  if (!(await savePenDocument(currentMaterializedDocument(), filename))) return;
   state.dialog = null;
   setToast(`Downloaded ${filename}.`);
   render();
