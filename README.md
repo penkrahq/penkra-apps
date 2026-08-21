@@ -13,7 +13,7 @@ the two release tracks.
 
 Penkra Apps are small, self-contained web applications that run inside Penkra's right panel. Each App gets its own isolated tab and can connect to your agent threads to read, write, and act on your behalf — with explicit permissions you control.
 
-This repository contains the four first-party Apps built for Penkra.
+This repository contains the five first-party Apps built for Penkra.
 
 ## The Apps
 
@@ -50,6 +50,12 @@ Canvas is an Account-scoped collaborative editor for cloud-hosted design documen
 loss-preserving `.pen` import and export, realtime and offline editing, sharing, and typed agent
 operations through Penkra's public App runtime. Its approved Pencil design, runtime source,
 compatibility corpus, collaboration tests, and package build all live under `canvas/`.
+
+### Simulator — Mobile device simulation
+
+The Simulator App creates and controls saved iPhone, iPad, and Android simulated devices through
+Penkra's scoped simulator-session service. Penkra owns native tooling, setup prompts, and process
+lifecycle while the App provides the complete device-management and interactive control surface.
 
 ## How Apps work
 
@@ -112,12 +118,17 @@ penkra-apps/
 │   ├── collaboration/       # Yjs convergence and recovery tests
 │   ├── RESEARCH.md           # Standards and upstream audit
 │   └── design/canvas.pen     # Approved UI/UX authority
-└── explorer/
+├── explorer/
+│   ├── app.html, app.js, styles.css
+│   ├── operations.html, operations.js
+│   ├── penkra-app.json
+│   ├── explorer-model.mjs
+│   └── design/explorer.pen
+└── simulator/
     ├── app.html, app.js, styles.css
-    ├── operations.html, operations.js
     ├── penkra-app.json
-    ├── explorer-model.mjs
-    └── design/explorer.pen
+    ├── simulator-model.mjs
+    └── design/simulator.pen
 ```
 
 ### Design system

@@ -116,35 +116,68 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   const Surface = {
     setup() {
       provideEditor(editor);
-      const canvasRef = ref(null);
-      const canvas = useCanvas(canvasRef, editor, {
-        showRulers: true,
-        onReady: () => {
-          if (!callbacks.viewport) {
-            if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
-              editor.select([callbacks.selectedId]);
-              editor.zoomToSelection();
-            } else {
-              fitDesignInView();
-            }
+      const sceneCanvasRef = ref(null);
+      const overlayCanvasRef = ref(null);
+      let readyLayers = 0;
+      const onLayerReady = () => {
+        readyLayers += 1;
+        if (readyLayers < 2) return;
+        if (!callbacks.viewport) {
+          if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
+            editor.select([callbacks.selectedId]);
+            editor.zoomToSelection();
+          } else {
+            fitDesignInView();
           }
-          callbacks.onReady?.();
-        },
+        }
+        callbacks.onReady?.();
+      };
+      useCanvas(sceneCanvasRef, editor, {
+        layer: "scene",
+        showRulers: false,
+        recomputeLayoutAfterFonts: false,
+        onPerformance: (name, duration, details) => callbacks.onPerformance?.(
+          name,
+          duration,
+          { ...details, layer: "scene" },
+        ),
+        onReady: onLayerReady,
+      });
+      const overlayCanvas = useCanvas(overlayCanvasRef, editor, {
+        layer: "overlays",
+        showRulers: true,
+        // Layout once while preparing the graph. Re-running Yoga for every
+        // expanded instance after fonts load blocks the main thread for large
+        // files and diverges from OpenPencil's own lifecycle.
+        recomputeLayoutAfterFonts: false,
+        onPerformance: (name, duration, details) => callbacks.onPerformance?.(
+          name,
+          duration,
+          { ...details, layer: "overlays" },
+        ),
+        onReady: onLayerReady,
       });
       useCanvasInput(
-        canvasRef,
+        overlayCanvasRef,
         editor,
-        canvas.hitTestSectionTitle,
-        canvas.hitTestComponentLabel,
-        canvas.hitTestFrameTitle,
+        overlayCanvas.hitTestSectionTitle,
+        overlayCanvas.hitTestComponentLabel,
+        overlayCanvas.hitTestFrameTitle,
       );
-      useTextEdit(canvasRef, editor);
-      return () => h("canvas", {
-        ref: canvasRef,
-        class: "openpencil-surface",
-        tabindex: "0",
-        "aria-label": "Canvas design viewport",
-      });
+      useTextEdit(overlayCanvasRef, editor);
+      return () => h("div", { class: "openpencil-surface-stack" }, [
+        h("canvas", {
+          ref: sceneCanvasRef,
+          class: "openpencil-surface openpencil-scene-surface",
+          "aria-hidden": "true",
+        }),
+        h("canvas", {
+          ref: overlayCanvasRef,
+          class: "openpencil-surface openpencil-overlay-surface",
+          tabindex: "0",
+          "aria-label": "Canvas design viewport",
+        }),
+      ]);
     },
   };
 

@@ -1,12 +1,14 @@
 import {
   escapeHtml,
   extensionOf,
+  finderRelativePath,
   looksLikeText,
   matchesQuery,
   parentRelative,
   previewKind,
   renderMarkdown,
   sortEntries,
+  treeRowIndent,
 } from "./explorer-model.mjs";
 import {
   chooseExplorerRoot,
@@ -228,11 +230,11 @@ async function runSearch(query) {
   if (!query.trim()) {
     state.searchResults = [];
     state.searchBusy = false;
-    render();
+    renderRailBody();
     return;
   }
   state.searchBusy = true;
-  render();
+  renderRailBody();
   try {
     const entries = await enumerate();
     if (sequence !== searchSequence) return;
@@ -242,7 +244,7 @@ async function runSearch(query) {
   } finally {
     if (sequence === searchSequence) {
       state.searchBusy = false;
-      render();
+      renderRailBody();
     }
   }
 }
@@ -251,9 +253,12 @@ function treeRows(path = "", depth = 0) {
   return (state.directoryCache.get(path) ?? []).map((entry) => {
     const selected = state.selected?.relativePath === entry.relativePath;
     const expanded = entry.kind === "directory" && state.expanded.has(entry.relativePath);
-    const row = `<button class="tree-row${selected ? " is-selected" : ""}" style="--depth:${depth}" data-path="${escapeHtml(entry.relativePath)}" data-kind="${entry.kind}">
+    const entryIcon = entry.kind === "directory"
+      ? (expanded ? "folderOpen" : "folder")
+      : previewKind(entry) === "image" ? "image" : "file";
+    const row = `<button class="tree-row${selected ? " is-selected" : ""}" style="--indent:${treeRowIndent(depth)}" data-path="${escapeHtml(entry.relativePath)}" data-kind="${entry.kind}">
       <span class="disclosure">${entry.kind === "directory" ? icon("chevron", expanded ? "is-open" : "") : ""}</span>
-      ${icon(entry.kind === "directory" ? (expanded ? "folderOpen" : "folder") : previewKind(entry) === "image" ? "image" : "file")}
+      ${icon(entryIcon, entryIcon === "file" ? "tree-file-icon" : "")}
       <span>${escapeHtml(entry.name)}</span>
     </button>`;
     return row + (expanded ? treeRows(entry.relativePath, depth + 1) : "");
@@ -280,14 +285,22 @@ function appBar() {
 
 function rail() {
   if (!state.handle) return `<aside class="tree-rail"><div class="search-box">${icon("search")}<input disabled placeholder="Search files…" /></div>${railState("folder", "No workspace", "Open a folder to browse files.")}</aside>`;
-  const body = state.query
+  return `<aside class="tree-rail"><label class="search-box">${icon("search")}<input data-search value="${escapeHtml(state.query)}" placeholder="Search files…" /></label>
+    ${state.newFolder ? `<form class="new-folder-form" data-new-folder><input name="name" autofocus placeholder="Folder name" /><button>Save</button><button type="button" data-action="cancel-new-folder">Cancel</button></form>` : ""}
+    <div class="tree-scroll">${railBody()}</div></aside>`;
+}
+
+function railBody() {
+  return state.query
     ? searchRows()
     : state.root?.kind === "file"
       ? `<button class="tree-row is-selected" data-path="" data-kind="file">${icon("file")}<span>${escapeHtml(state.root.name)}</span></button>`
       : treeRows() || railState("folder", "Empty folder", "This folder doesn’t contain any files yet.");
-  return `<aside class="tree-rail"><label class="search-box">${icon("search")}<input data-search value="${escapeHtml(state.query)}" placeholder="Search files…" /></label>
-    ${state.newFolder ? `<form class="new-folder-form" data-new-folder><input name="name" autofocus placeholder="Folder name" /><button>Save</button><button type="button" data-action="cancel-new-folder">Cancel</button></form>` : ""}
-    <div class="tree-scroll">${body}</div></aside>`;
+}
+
+function renderRailBody() {
+  const treeScroll = root.querySelector(".tree-scroll");
+  if (treeScroll) treeScroll.innerHTML = railBody();
 }
 
 function railState(iconName, title, detail) {
@@ -338,7 +351,30 @@ function mainStateContent(iconName, title, detail, spinning = false) {
 }
 
 function render() {
+  const activeSearch = root.querySelector("[data-search]:focus");
+  const searchSelection = activeSearch
+    ? {
+        start: activeSearch.selectionStart,
+        end: activeSearch.selectionEnd,
+        direction: activeSearch.selectionDirection,
+      }
+    : null;
   root.innerHTML = `${appBar()}<div class="surface">${rail()}${preview()}</div>`;
+  if (searchSelection) {
+    const nextSearch = root.querySelector("[data-search]");
+    nextSearch?.focus({ preventScroll: true });
+    if (
+      nextSearch &&
+      searchSelection.start !== null &&
+      searchSelection.end !== null
+    ) {
+      nextSearch.setSelectionRange(
+        searchSelection.start,
+        searchSelection.end,
+        searchSelection.direction ?? "none",
+      );
+    }
+  }
 }
 
 function friendlyError(error, fallback) {
@@ -366,6 +402,16 @@ async function createFolder(form) {
   state.newFolder = false;
   await loadDirectory(base, true);
   render();
+}
+
+async function showInFinder(entry) {
+  if (!state.handle) return;
+  const relativePath = finderRelativePath(entry);
+  await runtime.open({
+    handleId: state.handle.id,
+    ...(relativePath ? { relativePath } : {}),
+    with: "system",
+  });
 }
 
 root.addEventListener("click", (event) => {
@@ -398,6 +444,29 @@ root.addEventListener("click", (event) => {
 
 root.addEventListener("input", (event) => {
   if (event.target.matches("[data-search]")) void runSearch(event.target.value);
+});
+
+root.addEventListener("contextmenu", (event) => {
+  const target = event.target.closest?.("button[data-path]");
+  if (!target || !runtime.contextMenu?.show) return;
+  event.preventDefault();
+  const entry = {
+    kind: target.dataset.kind === "directory" ? "directory" : "file",
+    relativePath: target.dataset.path ?? "",
+  };
+  void runtime.contextMenu
+    .show([
+      { id: "open", label: "Open" },
+      { id: "show-in-finder", label: "Show in Finder", separatorBefore: true },
+    ])
+    .then((action) => {
+      if (action === "open") return selectPath(entry.relativePath, true);
+      if (action === "show-in-finder") return showInFinder(entry);
+    })
+    .catch((error) => {
+      state.error = friendlyError(error, "Explorer could not open this item in Finder.");
+      render();
+    });
 });
 
 root.addEventListener("submit", (event) => {

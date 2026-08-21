@@ -14,7 +14,7 @@ export async function readDroppedPenDocument(dataTransfer, files = runtimeFiles(
   const item = [...(dataTransfer?.items ?? [])].find((candidate) => candidate.kind === "file");
   const file = item?.getAsFile?.();
   if (!file || !file.name.toLowerCase().endsWith(".pen")) throw new Error("Drop one .pen file to import it.");
-  const source = parsePenSource(await file.text());
+  const source = parsePenSource(await readBrowserTextFile(file));
   if (collectImageReferences(source).length === 0) {
     return { source, assets: [], fallbackTitle: file.name.replace(/\.pen$/iu, "") };
   }
@@ -30,7 +30,7 @@ export async function readPenDocument(files, root, document) {
   if (root?.kind !== "directory" || !root.id) throw new Error("Choose the folder containing the .pen file.");
   if (document?.kind !== "file" || !document.name.toLowerCase().endsWith(".pen")) throw new Error("Choose a .pen file.");
   const relative = document.relativePath || document.name;
-  const source = parsePenSource(await files.readText(root.id, relative));
+  const source = parsePenSource(await readTextFile(files, root.id, relative));
   const base = relative.split("/").slice(0, -1);
   const assets = [];
   for (const reference of collectImageReferences(source)) {
@@ -53,7 +53,26 @@ export async function readPenDocument(files, root, document) {
 export async function savePenDocument(source, suggestedName, files = runtimeFiles()) {
   const root = await files.pick("directory");
   if (!root) return false;
-  await files.writeText(root.id, JSON.stringify(source, null, 2), suggestedName);
+  const bytes = new TextEncoder().encode(JSON.stringify(source, null, 2));
+  const session = await files.beginWrite({
+    handleId: root.id,
+    relativePath: suggestedName,
+    expectedBytes: bytes.byteLength,
+    expectedSha256: await sha256(bytes),
+  });
+  try {
+    for (let offset = 0; offset < bytes.byteLength; offset += session.chunkBytes) {
+      await files.writeChunk({
+        writeId: session.writeId,
+        offset,
+        bytes: bytes.subarray(offset, offset + session.chunkBytes),
+      });
+    }
+    await files.commitWrite(session.writeId);
+  } catch (error) {
+    await files.abortWrite(session.writeId).catch(() => undefined);
+    throw error;
+  }
   return true;
 }
 
@@ -154,6 +173,52 @@ async function readBinaryFile(files, handleId, relativePath, reference) {
   let cursor = 0;
   for (const chunk of chunks) { output.set(chunk, cursor); cursor += chunk.byteLength; }
   return output;
+}
+
+async function readTextFile(files, handleId, relativePath) {
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const chunks = [];
+  let offset = 0;
+  let totalBytes = null;
+  try {
+    while (totalBytes === null || offset < totalBytes) {
+      const result = await files.readBinary({
+        handleId,
+        relativePath,
+        offset,
+        length: BINARY_CHUNK_BYTES,
+      });
+      const bytes = result.bytes instanceof Uint8Array ? result.bytes : new Uint8Array(result.bytes);
+      totalBytes = result.totalBytes;
+      chunks.push(decoder.decode(bytes, { stream: !result.complete }));
+      offset += bytes.byteLength;
+      if (result.complete) break;
+      if (bytes.byteLength === 0) throw new Error("Could not finish reading the .pen document.");
+    }
+    chunks.push(decoder.decode());
+  } catch (error) {
+    if (error instanceof TypeError) throw new Error("This .pen document is not valid UTF-8 text.");
+    throw error;
+  }
+  return chunks.join("");
+}
+
+async function readBrowserTextFile(file) {
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const chunks = [];
+  try {
+    for (let offset = 0; offset < file.size; offset += BINARY_CHUNK_BYTES) {
+      const bytes = new Uint8Array(
+        await file.slice(offset, offset + BINARY_CHUNK_BYTES).arrayBuffer(),
+      );
+      chunks.push(decoder.decode(bytes, { stream: offset + bytes.byteLength < file.size }));
+    }
+    chunks.push(decoder.decode());
+  } catch (error) {
+    if (error instanceof TypeError) throw new Error("This .pen document is not valid UTF-8 text.");
+    throw error;
+  }
+  return chunks.join("");
 }
 
 function runtimeFiles() {

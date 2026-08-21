@@ -103,6 +103,55 @@ export function restoreNode(model, nodeId, origin) {
   transact(model, origin, () => getNode(model, nodeId).set("deleted", false));
 }
 
+export function replaceModelContent(model, penDocument, origin) {
+  assertEditableModel(model);
+  assertJsonValue(penDocument);
+  validateNodeTree(penDocument.children, new Set());
+  const desired = new Map();
+  const collect = (nodes = [], parentId = null) => {
+    nodes.forEach((node, position) => {
+      desired.set(node.id, { node, parentId, position });
+      collect(node.children, node.id);
+    });
+  };
+  collect(penDocument.children);
+
+  transact(model, origin, () => {
+    for (const key of [...model.documentFields.keys()]) {
+      if (key !== "children" && !Object.hasOwn(penDocument, key)) model.documentFields.delete(key);
+    }
+    for (const [key, value] of Object.entries(penDocument)) {
+      if (key !== "children") model.documentFields.set(key, cloneJson(value));
+    }
+    for (const [id, current] of model.nodes.entries()) {
+      if (!desired.has(id)) current.set("deleted", true);
+    }
+    for (const [id, { node, parentId, position }] of desired) {
+      let current = model.nodes.get(id);
+      if (!(current instanceof Y.Map)) {
+        model.nodes.set(id, createYNode(node, parentId, position));
+        continue;
+      }
+      current.set("type", node.type);
+      current.set("parentId", parentId);
+      current.set("position", position);
+      current.set("deleted", false);
+      current.set("hadChildren", Array.isArray(node.children));
+      const properties = current.get("properties");
+      if (!(properties instanceof Y.Map)) throw new Error(`Node ${id} has invalid properties.`);
+      const nextProperties = Object.fromEntries(
+        Object.entries(node).filter(([key]) => !RESERVED_NODE_PROPERTIES.has(key)),
+      );
+      for (const key of [...properties.keys()]) {
+        if (!Object.hasOwn(nextProperties, key)) properties.delete(key);
+      }
+      for (const [key, value] of Object.entries(nextProperties)) {
+        properties.set(key, toYValue(value));
+      }
+    }
+  });
+}
+
 export function upgradeModel(model, origin) {
   assertEditableModel(model);
   transact(model, origin, () => {

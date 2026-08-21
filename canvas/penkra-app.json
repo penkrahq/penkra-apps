@@ -4,8 +4,8 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, import, edit, and share Account-owned collaborative design documents.",
-  "version": "0.2.15",
-  "compatibility": { "penkra": ">=0.11.0" },
+  "version": "0.2.18",
+  "compatibility": { "penkra": ">=0.11.1" },
   "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
   "entrypoints": { "app": "app.html", "operations": "operations.html" },
   "permissions": [
@@ -13,9 +13,27 @@
       "name": "account-data",
       "required": true,
       "reason": "Canvas stores and synchronizes your Account-owned design documents and sharing grants."
+    },
+    {
+      "name": "network-fetch",
+      "required": true,
+      "reason": "Canvas loads the exact font faces used by a design through host-validated online font providers."
     }
   ],
   "operations": [
+    {
+      "key": "guidelines.get",
+      "summary": "List Canvas guidance topics or read one complete operating guide.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "topic": { "enum": ["workflow", "execute", "design", "text", "review"] }
+        },
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "handler": "guidelines.get"
+    },
     {
       "key": "documents.list",
       "summary": "List Account-owned and shared Canvas documents.",
@@ -50,7 +68,7 @@
     },
     {
       "key": "documents.get",
-      "summary": "Inspect Canvas document metadata and a bounded node hierarchy.",
+      "summary": "Inspect document metadata, raw node properties, resolved bounds, and validation problems.",
       "input": {
         "type": "object",
         "properties": {
@@ -60,7 +78,55 @@
         "required": ["documentId"],
         "additionalProperties": false
       },
-      "output": { "type": "object", "additionalProperties": true },
+      "output": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "access": { "enum": ["owner", "editor"] },
+          "ownerAccountId": { "type": "string" },
+          "nodes": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" }, "type": { "type": "string" },
+                    "name": { "type": ["string", "null"] }, "depth": { "type": "integer" },
+                    "parentId": { "type": ["string", "null"] }, "index": { "type": "integer" },
+                    "properties": { "type": "object", "additionalProperties": true },
+                    "bounds": {
+                      "oneOf": [
+                        { "type": "null" },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "x": { "type": "number" }, "y": { "type": "number" },
+                            "width": { "type": "number" }, "height": { "type": "number" }
+                          },
+                          "required": ["x", "y", "width", "height"],
+                          "additionalProperties": false
+                        }
+                      ]
+                    },
+                    "problems": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+                  },
+                  "required": ["id", "type", "name", "depth", "parentId", "index", "properties", "bounds", "problems"],
+                  "additionalProperties": false
+                }
+              },
+              "truncated": { "type": "boolean" }, "total": { "type": "integer", "minimum": 0 },
+              "issues": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+            },
+            "required": ["items", "truncated", "total", "issues"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["id", "title", "access", "ownerAccountId", "nodes"],
+        "additionalProperties": false
+      },
       "handler": "documents.get"
     },
     {
@@ -105,17 +171,52 @@
           "mutations": {
             "type": "array", "minItems": 1, "maxItems": 200,
             "items": {
-              "type": "object",
-              "properties": {
-                "kind": { "enum": ["set-property", "set-property-path", "insert-node", "move-node", "delete-node", "restore-node"] },
-                "nodeId": { "type": "string", "minLength": 1 },
-                "property": { "type": "string", "minLength": 1 },
-                "path": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-                "value": {}, "node": { "type": "object", "additionalProperties": true },
-                "parentId": { "type": ["string", "null"] }, "position": { "type": "number" }
-              },
-              "required": ["kind"],
-              "additionalProperties": false
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": { "const": "set-property" }, "nodeId": { "type": "string", "minLength": 1 },
+                    "property": { "type": "string", "minLength": 1 }, "value": {}
+                  },
+                  "required": ["kind", "nodeId", "property", "value"], "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": { "const": "set-property-path" }, "nodeId": { "type": "string", "minLength": 1 },
+                    "property": { "type": "string", "minLength": 1 },
+                    "path": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+                    "value": {}
+                  },
+                  "required": ["kind", "nodeId", "property", "path", "value"], "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": { "const": "insert-node" }, "node": { "type": "object", "additionalProperties": true },
+                    "parentId": { "type": ["string", "null"] }, "position": { "type": "number" }
+                  },
+                  "required": ["kind", "node", "position"], "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "kind": { "const": "move-node" }, "nodeId": { "type": "string", "minLength": 1 },
+                    "parentId": { "type": ["string", "null"] }, "position": { "type": "number" }
+                  },
+                  "required": ["kind", "nodeId", "position"], "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": { "kind": { "const": "delete-node" }, "nodeId": { "type": "string", "minLength": 1 } },
+                  "required": ["kind", "nodeId"], "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": { "kind": { "const": "restore-node" }, "nodeId": { "type": "string", "minLength": 1 } },
+                  "required": ["kind", "nodeId"], "additionalProperties": false
+                }
+              ]
             }
           }
         },
@@ -124,6 +225,33 @@
       },
       "output": { "type": "object", "additionalProperties": true },
       "handler": "documents.mutate"
+    },
+    {
+      "key": "documents.execute",
+      "summary": "Run one bounded JavaScript edit against a private document clone and commit it only if the shared document has not changed.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "minLength": 1 },
+          "code": { "type": "string", "minLength": 1, "maxLength": 100000 }
+        },
+        "required": ["documentId", "code"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string" },
+          "changed": { "type": "boolean" },
+          "sequence": { "type": "integer", "minimum": 0 },
+          "prints": { "type": "array", "maxItems": 1000 },
+          "result": {},
+          "issues": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+        },
+        "required": ["documentId", "changed", "sequence", "prints", "result", "issues"],
+        "additionalProperties": false
+      },
+      "handler": "documents.execute"
     },
     {
       "key": "documents.export",
@@ -171,6 +299,20 @@
       "input": { "type": "object", "properties": { "nodeId": { "type": "string", "minLength": 1 } }, "required": ["nodeId"], "additionalProperties": false },
       "output": { "type": "object", "properties": { "tabId": { "type": "string" }, "nodeId": { "type": "string" } }, "required": ["tabId", "nodeId"], "additionalProperties": false },
       "handler": "viewport.focus"
+    },
+    {
+      "key": "performance.snapshot",
+      "summary": "Inspect bounded cold-open and renderer performance measurements from one visible Canvas tab.",
+      "input": { "type": "object", "properties": {}, "additionalProperties": false },
+      "output": {
+        "type": "object",
+        "properties": {
+          "entries": { "type": "array", "items": { "type": "object", "additionalProperties": true }, "maxItems": 200 }
+        },
+        "required": ["entries"],
+        "additionalProperties": false
+      },
+      "handler": "performance.snapshot"
     }
   ]
 }

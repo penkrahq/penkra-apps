@@ -14,6 +14,10 @@ Canvas bundles these MIT-licensed projects:
   <https://github.com/yjs/y-indexeddb>
 - lib0 0.2.117 — Copyright 2019 Kevin Jahns.
   <https://github.com/dmonad/lib0>
+- quickjs-emscripten 0.32.0 — Copyright 2019–2024 Jake Teton-Landis, under the
+  MIT license. Its bundled QuickJS engine is Copyright 2017–2021 Fabrice Bellard
+  and Charlie Gordon, also under the MIT license.
+  <https://github.com/justjake/quickjs-emscripten>
 
 Canvas also bundles:
 

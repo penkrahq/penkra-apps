@@ -8,13 +8,20 @@ import {
   listNodes,
   materialize,
   mutate,
+  replaceDocument,
   restoreDocumentModel,
 } from "./document-model.mjs";
-import { assertMutationBatch, inlineExport, summarizeNodes } from "./operation-model.mjs";
+import {
+  assertMutationBatch,
+  inlineExport,
+} from "./operation-model.mjs";
+import { getCanvasGuidelines } from "./guidelines.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
 const api = createCanvasApi(runtime);
+
+runtime.operations.handle("guidelines.get", ({ topic } = {}) => getCanvasGuidelines(topic));
 
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
@@ -33,6 +40,7 @@ runtime.operations.handle("documents.list", async (input = {}) => {
 });
 
 runtime.operations.handle("documents.get", async ({ documentId, nodeLimit = 500 }) => {
+  const { inspectDocument } = await import("./document-inspection.js");
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
   try {
@@ -41,7 +49,7 @@ runtime.operations.handle("documents.get", async ({ documentId, nodeLimit = 500 
       title: payload.title,
       access: payload.access,
       ownerAccountId: payload.ownerAccountId,
-      nodes: summarizeNodes(listNodes(model), nodeLimit),
+      nodes: inspectDocument(materialize(model), listNodes(model), nodeLimit),
     };
   } finally {
     model.doc.destroy();
@@ -85,6 +93,7 @@ runtime.operations.handle("documents.mutate", async ({ documentId, mutations }) 
     const appended = await api.appendUpdate(documentId, {
       clientUpdateId: crypto.randomUUID(),
       update: encodeUpdate(combined),
+      expectedSequence: authoritativeSequence(payload),
     });
     await api.createSnapshot(documentId, {
       throughSequence: appended.sequence,
@@ -96,6 +105,63 @@ runtime.operations.handle("documents.mutate", async ({ documentId, mutations }) 
       changed: true,
       mutationCount: mutations.length,
       sequence: appended.sequence,
+    };
+  } finally {
+    model.doc.off("update", listener);
+    model.doc.destroy();
+  }
+});
+
+runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
+  const [{ executeCanvasScript }, { reviewDocumentIssues }] = await Promise.all([
+    import("./script-runtime.js"),
+    import("./document-review.js"),
+  ]);
+  const payload = await api.getDocument(documentId);
+  const model = restoreDocumentModel(payload);
+  const updates = [];
+  const listener = (update, origin) => {
+    if (origin === LOCAL_ORIGIN) updates.push(update);
+  };
+  model.doc.on("update", listener);
+  try {
+    const before = materialize(model);
+    const execution = await executeCanvasScript(before, code);
+    // Build once in isolation before touching the working clone. This enforces
+    // the complete normalized-tree contract without relying on Yjs to roll a
+    // partially applied transaction back after a validation error.
+    const validationModel = createDocumentModel(execution.document);
+    validationModel.doc.destroy();
+    const issues = reviewDocumentIssues(execution.document);
+    if (JSON.stringify(before) === JSON.stringify(execution.document)) {
+      return {
+        documentId,
+        changed: false,
+        sequence: authoritativeSequence(payload),
+        prints: execution.prints,
+        result: execution.result,
+        issues,
+      };
+    }
+    model.doc.transact(() => replaceDocument(model, execution.document, LOCAL_ORIGIN), LOCAL_ORIGIN);
+    const combined = updates.length === 1 ? updates[0] : Y.mergeUpdates(updates);
+    const appended = await api.appendUpdate(documentId, {
+      clientUpdateId: crypto.randomUUID(),
+      update: encodeUpdate(combined),
+      expectedSequence: authoritativeSequence(payload),
+    });
+    await api.createSnapshot(documentId, {
+      throughSequence: appended.sequence,
+      state: encodeState(model),
+      source: materialize(model),
+    });
+    return {
+      documentId,
+      changed: true,
+      sequence: appended.sequence,
+      prints: execution.prints,
+      result: execution.result,
+      issues,
     };
   } finally {
     model.doc.off("update", listener);
@@ -134,3 +200,15 @@ runtime.operations.handle("viewport.focus", async ({ nodeId }, context) => {
   await context.tab.invoke({ operation: "viewport.focus", input: { nodeId } });
   return { tabId: context.tab.id, nodeId };
 });
+
+runtime.operations.handle("performance.snapshot", async (_input, context) => {
+  if (!context.tab) throw new Error("performance.snapshot requires an explicit Canvas tabId.");
+  return context.tab.invoke({ operation: "performance.snapshot", input: {} });
+});
+
+function authoritativeSequence(payload) {
+  return Math.max(
+    Number(payload.snapshot?.throughSequence ?? 0),
+    ...(payload.updates ?? []).map((update) => Number(update.sequence ?? 0)),
+  );
+}

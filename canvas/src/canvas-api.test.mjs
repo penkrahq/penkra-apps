@@ -67,7 +67,22 @@ test("Canvas API forwards realtime connection-state listeners", async () => {
 test("Canvas maps project projections and exact asset paths without changing the source", async () => {
   const calls = [];
   const responses = new Map([
-    ["/projects/project-id", { id: "project-id", snapshot: { projection: { children: [] } } }],
+    ["/projects/snapshot-uploads", { uploadId: "upload-id", projectId: "project-id", chunkSize: 1024 }],
+    ["/projects/snapshot-uploads/upload-id/parts", { receivedBytes: 1 }],
+    ["/projects/snapshot-uploads/upload-id/complete", { id: "project-id" }],
+    ["/projects/project-id?chunked=auto", {
+      id: "project-id",
+      snapshot: { throughSequence: 0, chunked: true },
+      updates: [],
+    }],
+    ["/projects/project-id/snapshots/0/content?kind=projection&offset=0&length=1048576", {
+      bytes: "eyJjaGlsZHJlbiI6W119",
+      complete: true,
+    }],
+    ["/projects/project-id/snapshots/0/content?kind=state&offset=0&length=1048576", {
+      bytes: "AQ==",
+      complete: true,
+    }],
     ["/projects/project-id/blobs", {
       items: [{ path: "images/hero.png", sha256: "abc", size: 3, mimeType: "image/png" }],
     }],
@@ -78,24 +93,61 @@ test("Canvas maps project projections and exact asset paths without changing the
         calls.push(input);
         const value = responses.get(input.path);
         return {
-          status: value ? 200 : 201,
+          status: input.method === "POST" ? 201 : 200,
           headers: {},
-          body: new TextEncoder().encode(JSON.stringify(value ?? { id: "project-id" })),
+          body: new TextEncoder().encode(JSON.stringify(value)),
         };
       },
       subscribe: async () => () => undefined,
     },
   });
   const source = { children: [{ id: "screen", type: "frame" }] };
-  await api.createDocument({ title: "Design", source });
-  assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), {
-    title: "Design",
-    projection: source,
-  });
+  await api.createDocument({ title: "Design", source, initialUpdate: "AQ==" });
+  const createMetadata = JSON.parse(new TextDecoder().decode(calls[0].body));
+  assert.equal(createMetadata.title, "Design");
+  assert.equal(createMetadata.projection.size, JSON.stringify(source).length);
+  assert.equal(createMetadata.projection.sha256.length, 64);
+  assert.equal(createMetadata.state.size, 1);
+  assert.deepEqual(
+    calls.slice(1, 3).map((call) => JSON.parse(new TextDecoder().decode(call.body)).kind),
+    ["projection", "state"],
+  );
   const opened = await api.getDocument("project-id");
   assert.deepEqual(opened.snapshot.source, { children: [] });
   assert.deepEqual(opened.assets, [
     { path: "images/hero.png", sha256: "abc", size: 3, mimeType: "image/png" },
+  ]);
+});
+
+test("Canvas accepts an automatically inlined snapshot without range requests", async () => {
+  const calls = [];
+  const projection = { children: [{ id: "screen", type: "frame" }] };
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input.path);
+        if (input.path === "/projects/project-id?chunked=auto") {
+          return response(200, {
+            id: "project-id",
+            snapshot: { throughSequence: 0, state: "AQ==", projection },
+            updates: [],
+          });
+        }
+        if (input.path === "/projects/project-id/blobs") {
+          return response(200, { items: [] });
+        }
+        throw new Error(`Unexpected request ${input.path}`);
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  const opened = await api.getDocument("project-id");
+
+  assert.deepEqual(opened.snapshot.source, projection);
+  assert.deepEqual(calls.sort(), [
+    "/projects/project-id/blobs",
+    "/projects/project-id?chunked=auto",
   ]);
 });
 
@@ -136,6 +188,30 @@ test("Canvas uploads every multipart byte under the exact Pencil asset path", as
   );
 });
 
+test("Canvas aborts an unfinished snapshot upload after a failed part", async () => {
+  const calls = [];
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input);
+        if (input.path === "/projects/snapshot-uploads") {
+          return response(201, { uploadId: "upload-id", chunkSize: 1 });
+        }
+        if (input.method === "DELETE") return response(200, { aborted: true });
+        return response(503, { code: "TEMPORARY", message: "try later" });
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  await assert.rejects(
+    api.createDocument({ title: "Design", source: { children: [] }, initialUpdate: "AQ==" }),
+    /try later/,
+  );
+  assert.equal(calls.at(-1).method, "DELETE");
+  assert.equal(calls.at(-1).path, "/projects/snapshot-uploads/upload-id");
+});
+
 test("Canvas reassembles bounded asset ranges", async () => {
   const replies = [
     { bytes: "AQI=", complete: false },
@@ -156,3 +232,11 @@ test("Canvas reassembles bounded asset ranges", async () => {
     Uint8Array.of(1, 2, 3),
   );
 });
+
+function response(status, value) {
+  return {
+    status,
+    headers: {},
+    body: new TextEncoder().encode(JSON.stringify(value)),
+  };
+}

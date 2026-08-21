@@ -13,6 +13,7 @@ import {
   insertNode,
   materializePen,
   moveNode,
+  replaceModelContent,
   setNodeProperty,
   setNodePropertyPath,
   syncModels,
@@ -55,6 +56,26 @@ test("normalization preserves an explicitly empty children array", () => {
     ],
   };
   assert.deepEqual(materializePen(createModel(document)), document);
+});
+
+test("whole-document reconciliation produces one faithful Yjs transaction", () => {
+  const model = createModel(fixture);
+  const updates = [];
+  model.doc.on("update", (update, origin) => updates.push({ update, origin }));
+  const replacement = {
+    version: "2.16",
+    futureDocumentField: { replaced: true },
+    children: [
+      { id: "frame-b", type: "frame", name: "Moved", children: [] },
+      { id: "new-text", type: "text", content: "New", fill: "#111111" },
+    ],
+  };
+
+  replaceModelContent(model, replacement, "execute");
+
+  assert.deepEqual(materializePen(model), replacement);
+  assert.equal(updates.length, 1);
+  assert.equal(updates[0].origin, "execute");
 });
 
 test("supported property edits cannot overwrite structural ID, type, or children fields", () => {

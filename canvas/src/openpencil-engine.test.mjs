@@ -2,11 +2,14 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+import { computeAllLayouts } from "../vendor/open-pencil/engine.mjs";
+
 import {
   analyzeOpenPencilCompatibility,
   createOpenPencilEditor,
   createOpenPencilGraph,
   fitOpenPencilDesign,
+  penPropertyToSceneChanges,
   refreshOpenPencilEditor,
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
@@ -68,6 +71,115 @@ test("OpenPencil computes nested auto-layout instead of collapsing children at t
   assert.equal(editor.graph.getNode("phone").layoutMode, "VERTICAL");
   assert.equal(heading.y, 24);
   assert.ok(body.y > heading.y, `expected body (${body.y}) below heading (${heading.y})`);
+});
+
+test("keyboard nudges update the selected scene node without replacing the editor graph", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{ id: "card", type: "frame", x: 12, y: 20, width: 100, height: 80, children: [] }],
+  });
+  const graph = editor.graph;
+  const updates = [];
+  editor.onEditorEvent("node:updated", (nodeId, changes) => updates.push({ nodeId, changes }));
+  editor.select(["card"]);
+
+  editor.nudgeSelected(1, -10);
+
+  assert.equal(editor.graph, graph);
+  assert.equal(editor.graph.getNode("card").x, 13);
+  assert.equal(editor.graph.getNode("card").y, 10);
+  assert.deepEqual(updates, [{ nodeId: "card", changes: { x: 13, y: 10 } }]);
+});
+
+test("deleting a selected node keeps the graph and restores it through editor undo", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [
+      { id: "first", type: "frame", x: 0, y: 0, width: 100, height: 80, children: [] },
+      { id: "second", type: "frame", x: 200, y: 0, width: 100, height: 80, children: [] },
+    ],
+  });
+  const graph = editor.graph;
+  const deleted = [];
+  const created = [];
+  editor.onEditorEvent("node:deleted", (nodeId) => deleted.push(nodeId));
+  editor.onEditorEvent("node:created", (node) => created.push(node.id));
+  editor.select(["first"]);
+
+  editor.deleteSelected();
+
+  assert.equal(editor.graph, graph);
+  assert.equal(editor.graph.getNode("first"), undefined);
+  assert.deepEqual(deleted, ["first"]);
+  assert.equal(editor.undo.canUndo, true);
+  editor.undoAction();
+  assert.equal(editor.graph.getNode("first").x, 0);
+  assert.deepEqual(created, ["first"]);
+});
+
+test("deletion still relayouts a parent that owns an auto-layout flow", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{
+      id: "stack",
+      type: "frame",
+      layout: "vertical",
+      gap: 10,
+      width: 100,
+      children: [
+        { id: "first", type: "frame", width: 100, height: 40, children: [] },
+        { id: "second", type: "frame", width: 100, height: 40, children: [] },
+      ],
+    }],
+  });
+  assert.equal(editor.graph.getNode("second").y, 50);
+  editor.select(["first"]);
+
+  editor.deleteSelected();
+
+  assert.equal(editor.graph.getNode("second").y, 0);
+});
+
+test("deferring the fallback-font layout preserves the final graph geometry", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "stack",
+      type: "frame",
+      width: 300,
+      height: "hug_content",
+      layout: "vertical",
+      padding: 12,
+      gap: 8,
+      children: [
+        { id: "first", type: "text", content: "First", fontSize: 16 },
+        { id: "second", type: "text", content: "Second", fontSize: 16 },
+      ],
+    }],
+  };
+  const eager = createOpenPencilGraph(source);
+  const deferred = createOpenPencilGraph(source, new Map(), null, { computeLayout: false });
+
+  for (const page of deferred.getPages()) computeAllLayouts(deferred, page.id);
+
+  for (const id of ["stack", "first", "second"]) {
+    const eagerNode = eager.getNode(id);
+    const deferredNode = deferred.getNode(id);
+    assert.deepEqual(
+      {
+        x: deferredNode.x,
+        y: deferredNode.y,
+        width: deferredNode.width,
+        height: deferredNode.height,
+      },
+      {
+        x: eagerNode.x,
+        y: eagerNode.y,
+        width: eagerNode.width,
+        height: eagerNode.height,
+      },
+    );
+  }
 });
 
 test("auto-sized text keeps hug-content flex layouts compact", () => {
@@ -288,6 +400,25 @@ test("scene edits translate to lossless Penkra mutations", () => {
     { kind: "set-property", nodeId: "heading", property: "enabled", value: false },
     { kind: "set-property", nodeId: "heading", property: "content", value: "Hello" },
   ]);
+});
+
+test("inspector properties translate to incremental scene changes", () => {
+  assert.deepEqual(penPropertyToSceneChanges({}, "x", 12), { x: 12 });
+  assert.deepEqual(penPropertyToSceneChanges({}, "gap", 8), { itemSpacing: 8 });
+  assert.deepEqual(penPropertyToSceneChanges({}, "padding", "4, 8"), {
+    paddingTop: 4,
+    paddingRight: 8,
+    paddingBottom: 4,
+    paddingLeft: 8,
+  });
+  assert.deepEqual(penPropertyToSceneChanges({ fills: [] }, "fill", "#ff800080"), {
+    fills: [{
+      type: "SOLID",
+      visible: true,
+      opacity: 1,
+      color: { r: 1, g: 128 / 255, b: 0, a: 128 / 255 },
+    }],
+  });
 });
 
 test("a selected frame edit does not serialize derived geometry onto untouched nodes", async () => {

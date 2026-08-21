@@ -39,6 +39,15 @@ export function parentRelative(path) {
   return parts.join("/");
 }
 
+export function treeRowIndent(depth) {
+  const normalizedDepth = Number.isFinite(depth) ? Math.max(0, Math.floor(depth)) : 0;
+  return `${normalizedDepth * 16}px`;
+}
+
+export function finderRelativePath(entry) {
+  return entry.kind === "directory" ? entry.relativePath : parentRelative(entry.relativePath);
+}
+
 export function sortEntries(entries) {
   return [...entries].sort((left, right) => {
     if (left.kind !== right.kind) return left.kind === "directory" ? -1 : 1;

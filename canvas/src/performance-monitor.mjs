@@ -31,8 +31,17 @@ export function createPerformanceMonitor({
     }
   };
 
+  const measureAsync = async (name, operation, detail = {}) => {
+    const start = performance.now();
+    try {
+      return await operation();
+    } finally {
+      record(name, performance.now() - start, detail);
+    }
+  };
+
   const snapshot = () => entries.map((entry) => ({ ...entry }));
-  const publicMonitor = { entries, measure, record, snapshot };
+  const publicMonitor = { entries, measure, measureAsync, record, snapshot };
   target.__penkraPerformance ??= {};
   target.__penkraPerformance[scope] = publicMonitor;
 

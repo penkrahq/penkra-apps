@@ -80108,7 +80108,10 @@ function createClipboardActions(ctx) {
       return;
     const relayoutParents = () => {
       for (const parentId of new Set(entries.map((entry) => entry.parentId))) {
-        ctx.runLayoutForNode(parentId);
+        const parent = ctx.graph.getNode(parentId);
+        if (parent?.layoutMode === "HORIZONTAL" || parent?.layoutMode === "VERTICAL") {
+          ctx.runLayoutForNode(parentId);
+        }
       }
     };
     const prevSelection = new Set(ctx.state.selectedIds);
@@ -84679,7 +84682,7 @@ function fixTextWidths(graph4) {
   }
 }
 function parsePenFile(json) {
-  const doc = JSON.parse(json);
+  const doc = typeof json === "string" ? JSON.parse(json) : json;
   const graph4 = new SceneGraph;
   for (const page2 of graph4.getPages(true)) {
     graph4.deleteNode(page2.id);
@@ -90786,6 +90789,7 @@ function createCanvasSurfaceManager({ editor, canvasRef, options, getCanvasKit: 
     glContext: null
   };
   let sceneBackingRenderTimer = null;
+  let firstRenderMeasured = false;
   function clearSceneBackingRenderTimer() {
     if (sceneBackingRenderTimer === null)
       return;
@@ -90822,7 +90826,15 @@ function createCanvasSurfaceManager({ editor, canvasRef, options, getCanvasKit: 
   function renderNow() {
     if (!state.renderer || isDestroyed())
       return;
+    const renderStartedAt = performance.now();
     state.renderer.renderFromEditorState(editor.state, editor.graph, editor.textEditor, canvasRef.value?.clientWidth ?? 0, canvasRef.value?.clientHeight ?? 0, shouldShowRulers(), options?.layer ?? "full");
+    if (!firstRenderMeasured) {
+      firstRenderMeasured = true;
+      options?.onPerformance?.("engine.render-first", performance.now() - renderStartedAt, {
+        graphNodes: editor.graph.nodes.size,
+        layer: options?.layer ?? "full"
+      });
+    }
     renderLoop.markRendered();
     clearSceneBackingRenderTimer();
     if (options?.layer === "scene" && state.renderer.sceneBackingNeedsCrispRender) {
@@ -90866,18 +90878,35 @@ function createCanvasSurfaceManager({ editor, canvasRef, options, getCanvasKit: 
     getRenderer: () => state.renderer
   };
 }
-function useCanvasSurfaceLifecycle({ canvasRef, surface, setCanvasKit, getCanvasKitValue, lifecycle, editor, onReady }) {
+function useCanvasSurfaceLifecycle({ canvasRef, surface, setCanvasKit, getCanvasKitValue, lifecycle, editor, options, onReady }) {
   useCanvasKitLoader({
     canvasRef,
     lifecycle,
     setCanvasKit,
     createSurface: surface.createSurface,
     loadFonts: async () => {
+      const fontsStartedAt = performance.now();
       await surface.getRenderer()?.loadFonts(surface.renderNow);
-      for (const page of editor.graph.getPages())
-        computeAllLayouts(editor.graph, page.id);
+      options?.onPerformance?.("engine.fonts", performance.now() - fontsStartedAt, {
+        graphNodes: editor.graph.nodes.size
+      });
+      const layoutStartedAt = performance.now();
+      if (options?.recomputeLayoutAfterFonts !== false) {
+        for (const page of editor.graph.getPages())
+          computeAllLayouts(editor.graph, page.id);
+      }
+      options?.onPerformance?.("engine.font-layout", performance.now() - layoutStartedAt, {
+        graphNodes: editor.graph.nodes.size,
+        skipped: options?.recomputeLayoutAfterFonts === false
+      });
     },
-    renderNow: surface.renderNow,
+    renderNow: () => {
+      const readyRenderStartedAt = performance.now();
+      surface.renderNow();
+      options?.onPerformance?.("engine.render-ready", performance.now() - readyRenderStartedAt, {
+        graphNodes: editor.graph.nodes.size
+      });
+    },
     onReady
   });
   const { cancelResize } = useCanvasResizeObserver({
@@ -90941,6 +90970,7 @@ function useCanvas(canvasRef, editor, options) {
     surface,
     lifecycle,
     editor,
+    options,
     getCanvasKitValue: () => ck,
     setCanvasKit: (value) => {
       ck = value;
@@ -95111,6 +95141,7 @@ function useTextEdit(canvasRef, store) {
   });
 }
 export {
+  fontManager,
   useTextEdit,
   useCanvasInput,
   useCanvas,

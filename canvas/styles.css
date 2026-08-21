@@ -101,7 +101,9 @@ h1, h2, h3, p { margin: 0; }
 .layer-type { width: 15px; color: var(--tertiary); font-size: 10px; text-align: center; }
 .viewport { position: relative; min-width: 0; min-height: 0; overflow: hidden; overscroll-behavior: none; touch-action: none; background-color: var(--canvas-background); }
 .openpencil-host { position: absolute; inset: 0; overflow: hidden; background-color: var(--canvas-background); transition: background-color 1ms linear; }
-.openpencil-surface { width: 100%; height: 100%; display: block; outline: none; }
+.openpencil-surface-stack { position: relative; width: 100%; height: 100%; }
+.openpencil-surface { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+.openpencil-scene-surface { pointer-events: none; }
 .openpencil-surface:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .engine-loading, .engine-error { position: absolute; z-index: 1; inset: 0; display: grid; place-content: center; gap: 6px; color: var(--secondary); font-size: 12px; text-align: center; }
 .engine-error strong { color: var(--text); }
@@ -121,10 +123,11 @@ h1, h2, h3, p { margin: 0; }
 .connection-banner + .compatibility-banner { top: 50px; }
 .inspector-empty { min-height: 180px; display: grid; place-items: center; padding: 20px; color: var(--secondary); font-size: 12px; text-align: center; }
 .selection-heading { display: flex; align-items: center; gap: 8px; padding: 10px 9px; border-bottom: 1px solid var(--border); }
-.selection-heading > div { min-width: 0; display: grid; gap: 2px; }
+.selection-heading > div { min-width: 0; display: grid; flex: 1; gap: 2px; }
 .selection-heading strong, .selection-heading span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .selection-heading strong { font-size: 12px; }
 .selection-heading span { color: var(--secondary); font-size: 9px; }
+.selection-heading .copy-reference { flex: none; padding: 5px 7px; font-size: 10px; }
 .section { padding: 10px 8px 13px; border-bottom: 1px solid var(--border); }
 .section h3 { margin-bottom: 9px; color: var(--secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }

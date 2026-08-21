@@ -79,14 +79,25 @@ test("exports through a user-selected Runtime v2 directory handle", async () => 
   const files = fileService({});
   assert.equal(await savePenDocument({ children: [] }, "sample.pen", files), true);
   assert.equal(files.writes[0].relativePath, "sample.pen");
-  assert.deepEqual(JSON.parse(files.writes[0].source), { children: [] });
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(files.writes[0].bytes)), { children: [] });
+});
+
+test("reads UTF-8 text safely across binary chunk boundaries", async () => {
+  const source = JSON.stringify({ name: `Before ${"x".repeat(5)}🙂 after`, children: [] });
+  const files = fileService({ "sample.pen": source }, 13);
+  const result = await readPenDocument(
+    files,
+    { id: "root", kind: "directory", name: "project" },
+    { kind: "file", name: "sample.pen", relativePath: "sample.pen" },
+  );
+  assert.equal(result.source.name, `Before ${"x".repeat(5)}🙂 after`);
 });
 
 test("rejects non-document JSON", () => {
   assert.throws(() => parsePenSource("{}"), /supported \.pen document structure/);
 });
 
-function fileService(initial) {
+function fileService(initial, maximumReadBytes = Infinity) {
   const values = new Map(Object.entries(initial).map(([path, value]) => [
     path,
     typeof value === "string" ? new TextEncoder().encode(value) : value,
@@ -94,6 +105,7 @@ function fileService(initial) {
   return {
     picks: [],
     writes: [],
+    writeSessions: new Map(),
     async pick(kind) {
       this.picks.push(kind);
       return { id: "root", kind: "directory", name: "project" };
@@ -111,11 +123,30 @@ function fileService(initial) {
     async readBinary({ relativePath, offset = 0, length }) {
       const bytes = values.get(relativePath);
       if (!bytes) throw new Error("missing");
-      const chunk = bytes.slice(offset, offset + length);
+      const chunk = bytes.slice(offset, offset + Math.min(length, maximumReadBytes));
       return { bytes: chunk, totalBytes: bytes.byteLength, complete: offset + chunk.byteLength >= bytes.byteLength };
     },
-    async writeText(handleId, source, relativePath) {
-      this.writes.push({ handleId, source, relativePath });
+    async beginWrite({ handleId, relativePath, expectedBytes }) {
+      const writeId = `write-${this.writeSessions.size + 1}`;
+      this.writeSessions.set(writeId, { handleId, relativePath, expectedBytes, chunks: [] });
+      return { writeId, chunkBytes: 7 };
+    },
+    async writeChunk({ writeId, offset, bytes }) {
+      const session = this.writeSessions.get(writeId);
+      assert.equal(offset, session.chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0));
+      session.chunks.push(bytes.slice());
+      return { writtenBytes: offset + bytes.byteLength };
+    },
+    async commitWrite(writeId) {
+      const session = this.writeSessions.get(writeId);
+      const bytes = new Uint8Array(session.expectedBytes);
+      let offset = 0;
+      for (const chunk of session.chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
+      this.writes.push({ handleId: session.handleId, relativePath: session.relativePath, bytes });
+      this.writeSessions.delete(writeId);
+    },
+    async abortWrite(writeId) {
+      this.writeSessions.delete(writeId);
     },
   };
 }

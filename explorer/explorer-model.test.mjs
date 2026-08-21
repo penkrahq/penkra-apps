@@ -1,10 +1,39 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { escapeHtml, joinRelative, looksLikeText, matchesQuery, parentRelative, previewKind, renderMarkdown, sortEntries } from "./explorer-model.mjs";
+import {
+  escapeHtml,
+  finderRelativePath,
+  joinRelative,
+  looksLikeText,
+  matchesQuery,
+  parentRelative,
+  previewKind,
+  renderMarkdown,
+  sortEntries,
+  treeRowIndent,
+} from "./explorer-model.mjs";
 
 test("normalizes scoped relative paths without inventing an absolute path", () => {
   assert.equal(joinRelative("docs/", "/guides", "intro.md"), "docs/guides/intro.md");
   assert.equal(parentRelative("docs/guides/intro.md"), "docs/guides");
+});
+
+test("uses explicit pixel indentation for nested tree rows", () => {
+  assert.equal(treeRowIndent(0), "0px");
+  assert.equal(treeRowIndent(1), "16px");
+  assert.equal(treeRowIndent(2), "32px");
+});
+
+test("opens directories directly and files through their containing folder", () => {
+  assert.equal(
+    finderRelativePath({ kind: "directory", relativePath: "apps/web" }),
+    "apps/web",
+  );
+  assert.equal(
+    finderRelativePath({ kind: "file", relativePath: "apps/web/package.json" }),
+    "apps/web",
+  );
+  assert.equal(finderRelativePath({ kind: "file", relativePath: "README.md" }), "");
 });
 
 test("sorts folders before files and uses natural names", () => {

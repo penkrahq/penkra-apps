@@ -25,6 +25,7 @@ const DIRECT_PROPERTY_MAP = new Map([
   ["height", "height"],
   ["rotation", "rotation"],
   ["opacity", "opacity"],
+  ["cornerRadius", "cornerRadius"],
   ["visible", "enabled"],
   ["clipsContent", "clip"],
   ["text", "content"],
@@ -45,17 +46,28 @@ const TRACKED_SCENE_PROPERTIES = new Set([
   "paddingLeft",
   "textAlignHorizontal",
   "textAlignVertical",
+  "fills",
 ]);
 
 export function createOpenPencilEditor(document, options = {}) {
-  const graph = createOpenPencilGraph(document, options.assets, options.preparedDocument);
+  const graph = createOpenPencilGraph(
+    document,
+    options.assets,
+    options.preparedDocument,
+    { computeLayout: options.computeInitialLayout !== false },
+  );
   return createEditor({
     graph,
     getViewportSize: options.getViewportSize,
   });
 }
 
-export function createOpenPencilGraph(document, assets = new Map(), preparedDocument = null) {
+export function createOpenPencilGraph(
+  document,
+  assets = new Map(),
+  preparedDocument = null,
+  options = {},
+) {
   const startedAt = performance.now();
   const renderDocument = measureGraphPhase(
     "engine.graph.prepare",
@@ -63,7 +75,7 @@ export function createOpenPencilGraph(document, assets = new Map(), preparedDocu
   );
   const graph = measureGraphPhase(
     "engine.graph.parse",
-    () => parsePenFile(JSON.stringify(renderDocument)),
+    () => parsePenFile(renderDocument),
   );
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
@@ -73,9 +85,11 @@ export function createOpenPencilGraph(document, assets = new Map(), preparedDocu
       if (graph.getNode(sourceNode.id)) graph.updateNode(sourceNode.id, { locked: true });
     });
   }, { graphNodes: graph.nodes.size });
-  measureGraphPhase("engine.graph.layout", () => {
-    for (const page of graph.getPages()) computeAllLayouts(graph, page.id);
-  }, { graphNodes: graph.nodes.size });
+  if (options.computeLayout !== false) {
+    measureGraphPhase("engine.graph.layout", () => {
+      for (const page of graph.getPages()) computeAllLayouts(graph, page.id);
+    }, { graphNodes: graph.nodes.size });
+  }
   recordGraphPerformance("engine.graph.total", performance.now() - startedAt, {
     graphNodes: graph.nodes.size,
   });
@@ -287,7 +301,35 @@ export function sceneUpdateToMutations(nodeId, changes) {
     const value = ({ CENTER: "center", BOTTOM: "bottom" })[changes.textAlignVertical] ?? "top";
     addMutation("textAlignVertical", value);
   }
+  if ("fills" in changes) {
+    const solid = changes.fills?.find((fill) => fill.visible !== false && fill.type === "SOLID");
+    addMutation("fill", solid ? rgbaToHex(solid.color, solid.opacity) : null);
+  }
   return mutations;
+}
+
+export function penPropertyToSceneChanges(node, property, value) {
+  for (const [sceneProperty, penProperty] of DIRECT_PROPERTY_MAP) {
+    if (penProperty === property) return { [sceneProperty]: value };
+  }
+  if (property === "gap") return { itemSpacing: value };
+  if (property === "padding") {
+    const values = normalizePadding(value);
+    if (!values) return null;
+    return {
+      paddingTop: values[0],
+      paddingRight: values[1],
+      paddingBottom: values[2],
+      paddingLeft: values[3],
+    };
+  }
+  if (property === "fill") {
+    const color = parseHexColor(value);
+    if (!color) return null;
+    const previous = node?.fills?.find((fill) => fill.type === "SOLID") ?? {};
+    return { fills: [{ ...previous, type: "SOLID", visible: true, opacity: 1, color }] };
+  }
+  return null;
 }
 
 export function sceneEventToPenMutations(editor, document, nodeId, changes, previousSceneValues) {
@@ -375,4 +417,27 @@ function rgbaToHex(color, opacity = 1) {
   const alpha = channel((color?.a ?? 1) * opacity);
   const value = `#${channel(color?.r)}${channel(color?.g)}${channel(color?.b)}`;
   return alpha === "ff" ? value : `${value}${alpha}`;
+}
+
+function normalizePadding(value) {
+  const input = Array.isArray(value)
+    ? value
+    : String(value).split(",").map((part) => Number(part.trim()));
+  if (!input.length || input.length > 4 || input.some((part) => !Number.isFinite(Number(part)))) return null;
+  const values = input.map(Number);
+  if (values.length === 1) return [values[0], values[0], values[0], values[0]];
+  if (values.length === 2) return [values[0], values[1], values[0], values[1]];
+  if (values.length === 3) return [values[0], values[1], values[2], values[1]];
+  return values;
+}
+
+function parseHexColor(value) {
+  const match = String(value).trim().match(/^#([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/iu);
+  if (!match) return null;
+  const hex = match[1].length <= 4
+    ? [...match[1]].map((part) => `${part}${part}`).join("")
+    : match[1];
+  const channels = [0, 2, 4].map((offset) => Number.parseInt(hex.slice(offset, offset + 2), 16) / 255);
+  const alpha = hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1;
+  return { r: channels[0], g: channels[1], b: channels[2], a: alpha };
 }
