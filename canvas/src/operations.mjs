@@ -15,13 +15,11 @@ import {
   assertMutationBatch,
   inlineExport,
 } from "./operation-model.mjs";
-import { getCanvasGuidelines } from "./guidelines.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
 const api = createCanvasApi(runtime);
-
-runtime.operations.handle("guidelines.get", ({ topic } = {}) => getCanvasGuidelines(topic));
+const MAX_DOCUMENT_GET_RESPONSE_BYTES = 40_000;
 
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
@@ -39,18 +37,56 @@ runtime.operations.handle("documents.list", async (input = {}) => {
   };
 });
 
+runtime.operations.handle("documents.delete", async ({ documentId, confirmTitle }) => {
+  let cursor;
+  let document;
+  do {
+    const page = await api.listDocuments(cursor);
+    document = page.items.find((candidate) => candidate.id === documentId);
+    cursor = page.pageInfo.nextCursor ?? undefined;
+  } while (!document && cursor);
+  if (!document) {
+    const error = new Error(`Canvas document ${documentId} was not found.`);
+    error.code = "CANVAS_DOCUMENT_NOT_FOUND";
+    throw error;
+  }
+  if (document.access !== "owner") {
+    const error = new Error(`Only the document owner can delete ${document.title}.`);
+    error.code = "CANVAS_DOCUMENT_DELETE_FORBIDDEN";
+    throw error;
+  }
+  if (confirmTitle !== document.title) {
+    const error = new Error(
+      `Deletion confirmation did not match the current title. Pass confirmTitle exactly as ${JSON.stringify(document.title)} after the user confirms permanent deletion.`,
+    );
+    error.code = "CANVAS_DOCUMENT_DELETE_CONFIRMATION_MISMATCH";
+    throw error;
+  }
+  await api.deleteDocument(documentId);
+  return { documentId, title: document.title, deleted: true };
+});
+
 runtime.operations.handle("documents.get", async ({ documentId, nodeLimit = 500 }) => {
   const { inspectDocument } = await import("./document-inspection.js");
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
   try {
-    return {
+    const result = {
       id: payload.id,
       title: payload.title,
       access: payload.access,
       ownerAccountId: payload.ownerAccountId,
       nodes: inspectDocument(materialize(model), listNodes(model), nodeLimit),
     };
+    const responseBytes = new TextEncoder().encode(JSON.stringify(result)).byteLength;
+    if (responseBytes > MAX_DOCUMENT_GET_RESPONSE_BYTES) {
+      const error = new Error(
+        `Canvas document inspection is ${responseBytes} bytes, exceeding the ${MAX_DOCUMENT_GET_RESPONSE_BYTES}-byte response limit. Use canvas documents export and read the file, or retry documents.get with a smaller nodeLimit.`,
+      );
+      error.code = "CANVAS_DOCUMENT_RESPONSE_LIMIT";
+      throw error;
+    }
+    return result;
   } finally {
     model.doc.destroy();
   }

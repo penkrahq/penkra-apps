@@ -1,5 +1,14 @@
 # Penkra Apps
 
+## Instruction authority
+
+The client-workspace `../AGENTS.md` is the higher-level authority for client scope, consequential
+claims, external effects, and shared-client-instruction changes. This file is authoritative for
+Penkra-authored App implementation, design, validation, and independent App releases in this
+repository. The workspace-root `TODO.md` is authoritative only for shared desktop and public
+platform/SDK contracts; it does not override an App's local design source or version authority. A
+narrower rule here applies unless it conflicts with the higher-level client boundary.
+
 ## Product boundaries
 
 - Work only on Penkra-authored Apps in this repository.
@@ -10,6 +19,13 @@
   adapters. Do not depend on the host rendering or configuring an App Bar for an App.
 - `TODO.md` at the client workspace root is authoritative for the active SDK and
   platform contract. Do not create a second repository-local product plan.
+
+## Manifest summaries
+
+- Treat every `penkra-app.json` `summary` as untrusted catalog data that Penkra will show to users
+  and agents. Keep it a short, factual description of what the App does.
+- Do not put headings, fenced blocks, model-directed instructions, authority claims, or operational
+  procedures in a summary. Put agent operating guidance in the App's `INSTRUCTIONS.md` instead.
 
 ## Penkra Dev Thread Boundary
 

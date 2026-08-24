@@ -8,7 +8,7 @@ export function createModel(penDocument, options = {}) {
   const metadata = doc.getMap("metadata");
   const documentFields = doc.getMap("documentFields");
   const nodes = doc.getMap("nodes");
-  assertJsonValue(penDocument);
+  assertJsonValue(penDocument, "$document");
   validateNodeTree(penDocument.children, new Set(nodes.keys()));
 
   doc.transact(() => {
@@ -33,34 +33,55 @@ export function openModel(doc) {
 
 export function setNodeProperty(model, nodeId, property, value, origin) {
   assertEditableModel(model);
-  assertJsonValue(value);
+  assertJsonValue(value, `$node[${JSON.stringify(nodeId)}].${property}`);
   if (RESERVED_NODE_PROPERTIES.has(property)) {
-    throw new Error(`${property} is structural and cannot be set as a node property.`);
+    throw new Error(
+      `${property} is structural and cannot be set as a node property.`,
+    );
   }
   transact(model, origin, () => {
     getNode(model, nodeId).get("properties").set(property, toYValue(value));
   });
 }
 
-export function setNodePropertyPath(model, nodeId, property, path, value, origin) {
+export function setNodePropertyPath(
+  model,
+  nodeId,
+  property,
+  path,
+  value,
+  origin,
+) {
   assertEditableModel(model);
-  assertJsonValue(value);
+  assertJsonValue(value, `$node[${JSON.stringify(nodeId)}].${property}`);
   if (RESERVED_NODE_PROPERTIES.has(property)) {
-    throw new Error(`${property} is structural and cannot be set as a node property.`);
+    throw new Error(
+      `${property} is structural and cannot be set as a node property.`,
+    );
   }
-  if (!Array.isArray(path) || path.length === 0 || path.some((key) => typeof key !== "string" || !key)) {
-    throw new Error("A nested property path must contain non-empty string keys.");
+  if (
+    !Array.isArray(path) ||
+    path.length === 0 ||
+    path.some((key) => typeof key !== "string" || !key)
+  ) {
+    throw new Error(
+      "A nested property path must contain non-empty string keys.",
+    );
   }
   transact(model, origin, () => {
     let current = getNode(model, nodeId).get("properties").get(property);
     for (const key of path.slice(0, -1)) {
       if (!(current instanceof Y.Map)) {
-        throw new Error(`${property}.${path.join(".")} is not an editable object path.`);
+        throw new Error(
+          `${property}.${path.join(".")} is not an editable object path.`,
+        );
       }
       current = current.get(key);
     }
     if (!(current instanceof Y.Map)) {
-      throw new Error(`${property}.${path.join(".")} is not an editable object path.`);
+      throw new Error(
+        `${property}.${path.join(".")} is not an editable object path.`,
+      );
     }
     current.set(path.at(-1), toYValue(value));
   });
@@ -70,7 +91,7 @@ export function insertNode(model, node, parentId, position, origin) {
   assertEditableModel(model);
   assertPosition(position);
   if (parentId !== null) getLiveNode(model, parentId);
-  assertJsonValue(node);
+  assertJsonValue(node, "$insertedNode");
   validateNodeTree([node], new Set(model.nodes.keys()));
   transact(model, origin, () => {
     model.nodes.set(node.id, createYNode(node, parentId, position));
@@ -118,7 +139,8 @@ export function replaceModelContent(model, penDocument, origin) {
 
   transact(model, origin, () => {
     for (const key of [...model.documentFields.keys()]) {
-      if (key !== "children" && !Object.hasOwn(penDocument, key)) model.documentFields.delete(key);
+      if (key !== "children" && !Object.hasOwn(penDocument, key))
+        model.documentFields.delete(key);
     }
     for (const [key, value] of Object.entries(penDocument)) {
       if (key !== "children") model.documentFields.set(key, cloneJson(value));
@@ -138,9 +160,12 @@ export function replaceModelContent(model, penDocument, origin) {
       current.set("deleted", false);
       current.set("hadChildren", Array.isArray(node.children));
       const properties = current.get("properties");
-      if (!(properties instanceof Y.Map)) throw new Error(`Node ${id} has invalid properties.`);
+      if (!(properties instanceof Y.Map))
+        throw new Error(`Node ${id} has invalid properties.`);
       const nextProperties = Object.fromEntries(
-        Object.entries(node).filter(([key]) => !RESERVED_NODE_PROPERTIES.has(key)),
+        Object.entries(node).filter(
+          ([key]) => !RESERVED_NODE_PROPERTIES.has(key),
+        ),
       );
       for (const key of [...properties.keys()]) {
         if (!Object.hasOwn(nextProperties, key)) properties.delete(key);
@@ -170,7 +195,10 @@ export function upgradeModel(model, origin) {
 
 export function materializePen(model) {
   const result = Object.fromEntries(
-    [...model.documentFields.entries()].map(([key, value]) => [key, cloneJson(value)]),
+    [...model.documentFields.entries()].map(([key, value]) => [
+      key,
+      cloneJson(value),
+    ]),
   );
   const live = new Map(
     [...model.nodes.entries()].filter(
@@ -196,7 +224,8 @@ export function materializePen(model) {
 
   for (const children of childrenByParent.values()) {
     children.sort((left, right) => {
-      const delta = Number(left.node.get("position")) - Number(right.node.get("position"));
+      const delta =
+        Number(left.node.get("position")) - Number(right.node.get("position"));
       return delta || left.id.localeCompare(right.id);
     });
   }
@@ -210,22 +239,36 @@ export function materializePen(model) {
       type: node.get("type"),
       id,
       ...Object.fromEntries(
-        [...properties.entries()].map(([key, property]) => [key, fromYValue(property)]),
+        [...properties.entries()].map(([key, property]) => [
+          key,
+          fromYValue(property),
+        ]),
       ),
     };
-    const children = (childrenByParent.get(id) ?? []).map(build).filter(Boolean);
-    if (children.length > 0 || node.get("hadChildren") === true) value.children = children;
+    const children = (childrenByParent.get(id) ?? [])
+      .map(build)
+      .filter(Boolean);
+    if (children.length > 0 || node.get("hadChildren") === true)
+      value.children = children;
     visiting.delete(id);
     return value;
   };
 
-  result.children = (childrenByParent.get(null) ?? []).map(build).filter(Boolean);
+  result.children = (childrenByParent.get(null) ?? [])
+    .map(build)
+    .filter(Boolean);
   return result;
 }
 
 export function syncModels(left, right) {
-  const leftUpdate = Y.encodeStateAsUpdate(left.doc, Y.encodeStateVector(right.doc));
-  const rightUpdate = Y.encodeStateAsUpdate(right.doc, Y.encodeStateVector(left.doc));
+  const leftUpdate = Y.encodeStateAsUpdate(
+    left.doc,
+    Y.encodeStateVector(right.doc),
+  );
+  const rightUpdate = Y.encodeStateAsUpdate(
+    right.doc,
+    Y.encodeStateVector(left.doc),
+  );
   Y.applyUpdate(left.doc, rightUpdate);
   Y.applyUpdate(right.doc, leftUpdate);
 }
@@ -245,7 +288,12 @@ function importChildren(nodes, children = [], parentId) {
 }
 
 function createYNode(node, parentId, position) {
-  if (!node || typeof node !== "object" || typeof node.id !== "string" || !node.id) {
+  if (
+    !node ||
+    typeof node !== "object" ||
+    typeof node.id !== "string" ||
+    !node.id
+  ) {
     throw new Error("Every normalized node must have a non-empty string ID.");
   }
   const value = new Y.Map();
@@ -266,13 +314,15 @@ function createYNode(node, parentId, position) {
 
 function getNode(model, nodeId) {
   const node = model.nodes.get(nodeId);
-  if (!(node instanceof Y.Map)) throw new Error(`Node ${nodeId} was not found.`);
+  if (!(node instanceof Y.Map))
+    throw new Error(`Node ${nodeId} was not found.`);
   return node;
 }
 
 function getLiveNode(model, nodeId) {
   const node = getNode(model, nodeId);
-  if (node.get("deleted") === true) throw new Error(`Node ${nodeId} is deleted.`);
+  if (node.get("deleted") === true)
+    throw new Error(`Node ${nodeId} is deleted.`);
   return node;
 }
 
@@ -282,7 +332,11 @@ function transact(model, origin, action) {
 
 function assertEditableModel(model) {
   const version = Number(model.metadata.get("modelVersion") ?? 1);
-  if (!Number.isInteger(version) || version < 1 || version > CURRENT_MODEL_VERSION) {
+  if (
+    !Number.isInteger(version) ||
+    version < 1 ||
+    version > CURRENT_MODEL_VERSION
+  ) {
     throw new Error(
       `Canvas model version ${String(model.metadata.get("modelVersion"))} is not editable by this client.`,
     );
@@ -296,7 +350,8 @@ function assertPosition(position) {
 }
 
 function validateNodeTree(children, occupiedIds) {
-  if (!Array.isArray(children)) throw new Error("Node children must be an array.");
+  if (!Array.isArray(children))
+    throw new Error("Node children must be an array.");
   for (const node of children) {
     if (!node || typeof node !== "object" || Array.isArray(node)) {
       throw new Error("Every normalized node must be an object.");
@@ -307,9 +362,11 @@ function validateNodeTree(children, occupiedIds) {
     if (typeof node.type !== "string" || !node.type) {
       throw new Error(`Node ${node.id} must have a non-empty string type.`);
     }
-    if (occupiedIds.has(node.id)) throw new Error(`Duplicate node ID ${node.id}.`);
+    if (occupiedIds.has(node.id))
+      throw new Error(`Duplicate node ID ${node.id}.`);
     occupiedIds.add(node.id);
-    if (node.children !== undefined) validateNodeTree(node.children, occupiedIds);
+    if (node.children !== undefined)
+      validateNodeTree(node.children, occupiedIds);
   }
 }
 
@@ -317,7 +374,8 @@ function assertNoLocalParentCycle(model, nodeId, parentId) {
   const visited = new Set();
   let currentId = parentId;
   while (currentId !== null && model.nodes.has(currentId)) {
-    if (currentId === nodeId) throw new Error("A node cannot move beneath its own descendant.");
+    if (currentId === nodeId)
+      throw new Error("A node cannot move beneath its own descendant.");
     if (visited.has(currentId)) return;
     visited.add(currentId);
     currentId = model.nodes.get(currentId).get("parentId");
@@ -330,9 +388,11 @@ function cloneJson(value) {
 }
 
 function toYValue(value) {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return cloneJson(value);
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return cloneJson(value);
   const map = new Y.Map();
-  for (const [key, nested] of Object.entries(value)) map.set(key, toYValue(nested));
+  for (const [key, nested] of Object.entries(value))
+    map.set(key, toYValue(nested));
   return map;
 }
 
@@ -378,18 +438,36 @@ function hasDeletedAncestor(nodes, nodeId) {
 }
 
 function assertJsonValue(value, path = "$", ancestors = new Set()) {
-  if (value === null || typeof value === "string" || typeof value === "boolean") return;
+  if (value === null || typeof value === "string" || typeof value === "boolean")
+    return;
   if (typeof value === "number") {
-    if (!Number.isFinite(value)) throw new Error(`${path} must contain only finite JSON numbers.`);
+    if (!Number.isFinite(value))
+      throw new Error(`${path} must contain only finite JSON numbers.`);
     return;
   }
   if (typeof value !== "object") {
-    throw new Error(`${path} contains a value that cannot be represented in JSON.`);
+    throw new Error(
+      `${path} contains a value that cannot be represented in JSON.`,
+    );
   }
   if (ancestors.has(value)) throw new Error(`${path} contains a JSON cycle.`);
   const prototype = Object.getPrototypeOf(value);
-  if (!Array.isArray(value) && prototype !== Object.prototype && prototype !== null) {
-    throw new Error(`${path} must contain only plain JSON objects and arrays.`);
+  if (
+    !Array.isArray(value) &&
+    prototype !== Object.prototype &&
+    prototype !== null
+  ) {
+    const constructor = Object.getOwnPropertyDescriptor(
+      prototype,
+      "constructor",
+    )?.value;
+    const received =
+      typeof constructor === "function" && constructor.name
+        ? constructor.name
+        : "an object with a custom prototype";
+    throw new Error(
+      `${path} received ${received}; JSON values allow only plain objects, arrays, strings, finite numbers, booleans, and null. Convert this property to plain JSON data and retry.`,
+    );
   }
   if (Reflect.ownKeys(value).some((key) => typeof key !== "string")) {
     throw new Error(`${path} contains a non-string JSON object key.`);
@@ -403,11 +481,14 @@ function assertJsonValue(value, path = "$", ancestors = new Set()) {
       }
     }
     for (let index = 0; index < value.length; index += 1) {
-      if (!Object.hasOwn(value, index)) throw new Error(`${path} contains a sparse JSON array.`);
+      if (!Object.hasOwn(value, index))
+        throw new Error(`${path} contains a sparse JSON array.`);
       assertJsonValue(value[index], `${path}[${index}]`, ancestors);
     }
   } else {
-    for (const [key, descriptor] of Object.entries(Object.getOwnPropertyDescriptors(value))) {
+    for (const [key, descriptor] of Object.entries(
+      Object.getOwnPropertyDescriptors(value),
+    )) {
       if (!descriptor.enumerable || !("value" in descriptor)) {
         throw new Error(`${path}.${key} is not a plain JSON data property.`);
       }

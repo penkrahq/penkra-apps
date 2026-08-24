@@ -21,7 +21,9 @@ export async function executeCanvasScript(document, code) {
     const output = QuickJS.evalCode(
       `const __canvasDocumentJson = ${JSON.stringify(input)};\nconst __canvasCode = ${JSON.stringify(code)};\n${SANDBOX_SOURCE}`,
       {
-        shouldInterrupt: shouldInterruptAfterDeadline(Date.now() + EXECUTION_TIMEOUT_MS),
+        shouldInterrupt: shouldInterruptAfterDeadline(
+          Date.now() + EXECUTION_TIMEOUT_MS,
+        ),
         memoryLimitBytes: 64 * 1024 * 1024,
         maxStackSizeBytes: 4 * 1024 * 1024,
       },
@@ -36,13 +38,24 @@ export async function executeCanvasScript(document, code) {
 
 function assertByteLimit(value, limit, label) {
   const bytes = new TextEncoder().encode(value).byteLength;
-  if (bytes > limit) throw new Error(`${label} is ${bytes} bytes; the limit is ${limit} bytes.`);
+  if (bytes > limit) {
+    const nextAction =
+      label === "Canvas script"
+        ? "Split the edit into smaller documents.execute calls and validate between them."
+        : "Reduce the document or output size and retry with a narrower operation.";
+    throw new Error(
+      `${label} is ${bytes} bytes; the limit is ${limit} bytes. ${nextAction}`,
+    );
+  }
 }
 
 function scriptError(value) {
-  const message = typeof value?.message === "string" ? value.message : String(value);
+  const message =
+    typeof value?.message === "string" ? value.message : String(value);
   const error = new Error(`Canvas script failed: ${message}`);
-  error.code = message.includes("interrupted") ? "CANVAS_SCRIPT_TIMEOUT" : "CANVAS_SCRIPT_FAILED";
+  error.code = message.includes("interrupted")
+    ? "CANVAS_SCRIPT_TIMEOUT"
+    : "CANVAS_SCRIPT_FAILED";
   return error;
 }
 

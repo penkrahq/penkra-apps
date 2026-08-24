@@ -1,14 +1,25 @@
-import { displayAddress, normalizeAddress, pageLabel } from "./browser-model.mjs";
+import {
+  displayAddress,
+  normalizeAddress,
+  pageLabel,
+} from "./browser-model.mjs";
 import {
   browserSurfaceInsets,
   browserSurfaceInsetsSignature,
 } from "./browser-surface.mjs";
 
 const runtime = globalThis.penkra;
-if (!runtime?.browser) throw new Error("Browser requires Penkra's hosted browser service.");
+if (!runtime?.browser)
+  throw new Error("Browser requires Penkra's hosted browser service.");
 
 const root = document.querySelector("#app");
-let state = { version: 0, open: false, activePageId: null, pages: [], lastError: null };
+let state = {
+  version: 0,
+  open: false,
+  activePageId: null,
+  pages: [],
+  lastError: null,
+};
 let findOpen = false;
 let moreOpen = false;
 let findResult = { activeMatchOrdinal: 0, matches: 0 };
@@ -17,10 +28,20 @@ let findDraft = "";
 let resizeObserver;
 let lastSurfaceLayoutSignature;
 
-const activePage = () => state.pages.find((page) => page.id === state.activePageId) ?? null;
-const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-})[character]);
+const activePage = () =>
+  state.pages.find((page) => page.id === state.activePageId) ?? null;
+const escapeHtml = (value) =>
+  String(value).replace(
+    /[&<>"']/g,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[character],
+  );
 
 function iconButton(action, label, symbol, disabled = false) {
   return `<button class="icon-button" data-action="${action}" aria-label="${label}" title="${label}" ${disabled ? "disabled" : ""}>${symbol}</button>`;
@@ -30,13 +51,18 @@ function render() {
   const page = activePage();
   const focusedAddress = document.activeElement?.id === "address";
   const focusedFind = document.activeElement?.id === "find-input";
-  if (!focusedAddress) addressDraft = displayAddress(page?.url ?? "about:blank");
-  const tabs = state.pages.map((candidate) => `
+  if (!focusedAddress)
+    addressDraft = displayAddress(page?.url ?? "about:blank");
+  const tabs = state.pages
+    .map(
+      (candidate) => `
     <button class="page-tab ${candidate.id === state.activePageId ? "active" : ""}" data-page="${candidate.id}" title="${escapeHtml(candidate.title || candidate.url)}">
       ${candidate.faviconUrl ? `<img class="favicon" src="${escapeHtml(candidate.faviconUrl)}" alt="" />` : `<span class="fallback">◎</span>`}
       <span class="label">${escapeHtml(pageLabel(candidate))}</span>
       <span class="close" data-close-page="${candidate.id}" role="button" aria-label="Close page">×</span>
-    </button>`).join("");
+    </button>`,
+    )
+    .join("");
   root.innerHTML = `<div class="browser">
     <nav class="page-tabs" aria-label="Pages">${tabs}<button class="new-page" data-action="new" aria-label="New page" title="New page">＋</button></nav>
     <header class="app-bar">
@@ -57,7 +83,11 @@ function render() {
   </div>`;
   bindEvents();
   observeViewport();
-  if (focusedAddress) { const input = document.querySelector("#address"); input?.focus(); input?.setSelectionRange(addressDraft.length, addressDraft.length); }
+  if (focusedAddress) {
+    const input = document.querySelector("#address");
+    input?.focus();
+    input?.setSelectionRange(addressDraft.length, addressDraft.length);
+  }
   if (focusedFind) document.querySelector("#find-input")?.focus();
 }
 
@@ -71,7 +101,9 @@ function observeViewport() {
       return;
     }
     const bounds = viewport.getBoundingClientRect();
-    publishSurfaceLayout(browserSurfaceInsets(bounds, window.innerWidth, window.innerHeight));
+    publishSurfaceLayout(
+      browserSurfaceInsets(bounds, window.innerWidth, window.innerHeight),
+    );
   };
   resizeObserver = new ResizeObserver(sync);
   if (viewport) resizeObserver.observe(viewport);
@@ -87,44 +119,115 @@ function publishSurfaceLayout(insets) {
 
 async function run(action, data) {
   const page = activePage();
-  if (action === "more") { moreOpen = !moreOpen; render(); return; }
-  if (action === "new") { moreOpen = false; await runtime.browser.newPage({ activate: true }); }
+  if (action === "more") {
+    moreOpen = !moreOpen;
+    render();
+    return;
+  }
+  if (action === "new") {
+    moreOpen = false;
+    await runtime.browser.newPage({ activate: true });
+  }
   if (action === "back" && page) await runtime.browser.back(page.id);
   if (action === "forward" && page) await runtime.browser.forward(page.id);
-  if (action === "reload" && page) await (page.isLoading ? runtime.browser.stop(page.id) : runtime.browser.reload(page.id));
-  if (action === "find") { moreOpen = false; findOpen = true; render(); requestAnimationFrame(() => document.querySelector("#find-input")?.focus()); }
-  if (action === "find-close") { findOpen = false; findDraft = ""; findResult = { activeMatchOrdinal: 0, matches: 0 }; if (page) await runtime.browser.stopFind(page.id); render(); }
+  if (action === "reload" && page)
+    await (page.isLoading
+      ? runtime.browser.stop(page.id)
+      : runtime.browser.reload(page.id));
+  if (action === "find") {
+    moreOpen = false;
+    findOpen = true;
+    render();
+    requestAnimationFrame(() => document.querySelector("#find-input")?.focus());
+  }
+  if (action === "find-close") {
+    findOpen = false;
+    findDraft = "";
+    findResult = { activeMatchOrdinal: 0, matches: 0 };
+    if (page) await runtime.browser.stopFind(page.id);
+    render();
+  }
   if ((action === "find-next" || action === "find-prev") && page && findDraft) {
-    findResult = await runtime.browser.find({ pageId: page.id, text: findDraft, action: action === "find-next" ? "next" : "previous" }); render();
+    findResult = await runtime.browser.find({
+      pageId: page.id,
+      text: findDraft,
+      action: action === "find-next" ? "next" : "previous",
+    });
+    render();
   }
   if (action === "select") await runtime.browser.selectPage(data);
   if (action === "close") await runtime.browser.closePage(data);
 }
 
 function bindEvents() {
-  root.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", () => void run(button.dataset.action)));
-  root.querySelectorAll("[data-page]").forEach((button) => button.addEventListener("click", (event) => {
-    if (event.target.closest("[data-close-page]")) return;
-    void run("select", button.dataset.page);
-  }));
-  root.querySelectorAll("[data-close-page]").forEach((button) => button.addEventListener("click", (event) => { event.stopPropagation(); void run("close", button.dataset.closePage); }));
-  document.querySelector("#address")?.addEventListener("input", (event) => { addressDraft = event.target.value; });
-  document.querySelector("#address-form")?.addEventListener("submit", (event) => {
+  root
+    .querySelectorAll("[data-action]")
+    .forEach((button) =>
+      button.addEventListener("click", () => void run(button.dataset.action)),
+    );
+  root.querySelectorAll("[data-page]").forEach((button) =>
+    button.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close-page]")) return;
+      void run("select", button.dataset.page);
+    }),
+  );
+  root.querySelectorAll("[data-close-page]").forEach((button) =>
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      void run("close", button.dataset.closePage);
+    }),
+  );
+  document.querySelector("#address")?.addEventListener("input", (event) => {
+    addressDraft = event.target.value;
+  });
+  document
+    .querySelector("#address-form")
+    ?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const page = activePage();
+      const url = normalizeAddress(addressDraft);
+      void (page
+        ? runtime.browser.navigate({ pageId: page.id, url })
+        : runtime.browser.open(url));
+    });
+  document.querySelector("#find-input")?.addEventListener("input", (event) => {
+    findDraft = event.target.value;
+  });
+  document.querySelector("#find-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
     const page = activePage();
-    const url = normalizeAddress(addressDraft);
-    void (page ? runtime.browser.navigate({ pageId: page.id, url }) : runtime.browser.open(url));
+    if (page && findDraft)
+      void runtime.browser
+        .find({ pageId: page.id, text: findDraft, action: "search" })
+        .then((result) => {
+          findResult = result;
+          render();
+        });
   });
-  document.querySelector("#find-input")?.addEventListener("input", (event) => { findDraft = event.target.value; });
-  document.querySelector("#find-form")?.addEventListener("submit", (event) => { event.preventDefault(); const page = activePage(); if (page && findDraft) void runtime.browser.find({ pageId: page.id, text: findDraft, action: "search" }).then((result) => { findResult = result; render(); }); });
 }
 
-runtime.browser.onState((next) => { state = next; render(); });
-runtime.tab.handle("pages.open", async (input) => runtime.browser.open(normalizeAddress(input.url)));
-runtime.tab.handle("pages.navigate", async (input) => runtime.browser.navigate({ url: normalizeAddress(input.url), ...(input.pageId ? { pageId: input.pageId } : {}) }));
-runtime.tab.handle("pages.evaluate", async (input) => runtime.browser.evaluate(input));
+runtime.browser.onState((next) => {
+  state = next;
+  render();
+});
+runtime.tab.handle("pages.open", async (input) =>
+  runtime.browser.open(normalizeAddress(input.url)),
+);
+runtime.tab.handle("pages.navigate", async (input) =>
+  runtime.browser.navigate({
+    url: normalizeAddress(input.url),
+    ...(input.pageId ? { pageId: input.pageId } : {}),
+  }),
+);
+runtime.tab.handle("pages.evaluate", async (input) =>
+  runtime.browser.evaluate(input),
+);
+runtime.tab.handle("pages.close", async (input) =>
+  runtime.browser.closePage(input.pageId),
+);
 runtime.tab.onNavigate(async ({ state: navigationState }) => {
-  if (navigationState?.url) await runtime.browser.open(normalizeAddress(navigationState.url));
+  if (navigationState?.url)
+    await runtime.browser.open(normalizeAddress(navigationState.url));
 });
 
 state = await runtime.browser.open();

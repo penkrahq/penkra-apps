@@ -4,7 +4,7 @@
   "slug": "apps",
   "name": "Apps",
   "summary": "Discover, install, update, and manage Apps in Penkra.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "compatibility": {
     "penkra": ">=0.11.0"
   },
@@ -22,51 +22,180 @@
   "operations": [
     {
       "key": "listings.open",
-      "summary": "Open an App's registry listing without installing it.",
-      "input": { "type": "object", "properties": { "appId": { "type": "string", "minLength": 1 } }, "required": ["appId"], "additionalProperties": false },
-      "output": { "type": "object", "properties": { "appId": { "type": "string" }, "tabId": { "type": "string" } }, "required": ["appId", "tabId"], "additionalProperties": false },
+      "summary": "Read one exact registry App/version and its permissions before install or update; this does not change local state.",
+      "input": {
+        "type": "object",
+        "properties": { "appId": { "type": "string", "minLength": 1 } },
+        "required": ["appId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "tabId": { "type": "string" }
+        },
+        "required": ["appId", "tabId"],
+        "additionalProperties": false
+      },
       "handler": "listings.open"
     },
     {
       "key": "installations.install",
-      "summary": "Install a registry App into the current Space.",
-      "input": { "$ref": "#/$defs/installInput", "$defs": { "installInput": { "type": "object", "properties": { "slug": { "type": "string", "minLength": 1 }, "version": { "type": "string", "minLength": 1 }, "permissions": { "$ref": "#/$defs/grants" } }, "required": ["slug", "version", "permissions"], "additionalProperties": false }, "grants": { "type": "object", "additionalProperties": { "enum": ["denied", "granted"] } } } },
-      "output": { "$ref": "#/$defs/result", "$defs": { "result": { "type": "object", "properties": { "appId": { "type": "string" }, "spaceId": { "type": "string" }, "state": { "const": "installed" }, "version": { "type": "string" } }, "required": ["appId", "spaceId", "state", "version"], "additionalProperties": false } } },
+      "summary": "Install one exact registry version into the current Space after the user grants every declared permission; verify the returned snapshot before claiming it is usable.",
+      "input": {
+        "$ref": "#/$defs/installInput",
+        "$defs": {
+          "installInput": {
+            "type": "object",
+            "properties": {
+              "slug": { "type": "string", "minLength": 1 },
+              "version": { "type": "string", "minLength": 1 },
+              "permissions": { "$ref": "#/$defs/grants" }
+            },
+            "required": ["slug", "version", "permissions"],
+            "additionalProperties": false
+          },
+          "grants": {
+            "type": "object",
+            "additionalProperties": { "enum": ["denied", "granted"] }
+          }
+        }
+      },
+      "output": {
+        "$ref": "#/$defs/result",
+        "$defs": {
+          "result": {
+            "type": "object",
+            "properties": {
+              "appId": { "type": "string" },
+              "spaceId": { "type": "string" },
+              "state": { "const": "installed" },
+              "version": { "type": "string" }
+            },
+            "required": ["appId", "spaceId", "state", "version"],
+            "additionalProperties": false
+          }
+        }
+      },
       "handler": "installations.install"
     },
     {
       "key": "installations.update",
-      "summary": "Update a registry App in the current Space with explicit permission grants.",
-      "input": { "type": "object", "properties": { "slug": { "type": "string", "minLength": 1 }, "version": { "type": "string", "minLength": 1 }, "permissions": { "type": "object", "additionalProperties": { "enum": ["denied", "granted"] } } }, "required": ["slug", "version", "permissions"], "additionalProperties": false },
-      "output": { "type": "object", "properties": { "appId": { "type": "string" }, "spaceId": { "type": "string" }, "state": { "const": "updated" }, "version": { "type": "string" } }, "required": ["appId", "spaceId", "state", "version"], "additionalProperties": false },
+      "summary": "Update an installed App in the current Space to one exact registry version; newly declared permissions require explicit grants.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "slug": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "permissions": {
+            "type": "object",
+            "additionalProperties": { "enum": ["denied", "granted"] }
+          }
+        },
+        "required": ["slug", "version", "permissions"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "spaceId": { "type": "string" },
+          "state": { "const": "updated" },
+          "version": { "type": "string" }
+        },
+        "required": ["appId", "spaceId", "state", "version"],
+        "additionalProperties": false
+      },
       "handler": "installations.update"
     },
     {
       "key": "installations.uninstall",
-      "summary": "Uninstall an App while explicitly choosing whether to retain its data.",
-      "input": { "type": "object", "properties": { "appId": { "type": "string", "minLength": 1 }, "retainData": { "type": "boolean" } }, "required": ["appId", "retainData"], "additionalProperties": false },
-      "output": { "type": "object", "properties": { "appId": { "type": "string" }, "spaceId": { "type": "string" }, "state": { "const": "uninstalled" } }, "required": ["appId", "spaceId", "state"], "additionalProperties": false },
+      "summary": "Uninstall one App from the current Space with an explicit retainData choice; use remove-data separately when retained data must later be erased.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string", "minLength": 1 },
+          "retainData": { "type": "boolean" }
+        },
+        "required": ["appId", "retainData"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "spaceId": { "type": "string" },
+          "state": { "const": "uninstalled" }
+        },
+        "required": ["appId", "spaceId", "state"],
+        "additionalProperties": false
+      },
       "handler": "installations.uninstall"
     },
     {
       "key": "installations.enable",
-      "summary": "Enable an installed App in the current Space.",
-      "input": { "type": "object", "properties": { "appId": { "type": "string", "minLength": 1 } }, "required": ["appId"], "additionalProperties": false },
-      "output": { "type": "object", "properties": { "appId": { "type": "string" }, "spaceId": { "type": "string" }, "state": { "const": "enabled" }, "version": { "type": "string" } }, "required": ["appId", "spaceId", "state", "version"], "additionalProperties": false },
+      "summary": "Enable one already-installed App in the current Space; installation and permission grants are separate prerequisites.",
+      "input": {
+        "type": "object",
+        "properties": { "appId": { "type": "string", "minLength": 1 } },
+        "required": ["appId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "spaceId": { "type": "string" },
+          "state": { "const": "enabled" },
+          "version": { "type": "string" }
+        },
+        "required": ["appId", "spaceId", "state", "version"],
+        "additionalProperties": false
+      },
       "handler": "installations.enable"
     },
     {
       "key": "installations.disable",
-      "summary": "Disable an installed App in the current Space.",
-      "input": { "type": "object", "properties": { "appId": { "type": "string", "minLength": 1 } }, "required": ["appId"], "additionalProperties": false },
-      "output": { "type": "object", "properties": { "appId": { "type": "string" }, "spaceId": { "type": "string" }, "state": { "const": "disabled" }, "version": { "type": "string" } }, "required": ["appId", "spaceId", "state", "version"], "additionalProperties": false },
+      "summary": "Disable one installed App in the current Space without uninstalling it or erasing retained data.",
+      "input": {
+        "type": "object",
+        "properties": { "appId": { "type": "string", "minLength": 1 } },
+        "required": ["appId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "spaceId": { "type": "string" },
+          "state": { "const": "disabled" },
+          "version": { "type": "string" }
+        },
+        "required": ["appId", "spaceId", "state", "version"],
+        "additionalProperties": false
+      },
       "handler": "installations.disable"
     },
     {
       "key": "installations.remove-data",
-      "summary": "Remove retained App data from the current Space.",
-      "input": { "type": "object", "properties": { "appId": { "type": "string", "minLength": 1 } }, "required": ["appId"], "additionalProperties": false },
-      "output": { "type": "object", "properties": { "appId": { "type": "string" }, "spaceId": { "type": "string" }, "state": { "const": "data-removed" } }, "required": ["appId", "spaceId", "state"], "additionalProperties": false },
+      "summary": "Permanently remove one inactive App's retained data from the current Space; disable it first and use only after explicit erasure authorization.",
+      "input": {
+        "type": "object",
+        "properties": { "appId": { "type": "string", "minLength": 1 } },
+        "required": ["appId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "spaceId": { "type": "string" },
+          "state": { "const": "data-removed" }
+        },
+        "required": ["appId", "spaceId", "state"],
+        "additionalProperties": false
+      },
       "handler": "installations.remove-data"
     }
   ]

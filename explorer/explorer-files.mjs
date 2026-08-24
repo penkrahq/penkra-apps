@@ -55,6 +55,10 @@ export function createDirectory(root, parentPath, name, files = runtimeFiles()) 
   return files.createDirectory(root.id, join(parentPath, name));
 }
 
+export function watchEntry(root, relativePath, listener, files = runtimeFiles()) {
+  return files.watch(root.id, relativePath || undefined, listener);
+}
+
 function join(parent, name) {
   return parent ? `${parent}/${name}` : name;
 }
