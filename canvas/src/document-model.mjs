@@ -9,6 +9,7 @@ import {
   moveNode,
   deleteNode,
   restoreNode,
+  replaceModelContent,
 } from "@penkra/canvas-collaboration-research";
 import { base64ToBytes, bytesToBase64 } from "./codec.mjs";
 
@@ -27,13 +28,41 @@ export function createUndoManager(model) {
   });
 }
 
-export function restoreDocumentModel(payload) {
+export function restoreDocumentModel(payload, options = {}) {
   const doc = new Y.Doc();
-  Y.applyUpdate(doc, base64ToBytes(payload.snapshot.state), REMOTE_ORIGIN);
+  const snapshotBytes = measureRestorePhase(
+    options,
+    "document.snapshot-decode",
+    () => base64ToBytes(payload.snapshot.state),
+  );
+  measureRestorePhase(
+    options,
+    "document.snapshot-apply",
+    () => Y.applyUpdate(doc, snapshotBytes, REMOTE_ORIGIN),
+    { bytes: snapshotBytes.byteLength },
+  );
   for (const update of payload.updates ?? []) {
-    Y.applyUpdate(doc, base64ToBytes(update.update), REMOTE_ORIGIN);
+    const updateBytes = measureRestorePhase(
+      options,
+      "document.update-decode",
+      () => base64ToBytes(update.update),
+      { sequence: update.sequence },
+    );
+    measureRestorePhase(
+      options,
+      "document.update-apply",
+      () => Y.applyUpdate(doc, updateBytes, REMOTE_ORIGIN),
+      { sequence: update.sequence, bytes: updateBytes.byteLength },
+    );
   }
   return openModel(doc);
+}
+
+function measureRestorePhase(options, name, action, details = {}) {
+  const startedAt = performance.now();
+  const result = action();
+  options.onPerformance?.(name, performance.now() - startedAt, details);
+  return result;
 }
 
 export function encodeState(model) {
@@ -45,7 +74,17 @@ export function encodeUpdate(update) {
 }
 
 export function applyRemoteUpdate(model, update) {
-  Y.applyUpdate(model.doc, base64ToBytes(update), REMOTE_ORIGIN);
+  let changed = false;
+  const observe = (_update, origin) => {
+    if (origin === REMOTE_ORIGIN) changed = true;
+  };
+  model.doc.on("update", observe);
+  try {
+    Y.applyUpdate(model.doc, base64ToBytes(update), REMOTE_ORIGIN);
+  } finally {
+    model.doc.off("update", observe);
+  }
+  return changed;
 }
 
 export function reconcileDocumentPayload(model, payload, lastSequence = 0) {
@@ -116,6 +155,10 @@ export function mutate(model, mutation, origin = LOCAL_ORIGIN) {
     default:
       throw new Error(`Unsupported Canvas mutation: ${String(mutation?.kind)}`);
   }
+}
+
+export function replaceDocument(model, document, origin = LOCAL_ORIGIN) {
+  return replaceModelContent(model, document, origin);
 }
 
 export { Y };

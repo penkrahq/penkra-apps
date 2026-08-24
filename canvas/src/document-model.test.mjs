@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   LOCAL_ORIGIN,
+  applyRemoteUpdate,
   createDocumentModel,
   createUndoManager,
   encodeState,
@@ -41,6 +42,29 @@ test("Canvas restores cloud snapshots and preserves unsupported content", () => 
   restored.doc.destroy();
 });
 
+test("Canvas reports snapshot decoding and Yjs application separately", () => {
+  const source = {
+    version: "2.15",
+    children: [{ id: "frame", type: "frame", width: 640, height: 480, children: [] }],
+  };
+  const created = createDocumentModel(source);
+  const phases = [];
+  const restored = restoreDocumentModel(
+    { snapshot: { state: encodeState(created), throughSequence: 0 }, updates: [] },
+    { onPerformance: (name, duration, details) => phases.push({ name, duration, details }) },
+  );
+
+  assert.deepEqual(phases.map(({ name }) => name), [
+    "document.snapshot-decode",
+    "document.snapshot-apply",
+  ]);
+  assert.ok(phases.every(({ duration }) => duration >= 0));
+  assert.ok(phases[1].details.bytes > 0);
+  assert.deepEqual(materialize(restored), source);
+  created.doc.destroy();
+  restored.doc.destroy();
+});
+
 test("Canvas applies missed lower-sequence updates after its offline update advances the watermark", () => {
   const initial = createDocumentModel({
     version: "2.15",
@@ -75,6 +99,22 @@ test("Canvas applies missed lower-sequence updates after its offline update adva
   initial.doc.destroy();
   remote.doc.destroy();
   local.doc.destroy();
+});
+
+test("remote update application reports whether Yjs state actually changed", () => {
+  const source = createDocumentModel({ version: "2.17", children: [] });
+  const target = createDocumentModel({ version: "2.17", children: [] });
+  mutate(source, {
+    kind: "insert-node",
+    node: { id: "card", type: "frame", width: 100, height: 80 },
+    parentId: null,
+    position: 0,
+  });
+  const update = encodeState(source);
+
+  assert.equal(applyRemoteUpdate(target, update), true);
+  assert.equal(applyRemoteUpdate(target, update), false);
+  assert.equal(materialize(target).children[0].id, "card");
 });
 
 test("Canvas applies a transactional property mutation without replacing the document", () => {

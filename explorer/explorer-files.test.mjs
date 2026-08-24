@@ -8,6 +8,7 @@ import {
   listDirectory,
   readEntry,
   restoreExplorerRoot,
+  watchEntry,
   writeTextEntry,
 } from "./explorer-files.mjs";
 
@@ -41,6 +42,10 @@ function fakeFiles() {
     async createDirectory(id, path) {
       calls.push(["createDirectory", id, path]);
     },
+    async watch(id, path, listener) {
+      calls.push(["watch", id, path, typeof listener]);
+      return () => undefined;
+    },
   };
 }
 
@@ -59,10 +64,12 @@ test("routes directory and editing work through the scoped service", async () =>
   await listDirectory(root, "docs", files);
   await writeTextEntry(root, "README.md", "next", files);
   await createDirectory(root, "docs", "notes", files);
+  await watchEntry(root, "docs", () => undefined, files);
   assert.deepEqual(files.calls, [
     ["listDirectory", "root", "docs"],
     ["writeText", "root", "next", "README.md"],
     ["createDirectory", "root", "docs/notes"],
+    ["watch", "root", "docs", "function"],
   ]);
 });
 

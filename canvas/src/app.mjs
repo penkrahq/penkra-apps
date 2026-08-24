@@ -2,7 +2,12 @@ import { createCanvasApi } from "./canvas-api.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
-import { analyzeOpenPencilCompatibility, isOpenPencilEditableNode } from "./openpencil-engine.mjs";
+import {
+  analyzeOpenPencilCompatibility,
+  isOpenPencilEditableNode,
+  penPropertyToSceneChanges,
+  sceneNodeToPenNode,
+} from "./openpencil-engine.mjs";
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import {
@@ -12,6 +17,9 @@ import {
 } from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
 import { createPerformanceMonitor } from "./performance-monitor.mjs";
+import { configureCanvasFonts } from "./font-runtime.mjs";
+import { copyTextToClipboard, formatCanvasNodeReference } from "./node-reference.mjs";
+import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
 import {
   ACCESS_REMOVED_HEADING,
   ACCESS_REMOVED_MESSAGE,
@@ -55,6 +63,7 @@ if (!runtime || !root) throw new Error("Canvas requires the Penkra App runtime."
 
 const api = createCanvasApi(runtime);
 const performanceMonitor = createPerformanceMonitor();
+configureCanvasFonts(runtime, { performanceMonitor });
 const state = {
   route: "library",
   libraryFilter: "all",
@@ -70,9 +79,9 @@ const state = {
   syncMessage: "Saved",
   presence: null,
   realtimeConnection: REALTIME_RECONNECTING,
-  activePanel: "layers",
-  layersOpen: true,
-  inspectorOpen: true,
+  activePanel: null,
+  layersOpen: false,
+  inspectorOpen: false,
   dialog: null,
   dialogReturnFocusSelector: null,
   dialogFocusSelector: null,
@@ -85,6 +94,8 @@ const state = {
   flushing: false,
   reconciling: null,
   pendingUpdates: [],
+  localUpdateSequences: new Map(),
+  incrementalEngineUpdate: false,
   persistence: null,
   undo: null,
   fieldDrafts: new Map(),
@@ -93,6 +104,7 @@ const state = {
   activeTool: "select",
   spacePressed: false,
   engineSurface: null,
+  engineMountGeneration: 0,
   engineViewport: null,
   engineReady: false,
   engineDocumentDirty: false,
@@ -104,8 +116,10 @@ const state = {
   preparedRenderDocument: null,
   documentNodes: null,
   documentNodeById: null,
+  deletedNodeSnapshots: new Map(),
   assetPanel: "file",
   inspectorTab: "design",
+  documentOpenStartedAt: null,
 };
 
 const routes = createRouteCoordinator({
@@ -120,21 +134,19 @@ runtime.tab.handle("selection.set", async ({ nodeId }) => {
   if (!state.model || !currentDocumentNode(nodeId)) {
     throw new Error(`Canvas node ${nodeId} was not found in this tab.`);
   }
-  state.selectedId = nodeId;
-  state.activePanel = "inspector";
-  state.inspectorOpen = true;
-  render();
+  selectNode(nodeId, { openInspector: true });
   return { selected: true };
 });
 runtime.tab.handle("viewport.focus", async ({ nodeId }) => {
   if (!state.model || !currentDocumentNode(nodeId)) {
     throw new Error(`Canvas node ${nodeId} was not found in this tab.`);
   }
-  state.selectedId = nodeId;
-  render();
-  requestAnimationFrame(() => focusNodeInViewport(nodeId));
+  selectNode(nodeId, { focus: true });
   return { focused: true };
 });
+runtime.tab.handle("performance.snapshot", async () => ({
+  entries: performanceMonitor.snapshot(),
+}));
 
 window.addEventListener("online", () => {
   if (state.document) {
@@ -260,32 +272,75 @@ async function navigateToDocument(documentId) {
 
 async function openDocument(documentId) {
   closeDocument();
+  state.documentOpenStartedAt = performance.now();
   state.route = "editor";
   state.loading = true;
   state.error = null;
   render();
   try {
-    const payload = await api.getDocument(documentId);
-    const assets = await Promise.all(
-      (payload.assets ?? []).map(async (asset) => [
-        asset.path,
-        { ...asset, bytes: await api.readAsset(documentId, asset) },
-      ]),
+    const [payload] = await Promise.all([
+      performanceMonitor.measureAsync(
+        "document.fetch",
+        () => api.getDocument(documentId),
+        { documentId },
+      ),
+      performanceMonitor.measureAsync(
+        "engine.canvaskit-ready",
+        () => prepareOpenPencilEngine(),
+        { documentId },
+      ),
+    ]);
+    const assetDescriptors = payload.assets ?? [];
+    const assets = await performanceMonitor.measureAsync(
+      "document.assets",
+      () => Promise.all(
+        assetDescriptors.map(async (asset) => [
+          asset.path,
+          { ...asset, bytes: await api.readAsset(documentId, asset) },
+        ]),
+      ),
+      {
+        documentId,
+        assets: assetDescriptors.length,
+        assetBytes: assetDescriptors.reduce((total, asset) => total + Number(asset.size ?? 0), 0),
+      },
     );
     state.document = payload;
     state.assets = new Map(assets);
     state.accessRemoved = false;
-    state.model = restoreDocumentModel(payload);
+    state.model = performanceMonitor.measure(
+      "document.restore-model",
+      () => restoreDocumentModel(payload, {
+        onPerformance: (name, duration, details) => {
+          performanceMonitor.record(name, duration, { documentId, ...details });
+        },
+      }),
+      {
+        documentId,
+        updates: payload.updates?.length ?? 0,
+        projectionBytes: payload.snapshot?.projectionBytes ?? 0,
+        stateBytes: payload.snapshot?.stateBytes ?? 0,
+      },
+    );
     invalidateDocumentProjection();
-    const serverStateVector = Y.encodeStateVector(state.model.doc);
+    const serverStateVector = performanceMonitor.measure(
+      "document.state-vector",
+      () => Y.encodeStateVector(state.model.doc),
+      { documentId },
+    );
     state.persistence = new IndexeddbPersistence(`penkra-canvas:${documentId}`, state.model.doc);
-    await state.persistence.whenSynced;
-    const offlineUpdate = Y.encodeStateAsUpdate(state.model.doc, serverStateVector);
+    await performanceMonitor.measureAsync(
+      "document.indexeddb-sync",
+      () => state.persistence.whenSynced,
+      { documentId },
+    );
+    const offlineUpdate = performanceMonitor.measure(
+      "document.offline-diff",
+      () => Y.encodeStateAsUpdate(state.model.doc, serverStateVector),
+      { documentId },
+    );
     if (offlineUpdate.byteLength > 2) {
-      state.pendingUpdates.push({
-        clientUpdateId: crypto.randomUUID(),
-        update: encodeUpdate(offlineUpdate),
-      });
+      queueEncodedUpdate(documentId, encodeUpdate(offlineUpdate));
     }
     state.undo = createUndoManager(state.model);
     state.lastSequence = Math.max(
@@ -294,7 +349,8 @@ async function openDocument(documentId) {
     );
     state.selectedId = currentDocumentNodes()[0]?.node.id ?? null;
     state.updateListener = (update, origin) => {
-      invalidateDocumentProjection();
+      const incrementalEngineUpdate = origin === ENGINE_ORIGIN && state.incrementalEngineUpdate;
+      if (!incrementalEngineUpdate) invalidateDocumentProjection();
       if (origin === REMOTE_ORIGIN) return;
       queueUpdate(documentId, update);
       state.engineDocumentDirty = origin !== ENGINE_ORIGIN;
@@ -307,18 +363,26 @@ async function openDocument(documentId) {
       } else {
         applyDisconnectedState(false);
       }
-      render();
+      if (incrementalEngineUpdate) renderSyncStatus();
+      else render();
       void flushPending();
     };
     state.model.doc.on("update", state.updateListener);
     state.realtimeConnection = REALTIME_RECONNECTING;
     state.presence = null;
-    state.unsubscribe = await api.subscribe(
-      documentId,
-      (event) => {
+    state.unsubscribe = await performanceMonitor.measureAsync(
+      "document.realtime-subscribe",
+      () => api.subscribe(
+        documentId,
+        (event) => {
         if (event.event === "project:update" && event.payload?.update) {
           state.lastSequence = Math.max(state.lastSequence, Number(event.payload.sequence ?? 0));
-          applyRemoteUpdate(state.model, event.payload.update);
+          if (event.payload.clientUpdateId && state.localUpdateSequences.has(event.payload.clientUpdateId)) {
+            state.localUpdateSequences.delete(event.payload.clientUpdateId);
+            return;
+          }
+          const changed = applyRemoteUpdate(state.model, event.payload.update);
+          if (!changed) return;
           state.engineDocumentDirty = true;
           state.engineDocumentDirtyReason = "realtime-remote-update";
           render();
@@ -328,19 +392,29 @@ async function openDocument(documentId) {
           render();
         }
         if (event.event === "access-revoked") handleAccessRemoved();
-      },
-      {
-        onConnectionStateChange: (connectionState) => {
-          void handleRealtimeConnectionChange(documentId, connectionState);
         },
-      },
+        {
+          onConnectionStateChange: (connectionState) => {
+            void handleRealtimeConnectionChange(documentId, connectionState);
+          },
+        },
+      ),
+      { documentId },
     );
-    await prepareOpenPencilEngine();
+    collapseEditorPanels();
     state.loading = false;
     setSync("saved", "Saved");
     render();
     await flushPending();
   } catch (error) {
+    if (state.documentOpenStartedAt !== null) {
+      performanceMonitor.record(
+        "document.failed",
+        performance.now() - state.documentOpenStartedAt,
+        { documentId, error: message(error) },
+      );
+      state.documentOpenStartedAt = null;
+    }
     state.loading = false;
     state.error = message(error);
     render();
@@ -360,6 +434,8 @@ function closeDocument() {
   state.persistence = null;
   state.undo = null;
   state.pendingUpdates = [];
+  state.localUpdateSequences.clear();
+  state.incrementalEngineUpdate = false;
   state.reconciling = null;
   state.document = null;
   state.model = null;
@@ -368,9 +444,7 @@ function closeDocument() {
   state.realtimeConnection = REALTIME_RECONNECTING;
   state.dialog = null;
   state.activeTool = "select";
-  state.activePanel = "layers";
-  state.layersOpen = true;
-  state.inspectorOpen = true;
+  collapseEditorPanels();
   state.spacePressed = false;
   state.engineViewport = null;
   state.engineReady = false;
@@ -383,9 +457,17 @@ function closeDocument() {
   state.preparedRenderDocument = null;
   state.documentNodes = null;
   state.documentNodeById = null;
+  state.deletedNodeSnapshots.clear();
+  state.documentOpenStartedAt = null;
   state.fieldDrafts.clear();
   state.fieldErrors.clear();
   state.accessRemoved = false;
+}
+
+function collapseEditorPanels() {
+  state.activePanel = null;
+  state.layersOpen = false;
+  state.inspectorOpen = false;
 }
 
 async function reconcileFromServer(documentId) {
@@ -399,6 +481,11 @@ async function reconcileFromServer(documentId) {
       if (state.document?.id !== documentId || state.model !== model) return false;
       const previousSequence = state.lastSequence;
       state.lastSequence = reconcileDocumentPayload(model, payload, state.lastSequence);
+      for (const [clientUpdateId, sequence] of state.localUpdateSequences) {
+        if (sequence !== null && sequence <= state.lastSequence) {
+          state.localUpdateSequences.delete(clientUpdateId);
+        }
+      }
       state.document = { ...state.document, ...payload };
       if (state.lastSequence > previousSequence) {
         state.engineDocumentDirty = true;
@@ -443,7 +530,14 @@ async function reconcileFromServer(documentId) {
 
 function queueUpdate(documentId, update) {
   if (state.document?.id !== documentId) return;
-  state.pendingUpdates.push({ clientUpdateId: crypto.randomUUID(), update: encodeUpdate(update) });
+  queueEncodedUpdate(documentId, encodeUpdate(update));
+}
+
+function queueEncodedUpdate(documentId, update) {
+  if (state.document?.id !== documentId) return;
+  const clientUpdateId = crypto.randomUUID();
+  state.pendingUpdates.push({ clientUpdateId, update });
+  state.localUpdateSequences.set(clientUpdateId, null);
 }
 
 async function flushPending() {
@@ -455,6 +549,9 @@ async function flushPending() {
       const item = state.pendingUpdates[0];
       const result = await api.appendUpdate(documentId, item);
       state.lastSequence = Math.max(state.lastSequence, Number(result.sequence));
+      if (state.localUpdateSequences.has(item.clientUpdateId)) {
+        state.localUpdateSequences.set(item.clientUpdateId, Number(result.sequence));
+      }
       state.pendingUpdates.shift();
     }
     if (state.updatesSinceSnapshot >= 10 && state.model) {
@@ -467,6 +564,7 @@ async function flushPending() {
     }
     if (state.realtimeConnection === REALTIME_CONNECTED) {
       setSync("saved", "Saved");
+      renderSyncStatus();
     } else {
       applyDisconnectedState(false);
     }
@@ -492,7 +590,7 @@ async function flushPending() {
     setTimeout(() => void flushPending(), 3_000);
   } finally {
     state.flushing = false;
-    render();
+    renderSyncStatus();
   }
 }
 
@@ -527,6 +625,15 @@ function applyDisconnectedState(shouldRender = true) {
 function setSync(sync, syncMessage) {
   state.sync = sync;
   state.syncMessage = syncMessage;
+}
+
+function renderSyncStatus() {
+  const sync = root.querySelector(".sync");
+  if (!sync) return;
+  sync.dataset.state = state.sync;
+  sync.title = state.syncMessage;
+  const label = sync.querySelector("span");
+  if (label) label.textContent = state.syncMessage;
 }
 
 function invalidateDocumentProjection() {
@@ -620,7 +727,7 @@ function render() {
         state.engineDocumentDirty = false;
         state.engineDocumentDirtyReason = null;
       }
-    } else mountEditorSurface();
+    } else scheduleEditorSurfaceMount();
   }
   else bindLibrary();
   focusRequestedControl();
@@ -703,10 +810,10 @@ function renderEditor() {
     <div class="editor-body ${panelClass} ${panelVisibilityClass}">
       <aside class="side-panel layers" ${state.layersOpen ? "" : "hidden"}>
         <div class="panel-tabs"><button class="${state.assetPanel === "file" ? "active" : ""}" data-asset-panel="file">File</button><button class="${state.assetPanel === "assets" ? "active" : ""}" data-asset-panel="assets">Assets</button><button class="icon-button panel-close" data-action="close-layers" aria-label="Close layers">${icon("close")}</button></div>
-        <div class="panel-scroll">${state.assetPanel === "file" ? `<section class="layer-section"><h3>Pages</h3><button class="page-row active">Page 1</button></section><section class="layer-section"><h3>Layers</h3><div role="tree" aria-label="Document layers">${nodes.map(layerRow).join("")}</div></section>` : `<div class="inspector-empty">Reusable components and document assets appear here.</div>`}</div>
+        <div class="panel-scroll">${state.layersOpen ? renderLayersPanelContent(nodes) : ""}</div>
       </aside>
       <section class="viewport" data-role="viewport" data-tool="${state.activeTool}" tabindex="0" aria-label="Canvas viewport">
-        <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading">Rendering design…</div></div>
+        <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading" role="status" aria-live="polite">Rendering design…</div></div>
         ${state.realtimeConnection === REALTIME_RECONNECTING && navigator.onLine ? `<div class="connection-banner">${icon("refresh")}<span>Reconnecting and merging changes</span></div>` : ""}
         ${unsupported.length ? `<div class="compatibility-banner"><span>${unsupported.length} visual behavior${unsupported.length === 1 ? "" : "s"} preserved but not faithfully represented</span><button class="button" data-action="compatibility">Review</button></div>` : ""}
         <div class="zoom-controls" aria-label="Canvas zoom"><button class="tool" data-action="zoom-out" aria-label="Zoom out">−</button><button class="zoom-label" data-action="fit" aria-label="Fit design in view">${Math.round((state.engineViewport?.zoom ?? 1) * 100)}%</button><button class="tool" data-action="zoom-in" aria-label="Zoom in">+</button></div>
@@ -722,6 +829,7 @@ function mountEditorSurface() {
   const host = root.querySelector('[data-role="openpencil-surface"]');
   if (!host) return;
   const documentId = state.document.id;
+  const firstFrameStartedAt = performance.now();
   try {
     let surface;
     surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentMaterializedDocument(), {
@@ -730,10 +838,34 @@ function mountEditorSurface() {
       selectedId: state.selectedId,
       viewport: state.engineViewport,
       getViewportInsets: () => visibleViewportInsets(host),
+      onPerformance: (name, duration, details) => {
+        performanceMonitor.record(name, duration, { documentId, ...details });
+      },
       onReady: () => {
         if (state.engineSurface !== surface) return;
         state.engineReady = true;
+        renderHistoryControls();
         host.querySelector(".engine-loading")?.remove();
+        performanceMonitor.record(
+          "engine.first-frame",
+          performance.now() - firstFrameStartedAt,
+          {
+            documentId,
+            graphNodes: surface.editor.graph.nodes.size,
+          },
+        );
+        if (state.documentOpenStartedAt !== null) {
+          performanceMonitor.record(
+            "document.interactive",
+            performance.now() - state.documentOpenStartedAt,
+            {
+              documentId,
+              nodes: state.documentNodes?.length ?? 0,
+              graphNodes: surface.editor.graph.nodes.size,
+            },
+          );
+          state.documentOpenStartedAt = null;
+        }
       },
       onSelection: ([nodeId]) => {
         if (state.document?.id !== documentId || nodeId === state.selectedId) return;
@@ -767,7 +899,29 @@ function mountEditorSurface() {
   }
 }
 
+function scheduleEditorSurfaceMount() {
+  const generation = ++state.engineMountGeneration;
+  const documentId = state.document?.id;
+  const scheduleAfterPaint = () => setTimeout(() => {
+    if (
+      generation !== state.engineMountGeneration
+      || state.loading
+      || state.route !== "editor"
+      || state.document?.id !== documentId
+      || !state.model
+      || state.engineSurface
+    ) return;
+    mountEditorSurface();
+  }, 0);
+  if (typeof requestAnimationFrame === "function" && document.visibilityState !== "hidden") {
+    requestAnimationFrame(scheduleAfterPaint);
+  } else {
+    scheduleAfterPaint();
+  }
+}
+
 function disposeEngineSurface() {
+  state.engineMountGeneration += 1;
   if (!state.engineSurface) return;
   const { editor } = state.engineSurface;
   state.engineViewport = {
@@ -781,26 +935,89 @@ function disposeEngineSurface() {
 }
 
 let pendingEngineBatch = null;
-function queueEngineMutations(documentId, surface, mutations) {
+function queueEngineMutations(documentId, surface, mutations, { prepend = false } = {}) {
   if (state.engineSurface !== surface || state.document?.id !== documentId) return;
   pendingEngineBatch ??= { documentId, surface, mutations: [] };
-  pendingEngineBatch.mutations.push(...mutations);
+  if (prepend) pendingEngineBatch.mutations.unshift(...mutations);
+  else pendingEngineBatch.mutations.push(...mutations);
   queueMicrotask(() => {
     const batch = pendingEngineBatch;
     if (!batch || batch.surface !== surface) return;
     pendingEngineBatch = null;
     if (state.engineSurface !== surface || state.document?.id !== documentId || !state.model) return;
-    const existing = new Set(currentDocumentNodes().map(({ node }) => node.id));
-    state.model.doc.transact(() => {
-      for (const mutation of batch.mutations) {
-        if (mutation.kind === "insert-node" && existing.has(mutation.node.id)) continue;
-        if (mutation.kind !== "insert-node" && !existing.has(mutation.nodeId)) continue;
-        mutate(state.model, mutation, ENGINE_ORIGIN);
-        if (mutation.kind === "insert-node") existing.add(mutation.node.id);
-        if (mutation.kind === "delete-node") existing.delete(mutation.nodeId);
-      }
-    }, ENGINE_ORIGIN);
+    const documentNodes = currentDocumentNodes();
+    const existing = new Set(documentNodes.map(({ node }) => node.id));
+    const mutations = compactDeletionMutations(batch.mutations, documentNodes);
+    const documentEntryById = new Map(documentNodes.map((entry) => [entry.node.id, entry]));
+    for (const mutation of mutations) {
+      if (mutation.kind !== "delete-node") continue;
+      const entry = documentEntryById.get(mutation.nodeId);
+      if (!entry) continue;
+      state.deletedNodeSnapshots.set(mutation.nodeId, {
+        node: structuredClone(entry.node),
+        parentId: entry.parentId,
+        position: entry.index,
+      });
+    }
+    const appliedMutations = [];
+    state.incrementalEngineUpdate = true;
+    try {
+      state.model.doc.transact(() => {
+        for (const mutation of mutations) {
+          if (mutation.kind === "insert-node" && existing.has(mutation.node.id)) continue;
+          if (mutation.kind !== "insert-node" && !existing.has(mutation.nodeId)) continue;
+          const modelMutation = mutation.kind === "insert-node" && state.model.nodes.has(mutation.node.id)
+            ? { kind: "restore-node", nodeId: mutation.node.id }
+            : mutation;
+          mutate(state.model, modelMutation, ENGINE_ORIGIN);
+          appliedMutations.push(mutation);
+          if (mutation.kind === "insert-node") {
+            existing.add(mutation.node.id);
+            state.deletedNodeSnapshots.delete(mutation.node.id);
+          }
+          if (mutation.kind === "delete-node") existing.delete(mutation.nodeId);
+        }
+      }, ENGINE_ORIGIN);
+    } finally {
+      state.incrementalEngineUpdate = false;
+    }
+    if (appliedMutations.length) {
+      applyMutationsToProjection(state.materializedDocument, appliedMutations);
+      state.documentNodes = null;
+      state.documentNodeById = null;
+      state.preparedRenderDocument = null;
+      state.compatibilityDocument = null;
+      renderSelection();
+      renderLayersTree();
+      renderHistoryControls();
+    }
   });
+}
+
+function renderLayersTree() {
+  const scroll = root.querySelector(".side-panel.layers .panel-scroll");
+  if (!scroll) return;
+  if (!state.layersOpen) {
+    scroll.replaceChildren();
+    return;
+  }
+  scroll.innerHTML = renderLayersPanelContent(currentDocumentNodes());
+  bindLayersTree();
+}
+
+function renderLayersPanelContent(nodes) {
+  if (state.assetPanel !== "file") {
+    return `<div class="inspector-empty">Reusable components and document assets appear here.</div>`;
+  }
+  return `<section class="layer-section"><h3>Pages</h3><button class="page-row active">Page 1</button></section><section class="layer-section"><h3>Layers</h3><div role="tree" aria-label="Document layers">${nodes.map(layerRow).join("")}</div></section>`;
+}
+
+function renderHistoryControls() {
+  const editor = state.engineSurface?.editor;
+  const undoButton = root.querySelector('[data-action="undo"]');
+  const redoButton = root.querySelector('[data-action="redo"]');
+  if (undoButton) undoButton.disabled = editor ? !editor.undo.canUndo : !state.undo?.canUndo();
+  if (redoButton) redoButton.disabled = editor ? !editor.undo.canRedo : !state.undo?.canRedo();
 }
 
 function layerRow({ node, depth }) {
@@ -811,16 +1028,20 @@ function layerRow({ node, depth }) {
 function renderInspector(node) {
   if (!node) return `<div class="inspector-empty">Select an object to inspect and edit its properties.</div>`;
   if (!isOpenPencilEditableNode(node)) {
-    return `<section class="selection-heading"><span class="layer-type">◇</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(node.id)}</span></div></section><div class="inspector-empty">This unsupported object is preserved as opaque .pen source and cannot be edited in Canvas.</div>`;
+    return `${selectionHeading(node)}<div class="inspector-empty">This unsupported object is preserved as opaque .pen source and cannot be edited in Canvas.</div>`;
   }
   const numeric = ["x", "y", "width", "height", "rotation"];
-  return `<section class="selection-heading"><span class="layer-type">${node.type === "text" ? "T" : "◇"}</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(node.id)}</span></div></section>
+  return `${selectionHeading(node)}
   <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, node.id)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("rotation", node.rotation ?? 0, "number", false, node.id)}</div></section>
   <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("gap", node.gap ?? 0, "number", false, node.id)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, node.id)}</div></section>
   <section class="section"><h3>Appearance</h3><div class="field-grid">${field("fill", fillValue(node.fill), "text", true, node.id)}${field("opacity", node.opacity ?? 1, "number", false, node.id)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, node.id)}</div></section>
   ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, node.id)}${field("fontSize", node.fontSize ?? 16, "number", false, node.id)}${field("fontWeight", node.fontWeight ?? 400, "number", false, node.id)}</div></section>` : ""}
   ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved in the .pen source but is not represented faithfully. Review compatibility for details.</p></section>` : ""}
   <div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`;
+}
+
+function selectionHeading(node) {
+  return `<section class="selection-heading"><span class="layer-type">${node.type === "text" ? "T" : "◇"}</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(node.id)}</span></div><button class="button copy-reference" data-action="copy-node-reference" type="button" title="Copy a reference you can paste into a Thread or send to an agent">Copy reference</button></section>`;
 }
 
 function renderSelection() {
@@ -922,13 +1143,18 @@ function bindEditor() {
   root.querySelector('[data-action="redo"]')?.addEventListener("click", redo);
   root.querySelectorAll("[data-panel]").forEach((button) => button.addEventListener("click", () => {
     const panel = button.dataset.panel;
+    const wasOpen = state[`${panel}Open`];
     state.activePanel = panel;
     state[`${panel}Open`] = true;
     syncPanelVisibility();
+    if (panel === "layers" && !wasOpen) renderLayersTree();
   }));
   root.querySelectorAll("[data-asset-panel]").forEach((button) => button.addEventListener("click", () => {
     state.assetPanel = button.dataset.assetPanel;
-    render();
+    root.querySelectorAll("[data-asset-panel]").forEach((candidate) => {
+      candidate.classList.toggle("active", candidate.dataset.assetPanel === state.assetPanel);
+    });
+    renderLayersTree();
   }));
   root.querySelectorAll("[data-inspector-tab]").forEach((button) => button.addEventListener("click", () => {
     state.inspectorTab = button.dataset.inspectorTab;
@@ -938,6 +1164,7 @@ function bindEditor() {
     state.layersOpen = false;
     if (state.activePanel === "layers") state.activePanel = null;
     syncPanelVisibility();
+    renderLayersTree();
   });
   root.querySelector('[data-action="close-inspector"]')?.addEventListener("click", () => {
     state.inspectorOpen = false;
@@ -952,27 +1179,7 @@ function bindEditor() {
     setToast("Document renamed.");
     render();
   }));
-  root.querySelector('[role="tree"]')?.addEventListener("click", (event) => {
-    const element = event.target.closest("[data-node-id]");
-    if (!element) return;
-    event.stopPropagation();
-    state.selectedId = element.dataset.nodeId;
-    if (innerWidth < 960) {
-      state.activePanel = "inspector";
-      state.inspectorOpen = true;
-    }
-    renderSelection();
-    if (innerWidth < 960) syncPanelVisibility();
-  });
-  root.querySelector('[role="tree"]')?.addEventListener("dblclick", (event) => {
-    const element = event.target.closest("[data-node-id]");
-    if (!element) return;
-    event.stopPropagation();
-    const nodeId = element.dataset.nodeId;
-    state.selectedId = nodeId;
-    renderSelection();
-    requestAnimationFrame(() => focusNodeInViewport(nodeId));
-  });
+  bindLayersTree();
   bindInspectorControls();
   root.querySelectorAll("button[data-tool]").forEach((button) => button.addEventListener("click", () => {
     state.engineSurface?.editor.setTool(button.dataset.tool);
@@ -1017,7 +1224,29 @@ function bindEditor() {
   root.querySelector('[data-action="confirm-remove-collaborator"]')?.addEventListener("click", () => void confirmDestructiveAction());
 }
 
+function bindLayersTree() {
+  const tree = root.querySelector('[role="tree"][aria-label="Document layers"]');
+  if (!tree || tree.dataset.bound === "true") return;
+  tree.dataset.bound = "true";
+  tree.addEventListener("click", (event) => {
+    const element = event.target.closest("[data-node-id]");
+    if (!element) return;
+    event.stopPropagation();
+    selectNode(element.dataset.nodeId, { openInspector: innerWidth < 960 });
+  });
+  tree.addEventListener("dblclick", (event) => {
+    const element = event.target.closest("[data-node-id]");
+    if (!element) return;
+    event.stopPropagation();
+    const nodeId = element.dataset.nodeId;
+    selectNode(nodeId, { focus: true });
+  });
+}
+
 function bindInspectorControls() {
+  root.querySelector('[data-action="copy-node-reference"]')?.addEventListener("click", (event) => {
+    void copySelectedNodeReference(event.currentTarget);
+  });
   root.querySelectorAll("[data-property]").forEach((input) => {
     input.addEventListener("input", () => {
       if (!state.selectedId) return;
@@ -1033,11 +1262,33 @@ function bindInspectorControls() {
     input.addEventListener("change", () => commitInspectorField(input));
   });
   root.querySelector('[data-action="delete-node"]')?.addEventListener("click", () => {
-    if (!state.selectedId) return;
-    mutate(state.model, { kind: "delete-node", nodeId: state.selectedId }, LOCAL_ORIGIN);
-    state.selectedId = null;
-    render();
+    deleteSelectedNode();
   });
+}
+
+async function copySelectedNodeReference(button = null) {
+  const node = currentDocumentNode(state.selectedId);
+  if (!node || !state.document) return;
+  try {
+    await copyTextToClipboard(formatCanvasNodeReference({ document: state.document, node }));
+    if (button) {
+      button.textContent = "Copied";
+      button.setAttribute("aria-label", "Node reference copied");
+      setTimeout(() => {
+        if (!button.isConnected) return;
+        button.textContent = "Copy reference";
+        button.removeAttribute("aria-label");
+      }, 1_500);
+    }
+  } catch (error) {
+    if (button) {
+      button.textContent = "Copy failed";
+      setTimeout(() => {
+        if (button.isConnected) button.textContent = "Copy reference";
+      }, 1_500);
+    }
+    console.error("Canvas could not copy the selected node reference.", error);
+  }
 }
 
 function handleAccessRemoved() {
@@ -1068,7 +1319,14 @@ function commitInspectorField(input) {
     }
   }
   try {
-    mutate(state.model, { kind: "set-property", nodeId: state.selectedId, property, value }, LOCAL_ORIGIN);
+    const editor = state.engineSurface?.editor;
+    const sceneNode = editor?.graph.getNode(state.selectedId);
+    const changes = penPropertyToSceneChanges(sceneNode, property, value);
+    if (editor && changes) {
+      editor.updateNodeWithUndo(state.selectedId, changes, `Set ${property}`);
+    } else {
+      mutate(state.model, { kind: "set-property", nodeId: state.selectedId, property, value }, LOCAL_ORIGIN);
+    }
     state.fieldDrafts.delete(key);
     state.fieldErrors.delete(key);
   } catch (error) {
@@ -1080,13 +1338,41 @@ function commitInspectorField(input) {
 }
 
 function undo() {
-  state.undo?.undo();
-  render();
+  if (state.engineSurface) {
+    state.engineSurface.editor.undoAction();
+    queueRestoredSelectedNodes(state.engineSurface);
+  } else state.undo?.undo();
+  renderHistoryControls();
+}
+
+function queueRestoredSelectedNodes(surface) {
+  if (!state.document || state.engineSurface !== surface) return;
+  const editor = surface.editor;
+  const existing = new Set(currentDocumentNodes().map(({ node }) => node.id));
+  const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
+  const mutations = [];
+  for (const nodeId of editor.state.selectedIds) {
+    if (existing.has(nodeId)) continue;
+    const sceneNode = editor.graph.getNode(nodeId);
+    const deleted = state.deletedNodeSnapshots.get(nodeId);
+    const node = deleted?.node ?? (sceneNode && sceneNodeToPenNode(sceneNode));
+    if (!node) continue;
+    mutations.push({
+      kind: "insert-node",
+      node,
+      parentId: deleted ? deleted.parentId : (pageIds.has(sceneNode.parentId) ? null : sceneNode.parentId),
+      position: deleted ? deleted.position : sceneNode.index,
+    });
+  }
+  if (mutations.length) {
+    queueEngineMutations(state.document.id, surface, mutations, { prepend: true });
+  }
 }
 
 function redo() {
-  state.undo?.redo();
-  render();
+  if (state.engineSurface) state.engineSurface.editor.redoAction();
+  else state.undo?.redo();
+  renderHistoryControls();
 }
 
 function handleKeyboardShortcut(event) {
@@ -1129,25 +1415,27 @@ function handleKeyboardShortcut(event) {
     duplicateSelectedNode();
     return;
   }
+  if (command && event.key.toLowerCase() === "c" && state.selectedId) {
+    event.preventDefault();
+    void copySelectedNodeReference();
+    return;
+  }
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key) && state.selectedId) {
     event.preventDefault();
     const amount = event.shiftKey ? 10 : 1;
-    const node = currentDocumentNode(state.selectedId);
-    if (!node) return;
     const horizontal = event.key === "ArrowLeft" ? -amount : event.key === "ArrowRight" ? amount : 0;
     const vertical = event.key === "ArrowUp" ? -amount : event.key === "ArrowDown" ? amount : 0;
-    state.model.doc.transact(() => {
-      if (horizontal) mutate(state.model, { kind: "set-property", nodeId: node.id, property: "x", value: finite(node.x, 0) + horizontal }, LOCAL_ORIGIN);
-      if (vertical) mutate(state.model, { kind: "set-property", nodeId: node.id, property: "y", value: finite(node.y, 0) + vertical }, LOCAL_ORIGIN);
-    }, LOCAL_ORIGIN);
+    state.engineSurface?.editor.nudgeSelected(horizontal, vertical);
     return;
   }
   if ((event.key === "Delete" || event.key === "Backspace") && state.selectedId) {
     event.preventDefault();
-    mutate(state.model, { kind: "delete-node", nodeId: state.selectedId }, LOCAL_ORIGIN);
-    state.selectedId = null;
-    render();
+    deleteSelectedNode();
   }
+}
+
+function deleteSelectedNode() {
+  state.engineSurface?.editor.deleteSelected();
 }
 
 function handleKeyboardRelease(event) {
@@ -1160,19 +1448,20 @@ function releaseSpacePan() {
 }
 
 function duplicateSelectedNode() {
-  const item = currentDocumentNodes().find(({ node }) => node.id === state.selectedId);
-  if (!item) return;
-  const clone = structuredClone(item.node);
-  const replaceIds = (node) => {
-    node.id = crypto.randomUUID();
-    node.children?.forEach(replaceIds);
-  };
-  replaceIds(clone);
-  clone.x = finite(clone.x, 0) + 12;
-  clone.y = finite(clone.y, 0) + 12;
-  mutate(state.model, { kind: "insert-node", node: clone, parentId: item.parentId, position: item.index + 0.5 }, LOCAL_ORIGIN);
-  state.selectedId = clone.id;
-  render();
+  state.engineSurface?.editor.duplicateSelected();
+}
+
+function selectNode(nodeId, options = {}) {
+  state.selectedId = nodeId;
+  if (options.openInspector) {
+    state.activePanel = "inspector";
+    state.inspectorOpen = true;
+    syncPanelVisibility();
+  }
+  const editor = state.engineSurface?.editor;
+  if (editor?.graph.getNode(nodeId)) editor.select([nodeId]);
+  renderSelection();
+  if (options.focus) requestAnimationFrame(() => focusNodeInViewport(nodeId));
 }
 
 function focusNodeInViewport(nodeId) {

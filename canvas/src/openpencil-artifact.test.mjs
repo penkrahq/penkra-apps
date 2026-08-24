@@ -7,6 +7,7 @@ const root = new URL("../", import.meta.url);
 
 test("pinned OpenPencil artifact has one core and CanvasKit singleton", async () => {
   const engine = await readFile(new URL("vendor/open-pencil/engine.mjs", root), "utf8");
+  const surface = await readFile(new URL("src/openpencil-surface.mjs", root), "utf8");
   const provenance = JSON.parse(await readFile(
     new URL("vendor/open-pencil/PROVENANCE.json", root),
     "utf8",
@@ -19,10 +20,15 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.deepEqual(provenance.localPatches, [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
-    "Honor Pencil sizing fallbacks, padding shorthands, flex text growth, and post-font layout measurement.",
+    "Honor Pencil sizing fallbacks, padding shorthands, flex text growth, and instrument optional post-font layout.",
     "Keep fill-less Pencil frames transparent instead of inheriting the scene graph's opaque default.",
     "Interpret Kiwi schemas without dynamic JavaScript evaluation so the engine obeys the App CSP.",
     "Render large scenes through cached descendant bounds and bounded subpixel detail culling instead of walking or recording every expanded node at overview zoom.",
+    "Report first-render, font-loading, post-font layout, and ready-render timings through the Canvas lifecycle callback.",
+    "Allow Pencil surfaces with authoritative stored geometry to skip the expensive post-font whole-graph layout, matching the upstream Canvas lifecycle.",
+    "Accept an already-parsed Pencil document so Canvas avoids a redundant large-scene JSON round trip.",
+    "Expose the upstream font manager so Canvas can configure host-mediated providers and a persistent downloaded-face cache.",
+    "Relayout deleted-node parents only when the parent actually owns an auto-layout flow.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
   assert.match(engine, /setScenePictureMode\(hasVolatileOverlays \? "volatile" : "direct", cacheMissReason\)/u);
@@ -35,6 +41,16 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(engine, /screenArea \/ descendantCount < 0\.75/u);
   assert.match(engine, /r4\.zoom < 0\.1 \? 6 : 2/u);
   assert.match(engine, /subtreeNodeCounts = new Map/u);
+  assert.match(engine, /onPerformance\?\.\("engine\.fonts"/u);
+  assert.match(engine, /onPerformance\?\.\("engine\.font-layout"/u);
+  assert.match(engine, /recomputeLayoutAfterFonts !== false/u);
+  assert.match(surface, /recomputeLayoutAfterFonts: false/u);
+  assert.match(surface, /layer: "scene"/u);
+  assert.match(surface, /layer: "overlays"/u);
+  assert.match(surface, /readyLayers < 2/u);
+  assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);
+  assert.match(engine, /onPerformance\?\.\("engine\.render-ready"/u);
+  assert.match(engine, /typeof json === "string" \? JSON\.parse\(json\) : json/u);
 });
 
 test("published OpenPencil packages and expr-eval are outside the dependency graph", async () => {

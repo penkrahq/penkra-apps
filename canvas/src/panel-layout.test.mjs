@@ -23,3 +23,43 @@ test("panel visibility classes update without rebuilding the editor", async () =
   assert.match(app, /state\.inspectorOpen \? "inspector-open" : "inspector-closed"/u);
   assert.match(app, /body\.classList\.remove\([^\n]*"layers-open"[^\n]*"inspector-closed"/u);
 });
+
+test("documents open with layers and inspector collapsed", async () => {
+  const app = await readFile(new URL("src/app.mjs", root), "utf8");
+
+  assert.match(app, /activePanel: null,\s+layersOpen: false,\s+inspectorOpen: false,/u);
+  assert.match(app, /function closeDocument\(\)[\s\S]*?collapseEditorPanels\(\);/u);
+  assert.match(app, /function collapseEditorPanels\(\)\s*\{\s*state\.activePanel = null;\s*state\.layersOpen = false;\s*state\.inspectorOpen = false;/u);
+  assert.match(app, /state\.unsubscribe = await performanceMonitor\.measureAsync\([\s\S]*?collapseEditorPanels\(\);\s*state\.loading = false;/u);
+});
+
+test("closed layers do not retain or rebuild the document tree", async () => {
+  const app = await readFile(new URL("src/app.mjs", root), "utf8");
+
+  assert.match(app, /state\.layersOpen \? renderLayersPanelContent\(nodes\) : ""/u);
+  assert.match(app, /function renderLayersTree\(\)[\s\S]*?if \(!state\.layersOpen\) \{\s*scroll\.replaceChildren\(\);\s*return;/u);
+  assert.match(app, /if \(panel === "layers" && !wasOpen\) renderLayersTree\(\);/u);
+});
+
+test("tab selection updates the live editor without a root render", async () => {
+  const app = await readFile(new URL("src/app.mjs", root), "utf8");
+
+  assert.match(app, /runtime\.tab\.handle\("selection\.set",[\s\S]*?selectNode\(nodeId, \{ openInspector: true \}\);/u);
+  assert.match(app, /function selectNode\(nodeId, options = \{\}\)[\s\S]*?editor\?\.graph\.getNode\(nodeId\)\) editor\.select\(\[nodeId\]\);[\s\S]*?renderSelection\(\);/u);
+});
+
+test("editor undo explicitly persists nodes restored to the selected graph", async () => {
+  const source = await readFile(new URL("app.mjs", import.meta.url), "utf8");
+  assert.match(source, /editor\.undoAction\(\);\s*queueRestoredSelectedNodes\(state\.engineSurface\)/u);
+  assert.match(source, /if \(existing\.has\(nodeId\)\) continue;/u);
+  assert.match(source, /state\.deletedNodeSnapshots\.set\(mutation\.nodeId/u);
+  assert.match(source, /const node = deleted\?\.node \?\? \(sceneNode && sceneNodeToPenNode\(sceneNode\)\)/u);
+  assert.match(source, /queueEngineMutations\(state\.document\.id, surface, mutations, \{ prepend: true \}\)/u);
+});
+
+test("hidden tabs mount the editor without waiting for a paint frame", async () => {
+  const app = await readFile(new URL("src/app.mjs", root), "utf8");
+
+  assert.match(app, /requestAnimationFrame === "function" && document\.visibilityState !== "hidden"/u);
+  assert.match(app, /requestAnimationFrame\(scheduleAfterPaint\);\s*\} else \{\s*scheduleAfterPaint\(\);/u);
+});

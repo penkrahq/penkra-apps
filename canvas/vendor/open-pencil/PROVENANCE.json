@@ -1,19 +1,25 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "cb4c6592f1c283b1a53b55763d3e41ccf67d5cf3eea82d127ee35a54eaca3515",
+  "engineSha256": "0b6c6b037b4117bc0a03935e167fee9cf50fd07e6995d315b7ad82acf4e19e08",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
-    "Honor Pencil sizing fallbacks, padding shorthands, flex text growth, and post-font layout measurement.",
+    "Honor Pencil sizing fallbacks, padding shorthands, flex text growth, and instrument optional post-font layout.",
     "Keep fill-less Pencil frames transparent instead of inheriting the scene graph's opaque default.",
     "Interpret Kiwi schemas without dynamic JavaScript evaluation so the engine obeys the App CSP.",
-    "Render large scenes through cached descendant bounds and bounded subpixel detail culling instead of walking or recording every expanded node at overview zoom."
+    "Render large scenes through cached descendant bounds and bounded subpixel detail culling instead of walking or recording every expanded node at overview zoom.",
+    "Report first-render, font-loading, post-font layout, and ready-render timings through the Canvas lifecycle callback.",
+    "Allow Pencil surfaces with authoritative stored geometry to skip the expensive post-font whole-graph layout, matching the upstream Canvas lifecycle.",
+    "Accept an already-parsed Pencil document so Canvas avoids a redundant large-scene JSON round trip.",
+    "Expose the upstream font manager so Canvas can configure host-mediated providers and a persistent downloaded-face cache.",
+    "Relayout deleted-node parents only when the parent actually owns an auto-layout flow."
   ],
   "exports": [
     "computeBounds",
     "computeAllLayouts",
     "createEditor",
+    "fontManager",
     "getCanvasKit",
     "parsePenFile",
     "provideEditor",

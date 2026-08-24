@@ -24,19 +24,24 @@ export function createCanvasApi(runtime = globalThis.penkra) {
   return {
     listDocuments: (cursor) =>
       request(`?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
-    createDocument: ({ source, ...input }) => request("", {
-      method: "POST",
-      body: { ...input, projection: source },
-    }),
+    createDocument: ({ source, initialUpdate, ...input }) =>
+      uploadSnapshot(request, null, {
+        ...input,
+        projection: source,
+        state: base64ToBytes(initialUpdate),
+      }),
     getDocument: async (id) => {
       const encoded = encodeURIComponent(id);
       const [project, assets] = await Promise.all([
-        request(`/${encoded}`),
+        request(`/${encoded}?chunked=auto`),
         request(`/${encoded}/blobs`),
       ]);
+      const snapshot = project.snapshot.chunked
+        ? await readChunkedSnapshot(request, encoded, project.snapshot)
+        : { ...project.snapshot, source: project.snapshot.projection };
       return {
         ...project,
-        snapshot: { ...project.snapshot, source: project.snapshot.projection },
+        snapshot,
         assets: assets.items,
       };
     },
@@ -46,10 +51,11 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       request(`/${encodeURIComponent(id)}`, { method: "DELETE" }),
     appendUpdate: (id, input) =>
       request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: input }),
-    createSnapshot: (id, { source, ...input }) =>
-      request(`/${encodeURIComponent(id)}/snapshots`, {
-        method: "POST",
-        body: { ...input, projection: source },
+    createSnapshot: (id, { source, state, ...input }) =>
+      uploadSnapshot(request, id, {
+        ...input,
+        projection: source,
+        state: base64ToBytes(state),
       }),
     listGrants: (id) => request(`/${encodeURIComponent(id)}/grants`),
     grantAccess: (id, email) =>
@@ -109,4 +115,82 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       return output;
     },
   };
+}
+
+async function readChunkedSnapshot(request, encodedProjectId, snapshot) {
+  const [projectionBytes, stateBytes] = await Promise.all([
+    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "projection"),
+    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "state"),
+  ]);
+  const projection = decodeJson(projectionBytes);
+  return {
+    ...snapshot,
+    state: bytesToBase64(stateBytes),
+    projection,
+    source: projection,
+  };
+}
+
+async function uploadSnapshot(request, projectId, input) {
+  const projection = encodeJson(input.projection);
+  const state = input.state;
+  const root = projectId
+    ? `/${encodeURIComponent(projectId)}/snapshot-uploads`
+    : "/snapshot-uploads";
+  const started = await request(root, {
+    method: "POST",
+    body: {
+      ...(projectId ? { throughSequence: input.throughSequence } : { title: input.title }),
+      projection: { size: projection.byteLength, sha256: await sha256(projection) },
+      state: { size: state.byteLength, sha256: await sha256(state) },
+    },
+  });
+  const partsRoot = `/snapshot-uploads/${encodeURIComponent(started.uploadId)}`;
+  try {
+    for (const [kind, bytes] of [["projection", projection], ["state", state]]) {
+      for (let offset = 0, part = 1; offset < bytes.byteLength; offset += started.chunkSize, part += 1) {
+        await request(`${partsRoot}/parts`, {
+          method: "POST",
+          body: {
+            kind,
+            part,
+            bytes: bytesToBase64(bytes.subarray(offset, offset + started.chunkSize)),
+          },
+        });
+      }
+    }
+    return await request(`${partsRoot}/complete`, { method: "POST" });
+  } catch (error) {
+    await request(partsRoot, { method: "DELETE" }).catch(() => undefined);
+    throw error;
+  }
+}
+
+async function readSnapshotContent(request, encodedProjectId, throughSequence, kind) {
+  const chunks = [];
+  let offset = 0;
+  for (;;) {
+    const result = await request(
+      `/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${offset}&length=${1024 * 1024}`,
+    );
+    const bytes = base64ToBytes(result.bytes);
+    chunks.push(bytes);
+    offset += bytes.byteLength;
+    if (result.complete) break;
+    if (bytes.byteLength === 0) throw new Error(`Could not finish reading Canvas ${kind}.`);
+  }
+  const output = new Uint8Array(offset);
+  let cursor = 0;
+  for (const chunk of chunks) {
+    output.set(chunk, cursor);
+    cursor += chunk.byteLength;
+  }
+  return output;
+}
+
+async function sha256(bytes) {
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
 }

@@ -16,8 +16,18 @@ Host paths never enter the renderer. A picker or explicit host handoff grants an
 Explorer in one Space for the current desktop session; tabs in that App and Space can reuse it. The
 authoritative design is [`design/explorer.pen`](./design/explorer.pen).
 
+The file tree watches loaded directories, preserves both scroll axes, supports conventional tree
+keyboard navigation, and uses a resizable rail. Editable text uses a bundled CodeMirror 6 surface;
+Markdown preview uses bundled markdown-it with raw HTML disabled. All runtime dependencies and file
+icons are local package assets, so the App does not require renderer network access. SVG files open
+in a checkerboard-backed visual viewer with a Source/Preview switch and remain editable as XML.
+
 ## Local verification
 
 ```sh
-node --test explorer-files.test.mjs explorer-model.test.mjs operations.test.mjs
+npm test
 ```
+
+`vendor/editor-runtime.mjs` is committed package output. When changing its pinned dependencies, run
+`npm install` followed by `npm run build:vendor`, review the generated bundle and notices, and package
+from a clean App directory without `node_modules`.

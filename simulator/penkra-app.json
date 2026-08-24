@@ -1,0 +1,18 @@
+{
+  "manifestVersion": 2,
+  "id": "com.penkra.simulator",
+  "slug": "simulator",
+  "name": "Simulator",
+  "summary": "Create and interact with saved iPhone, iPad, and Android simulated devices.",
+  "version": "0.1.1",
+  "compatibility": { "penkra": ">=0.8.0" },
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
+  "entrypoints": { "app": "app.html" },
+  "permissions": [
+    {
+      "name": "simulator-session",
+      "required": true,
+      "reason": "Simulator creates saved devices and hosts their complete interactive OS surfaces."
+    }
+  ]
+}

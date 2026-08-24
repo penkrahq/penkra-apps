@@ -13,6 +13,7 @@ import {
   insertNode,
   materializePen,
   moveNode,
+  replaceModelContent,
   setNodeProperty,
   setNodePropertyPath,
   syncModels,
@@ -55,6 +56,26 @@ test("normalization preserves an explicitly empty children array", () => {
     ],
   };
   assert.deepEqual(materializePen(createModel(document)), document);
+});
+
+test("whole-document reconciliation produces one faithful Yjs transaction", () => {
+  const model = createModel(fixture);
+  const updates = [];
+  model.doc.on("update", (update, origin) => updates.push({ update, origin }));
+  const replacement = {
+    version: "2.16",
+    futureDocumentField: { replaced: true },
+    children: [
+      { id: "frame-b", type: "frame", name: "Moved", children: [] },
+      { id: "new-text", type: "text", content: "New", fill: "#111111" },
+    ],
+  };
+
+  replaceModelContent(model, replacement, "execute");
+
+  assert.deepEqual(materializePen(model), replacement);
+  assert.equal(updates.length, 1);
+  assert.equal(updates[0].origin, "execute");
 });
 
 test("supported property edits cannot overwrite structural ID, type, or children fields", () => {
@@ -117,7 +138,13 @@ test("concurrent inserts and competing moves converge to one deterministic hiera
   const alice = cloneModel(base, { guid: "alice" });
   const bob = cloneModel(base, { guid: "bob" });
 
-  insertNode(alice, { id: "z-insert", type: "rectangle" }, "frame-a", 0.5, "alice");
+  insertNode(
+    alice,
+    { id: "z-insert", type: "rectangle" },
+    "frame-a",
+    0.5,
+    "alice",
+  );
   insertNode(bob, { id: "a-insert", type: "ellipse" }, "frame-a", 0.5, "bob");
   moveNode(alice, "child", "frame-b", 0, "alice");
   moveNode(bob, "child", null, 1, "bob");
@@ -127,7 +154,10 @@ test("concurrent inserts and competing moves converge to one deterministic hiera
   assert.deepEqual(left, materializePen(bob));
   assert.equal(countNode(left.children, "child"), 1);
   const frameA = findNode(left.children, "frame-a");
-  assert.deepEqual(frameA.children.map(({ id }) => id), ["a-insert", "z-insert"]);
+  assert.deepEqual(
+    frameA.children.map(({ id }) => id),
+    ["a-insert", "z-insert"],
+  );
 });
 
 test("invalid subtree insertion is rejected before any partial Yjs mutation", () => {
@@ -158,19 +188,33 @@ test("invalid subtree insertion is rejected before any partial Yjs mutation", ()
 test("insert and move validate parents, finite positions, and local cycles", () => {
   const model = createModel(fixture);
   assert.throws(
-    () => insertNode(model, { id: "orphan", type: "frame" }, "missing", 0, "alice"),
+    () =>
+      insertNode(model, { id: "orphan", type: "frame" }, "missing", 0, "alice"),
     /not found/,
   );
   assert.throws(
-    () => insertNode(model, { id: "bad-position", type: "frame" }, null, Number.NaN, "alice"),
+    () =>
+      insertNode(
+        model,
+        { id: "bad-position", type: "frame" },
+        null,
+        Number.NaN,
+        "alice",
+      ),
     /finite number/,
   );
   assert.throws(
     () => insertNode(model, { id: "missing-type" }, null, 2, "alice"),
     /string type/,
   );
-  assert.throws(() => moveNode(model, "frame-a", "child", 0, "alice"), /own descendant/);
-  assert.throws(() => moveNode(model, "child", null, Number.POSITIVE_INFINITY, "alice"), /finite number/);
+  assert.throws(
+    () => moveNode(model, "frame-a", "child", 0, "alice"),
+    /own descendant/,
+  );
+  assert.throws(
+    () => moveNode(model, "child", null, Number.POSITIVE_INFINITY, "alice"),
+    /finite number/,
+  );
   assert.deepEqual(materializePen(model), fixture);
 });
 
@@ -181,7 +225,14 @@ test("non-JSON values fail before import or mutation instead of silently coercin
     /finite JSON numbers/,
   );
   assert.throws(
-    () => insertNode(model, { id: "invalid", type: "frame", opacity: Infinity }, null, 2, "alice"),
+    () =>
+      insertNode(
+        model,
+        { id: "invalid", type: "frame", opacity: Infinity },
+        null,
+        2,
+        "alice",
+      ),
     /finite JSON numbers/,
   );
   assert.throws(
@@ -193,6 +244,10 @@ test("non-JSON values fail before import or mutation instead of silently coercin
   assert.throws(
     () => setNodeProperty(model, "frame-a", "future", cyclic, "alice"),
     /JSON cycle/,
+  );
+  assert.throws(
+    () => setNodeProperty(model, "frame-a", "future", new Date(0), "alice"),
+    /\$node\["frame-a"\]\.future received Date; JSON values allow only plain objects.*Convert this property to plain JSON data/,
   );
   assert.equal(model.nodes.has("invalid"), false);
   assert.deepEqual(materializePen(model), fixture);
@@ -302,9 +357,15 @@ test("one user's structural insert, move, and subtree delete undo in reverse ord
 
   undo.undo();
   assert.equal(countNode(materializePen(model).children, "frame-a"), 1);
-  assert.equal(findNode(materializePen(model).children, "frame-b").children[0].id, "child");
+  assert.equal(
+    findNode(materializePen(model).children, "frame-b").children[0].id,
+    "child",
+  );
   undo.undo();
-  assert.equal(findNode(materializePen(model).children, "frame-a").children[0].id, "child");
+  assert.equal(
+    findNode(materializePen(model).children, "frame-a").children[0].id,
+    "child",
+  );
   undo.undo();
   assert.equal(countNode(materializePen(model).children, "inserted"), 0);
 });
@@ -314,11 +375,20 @@ test("offline edits reconnect through state vectors and converge", () => {
   const alice = cloneModel(base);
   const bob = cloneModel(base);
   setNodeProperty(alice, "child", "content", "Edited offline", "alice");
-  insertNode(bob, { id: "offline-node", type: "text", content: "Also offline" }, null, 2, "bob");
+  insertNode(
+    bob,
+    { id: "offline-node", type: "text", content: "Also offline" },
+    null,
+    2,
+    "bob",
+  );
 
   syncModels(alice, bob);
   assert.deepEqual(materializePen(alice), materializePen(bob));
-  assert.equal(findNode(materializePen(alice).children, "child").content, "Edited offline");
+  assert.equal(
+    findNode(materializePen(alice).children, "child").content,
+    "Edited offline",
+  );
 });
 
 test("duplicated and reordered Yjs updates remain idempotent and converge", () => {
@@ -344,14 +414,23 @@ test("an additive schema upgrade converges with an older peer and preserves new 
   const older = cloneModel(base);
   const newer = cloneModel(base);
   upgradeModel(newer, "newer");
-  setNodeProperty(newer, "frame-a", "futureV2Property", { enabled: true }, "newer");
+  setNodeProperty(
+    newer,
+    "frame-a",
+    "futureV2Property",
+    { enabled: true },
+    "newer",
+  );
   setNodeProperty(older, "frame-a", "name", "Edited by old client", "older");
   syncModels(older, newer);
   upgradeModel(older, "older");
   syncModels(older, newer);
 
   assert.equal(older.metadata.get("modelVersion"), CURRENT_MODEL_VERSION);
-  assert.deepEqual(older.metadata.get("capabilities"), newer.metadata.get("capabilities"));
+  assert.deepEqual(
+    older.metadata.get("capabilities"),
+    newer.metadata.get("capabilities"),
+  );
   assert.deepEqual(materializePen(older), materializePen(newer));
   const frame = findNode(materializePen(older).children, "frame-a");
   assert.equal(frame.name, "Edited by old client");
@@ -359,7 +438,9 @@ test("an additive schema upgrade converges with an older peer and preserves new 
 });
 
 test("a future internal model remains exportable but refuses edits", () => {
-  const future = createModel(fixture, { modelVersion: CURRENT_MODEL_VERSION + 1 });
+  const future = createModel(fixture, {
+    modelVersion: CURRENT_MODEL_VERSION + 1,
+  });
   assert.deepEqual(materializePen(future), fixture);
   assert.throws(
     () => setNodeProperty(future, "frame-a", "width", 240, "alice"),
@@ -374,14 +455,30 @@ test("a 5,000-node document converges after concurrent bulk edits within a bound
     type: index % 2 === 0 ? "rectangle" : "text",
     x: index,
     content: index % 2 === 0 ? undefined : `Label ${index}`,
-  })).map((node) => Object.fromEntries(Object.entries(node).filter(([, value]) => value !== undefined)));
+  })).map((node) =>
+    Object.fromEntries(
+      Object.entries(node).filter(([, value]) => value !== undefined),
+    ),
+  );
   const started = performance.now();
   const base = createModel({ version: "2.15", children });
   const alice = cloneModel(base);
   const bob = cloneModel(base);
   for (let index = 0; index < 200; index += 1) {
-    setNodeProperty(alice, `node-${String(index).padStart(5, "0")}`, "x", index + 10_000, "alice");
-    setNodeProperty(bob, `node-${String(index + 200).padStart(5, "0")}`, "opacity", 0.5, "bob");
+    setNodeProperty(
+      alice,
+      `node-${String(index).padStart(5, "0")}`,
+      "x",
+      index + 10_000,
+      "alice",
+    );
+    setNodeProperty(
+      bob,
+      `node-${String(index + 200).padStart(5, "0")}`,
+      "opacity",
+      0.5,
+      "bob",
+    );
   }
   syncModels(alice, bob);
   const updateBytes = Y.encodeStateAsUpdate(alice.doc).byteLength;
@@ -404,7 +501,8 @@ function findNode(nodes, id) {
 
 function countNode(nodes, id) {
   return (nodes ?? []).reduce(
-    (count, node) => count + (node.id === id ? 1 : 0) + countNode(node.children, id),
+    (count, node) =>
+      count + (node.id === id ? 1 : 0) + countNode(node.children, id),
     0,
   );
 }

@@ -10,6 +10,23 @@ const dedupeYjsPlugin = {
     build.onResolve({ filter: /^yjs$/ }, () => ({ path: yjsEntry }));
   },
 };
+const lazyOperationModulesPlugin = {
+  name: "lazy-operation-modules",
+  setup(build) {
+    build.onResolve({ filter: /^\.\/document-inspection\.js$/ }, () => ({
+      path: "./document-inspection.js",
+      external: true,
+    }));
+    build.onResolve({ filter: /^\.\/script-runtime\.js$/ }, () => ({
+      path: "./script-runtime.js",
+      external: true,
+    }));
+    build.onResolve({ filter: /^\.\/document-review\.js$/ }, () => ({
+      path: "./document-review.js",
+      external: true,
+    }));
+  },
+};
 
 await rm(output, { recursive: true, force: true });
 await mkdir(new URL("assets/", output), { recursive: true });
@@ -32,7 +49,32 @@ const builds = await Promise.all([
     format: "esm",
     naming: "operations.js",
     minify: true,
+    plugins: [dedupeYjsPlugin, lazyOperationModulesPlugin],
+  }),
+  Bun.build({
+    entrypoints: [new URL("src/document-inspection.mjs", root).pathname],
+    outdir: output.pathname,
+    target: "browser",
+    format: "esm",
+    naming: "document-inspection.js",
+    minify: true,
     plugins: [dedupeYjsPlugin],
+  }),
+  Bun.build({
+    entrypoints: [new URL("src/script-runtime.mjs", root).pathname],
+    outdir: output.pathname,
+    target: "browser",
+    format: "esm",
+    naming: "script-runtime.js",
+    minify: true,
+  }),
+  Bun.build({
+    entrypoints: [new URL("src/document-review.mjs", root).pathname],
+    outdir: output.pathname,
+    target: "browser",
+    format: "esm",
+    naming: "document-review.js",
+    minify: true,
   }),
 ]);
 for (const build of builds) {
@@ -54,6 +96,10 @@ await cp(
   new URL("node_modules/canvaskit-wasm/bin/canvaskit.wasm", root),
   new URL("canvaskit.wasm", output),
 );
+await cp(
+  new URL("node_modules/@jitl/quickjs-wasmfile-release-sync/dist/emscripten-module.wasm", root),
+  new URL("emscripten-module.wasm", output),
+);
 for (const font of ["Inter-Regular.ttf", "Inter-Medium.ttf", "Inter-SemiBold.ttf", "Inter-Bold.ttf", "Inter-ExtraBold.ttf"]) {
   await cp(new URL(`vendor/open-pencil/fonts/${font}`, root), new URL(font, output));
 }
@@ -63,6 +109,10 @@ for (const dependency of ["yjs", "y-indexeddb", "lib0", "canvaskit-wasm", "lucid
     new URL(`licenses/${dependency}-LICENSE.txt`, output),
   );
 }
+await cp(
+  new URL("node_modules/@jitl/quickjs-wasmfile-release-sync/LICENSE", root),
+  new URL("licenses/quickjs-emscripten-LICENSE.txt", output),
+);
 await cp(new URL("licenses/OpenPencil-LICENSE.txt", root), new URL("licenses/OpenPencil-LICENSE.txt", output));
 await cp(new URL("licenses/Inter-OFL.txt", root), new URL("licenses/Inter-OFL.txt", output));
 
@@ -75,7 +125,15 @@ try {
 }
 
 const buildInfo = { files: {} };
-for (const file of ["app.js", "operations.js"]) {
+for (const file of [
+  "app.js",
+  "operations.js",
+  "document-inspection.js",
+  "document-review.js",
+  "script-runtime.js",
+  "canvaskit.wasm",
+  "emscripten-module.wasm",
+]) {
   buildInfo.files[file] = Buffer.byteLength(await readFile(join(output.pathname, file)));
 }
 await writeFile(new URL("build-info.json", output), `${JSON.stringify(buildInfo, null, 2)}\n`);

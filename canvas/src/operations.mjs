@@ -8,13 +8,18 @@ import {
   listNodes,
   materialize,
   mutate,
+  replaceDocument,
   restoreDocumentModel,
 } from "./document-model.mjs";
-import { assertMutationBatch, inlineExport, summarizeNodes } from "./operation-model.mjs";
+import {
+  assertMutationBatch,
+  inlineExport,
+} from "./operation-model.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
 const api = createCanvasApi(runtime);
+const MAX_DOCUMENT_GET_RESPONSE_BYTES = 40_000;
 
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
@@ -32,17 +37,56 @@ runtime.operations.handle("documents.list", async (input = {}) => {
   };
 });
 
+runtime.operations.handle("documents.delete", async ({ documentId, confirmTitle }) => {
+  let cursor;
+  let document;
+  do {
+    const page = await api.listDocuments(cursor);
+    document = page.items.find((candidate) => candidate.id === documentId);
+    cursor = page.pageInfo.nextCursor ?? undefined;
+  } while (!document && cursor);
+  if (!document) {
+    const error = new Error(`Canvas document ${documentId} was not found.`);
+    error.code = "CANVAS_DOCUMENT_NOT_FOUND";
+    throw error;
+  }
+  if (document.access !== "owner") {
+    const error = new Error(`Only the document owner can delete ${document.title}.`);
+    error.code = "CANVAS_DOCUMENT_DELETE_FORBIDDEN";
+    throw error;
+  }
+  if (confirmTitle !== document.title) {
+    const error = new Error(
+      `Deletion confirmation did not match the current title. Pass confirmTitle exactly as ${JSON.stringify(document.title)} after the user confirms permanent deletion.`,
+    );
+    error.code = "CANVAS_DOCUMENT_DELETE_CONFIRMATION_MISMATCH";
+    throw error;
+  }
+  await api.deleteDocument(documentId);
+  return { documentId, title: document.title, deleted: true };
+});
+
 runtime.operations.handle("documents.get", async ({ documentId, nodeLimit = 500 }) => {
+  const { inspectDocument } = await import("./document-inspection.js");
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
   try {
-    return {
+    const result = {
       id: payload.id,
       title: payload.title,
       access: payload.access,
       ownerAccountId: payload.ownerAccountId,
-      nodes: summarizeNodes(listNodes(model), nodeLimit),
+      nodes: inspectDocument(materialize(model), listNodes(model), nodeLimit),
     };
+    const responseBytes = new TextEncoder().encode(JSON.stringify(result)).byteLength;
+    if (responseBytes > MAX_DOCUMENT_GET_RESPONSE_BYTES) {
+      const error = new Error(
+        `Canvas document inspection is ${responseBytes} bytes, exceeding the ${MAX_DOCUMENT_GET_RESPONSE_BYTES}-byte response limit. Use canvas documents export and read the file, or retry documents.get with a smaller nodeLimit.`,
+      );
+      error.code = "CANVAS_DOCUMENT_RESPONSE_LIMIT";
+      throw error;
+    }
+    return result;
   } finally {
     model.doc.destroy();
   }
@@ -85,6 +129,7 @@ runtime.operations.handle("documents.mutate", async ({ documentId, mutations }) 
     const appended = await api.appendUpdate(documentId, {
       clientUpdateId: crypto.randomUUID(),
       update: encodeUpdate(combined),
+      expectedSequence: authoritativeSequence(payload),
     });
     await api.createSnapshot(documentId, {
       throughSequence: appended.sequence,
@@ -96,6 +141,63 @@ runtime.operations.handle("documents.mutate", async ({ documentId, mutations }) 
       changed: true,
       mutationCount: mutations.length,
       sequence: appended.sequence,
+    };
+  } finally {
+    model.doc.off("update", listener);
+    model.doc.destroy();
+  }
+});
+
+runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
+  const [{ executeCanvasScript }, { reviewDocumentIssues }] = await Promise.all([
+    import("./script-runtime.js"),
+    import("./document-review.js"),
+  ]);
+  const payload = await api.getDocument(documentId);
+  const model = restoreDocumentModel(payload);
+  const updates = [];
+  const listener = (update, origin) => {
+    if (origin === LOCAL_ORIGIN) updates.push(update);
+  };
+  model.doc.on("update", listener);
+  try {
+    const before = materialize(model);
+    const execution = await executeCanvasScript(before, code);
+    // Build once in isolation before touching the working clone. This enforces
+    // the complete normalized-tree contract without relying on Yjs to roll a
+    // partially applied transaction back after a validation error.
+    const validationModel = createDocumentModel(execution.document);
+    validationModel.doc.destroy();
+    const issues = reviewDocumentIssues(execution.document);
+    if (JSON.stringify(before) === JSON.stringify(execution.document)) {
+      return {
+        documentId,
+        changed: false,
+        sequence: authoritativeSequence(payload),
+        prints: execution.prints,
+        result: execution.result,
+        issues,
+      };
+    }
+    model.doc.transact(() => replaceDocument(model, execution.document, LOCAL_ORIGIN), LOCAL_ORIGIN);
+    const combined = updates.length === 1 ? updates[0] : Y.mergeUpdates(updates);
+    const appended = await api.appendUpdate(documentId, {
+      clientUpdateId: crypto.randomUUID(),
+      update: encodeUpdate(combined),
+      expectedSequence: authoritativeSequence(payload),
+    });
+    await api.createSnapshot(documentId, {
+      throughSequence: appended.sequence,
+      state: encodeState(model),
+      source: materialize(model),
+    });
+    return {
+      documentId,
+      changed: true,
+      sequence: appended.sequence,
+      prints: execution.prints,
+      result: execution.result,
+      issues,
     };
   } finally {
     model.doc.off("update", listener);
@@ -134,3 +236,15 @@ runtime.operations.handle("viewport.focus", async ({ nodeId }, context) => {
   await context.tab.invoke({ operation: "viewport.focus", input: { nodeId } });
   return { tabId: context.tab.id, nodeId };
 });
+
+runtime.operations.handle("performance.snapshot", async (_input, context) => {
+  if (!context.tab) throw new Error("performance.snapshot requires an explicit Canvas tabId.");
+  return context.tab.invoke({ operation: "performance.snapshot", input: {} });
+});
+
+function authoritativeSequence(payload) {
+  return Math.max(
+    Number(payload.snapshot?.throughSequence ?? 0),
+    ...(payload.updates ?? []).map((update) => Number(update.sequence ?? 0)),
+  );
+}

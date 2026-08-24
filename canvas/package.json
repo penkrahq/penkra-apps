@@ -10,6 +10,7 @@
     "@penkra/canvas-collaboration-research": "file:./collaboration",
     "canvaskit-wasm": "0.40.0",
     "lucide": "1.31.0",
+    "quickjs-emscripten": "0.32.0",
     "vue": "3.5.18",
     "y-indexeddb": "9.0.12",
     "yjs": "13.6.30"

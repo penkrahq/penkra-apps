@@ -4,9 +4,11 @@
   "slug": "browser",
   "name": "Browser",
   "summary": "Browse the web in isolated pages that agents and people can use together.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "compatibility": { "penkra": ">=0.11.0" },
-  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
   "entrypoints": { "app": "app.html", "operations": "operations.html" },
   "permissions": [
     {
@@ -18,7 +20,7 @@
   "operations": [
     {
       "key": "pages.open",
-      "summary": "Open a URL in a Browser tab.",
+      "summary": "Open one HTTP(S) URL in a Browser tab and return its tab/page state; use penkra open instead when the user did not choose Browser.",
       "input": {
         "type": "object",
         "properties": { "url": { "type": "string", "minLength": 1 } },
@@ -30,7 +32,7 @@
     },
     {
       "key": "pages.navigate",
-      "summary": "Navigate a page in the explicitly targeted Browser tab.",
+      "summary": "Navigate an existing page in the explicitly targeted Browser tab; use a current pageId when choosing among multiple pages and snapshot again afterward.",
       "input": {
         "type": "object",
         "properties": {
@@ -45,21 +47,43 @@
     },
     {
       "key": "pages.evaluate",
-      "summary": "Evaluate a bounded JavaScript expression in a page in the targeted Browser tab.",
+      "summary": "Evaluate one bounded JavaScript expression in an exact page and targeted Browser tab; use only when semantic operations and tab observation cannot express the task.",
       "input": {
         "type": "object",
         "properties": {
           "pageId": { "type": "string", "minLength": 1 },
-          "expression": { "type": "string", "minLength": 1, "maxLength": 100000 }
+          "expression": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000
+          }
         },
         "required": ["pageId", "expression"],
         "additionalProperties": false
       },
       "output": {},
       "handler": "pages.evaluate"
+    },
+    {
+      "key": "pages.close",
+      "summary": "Close one page in the explicitly targeted Browser tab; use its exact pageId and rediscover Browser state if it is stale.",
+      "input": {
+        "type": "object",
+        "properties": { "pageId": { "type": "string", "minLength": 1 } },
+        "required": ["pageId"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "handler": "pages.close"
     }
   ],
   "contributions": {
-    "handlers": [{ "intent": "open-url", "operation": "pages.open", "schemes": ["http", "https"] }]
+    "handlers": [
+      {
+        "intent": "open-url",
+        "operation": "pages.open",
+        "schemes": ["http", "https"]
+      }
+    ]
   }
 }

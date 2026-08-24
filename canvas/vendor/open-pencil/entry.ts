@@ -1,6 +1,7 @@
 // Build this file from the root of an OpenPencil checkout at the commit recorded
 // in PROVENANCE.json. It deliberately exports only Canvas's renderer/editor seam.
 export { createEditor } from '@open-pencil/core/editor'
+export { fontManager } from '@open-pencil/core'
 export { computeAllLayouts } from '@open-pencil/core/layout'
 export { getCanvasKit } from '@open-pencil/core/canvaskit'
 export { parsePenFile } from '@open-pencil/pen'

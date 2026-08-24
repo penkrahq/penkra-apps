@@ -755,6 +755,16 @@
                           "name": "Markdown View Switch"
                         },
                         {
+                          "type": "text",
+                          "id": "exSaved",
+                          "name": "Editor Save Status",
+                          "fill": "$color-text-secondary",
+                          "content": "Saved",
+                          "fontFamily": "$font-ui",
+                          "fontSize": 10,
+                          "fontWeight": "normal"
+                        },
+                        {
                           "type": "frame",
                           "id": "G9TzOW",
                           "name": "More Actions",
@@ -779,26 +789,82 @@
                         {
                           "type": "frame",
                           "id": "DDYr7",
-                          "name": "Open in Editor",
-                          "width": 30,
+                          "name": "Save File",
+                          "width": 48,
                           "height": 30,
+                          "fill": "$color-accent",
                           "cornerRadius": 6,
                           "justifyContent": "center",
                           "alignItems": "center",
                           "children": [
                             {
-                              "type": "icon",
+                              "type": "text",
                               "id": "AqqYR",
-                              "name": "Open Icon",
-                              "width": 15,
-                              "height": 15,
-                              "icon": "external-link",
-                              "library": "lucide",
-                              "fill": "$color-text-secondary"
+                              "name": "Save Label",
+                              "content": "Save",
+                              "fontFamily": "$font-ui",
+                              "fontSize": 11,
+                              "fontWeight": "600",
+                              "fill": "#FFFFFF"
                             }
                           ]
                         }
                       ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "exConflictBanner",
+                  "name": "External Change Banner / Shared",
+                  "reusable": true,
+                  "width": 720,
+                  "height": 54,
+                  "fill": "#2B2418",
+                  "stroke": "#74531F",
+                  "strokeWidth": { "bottom": 1 },
+                  "padding": [0, 12],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "exConflictCopy",
+                      "name": "Conflict Copy",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "exConflictIcon",
+                          "name": "Warning",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "triangle-alert",
+                          "library": "lucide",
+                          "fill": "#D8BA67"
+                        },
+                        {
+                          "type": "text",
+                          "id": "exConflictText",
+                          "name": "Conflict Message",
+                          "fill": "$color-text-primary",
+                          "content": "File changed on disk · choose which version to keep",
+                          "fontFamily": "$font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "exConflictActions",
+                      "name": "Conflict Actions",
+                      "fill": "$color-accent",
+                      "content": "Reload   Compare   Keep mine",
+                      "fontFamily": "$font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "600"
                     }
                   ]
                 },
@@ -2774,7 +2840,7 @@
       "id": "zwsUx",
       "x": 0,
       "y": 5600,
-      "name": "Explorer / Image Preview",
+      "name": "Explorer / SVG Preview",
       "theme": {
         "mode": "dark"
       },
@@ -2898,14 +2964,14 @@
                           "id": "dx7vB",
                           "type": "ref",
                           "ref": "ZFGdl",
-                          "name": "penkra-mark.png",
+                          "name": "penkra-mark.svg",
                           "width": "fill_container",
                           "descendants": {
                             "o0r5s": {
                               "icon": "image"
                             },
                             "X9koHD": {
-                              "content": "penkra-mark.png"
+                              "content": "penkra-mark.svg"
                             }
                           }
                         }
@@ -2940,17 +3006,17 @@
                   "content": "assets"
                 },
                 "t9OYP": {
-                  "content": "penkra-mark.png"
+                  "content": "penkra-mark.svg"
                 },
                 "n2Sc9S": {
-                  "enabled": false
+                  "enabled": true
                 }
               }
             },
             {
               "type": "frame",
               "id": "XAQO8",
-              "name": "Image Preview",
+              "name": "SVG Preview",
               "width": "fill_container",
               "height": "fill_container",
               "fill": "$color-background-raised",
@@ -2960,7 +3026,7 @@
                 {
                   "type": "frame",
                   "id": "ySY9s",
-                  "name": "Image Canvas",
+                  "name": "SVG Checkerboard Canvas",
                   "width": 360,
                   "height": 360,
                   "fill": "$color-background-panel",
@@ -4151,7 +4217,7 @@
       },
       "clip": true,
       "width": 1100,
-      "height": 640,
+      "height": 720,
       "fill": "$color-background-panel",
       "layout": "vertical",
       "gap": 24,
@@ -4243,7 +4309,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "The 240 px rail owns search and the expandable workspace tree. The preview never changes tree expansion.",
+                      "content": "The resizable rail owns search and the expandable workspace tree. Long paths scroll horizontally, and selection preserves both scroll axes.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -4307,7 +4373,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Selecting a file updates the preview and selected row. Selecting a folder only expands or collapses it.",
+                      "content": "Selecting a file updates the preview and selected row. Arrow keys, Home, End, Enter, and type-ahead navigate the tree without losing its position.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -4435,7 +4501,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Text and source files show source; Markdown adds Source / Preview; images and PDFs use native preview surfaces.",
+                      "content": "Text files use a line-numbered syntax editor with undo, search, selections, and standard keybindings. Markdown adds CommonMark/GFM rendering; SVG adds a checkerboard-backed visual preview while preserving editable XML source.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -4499,7 +4565,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "More actions, Open With, and Open in editor belong to the selected file header. Non-Markdown files omit the view switch.",
+                      "content": "Editable files show Saved / Unsaved status and Save in the selected-file header. Markdown and SVG add Source / Preview; Cmd/Ctrl+S saves from either view.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -4627,7 +4693,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Loading, empty directory, no workspace, no results, unreadable, unsupported, and revoked-access states stay inside the App surface.",
+                      "content": "Filesystem changes refresh visible folders. A disk change during unsaved edits shows Reload, Compare, and Keep mine; deletion preserves the draft until closed.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"

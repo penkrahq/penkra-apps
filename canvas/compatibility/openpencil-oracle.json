@@ -69,10 +69,10 @@
     },
     {
       "label": "Explorer current Pencil design",
-      "sha256": "31957b0d10100ab6afb1f103f322114986e89414600132bd25a70c39776114dd",
+      "sha256": "a9f8d577f08082b4e4898a37a2aef4ef9b22c0ffe0382d63a3e50787a886312c",
       "version": "2.15",
-      "sourceNodes": 449,
-      "graphNodes": 985,
+      "sourceNodes": 455,
+      "graphNodes": 991,
       "missingSourceIds": [],
       "pages": [{ "name": "Components Banner", "children": 20 }]
     }
