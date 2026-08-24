@@ -40,7 +40,7 @@ const builds = await Promise.all([
   Bun.build({
     entrypoints: [new URL("src/operations.mjs", root).pathname],
     outdir: output.pathname,
-    target: "browser",
+    target: "node",
     format: "esm",
     naming: "operations.js",
     minify: true,
@@ -49,7 +49,11 @@ const builds = await Promise.all([
   Bun.build({
     entrypoints: [new URL("src/document-inspection.mjs", root).pathname],
     outdir: output.pathname,
-    target: "browser",
+    // These lazy operation modules execute in Penkra's dedicated Node
+    // controller, not in the Canvas renderer. A browser target makes WASM
+    // dependencies choose fetch-based loaders that cannot start after the App
+    // has been packaged and installed.
+    target: "node",
     format: "esm",
     naming: "document-inspection.js",
     minify: true,
@@ -58,7 +62,7 @@ const builds = await Promise.all([
   Bun.build({
     entrypoints: [new URL("src/script-runtime.mjs", root).pathname],
     outdir: output.pathname,
-    target: "browser",
+    target: "node",
     format: "esm",
     naming: "script-runtime.js",
     minify: true,
@@ -66,7 +70,7 @@ const builds = await Promise.all([
   Bun.build({
     entrypoints: [new URL("src/document-review.mjs", root).pathname],
     outdir: output.pathname,
-    target: "browser",
+    target: "node",
     format: "esm",
     naming: "document-review.js",
     minify: true,
@@ -90,10 +94,10 @@ for (const module of ["document-inspection", "script-runtime", "document-review"
   }
 }
 await writeFile(operationsBundleUrl, operationsBundle);
+await writeFile(new URL("package.json", output), '{"type":"module"}\n');
 
 for (const file of [
   "app.html",
-  "operations.html",
   "styles.css",
   "README.md",
   "INSTRUCTIONS.md",
@@ -154,3 +158,15 @@ for (const file of [
   buildInfo.files[file] = Buffer.byteLength(await readFile(join(output.pathname, file)));
 }
 await writeFile(new URL("build-info.json", output), `${JSON.stringify(buildInfo, null, 2)}\n`);
+
+// Exercise the installed shape, not only the source module. This catches
+// target/asset regressions such as a packaged controller bundle selecting a
+// browser-only WASM loader while all source-level tests remain green.
+const { executeCanvasScript } = await import(new URL("script-runtime.js", output));
+const packagedRuntimeSmoke = await executeCanvasScript(
+  { children: [] },
+  'return Get("*").length;',
+);
+if (packagedRuntimeSmoke?.result !== 0) {
+  throw new Error("Packaged Canvas script runtime smoke test returned an unexpected result.");
+}

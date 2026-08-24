@@ -3,12 +3,20 @@ if (!runtime?.operations)
   throw new Error("Browser requires the Penkra App runtime.");
 
 export async function deliver(input, context, operation) {
-  if (context.tab) return context.tab.invoke({ operation, input });
+  if (context.tab) {
+    const result = await context.tab.invoke({ operation, input });
+    return operation === "pages.open"
+      ? { tabId: context.tab.id, ...result }
+      : result;
+  }
   const tab = await context.tabs.open({
     route: "/",
     state: operation === "pages.open" ? input : undefined,
   });
-  if (operation === "pages.open") return { tabId: tab.id };
+  if (operation === "pages.open") {
+    const result = await tab.invoke({ operation: "pages.state", input: {} });
+    return { tabId: tab.id, ...result };
+  }
   return tab.invoke({ operation, input });
 }
 

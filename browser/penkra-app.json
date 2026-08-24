@@ -4,12 +4,12 @@
   "slug": "browser",
   "name": "Browser",
   "summary": "Browse the web in isolated pages that agents and people can use together.",
-  "version": "0.2.3",
-  "compatibility": { "penkra": ">=0.11.0" },
+  "version": "0.2.4",
+  "compatibility": { "penkra": ">=0.11.11" },
   "icons": [
     { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
   ],
-  "entrypoints": { "app": "app.html", "operations": "operations.html" },
+  "entrypoints": { "app": "app.html", "operations": "operations.js" },
   "permissions": [
     {
       "name": "browser-session",
@@ -27,7 +27,30 @@
         "required": ["url"],
         "additionalProperties": false
       },
-      "output": { "type": "object", "additionalProperties": true },
+      "output": {
+        "type": "object",
+        "properties": {
+          "tabId": { "type": "string", "minLength": 1 },
+          "activePageId": { "type": "string", "minLength": 1 },
+          "pages": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "minLength": 1 },
+                "url": { "type": "string" },
+                "title": { "type": "string" },
+                "status": { "enum": ["live", "suspended"] }
+              },
+              "required": ["id", "url", "title", "status"],
+              "additionalProperties": true
+            }
+          }
+        },
+        "required": ["tabId", "activePageId", "pages"],
+        "additionalProperties": true
+      },
       "examples": [{ "name": "Open the Penkra website", "input": { "url": "https://penkra.com" } }],
       "handler": "pages.open"
     },

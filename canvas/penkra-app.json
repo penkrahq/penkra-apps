@@ -4,9 +4,9 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.20",
+  "version": "0.2.21",
   "compatibility": {
-    "penkra": ">=0.11.1"
+    "penkra": ">=0.11.11"
   },
   "icons": [
     {
@@ -17,7 +17,7 @@
   ],
   "entrypoints": {
     "app": "app.html",
-    "operations": "operations.html"
+    "operations": "operations.js"
   },
   "permissions": [
     {
@@ -177,7 +177,7 @@
     {
       "key": "documents.execute",
       "summary": "Read or change one Canvas document with bounded Pencil-style JavaScript; one execution should express one coherent design intent.",
-      "guidance": "Execute runs JavaScript against a private JSON clone with no network, files, Account API, browser, timers, or Penkra runtime. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, and Print. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get accepts an optional visitor and `{ limit }`; it returns immutable contexts containing node, parent, index, path, resolved pre-execution bounds, and problems. Its limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. Update(target, properties) changes properties without replacing ID or children. Copy(target, parent, position, overrides) renews IDs recursively. Replace(target, node), Delete(target), and Move(target, parent, position) each require exactly one target. Print records bounded JSON values in the result. Return values and printed values must be JSON-serializable.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete resulting tree before changing shared state and commits only when the source sequence is unchanged. The result names touched nodes and reports their current post-execution inspection. Use one execution for one coherent design intent; it may create or update many related nodes. After a write, use a separate read-only execution to inspect affected structure and ancestors, then open the document and use Penkra tab observation when appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
+      "guidance": "Execute runs JavaScript against a private document clone. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, G, and Print; the script cannot access files, network, Account data, timers, or the Penkra runtime directly. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get returns immutable contexts with node, parent, index, path, resolved pre-execution bounds, and problems; its optional limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. Update changes properties without replacing ID or children. Copy renews IDs recursively. Replace, Delete, and Move each require exactly one target. Print records bounded JSON values in the result.\n\nG(target, \"ai\", prompt) generates a low-quality GPT Image 2 asset using Canvas's global image-generation service. G(target, source) applies an absolute path, file:// URL, HTTP(S) URL, or data URL. Canvas stores the image before commit and replaces the transient source with a durable document asset; a new relative path is rejected unless it already names an uploaded asset.\n\nFor library icons, insert `type: \"icon_font\"` with iconFontFamily and iconFontName; supported families are Material Symbols Outlined, Material Symbols Rounded, Material Symbols Sharp, Lucide, Feather, and Phosphor. Set width, height, fontSize, and fill explicitly.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete result and commits only when the source sequence is unchanged. Use one execution for one coherent design intent. After a write, inspect the touched structure in a separate read-only execution, then open the document and observe the Canvas tab when appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
       "input": {
         "type": "object",
         "properties": {
@@ -273,6 +273,20 @@
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
             "code": "Insert(null, { id: \"sign-in\", type: \"frame\", name: \"Sign in\", x: 0, y: 0, width: 393, height: 852, layout: \"vertical\", padding: 24, gap: 16, fill: \"#ffffff\", children: [] });\nreturn \"sign-in\";"
+          }
+        },
+        {
+          "name": "Generate an image for an existing frame",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "code": "G(\"#hero\", \"ai\", \"editorial photograph of a quiet paper studio, warm morning light, no text\");\nreturn \"hero\";"
+          }
+        },
+        {
+          "name": "Insert a standard library icon",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "code": "Insert(\"#toolbar\", { id: \"mail-icon\", type: \"icon_font\", iconFontFamily: \"Material Symbols Rounded\", iconFontName: \"mail\", width: 20, height: 20, fontSize: 20, fill: \"#20211d\" });\nreturn \"mail-icon\";"
           }
         }
       ],
@@ -480,7 +494,5 @@
       "handler": "sharing.remove"
     }
   ],
-  "contributions": {
-    "skills": [{ "path": "skills/canvas-design" }]
-  }
+  "contributions": { "skills": [{ "path": "skills/canvas-design" }] }
 }

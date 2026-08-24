@@ -38,6 +38,14 @@ weight, line height, alignment, fill, and wrapping behavior. Prefer concrete ver
 sentence case, and enough context to explain consequences. Recheck wrapping and clipping after font
 or width changes because loaded font metrics affect layout.
 
+Use real media when it carries product meaning. Apply an existing local or remote image with
+`G(target, source)`, or generate one with `G(target, "ai", prompt)`. New local sources must be
+absolute paths or `file://` URLs; Canvas
+uploads every accepted source into the document before commit. Never draw a brand or interface icon
+from memory when a library glyph exists. Insert an `icon_font` node with an explicit
+`iconFontFamily`, `iconFontName`, width, height, fontSize, and fill. Prefer Material Symbols,
+Lucide, Feather, or Phosphor names you can identify confidently, then verify the rendered glyph.
+
 ## Cover real states and accessibility
 
 Design the states needed to understand and use the product: initial, loading, empty, populated,

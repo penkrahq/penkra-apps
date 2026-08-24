@@ -20,6 +20,7 @@ button, input { font: inherit; color: inherit; }
 button { border: 0; }
 .browser { height: 100%; display: grid; grid-template-rows: 38px 46px minmax(0, 1fr); background: var(--canvas); }
 .page-tabs { min-width: 0; display: flex; align-items: stretch; gap: 2px; padding: 4px 6px 0; border-bottom: 1px solid var(--border); background: var(--panel); }
+.page-tabs-pages { min-width: 0; flex: 1; display: flex; align-items: stretch; gap: 2px; overflow: hidden; }
 .page-tab { min-width: 72px; max-width: 190px; flex: 0 1 190px; height: 33px; display: flex; align-items: center; gap: 7px; padding: 0 7px 0 10px; background: transparent; border-radius: 8px 8px 0 0; color: var(--muted); }
 .page-tab:hover { background: var(--hover); color: var(--text); }
 .page-tab.active { background: var(--selected); color: var(--text); }
@@ -31,6 +32,10 @@ button { border: 0; }
 .page-tab .close:hover { background: color-mix(in srgb, var(--text) 12%, transparent); }
 .new-page { width: 28px; height: 28px; margin: 2px 0 0 2px; display: grid; place-items: center; border-radius: 7px; background: transparent; color: var(--muted); }
 .new-page:hover { background: var(--hover); color: var(--text); }
+.extension-actions { flex: 0 0 auto; display: flex; align-items: flex-start; gap: 2px; margin-left: auto; padding-left: 4px; }
+.extension-action { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 7px; background: transparent; color: var(--muted); }
+.extension-action:hover { background: var(--hover); color: var(--text); }
+.extension-action img { width: 19px; height: 19px; object-fit: contain; }
 .app-bar { position: relative; min-width: 0; display: flex; align-items: center; gap: 3px; padding: 0 8px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .icon-button { width: 28px; height: 28px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 7px; background: transparent; color: var(--muted); font-size: 16px; }
 .icon-button:hover:not(:disabled) { background: var(--hover); color: var(--text); }

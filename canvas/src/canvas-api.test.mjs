@@ -24,6 +24,34 @@ test("Canvas API stays inside the generic project namespace", async () => {
   assert.equal(calls[0].method, "GET");
 });
 
+test("Canvas requests global image generation inside its document namespace", async () => {
+  const calls = [];
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input);
+        return response(201, { path: "images/generated.png" });
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  const generated = await api.generateImage("document-id", {
+    prompt: "quiet paper studio",
+    width: 400,
+    height: 240,
+  });
+
+  assert.deepEqual(generated, { path: "images/generated.png" });
+  assert.equal(calls[0].path, "/projects/document-id/images/generate");
+  assert.equal(calls[0].method, "POST");
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), {
+    prompt: "quiet paper studio",
+    width: 400,
+    height: 240,
+  });
+});
+
 test("Canvas API reports bounded backend errors", async () => {
   const api = createCanvasApi({
     account: {
@@ -175,7 +203,7 @@ test("Canvas uploads every multipart byte under the exact Pencil asset path", as
     mimeType: "image/png",
     bytes: Uint8Array.of(1, 2, 3),
   });
-  assert.deepEqual(result, { sha256: "hash" });
+  assert.deepEqual(result, { sha256: "hash", path: "../shared/hero.png" });
   assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), {
     path: "../shared/hero.png",
     sha256: "hash",
@@ -186,6 +214,32 @@ test("Canvas uploads every multipart byte under the exact Pencil asset path", as
     calls.slice(1, 3).map((call) => JSON.parse(new TextDecoder().decode(call.body))),
     [{ part: 1, bytes: "AQI=" }, { part: 2, bytes: "Aw==" }],
   );
+});
+
+test("Canvas restores the requested asset path when an upload is already ready", async () => {
+  const api = createCanvasApi({
+    account: {
+      request: async () => response(200, {
+        status: "ready",
+        blob: { sha256: "hash", size: 3, mimeType: "image/png" },
+      }),
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  const result = await api.uploadAsset("project-id", {
+    path: "images/hero.png",
+    sha256: "hash",
+    mimeType: "image/png",
+    bytes: Uint8Array.of(1, 2, 3),
+  });
+
+  assert.deepEqual(result, {
+    path: "images/hero.png",
+    sha256: "hash",
+    size: 3,
+    mimeType: "image/png",
+  });
 });
 
 test("Canvas aborts an unfinished snapshot upload after a failed part", async () => {

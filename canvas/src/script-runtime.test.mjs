@@ -62,6 +62,37 @@ test("execute scripts cannot reach host services", async () => {
   });
 });
 
+test("G records Pencil-compatible generated fills without exposing host services", async () => {
+  const result = await executeCanvasScript(
+    { version: "2.15", children: [{ id: "hero", type: "frame", width: 400, height: 240 }] },
+    `G("hero", "ai", "paper cutout mountains at sunrise"); return "hero";`,
+  );
+  assert.deepEqual(result.document.children[0].fill, {
+    type: "image",
+    url: "penkra-generation://0",
+    mode: "fill",
+  });
+  assert.deepEqual(result.generations, [
+    {
+      nodeId: "hero",
+      kind: "ai",
+      prompt: "paper cutout mountains at sunrise",
+      url: "penkra-generation://0",
+    },
+  ]);
+  assert.deepEqual(result.touchedNodeIds, ["hero"]);
+});
+
+test("G rejects removed stock-photo generation", async () => {
+  await assert.rejects(
+    executeCanvasScript(
+      { version: "2.15", children: [{ id: "hero", type: "frame" }] },
+      `G("hero", "stock", "paper studio");`,
+    ),
+    /G accepts a prompt only for the 'ai' source/,
+  );
+});
+
 test("execute scripts reject invalid and oversized code", async () => {
   await assert.rejects(
     executeCanvasScript(

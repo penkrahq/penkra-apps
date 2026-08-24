@@ -11,6 +11,7 @@ import {
   restoreDocumentModel,
 } from "./document-model.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
+import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -119,6 +120,19 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
       error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
       throw error;
     }
+    const structuralModel = createDocumentModel(execution.document);
+    structuralModel.doc.destroy();
+    const changedByScript = JSON.stringify(before) !== JSON.stringify(execution.document);
+    if (changedByScript) {
+      await materializeDocumentImages({
+        api,
+        documentId,
+        document: execution.document,
+        existingAssets: payload.assets,
+        generations: execution.generations,
+        skipSources: new Set(collectImageFills(before).map((fill) => fill.url)),
+      });
+    }
     const validationModel = createDocumentModel(execution.document);
     let existingInspection;
     let issues;
@@ -147,7 +161,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         .filter((nodeId) => !inspectedIds.has(nodeId))
         .map((nodeId) => ({ nodeId, deleted: true })),
     ];
-    if (JSON.stringify(before) === JSON.stringify(execution.document)) {
+    if (!changedByScript) {
       return {
         documentId,
         changed: false,

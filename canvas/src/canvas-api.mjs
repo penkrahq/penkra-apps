@@ -81,7 +81,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
           mimeType: asset.mimeType,
         },
       });
-      if (started.status === "ready") return started.blob;
+      if (started.status === "ready") return uploadedAsset(started.blob, asset.path);
       const chunkSize = started.chunkSize;
       for (let offset = 0, part = 1; offset < asset.bytes.byteLength; offset += chunkSize, part += 1) {
         await request(`${root}/${encodeURIComponent(started.uploadId)}/parts`, {
@@ -92,8 +92,13 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       const completed = await request(`${root}/${encodeURIComponent(started.uploadId)}/complete`, {
         method: "POST",
       });
-      return completed.blob;
+      return uploadedAsset(completed.blob, asset.path);
     },
+    generateImage: (id, input) =>
+      request(`/${encodeURIComponent(id)}/images/generate`, {
+        method: "POST",
+        body: input,
+      }),
     readAsset: async (id, asset) => {
       const chunks = [];
       let offset = 0;
@@ -115,6 +120,17 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       return output;
     },
   };
+}
+
+function uploadedAsset(blob, path) {
+  if (!blob || typeof blob !== "object") {
+    throw new Error("Canvas asset upload completed without blob metadata.");
+  }
+  // The Account blob projection identifies content, while the Pencil-relative
+  // path belongs to this document and is supplied on upload. Preserve that
+  // requested path at the Canvas boundary so callers always receive the
+  // durable fill URL, even when the backend projection omits it.
+  return { ...blob, path };
 }
 
 async function readChunkedSnapshot(request, encodedProjectId, snapshot) {

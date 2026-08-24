@@ -18,6 +18,7 @@ let state = {
   open: false,
   activePageId: null,
   pages: [],
+  extensionActions: [],
   lastError: null,
 };
 let findOpen = false;
@@ -63,8 +64,15 @@ function render() {
     </button>`,
     )
     .join("");
+  const extensionActions = (state.extensionActions ?? [])
+    .map(
+      (action) => `<button class="extension-action" data-extension-action="${escapeHtml(action.id)}" aria-label="${escapeHtml(action.name)}" title="${escapeHtml(action.name)}">
+        ${action.iconDataUrl ? `<img src="${escapeHtml(action.iconDataUrl)}" alt="" />` : `<span>◐</span>`}
+      </button>`,
+    )
+    .join("");
   root.innerHTML = `<div class="browser">
-    <nav class="page-tabs" aria-label="Pages">${tabs}<button class="new-page" data-action="new" aria-label="New page" title="New page">＋</button></nav>
+    <nav class="page-tabs" aria-label="Pages"><div class="page-tabs-pages">${tabs}<button class="new-page" data-action="new" aria-label="New page" title="New page">＋</button></div><div class="extension-actions">${extensionActions}</div></nav>
     <header class="app-bar">
       ${iconButton("back", "Back", "‹", !page?.canGoBack)}
       ${iconButton("forward", "Forward", "›", !page?.canGoForward)}
@@ -157,6 +165,9 @@ async function run(action, data) {
   }
   if (action === "select") await runtime.browser.selectPage(data);
   if (action === "close") await runtime.browser.closePage(data);
+  if (action === "extension" && page) {
+    await runtime.browser.openExtensionAction({ extensionId: data, pageId: page.id });
+  }
 }
 
 function bindEvents() {
@@ -176,6 +187,11 @@ function bindEvents() {
       event.stopPropagation();
       void run("close", button.dataset.closePage);
     }),
+  );
+  root.querySelectorAll("[data-extension-action]").forEach((button) =>
+    button.addEventListener("click", () =>
+      void run("extension", button.dataset.extensionAction),
+    ),
   );
   document.querySelector("#address")?.addEventListener("input", (event) => {
     addressDraft = event.target.value;
@@ -213,6 +229,7 @@ runtime.browser.onState((next) => {
 runtime.tab.handle("pages.open", async (input) =>
   runtime.browser.open(normalizeAddress(input.url)),
 );
+runtime.tab.handle("pages.state", async () => runtime.browser.getState());
 runtime.tab.handle("pages.navigate", async (input) =>
   runtime.browser.navigate({
     url: normalizeAddress(input.url),

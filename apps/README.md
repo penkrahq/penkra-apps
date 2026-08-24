@@ -10,10 +10,10 @@ Apps owns its complete web surface. It may render or omit the standard App Bar o
 each page through the public UI contract. Penkra owns only the trusted panel-tab
 chrome around the App.
 
-Apps uses the ordinary public runtime for rendering and isolation. Its private surfaces are
-narrow bindings to the trusted installation service and the account-authenticated registry
-client; it does not receive account cookies, signed object URLs, general filesystem, process,
-registry-key, or host-control authority.
+Apps uses the ordinary public UI and Node-controller runtimes. Its Apps-specific surface is a
+narrow binding to the trusted installation service and account-authenticated registry client; it
+does not receive account cookies, signed object URLs, registry signing keys, or general host-control
+authority.
 
 Discovery combines validated registry responses with the trusted local installation snapshot.
 The App presents one launcher, a state-aware search list, and one detail surface with Description,
@@ -37,7 +37,8 @@ instead of reinstalling them on the next launch.
 
 - `penkra-app.json` is the validated install manifest.
 - `app.html`, `app.js`, and `styles.css` are the framework-neutral visual App.
-- `operations.html` and `operations.js` publish the Apps-local installation lifecycle operations.
+- `operations.js` is the Node controller that publishes Apps-local installation lifecycle
+  operations.
 - `ui-model.mjs` owns pure action, permission, version, escaping, and Markdown behavior.
 - `INSTRUCTIONS.md` supplies general agent-facing help; operation help is generated from the
   manifest declarations.

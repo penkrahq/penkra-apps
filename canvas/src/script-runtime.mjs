@@ -67,6 +67,7 @@ const __document = JSON.parse(__canvasDocumentJson);
 const __inspection = JSON.parse(__canvasInspectionJson);
 const __prints = [];
 const __touched = new Set();
+const __generations = [];
 let __copyCounter = 0;
 const __clone = (value) => JSON.parse(JSON.stringify(value));
 const __readonly = (value) => {
@@ -232,6 +233,27 @@ globalThis.Print = function Print(...values) {
   __prints.push(values.length === 1 ? values[0] : values);
 };
 
+globalThis.G = function G(target, source, prompt) {
+  const entry = __requireOne(target);
+  if (typeof source !== "string" || source.length === 0) {
+    throw new TypeError("G source must be an image URL, absolute file path, or 'ai'.");
+  }
+  let url = source;
+  if (source === "ai") {
+    if (typeof prompt !== "string" || prompt.trim().length === 0) {
+      throw new TypeError("G " + source + " generation requires a non-empty prompt.");
+    }
+    if (__generations.length >= 20) throw new Error("G is limited to 20 generated images per execution.");
+    url = "penkra-generation://" + __generations.length;
+    __generations.push({ nodeId: entry.node.id, kind: source, prompt: prompt.trim(), url });
+  } else if (prompt !== undefined) {
+    throw new TypeError("G accepts a prompt only for the 'ai' source.");
+  }
+  entry.node.fill = { type: "image", url, mode: "fill" };
+  __touched.add(entry.node.id);
+  return entry.node.id;
+};
+
 const __result = (0, eval)("(function () {\n" + __canvasCode + "\n})()");
-JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched] });
+JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations });
 `;

@@ -4,9 +4,9 @@
   "slug": "apps",
   "name": "Apps",
   "summary": "Discover, install, update, and manage Apps in Penkra.",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "compatibility": {
-    "penkra": ">=0.11.0"
+    "penkra": ">=0.11.11"
   },
   "icons": [
     {
@@ -17,7 +17,7 @@
   ],
   "entrypoints": {
     "app": "app.html",
-    "operations": "operations.html"
+    "operations": "operations.js"
   },
   "operations": [
     {
@@ -109,7 +109,7 @@
         "required": ["appId", "spaceId", "state", "version"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Update Canvas to an exact version", "input": { "slug": "canvas", "version": "0.2.20", "permissions": { "account-data": "granted", "network-fetch": "granted" } } }],
+      "examples": [{ "name": "Update Canvas to an exact version", "input": { "slug": "canvas", "version": "0.2.21", "permissions": { "account-data": "granted", "network-fetch": "granted" } } }],
       "handler": "installations.update"
     },
     {

@@ -27,13 +27,23 @@ test("targets an existing tab point-to-point", async () => {
 
 test("opens a Browser tab for untargeted URLs", async () => {
   const opens = [];
+  const invokes = [];
   const result = await deliver(
     { url: "https://penkra.com" },
     {
       tabs: {
         open: async (input) => {
           opens.push(input);
-          return { id: "tab_1" };
+          return {
+            id: "tab_1",
+            invoke: async (request) => {
+              invokes.push(request);
+              return {
+                activePageId: "page_1",
+                pages: [{ id: "page_1", url: "https://penkra.com", title: "Penkra", status: "live" }],
+              };
+            },
+          };
         },
       },
     },
@@ -42,7 +52,30 @@ test("opens a Browser tab for untargeted URLs", async () => {
   assert.deepEqual(opens, [
     { route: "/", state: { url: "https://penkra.com" } },
   ]);
-  assert.deepEqual(result, { tabId: "tab_1" });
+  assert.deepEqual(invokes, [{ operation: "pages.state", input: {} }]);
+  assert.deepEqual(result, {
+    tabId: "tab_1",
+    activePageId: "page_1",
+    pages: [{ id: "page_1", url: "https://penkra.com", title: "Penkra", status: "live" }],
+  });
+});
+
+test("includes the owning tab ID when opening a page in a targeted tab", async () => {
+  const result = await deliver(
+    { url: "https://penkra.com" },
+    {
+      tab: {
+        id: "tab_1",
+        invoke: async () => ({
+          activePageId: "page_1",
+          pages: [{ id: "page_1", url: "https://penkra.com", title: "Penkra", status: "live" }],
+        }),
+      },
+    },
+    "pages.open",
+  );
+  assert.equal(result.tabId, "tab_1");
+  assert.equal(result.activePageId, "page_1");
 });
 
 test("requires the owning Browser tab when closing a page", async () => {

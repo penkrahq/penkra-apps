@@ -11,7 +11,9 @@ the two release tracks.
   <img src="docs/readme-assets/DSDog.png" alt="Installed first-party Apps in Penkra's right panel" width="420" />
 </p>
 
-Penkra Apps are small, self-contained web applications that run inside Penkra's right panel. Each App gets its own isolated tab and can connect to your agent threads to read, write, and act on your behalf — with explicit permissions you control.
+Penkra Apps are self-contained packages with a sandboxed web interface and, when needed, a
+dedicated Node operation controller. Each App gets its own isolated tab and can connect to agent
+threads to read, write, and act through its declared operations.
 
 This repository contains the five first-party Apps built for Penkra.
 
@@ -64,13 +66,16 @@ Every App is an independent web application with its own source, manifest, tests
 Key concepts:
 
 - **Manifests** (`penkra-app.json`) declare what the App needs — its ID, name, permissions, and entry points
-- **Scoped services** give Apps explicit access to hosted capabilities such as account data,
-  browser sessions, and simulators without broad system access
+- **Two runtimes** keep web UI isolated while letting reviewed operation controllers use ordinary
+  Node facilities for background work
+- **Scoped services** give either runtime access to Penkra-owned capabilities such as Account data,
+  browser sessions, and simulators
 - **Native file pickers** use the browser-standard File System Access API; the user's selection is
   the authorization boundary, with no separate Penkra filesystem vocabulary
-- **Permissions** are explicit and user-controlled — Apps cannot access host capabilities they
-  haven't been granted
-- **Isolation** means one App cannot see or interfere with another App's state
+- **Penkra permissions** are explicit and user-controlled — Apps cannot use Account data, hosted
+  browser/simulator sessions, or other Penkra-owned capabilities they have not been granted
+- **Isolation** separates every visual App tab from Penkra's shell and other Apps; each Node
+  controller runs in its own App-and-Space process
 
 Penkra owns the trusted panel tab strip. Each App owns its complete web surface and may render the standard App Bar on any page using the public specification.
 
@@ -97,21 +102,21 @@ penkra-apps/
 │   ├── app.html            # App entry point
 │   ├── app.js              # App logic
 │   ├── styles.css          # App styles
-│   ├── operations.html     # Operations entry point
-│   ├── operations.js       # Operations logic
+│   ├── operations.js       # Node operation controller
+│   ├── package.json        # Standard Node module metadata
 │   ├── penkra-app.json     # App manifest
 │   ├── INSTRUCTIONS.md     # Agent instructions
 │   ├── ui-model.mjs        # Pure logic (framework-free)
 │   └── design/apps.pen     # Pencil design source
 ├── browser/
-│   ├── app.html, app.js, styles.css
-│   ├── operations.html, operations.js
+│   ├── app.html, app.js, styles.css, package.json
+│   ├── operations.js
 │   ├── penkra-app.json
 │   ├── browser-model.mjs
 │   └── design/browser.pen
 ├── canvas/
-│   ├── app.html, app.js, styles.css
-│   ├── operations.html, operations.js
+│   ├── app.html, app.js, styles.css, package.json
+│   ├── operations.js
 │   ├── penkra-app.json
 │   ├── src/                 # Runtime, API, document, and operation models
 │   ├── compatibility/       # Loss-preservation corpus and differential checks
@@ -119,8 +124,8 @@ penkra-apps/
 │   ├── RESEARCH.md           # Standards and upstream audit
 │   └── design/canvas.pen     # Approved UI/UX authority
 ├── explorer/
-│   ├── app.html, app.js, styles.css
-│   ├── operations.html, operations.js
+│   ├── app.html, app.js, styles.css, package.json
+│   ├── operations.js
 │   ├── penkra-app.json
 │   ├── explorer-model.mjs
 │   └── design/explorer.pen

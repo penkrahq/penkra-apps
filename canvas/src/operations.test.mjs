@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { encodeJson } from "./codec.mjs";
+import { decodeJson, encodeJson } from "./codec.mjs";
 import { createDocumentModel, encodeState } from "./document-model.mjs";
 
 function response(status, value) {
@@ -174,4 +174,80 @@ test("invalid execute output fails before any shared update or snapshot write", 
     /non-empty string type/,
   );
   assert.equal(requests.some((request) => request.method === "POST"), false);
+});
+
+test("execute uploads a direct image before committing its durable asset path", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const source = {
+    version: "2.15",
+    children: [
+      { id: "hero", type: "frame", x: 0, y: 0, width: 400, height: 240, children: [] },
+    ],
+  };
+  const base = readableDocumentAccount(source, requests);
+  globalThis.penkra = {
+    account: {
+      ...base,
+      async request(request) {
+        if ((request.method ?? "GET") === "GET") return base.request(request);
+        requests.push(request);
+        if (request.path === "/projects/document-1/blobs/uploads") {
+          const input = decodeJson(request.body);
+          return response(200, {
+            status: "ready",
+            blob: {
+              path: input.path,
+              sha256: input.sha256,
+              size: input.size,
+              mimeType: input.mimeType,
+            },
+          });
+        }
+        if (request.path === "/projects/document-1/updates") {
+          return response(200, { sequence: 8 });
+        }
+        if (request.path === "/projects/document-1/snapshot-uploads") {
+          return response(200, { uploadId: "snapshot-1", chunkSize: 1024 * 1024 });
+        }
+        if (request.path === "/projects/snapshot-uploads/snapshot-1/parts") {
+          return response(200, null);
+        }
+        if (request.path === "/projects/snapshot-uploads/snapshot-1/complete") {
+          return response(200, { throughSequence: 8 });
+        }
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?image-test=${Date.now()}`);
+  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  const result = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: `Update("#hero", { fill: { type: "image", mode: "fill", url: "data:image/png;base64,${png.toString("base64")}" } });`,
+  });
+
+  assert.equal(result.changed, true);
+  assert.equal(result.sequence, 8);
+  const uploadIndex = requests.findIndex(
+    (request) => request.path === "/projects/document-1/blobs/uploads",
+  );
+  const updateIndex = requests.findIndex(
+    (request) => request.path === "/projects/document-1/updates",
+  );
+  assert.ok(uploadIndex >= 0 && updateIndex > uploadIndex);
+  const snapshotStart = requests.find(
+    (request) => request.path === "/projects/document-1/snapshot-uploads",
+  );
+  assert.match(decodeJson(snapshotStart.body).projection.sha256, /^[a-f0-9]{64}$/u);
+  const projectionParts = requests
+    .filter((request) => request.path === "/projects/snapshot-uploads/snapshot-1/parts")
+    .map((request) => decodeJson(request.body))
+    .filter((part) => part.kind === "projection")
+    .sort((left, right) => left.part - right.part);
+  const projection = decodeJson(
+    Buffer.concat(projectionParts.map((part) => Buffer.from(part.bytes, "base64"))),
+  );
+  assert.match(projection.children[0].fill.url, /^images\/[a-f0-9]{64}\.png$/u);
 });

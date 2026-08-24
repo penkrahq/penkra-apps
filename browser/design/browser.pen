@@ -1,5 +1,5 @@
 {
-  "version": "2.15",
+  "version": "2.17",
   "children": [
     {
       "type": "frame",
@@ -731,19 +731,44 @@
                       "type": "ref",
                       "ref": "bUWEI",
                       "name": "Active Tab"
+                    },
+                    {
+                      "id": "rezML",
+                      "type": "ref",
+                      "ref": "QFtP8",
+                      "name": "New Tab",
+                      "descendants": {
+                        "D1Wlyh": {
+                          "icon": "plus"
+                        }
+                      }
                     }
                   ]
                 },
                 {
-                  "id": "rezML",
-                  "type": "ref",
-                  "ref": "QFtP8",
-                  "name": "New Tab",
-                  "descendants": {
-                    "D1Wlyh": {
-                      "icon": "plus"
+                  "type": "frame",
+                  "id": "RJJ7e",
+                  "name": "Dark Reader Extension Action",
+                  "width": 32,
+                  "height": 32,
+                  "cornerRadius": 7,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "rectangle",
+                      "id": "ZEF9g",
+                      "name": "Dark Reader Icon",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "../assets/darkreader.png",
+                        "mode": "fit"
+                      },
+                      "width": 19,
+                      "height": 19
                     }
-                  }
+                  ]
                 }
               ]
             }
@@ -1228,19 +1253,44 @@
                       "content": "GitHub"
                     }
                   }
+                },
+                {
+                  "id": "l5y8i",
+                  "type": "ref",
+                  "ref": "QFtP8",
+                  "name": "New Tab",
+                  "descendants": {
+                    "D1Wlyh": {
+                      "icon": "plus"
+                    }
+                  }
                 }
               ]
             },
             {
-              "id": "l5y8i",
-              "type": "ref",
-              "ref": "QFtP8",
-              "name": "New Tab",
-              "descendants": {
-                "D1Wlyh": {
-                  "icon": "plus"
+              "type": "frame",
+              "id": "NtIoy",
+              "name": "Dark Reader Extension Action",
+              "width": 32,
+              "height": 32,
+              "cornerRadius": 7,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "rectangle",
+                  "id": "fw3o0",
+                  "name": "Dark Reader Icon",
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "../assets/darkreader.png",
+                    "mode": "fit"
+                  },
+                  "width": 19,
+                  "height": 19
                 }
-              }
+              ]
             }
           ]
         },
