@@ -3,13 +3,22 @@
   "id": "com.penkra.canvas",
   "slug": "canvas",
   "name": "Canvas",
-  "summary": "Create, import, edit, and share Account-owned collaborative design documents.",
-  "version": "0.2.19",
-  "compatibility": { "penkra": ">=0.11.1" },
+  "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
+  "version": "0.2.20",
+  "compatibility": {
+    "penkra": ">=0.11.1"
+  },
   "icons": [
-    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
   ],
-  "entrypoints": { "app": "app.html", "operations": "operations.html" },
+  "entrypoints": {
+    "app": "app.html",
+    "operations": "operations.html"
+  },
   "permissions": [
     {
       "name": "account-data",
@@ -25,12 +34,21 @@
   "operations": [
     {
       "key": "documents.list",
-      "summary": "List Account-owned and shared Canvas documents so the caller can resolve an exact ID and current title before reading, editing, sharing, or deleting.",
+      "summary": "Find Account-owned and shared Canvas documents and resolve the exact document ID needed by later operations.",
       "input": {
         "type": "object",
         "properties": {
-          "query": { "type": "string", "maxLength": 255 },
-          "limit": { "type": "integer", "minimum": 1, "maximum": 500 }
+          "query": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Optional case-insensitive title filter."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 500,
+            "description": "Maximum matching documents to return."
+          }
         },
         "additionalProperties": false
       },
@@ -39,301 +57,188 @@
         "properties": {
           "items": {
             "type": "array",
-            "items": { "$ref": "#/$defs/documentSummary" },
-            "maxItems": 500
-          }
-        },
-        "required": ["items"],
-        "additionalProperties": false,
-        "$defs": {
-          "documentSummary": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string" },
-              "title": { "type": "string" },
-              "ownerAccountId": { "type": "string" },
-              "ownerName": { "type": ["string", "null"] },
-              "access": { "enum": ["owner", "editor"] },
-              "createdAt": { "type": "string" },
-              "updatedAt": { "type": "string" },
-              "lastOpenedAt": { "type": ["string", "null"] }
-            },
-            "required": [
-              "id",
-              "title",
-              "ownerAccountId",
-              "ownerName",
-              "access",
-              "createdAt",
-              "updatedAt",
-              "lastOpenedAt"
-            ],
-            "additionalProperties": false
-          }
-        }
-      },
-      "handler": "documents.list"
-    },
-    {
-      "key": "documents.get",
-      "summary": "Inspect bounded metadata, raw node properties, resolved bounds, and validation problems for one document; lower nodeLimit or export when the 40,000-byte response limit is exceeded.",
-      "input": {
-        "type": "object",
-        "properties": {
-          "documentId": { "type": "string", "format": "uuid" },
-          "nodeLimit": { "type": "integer", "minimum": 1, "maximum": 1000 }
-        },
-        "required": ["documentId"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "title": { "type": "string" },
-          "access": { "enum": ["owner", "editor"] },
-          "ownerAccountId": { "type": "string" },
-          "nodes": {
-            "type": "object",
-            "properties": {
-              "items": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": { "type": "string" },
-                    "type": { "type": "string" },
-                    "name": { "type": ["string", "null"] },
-                    "depth": { "type": "integer" },
-                    "parentId": { "type": ["string", "null"] },
-                    "index": { "type": "integer" },
-                    "properties": {
-                      "type": "object",
-                      "additionalProperties": true
-                    },
-                    "bounds": {
-                      "oneOf": [
-                        { "type": "null" },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "x": { "type": "number" },
-                            "y": { "type": "number" },
-                            "width": { "type": "number" },
-                            "height": { "type": "number" }
-                          },
-                          "required": ["x", "y", "width", "height"],
-                          "additionalProperties": false
-                        }
-                      ]
-                    },
-                    "problems": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "additionalProperties": true
-                      }
-                    }
-                  },
-                  "required": [
-                    "id",
-                    "type",
-                    "name",
-                    "depth",
-                    "parentId",
-                    "index",
-                    "properties",
-                    "bounds",
-                    "problems"
-                  ],
-                  "additionalProperties": false
+            "maxItems": 500,
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "ownerAccountId": {
+                  "type": "string"
+                },
+                "ownerName": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "access": {
+                  "enum": [
+                    "owner",
+                    "editor"
+                  ]
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "updatedAt": {
+                  "type": "string"
+                },
+                "lastOpenedAt": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
                 }
               },
-              "truncated": { "type": "boolean" },
-              "total": { "type": "integer", "minimum": 0 },
-              "issues": {
-                "type": "array",
-                "items": { "type": "object", "additionalProperties": true }
-              }
-            },
-            "required": ["items", "truncated", "total", "issues"],
-            "additionalProperties": false
-          }
-        },
-        "required": ["id", "title", "access", "ownerAccountId", "nodes"],
-        "additionalProperties": false
-      },
-      "handler": "documents.get"
-    },
-    {
-      "key": "documents.delete",
-      "summary": "Permanently delete one owned Canvas document after explicit user authorization and exact current-title confirmation; this has no undo.",
-      "input": {
-        "type": "object",
-        "properties": {
-          "documentId": { "type": "string", "format": "uuid" },
-          "confirmTitle": { "type": "string", "minLength": 1, "maxLength": 255 }
-        },
-        "required": ["documentId", "confirmTitle"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "documentId": { "type": "string", "format": "uuid" },
-          "title": { "type": "string" },
-          "deleted": { "const": true }
-        },
-        "required": ["documentId", "title", "deleted"],
-        "additionalProperties": false
-      },
-      "handler": "documents.delete"
-    },
-    {
-      "key": "documents.create",
-      "summary": "Create one cloud-backed Canvas document from complete version-matched .pen JSON; use mutate for changes to an existing document.",
-      "input": {
-        "type": "object",
-        "properties": {
-          "title": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "document": { "type": "object", "additionalProperties": true }
-        },
-        "required": ["title", "document"],
-        "additionalProperties": false
-      },
-      "output": { "type": "object", "additionalProperties": true },
-      "handler": "documents.create"
-    },
-    {
-      "key": "documents.open",
-      "summary": "Open one exact Canvas document in a new or explicitly targeted tab and return its tabId for visual inspection.",
-      "input": {
-        "type": "object",
-        "properties": { "documentId": { "type": "string", "format": "uuid" } },
-        "required": ["documentId"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": { "tabId": { "type": "string", "minLength": 1 } },
-        "required": ["tabId"],
-        "additionalProperties": false
-      },
-      "handler": "documents.open"
-    },
-    {
-      "key": "documents.mutate",
-      "summary": "Apply one small declarative batch of supported node mutations after exporting the current version; use execute only for traversal or conditional edits.",
-      "input": {
-        "type": "object",
-        "properties": {
-          "documentId": { "type": "string", "format": "uuid" },
-          "mutations": {
-            "type": "array",
-            "minItems": 1,
-            "maxItems": 200,
-            "items": {
-              "oneOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "kind": { "const": "set-property" },
-                    "nodeId": { "type": "string", "minLength": 1 },
-                    "property": { "type": "string", "minLength": 1 },
-                    "value": {}
-                  },
-                  "required": ["kind", "nodeId", "property", "value"],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "kind": { "const": "set-property-path" },
-                    "nodeId": { "type": "string", "minLength": 1 },
-                    "property": { "type": "string", "minLength": 1 },
-                    "path": {
-                      "type": "array",
-                      "minItems": 1,
-                      "items": { "type": "string", "minLength": 1 }
-                    },
-                    "value": {}
-                  },
-                  "required": ["kind", "nodeId", "property", "path", "value"],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "kind": { "const": "insert-node" },
-                    "node": { "type": "object", "additionalProperties": true },
-                    "parentId": { "type": ["string", "null"] },
-                    "position": { "type": "number" }
-                  },
-                  "required": ["kind", "node", "position"],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "kind": { "const": "move-node" },
-                    "nodeId": { "type": "string", "minLength": 1 },
-                    "parentId": { "type": ["string", "null"] },
-                    "position": { "type": "number" }
-                  },
-                  "required": ["kind", "nodeId", "position"],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "kind": { "const": "delete-node" },
-                    "nodeId": { "type": "string", "minLength": 1 }
-                  },
-                  "required": ["kind", "nodeId"],
-                  "additionalProperties": false
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "kind": { "const": "restore-node" },
-                    "nodeId": { "type": "string", "minLength": 1 }
-                  },
-                  "required": ["kind", "nodeId"],
-                  "additionalProperties": false
-                }
-              ]
+              "required": [
+                "id",
+                "title",
+                "ownerAccountId",
+                "ownerName",
+                "access",
+                "createdAt",
+                "updatedAt",
+                "lastOpenedAt"
+              ],
+              "additionalProperties": false
             }
           }
         },
-        "required": ["documentId", "mutations"],
+        "required": [
+          "items"
+        ],
         "additionalProperties": false
       },
-      "output": { "type": "object", "additionalProperties": true },
-      "handler": "documents.mutate"
+      "examples": [
+        {
+          "name": "Find Penut design documents",
+          "input": {
+            "query": "Penut",
+            "limit": 20
+          }
+        }
+      ],
+      "handler": "documents.list"
     },
     {
-      "key": "documents.execute",
-      "summary": "Run one bounded JavaScript edit against a private clone, validate it, and commit only if the shared document sequence is unchanged; split large scripts and never blindly replay conflicts.",
+      "key": "documents.create",
+      "summary": "Create a blank Account-owned Canvas document. Use documents.execute to add or inspect design content.",
+      "guidance": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI. It does not open a tab or import `.pen` JSON. Call documents.execute for content, then documents.open when visible review matters.",
       "input": {
         "type": "object",
         "properties": {
-          "documentId": { "type": "string", "minLength": 1 },
-          "code": { "type": "string", "minLength": 1, "maxLength": 100000 }
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255,
+            "description": "Title shown in Canvas and document lists."
+          }
         },
-        "required": ["documentId", "code"],
+        "required": [
+          "title"
+        ],
         "additionalProperties": false
       },
       "output": {
         "type": "object",
         "properties": {
-          "documentId": { "type": "string" },
-          "changed": { "type": "boolean" },
-          "sequence": { "type": "integer", "minimum": 0 },
-          "prints": { "type": "array", "maxItems": 1000 },
-          "result": {},
-          "issues": {
+          "documentId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "access": {
+            "const": "owner"
+          }
+        },
+        "required": [
+          "documentId",
+          "title",
+          "access"
+        ],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "name": "Create a Penut mobile design document",
+          "input": {
+            "title": "Penut Mobile"
+          }
+        }
+      ],
+      "handler": "documents.create"
+    },
+    {
+      "key": "documents.execute",
+      "summary": "Read or change one Canvas document with bounded Pencil-style JavaScript; one execution should express one coherent design intent.",
+      "guidance": "Execute runs JavaScript against a private JSON clone with no network, files, Account API, browser, timers, or Penkra runtime. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, and Print. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get accepts an optional visitor and `{ limit }`; it returns immutable contexts containing node, parent, index, path, resolved pre-execution bounds, and problems. Its limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. Update(target, properties) changes properties without replacing ID or children. Copy(target, parent, position, overrides) renews IDs recursively. Replace(target, node), Delete(target), and Move(target, parent, position) each require exactly one target. Print records bounded JSON values in the result. Return values and printed values must be JSON-serializable.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete resulting tree before changing shared state and commits only when the source sequence is unchanged. The result names touched nodes and reports their current post-execution inspection. Use one execution for one coherent design intent; it may create or update many related nodes. After a write, use a separate read-only execution to inspect affected structure and ancestors, then open the document and use Penkra tab observation when appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Exact document returned by documents.list or documents.create."
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100000,
+            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, and Print."
+          }
+        },
+        "required": [
+          "documentId",
+          "code"
+        ],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "changed": {
+            "type": "boolean"
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "prints": {
             "type": "array",
-            "items": { "type": "object", "additionalProperties": true }
+            "maxItems": 1000
+          },
+          "result": {},
+          "touchedNodeIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10000
+          },
+          "inspection": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "maxItems": 10000
+          },
+        "issues": {
+          "type": "array",
+          "maxItems": 10000,
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
           }
         },
         "required": [
@@ -342,34 +247,163 @@
           "sequence",
           "prints",
           "result",
+          "touchedNodeIds",
+          "inspection",
           "issues"
         ],
         "additionalProperties": false
       },
+      "examples": [
+        {
+          "name": "Inspect frames with resolved bounds and problems",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "code": "return Get(\"type:frame\", ({ node, parent, bounds, problems }) => Print({ id: node.id, name: node.name ?? null, parentId: parent?.id ?? null, bounds, problems }), { limit: 100 });"
+          }
+        },
+        {
+          "name": "Rename one exact frame",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "code": "Update(\"#frame-id\", { name: \"Sign in\" });\nreturn \"frame-id\";"
+          }
+        },
+        {
+          "name": "Insert one coherent mobile screen",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "code": "Insert(null, { id: \"sign-in\", type: \"frame\", name: \"Sign in\", x: 0, y: 0, width: 393, height: 852, layout: \"vertical\", padding: 24, gap: 16, fill: \"#ffffff\", children: [] });\nreturn \"sign-in\";"
+          }
+        }
+      ],
       "handler": "documents.execute"
     },
     {
-      "key": "documents.export",
-      "summary": "Export the complete current Canvas document as .pen data for schema inspection or recovery; use documents.get only for a bounded inline inspection.",
+      "key": "documents.open",
+      "summary": "Open one exact Canvas document in a new or explicitly targeted tab and return its tab ID for visible verification.",
+      "guidance": "Opening changes visible tab state but does not modify document content. Pass the returned tabId to Penkra's tab snapshot or screenshot operation; Canvas does not expose a separate agent screenshot or export operation.",
       "input": {
         "type": "object",
-        "properties": { "documentId": { "type": "string", "format": "uuid" } },
-        "required": ["documentId"],
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "documentId"
+        ],
         "additionalProperties": false
       },
-      "output": { "type": "object", "additionalProperties": true },
-      "handler": "documents.export"
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "tabId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "documentId",
+          "tabId"
+        ],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "name": "Open a document for visual review",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9"
+          }
+        }
+      ],
+      "handler": "documents.open"
+    },
+    {
+      "key": "documents.delete",
+      "summary": "Permanently delete one owned Canvas document after explicit user authorization and exact current-title confirmation; this has no undo.",
+      "guidance": "Resolve the exact current title with documents.list, obtain explicit authorization for that document, and pass the title unchanged as confirmTitle. Edit or cleanup authorization does not imply document deletion. Deletion works from metadata and can remove an unreadable owned document.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "confirmTitle": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "documentId",
+          "confirmTitle"
+        ],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "deleted": {
+            "const": true
+          }
+        },
+        "required": [
+          "documentId",
+          "title",
+          "deleted"
+        ],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "name": "Delete an explicitly confirmed test document",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "confirmTitle": "Canvas QA Test"
+          }
+        }
+      ],
+      "handler": "documents.delete"
     },
     {
       "key": "sharing.list",
-      "summary": "List current editors and pending Account email grants for one owned document before adding or revoking access.",
+      "summary": "List current editors and pending Account email grants for one owned document before changing access.",
       "input": {
         "type": "object",
-        "properties": { "documentId": { "type": "string", "format": "uuid" } },
-        "required": ["documentId"],
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "documentId"
+        ],
         "additionalProperties": false
       },
-      "output": { "type": "object", "additionalProperties": true },
+      "output": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "name": "Review current document access",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9"
+          }
+        }
+      ],
       "handler": "sharing.list"
     },
     {
@@ -378,91 +412,75 @@
       "input": {
         "type": "object",
         "properties": {
-          "documentId": { "type": "string", "format": "uuid" },
-          "email": { "type": "string", "format": "email", "maxLength": 320 }
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 320
+          }
         },
-        "required": ["documentId", "email"],
+        "required": [
+          "documentId",
+          "email"
+        ],
         "additionalProperties": false
       },
-      "output": { "type": "object", "additionalProperties": true },
+      "output": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "name": "Grant editor access",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "email": "designer@example.com"
+          }
+        }
+      ],
       "handler": "sharing.add"
     },
     {
       "key": "sharing.remove",
-      "summary": "Revoke one exact editor or pending email grant from an owned document after resolving its current grantId.",
+      "summary": "Revoke one exact editor or pending email grant from an owned document after resolving its current grant ID.",
       "input": {
         "type": "object",
         "properties": {
-          "documentId": { "type": "string", "format": "uuid" },
-          "grantId": { "type": "string", "format": "uuid" }
-        },
-        "required": ["documentId", "grantId"],
-        "additionalProperties": false
-      },
-      "output": { "type": "object", "additionalProperties": true },
-      "handler": "sharing.remove"
-    },
-    {
-      "key": "selection.set",
-      "summary": "Select one exact node in an explicitly targeted visible Canvas tab; use documents.get or export first to resolve the nodeId.",
-      "input": {
-        "type": "object",
-        "properties": { "nodeId": { "type": "string", "minLength": 1 } },
-        "required": ["nodeId"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "tabId": { "type": "string" },
-          "nodeId": { "type": "string" }
-        },
-        "required": ["tabId", "nodeId"],
-        "additionalProperties": false
-      },
-      "handler": "selection.set"
-    },
-    {
-      "key": "viewport.focus",
-      "summary": "Focus the viewport on one exact node in an explicitly targeted visible Canvas tab; this changes view state, not document content.",
-      "input": {
-        "type": "object",
-        "properties": { "nodeId": { "type": "string", "minLength": 1 } },
-        "required": ["nodeId"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "tabId": { "type": "string" },
-          "nodeId": { "type": "string" }
-        },
-        "required": ["tabId", "nodeId"],
-        "additionalProperties": false
-      },
-      "handler": "viewport.focus"
-    },
-    {
-      "key": "performance.snapshot",
-      "summary": "Read bounded cold-open and renderer performance measurements from one visible Canvas tab for diagnosis; this does not inspect document correctness.",
-      "input": {
-        "type": "object",
-        "properties": {},
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "entries": {
-            "type": "array",
-            "items": { "type": "object", "additionalProperties": true },
-            "maxItems": 200
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "grantId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
-        "required": ["entries"],
+        "required": [
+          "documentId",
+          "grantId"
+        ],
         "additionalProperties": false
       },
-      "handler": "performance.snapshot"
+      "output": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "examples": [
+        {
+          "name": "Revoke an exact sharing grant",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "grantId": "22d3b50e-2a49-499b-8f3c-8a1587a42247"
+          }
+        }
+      ],
+      "handler": "sharing.remove"
     }
-  ]
+  ],
+  "contributions": {
+    "skills": [{ "path": "skills/canvas-design" }]
+  }
 }

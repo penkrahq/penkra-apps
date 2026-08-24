@@ -2,7 +2,7 @@ import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { designValidationIssues } from "./document-review.mjs";
 
-export function inspectDocument(document, nodes, requestedLimit = 500) {
+export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) {
   const limit = Math.min(1_000, Math.max(1, Number(requestedLimit) || 500));
   const prepared = prepareOpenPencilRenderDocument(document);
   const graph = createOpenPencilGraph(document, new Map(), prepared);
@@ -19,8 +19,11 @@ export function inspectDocument(document, nodes, requestedLimit = 500) {
   const boundsById = new Map(
     nodes.map((entry) => [entry.node.id, sceneBounds(graph, entry.node.id)]),
   );
+  const selectedNodes = nodeIds
+    ? nodes.filter((entry) => nodeIds.has(entry.node.id))
+    : nodes;
   return {
-    items: nodes.slice(0, limit).map(({ node, depth, parentId, index }) => ({
+    items: selectedNodes.slice(0, limit).map(({ node, depth, parentId, index }) => ({
       id: node.id,
       type: node.type,
       name: node.name ?? null,
@@ -36,8 +39,8 @@ export function inspectDocument(document, nodes, requestedLimit = 500) {
         ...clippingProblems(node.id, nodeById, parentById, boundsById),
       ],
     })),
-    truncated: nodes.length > limit,
-    total: nodes.length,
+    truncated: selectedNodes.length > limit,
+    total: selectedNodes.length,
     issues: reviewIssues,
   };
 }

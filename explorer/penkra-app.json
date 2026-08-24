@@ -4,7 +4,7 @@
   "slug": "explorer",
   "name": "Explorer",
   "summary": "Browse, search, preview, and manage files through scoped Penkra access.",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "compatibility": { "penkra": ">=0.11.0" },
   "icons": [
     { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
@@ -30,6 +30,7 @@
         "required": ["tabId"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Open a host-approved project directory", "input": { "handleId": "handle_01HXYZ", "kind": "directory", "name": "Penkra" } }],
       "handler": "resources.open"
     }
   ],

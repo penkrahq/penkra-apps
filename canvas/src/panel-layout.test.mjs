@@ -41,10 +41,10 @@ test("closed layers do not retain or rebuild the document tree", async () => {
   assert.match(app, /if \(panel === "layers" && !wasOpen\) renderLayersTree\(\);/u);
 });
 
-test("tab selection updates the live editor without a root render", async () => {
+test("selection remains an internal UI concern without public tab handlers", async () => {
   const app = await readFile(new URL("src/app.mjs", root), "utf8");
 
-  assert.match(app, /runtime\.tab\.handle\("selection\.set",[\s\S]*?selectNode\(nodeId, \{ openInspector: true \}\);/u);
+  assert.doesNotMatch(app, /runtime\.tab\.handle\("(?:selection\.set|viewport\.focus|performance\.snapshot)"/u);
   assert.match(app, /function selectNode\(nodeId, options = \{\}\)[\s\S]*?editor\?\.graph\.getNode\(nodeId\)\) editor\.select\(\[nodeId\]\);[\s\S]*?renderSelection\(\);/u);
 });
 

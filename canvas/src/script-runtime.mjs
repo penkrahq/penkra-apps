@@ -7,19 +7,21 @@ const EXECUTION_TIMEOUT_MS = 5_000;
 
 let quickJsPromise;
 
-export async function executeCanvasScript(document, code) {
+export async function executeCanvasScript(document, code, inspection = {}) {
   if (typeof code !== "string" || code.trim().length === 0) {
     throw new Error("Canvas script code must be a non-empty string.");
   }
   assertByteLimit(code, MAX_SCRIPT_BYTES, "Canvas script");
   const input = JSON.stringify(document);
+  const inspectionInput = JSON.stringify(inspection);
   assertByteLimit(input, MAX_INPUT_BYTES, "Canvas document");
+  assertByteLimit(inspectionInput, MAX_INPUT_BYTES, "Canvas inspection context");
 
   quickJsPromise ??= getQuickJS();
   const QuickJS = await quickJsPromise;
   try {
     const output = QuickJS.evalCode(
-      `const __canvasDocumentJson = ${JSON.stringify(input)};\nconst __canvasCode = ${JSON.stringify(code)};\n${SANDBOX_SOURCE}`,
+      `const __canvasDocumentJson = ${JSON.stringify(input)};\nconst __canvasInspectionJson = ${JSON.stringify(inspectionInput)};\nconst __canvasCode = ${JSON.stringify(code)};\n${SANDBOX_SOURCE}`,
       {
         shouldInterrupt: shouldInterruptAfterDeadline(
           Date.now() + EXECUTION_TIMEOUT_MS,
@@ -62,9 +64,16 @@ function scriptError(value) {
 const SANDBOX_SOURCE = String.raw`
 "use strict";
 const __document = JSON.parse(__canvasDocumentJson);
+const __inspection = JSON.parse(__canvasInspectionJson);
 const __prints = [];
+const __touched = new Set();
 let __copyCounter = 0;
 const __clone = (value) => JSON.parse(JSON.stringify(value));
+const __readonly = (value) => {
+  if (!value || typeof value !== "object") return value;
+  for (const child of Object.values(value)) __readonly(child);
+  return Object.freeze(value);
+};
 
 function __walk(nodes = __document.children, parent = null, parentPath = [], output = []) {
   for (let index = 0; index < (nodes || []).length; index += 1) {
@@ -78,7 +87,10 @@ function __walk(nodes = __document.children, parent = null, parentPath = [], out
 
 function __matches(entry, selector) {
   if (selector === "*" || selector === undefined || selector === null) return true;
-  if (typeof selector === "object") return entry.node === selector.node || entry.node === selector;
+  if (typeof selector === "object") {
+    const selected = selector.node && typeof selector.node === "object" ? selector.node : selector;
+    return typeof selected.id === "string" && entry.node.id === selected.id;
+  }
   if (typeof selector !== "string") throw new TypeError("A Canvas selector must be a string, node, or context.");
   if (selector.startsWith("#")) return entry.node.id === selector.slice(1);
   if (selector.startsWith("type:")) return entry.node.type === selector.slice(5);
@@ -100,14 +112,20 @@ function __requireOne(target) {
 }
 
 function __context(entry) {
+  const inspected = __inspection[entry.node.id] || {};
   return Object.freeze({
-    node: entry.node,
-    parent: entry.parent,
+    node: __readonly(__clone(entry.node)),
+    parent: entry.parent ? __readonly(__clone(entry.parent)) : null,
     index: entry.index,
     path: entry.path.join("/"),
-    bounds: null,
-    problems: Object.freeze([]),
+    bounds: inspected.bounds === undefined ? null : __readonly(__clone(inspected.bounds)),
+    problems: __readonly(__clone(inspected.problems || [])),
   });
+}
+
+function __touchTree(node) {
+  __touched.add(node.id);
+  for (const child of node.children || []) __touchTree(child);
 }
 
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
@@ -134,6 +152,8 @@ globalThis.Insert = function Insert(parent, node, position) {
   const index = position === undefined ? children.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > children.length) throw new RangeError("Insert position is outside the parent.");
   children.splice(index, 0, __clone(node));
+  __touchTree(node);
+  if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
   return node.id;
 };
 
@@ -146,6 +166,7 @@ globalThis.Update = function Update(target, properties) {
     if (value === undefined) delete node[key];
     else node[key] = __clone(value);
   }
+  __touched.add(node.id);
   return node;
 };
 
@@ -157,6 +178,8 @@ globalThis.Replace = function Replace(target, replacement) {
   if (next.id !== entry.node.id && __entries("#" + next.id).length > 0) throw new Error("Node " + next.id + " already exists.");
   const siblings = entry.parent ? entry.parent.children : __document.children;
   siblings.splice(entry.index, 1, next);
+  __touchTree(next);
+  if (entry.parent) __touched.add(entry.parent.id);
   return next.id;
 };
 
@@ -164,6 +187,8 @@ globalThis.Delete = function Delete(target) {
   const entry = __requireOne(target);
   const siblings = entry.parent ? entry.parent.children : __document.children;
   siblings.splice(entry.index, 1);
+  __touched.add(entry.node.id);
+  if (entry.parent) __touched.add(entry.parent.id);
   return entry.node.id;
 };
 
@@ -177,6 +202,9 @@ globalThis.Move = function Move(target, parent, position) {
   const index = position === undefined ? destination.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > destination.length) throw new RangeError("Move position is outside the parent.");
   destination.splice(index, 0, entry.node);
+  __touched.add(entry.node.id);
+  if (entry.parent) __touched.add(entry.parent.id);
+  if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
   return entry.node.id;
 };
 
@@ -200,9 +228,10 @@ globalThis.Copy = function Copy(target, parent, position, properties = {}) {
 };
 
 globalThis.Print = function Print(...values) {
+  if (__prints.length >= 1000) throw new Error("Print is limited to 1,000 entries; return a narrower result.");
   __prints.push(values.length === 1 ? values[0] : values);
 };
 
 const __result = (0, eval)("(function () {\n" + __canvasCode + "\n})()");
-JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result });
+JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched] });
 `;

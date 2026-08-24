@@ -4,7 +4,7 @@
   "slug": "apps",
   "name": "Apps",
   "summary": "Discover, install, update, and manage Apps in Penkra.",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "compatibility": {
     "penkra": ">=0.11.0"
   },
@@ -38,6 +38,7 @@
         "required": ["appId", "tabId"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Inspect the Canvas listing", "input": { "appId": "com.penkra.canvas" } }],
       "handler": "listings.open"
     },
     {
@@ -78,6 +79,7 @@
           }
         }
       },
+      "examples": [{ "name": "Install Canvas with its required permissions", "input": { "slug": "canvas", "version": "0.2.19", "permissions": { "account-data": "granted", "network-fetch": "granted" } } }],
       "handler": "installations.install"
     },
     {
@@ -107,6 +109,7 @@
         "required": ["appId", "spaceId", "state", "version"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Update Canvas to an exact version", "input": { "slug": "canvas", "version": "0.2.20", "permissions": { "account-data": "granted", "network-fetch": "granted" } } }],
       "handler": "installations.update"
     },
     {
@@ -131,6 +134,7 @@
         "required": ["appId", "spaceId", "state"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Uninstall Canvas while retaining its data", "input": { "appId": "com.penkra.canvas", "retainData": true } }],
       "handler": "installations.uninstall"
     },
     {
@@ -153,6 +157,7 @@
         "required": ["appId", "spaceId", "state", "version"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Enable Canvas in the current Space", "input": { "appId": "com.penkra.canvas" } }],
       "handler": "installations.enable"
     },
     {
@@ -175,6 +180,7 @@
         "required": ["appId", "spaceId", "state", "version"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Disable Canvas in the current Space", "input": { "appId": "com.penkra.canvas" } }],
       "handler": "installations.disable"
     },
     {
@@ -196,6 +202,7 @@
         "required": ["appId", "spaceId", "state"],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Erase retained Canvas data", "input": { "appId": "com.penkra.canvas" } }],
       "handler": "installations.remove-data"
     }
   ]

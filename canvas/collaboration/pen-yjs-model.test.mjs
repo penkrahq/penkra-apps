@@ -5,7 +5,6 @@ import { test } from "node:test";
 
 import { corpusFiles } from "../compatibility/corpus-files.mjs";
 import {
-  CURRENT_MODEL_VERSION,
   Y,
   cloneModel,
   createModel,
@@ -17,7 +16,6 @@ import {
   setNodeProperty,
   setNodePropertyPath,
   syncModels,
-  upgradeModel,
 } from "./pen-yjs-model.mjs";
 
 const fixture = {
@@ -409,44 +407,11 @@ test("duplicated and reordered Yjs updates remain idempotent and converge", () =
   assert.deepEqual(materializePen(receiver), materializePen(sender));
 });
 
-test("an additive schema upgrade converges with an older peer and preserves new data", () => {
-  const base = createModel(fixture, { modelVersion: 1 });
-  const older = cloneModel(base);
-  const newer = cloneModel(base);
-  upgradeModel(newer, "newer");
-  setNodeProperty(
-    newer,
-    "frame-a",
-    "futureV2Property",
-    { enabled: true },
-    "newer",
-  );
-  setNodeProperty(older, "frame-a", "name", "Edited by old client", "older");
-  syncModels(older, newer);
-  upgradeModel(older, "older");
-  syncModels(older, newer);
-
-  assert.equal(older.metadata.get("modelVersion"), CURRENT_MODEL_VERSION);
-  assert.deepEqual(
-    older.metadata.get("capabilities"),
-    newer.metadata.get("capabilities"),
-  );
-  assert.deepEqual(materializePen(older), materializePen(newer));
-  const frame = findNode(materializePen(older).children, "frame-a");
-  assert.equal(frame.name, "Edited by old client");
-  assert.deepEqual(frame.futureV2Property, { enabled: true });
-});
-
-test("a future internal model remains exportable but refuses edits", () => {
-  const future = createModel(fixture, {
-    modelVersion: CURRENT_MODEL_VERSION + 1,
-  });
-  assert.deepEqual(materializePen(future), fixture);
-  assert.throws(
-    () => setNodeProperty(future, "frame-a", "width", 240, "alice"),
-    /not editable/,
-  );
-  assert.throws(() => upgradeModel(future, "alice"), /not editable/);
+test("legacy metadata never gates otherwise valid edits", () => {
+  const model = createModel(fixture);
+  model.metadata.set("modelVersion", 999);
+  setNodeProperty(model, "frame-a", "width", 240, "alice");
+  assert.equal(findNode(materializePen(model).children, "frame-a").width, 240);
 });
 
 test("a 5,000-node document converges after concurrent bulk edits within a bounded update", () => {

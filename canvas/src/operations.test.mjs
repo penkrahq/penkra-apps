@@ -1,8 +1,37 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { encodeJson } from "./codec.mjs";
+import { createDocumentModel, encodeState } from "./document-model.mjs";
 
-test("tab-targeted operations use the public request-object invoke contract", async () => {
+function response(status, value) {
+  return { status, headers: {}, body: value === null ? new Uint8Array() : encodeJson(value) };
+}
+
+function readableDocumentAccount(source, requests) {
+  const model = createDocumentModel(source);
+  const state = encodeState(model);
+  model.doc.destroy();
+  return {
+    async request(request) {
+      requests.push(request);
+      if (request.path === "/projects/document-1?chunked=auto") {
+        return response(200, {
+          id: "document-1",
+          title: "Design",
+          access: "owner",
+          ownerAccountId: "account-1",
+          snapshot: { throughSequence: 7, state, projection: source },
+          updates: [],
+        });
+      }
+      if (request.path === "/projects/document-1/blobs") return response(200, { items: [] });
+      throw new Error(`Unexpected request ${request.method} ${request.path}`);
+    },
+    subscribe() {},
+  };
+}
+
+test("registers only the public document lifecycle, execute, and sharing surface", async () => {
   const handlers = new Map();
   globalThis.penkra = {
     account: { request() {}, subscribe() {} },
@@ -13,28 +42,26 @@ test("tab-targeted operations use the public request-object invoke contract", as
     },
   };
   await import(`./operations.mjs?test=${Date.now()}`);
-  const calls = [];
   const context = {
     tab: {
       id: "tab-1",
-      async invoke(request) {
-        calls.push(request);
-      },
+      async navigate() {},
     },
   };
-
-  assert.deepEqual(
-    await handlers.get("selection.set")({ nodeId: "node-1" }, context),
-    { tabId: "tab-1", nodeId: "node-1" },
-  );
-  assert.deepEqual(
-    await handlers.get("viewport.focus")({ nodeId: "node-2" }, context),
-    { tabId: "tab-1", nodeId: "node-2" },
-  );
-  assert.deepEqual(calls, [
-    { operation: "selection.set", input: { nodeId: "node-1" } },
-    { operation: "viewport.focus", input: { nodeId: "node-2" } },
+  assert.deepEqual([...handlers.keys()].sort(), [
+    "documents.create",
+    "documents.delete",
+    "documents.execute",
+    "documents.list",
+    "documents.open",
+    "sharing.add",
+    "sharing.list",
+    "sharing.remove",
   ]);
+  assert.deepEqual(
+    await handlers.get("documents.open")({ documentId: "document-1" }, context),
+    { documentId: "document-1", tabId: "tab-1" },
+  );
 });
 
 test("documents.delete requires exact current-title confirmation without decoding the document", async () => {
@@ -100,4 +127,51 @@ test("documents.delete requires exact current-title confirmation without decodin
     ),
     true,
   );
+});
+
+test("read-only execute reports real inspection without advancing the source sequence", async () => {
+  const handlers = new Map();
+  const requests = [];
+  globalThis.penkra = {
+    account: readableDocumentAccount(
+      {
+        version: "2.15",
+        children: [
+          { id: "frame", type: "frame", x: 10, y: 20, width: 200, height: 100, children: [] },
+        ],
+      },
+      requests,
+    ),
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?read-test=${Date.now()}`);
+  const result = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: 'Print(Get("#frame")[0].bounds); return "frame";',
+  });
+
+  assert.equal(result.changed, false);
+  assert.equal(result.sequence, 7);
+  assert.deepEqual(result.touchedNodeIds, []);
+  assert.equal(result.prints[0].width, 200);
+  assert.equal(requests.some((request) => request.method === "POST"), false);
+});
+
+test("invalid execute output fails before any shared update or snapshot write", async () => {
+  const handlers = new Map();
+  const requests = [];
+  globalThis.penkra = {
+    account: readableDocumentAccount({ version: "2.15", children: [] }, requests),
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?invalid-test=${Date.now()}`);
+
+  await assert.rejects(
+    handlers.get("documents.execute")({
+      documentId: "document-1",
+      code: 'Insert(null, { id: "broken" });',
+    }),
+    /non-empty string type/,
+  );
+  assert.equal(requests.some((request) => request.method === "POST"), false);
 });

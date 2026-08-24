@@ -4,7 +4,7 @@
   "slug": "browser",
   "name": "Browser",
   "summary": "Browse the web in isolated pages that agents and people can use together.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "compatibility": { "penkra": ">=0.11.0" },
   "icons": [
     { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
@@ -28,6 +28,7 @@
         "additionalProperties": false
       },
       "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Open the Penkra website", "input": { "url": "https://penkra.com" } }],
       "handler": "pages.open"
     },
     {
@@ -43,6 +44,7 @@
         "additionalProperties": false
       },
       "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Navigate the targeted tab's current page", "input": { "url": "https://penkra.com/docs" } }],
       "handler": "pages.navigate"
     },
     {
@@ -62,6 +64,7 @@
         "additionalProperties": false
       },
       "output": {},
+      "examples": [{ "name": "Read the current page title", "input": { "pageId": "page_01HXYZ", "expression": "document.title" } }],
       "handler": "pages.evaluate"
     },
     {
@@ -74,6 +77,7 @@
         "additionalProperties": false
       },
       "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Close an exact browser page", "input": { "pageId": "page_01HXYZ" } }],
       "handler": "pages.close"
     }
   ],

@@ -1,6 +1,5 @@
 import * as Y from "yjs";
 
-export const CURRENT_MODEL_VERSION = 2;
 const RESERVED_NODE_PROPERTIES = new Set(["id", "type", "children"]);
 
 export function createModel(penDocument, options = {}) {
@@ -12,7 +11,6 @@ export function createModel(penDocument, options = {}) {
   validateNodeTree(penDocument.children, new Set(nodes.keys()));
 
   doc.transact(() => {
-    metadata.set("modelVersion", options.modelVersion ?? CURRENT_MODEL_VERSION);
     for (const [key, value] of Object.entries(penDocument)) {
       if (key !== "children") documentFields.set(key, cloneJson(value));
     }
@@ -177,22 +175,6 @@ export function replaceModelContent(model, penDocument, origin) {
   });
 }
 
-export function upgradeModel(model, origin) {
-  assertEditableModel(model);
-  transact(model, origin, () => {
-    const version = Number(model.metadata.get("modelVersion") ?? 1);
-    if (version > CURRENT_MODEL_VERSION) return;
-    if (version < 2) {
-      model.metadata.set("capabilities", {
-        stableNodeIds: true,
-        singleParentHierarchy: true,
-        unknownPropertyPreservation: true,
-      });
-      model.metadata.set("modelVersion", 2);
-    }
-  });
-}
-
 export function materializePen(model) {
   const result = Object.fromEntries(
     [...model.documentFields.entries()].map(([key, value]) => [
@@ -331,15 +313,8 @@ function transact(model, origin, action) {
 }
 
 function assertEditableModel(model) {
-  const version = Number(model.metadata.get("modelVersion") ?? 1);
-  if (
-    !Number.isInteger(version) ||
-    version < 1 ||
-    version > CURRENT_MODEL_VERSION
-  ) {
-    throw new Error(
-      `Canvas model version ${String(model.metadata.get("modelVersion"))} is not editable by this client.`,
-    );
+  if (!model?.doc || !model?.nodes || !model?.documentFields) {
+    throw new Error("Canvas model is not editable.");
   }
 }
 

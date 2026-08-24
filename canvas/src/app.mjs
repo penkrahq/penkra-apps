@@ -1,4 +1,5 @@
 import { createCanvasApi } from "./canvas-api.mjs";
+import { createBlankDocumentSource } from "./blank-document.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
@@ -130,24 +131,6 @@ const routes = createRouteCoordinator({
 });
 
 runtime.tab.onNavigate((input) => routes.handleHostNavigation(input));
-runtime.tab.handle("selection.set", async ({ nodeId }) => {
-  if (!state.model || !currentDocumentNode(nodeId)) {
-    throw new Error(`Canvas node ${nodeId} was not found in this tab.`);
-  }
-  selectNode(nodeId, { openInspector: true });
-  return { selected: true };
-});
-runtime.tab.handle("viewport.focus", async ({ nodeId }) => {
-  if (!state.model || !currentDocumentNode(nodeId)) {
-    throw new Error(`Canvas node ${nodeId} was not found in this tab.`);
-  }
-  selectNode(nodeId, { focus: true });
-  return { focused: true };
-});
-runtime.tab.handle("performance.snapshot", async () => ({
-  entries: performanceMonitor.snapshot(),
-}));
-
 window.addEventListener("online", () => {
   if (state.document) {
     const documentId = state.document.id;
@@ -218,23 +201,7 @@ async function navigateToLibrary() {
 }
 
 async function createBlankDocument(title = "Untitled") {
-  const frameId = crypto.randomUUID();
-  const source = {
-    version: "2.15",
-    children: [
-      {
-        id: frameId,
-        type: "frame",
-        name: "Frame",
-        x: 120,
-        y: 100,
-        width: 720,
-        height: 480,
-        fill: "#ffffff",
-        children: [],
-      },
-    ],
-  };
+  const source = createBlankDocumentSource();
   const model = createDocumentModel(source);
   try {
     const document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });

@@ -22,17 +22,43 @@ test("execute scripts edit only their private JSON document", async () => {
   assert.equal(result.document.children[0].content, "After");
   assert.deepEqual(result.prints, ["heading"]);
   assert.deepEqual(result.result, { changedId: "heading" });
+  assert.deepEqual(result.touchedNodeIds, ["heading"]);
+});
+
+test("Get exposes host-computed source bounds and problems without allowing mutation", async () => {
+  const result = await executeCanvasScript(
+    { version: "2.15", children: [{ id: "heading", type: "text", content: "Hello" }] },
+    `const context = Get("#heading")[0];
+     try { context.node.content = "Changed"; } catch {}
+     Print({ bounds: context.bounds, problems: context.problems });
+     return { path: context.path, content: Get(context)[0].node.content };`,
+    {
+      heading: {
+        bounds: { x: 10, y: 20, width: 100, height: 24 },
+        problems: [{ kind: "text-fill", nodeId: "heading" }],
+      },
+    },
+  );
+  assert.deepEqual(result.prints, [
+    {
+      bounds: { x: 10, y: 20, width: 100, height: 24 },
+      problems: [{ kind: "text-fill", nodeId: "heading" }],
+    },
+  ]);
+  assert.deepEqual(result.result, { path: "heading", content: "Hello" });
+  assert.deepEqual(result.touchedNodeIds, []);
 });
 
 test("execute scripts cannot reach host services", async () => {
   const result = await executeCanvasScript(
     { version: "2.15", children: [] },
-    "return { fetch: typeof fetch, penkra: typeof penkra, process: typeof process };",
+    "return { fetch: typeof fetch, penkra: typeof penkra, process: typeof process, timer: typeof setTimeout };",
   );
   assert.deepEqual(result.result, {
     fetch: "undefined",
     penkra: "undefined",
     process: "undefined",
+    timer: "undefined",
   });
 });
 
@@ -47,6 +73,13 @@ test("execute scripts reject invalid and oversized code", async () => {
   await assert.rejects(
     executeCanvasScript({ version: "2.15", children: [] }, "x".repeat(100_001)),
     /100001 bytes; the limit is 100000 bytes\. Split the edit into smaller documents\.execute calls/,
+  );
+  await assert.rejects(
+    executeCanvasScript(
+      { version: "2.15", children: [] },
+      "for (let index = 0; index <= 1000; index += 1) Print(index);",
+    ),
+    /Print is limited to 1,000 entries/,
   );
 });
 

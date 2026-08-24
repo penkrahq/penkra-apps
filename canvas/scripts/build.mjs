@@ -1,4 +1,5 @@
 import { cp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 
 const root = new URL("../", import.meta.url);
@@ -13,18 +14,12 @@ const dedupeYjsPlugin = {
 const lazyOperationModulesPlugin = {
   name: "lazy-operation-modules",
   setup(build) {
-    build.onResolve({ filter: /^\.\/document-inspection\.js$/ }, () => ({
-      path: "./document-inspection.js",
-      external: true,
-    }));
-    build.onResolve({ filter: /^\.\/script-runtime\.js$/ }, () => ({
-      path: "./script-runtime.js",
-      external: true,
-    }));
-    build.onResolve({ filter: /^\.\/document-review\.js$/ }, () => ({
-      path: "./document-review.js",
-      external: true,
-    }));
+    for (const module of ["document-inspection", "script-runtime", "document-review"]) {
+      build.onResolve({ filter: new RegExp(`^\\./${module}\\.mjs$`) }, (args) => ({
+        path: args.path,
+        external: true,
+      }));
+    }
   },
 };
 
@@ -81,6 +76,21 @@ for (const build of builds) {
   if (!build.success) throw new AggregateError(build.logs, "Canvas bundle failed.");
 }
 
+const operationsBundleUrl = new URL("operations.js", output);
+let operationsBundle = await readFile(operationsBundleUrl, "utf8");
+for (const module of ["document-inspection", "script-runtime", "document-review"]) {
+  const sourceSpecifier = `./${module}.mjs`;
+  const packagedSpecifier = `./${module}.js`;
+  if (!operationsBundle.includes(sourceSpecifier)) {
+    throw new Error(`Canvas operations bundle is missing the expected ${sourceSpecifier} import.`);
+  }
+  operationsBundle = operationsBundle.replaceAll(sourceSpecifier, packagedSpecifier);
+  if (!operationsBundle.includes(packagedSpecifier)) {
+    throw new Error(`Canvas operations bundle did not retain the packaged ${packagedSpecifier} import.`);
+  }
+}
+await writeFile(operationsBundleUrl, operationsBundle);
+
 for (const file of [
   "app.html",
   "operations.html",
@@ -92,6 +102,7 @@ for (const file of [
   await cp(new URL(file, root), new URL(file, output));
 }
 await cp(new URL("assets/icon.svg", root), new URL("assets/icon.svg", output));
+await cp(new URL("skills/", root), new URL("skills/", output), { recursive: true });
 await cp(
   new URL("node_modules/canvaskit-wasm/bin/canvaskit.wasm", root),
   new URL("canvaskit.wasm", output),
@@ -124,7 +135,13 @@ try {
   if (error?.code !== "ENOENT") throw error;
 }
 
-const buildInfo = { files: {} };
+const collaborationSource = await readFile(new URL("collaboration/pen-yjs-model.mjs", root));
+const buildInfo = {
+  files: {},
+  sources: {
+    collaborationSha256: createHash("sha256").update(collaborationSource).digest("hex"),
+  },
+};
 for (const file of [
   "app.js",
   "operations.js",

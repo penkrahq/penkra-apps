@@ -7,7 +7,6 @@
     "test": "node --test src/*.test.mjs compatibility/pen-corpus.test.mjs collaboration/pen-yjs-model.test.mjs"
   },
   "dependencies": {
-    "@penkra/canvas-collaboration-research": "file:./collaboration",
     "canvaskit-wasm": "0.40.0",
     "lucide": "1.31.0",
     "quickjs-emscripten": "0.32.0",

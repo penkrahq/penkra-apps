@@ -10,7 +10,7 @@ import {
   deleteNode,
   restoreNode,
   replaceModelContent,
-} from "@penkra/canvas-collaboration-research";
+} from "../collaboration/pen-yjs-model.mjs";
 import { base64ToBytes, bytesToBase64 } from "./codec.mjs";
 
 export const LOCAL_ORIGIN = Symbol("canvas-local");
