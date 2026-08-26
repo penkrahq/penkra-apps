@@ -53,6 +53,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Invalidate overridden text metrics before intrinsic layout and coordinate one exact-font layout before revealing the layered canvas.",
     "Measure auto-width Pencil text intrinsically after fonts resolve so parent constraints cannot turn instance text overrides into wrapped multi-line text.",
     "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",
+    "Resolve selection hit tests one immediate hierarchy level at a time and enter containers without skipping directly to deep text editing.",
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
@@ -81,6 +82,9 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-ready"/u);
   assert.match(engine, /typeof json === "string" \? JSON\.parse\(json\) : json/u);
+  assert.match(engine, /while \(hit\.parentId && hit\.parentId !== scope\)/u);
+  assert.match(engine, /return editor\.graph\.hitTest\(cx, cy, containerId\)/u);
+  assert.doesNotMatch(engine, /if \(hit2\?\.type === "TEXT"\)\s+startTextEditingAt\(hit2, cx, cy\)/u);
 });
 
 test("published OpenPencil packages and expr-eval are outside the dependency graph", async () => {

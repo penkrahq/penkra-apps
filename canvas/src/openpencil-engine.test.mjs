@@ -1044,6 +1044,104 @@ test("new OpenPencil nodes map to explicit .pen nodes", () => {
   });
 });
 
+test("selection hit testing advances exactly one frame hierarchy level", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "screen",
+      type: "frame",
+      x: 0,
+      y: 0,
+      width: 320,
+      height: 240,
+      fill: "#ffffff",
+      children: [{
+        id: "row",
+        type: "frame",
+        x: 20,
+        y: 20,
+        width: 240,
+        height: 64,
+        fill: "#eeeeee",
+        children: [{
+          id: "row-label",
+          type: "text",
+          x: 12,
+          y: 12,
+          content: "Queue item",
+          fontSize: 14,
+        }],
+      }],
+    }],
+  });
+  const pageId = graph.getPages()[0].id;
+  const label = graph.getNode("row-label");
+  const labelPosition = graph.getAbsolutePosition("row-label");
+  const x = labelPosition.x + label.width / 2;
+  const y = labelPosition.y + label.height / 2;
+
+  assert.equal(graph.hitTest(x, y, pageId)?.id, "screen");
+  assert.equal(graph.hitTest(x, y, "screen")?.id, "row");
+  assert.equal(graph.hitTest(x, y, "row")?.id, "row-label");
+  assert.equal(graph.hitTestDeep(x, y, pageId)?.id, "row-label");
+});
+
+test("component instances expose their immediate authored descendant for hierarchy selection", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "queue-component",
+        type: "frame",
+        reusable: true,
+        x: 400,
+        y: 0,
+        width: 320,
+        height: 160,
+        children: [{
+          id: "FEmhW",
+          type: "frame",
+          x: 20,
+          y: 20,
+          width: 240,
+          height: 64,
+          fill: "#eeeeee",
+          children: [{
+            id: "row-label",
+            type: "text",
+            x: 12,
+            y: 12,
+            content: "Queue item",
+            fontSize: 14,
+          }],
+        }],
+      },
+      {
+        id: "Ue7jf",
+        type: "ref",
+        ref: "queue-component",
+        x: 0,
+        y: 0,
+      },
+    ],
+  });
+  const pageId = graph.getPages()[0].id;
+  const instanceRow = graph.getAllNodes().find((node) => (
+    node.parentId === "Ue7jf" && node.componentId === "FEmhW"
+  ));
+  const instanceLabel = graph.getAllNodes().find((node) => (
+    node.parentId === instanceRow?.id && node.componentId === "row-label"
+  ));
+  const labelPosition = graph.getAbsolutePosition(instanceLabel.id);
+  const x = labelPosition.x + instanceLabel.width / 2;
+  const y = labelPosition.y + instanceLabel.height / 2;
+
+  assert.equal(graph.hitTest(x, y, pageId)?.id, "Ue7jf");
+  assert.equal(graph.hitTest(x, y, "Ue7jf")?.id, instanceRow?.id);
+  assert.equal(instanceRow?.componentId, "FEmhW");
+  assert.equal(graph.hitTestDeep(x, y, "Ue7jf")?.id, instanceLabel.id);
+});
+
 test("repeated document refresh keeps one editor, viewport, and selection", () => {
   const source = {
     version: "2.15",

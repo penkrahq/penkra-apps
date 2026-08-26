@@ -1765,7 +1765,17 @@ function hitTestChildren(graph, px, py, parentId, deep = false) {
   return null;
 }
 function hitTest(graph, px, py, scopeId) {
-  return hitTestChildren(graph, px, py, scopeId ?? graph.rootId, false);
+  const scope = scopeId ?? graph.rootId;
+  let hit = hitTestChildren(graph, px, py, scope, true);
+  if (!hit)
+    return null;
+  while (hit.parentId && hit.parentId !== scope) {
+    const parent = graph.nodes.get(hit.parentId);
+    if (!parent)
+      return null;
+    hit = parent;
+  }
+  return hit.parentId === scope ? hit : null;
 }
 function hitTestDeep(graph, px, py, scopeId) {
   return hitTestChildren(graph, px, py, scopeId ?? graph.rootId, true);
@@ -92729,12 +92739,7 @@ function createTextEditInput(options) {
     }
   }
   function getContainerDescendantHit(containerId, cx, cy) {
-    const hit = editor.graph.hitTestDeep(cx, cy, editor.state.currentPageId);
-    if (!hit)
-      return null;
-    if (hit.id === containerId || editor.graph.isDescendant(hit.id, containerId))
-      return hit;
-    return null;
+    return editor.graph.hitTest(cx, cy, containerId);
   }
   function onDblClick(e4) {
     const nodeEditEditor = editor;
@@ -92746,9 +92751,7 @@ function createTextEditInput(options) {
     if (selectedNode && selectedId && editor.graph.isContainer(selectedId) && !selectedNode.locked) {
       const hit2 = getContainerDescendantHit(selectedId, cx, cy);
       editor.enterContainer(selectedId);
-      if (hit2?.type === "TEXT")
-        startTextEditingAt(hit2, cx, cy);
-      else if (hit2)
+      if (hit2)
         editor.select([hit2.id]);
       else
         editor.clearSelection();
