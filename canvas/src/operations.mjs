@@ -64,10 +64,11 @@ runtime.operations.handle("documents.delete", async ({ documentId, confirmTitle 
 
 runtime.operations.handle("documents.create", async ({ title }) => {
   const source = createBlankDocumentSource();
+  const starterFrameId = source.children[0].id;
   const model = createDocumentModel(source);
   try {
     const document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
-    return { documentId: document.id, title, access: "owner" };
+    return { documentId: document.id, title, access: "owner", starterFrameId };
   } finally {
     model.doc.destroy();
   }
@@ -84,10 +85,16 @@ runtime.operations.handle("documents.open", async ({ documentId }, context) => {
 });
 
 runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
-  const [{ executeCanvasScript }, { reviewDocumentIssues }, { inspectDocument }] = await Promise.all([
+  const [
+    { executeCanvasScript },
+    { reviewDocumentIssues },
+    { inspectDocument },
+    { takeDocumentScreenshots },
+  ] = await Promise.all([
     import("./script-runtime.mjs"),
     import("./document-review.mjs"),
     import("./document-inspection.mjs"),
+    import("./document-screenshot.mjs"),
   ]);
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
@@ -123,8 +130,9 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
     const structuralModel = createDocumentModel(execution.document);
     structuralModel.doc.destroy();
     const changedByScript = JSON.stringify(before) !== JSON.stringify(execution.document);
+    let uploadedAssets = [];
     if (changedByScript) {
-      await materializeDocumentImages({
+      const materialized = await materializeDocumentImages({
         api,
         documentId,
         document: execution.document,
@@ -132,6 +140,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         generations: execution.generations,
         skipSources: new Set(collectImageFills(before).map((fill) => fill.url)),
       });
+      uploadedAssets = materialized.uploaded;
     }
     const validationModel = createDocumentModel(execution.document);
     let existingInspection;
@@ -161,8 +170,15 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         .filter((nodeId) => !inspectedIds.has(nodeId))
         .map((nodeId) => ({ nodeId, deleted: true })),
     ];
+    const screenshots = execution.screenshots.length === 0
+      ? []
+      : await takeDocumentScreenshots(
+        execution.document,
+        execution.screenshots,
+        await readDocumentAssets(api, documentId, [...payload.assets, ...uploadedAssets]),
+      );
     if (!changedByScript) {
-      return {
+      return operationResult({
         documentId,
         changed: false,
         sequence: authoritativeSequence(payload),
@@ -171,7 +187,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         touchedNodeIds,
         inspection,
         issues,
-      };
+      }, screenshots);
     }
     model.doc.transact(() => replaceDocument(model, execution.document, LOCAL_ORIGIN), LOCAL_ORIGIN);
     const combined = updates.length === 1 ? updates[0] : Y.mergeUpdates(updates);
@@ -185,7 +201,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
       state: encodeState(model),
       source: materialize(model),
     });
-    return {
+    return operationResult({
       documentId,
       changed: true,
       sequence: appended.sequence,
@@ -194,12 +210,34 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
       touchedNodeIds,
       inspection,
       issues,
-    };
+    }, screenshots);
   } finally {
     model.doc.off("update", listener);
     model.doc.destroy();
   }
 });
+
+function operationResult(structuredContent, screenshots) {
+  const metadata = screenshots.map(({ data: _data, ...screenshot }) => screenshot);
+  const result = { ...structuredContent, screenshots: metadata };
+  if (screenshots.length === 0) return result;
+  return {
+    structuredContent: result,
+    content: screenshots.map((screenshot) => ({
+      type: "image",
+      data: screenshot.data,
+      mimeType: screenshot.mimeType,
+    })),
+  };
+}
+
+async function readDocumentAssets(api, documentId, descriptors) {
+  const byPath = new Map(descriptors.map((asset) => [asset.path, asset]));
+  return new Map(await Promise.all([...byPath.values()].map(async (asset) => [
+    asset.path,
+    { ...asset, bytes: await api.readAsset(documentId, asset) },
+  ])));
+}
 
 runtime.operations.handle("sharing.list", async ({ documentId }) =>
   api.listGrants(documentId),

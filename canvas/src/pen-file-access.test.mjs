@@ -45,6 +45,47 @@ test("reads every referenced asset relative to the chosen .pen file", async () =
   assert.equal(result.assets[0].sha256.length, 64);
 });
 
+test("recursively reads typed resources declared by imported Pencil libraries", async () => {
+  const files = fileService({
+    "design/sample.pen": JSON.stringify({
+      imports: { cards: "../libraries/cards.pen" },
+      children: [],
+    }),
+    "libraries/cards.pen": JSON.stringify({
+      imports: { tokens: "nested/tokens.pen" },
+      children: [{
+        id: "chart",
+        type: "script",
+        scriptUri: "../scripts/chart.js",
+        fill: { type: "shader", url: "shaders/glow.frag" },
+      }],
+    }),
+    "libraries/nested/tokens.pen": JSON.stringify({
+      children: [{ id: "logo", type: "frame", fill: { type: "image", url: "../../assets/logo.png" } }],
+    }),
+    "scripts/chart.js": "// @schema 2.17\nreturn [];",
+    "libraries/shaders/glow.frag": "void main() { gl_FragColor = vec4(1.0); }",
+    "assets/logo.png": new Uint8Array([9, 8, 7]),
+  });
+
+  const result = await readPenDocument(
+    files,
+    { id: "root", kind: "directory", name: "project" },
+    { kind: "file", name: "sample.pen", relativePath: "design/sample.pen" },
+  );
+
+  assert.deepEqual(
+    result.assets.map(({ path, kind, mimeType }) => ({ path, kind, mimeType })),
+    [
+      { path: "../libraries/cards.pen", kind: "library", mimeType: "application/x-pencil+json" },
+      { path: "../libraries/nested/tokens.pen", kind: "library", mimeType: "application/x-pencil+json" },
+      { path: "../scripts/chart.js", kind: "script", mimeType: "text/javascript" },
+      { path: "../libraries/shaders/glow.frag", kind: "shader", mimeType: "text/x-glsl" },
+      { path: "../assets/logo.png", kind: "image", mimeType: "image/png" },
+    ],
+  );
+});
+
 test("fails the import when a referenced asset is missing", async () => {
   const files = fileService({
     "sample.pen": JSON.stringify({
@@ -54,7 +95,7 @@ test("fails the import when a referenced asset is missing", async () => {
   const root = { id: "root", kind: "directory", name: "project" };
   const document = { kind: "file", name: "sample.pen", relativePath: "sample.pen" };
 
-  await assert.rejects(readPenDocument(files, root, document), /Referenced asset missing\.png is missing/);
+  await assert.rejects(readPenDocument(files, root, document), /Referenced Pencil resource missing\.png is missing/);
 });
 
 test("imports the only top-level .pen file through Runtime v2 scoped files", async () => {

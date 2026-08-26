@@ -50,6 +50,62 @@ test("resolves Pencil variables with inherited multi-axis themes without changin
   assert.deepEqual(source, before);
 });
 
+test("resolves Pencil 2.17 variables in nested paint, geometry, text, and icon fields", () => {
+  const source = {
+    version: "2.17",
+    variables: {
+      color: { type: "color", value: "#123456" },
+      number: { type: "number", value: 6 },
+      boolean: { type: "boolean", value: true },
+      string: { type: "string", value: "arrow-back" },
+      family: { type: "string", value: "Inter" },
+      weightName: { type: "string", value: "500" },
+    },
+    children: [{
+      id: "shape",
+      type: "ellipse",
+      flipX: "$boolean",
+      innerRadius: "$number",
+      stroke: { type: "color", color: "$color" },
+      strokeWidth: { top: "$number", right: "$number", bottom: "$number", left: "$number" },
+      fill: {
+        type: "gradient",
+        colors: [{ color: "$color", position: "$number" }],
+      },
+    }, {
+      id: "text",
+      type: "text",
+      content: "$string",
+      fontFamily: "$family",
+      fontWeight: "$weightName",
+      underline: "$boolean",
+    }, {
+      id: "icon",
+      type: "icon",
+      library: "Material Symbols Rounded",
+      icon: "$string",
+      weight: "$number",
+    }],
+  };
+  const before = structuredClone(source);
+  const result = prepareOpenPencilRenderDocument(source);
+
+  assert.equal(result.document.children[0].flipX, true);
+  assert.equal(result.document.children[0].innerRadius, 6);
+  assert.equal(result.document.children[0].stroke.fills[0].color, "#123456");
+  assert.equal(result.document.children[0].stroke.thickness.top, 6);
+  assert.equal(result.document.children[0].fill.colors[0].color, "#123456");
+  assert.equal(result.document.children[0].fill.colors[0].position, 6);
+  assert.equal(result.document.children[1].content, "arrow-back");
+  assert.equal(result.document.children[1].fontFamily, "Inter");
+  assert.equal(result.document.children[1].fontWeight, "500");
+  assert.equal(result.document.children[1].underline, true);
+  assert.equal(result.document.children[2].icon, "arrow-back");
+  assert.equal(result.document.children[2].weight, 6);
+  assert.deepEqual(result.issues.map(({ kind }) => kind), ["icon"]);
+  assert.deepEqual(source, before);
+});
+
 test("uses safe render fallbacks and reports cyclic or invalid numeric variables", () => {
   const source = {
     themes: { state: ["default"] },
@@ -93,7 +149,7 @@ test("uses safe fallbacks and reports missing render variables", () => {
   assert.match(result.issues[0].message, /was not found/);
 });
 
-test("converts themed Lucide icons to render-only stroked paths", () => {
+test("compiles themed Lucide icons without changing their semantic node type", () => {
   const source = {
     themes: { state: ["default", "open"] },
     variables: {
@@ -121,15 +177,12 @@ test("converts themed Lucide icons to render-only stroked paths", () => {
   const result = prepareOpenPencilRenderDocument(source);
   const rendered = result.document.children[0];
 
-  assert.equal(rendered.type, "path");
-  assert.match(rendered.geometry, /m6 9 6 6 6-6/);
-  assert.deepEqual(rendered.stroke, {
-    align: "center",
-    thickness: 2,
-    join: "round",
-    cap: "round",
-    fill: "#123456",
-  });
+  assert.equal(rendered.type, "icon");
+  assert.equal(rendered.icon, "chevron-down");
+  assert.equal(rendered.library, "lucide");
+  assert.equal(rendered.fill, "#123456");
+  assert.match(rendered.__canvasIcon.geometry, /m6 9 6 6 6-6/);
+  assert.deepEqual(rendered.__canvasIcon.viewBox, [0, 0, 24, 24]);
   assert.deepEqual(result.issues, []);
   assert.equal(source.children[0].type, "icon");
   assert.equal(source.children[0].icon, "$glyph");
@@ -148,7 +201,7 @@ test("reports unsupported icon libraries without changing their render node", ()
   assert.match(result.issues[0].message, /unknown icon custom is not supported/i);
 });
 
-test("converts the supported filled Phosphor pin to a render-only filled path", () => {
+test("compiles any catalogued Phosphor icon without a hardcoded path", () => {
   const source = {
     children: [{
       id: "pin",
@@ -163,9 +216,10 @@ test("converts the supported filled Phosphor pin to a render-only filled path", 
 
   const result = prepareOpenPencilRenderDocument(source);
 
-  assert.equal(result.document.children[0].type, "path");
+  assert.equal(result.document.children[0].type, "icon");
   assert.equal(result.document.children[0].fill, "#abcdef");
-  assert.equal(result.document.children[0].stroke, undefined);
+  assert.match(result.document.children[0].__canvasIcon.geometry, /235\.33 104/);
+  assert.equal(result.document.children[0].__canvasIcon.paint, "fill");
   assert.deepEqual(result.issues, []);
 });
 
@@ -193,7 +247,7 @@ test("normalizes Pencil 2.17 frame defaults, sizing, alignment, and strokes", ()
   assert.equal(row.height, "hug_content");
   assert.equal(row.justifyContent, "space-between");
   assert.deepEqual(row.stroke, {
-    fill: "#123456",
+    fills: ["#123456"],
     thickness: { bottom: 2 },
     align: "inside",
     join: "round",
@@ -203,7 +257,7 @@ test("normalizes Pencil 2.17 frame defaults, sizing, alignment, and strokes", ()
   assert.deepEqual(source, before);
 });
 
-test("materializes component instances before resolving descendant themes and icons", () => {
+test("preserves component instances while resolving descendant themes and icons", () => {
   const source = {
     version: "2.17",
     themes: { mode: ["light", "dark"] },
@@ -241,18 +295,13 @@ test("materializes component instances before resolving descendant themes and ic
 
   const result = prepareOpenPencilRenderDocument(source);
   const instance = result.document.children[1];
-  const [label, glyph] = instance.children;
 
-  assert.equal(instance.type, "frame");
+  assert.equal(instance.type, "ref");
   assert.equal(instance.id, "instance");
-  assert.equal(instance.reusable, false);
-  assert.equal(label.id, "instance::label");
-  assert.equal(label.content, "Open");
-  assert.equal(label.fontWeight, 700);
-  assert.equal(label.fill, "#eeeeee");
-  assert.equal(glyph.id, "instance::glyph");
-  assert.equal(glyph.type, "path");
-  assert.match(glyph.geometry, /m6 9 6 6 6-6/);
+  assert.equal(instance.ref, "button");
+  assert.equal(instance.descendants.label.content, "Open");
+  assert.equal(instance.descendants.label.fontWeight, 700);
+  assert.equal(instance.descendants.glyph.icon, "chevron-down");
   assert.deepEqual(result.issues, []);
   assert.deepEqual(source, before);
 });

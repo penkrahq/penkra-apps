@@ -19,8 +19,8 @@
 
 * { box-sizing: border-box; }
 html, body, #app { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-body, button, input, select { font: inherit; }
-button, input, select { color: inherit; }
+body, button, input, select, textarea { font: inherit; }
+button, input, select, textarea { color: inherit; }
 button { border: 0; }
 h1, h2, h3, p { margin: 0; }
 .shell { width: 100%; height: 100%; min-width: 320px; background: var(--bg); }
@@ -135,6 +135,8 @@ h1, h2, h3, p { margin: 0; }
 .field-row.full { grid-column: 1 / -1; }
 .field-row label { color: var(--tertiary); font-size: 10px; }
 .field { width: 100%; min-width: 0; height: 29px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; outline: 0; background: var(--control); font-size: 11px; }
+.field-area { min-height: 72px; height: auto; padding: 7px 8px; resize: vertical; font: 10px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.field-check { width: 16px; height: 16px; padding: 0; accent-color: var(--accent); }
 .field[aria-invalid="true"] { border-color: var(--danger); }
 .field-error { color: var(--danger); font-size: 10px; line-height: 1.3; }
 .danger-zone { padding: 12px 8px; }

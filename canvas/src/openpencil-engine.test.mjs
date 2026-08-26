@@ -9,6 +9,7 @@ import {
   createOpenPencilEditor,
   createOpenPencilGraph,
   fitOpenPencilDesign,
+  isOpenPencilEditableNode,
   penPropertyToSceneChanges,
   refreshOpenPencilEditor,
   sceneEventToPenMutations,
@@ -16,6 +17,8 @@ import {
   sceneNodeToPenNode,
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
+import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 
 test("binds imported image bytes to their lossless Pencil URL fill", () => {
   const bytes = new Uint8Array([1, 2, 3]);
@@ -47,6 +50,39 @@ test("binds imported image bytes to their lossless Pencil URL fill", () => {
     ])),
     [],
   );
+});
+
+test("Pencil image opacity and blend mode survive asset binding", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "image",
+      type: "rectangle",
+      width: 100,
+      height: 100,
+      fill: { type: "image", url: "image.png", opacity: 0.4, blendMode: "multiply" },
+    }],
+  }, new Map([["image.png", { sha256: "b".repeat(64), bytes: new Uint8Array([1]) }]]));
+
+  assert.equal(graph.getNode("image").fills[0].opacity, 0.4);
+  assert.equal(graph.getNode("image").fills[0].blendMode, "MULTIPLY");
+});
+
+test("Pencil Linear Burn and Linear Dodge reach their exact renderer blend modes", () => {
+  const document = {
+    version: "2.17",
+    children: [
+      { id: "burn", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearBurn" } },
+      { id: "dodge", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearDodge" } },
+      { id: "shadow", type: "rectangle", effect: { type: "shadow", blendMode: "linearBurn" } },
+    ],
+  };
+  const graph = createOpenPencilGraph(document);
+
+  assert.deepEqual(analyzeOpenPencilCompatibility(document), []);
+  assert.equal(graph.getNode("burn").fills[0].blendMode, "LINEAR_BURN");
+  assert.equal(graph.getNode("dodge").fills[0].blendMode, "LINEAR_DODGE");
+  assert.equal(graph.getNode("shadow").effects[0].blendMode, "LINEAR_BURN");
 });
 
 test("OpenPencil computes nested auto-layout instead of collapsing children at the origin", () => {
@@ -341,7 +377,7 @@ test("Pencil 2.17 scene properties survive normalization into the render graph",
   assert.deepEqual(source.children[0].strokeWidth, 2);
 });
 
-test("empty Pencil slots stay visually empty without changing the source", () => {
+test("Pencil slots retain their component and instance visual semantics without changing the source", () => {
   const source = {
     version: "2.17",
     children: [{
@@ -353,10 +389,16 @@ test("empty Pencil slots stay visually empty without changing the source", () =>
     }],
   };
 
+  source.children.push({ id: "slot-instance", type: "ref", ref: "app-owned" });
+  source.children[0].reusable = true;
+  const before = structuredClone(source);
   const graph = createOpenPencilGraph(source);
   assert.deepEqual(graph.getNode("app-owned").fills, []);
+  assert.equal(graph.getNode("app-owned").pencilSlotKind, "component");
+  assert.equal(graph.getNode("slot-instance").pencilSlotKind, "instance");
   assert.deepEqual(source.children[0].slot, []);
   assert.equal(source.children[0].fill, undefined);
+  assert.deepEqual(source, before);
 });
 
 test("Pencil alpha colors are applied once and survive SVG export", () => {
@@ -429,8 +471,7 @@ test("a selected frame edit does not serialize derived geometry onto untouched n
   const editor = createOpenPencilEditor(source);
   editor.select(["known-frame"]);
   const knownBefore = sceneNodePropertySnapshot(editor.graph.getNode("known-frame"));
-  const futureBefore = sceneNodePropertySnapshot(editor.graph.getNode("future-node"));
-  assert.equal(editor.graph.getNode("future-node").locked, true);
+  assert.equal(editor.graph.getNode("future-node"), undefined);
 
   assert.deepEqual(
     sceneEventToPenMutations(
@@ -442,27 +483,9 @@ test("a selected frame edit does not serialize derived geometry onto untouched n
     ),
     [{ kind: "set-property", nodeId: "known-frame", property: "width", value: 322 }],
   );
-  assert.deepEqual(
-    sceneEventToPenMutations(
-      editor,
-      source,
-      "future-node",
-      { x: -0.12109375, y: 0 },
-      futureBefore,
-    ),
-    [],
-  );
-  editor.select(["future-node"]);
-  assert.deepEqual(
-    sceneEventToPenMutations(
-      editor,
-      source,
-      "future-node",
-      { x: 12, y: 8 },
-      futureBefore,
-    ),
-    [],
-  );
+  assert.deepEqual(analyzeOpenPencilCompatibility(source).map(({ nodeId, kind }) => [nodeId, kind]), [
+    ["future-node", "node-type"],
+  ]);
   assert.equal(Object.hasOwn(source.children[0].children[0], "x"), false);
   assert.equal(Object.hasOwn(source.children[0].children[0], "y"), false);
 });
@@ -482,20 +505,415 @@ test("moving a selected supported node to zero remains an authored edit", () => 
   ]);
 });
 
-test("unsupported visuals are reported without changing the source", () => {
+test("Pencil gradients and blur effects map faithfully without changing the source", () => {
   const document = {
     version: "2.15",
     children: [{
       id: "gradient",
       type: "rectangle",
-      fill: { type: "gradient", color: "#fff" },
-      effect: { type: "blur", blur: 12 },
+      width: 200,
+      height: 20,
+      fill: {
+        type: "gradient",
+        gradientType: "linear",
+        rotation: 270,
+        colors: [
+          { color: "#ff0000", position: 0 },
+          { color: "#0000ff", position: 1 },
+        ],
+      },
+      effect: { type: "blur", radius: 12 },
     }],
   };
   const before = structuredClone(document);
-  const issues = analyzeOpenPencilCompatibility(document);
-  assert.deepEqual(issues.map((issue) => issue.kind), ["fill", "effect"]);
+  const graph = createOpenPencilGraph(document);
+  const node = graph.getNode("gradient");
+  assert.deepEqual(analyzeOpenPencilCompatibility(document), []);
+  assert.equal(node.fills[0].type, "GRADIENT_LINEAR");
+  assert.deepEqual(node.fills[0].gradientStops.map((stop) => stop.position), [0, 1]);
+  assert.ok(node.fills[0].gradientTransform.m00 < -0.99);
+  assert.equal(node.effects[0].type, "LAYER_BLUR");
+  assert.equal(node.effects[0].radius, 12);
   assert.deepEqual(document, before);
+});
+
+test("layoutIncludeStroke uses inside strokes as Yoga border-box layout space", () => {
+  const included = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "included",
+      type: "frame",
+      layout: "horizontal",
+      layoutIncludeStroke: true,
+      stroke: "#000000",
+      strokeWidth: 5,
+      strokeAlignment: "inner",
+      children: [{ id: "child", type: "rectangle", width: 20, height: 10 }],
+    }],
+  });
+  const excluded = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "excluded",
+      type: "frame",
+      layout: "horizontal",
+      layoutIncludeStroke: false,
+      stroke: "#000000",
+      strokeWidth: 5,
+      strokeAlignment: "inner",
+      children: [{ id: "other-child", type: "rectangle", width: 20, height: 10 }],
+    }],
+  });
+
+  assert.equal(included.getNode("included").strokesIncludedInLayout, true);
+  assert.equal(included.getNode("included").width, 30);
+  assert.equal(included.getNode("included").height, 20);
+  assert.equal(included.getNode("child").x, 5);
+  assert.equal(included.getNode("child").y, 5);
+  assert.equal(excluded.getNode("excluded").width, 20);
+  assert.equal(excluded.getNode("excluded").height, 10);
+  assert.equal(excluded.getNode("other-child").x, 0);
+});
+
+test("unsupported Pencil 2.17 visuals are reported without silent fallbacks", () => {
+  const document = {
+    version: "2.17",
+    children: [
+      { id: "annotation", type: "note", content: "Review" },
+      { id: "context", type: "context", content: "Reference" },
+      { id: "prompt", type: "prompt", content: "Generate" },
+      { id: "script", type: "script", code: "return [];" },
+      { id: "shader", type: "rectangle", fill: { type: "shader", code: "" } },
+      { id: "mesh", type: "rectangle", fill: { type: "mesh_gradient", points: [] } },
+      { id: "blend", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearBurn" } },
+      { id: "layout-stroke", type: "frame", layoutIncludeStroke: true, children: [] },
+      { id: "external-ref", type: "ref", ref: "library:button" },
+    ],
+  };
+  const issues = analyzeOpenPencilCompatibility(document);
+  const graph = createOpenPencilGraph(document);
+
+  assert.deepEqual(issues.map(({ nodeId, kind }) => [nodeId, kind]), [
+    ["script", "script"],
+    ["shader", "shader"],
+    ["mesh", "mesh-gradient"],
+    ["external-ref", "component"],
+  ]);
+  assert.ok(issues.every(({ message }) => message.includes("preserved")));
+  assert.equal(graph.getNode("annotation").type, "FRAME");
+  assert.equal(graph.getNode("context").type, "FRAME");
+  assert.equal(graph.getNode("prompt").type, "FRAME");
+  assert.equal(graph.getNode("script"), undefined);
+  assert.equal(graph.getNode("shader").fills[0].visible, false);
+  assert.equal(graph.getNode("mesh").fills[0].visible, false);
+  assert.equal(graph.getNode("blend").fills[0].blendMode, "LINEAR_BURN");
+});
+
+test("Pencil note, context, and prompt nodes retain their semantic source and exact visual structure", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      { id: "note", type: "note", width: 174, content: "Review this area" },
+      { id: "context", type: "context", content: "Reference material" },
+      { id: "prompt", type: "prompt", content: "Generate a variation", model: "default" },
+    ],
+  };
+  const before = structuredClone(source);
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared);
+
+  assert.deepEqual(prepared.issues, []);
+  assert.deepEqual(analyzeOpenPencilCompatibility(source, new Map(), prepared), []);
+  assert.equal(graph.getNode("note").type, "FRAME");
+  assert.equal(graph.getNode("note").width, 250);
+  assert.equal(graph.getNode("note").height, 219);
+  assert.equal(graph.getNode("note").locked, true);
+  assert.equal(graph.getNode("note::sticky::header").height, 45);
+  assert.equal(graph.getNode("note::sticky::header").fills[0].color.r, 1);
+  assert.equal(graph.getNode("note::sticky::title").fontFamily, "JetBrains Mono");
+  assert.equal(graph.getNode("note::sticky::title").fontWeight, 500);
+  assert.deepEqual(graph.getNode("note::sticky::divider").strokes[0].dashPattern, [4, 4]);
+  assert.equal(graph.getNode("note::sticky::content").text, "Review this area");
+  assert.equal(graph.getNode("prompt::sticky::copy-label").text, "Copy");
+  assert.equal(graph.getNode("prompt::sticky::copy").height, 26);
+  assert.equal(isOpenPencilEditableNode(source.children[0]), false);
+  assert.deepEqual(source, before);
+});
+
+test("Pencil script nodes render sandboxed derived children without changing source", async () => {
+  await preparePencilScriptRuntime();
+  const code = new TextEncoder().encode(`/**
+   * @schema 2.17
+   * @input count: number(min=1, max=4) = 2
+   * @input fill: color = #ff0000
+   */
+  return Array.from({length: pencil.input.count}, (_, index) => ({
+    type: "rectangle", x: index * 25, width: 20, height: pencil.height, fill: pencil.input.fill
+  }));`);
+  const document = {
+    version: "2.17",
+    variables: { accent: { type: "color", value: "#123456" } },
+    children: [{
+      id: "bars",
+      type: "script",
+      width: 100,
+      height: 40,
+      scriptUri: "scripts/bars.js",
+      inputs: { count: 3, fill: "$accent" },
+    }],
+  };
+  const before = structuredClone(document);
+  const assets = new Map([["scripts/bars.js", { bytes: code, sha256: "b".repeat(64) }]]);
+  const prepared = prepareOpenPencilRenderDocument(document, { assets });
+  const graph = createOpenPencilGraph(document, assets, prepared);
+
+  assert.deepEqual(prepared.issues, []);
+  assert.equal(graph.getNode("bars").type, "FRAME");
+  assert.equal(graph.getNode("bars").childIds.length, 3);
+  assert.equal(graph.getNode("bars::script::0").fills[0].color.r, 0x12 / 255);
+  assert.equal(graph.getNode("bars::script::0").locked, true);
+  assert.equal(isOpenPencilEditableNode(document.children[0]), false);
+  assert.deepEqual(analyzeOpenPencilCompatibility(document, assets, prepared), []);
+  assert.deepEqual(document, before);
+});
+
+test("Pencil shader fills compile into a semantic WebGL render definition", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "shader-card",
+      type: "rectangle",
+      width: 120,
+      height: 80,
+      fill: {
+        type: "shader",
+        url: "shaders/checker.frag",
+        uniforms: { u_size: 12 },
+      },
+    }],
+  };
+  const shader = new TextEncoder().encode(`#version 100
+precision mediump float;
+/** @resolution */ uniform vec2 u_resolution;
+/** @time */ uniform float u_time;
+/** @default 8 */ uniform float u_size;
+void main() { gl_FragColor = vec4(gl_FragCoord.xy / u_resolution, mod(u_time, u_size), 1.0); }
+`);
+  const assets = new Map([["shaders/checker.frag", { bytes: shader, sha256: "d".repeat(64) }]]);
+  const before = structuredClone(source);
+  const prepared = prepareOpenPencilRenderDocument(source, { assets });
+  const graph = createOpenPencilGraph(source, assets, prepared);
+  const fill = graph.getNode("shader-card").fills[0];
+
+  assert.deepEqual(prepared.issues, []);
+  assert.deepEqual(analyzeOpenPencilCompatibility(source, assets, prepared), []);
+  assert.equal(fill.type, "CUSTOM");
+  assert.equal(fill.pencilShader.values.u_size, 12);
+  assert.deepEqual(fill.pencilShader.uniforms.map(({ automatic }) => automatic), ["resolution", "time", null]);
+  assert.deepEqual(source, before);
+});
+
+test("Pencil mesh gradients retain their exact grid and normalized handles", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "mesh-card",
+      type: "rectangle",
+      width: 100,
+      height: 100,
+      fill: {
+        type: "mesh_gradient",
+        columns: 2,
+        rows: 2,
+        colors: ["#ff0000", "#00ff00", "#0000ff", "#ffffff"],
+        points: [[0, 0], [1, 0], [0, 1], { position: [1, 1], leftHandle: [-0.4, 0] }],
+      },
+    }],
+  };
+  const before = structuredClone(source);
+  const graph = createOpenPencilGraph(source);
+  const fill = graph.getNode("mesh-card").fills[0];
+
+  assert.deepEqual(analyzeOpenPencilCompatibility(source), []);
+  assert.equal(fill.type, "CUSTOM");
+  assert.equal(fill.pencilMesh.columns, 2);
+  assert.deepEqual(fill.pencilMesh.points[0].rightHandle, [0.25, 0]);
+  assert.deepEqual(fill.pencilMesh.points[3].leftHandle, [-0.4, 0]);
+  assert.deepEqual(source, before);
+});
+
+test("Pencil design-library imports provide reusable components without appearing on the page", () => {
+  const library = new TextEncoder().encode(JSON.stringify({
+    version: "2.17",
+    variables: { surface: { type: "color", value: "#abcdef" } },
+    children: [{
+      id: "library-card",
+      type: "frame",
+      reusable: true,
+      width: 120,
+      height: 60,
+      fill: "$surface",
+      children: [{ id: "library-label", type: "text", content: "Library" }],
+    }],
+  }));
+  const document = {
+    version: "2.17",
+    imports: { cards: "libraries/cards.lib.pen" },
+    children: [{ id: "card-instance", type: "ref", ref: "library-card", x: 20, y: 30 }],
+  };
+  const before = structuredClone(document);
+  const assets = new Map([["libraries/cards.lib.pen", { bytes: library, sha256: "c".repeat(64) }]]);
+  const prepared = prepareOpenPencilRenderDocument(document, { assets });
+  const graph = createOpenPencilGraph(document, assets, prepared);
+  const page = graph.getPages()[0];
+
+  assert.deepEqual(prepared.issues, []);
+  assert.equal(graph.getNode("library-card").parentId, graph.rootId);
+  assert.deepEqual(page.childIds, ["card-instance"]);
+  assert.equal(graph.getNode("card-instance").width, 120);
+  assert.equal(graph.getNode("card-instance").fills[0].color.r, 0xab / 255);
+  assert.deepEqual(analyzeOpenPencilCompatibility(document, assets, prepared), []);
+  assert.deepEqual(document, before);
+});
+
+test("Pencil gradient and blended stroke paints reach the renderer semantically", () => {
+  const document = {
+    version: "2.17",
+    children: [
+      {
+        id: "gradient-stroke",
+        type: "rectangle",
+        stroke: {
+          type: "gradient",
+          gradientType: "linear",
+          blendMode: "multiply",
+          colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }],
+        },
+        strokeWidth: 8,
+      },
+      {
+        id: "solid-stroke",
+        type: "rectangle",
+        stroke: { type: "color", color: "#ff0000", blendMode: "linearBurn" },
+        strokeWidth: 2,
+      },
+    ],
+  };
+  const graph = createOpenPencilGraph(document);
+  assert.deepEqual(analyzeOpenPencilCompatibility(document), []);
+  assert.equal(graph.getNode("gradient-stroke").strokes[0].type, "GRADIENT_LINEAR");
+  assert.equal(graph.getNode("gradient-stroke").strokes[0].gradientStops.length, 2);
+  assert.equal(graph.getNode("gradient-stroke").strokes[0].blendMode, "MULTIPLY");
+  assert.equal(graph.getNode("solid-stroke").strokes[0].blendMode, "LINEAR_BURN");
+});
+
+test("native icon nodes render from their provider while keeping Pencil semantics", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "back",
+      type: "icon",
+      library: "lucide",
+      icon: "arrow-left",
+      fill: "#334455",
+      width: 15,
+      height: 15,
+    }],
+  };
+  const graph = createOpenPencilGraph(source);
+  const icon = graph.getNode("back");
+
+  assert.equal(source.children[0].type, "icon");
+  assert.equal(icon.type, "VECTOR");
+  assert.equal(icon.strokes[0].weight, 1.25);
+  assert.deepEqual(icon.vectorNetwork.vertices.slice(1, 5), [
+    { x: 7.5, y: 11.875 },
+    { x: 3.125, y: 7.5 },
+    { x: 7.5, y: 3.125 },
+    { x: 11.875, y: 7.5 },
+  ]);
+});
+
+test("weighted Material Symbols remain semantic text backed by the official variable font", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "home",
+      type: "icon",
+      library: "Material Symbols Rounded",
+      icon: "home",
+      weight: 700,
+      fill: "#334455",
+      width: 24,
+      height: 24,
+    }],
+  };
+  const before = structuredClone(source);
+  const graph = createOpenPencilGraph(source);
+  const icon = graph.getNode("home");
+
+  assert.deepEqual(analyzeOpenPencilCompatibility(source), []);
+  assert.equal(icon.type, "TEXT");
+  assert.equal(icon.text, "home");
+  assert.equal(icon.fontFamily, "Material Symbols Rounded");
+  assert.equal(icon.fontWeight, 700);
+  assert.equal(icon.textAutoResize, "NONE");
+  assert.deepEqual(source, before);
+});
+
+test("numeric-string font weights and Pencil text styling survive import", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "label",
+      type: "text",
+      content: "Medium",
+      fontWeight: "500",
+      fontStyle: "italic",
+      underline: true,
+    }],
+  });
+  const label = graph.getNode("label");
+  assert.equal(label.fontWeight, 500);
+  assert.equal(label.italic, true);
+  assert.equal(label.textDecoration, "UNDERLINE");
+});
+
+test("Pencil even-odd path fill rules reach the native vector network", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "ring",
+      type: "path",
+      width: 10,
+      height: 10,
+      geometry: "M0 0H10V10H0Z M2 2H8V8H2Z",
+      viewBox: [0, 0, 10, 10],
+      fillRule: "evenodd",
+      fill: "#000000",
+    }],
+  });
+
+  assert.equal(graph.getNode("ring").vectorNetwork.regions[0].windingRule, "EVENODD");
+});
+
+test("Pencil line nodes stay semantic and preserve horizontal, vertical, and diagonal geometry", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      { id: "horizontal", type: "line", width: 60, height: 0, stroke: "#11181c", strokeWidth: 4 },
+      { id: "diagonal", type: "line", width: 60, height: 22, stroke: "#3057e1", strokeWidth: 8, strokeLinecap: "round" },
+      { id: "vertical", type: "line", width: 0, height: 30, stroke: "#e5484d", strokeWidth: 10, strokeLinecap: "square" },
+    ],
+  };
+  const before = structuredClone(source);
+  const graph = createOpenPencilGraph(source);
+  assert.deepEqual(analyzeOpenPencilCompatibility(source), []);
+  assert.equal(graph.getNode("horizontal").type, "LINE");
+  assert.deepEqual([graph.getNode("diagonal").width, graph.getNode("diagonal").height], [60, 22]);
+  assert.equal(graph.getNode("diagonal").strokeCap, "ROUND");
+  assert.equal(graph.getNode("vertical").strokeCap, "SQUARE");
+  assert.deepEqual(source, before);
 });
 
 test("new OpenPencil nodes map to explicit .pen nodes", () => {

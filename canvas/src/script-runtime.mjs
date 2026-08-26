@@ -68,6 +68,7 @@ const __inspection = JSON.parse(__canvasInspectionJson);
 const __prints = [];
 const __touched = new Set();
 const __generations = [];
+const __screenshots = [];
 let __copyCounter = 0;
 const __clone = (value) => JSON.parse(JSON.stringify(value));
 const __readonly = (value) => {
@@ -233,6 +234,21 @@ globalThis.Print = function Print(...values) {
   __prints.push(values.length === 1 ? values[0] : values);
 };
 
+globalThis.TakeScreenshot = function TakeScreenshot(targets) {
+  if (!Array.isArray(targets) || targets.length === 0) {
+    throw new TypeError("TakeScreenshot requires a non-empty array of exact node targets.");
+  }
+  const nodeIds = targets.map((target) => __requireOne(target).node.id);
+  if (new Set(nodeIds).size !== nodeIds.length) {
+    throw new Error("TakeScreenshot targets must be unique.");
+  }
+  if (__screenshots.length > 0) {
+    throw new Error("TakeScreenshot may be called once per execution; pass every node to one array.");
+  }
+  __screenshots.push({ nodeIds });
+  return nodeIds;
+};
+
 globalThis.G = function G(target, source, prompt) {
   const entry = __requireOne(target);
   if (typeof source !== "string" || source.length === 0) {
@@ -255,5 +271,5 @@ globalThis.G = function G(target, source, prompt) {
 };
 
 const __result = (0, eval)("(function () {\n" + __canvasCode + "\n})()");
-JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations });
+JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations, screenshots: __screenshots });
 `;

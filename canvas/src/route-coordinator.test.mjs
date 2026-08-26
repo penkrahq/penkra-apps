@@ -22,6 +22,10 @@ function fixture({ blockLibrary = false } = {}) {
       openDocumentId = documentId;
     },
     setRoute: async (route) => calls.push({ route }),
+    showDocumentUnavailable: async (input) => {
+      calls.push({ unavailable: input });
+      openDocumentId = null;
+    },
     showLibrary: async () => {
       calls.push("library");
       openDocumentId = null;
@@ -93,5 +97,19 @@ test("App-originated navigation records only a successfully opened document", as
     { route: { route: "/document", state: { documentId: "doc-1" } } },
     "library",
     { route: { route: "/" } },
+  ]);
+});
+
+test("deleted-document replacement state is explicit and restorable", async () => {
+  const current = fixture();
+  const unavailable = { documentId: "doc-1", reason: "deleted", title: "Draft" };
+
+  await current.router.navigateToDocumentUnavailable(unavailable);
+  await current.router.handleHostNavigation({ route: "/document-unavailable", state: unavailable });
+
+  assert.deepEqual(current.calls, [
+    { unavailable },
+    { route: { route: "/document-unavailable", state: unavailable } },
+    { unavailable },
   ]);
 });

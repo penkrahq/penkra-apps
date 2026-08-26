@@ -6,9 +6,13 @@ Canvas runtime or an internal editing-model commitment.
 The first invariant is semantic preservation: parsing, inspecting, or changing
 one supported property must not discard unknown document fields, unknown node
 types, unknown node properties, or relative resource references. Format version
-strings are recorded rather than restricted to a hard-coded allowlist because
-Pencil documents in this workspace already use 2.15 while the public schema
-documentation currently shows 2.14.
+strings are recorded rather than restricted to a hard-coded allowlist. Canvas'
+current rendering contract targets Pencil 2.17, while preservation remains
+forward-compatible with unknown fields and types.
+
+See [`pencil-2.17-support.md`](./pencil-2.17-support.md) for the explicit support
+boundary. Unsupported visual behavior is preserved and reported; it is never
+silently replaced with a visually similar feature.
 
 Run the corpus with:
 

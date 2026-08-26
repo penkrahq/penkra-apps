@@ -83,6 +83,35 @@ test("G records Pencil-compatible generated fills without exposing host services
   assert.deepEqual(result.touchedNodeIds, ["hero"]);
 });
 
+test("TakeScreenshot records exact node groups without changing the document", async () => {
+  const result = await executeCanvasScript(
+    {
+      version: "2.15",
+      children: [{ id: "screen", type: "frame", width: 393, height: 852, children: [] }],
+    },
+    'TakeScreenshot(["#screen"]); return "screen";',
+  );
+  assert.deepEqual(result.screenshots, [{ nodeIds: ["screen"] }]);
+  assert.deepEqual(result.touchedNodeIds, []);
+  assert.equal(result.document.children[0].id, "screen");
+});
+
+test("TakeScreenshot rejects ambiguous, empty, and duplicate targets", async () => {
+  const document = {
+    version: "2.15",
+    children: [{ id: "screen", type: "frame", width: 10, height: 10, children: [] }],
+  };
+  await assert.rejects(executeCanvasScript(document, "TakeScreenshot([]);"), /non-empty array/u);
+  await assert.rejects(
+    executeCanvasScript(document, 'TakeScreenshot(["screen", "#screen"]);'),
+    /must be unique/u,
+  );
+  await assert.rejects(
+    executeCanvasScript(document, 'TakeScreenshot(["screen"]); TakeScreenshot(["screen"]);'),
+    /once per execution/u,
+  );
+});
+
 test("G rejects removed stock-photo generation", async () => {
   await assert.rejects(
     executeCanvasScript(

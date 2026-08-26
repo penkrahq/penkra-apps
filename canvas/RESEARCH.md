@@ -1,6 +1,6 @@
 # Canvas standards and upstream audit
 
-Reviewed 2026-08-07. Primary sources are linked so each architectural choice can
+Reviewed 2026-08-25. Primary sources are linked so each architectural choice can
 be revisited against the implementation that inspired it.
 
 ## Collaboration and offline behavior
@@ -21,6 +21,22 @@ be revisited against the implementation that inspired it.
 
 ## `.pen` and rendering
 
+- Pencil's live [`.pen` format](https://docs.pencil.dev/for-developers/the-pen-format)
+  is the semantic contract. Canvas currently targets schema 2.17, including
+  native icon nodes, gradients, frame defaults, variables/themes, refs, and
+  effects; the exact boundary is recorded in
+  `compatibility/pencil-2.17-support.md`.
+- Pencil [Code on Canvas](https://docs.pencil.dev/core-concepts/code-on-canvas)
+  defines script nodes as a separate derived runtime: synchronous sandboxed
+  JavaScript, schema-declared inputs, deterministic randomness, a two-second
+  limit, and at most 1,000 returned nodes. Canvas does not reinterpret ordinary
+  document-operation scripts as this node runtime.
+- Pencil's official [AI integration](https://docs.pencil.dev/getting-started/ai-integration)
+  and [headless CLI](https://docs.pencil.dev/for-developers/pen-cli) both expose
+  `TakeScreenshot([nodeId, ...])` alongside document mutation. Canvas follows
+  that node-targeted contract: the operation renders the post-mutation document
+  directly and returns PNG evidence without requiring the editor tab to be
+  visible.
 - [OpenPencil](https://github.com/open-pencil/open-pencil) is MIT licensed and is
   the strongest public `.pen` implementation found. Canvas pins a real commit in
   `compatibility/openpencil-oracle.json` and differentially checks import shape

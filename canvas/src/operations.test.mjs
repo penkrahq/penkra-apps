@@ -64,6 +64,36 @@ test("registers only the public document lifecycle, execute, and sharing surface
   );
 });
 
+test("documents.create identifies the starter frame that later execution should replace", async () => {
+  const handlers = new Map();
+  globalThis.penkra = {
+    account: {
+      async request(request) {
+        if (request.path === "/projects/snapshot-uploads") {
+          return response(200, { uploadId: "upload-1", chunkSize: 1024 * 1024 });
+        }
+        if (request.path === "/projects/snapshot-uploads/upload-1/parts") {
+          return response(200, { received: true });
+        }
+        if (request.path === "/projects/snapshot-uploads/upload-1/complete") {
+          return response(200, { id: "document-1" });
+        }
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+      subscribe() {},
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?create-test=${Date.now()}`);
+
+  const result = await handlers.get("documents.create")({ title: "New design" });
+
+  assert.equal(result.documentId, "document-1");
+  assert.equal(result.title, "New design");
+  assert.equal(result.access, "owner");
+  assert.match(result.starterFrameId, /^[0-9a-f-]{36}$/u);
+});
+
 test("documents.delete requires exact current-title confirmation without decoding the document", async () => {
   const handlers = new Map();
   const requests = [];
@@ -157,6 +187,42 @@ test("read-only execute reports real inspection without advancing the source seq
   assert.equal(requests.some((request) => request.method === "POST"), false);
 });
 
+test("execute returns TakeScreenshot renders as MCP-compatible rich content", async () => {
+  const handlers = new Map();
+  const requests = [];
+  globalThis.penkra = {
+    account: readableDocumentAccount(
+      {
+        version: "2.15",
+        children: [
+          { id: "frame", type: "frame", x: 0, y: 0, width: 120, height: 80, fill: "#ff0000", children: [] },
+        ],
+      },
+      requests,
+    ),
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?screenshot-test=${Date.now()}`);
+  const result = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: 'TakeScreenshot(["#frame"]); return "frame";',
+  });
+
+  assert.equal(result.content.length, 1);
+  assert.equal(result.content[0].type, "image");
+  assert.equal(result.content[0].mimeType, "image/png");
+  assert.deepEqual(Buffer.from(result.content[0].data, "base64").subarray(0, 8),
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  assert.deepEqual(result.structuredContent.screenshots, [{
+    nodeIds: ["frame"],
+    width: 120,
+    height: 80,
+    mimeType: "image/png",
+  }]);
+  assert.equal(result.structuredContent.changed, false);
+  assert.equal(requests.some((request) => request.method === "POST"), false);
+});
+
 test("invalid execute output fails before any shared update or snapshot write", async () => {
   const handlers = new Map();
   const requests = [];
@@ -185,11 +251,19 @@ test("execute uploads a direct image before committing its durable asset path", 
       { id: "hero", type: "frame", x: 0, y: 0, width: 400, height: 240, children: [] },
     ],
   };
+  const png = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9WlY7iQAAAAASUVORK5CYII=",
+    "base64",
+  );
   const base = readableDocumentAccount(source, requests);
   globalThis.penkra = {
     account: {
       ...base,
       async request(request) {
+        if (request.path.startsWith("/projects/document-1/blobs/") && request.path.includes("?offset=")) {
+          requests.push(request);
+          return response(200, { bytes: png.toString("base64"), complete: true });
+        }
         if ((request.method ?? "GET") === "GET") return base.request(request);
         requests.push(request);
         if (request.path === "/projects/document-1/blobs/uploads") {
@@ -222,14 +296,14 @@ test("execute uploads a direct image before committing its durable asset path", 
     operations: { handle: (name, handler) => handlers.set(name, handler) },
   };
   await import(`./operations.mjs?image-test=${Date.now()}`);
-  const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
   const result = await handlers.get("documents.execute")({
     documentId: "document-1",
-    code: `Update("#hero", { fill: { type: "image", mode: "fill", url: "data:image/png;base64,${png.toString("base64")}" } });`,
+    code: `Update("#hero", { fill: { type: "image", mode: "fill", url: "data:image/png;base64,${png.toString("base64")}" } }); TakeScreenshot(["#hero"]);`,
   });
 
-  assert.equal(result.changed, true);
-  assert.equal(result.sequence, 8);
+  assert.equal(result.structuredContent.changed, true);
+  assert.equal(result.structuredContent.sequence, 8);
+  assert.equal(result.content[0].mimeType, "image/png");
   const uploadIndex = requests.findIndex(
     (request) => request.path === "/projects/document-1/blobs/uploads",
   );

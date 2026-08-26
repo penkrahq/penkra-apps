@@ -37216,6 +37216,13 @@ class FontManager {
   provider() {
     return this.fontProvider;
   }
+  registerDocumentFont(family, data) {
+    if (typeof family !== "string" || !family.trim())
+      throw new Error("Document font family must be a non-empty string.");
+    const buffer = data instanceof ArrayBuffer ? data : data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+    if (!this.registerAndCache(family, "Regular", buffer))
+      throw new Error(`Document font ${family} could not be registered.`);
+  }
   generation() {
     return this.registrationGeneration;
   }
@@ -37619,7 +37626,30 @@ var init_fonts = __esm(() => {
     "Inter|SemiBold": "/Inter-SemiBold.ttf",
     "Inter|Bold": "/Inter-Bold.ttf",
     "Inter|ExtraBold": "/Inter-ExtraBold.ttf",
-    "Noto Naskh Arabic|Regular": "/NotoNaskhArabic-Regular.ttf"
+    "JetBrains Mono|Regular": "/jetbrains-mono-400.woff2",
+    "JetBrains Mono|Medium": "/jetbrains-mono-500.woff2",
+    "Noto Naskh Arabic|Regular": "/NotoNaskhArabic-Regular.ttf",
+    "Material Symbols Outlined|Thin": "/material-symbols-outlined.woff2",
+    "Material Symbols Outlined|ExtraLight": "/material-symbols-outlined.woff2",
+    "Material Symbols Outlined|Light": "/material-symbols-outlined.woff2",
+    "Material Symbols Outlined|Regular": "/material-symbols-outlined.woff2",
+    "Material Symbols Outlined|Medium": "/material-symbols-outlined.woff2",
+    "Material Symbols Outlined|SemiBold": "/material-symbols-outlined.woff2",
+    "Material Symbols Outlined|Bold": "/material-symbols-outlined.woff2",
+    "Material Symbols Rounded|Thin": "/material-symbols-rounded.woff2",
+    "Material Symbols Rounded|ExtraLight": "/material-symbols-rounded.woff2",
+    "Material Symbols Rounded|Light": "/material-symbols-rounded.woff2",
+    "Material Symbols Rounded|Regular": "/material-symbols-rounded.woff2",
+    "Material Symbols Rounded|Medium": "/material-symbols-rounded.woff2",
+    "Material Symbols Rounded|SemiBold": "/material-symbols-rounded.woff2",
+    "Material Symbols Rounded|Bold": "/material-symbols-rounded.woff2",
+    "Material Symbols Sharp|Thin": "/material-symbols-sharp.woff2",
+    "Material Symbols Sharp|ExtraLight": "/material-symbols-sharp.woff2",
+    "Material Symbols Sharp|Light": "/material-symbols-sharp.woff2",
+    "Material Symbols Sharp|Regular": "/material-symbols-sharp.woff2",
+    "Material Symbols Sharp|Medium": "/material-symbols-sharp.woff2",
+    "Material Symbols Sharp|SemiBold": "/material-symbols-sharp.woff2",
+    "Material Symbols Sharp|Bold": "/material-symbols-sharp.woff2"
   };
   fontManager = new FontManager;
 });
@@ -39542,6 +39572,8 @@ function mapJustify(align) {
       return Justify.FlexEnd;
     case "SPACE_BETWEEN":
       return Justify.SpaceBetween;
+    case "SPACE_AROUND":
+      return Justify.SpaceAround;
     default:
       return Justify.FlexStart;
   }
@@ -39758,10 +39790,27 @@ function configureFlexContainer(yogaNode, node, direction) {
   yogaNode.setPadding(Edge.Right, node.paddingRight);
   yogaNode.setPadding(Edge.Bottom, node.paddingBottom);
   yogaNode.setPadding(Edge.Left, node.paddingLeft);
+  applyIncludedStrokeBorders(yogaNode, node);
   const primaryGap = node.primaryAxisAlign === "SPACE_BETWEEN" ? 0 : node.itemSpacing;
   yogaNode.setGap(Gutter.Column, node.layoutMode === "HORIZONTAL" ? primaryGap : node.counterAxisSpacing);
   yogaNode.setGap(Gutter.Row, node.layoutMode === "HORIZONTAL" ? node.counterAxisSpacing : primaryGap);
   applyMinMaxConstraints(yogaNode, node);
+}
+function applyIncludedStrokeBorders(yogaNode, node) {
+  if (!node.strokesIncludedInLayout)
+    return;
+  const insideStrokes = node.strokes.filter((stroke) => stroke.visible !== false && stroke.align === "INSIDE");
+  if (insideStrokes.length === 0)
+    return;
+  if (node.independentStrokeWeights) {
+    yogaNode.setBorder(Edge.Top, node.borderTopWeight);
+    yogaNode.setBorder(Edge.Right, node.borderRightWeight);
+    yogaNode.setBorder(Edge.Bottom, node.borderBottomWeight);
+    yogaNode.setBorder(Edge.Left, node.borderLeftWeight);
+    return;
+  }
+  const weight = Math.max(...insideStrokes.map((stroke) => stroke.weight));
+  yogaNode.setBorder(Edge.All, weight);
 }
 function configureChildAsGrid(yogaChild, child, parent, graph, inheritedDirection) {
   const direction = resolveNodeLayoutDirection(child, inheritedDirection);
@@ -70040,6 +70089,8 @@ function figmaBlendModeToSkia(ck, mode) {
       return ck.BlendMode.Darken;
     case "MULTIPLY":
       return ck.BlendMode.Multiply;
+    case "LINEAR_DODGE":
+      return ck.BlendMode.Plus;
     case "COLOR_BURN":
       return ck.BlendMode.ColorBurn;
     case "LIGHTEN":
@@ -70069,6 +70120,13 @@ function figmaBlendModeToSkia(ck, mode) {
     default:
       return ck.BlendMode.SrcOver;
   }
+}
+function setFigmaPaintBlendMode(r4, paint, mode) {
+  if (mode === "LINEAR_BURN") {
+    paint.setBlender(r4.linearBurnBlender);
+    return;
+  }
+  paint.setBlendMode(figmaBlendModeToSkia(r4.ck, mode));
 }
 function needsIsolatedBlendLayer(mode) {
   return mode !== undefined && mode !== "NORMAL" && mode !== "PASS_THROUGH";
@@ -71082,7 +71140,7 @@ function paintFills(r4, fills, node, graph, draw, options = {}) {
     if (!applied)
       continue;
     r4.fillPaint.setAlphaf(fill3.opacity);
-    r4.fillPaint.setBlendMode(figmaBlendModeToSkia(r4.ck, fill3.blendMode));
+    setFigmaPaintBlendMode(r4, r4.fillPaint, fill3.blendMode);
     draw(fill3);
     r4.fillPaint.setShader(null);
     r4.fillPaint.setBlendMode(r4.ck.BlendMode.SrcOver);
@@ -71156,6 +71214,529 @@ function drawNodeFill(r4, canvas, node, rect, hasRadius, fill3) {
       }
   }
 }
+function pencilShaderContext(r4) {
+  if (r4.pencilShaderGL)
+    return r4.pencilShaderGL;
+  if (typeof document === "undefined")
+    return null;
+  const source = document.createElement("canvas");
+  const gl = source.getContext("webgl", {
+    alpha: true,
+    antialias: false,
+    depth: false,
+    premultipliedAlpha: true,
+    preserveDrawingBuffer: true,
+    stencil: false
+  });
+  if (!gl)
+    return null;
+  r4.pencilShaderCanvas = source;
+  r4.pencilShaderGL = gl;
+  return gl;
+}
+function compilePencilGLShader(gl, type, source) {
+  const shader = gl.createShader(type);
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    const message = gl.getShaderInfoLog(shader) || "Unknown WebGL shader compilation error.";
+    gl.deleteShader(shader);
+    throw new Error(message);
+  }
+  return shader;
+}
+function pencilShaderProgram(r4, definition) {
+  const programSource = definition.webglSource ?? definition.source;
+  const cached = r4.pencilShaderPrograms.get(programSource);
+  if (cached)
+    return cached;
+  const gl = pencilShaderContext(r4);
+  if (!gl)
+    return null;
+  const vertex = compilePencilGLShader(gl, gl.VERTEX_SHADER, `
+    attribute vec2 a_position;
+    void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+  `);
+  const fragmentSource = programSource.replace(/^\s*#version\s+100\s*$/mu, "");
+  const fragment = compilePencilGLShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+  const program = gl.createProgram();
+  gl.attachShader(program, vertex);
+  gl.attachShader(program, fragment);
+  gl.linkProgram(program);
+  gl.deleteShader(vertex);
+  gl.deleteShader(fragment);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    const message = gl.getProgramInfoLog(program) || "Unknown WebGL shader link error.";
+    gl.deleteProgram(program);
+    throw new Error(message);
+  }
+  const position = gl.getAttribLocation(program, "a_position");
+  const buffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const result = { program, position, buffer };
+  r4.pencilShaderPrograms.set(programSource, result);
+  return result;
+}
+function shaderColor(value, length) {
+  const hex = value.slice(1);
+  const channels = [0, 2, 4, 6].map((offset) => offset < hex.length ? Number.parseInt(hex.slice(offset, offset + 2), 16) / 255 : 1);
+  return channels.slice(0, length);
+}
+function setPencilShaderUniform(gl, location, uniform, value) {
+  if (location === null)
+    return;
+  if (uniform.type === "float") gl.uniform1f(location, value);
+  else if (uniform.type === "int" || uniform.type === "bool") gl.uniform1i(location, Number(value));
+  else {
+    const values = typeof value === "string" ? shaderColor(value, Number(uniform.type.at(-1))) : value;
+    const integer = uniform.type.startsWith("ivec");
+    const method = `${integer ? "uniform" : "uniform"}${values.length}${integer ? "iv" : "fv"}`;
+    gl[method](location, values);
+  }
+}
+function pencilShaderTexture(r4, hash2, graph) {
+  const cached = r4.pencilShaderTextures.get(hash2);
+  if (cached)
+    return cached;
+  const bytes = graph.images.get(hash2);
+  if (!bytes)
+    return null;
+  const image = r4.ck.MakeImageFromEncoded(bytes);
+  if (!image)
+    return null;
+  const width = image.width();
+  const height = image.height();
+  const pixels = image.readPixels(0, 0, {
+    width,
+    height,
+    colorType: r4.ck.ColorType.RGBA_8888,
+    alphaType: r4.ck.AlphaType.Unpremul,
+    colorSpace: r4.ck.ColorSpace.SRGB
+  });
+  image.delete();
+  if (!pixels)
+    return null;
+  const gl = pencilShaderContext(r4);
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+  const result = { texture, width, height };
+  r4.pencilShaderTextures.set(hash2, result);
+  return result;
+}
+function squaredDistanceTransform1D(values) {
+  const length = values.length;
+  const output = new Float64Array(length);
+  const locations = new Int32Array(length);
+  const boundaries = new Float64Array(length + 1);
+  let last = 0;
+  locations[0] = 0;
+  boundaries[0] = -Infinity;
+  boundaries[1] = Infinity;
+  for (let q = 1;q < length; q++) {
+    let intersection;
+    do {
+      const p4 = locations[last];
+      intersection = (values[q] + q * q - values[p4] - p4 * p4) / (2 * q - 2 * p4);
+      if (intersection <= boundaries[last]) last--;
+    } while (intersection <= boundaries[last]);
+    last++;
+    locations[last] = q;
+    boundaries[last] = intersection;
+    boundaries[last + 1] = Infinity;
+  }
+  last = 0;
+  for (let q = 0;q < length; q++) {
+    while (boundaries[last + 1] < q) last++;
+    const delta = q - locations[last];
+    output[q] = delta * delta + values[locations[last]];
+  }
+  return output;
+}
+function squaredDistanceTransform2D(mask, width, height, featureValue) {
+  const infinity = 1e20;
+  const intermediate = new Float64Array(width * height);
+  for (let y = 0;y < height; y++) {
+    const row = new Float64Array(width);
+    for (let x2 = 0;x2 < width; x2++) row[x2] = mask[y * width + x2] === featureValue ? 0 : infinity;
+    intermediate.set(squaredDistanceTransform1D(row), y * width);
+  }
+  const output = new Float64Array(width * height);
+  for (let x2 = 0;x2 < width; x2++) {
+    const column = new Float64Array(height);
+    for (let y = 0;y < height; y++) column[y] = intermediate[y * width + x2];
+    const transformed = squaredDistanceTransform1D(column);
+    for (let y = 0;y < height; y++) output[y * width + x2] = transformed[y];
+  }
+  return output;
+}
+function pencilSdfPixels(r4, node, width, height) {
+  const surface = r4.ck.MakeSurface(width, height);
+  if (!surface)
+    return null;
+  const canvas = surface.getCanvas();
+  canvas.clear(r4.ck.TRANSPARENT);
+  const paint = new r4.ck.Paint;
+  paint.setAntiAlias(true);
+  paint.setColor(r4.ck.WHITE);
+  const path = r4.makeNodeShapePath(node, r4.ck.LTRBRect(0, 0, node.width, node.height), nodeHasRadius(node));
+  canvas.drawPath(path, paint);
+  surface.flush();
+  path.delete();
+  paint.delete();
+  const pixels = surface.readPixels(0, 0, {
+    width,
+    height,
+    colorType: r4.ck.ColorType.RGBA_8888,
+    alphaType: r4.ck.AlphaType.Unpremul,
+    colorSpace: r4.ck.ColorSpace.SRGB
+  });
+  surface.delete();
+  if (!pixels)
+    return null;
+  const paddedWidth = width + 2;
+  const paddedHeight = height + 2;
+  const mask = new Uint8Array(paddedWidth * paddedHeight);
+  for (let y = 0;y < height; y++) {
+    for (let x2 = 0;x2 < width; x2++) {
+      mask[(y + 1) * paddedWidth + x2 + 1] = pixels[(y * width + x2) * 4 + 3] >= 128 ? 1 : 0;
+    }
+  }
+  const toInside = squaredDistanceTransform2D(mask, paddedWidth, paddedHeight, 1);
+  const toOutside = squaredDistanceTransform2D(mask, paddedWidth, paddedHeight, 0);
+  const distance = new Float32Array(width * height);
+  for (let y = 0;y < height; y++) {
+    for (let x2 = 0;x2 < width; x2++) {
+      const index = y * width + x2;
+      const paddedIndex = (y + 1) * paddedWidth + x2 + 1;
+      distance[index] = mask[paddedIndex] ? Math.sqrt(toOutside[paddedIndex]) : -Math.sqrt(toInside[paddedIndex]);
+    }
+  }
+  const output = new Float32Array(width * height * 4);
+  const sample = (x2, y) => distance[Math.max(0, Math.min(height - 1, y)) * width + Math.max(0, Math.min(width - 1, x2))];
+  for (let y = 0;y < height; y++) {
+    for (let x2 = 0;x2 < width; x2++) {
+      const index = y * width + x2;
+      const dx = sample(x2 + 1, y) - sample(x2 - 1, y);
+      const dy = sample(x2, y + 1) - sample(x2, y - 1);
+      const magnitude = Math.hypot(dx, dy) || 1;
+      const destination = ((height - 1 - y) * width + x2) * 4;
+      output[destination] = distance[index];
+      output[destination + 1] = dx / magnitude;
+      output[destination + 2] = -dy / magnitude;
+      output[destination + 3] = 1;
+    }
+  }
+  return output;
+}
+function pencilSdfTexture(r4, node, width, height) {
+  const key = `sdf:${node.id}:${width}:${height}`;
+  const cached = r4.pencilShaderTextures.get(key);
+  if (cached)
+    return cached;
+  const gl = pencilShaderContext(r4);
+  if (!gl.getExtension("OES_texture_float"))
+    throw new Error("WebGL floating-point textures are required for Pencil @sdf shaders.");
+  const pixels = pencilSdfPixels(r4, node, width, height);
+  if (!pixels)
+    return null;
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.FLOAT, pixels);
+  const result = { texture, width, height };
+  r4.pencilShaderTextures.set(key, result);
+  return result;
+}
+function pencilBackdropTexture(r4, node, width, height) {
+  const canvas = r4.pencilShaderRenderCanvas;
+  if (!canvas)
+    return null;
+  r4.surface.flush();
+  const snapshot = r4.surface.makeImageSnapshot();
+  const snapshotWidth = snapshot.width();
+  const snapshotHeight = snapshot.height();
+  const source = snapshot.readPixels(0, 0, {
+    width: snapshotWidth,
+    height: snapshotHeight,
+    colorType: r4.ck.ColorType.RGBA_8888,
+    alphaType: r4.ck.AlphaType.Unpremul,
+    colorSpace: r4.ck.ColorSpace.SRGB
+  });
+  snapshot.delete();
+  if (!source)
+    return null;
+  const matrix = canvas.getTotalMatrix();
+  const output = new Uint8Array(width * height * 4);
+  for (let y = 0;y < height; y++) {
+    for (let x2 = 0;x2 < width; x2++) {
+      const localX = (x2 + 0.5) / width * node.width;
+      const localY = (y + 0.5) / height * node.height;
+      const [deviceX, deviceY] = r4.ck.Matrix.mapPoints(matrix, [localX, localY]);
+      const sx = Math.max(0, Math.min(snapshotWidth - 1, Math.floor(deviceX)));
+      const sy = Math.max(0, Math.min(snapshotHeight - 1, Math.floor(deviceY)));
+      const sourceIndex = (sy * snapshotWidth + sx) * 4;
+      const destinationIndex = ((height - 1 - y) * width + x2) * 4;
+      output[destinationIndex] = source[sourceIndex];
+      output[destinationIndex + 1] = source[sourceIndex + 1];
+      output[destinationIndex + 2] = source[sourceIndex + 2];
+      output[destinationIndex + 3] = source[sourceIndex + 3];
+    }
+  }
+  const gl = pencilShaderContext(r4);
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, output);
+  return { texture, width, height, transient: true };
+}
+function renderPencilShader(r4, definition, node, graph) {
+  const gl = pencilShaderContext(r4);
+  const compiled = pencilShaderProgram(r4, definition);
+  if (!gl || !compiled)
+    return null;
+  const width = Math.max(1, Math.ceil(node.width));
+  const height = Math.max(1, Math.ceil(node.height));
+  r4.pencilShaderCanvas.width = width;
+  r4.pencilShaderCanvas.height = height;
+  gl.viewport(0, 0, width, height);
+  gl.useProgram(compiled.program);
+  gl.bindBuffer(gl.ARRAY_BUFFER, compiled.buffer);
+  gl.enableVertexAttribArray(compiled.position);
+  gl.vertexAttribPointer(compiled.position, 2, gl.FLOAT, false, 0, 0);
+  let textureUnit = 0;
+  const transientTextures = [];
+  for (const uniform of definition.uniforms) {
+    const location = gl.getUniformLocation(compiled.program, uniform.name);
+    if (uniform.automatic === "resolution") setPencilShaderUniform(gl, location, uniform, [width, height]);
+    else if (uniform.automatic === "time") setPencilShaderUniform(gl, location, uniform, (performance.now() - r4.pencilShaderEpoch) / 1000);
+    else if (uniform.automatic === "mouse") {
+      const absolute = graph.getAbsolutePosition(node.id);
+      const mouse = r4.pencilShaderMouseCanvas;
+      setPencilShaderUniform(gl, location, uniform, mouse
+        ? [mouse.x - absolute.x, height - (mouse.y - absolute.y)]
+        : [-1, -1]);
+    }
+    else if (uniform.type === "sampler2D") {
+      const textureInfo = definition.textures.find(({ name }) => name === uniform.name);
+      const texture = uniform.automatic === "sdf"
+        ? pencilSdfTexture(r4, node, width, height)
+        : uniform.automatic === "backdrop"
+          ? pencilBackdropTexture(r4, node, width, height)
+        : pencilShaderTexture(r4, textureInfo?.sha256, graph);
+      if (!texture) return null;
+      if (texture.transient) transientTextures.push(texture.texture);
+      gl.activeTexture(gl.TEXTURE0 + textureUnit);
+      gl.bindTexture(gl.TEXTURE_2D, texture.texture);
+      gl.uniform1i(location, textureUnit);
+      const sizeLocation = gl.getUniformLocation(compiled.program, `__pencil_texture_size_${uniform.name}`);
+      if (sizeLocation !== null) gl.uniform2f(sizeLocation, texture.width, texture.height);
+      textureUnit++;
+    } else setPencilShaderUniform(gl, location, uniform, definition.values[uniform.name]);
+  }
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  gl.finish();
+  const image = r4.ck.MakeImageFromCanvasImageSource(r4.pencilShaderCanvas);
+  for (const texture of transientTextures) gl.deleteTexture(texture);
+  return image;
+}
+function applyPencilShaderFill(r4, fill3, node, graph) {
+  const definition = fill3.pencilShader;
+  const dynamic = definition.uniforms.some(({ automatic }) => ["time", "mouse", "backdrop"].includes(automatic));
+  const key = `${node.id}:${node.width}:${node.height}:${JSON.stringify(definition.values)}`;
+  let image = dynamic ? null : r4.pencilShaderImages.get(key);
+  if (!image) {
+    try {
+      image = renderPencilShader(r4, definition, node, graph);
+    } catch (error) {
+      console.error("Pencil shader render failed", error);
+      return false;
+    }
+    if (!image)
+      return false;
+    if (!dynamic) r4.pencilShaderImages.set(key, image);
+  }
+  const shader = image.makeShaderOptions(r4.ck.TileMode.Clamp, r4.ck.TileMode.Clamp, r4.ck.FilterMode.Linear, r4.ck.MipmapMode.None);
+  r4.fillPaint.setShader(shader);
+  if (dynamic) image.delete();
+  return true;
+}
+function meshPointAdd(a, b) {
+  return [a[0] + b[0], a[1] + b[1]];
+}
+function meshPointMix(a, b, t) {
+  return [a[0] * (1 - t) + b[0] * t, a[1] * (1 - t) + b[1] * t];
+}
+function meshCubic(a, b, c3, d, t) {
+  const inverse = 1 - t;
+  return [0, 1].map((axis) => inverse ** 3 * a[axis] + 3 * inverse ** 2 * t * b[axis] + 3 * inverse * t ** 2 * c3[axis] + t ** 3 * d[axis]);
+}
+function pencilMeshPatchPoints(mesh, column, row) {
+  const p00 = mesh.points[row * mesh.columns + column];
+  const p10 = mesh.points[row * mesh.columns + column + 1];
+  const p01 = mesh.points[(row + 1) * mesh.columns + column];
+  const p11 = mesh.points[(row + 1) * mesh.columns + column + 1];
+  return { p00, p10, p01, p11 };
+}
+function evaluatePencilMeshSurface(patch, u, v) {
+  const { p00, p10, p01, p11 } = patch;
+  const top = meshCubic(p00.position, meshPointAdd(p00.position, p00.rightHandle), meshPointAdd(p10.position, p10.leftHandle), p10.position, u);
+  const bottom = meshCubic(p01.position, meshPointAdd(p01.position, p01.rightHandle), meshPointAdd(p11.position, p11.leftHandle), p11.position, u);
+  const left = meshCubic(p00.position, meshPointAdd(p00.position, p00.bottomHandle), meshPointAdd(p01.position, p01.topHandle), p01.position, v);
+  const right = meshCubic(p10.position, meshPointAdd(p10.position, p10.bottomHandle), meshPointAdd(p11.position, p11.topHandle), p11.position, v);
+  const bilinear = meshPointMix(meshPointMix(p00.position, p10.position, u), meshPointMix(p01.position, p11.position, u), v);
+  const crossed = meshPointAdd(meshPointMix(top, bottom, v), meshPointMix(left, right, u));
+  return [crossed[0] - bilinear[0], crossed[1] - bilinear[1]];
+}
+function pencilMeshSegments(patch, width, height) {
+  const center = evaluatePencilMeshSurface(patch, 0.5, 0.5);
+  const bilinearCenter = meshPointMix(meshPointMix(patch.p00.position, patch.p10.position, 0.5), meshPointMix(patch.p01.position, patch.p11.position, 0.5), 0.5);
+  const centerError = Math.hypot((center[0] - bilinearCenter[0]) * width, (center[1] - bilinearCenter[1]) * height);
+  const boundaryControls = [
+    [patch.p00.position, meshPointAdd(patch.p00.position, patch.p00.rightHandle), meshPointAdd(patch.p10.position, patch.p10.leftHandle), patch.p10.position],
+    [patch.p01.position, meshPointAdd(patch.p01.position, patch.p01.rightHandle), meshPointAdd(patch.p11.position, patch.p11.leftHandle), patch.p11.position],
+    [patch.p00.position, meshPointAdd(patch.p00.position, patch.p00.bottomHandle), meshPointAdd(patch.p01.position, patch.p01.topHandle), patch.p01.position],
+    [patch.p10.position, meshPointAdd(patch.p10.position, patch.p10.bottomHandle), meshPointAdd(patch.p11.position, patch.p11.topHandle), patch.p11.position]
+  ];
+  let error = centerError;
+  for (const curve of boundaryControls) {
+    for (const t of [0.25, 0.5, 0.75]) {
+      const curvePoint = meshCubic(...curve, t);
+      const chordPoint = meshPointMix(curve[0], curve[3], t);
+      error = Math.max(error, Math.hypot((curvePoint[0] - chordPoint[0]) * width, (curvePoint[1] - chordPoint[1]) * height));
+    }
+  }
+  return Math.max(1, Math.min(128, Math.ceil(Math.sqrt(error / 0.25))));
+}
+function pencilMeshProgram(r4) {
+  const cacheKey = "__pencil_mesh_gradient__";
+  const cached = r4.pencilShaderPrograms.get(cacheKey);
+  if (cached)
+    return cached;
+  const gl = pencilShaderContext(r4);
+  if (!gl)
+    return null;
+  const vertex = compilePencilGLShader(gl, gl.VERTEX_SHADER, `
+    attribute vec2 a_position;
+    attribute vec2 a_uv;
+    varying vec2 v_uv;
+    void main() {
+      v_uv = a_uv;
+      gl_Position = vec4(a_position.x * 2.0 - 1.0, 1.0 - a_position.y * 2.0, 0.0, 1.0);
+    }
+  `);
+  const fragment = compilePencilGLShader(gl, gl.FRAGMENT_SHADER, `
+    precision mediump float;
+    varying vec2 v_uv;
+    uniform vec4 u_color00;
+    uniform vec4 u_color10;
+    uniform vec4 u_color01;
+    uniform vec4 u_color11;
+    void main() {
+      gl_FragColor = mix(mix(u_color00, u_color10, v_uv.x), mix(u_color01, u_color11, v_uv.x), v_uv.y);
+    }
+  `);
+  const program = gl.createProgram();
+  gl.attachShader(program, vertex);
+  gl.attachShader(program, fragment);
+  gl.linkProgram(program);
+  gl.deleteShader(vertex);
+  gl.deleteShader(fragment);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    const message = gl.getProgramInfoLog(program) || "Unknown Pencil mesh shader link error.";
+    gl.deleteProgram(program);
+    throw new Error(message);
+  }
+  const result = {
+    program,
+    position: gl.getAttribLocation(program, "a_position"),
+    uv: gl.getAttribLocation(program, "a_uv"),
+    buffer: gl.createBuffer()
+  };
+  r4.pencilShaderPrograms.set(cacheKey, result);
+  return result;
+}
+function pencilMeshColor(value) {
+  const parsed = parseColor2(value);
+  return [parsed.r, parsed.g, parsed.b, parsed.a];
+}
+function renderPencilMesh(r4, mesh, node) {
+  const gl = pencilShaderContext(r4);
+  const compiled = pencilMeshProgram(r4);
+  if (!gl || !compiled)
+    return null;
+  const width = Math.max(1, Math.ceil(node.width));
+  const height = Math.max(1, Math.ceil(node.height));
+  r4.pencilShaderCanvas.width = width;
+  r4.pencilShaderCanvas.height = height;
+  gl.viewport(0, 0, width, height);
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  gl.useProgram(compiled.program);
+  gl.bindBuffer(gl.ARRAY_BUFFER, compiled.buffer);
+  gl.enableVertexAttribArray(compiled.position);
+  gl.vertexAttribPointer(compiled.position, 2, gl.FLOAT, false, 16, 0);
+  gl.enableVertexAttribArray(compiled.uv);
+  gl.vertexAttribPointer(compiled.uv, 2, gl.FLOAT, false, 16, 8);
+  for (let row = 0;row < mesh.rows - 1; row++) {
+    for (let column = 0;column < mesh.columns - 1; column++) {
+      const patch = pencilMeshPatchPoints(mesh, column, row);
+      const segments = pencilMeshSegments(patch, width, height);
+      const vertices = [];
+      const append = (u, v) => {
+        const point = evaluatePencilMeshSurface(patch, u, v);
+        vertices.push(point[0], point[1], u, v);
+      };
+      for (let y = 0;y < segments; y++) {
+        for (let x2 = 0;x2 < segments; x2++) {
+          const u0 = x2 / segments, u1 = (x2 + 1) / segments;
+          const v0 = y / segments, v1 = (y + 1) / segments;
+          append(u0, v0); append(u1, v0); append(u0, v1);
+          append(u0, v1); append(u1, v0); append(u1, v1);
+        }
+      }
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STREAM_DRAW);
+      const colorIndex = row * mesh.columns + column;
+      const colors = [mesh.colors[colorIndex], mesh.colors[colorIndex + 1], mesh.colors[colorIndex + mesh.columns], mesh.colors[colorIndex + mesh.columns + 1]];
+      for (const [index, name50] of ["u_color00", "u_color10", "u_color01", "u_color11"].entries())
+        gl.uniform4fv(gl.getUniformLocation(compiled.program, name50), pencilMeshColor(colors[index]));
+      gl.drawArrays(gl.TRIANGLES, 0, vertices.length / 4);
+    }
+  }
+  gl.finish();
+  return r4.ck.MakeImageFromCanvasImageSource(r4.pencilShaderCanvas);
+}
+function applyPencilMeshFill(r4, fill3, node) {
+  const key = `${node.id}:mesh:${node.width}:${node.height}:${JSON.stringify(fill3.pencilMesh)}`;
+  let image = r4.pencilShaderImages.get(key);
+  if (!image) {
+    try {
+      image = renderPencilMesh(r4, fill3.pencilMesh, node);
+    } catch (error) {
+      console.error("Pencil mesh gradient render failed", error);
+      return false;
+    }
+    if (!image)
+      return false;
+    r4.pencilShaderImages.set(key, image);
+  }
+  const shader = image.makeShaderOptions(r4.ck.TileMode.Clamp, r4.ck.TileMode.Clamp, r4.ck.FilterMode.Linear, r4.ck.MipmapMode.None);
+  r4.fillPaint.setShader(shader);
+  return true;
+}
 function applyFill(r4, fill3, node, graph, fillIndex = 0, patternStack = new Set) {
   r4.fillPaint.setShader(null);
   if (fill3.type === "SOLID") {
@@ -71170,6 +71751,10 @@ function applyFill(r4, fill3, node, graph, fillIndex = 0, patternStack = new Set
   if (fill3.type === "IMAGE" && fill3.imageHash) {
     return r4.applyImageFill(fill3, node, graph);
   }
+  if (fill3.type === "CUSTOM" && fill3.pencilShader)
+    return applyPencilShaderFill(r4, fill3, node, graph);
+  if (fill3.type === "CUSTOM" && fill3.pencilMesh)
+    return applyPencilMeshFill(r4, fill3, node);
   if (fill3.type === "PATTERN" && applyPatternFill(r4, fill3, node, graph, patternStack))
     return true;
   if (fill3.type === "PATTERN" || fill3.type === "NOISE" || fill3.type === "CUSTOM") {
@@ -71280,7 +71865,7 @@ function linearGradientEndpoints(width, height, transform) {
     end: { x: transform.m02 * width, y: transform.m12 * height }
   };
 }
-function applyGradientFill(r4, fill3, node, graph) {
+function applyGradientFill(r4, fill3, node, graph, paint = r4.fillPaint) {
   const stops = fill3.gradientStops;
   const t = fill3.gradientTransform;
   if (!stops || !t)
@@ -71306,15 +71891,15 @@ function applyGradientFill(r4, fill3, node, graph) {
     const endX = end.x;
     const endY = end.y;
     const shader = r4.ck.Shader.MakeLinearGradient([startX, startY], [endX, endY], colors, positions, r4.ck.TileMode.Clamp);
-    r4.fillPaint.setShader(shader);
+    paint.setShader(shader);
   } else if (fill3.type === "GRADIENT_RADIAL" || fill3.type === "GRADIENT_DIAMOND") {
     const localMatrix = makeGradientLocalMatrix(r4, w, h, t);
     const shader = r4.ck.Shader.MakeRadialGradient([0.5, 0.5], 0.5, colors, positions, r4.ck.TileMode.Clamp, localMatrix);
-    r4.fillPaint.setShader(shader);
+    paint.setShader(shader);
   } else if (fill3.type === "GRADIENT_ANGULAR") {
     const localMatrix = makeGradientLocalMatrix(r4, w, h, t);
     const shader = r4.ck.Shader.MakeSweepGradient(0.5, 0.5, colors, positions, r4.ck.TileMode.Clamp, localMatrix);
-    r4.fillPaint.setShader(shader);
+    paint.setShader(shader);
   }
 }
 function makeImageFillLocalMatrix(r4, fill3, node, imgW, imgH) {
@@ -79225,7 +79810,8 @@ function collectGridPositionClasses(node) {
 var JUSTIFY_MAP = {
   CENTER: "center",
   MAX: "flex-end",
-  SPACE_BETWEEN: "space-between"
+  SPACE_BETWEEN: "space-between",
+  SPACE_AROUND: "space-around"
 };
 var ALIGN_MAP = {
   CENTER: "center",
@@ -84024,38 +84610,145 @@ function convertFill(fill3, ctx, node) {
     return [];
   const fills = Array.isArray(fill3) ? fill3 : [fill3];
   return fills.map((item, index) => {
+    if (unsupportedPenBlendMode(item?.blendMode))
+      return { type: "SOLID", visible: false, opacity: 0, color: { r: 0, g: 0, b: 0, a: 0 } };
+    if (item && typeof item === "object" && item.type === "gradient")
+      return convertPenGradient(item, ctx, node, index);
+    if (item && typeof item === "object" && item.type === "shader" && item.__canvasShader)
+      return {
+        type: "CUSTOM",
+        visible: item.enabled !== false,
+        opacity: Number(item.opacity ?? 1),
+        color: { r: 1, g: 1, b: 1, a: 1 },
+        blendMode: mapPenBlendMode(item.blendMode),
+        pencilShader: item.__canvasShader
+      };
+    if (item && typeof item === "object" && item.type === "mesh_gradient" && item.__canvasMesh)
+      return {
+        type: "CUSTOM",
+        visible: item.enabled !== false,
+        opacity: Number(item.opacity ?? 1),
+        color: { r: 1, g: 1, b: 1, a: 1 },
+        blendMode: mapPenBlendMode(item.blendMode),
+        pencilMesh: item.__canvasMesh
+      };
+    if (item && typeof item === "object" && item.type && !["color", "solid"].includes(item.type))
+      return { type: "SOLID", visible: false, opacity: 0, color: { r: 0, g: 0, b: 0, a: 0 } };
     const visible = typeof item === "string" ? true : item.enabled !== false;
     const parsedColor = parseFillColor(item, ctx);
     const color = { ...parsedColor, a: 1 };
-    const result = { type: "SOLID", visible, opacity: parsedColor.a, color };
+    const result = { type: "SOLID", visible, opacity: parsedColor.a, color, blendMode: mapPenBlendMode(item?.blendMode) };
     if (node)
       bindIfVar(node, `fills[${index}]`, typeof item === "string" ? item : item.color, ctx);
     return result;
   });
 }
+function convertPenGradient(item, ctx, node, index) {
+  const type = item.gradientType === "radial" ? "GRADIENT_RADIAL" : item.gradientType === "angular" ? "GRADIENT_ANGULAR" : "GRADIENT_LINEAR";
+  const center = item.center ?? { x: .5, y: .5 };
+  const size = item.size ?? {};
+  const width = Number(size.width ?? 1);
+  const height = Number(size.height ?? 1);
+  const rotation = Number(item.rotation ?? 0) * Math.PI / 180;
+  const cos = Math.cos(rotation);
+  const sin = Math.sin(rotation);
+  let gradientTransform;
+  if (type === "GRADIENT_LINEAR") {
+    const dx = -sin * height;
+    const dy = -cos * height;
+    gradientTransform = {
+      m00: -dx,
+      m01: 0,
+      m02: Number(center.x ?? .5) + dx / 2,
+      m10: -dy,
+      m11: 1,
+      m12: Number(center.y ?? .5) + dy / 2
+    };
+  } else {
+    const m00 = cos * width;
+    const m01 = -sin * height;
+    const m10 = sin * width;
+    const m11 = cos * height;
+    gradientTransform = {
+      m00,
+      m01,
+      m02: Number(center.x ?? .5) - .5 * (m00 + m01),
+      m10,
+      m11,
+      m12: Number(center.y ?? .5) - .5 * (m10 + m11)
+    };
+  }
+  const stops = Array.isArray(item.colors) ? item.colors : [];
+  const gradientStops = stops.map((stop) => {
+    const parsed = parseFillColor(stop.color, ctx);
+    return { color: parsed, position: Number(stop.position) };
+  });
+  if (node) {
+    for (let stopIndex = 0; stopIndex < stops.length; stopIndex++)
+      bindIfVar(node, `fills[${index}].gradientStops[${stopIndex}]`, stops[stopIndex].color, ctx);
+  }
+  return {
+    type,
+    visible: item.enabled !== false,
+    opacity: Number(item.opacity ?? 1),
+    color: { r: 1, g: 1, b: 1, a: 1 },
+    blendMode: mapPenBlendMode(item.blendMode),
+    gradientStops,
+    gradientTransform
+  };
+}
+function mapPenBlendMode(value) {
+  if (!value || value === "normal") return "NORMAL";
+  if (value === "light") return "LIGHTEN";
+  return value.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
+}
+function unsupportedPenBlendMode(value) {
+  return false;
+}
 function strokeWeight(stroke) {
   return typeof stroke.thickness === "number" ? stroke.thickness : Math.max(...Object.values(stroke.thickness));
 }
 function convertStroke(stroke, ctx, node) {
-  if (!stroke?.fill)
+  const fills = stroke?.fills ?? (stroke?.fill === undefined ? [] : [stroke.fill]);
+  if (fills.length === 0)
     return [];
-  const parsedColor = isVarRef(stroke.fill) ? ctx.resolveColor(stroke.fill) : parseColor2(stroke.fill);
-  const color = { ...parsedColor, a: 1 };
   let align = "CENTER";
   if (stroke.align === "inside")
     align = "INSIDE";
   else if (stroke.align === "outside")
     align = "OUTSIDE";
-  const result = {
-    visible: true,
-    color,
-    opacity: parsedColor.a,
-    weight: strokeWeight(stroke),
-    align,
-    dashPattern: []
-  };
+  const results = fills.flatMap((fill3, index) => {
+    if (fill3 && typeof fill3 === "object" && fill3.type === "gradient") {
+      const gradient = convertPenGradient(fill3, ctx, null, index);
+      return [{
+        visible: fill3.enabled !== false,
+        color: { r: 1, g: 1, b: 1, a: 1 },
+        opacity: Number(fill3.opacity ?? 1),
+        weight: strokeWeight(stroke),
+        align,
+        dashPattern: stroke.dashPattern ?? [],
+        blendMode: gradient.blendMode,
+        gradientStops: gradient.gradientStops,
+        gradientTransform: gradient.gradientTransform,
+        type: gradient.type
+      }];
+    }
+    if (fill3 && typeof fill3 === "object" && !["color", "solid"].includes(fill3.type)) return [];
+    const rawColor = typeof fill3 === "string" ? fill3 : fill3.color;
+    const parsedColor = isVarRef(rawColor) ? ctx.resolveColor(rawColor) : parseColor2(rawColor);
+    const color = { ...parsedColor, a: 1 };
+    if (node) bindIfVar(node, `strokes[${index}]`, rawColor, ctx);
+    return [{
+      visible: typeof fill3 === "string" || fill3.enabled !== false,
+      color,
+      opacity: parsedColor.a,
+      blendMode: mapPenBlendMode(fill3?.blendMode),
+      weight: strokeWeight(stroke),
+      align,
+      dashPattern: stroke.dashPattern ?? []
+    }];
+  });
   if (node) {
-    bindIfVar(node, "strokes[0]", stroke.fill, ctx);
     if (typeof stroke.thickness === "object") {
       node.independentStrokeWeights = true;
       node.borderTopWeight = stroke.thickness.top ?? 0;
@@ -84066,7 +84759,7 @@ function convertStroke(stroke, ctx, node) {
     node.strokeJoin = mapStrokeJoin(stroke.join);
     node.strokeCap = mapStrokeCap(stroke.cap);
   }
-  return [result];
+  return results;
 }
 function mapStrokeJoin(join2) {
   if (join2 === "round")
@@ -84087,14 +84780,23 @@ function convertEffects2(effect) {
     return [];
   const effects = Array.isArray(effect) ? effect : [effect];
   return effects.flatMap((item) => {
-    if (item.type !== "shadow")
+    if (item.enabled === false)
       return [];
+    if (unsupportedPenBlendMode(item.blendMode))
+      return [];
+    if (item.type === "blur" || item.type === "background_blur")
+      return [{
+        type: item.type === "background_blur" ? "BACKGROUND_BLUR" : "LAYER_BLUR",
+        visible: true,
+        radius: Number(item.radius ?? 0)
+      }];
+    if (item.type !== "shadow") return [];
     const color = item.color ? parseColor2(item.color) : { r: 0, g: 0, b: 0, a: 0.25 };
     return [
       {
         type: item.shadowType === "inner" ? "INNER_SHADOW" : "DROP_SHADOW",
         visible: true,
-        blendMode: "NORMAL",
+        blendMode: mapPenBlendMode(item.blendMode),
         color,
         offset: item.offset ?? { x: 0, y: 0 },
         radius: item.blur ?? 0,
@@ -84176,6 +84878,8 @@ function mapJustifyContent(value) {
     return "MAX";
   if (value === "space-between")
     return "SPACE_BETWEEN";
+  if (value === "space_around")
+    return "SPACE_AROUND";
   return "MIN";
 }
 function mapAlignItems(value) {
@@ -84206,6 +84910,11 @@ function mapTextAlignVertical(value) {
 function mapFontWeight(value) {
   if (typeof value === "number")
     return value;
+  if (typeof value === "string" && /^\d{3}$/.test(value)) {
+    const numeric = Number(value);
+    if (numeric >= 1 && numeric <= 1000)
+      return numeric;
+  }
   if (value === "thin")
     return 100;
   if (value === "extralight")
@@ -84231,13 +84940,25 @@ function mapNodeType2(pen) {
     return "RECTANGLE";
   if (pen.type === "ellipse")
     return "ELLIPSE";
+  if (pen.type === "line")
+    return "LINE";
+  if (pen.type === "polygon")
+    return "POLYGON";
+  if (pen.type === "group")
+    return "GROUP";
   if (pen.type === "text" || pen.type === "icon_font")
     return "TEXT";
   if (pen.type === "path")
     return "VECTOR";
+  if (pen.type === "icon")
+    return pen.__canvasIcon?.fontFamily ? "TEXT" : "VECTOR";
   if (pen.type === "ref")
     return "INSTANCE";
-  return "FRAME";
+  if (pen.type === "script" && pen.__canvasScript)
+    return "FRAME";
+  if ((pen.type === "note" || pen.type === "context" || pen.type === "prompt") && pen.__canvasSticky)
+    return "FRAME";
+  return null;
 }
 
 // packages/pen/src/read.ts
@@ -84310,7 +85031,8 @@ function buildBaseOverrides(pen) {
     flipX: pen.flipX ?? false,
     flipY: pen.flipY ?? false,
     clipsContent: pen.clip ?? false,
-    boundVariables: {}
+    boundVariables: {},
+    strokesIncludedInLayout: pen.layoutIncludeStroke === true
   };
 }
 function applyAutoLayout(overrides, layoutMode, pen, widthSizing, heightSizing, ctx) {
@@ -84331,6 +85053,8 @@ function applyTextProps(node, pen, ctx) {
   node.fontFamily = pen.type === "icon_font" ? pen.iconFontFamily ?? "Material Symbols Sharp" : resolveFontFamily(pen.fontFamily, ctx);
   node.fontSize = pen.fontSize ?? 14;
   node.fontWeight = mapFontWeight(pen.fontWeight ?? (pen.type === "icon_font" ? pen.weight : undefined));
+  node.italic = pen.fontStyle === "italic" || pen.fontStyle === "oblique";
+  node.textDecoration = pen.underline === true ? "UNDERLINE" : pen.strikethrough === true ? "STRIKETHROUGH" : "NONE";
   node.textAlignHorizontal = mapTextAlign(pen.textAlign);
   node.textAlignVertical = mapTextAlignVertical(pen.textAlignVertical);
   if (pen.lineHeight !== undefined) {
@@ -84362,7 +85086,7 @@ function estimatePenTextWidth(text, fontSize, letterSpacing = 0) {
   return em * fontSize + Math.max(0, Array.from(text).length - 1) * letterSpacing;
 }
 function resolveSizing(pen, ctx) {
-  const isTextLike = pen.type === "text" || pen.type === "icon_font";
+  const isTextLike = pen.type === "text" || pen.type === "icon_font" || pen.type === "icon" && pen.__canvasIcon?.fontFamily;
   const defaultSize = isTextLike ? 20 : 100;
   const defaultW = isTextLike && pen.width === undefined ? 1e4 : defaultSize;
   const w = parseSize(pen.width, defaultW, ctx);
@@ -84401,6 +85125,8 @@ function inheritLayoutFromComp(node, pen, comp) {
   }
   if (pen.clip === undefined)
     node.clipsContent = comp.clipsContent;
+  if (pen.layoutIncludeStroke === undefined)
+    node.strokesIncludedInLayout = comp.strokesIncludedInLayout;
 }
 function applyRefVisuals(node, pen, compPen, ctx) {
   if (!compPen)
@@ -84447,7 +85173,8 @@ function applyTheme(theme, ctx) {
     ctx.setActiveTheme(themeName);
 }
 function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
-  if (pen.type === "prompt")
+  const sceneType = mapNodeType2(pen);
+  if (!sceneType)
     return null;
   if (pen.theme)
     applyTheme(pen.theme, ctx);
@@ -84461,10 +85188,12 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
     const heightSizing = parentLayout2 === "NONE" && h.sizing === "FILL" ? "FIXED" : h.sizing;
     applyAutoLayout(overrides, layout, pen, widthSizing, heightSizing, ctx);
   }
-  const node = graph4.createNode(mapNodeType2(pen), parentId, overrides);
+  const node = graph4.createNode(sceneType, parentId, overrides);
+  if (pen.type === "polygon")
+    node.pointCount = Math.max(3, Math.round(Number(pen.polygonCount ?? 3)));
   if (pen.fill !== undefined)
     node.fills = convertFill(pen.fill, ctx, node);
-  else if (pen.type === "frame" || pen.type === "ref")
+  else if (pen.type === "frame" || pen.type === "ref" || pen.type === "script")
     node.fills = [];
   if (pen.stroke)
     node.strokes = convertStroke(pen.stroke, ctx, node);
@@ -84480,8 +85209,52 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
       node.width = estimatePenTextWidth(node.text, node.fontSize, node.letterSpacing ?? 0);
     }
   }
+  if (pen.type === "icon" && pen.__canvasIcon) {
+    const definition = pen.__canvasIcon;
+    const colorValue = Array.isArray(pen.fill) ? pen.fill.find((fill) => fill?.enabled !== false) : pen.fill;
+    const parsedColor = parseFillColor(colorValue ?? "#000000", ctx);
+    const color = { ...parsedColor, a: 1 };
+    if (definition.fontFamily) {
+      node.text = definition.content;
+      node.fontFamily = definition.fontFamily;
+      node.fontWeight = definition.weight;
+      node.fontSize = Math.min(node.width, node.height);
+      node.lineHeight = node.height;
+      node.textAlignHorizontal = "CENTER";
+      node.textAlignVertical = "CENTER";
+      node.textAutoResize = "NONE";
+    } else if (definition.layers) {
+      const networks = definition.layers.map((layer) => parseSVGPath(layer.geometry));
+      for (const network of networks)
+        scaleVectorNetwork2(network, node.width, node.height, definition.viewBox);
+      const vectorNetwork = mergeVectorNetworks(networks);
+      node.vectorNetwork = vectorNetwork;
+      const placeholders = definition.layers.flatMap((layer, index) => networks[index].regions.map((region) => ({
+        windingRule: region.windingRule,
+        commandsBlob: new Uint8Array(0),
+        fills: [{ type: "SOLID", visible: true, opacity: parsedColor.a * layer.opacity, color }]
+      })));
+      node.fillGeometry = regenerateFillGeometry(vectorNetwork, placeholders);
+      node.fills = [];
+    } else {
+      const vectorNetwork = parseSVGPath(definition.geometry);
+      node.vectorNetwork = vectorNetwork;
+      scaleVectorNetwork2(vectorNetwork, node.width, node.height, definition.viewBox);
+    }
+    if (definition.paint === "stroke") {
+      node.fills = [];
+      const viewWidth = definition.viewBox[2];
+      const viewHeight = definition.viewBox[3];
+      const scale = Math.min(node.width / viewWidth, node.height / viewHeight);
+      node.strokes = [{ visible: true, color, opacity: parsedColor.a, weight: definition.strokeWidth * scale, align: "CENTER", dashPattern: [] }];
+      node.strokeJoin = "ROUND";
+      node.strokeCap = "ROUND";
+    } else if (!definition.layers) {
+      node.fills = [{ type: "SOLID", visible: true, opacity: parsedColor.a, color }];
+    }
+  }
   if (pen.type === "path" && pen.geometry) {
-    const vectorNetwork = parseSVGPath(pen.geometry);
+    const vectorNetwork = parseSVGPath(pen.geometry, pen.fillRule === "evenodd" ? "EVENODD" : "NONZERO");
     node.vectorNetwork = vectorNetwork;
     scaleVectorNetwork2(vectorNetwork, node.width, node.height, pen.viewBox);
   }
@@ -84693,7 +85466,7 @@ function parsePenFile(json) {
   collectComponentIds(doc.children, componentIds);
   const page = graph4.addPage(doc.children[0]?.name ?? "Page 1");
   for (const child of doc.children) {
-    createSceneNode(child, page.id, graph4, ctx, componentIds, penSources);
+    createSceneNode(child, child.__canvasImported ? graph4.rootId : page.id, graph4, ctx, componentIds, penSources);
   }
   applyAllRefProps(doc.children, graph4, componentIds, penSources, ctx);
   populateInstances2(graph4);
@@ -85976,6 +86749,21 @@ function destroyRenderer(r4) {
   for (const img of r4.imageCache.values())
     img.delete();
   r4.imageCache.clear();
+  for (const img of r4.pencilShaderImages.values())
+    img.delete();
+  r4.pencilShaderImages.clear();
+  if (r4.pencilShaderGL) {
+    for (const { program, buffer } of r4.pencilShaderPrograms.values()) {
+      r4.pencilShaderGL.deleteProgram(program);
+      r4.pencilShaderGL.deleteBuffer(buffer);
+    }
+    for (const { texture } of r4.pencilShaderTextures.values())
+      r4.pencilShaderGL.deleteTexture(texture);
+  }
+  r4.pencilShaderPrograms.clear();
+  r4.pencilShaderTextures.clear();
+  r4.pencilShaderGL = null;
+  r4.pencilShaderCanvas = null;
   for (const cache of [
     r4.vectorPathCache,
     r4.vectorStrokePathCache,
@@ -85997,6 +86785,7 @@ function destroyRenderer(r4) {
   r4.auxFill.delete();
   r4.auxStroke.delete();
   r4.opacityPaint.delete();
+  r4.linearBurnBlender.delete();
   r4.textFont?.delete();
   r4.labelFont?.delete();
   r4.sizeFont?.delete();
@@ -88253,6 +89042,7 @@ function applyNodeTransforms(_r, canvas, node, nodeId2, overlays) {
   }
 }
 function renderNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
+  r4.pencilShaderRenderCanvas = canvas;
   if (node.type === "SECTION") {
     r4.renderSection(canvas, node, graph4);
   } else if (node.type === "COMPONENT_SET") {
@@ -88262,6 +89052,7 @@ function renderNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
   } else {
     r4.renderShape(canvas, node, graph4);
   }
+  drawPencilSlotOutline(r4, canvas, node);
   if (overlays.editingTextId === nodeId2 && overlays.textEditor?.state?.paragraph) {
     r4.drawTextEditOverlay(canvas, node, overlays.textEditor);
   }
@@ -88269,6 +89060,33 @@ function renderNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
     r4.auxStroke.setStrokeWidth(DROP_HIGHLIGHT_STROKE / r4.zoom);
     r4.auxStroke.setColor(r4.selColor(DROP_HIGHLIGHT_ALPHA));
     canvas.drawRect(r4.ck.LTRBRect(0, 0, node.width, node.height), r4.auxStroke);
+  }
+}
+function drawPencilSlotOutline(r4, canvas, node) {
+  if (!node.pencilSlotKind || node.width <= 20 || node.height <= 20)
+    return;
+  const inset = 10;
+  const slotNode = {
+    ...node,
+    width: node.width - inset * 2,
+    height: node.height - inset * 2,
+    cornerRadius: Math.max(0, node.cornerRadius - inset),
+    topLeftRadius: Math.max(0, node.topLeftRadius - inset),
+    topRightRadius: Math.max(0, node.topRightRadius - inset),
+    bottomRightRadius: Math.max(0, node.bottomRightRadius - inset),
+    bottomLeftRadius: Math.max(0, node.bottomLeftRadius - inset)
+  };
+  const path = makeNodeShapePath(r4, slotNode, r4.ck.LTRBRect(0, 0, slotNode.width, slotNode.height), nodeHasRadius(slotNode));
+  try {
+    r4.auxStroke.setStrokeWidth(1);
+    r4.auxStroke.setPathEffect(null);
+    r4.auxStroke.setColor(node.pencilSlotKind === "instance" ? r4.ck.Color4f(149 / 255, 128 / 255, 1, 1) : r4.ck.Color4f(212 / 255, 128 / 255, 1, 1));
+    canvas.save();
+    canvas.translate(inset, inset);
+    canvas.drawPath(path, r4.auxStroke);
+    canvas.restore();
+  } finally {
+    path.delete();
   }
 }
 function renderMaskNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
@@ -88335,7 +89153,7 @@ function renderNode2(r4, canvas, graph4, nodeId2, overlays, parentAbsX = 0, pare
     const bounds = computeDescendantVisualBounds([nodeId2], (id) => graph4.getNode(id) ?? undefined, (id) => graph4.getAbsolutePosition(id));
     const layerBounds = bounds ? r4.ck.LTRBRect(bounds.minX - absX, bounds.minY - absY, bounds.maxX - absX, bounds.maxY - absY) : r4.ck.LTRBRect(0, 0, node.width, node.height);
     r4.opacityPaint.setAlphaf(node.opacity);
-    r4.opacityPaint.setBlendMode(figmaBlendModeToSkia(r4.ck, node.blendMode));
+    setFigmaPaintBlendMode(r4, r4.opacityPaint, node.blendMode);
     canvas.saveLayer(r4.opacityPaint, layerBounds);
   }
   const layerBlur = node.effects.find((e4) => e4.visible && (e4.type === "LAYER_BLUR" || e4.type === "FOREGROUND_BLUR"));
@@ -88377,7 +89195,22 @@ function forVisibleStrokes(r4, node, graph4, draw) {
     const stroke = node.strokes[index];
     if (!stroke.visible)
       continue;
-    draw(stroke, r4.resolveStrokeColor(stroke, index, node, graph4));
+    r4.strokePaint.setShader(null);
+    r4.fillPaint.setShader(null);
+    setFigmaPaintBlendMode(r4, r4.strokePaint, stroke.blendMode);
+    setFigmaPaintBlendMode(r4, r4.fillPaint, stroke.blendMode);
+    if (stroke.type?.startsWith("GRADIENT") && stroke.gradientStops && stroke.gradientTransform) {
+      applyGradientFill(r4, stroke, node, graph4, r4.strokePaint);
+      applyGradientFill(r4, stroke, node, graph4, r4.fillPaint);
+    }
+    try {
+      draw(stroke, r4.resolveStrokeColor(stroke, index, node, graph4));
+    } finally {
+      r4.strokePaint.setShader(null);
+      r4.fillPaint.setShader(null);
+      r4.strokePaint.setBlendMode(r4.ck.BlendMode.SrcOver);
+      r4.fillPaint.setBlendMode(r4.ck.BlendMode.SrcOver);
+    }
   }
 }
 function renderSection(r4, canvas, node, graph4) {
@@ -88454,7 +89287,6 @@ function getShadowShapeChild(node, graph4) {
 function drawVectorStrokeGeometry(r4, canvas, sg, sc, opacity) {
   r4.fillPaint.setColor(r4.ck.Color4f(sc.r, sc.g, sc.b, sc.a));
   r4.fillPaint.setAlphaf(opacity);
-  r4.fillPaint.setShader(null);
   for (const p4 of sg)
     canvas.drawPath(p4, r4.fillPaint);
 }
@@ -88492,7 +89324,6 @@ function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, miterLimit, 
     r4.strokePaint.setStrokeCap(getStrokeCapEntity(r4, stroke.cap ?? "NONE"));
     r4.strokePaint.setStrokeJoin(getStrokeJoinEntity(r4, stroke.join ?? "MITER"));
     r4.strokePaint.setStrokeMiter(miterLimit);
-    r4.strokePaint.setShader(null);
     const effect = r4.ck.PathEffect.MakeDash(dash, 0);
     r4.strokePaint.setPathEffect(effect);
     for (const vp of vectorPaths)
@@ -88509,7 +89340,6 @@ function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, miterLimit, 
   };
   r4.fillPaint.setColor(r4.ck.Color4f(sc.r, sc.g, sc.b, sc.a));
   r4.fillPaint.setAlphaf(stroke.opacity);
-  r4.fillPaint.setShader(null);
   let outlines = outlineCacheKey ? r4.vectorStrokeOutlineCache.get(outlineCacheKey) : undefined;
   if (!outlines) {
     outlines = [];
@@ -88875,7 +89705,7 @@ function drawShapeDropShadow(r4, canvas, node, effect, hasRadius2, shadowShapeCh
   r4.auxFill.setColor(r4.color4f(effect.color.r, effect.color.g, effect.color.b, effect.color.a));
   r4.auxFill.setMaskFilter(r4.getCachedMaskBlur(effect.radius / 2));
   r4.auxFill.setImageFilter(null);
-  r4.auxFill.setBlendMode(figmaBlendModeToSkia(r4.ck, effect.blendMode));
+  setFigmaPaintBlendMode(r4, r4.auxFill, effect.blendMode);
   canvas.save();
   let savedLayer = false;
   try {
@@ -88934,7 +89764,7 @@ function renderDropShadow(r4, canvas, node, effect, hasRadius2, shadowShapeChild
       drawChildTransform(canvas, shadowShapeChild, effect.offset);
     else
       canvas.translate(effect.offset.x, effect.offset.y);
-    r4.effectLayerPaint.setBlendMode(figmaBlendModeToSkia(r4.ck, effect.blendMode));
+    setFigmaPaintBlendMode(r4, r4.effectLayerPaint, effect.blendMode);
     r4.effectLayerPaint.setImageFilter(dropFilter);
     canvas.saveLayer(r4.effectLayerPaint, effectLayerBounds(r4, shapeNode, effect));
     savedLayer = true;
@@ -89005,7 +89835,7 @@ function drawShapeInnerShadow(r4, canvas, node, rect, effect, hasRadius2, shadow
   const shapeNode = shadowShapeChild ?? node;
   r4.auxFill.setColor(r4.ck.Color4f(effect.color.r, effect.color.g, effect.color.b, effect.color.a));
   r4.auxFill.setImageFilter(r4.getCachedDecalBlur(effect.radius / 2));
-  r4.auxFill.setBlendMode(figmaBlendModeToSkia(r4.ck, effect.blendMode));
+  setFigmaPaintBlendMode(r4, r4.auxFill, effect.blendMode);
   const shapeRect = shadowShapeChild ? r4.ck.LTRBRect(0, 0, shapeNode.width, shapeNode.height) : rect;
   const shapeHasRadius = shadowShapeChild ? nodeHasRadius(shadowShapeChild) : hasRadius2;
   canvas.save();
@@ -89292,6 +90122,23 @@ function installRendererDomainMethods(prototype) {
 init_constants2();
 function initializeRendererPaints(r4) {
   const ck = r4.ck;
+  const linearBurnEffect = ck.RuntimeEffect.MakeForBlender(`
+    half4 main(half4 src, half4 dst) {
+      half srcAlpha = src.a;
+      half dstAlpha = dst.a;
+      half3 srcColor = srcAlpha > 0 ? src.rgb / srcAlpha : half3(0);
+      half3 dstColor = dstAlpha > 0 ? dst.rgb / dstAlpha : half3(0);
+      half3 blended = max(srcColor + dstColor - half3(1), half3(0));
+      return half4(
+        (1 - srcAlpha) * dst.rgb + (1 - dstAlpha) * src.rgb + srcAlpha * dstAlpha * blended,
+        srcAlpha + dstAlpha - srcAlpha * dstAlpha
+      );
+    }
+  `);
+  if (!linearBurnEffect)
+    throw new Error("CanvasKit could not compile the Linear Burn blender.");
+  r4.linearBurnBlender = linearBurnEffect.makeBlender([]);
+  linearBurnEffect.delete();
   r4.fillPaint = new ck.Paint;
   r4.fillPaint.setStyle(ck.PaintStyle.Fill);
   r4.fillPaint.setAntiAlias(true);
@@ -89808,7 +90655,14 @@ function scenePictureMissReason(r4, graph4, overlays, sceneVersion, hasPositionP
   return "unknown";
 }
 function canUseScenePicture(r4, graph4, sceneVersion, hasVolatileOverlays) {
-  return !hasVolatileOverlays && !!r4.scenePicture && graph4.positionPreviewVersion === r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion && r4.fontGeneration === r4.scenePictureFontGeneration && r4.pageId === r4.scenePicturePageId;
+  return !hasVolatileOverlays && !graphHasDynamicPencilShader(graph4) && !!r4.scenePicture && graph4.positionPreviewVersion === r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion && r4.fontGeneration === r4.scenePictureFontGeneration && r4.pageId === r4.scenePicturePageId;
+}
+function graphHasDynamicPencilShader(graph4) {
+  for (const node of graph4.getAllNodes()) {
+    if (node.fills.some((fill3) => fill3.pencilShader?.uniforms.some(({ automatic }) => ["time", "mouse", "backdrop"].includes(automatic))))
+      return true;
+  }
+  return false;
 }
 var MAX_RETAINED_SCENE_NODES = 1e4;
 var now3 = typeof performance !== "undefined" ? () => performance.now() : () => 0;
@@ -89842,7 +90696,7 @@ function render(r4, graph4, selectedIds, overlays = {}, sceneVersion = -1, layer
   };
   updateSceneBackingPreviewState(r4, layer);
   const hasPositionPreview = graph4.positionPreviewVersion !== r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion;
-  const hasVolatileOverlays = hasPositionPreview || hasVolatileOverlay(overlays);
+  const hasVolatileOverlays = hasPositionPreview || hasVolatileOverlay(overlays) || graphHasDynamicPencilShader(graph4);
   const retainFullScene = graph4.nodes.size <= MAX_RETAINED_SCENE_NODES;
   if (!retainFullScene && r4.scenePicture) {
     r4.scenePicture.delete();
@@ -89993,6 +90847,14 @@ class SkiaRenderer {
   pendingFontNodes = new Map;
   textPictureGenerations = new Map;
   imageCache = new Map;
+  pencilShaderCanvas = null;
+  pencilShaderGL = null;
+  pencilShaderPrograms = new Map;
+  pencilShaderTextures = new Map;
+  pencilShaderImages = new Map;
+  pencilShaderEpoch = performance.now();
+  pencilShaderMouseCanvas = null;
+  pencilShaderRenderCanvas = null;
   vectorPathCache = new Map;
   vectorStrokePathCache = new Map;
   vectorStrokeOutlineCache = new Map;
@@ -95150,5 +96012,7 @@ export {
   getCanvasKit,
   createEditor,
   computeBounds3 as computeBounds,
-  computeAllLayouts
+  computeAllLayouts,
+  computeDescendantVisualBounds,
+  SkiaRenderer
 };

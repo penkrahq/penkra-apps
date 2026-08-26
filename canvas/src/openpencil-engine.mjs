@@ -5,16 +5,24 @@ import {
   parsePenFile,
 } from "../vendor/open-pencil/engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { pencilResourceAsset } from "./pencil-resources.mjs";
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",
   "rectangle",
   "ellipse",
+  "line",
+  "polygon",
+  "group",
   "text",
   "icon_font",
   "icon",
   "path",
   "ref",
+  "script",
+  "note",
+  "context",
+  "prompt",
 ]);
 
 const DIRECT_PROPERTY_MAP = new Map([
@@ -71,7 +79,7 @@ export function createOpenPencilGraph(
   const startedAt = performance.now();
   const renderDocument = measureGraphPhase(
     "engine.graph.prepare",
-    () => (preparedDocument ?? prepareOpenPencilRenderDocument(document)).document,
+    () => (preparedDocument ?? prepareOpenPencilRenderDocument(document, { assets })).document,
   );
   const graph = measureGraphPhase(
     "engine.graph.parse",
@@ -80,6 +88,12 @@ export function createOpenPencilGraph(
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
     applyImageAssets(graph, renderDocument, assets);
+    applyShaderAssets(graph, renderDocument, assets);
+    walkPenNodes(renderDocument.children, (renderNode) => {
+      if (renderNode.__canvasGenerated && graph.getNode(renderNode.id)) {
+        graph.updateNode(renderNode.id, { locked: true });
+      }
+    });
     walkPenNodes(document.children, (sourceNode) => {
       if (isOpenPencilEditableNode(sourceNode)) return;
       if (graph.getNode(sourceNode.id)) graph.updateNode(sourceNode.id, { locked: true });
@@ -96,6 +110,17 @@ export function createOpenPencilGraph(
   return graph;
 }
 
+function applyShaderAssets(graph, document, assets) {
+  walkPenNodes(document.children, (node) => {
+    for (const fill of Array.isArray(node.fill) ? node.fill : node.fill ? [node.fill] : []) {
+      for (const texture of fill?.__canvasShader?.textures ?? []) {
+        const asset = pencilResourceAsset(assets, texture.url);
+        if (asset) graph.images.set(texture.sha256, asset.bytes);
+      }
+    }
+  });
+}
+
 function measureGraphPhase(name, operation, detail = {}) {
   const monitor = globalThis.__penkraPerformance?.canvas;
   return monitor?.measure ? monitor.measure(name, operation, detail) : operation();
@@ -106,6 +131,7 @@ function recordGraphPerformance(name, durationMs, detail = {}) {
 }
 
 function applyPencilSceneProperties(graph, document) {
+  const slotIds = new Set();
   walkPenNodes(document.children, (sourceNode) => {
     const sceneNode = graph.getNode(sourceNode.id);
     if (!sceneNode) return;
@@ -126,8 +152,17 @@ function applyPencilSceneProperties(graph, document) {
         innerRadius: sourceNode.innerRadius ?? 0,
       };
     }
+    if (Array.isArray(sourceNode.slot)) {
+      changes.pencilSlotKind = "component";
+      slotIds.add(sourceNode.id);
+    }
     if (Object.keys(changes).length > 0) graph.updateNode(sourceNode.id, changes);
   });
+  for (const sceneNode of graph.nodes.values()) {
+    if (slotIds.has(sceneNode.componentId)) {
+      graph.updateNode(sceneNode.id, { pencilSlotKind: "instance" });
+    }
+  }
 }
 
 function degreesToRadians(value) {
@@ -163,7 +198,7 @@ function applyImageAssets(graph, document, assets) {
     if (!sceneNode) return;
     const fills = sourceFills.map((fill, index) => {
       if (fill?.type !== "image") return sceneNode.fills[index];
-      const asset = assets.get(fill.url);
+      const asset = pencilResourceAsset(assets, fill.url);
       if (!asset) return sceneNode.fills[index];
       graph.images.set(asset.sha256, asset.bytes);
       return {
@@ -173,7 +208,8 @@ function applyImageAssets(graph, document, assets) {
         // Skia modulates shader output by the paint color. Keep image pixels
         // fully visible instead of multiplying them by transparent black.
         color: { r: 1, g: 1, b: 1, a: 1 },
-        opacity: 1,
+        opacity: Number(fill.opacity ?? 1),
+        blendMode: pencilBlendMode(fill.blendMode),
         visible: fill.enabled !== false,
       };
     });
@@ -186,6 +222,12 @@ function imageScaleMode(mode) {
   if (mode === "stretch") return "STRETCH";
   if (mode === "tile") return "TILE";
   return "FILL";
+}
+
+function pencilBlendMode(value) {
+  if (!value || value === "normal") return "NORMAL";
+  if (value === "light") return "LIGHTEN";
+  return value.replace(/([a-z])([A-Z])/gu, "$1_$2").toUpperCase();
 }
 
 export function fitOpenPencilDesign(editor, viewport) {
@@ -222,32 +264,37 @@ export function fitOpenPencilDesign(editor, viewport) {
 }
 
 export function analyzeOpenPencilCompatibility(document, assets = new Map(), preparedDocument = null) {
-  const issues = [...(preparedDocument ?? prepareOpenPencilRenderDocument(document)).issues];
+  const prepared = preparedDocument ?? prepareOpenPencilRenderDocument(document, { assets });
+  const issues = [...prepared.issues];
   walkPenNodes(document.children, (node) => {
-    if (node.type === "prompt") return;
     if (!VISUAL_NODE_TYPES.has(node.type)) {
       issues.push({
         nodeId: node.id,
         kind: "node-type",
-        message: `${node.type} is preserved but OpenPencil renders it as a generic frame.`,
+        message: `${node.type} is preserved but Canvas does not render this Pencil node type.`,
       });
     }
     for (const fill of Array.isArray(node.fill) ? node.fill : node.fill ? [node.fill] : []) {
-      const representedImage = fill?.type === "image" && assets.has(fill.url);
-      if (typeof fill === "object" && fill.type && fill.type !== "solid" && !representedImage) {
+      const representedImage = fill?.type === "image" && Boolean(pencilResourceAsset(assets, fill.url));
+      const supportedFill = ["solid", "color", "gradient"].includes(fill?.type)
+        || fill?.type === "shader" && Boolean(fill.__canvasShader)
+        || fill?.type === "mesh_gradient" && Boolean(fill.__canvasMesh);
+      if (fill?.type === "shader" && !supportedFill) continue;
+      if (fill?.type === "mesh_gradient" && !supportedFill) continue;
+      if (typeof fill === "object" && fill.type && !supportedFill && !representedImage) {
         issues.push({
           nodeId: node.id,
           kind: "fill",
-          message: `${fill.type} fill is preserved but is not represented faithfully by the current OpenPencil .pen adapter.`,
+          message: `${fill.type} fill is preserved but Canvas does not render this Pencil fill type.`,
         });
       }
     }
     for (const effect of Array.isArray(node.effect) ? node.effect : node.effect ? [node.effect] : []) {
-      if (effect?.type && effect.type !== "shadow") {
+      if (effect?.type && !["shadow", "blur", "background_blur"].includes(effect.type)) {
         issues.push({
           nodeId: node.id,
           kind: "effect",
-          message: `${effect.type} effect is preserved but is not represented by the current OpenPencil .pen adapter.`,
+          message: `${effect.type} effect is preserved but Canvas does not render this Pencil effect type.`,
         });
       }
     }
@@ -255,9 +302,21 @@ export function analyzeOpenPencilCompatibility(document, assets = new Map(), pre
       issues.push({
         nodeId: node.id,
         kind: "layout",
-        message: `${node.layout} layout is preserved but is not represented by the current OpenPencil .pen adapter.`,
+        message: `${node.layout} layout is preserved but Canvas does not render this Pencil layout mode.`,
       });
     }
+  });
+  const componentIds = new Set();
+  walkPenNodes(prepared.document.children, (node) => {
+    if (node.reusable === true) componentIds.add(node.id);
+  });
+  walkPenNodes(document.children, (node) => {
+    if (node.type !== "ref" || componentIds.has(node.ref)) return;
+    issues.push({
+      nodeId: node.id,
+      kind: "component",
+      message: `Component ${node.ref ?? "(missing)"} is preserved but is unavailable to the Canvas render graph.`,
+    });
   });
   return issues;
 }
@@ -343,7 +402,11 @@ export function sceneEventToPenMutations(editor, document, nodeId, changes, prev
 }
 
 export function isOpenPencilEditableNode(node) {
-  return Boolean(node && node.type !== "prompt" && VISUAL_NODE_TYPES.has(node.type));
+  return Boolean(
+    node
+    && !["note", "context", "prompt", "script"].includes(node.type)
+    && VISUAL_NODE_TYPES.has(node.type),
+  );
 }
 
 export function sceneNodePropertySnapshot(node) {
@@ -370,7 +433,7 @@ export function sceneNodeToPenNode(node) {
     ROUNDED_RECTANGLE: "rectangle",
     ELLIPSE: "ellipse",
     TEXT: "text",
-    LINE: "path",
+    LINE: "line",
     VECTOR: "path",
   })[node.type];
   if (!type) return null;

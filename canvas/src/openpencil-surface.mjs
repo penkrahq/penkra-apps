@@ -1,6 +1,7 @@
 import { createApp, h, ref } from "vue";
 import {
   getCanvasKit,
+  fontManager,
   provideEditor,
   useCanvas,
   useCanvasInput,
@@ -18,17 +19,23 @@ import {
   sceneNodeToPenNode,
 } from "./openpencil-engine.mjs";
 import { bindCanvasThemeBackground } from "./canvas-theme.mjs";
+import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
+import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
-  canvasKitReady ??= getCanvasKit({
-    locateFile: (file) => new URL(file, import.meta.url).href,
-  });
+  canvasKitReady ??= Promise.all([
+    getCanvasKit({
+      locateFile: (file) => new URL(file, import.meta.url).href,
+    }),
+    preparePencilScriptRuntime(),
+  ]).then(([canvasKit]) => canvasKit);
   return canvasKitReady;
 }
 
 export function mountOpenPencilSurface(element, document, callbacks = {}) {
   let sourceDocument = document;
+  registerDocumentFonts(document, callbacks.assets);
   const editor = createOpenPencilEditor(document, {
     getViewportSize: () => ({ width: element.clientWidth, height: element.clientHeight }),
     assets: callbacks.assets,
@@ -43,6 +50,35 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   }
 
   let refreshingDocument = false;
+  let shaderAnimationFrame = 0;
+  const hasTimeShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
+    (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
+  ));
+  const hasMouseShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
+    (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "mouse"),
+  ));
+  const updateShaderMouse = (event) => {
+    if (!hasMouseShader()) return;
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const point = {
+      x: (event.clientX - bounds.left - editor.state.panX) / editor.state.zoom,
+      y: (event.clientY - bounds.top - editor.state.panY) / editor.state.zoom,
+    };
+    for (const renderer of editor.canvasRenderers) renderer.pencilShaderMouseCanvas = point;
+    editor.requestRepaint();
+  };
+  const animateTimeShaders = () => {
+    shaderAnimationFrame = 0;
+    if (!hasTimeShader()) return;
+    editor.requestRepaint();
+    shaderAnimationFrame = requestAnimationFrame(animateTimeShaders);
+  };
+  const ensureTimeShaderAnimation = () => {
+    if (!shaderAnimationFrame && hasTimeShader()) {
+      shaderAnimationFrame = requestAnimationFrame(animateTimeShaders);
+    }
+  };
+  ensureTimeShaderAnimation();
   const fitDesignInView = () => {
     const viewport = fitOpenPencilDesign(editor, {
       width: element.clientWidth,
@@ -176,6 +212,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
           class: "openpencil-surface openpencil-overlay-surface",
           tabindex: "0",
           "aria-label": "Canvas design viewport",
+          onPointermove: updateShaderMouse,
         }),
       ]);
     },
@@ -195,6 +232,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       refreshingDocument = true;
       try {
         sourceDocument = nextDocument;
+        registerDocumentFonts(nextDocument, callbacks.assets);
         refreshOpenPencilEditor(
           editor,
           nextDocument,
@@ -203,16 +241,24 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
           preparedDocument,
         );
         sceneValues = captureSceneValues(editor);
+        ensureTimeShaderAnimation();
       } finally {
         refreshingDocument = false;
       }
     },
     unmount() {
+      if (shaderAnimationFrame) cancelAnimationFrame(shaderAnimationFrame);
       unbindCanvasTheme();
       for (const dispose of disposers) dispose?.();
       app.unmount();
     },
   };
+}
+
+function registerDocumentFonts(document, assets) {
+  for (const font of collectPencilDocumentFonts(document, assets instanceof Map ? assets : new Map())) {
+    fontManager.registerDocumentFont(font.family, font.bytes);
+  }
 }
 
 function captureSceneValues(editor) {

@@ -4,9 +4,9 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "compatibility": {
-    "penkra": ">=0.11.11"
+    "penkra": ">=0.11.14"
   },
   "icons": [
     {
@@ -128,7 +128,7 @@
     {
       "key": "documents.create",
       "summary": "Create a blank Account-owned Canvas document. Use documents.execute to add or inspect design content.",
-      "guidance": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI. It does not open a tab or import `.pen` JSON. Call documents.execute for content, then documents.open when visible review matters.",
+      "guidance": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI: one white 720×480 starter frame. The result identifies that frame as `starterFrameId`; replace or update it when building the first screen so it does not remain underneath new content. Creation does not open a tab or import `.pen` JSON. Call documents.execute for content, then documents.open when visible review matters.",
       "input": {
         "type": "object",
         "properties": {
@@ -155,12 +155,18 @@
           },
           "access": {
             "const": "owner"
+          },
+          "starterFrameId": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Exact ID of the blank document's initial 720×480 frame."
           }
         },
         "required": [
           "documentId",
           "title",
-          "access"
+          "access",
+          "starterFrameId"
         ],
         "additionalProperties": false
       },
@@ -177,7 +183,7 @@
     {
       "key": "documents.execute",
       "summary": "Read or change one Canvas document with bounded Pencil-style JavaScript; one execution should express one coherent design intent.",
-      "guidance": "Execute runs JavaScript against a private document clone. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, G, and Print; the script cannot access files, network, Account data, timers, or the Penkra runtime directly. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get returns immutable contexts with node, parent, index, path, resolved pre-execution bounds, and problems; its optional limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. Update changes properties without replacing ID or children. Copy renews IDs recursively. Replace, Delete, and Move each require exactly one target. Print records bounded JSON values in the result.\n\nG(target, \"ai\", prompt) generates a low-quality GPT Image 2 asset using Canvas's global image-generation service. G(target, source) applies an absolute path, file:// URL, HTTP(S) URL, or data URL. Canvas stores the image before commit and replaces the transient source with a durable document asset; a new relative path is rejected unless it already names an uploaded asset.\n\nFor library icons, insert `type: \"icon_font\"` with iconFontFamily and iconFontName; supported families are Material Symbols Outlined, Material Symbols Rounded, Material Symbols Sharp, Lucide, Feather, and Phosphor. Set width, height, fontSize, and fill explicitly.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete result and commits only when the source sequence is unchanged. Use one execution for one coherent design intent. After a write, inspect the touched structure in a separate read-only execution, then open the document and observe the Canvas tab when appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
+      "guidance": "Execute runs JavaScript against a private document clone. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, G, TakeScreenshot, and Print; the script cannot access files, network, Account data, timers, or the Penkra runtime directly. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get returns immutable contexts with node, parent, index, path, resolved pre-execution bounds, and problems; its optional limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. A newly created document already has the exact `starterFrameId` returned by documents.create; replace or update that frame for the first screen instead of inserting overlapping content. Update changes properties without replacing ID or children. Copy renews IDs recursively. Replace, Delete, and Move each require exactly one target. Print records bounded JSON values in the result.\n\nG(target, \"ai\", prompt) generates a low-quality GPT Image 2 asset using Canvas's global image-generation service. G(target, source) applies an absolute path, file:// URL, HTTP(S) URL, or data URL. Canvas stores the image before commit and replaces the transient source with a durable document asset; a new relative path is rejected unless it already names an uploaded asset.\n\nTakeScreenshot([target, ...]) renders one or more exact nodes together as a PNG and returns it as image content with dimensions in `screenshots`. Call it after the mutations it should verify, as in `const screen = Replace(\"#starter-frame-id\", {...}); TakeScreenshot([screen]);`. It renders document content through Canvas's Pencil-compatible engine; it does not capture editor chrome and does not require an open or visible tab.\n\nFor library icons, insert a native `type: \"icon\"` node with exact `library` and `icon` fields. Valid libraries are `lucide`, `feather`, `Material Symbols Outlined`, `Material Symbols Rounded`, `Material Symbols Sharp`, and `phosphor`. Set width, height, and fill explicitly.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete result and commits only when the source sequence is unchanged. Use one execution for one coherent design intent. Inspect relevant structure with Get and use TakeScreenshot whenever appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
       "input": {
         "type": "object",
         "properties": {
@@ -190,7 +196,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100000,
-            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, and Print."
+            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, G, TakeScreenshot, and Print."
           }
         },
         "required": [
@@ -232,12 +238,27 @@
             },
             "maxItems": 10000
           },
-        "issues": {
-          "type": "array",
-          "maxItems": 10000,
+          "issues": {
+            "type": "array",
+            "maxItems": 10000,
             "items": {
               "type": "object",
               "additionalProperties": true
+            }
+          },
+          "screenshots": {
+            "type": "array",
+            "maxItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "nodeIds": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+                "width": { "type": "integer", "minimum": 1 },
+                "height": { "type": "integer", "minimum": 1 },
+                "mimeType": { "const": "image/png" }
+              },
+              "required": ["nodeIds", "width", "height", "mimeType"],
+              "additionalProperties": false
             }
           }
         },
@@ -249,7 +270,8 @@
           "result",
           "touchedNodeIds",
           "inspection",
-          "issues"
+          "issues",
+          "screenshots"
         ],
         "additionalProperties": false
       },
@@ -286,7 +308,14 @@
           "name": "Insert a standard library icon",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Insert(\"#toolbar\", { id: \"mail-icon\", type: \"icon_font\", iconFontFamily: \"Material Symbols Rounded\", iconFontName: \"mail\", width: 20, height: 20, fontSize: 20, fill: \"#20211d\" });\nreturn \"mail-icon\";"
+            "code": "Insert(\"#toolbar\", { id: \"mail-icon\", type: \"icon\", library: \"Material Symbols Rounded\", icon: \"mail\", width: 20, height: 20, fill: \"#20211d\" });\nreturn \"mail-icon\";"
+          }
+        },
+        {
+          "name": "Replace a new document's starter frame and visually verify it",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "code": "const starter = Get(\"type:frame\")[0];\nconst screen = Replace(`#${starter.node.id}`, { id: \"sign-in\", type: \"frame\", name: \"Sign in\", x: 0, y: 0, width: 393, height: 852, fill: \"#ffffff\", children: [] });\nTakeScreenshot([screen]);\nreturn screen;"
           }
         }
       ],
@@ -294,8 +323,8 @@
     },
     {
       "key": "documents.open",
-      "summary": "Open one exact Canvas document in a new or explicitly targeted tab and return its tab ID for visible verification.",
-      "guidance": "Opening changes visible tab state but does not modify document content. Pass the returned tabId to Penkra's tab snapshot or screenshot operation; Canvas does not expose a separate agent screenshot or export operation.",
+      "summary": "Open one exact Canvas document in a new or explicitly targeted tab for the user.",
+      "guidance": "Opening changes visible tab state but does not modify document content. Use documents.execute with TakeScreenshot for document visual inspection; open a tab when the user should view or work in the Canvas editor.",
       "input": {
         "type": "object",
         "properties": {

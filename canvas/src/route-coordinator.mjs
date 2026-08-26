@@ -2,6 +2,7 @@ export function createRouteCoordinator({
   isDocumentOpen,
   openDocument,
   setRoute,
+  showDocumentUnavailable,
   showLibrary,
 }) {
   let hostNavigationRequested = false;
@@ -23,11 +24,15 @@ export function createRouteCoordinator({
 
   const handleHostNavigation = (input) => {
     hostNavigationRequested = true;
-    return enqueue(() =>
-      input.route === "/document" && input.state?.documentId
-        ? openDocument(input.state.documentId)
-        : showLibrary(),
-    );
+    return enqueue(() => {
+      if (input.route === "/document" && input.state?.documentId) {
+        return openDocument(input.state.documentId);
+      }
+      if (input.route === "/document-unavailable" && input.state?.documentId) {
+        return showDocumentUnavailable(input.state);
+      }
+      return showLibrary();
+    });
   };
 
   const navigateToDocument = (documentId) =>
@@ -43,9 +48,16 @@ export function createRouteCoordinator({
       await setRoute({ route: "/" });
     });
 
+  const navigateToDocumentUnavailable = (input) =>
+    enqueue(async () => {
+      await showDocumentUnavailable(input);
+      await setRoute({ route: "/document-unavailable", state: input });
+    });
+
   return {
     handleHostNavigation,
     navigateToDocument,
+    navigateToDocumentUnavailable,
     navigateToLibrary,
     showDefaultLibrary,
   };

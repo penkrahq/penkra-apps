@@ -12,6 +12,11 @@ import {
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import {
+  isPencilAuthorableNode,
+  parsePencilAuthoringValue,
+  pencilAuthoringSections,
+} from "./pencil-authoring.mjs";
+import {
   choosePenDocument,
   readDroppedPenDocument,
   savePenDocument,
@@ -102,6 +107,7 @@ const state = {
   fieldDrafts: new Map(),
   fieldErrors: new Map(),
   accessRemoved: false,
+  documentUnavailable: null,
   activeTool: "select",
   spacePressed: false,
   engineSurface: null,
@@ -127,6 +133,7 @@ const routes = createRouteCoordinator({
   isDocumentOpen: (documentId) => state.document?.id === documentId,
   openDocument,
   setRoute: (input) => runtime.tab.setRoute(input),
+  showDocumentUnavailable,
   showLibrary,
 });
 
@@ -194,6 +201,19 @@ async function showLibrary() {
     state.loading = false;
     render();
   }
+}
+
+async function showDocumentUnavailable(input) {
+  closeDocument();
+  state.route = "document-unavailable";
+  state.documentUnavailable = {
+    documentId: input.documentId,
+    reason: input.reason === "deleted" ? "deleted" : "unavailable",
+    ...(typeof input.title === "string" && input.title ? { title: input.title } : {}),
+  };
+  state.loading = false;
+  state.error = null;
+  render();
 }
 
 async function navigateToLibrary() {
@@ -358,6 +378,13 @@ async function openDocument(documentId) {
           state.presence = normalizePresenceCount(event.payload?.count);
           render();
         }
+        if (event.event === "project:deleted") {
+          void routes.navigateToDocumentUnavailable({
+            documentId,
+            reason: "deleted",
+            ...(state.document?.title ? { title: state.document.title } : {}),
+          });
+        }
         if (event.event === "access-revoked") handleAccessRemoved();
         },
         {
@@ -382,9 +409,17 @@ async function openDocument(documentId) {
       );
       state.documentOpenStartedAt = null;
     }
-    state.loading = false;
-    state.error = message(error);
-    render();
+    if (error?.status === 404) {
+      await showDocumentUnavailable({ documentId, reason: "unavailable" });
+      await runtime.tab.setRoute({
+        route: "/document-unavailable",
+        state: { documentId, reason: "unavailable" },
+      });
+    } else {
+      state.loading = false;
+      state.error = message(error);
+      render();
+    }
   }
 }
 
@@ -429,6 +464,7 @@ function closeDocument() {
   state.fieldDrafts.clear();
   state.fieldErrors.clear();
   state.accessRemoved = false;
+  state.documentUnavailable = null;
 }
 
 function collapseEditorPanels() {
@@ -614,7 +650,7 @@ function currentPreparedRenderDocument() {
   if (!state.preparedRenderDocument) {
     state.preparedRenderDocument = performanceMonitor.measure(
       "document.prepare-render",
-      () => prepareOpenPencilRenderDocument(currentMaterializedDocument()),
+      () => prepareOpenPencilRenderDocument(currentMaterializedDocument(), { assets: state.assets }),
       { documentId: state.document?.id, nodes: state.documentNodes?.length ?? 0 },
     );
   }
@@ -669,7 +705,9 @@ function render() {
   }
   root.innerHTML = state.route === "editor" && state.document && state.model
     ? renderEditor()
-    : renderLibrary();
+    : state.route === "document-unavailable" && state.documentUnavailable
+      ? renderDocumentUnavailable()
+      : renderLibrary();
   if (retainedHost) {
     root.querySelector('[data-role="openpencil-surface"]')?.replaceWith(retainedHost);
   }
@@ -702,6 +740,17 @@ function render() {
     route: state.route,
     nodes: state.documentNodes?.length ?? 0,
   });
+}
+
+function renderDocumentUnavailable() {
+  const unavailable = state.documentUnavailable;
+  const deleted = unavailable.reason === "deleted";
+  const heading = deleted ? "This design was deleted" : "This design is unavailable";
+  const subject = unavailable.title ? `“${unavailable.title}”` : "This Canvas design";
+  const detail = deleted
+    ? `${subject} was permanently deleted and can no longer be opened.`
+    : `${subject} no longer exists or you no longer have access to it.`;
+  return `<main class="shell empty"><div>${icon("file")}<h2>${heading}</h2><p>${escapeHtml(detail)}</p><div class="library-actions"><button class="button primary" data-action="back">Back to files</button></div></div></main>`;
 }
 
 function renderLibrary() {
@@ -994,17 +1043,33 @@ function layerRow({ node, depth }) {
 
 function renderInspector(node) {
   if (!node) return `<div class="inspector-empty">Select an object to inspect and edit its properties.</div>`;
-  if (!isOpenPencilEditableNode(node)) {
+  const sceneEditable = isOpenPencilEditableNode(node);
+  if (!isPencilAuthorableNode(node, sceneEditable)) {
     return `${selectionHeading(node)}<div class="inspector-empty">This unsupported object is preserved as opaque .pen source and cannot be edited in Canvas.</div>`;
   }
   const numeric = ["x", "y", "width", "height", "rotation"];
+  const simpleFill = typeof node.fill === "string"
+    || node.fill?.type === "color"
+    || node.fill?.type === "solid"
+    || node.fill == null;
   return `${selectionHeading(node)}
   <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, node.id)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("rotation", node.rotation ?? 0, "number", false, node.id)}</div></section>
   <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("gap", node.gap ?? 0, "number", false, node.id)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, node.id)}</div></section>
-  <section class="section"><h3>Appearance</h3><div class="field-grid">${field("fill", fillValue(node.fill), "text", true, node.id)}${field("opacity", node.opacity ?? 1, "number", false, node.id)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, node.id)}</div></section>
-  ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, node.id)}${field("fontSize", node.fontSize ?? 16, "number", false, node.id)}${field("fontWeight", node.fontWeight ?? 400, "number", false, node.id)}</div></section>` : ""}
+  <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, node.id) : ""}${field("opacity", node.opacity ?? 1, "number", false, node.id)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, node.id)}</div></section>
+  ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, node.id)}${field("fontFamily", node.fontFamily ?? "Inter", "text", true, node.id)}${field("fontSize", node.fontSize ?? 16, "number", false, node.id)}${field("fontWeight", node.fontWeight ?? "400", "text", false, node.id)}${field("lineHeight", node.lineHeight ?? 1.2, "number", false, node.id)}</div></section>` : ""}
+  ${pencilAuthoringSections(node).map((section) => renderAuthoringSection(section, node.id)).join("")}
   ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved in the .pen source but is not represented faithfully. Review compatibility for details.</p></section>` : ""}
   <div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`;
+}
+
+function renderAuthoringSection(section, nodeId) {
+  return `<section class="section"><h3>${escapeHtml(section.title)}</h3><div class="field-grid">${section.fields.map((descriptor) => authoringField(descriptor, nodeId)).join("")}</div></section>`;
+}
+
+function authoringField(descriptor, nodeId) {
+  const path = descriptor.path.join(".");
+  const options = { kind: descriptor.kind, path, label: descriptor.path.at(-1) ?? descriptor.property };
+  return field(descriptor.property, descriptor.value, descriptor.kind, descriptor.full, nodeId, options);
 }
 
 function selectionHeading(node) {
@@ -1062,15 +1127,34 @@ function renderCodeInspector(node) {
   return `<section class="section code-section"><h3>.pen source</h3><pre>${escapeHtml(JSON.stringify(node, null, 2))}</pre></section>`;
 }
 
-function field(property, value, type = "text", full = false, nodeId = "") {
-  const key = `${nodeId}:${property}`;
+function field(property, value, type = "text", full = false, nodeId = "", options = {}) {
+  const kind = options.kind ?? type;
+  const path = options.path ?? "";
+  const key = `${nodeId}:${property}:${path}`;
   const displayed = state.fieldDrafts.has(key) ? state.fieldDrafts.get(key) : value;
   const error = state.fieldErrors.get(key);
-  return `<div class="field-row ${full ? "full" : ""}"><label for="field-${property}">${property}</label><input id="field-${property}" class="field" type="${type}" data-property="${property}" value="${escapeHtml(displayed)}" ${error ? `aria-invalid="true" aria-describedby="field-${property}-error"` : ""} />${error ? `<span class="field-error" id="field-${property}-error">${escapeHtml(error)}</span>` : ""}</div>`;
+  const label = options.label ?? property;
+  const attributes = `data-property="${escapeHtml(property)}" data-path="${escapeHtml(path)}" data-value-kind="${escapeHtml(kind)}"`;
+  const invalid = error ? `aria-invalid="true" aria-describedby="field-${property}-error"` : "";
+  let control;
+  if (kind === "json" || kind === "textarea") {
+    const text = state.fieldDrafts.has(key)
+      ? displayed
+      : kind === "json" ? JSON.stringify(value, null, 2) : displayed;
+    control = `<textarea id="field-${property}" class="field field-area" ${attributes} ${invalid}>${escapeHtml(text)}</textarea>`;
+  } else if (kind === "boolean") {
+    control = `<input id="field-${property}" class="field field-check" type="checkbox" ${attributes} ${displayed ? "checked" : ""} ${invalid} />`;
+  } else {
+    control = `<input id="field-${property}" class="field" type="${type === "number" ? "number" : "text"}" ${attributes} value="${escapeHtml(displayed)}" ${invalid} />`;
+  }
+  return `<div class="field-row ${full ? "full" : ""}"><label for="field-${property}">${escapeHtml(label)}</label>${control}${error ? `<span class="field-error" id="field-${property}-error">${escapeHtml(error)}</span>` : ""}</div>`;
 }
 
 function bindCommon() {
   root.querySelector('[data-action="retry"]')?.addEventListener("click", () => void bootstrap());
+  if (state.route === "document-unavailable") {
+    root.querySelector('[data-action="back"]')?.addEventListener("click", () => void navigateToLibrary());
+  }
   root.querySelectorAll("[data-action=close-dialog]").forEach((button) =>
     button.addEventListener("click", closeDialog),
   );
@@ -1217,11 +1301,11 @@ function bindInspectorControls() {
   root.querySelectorAll("[data-property]").forEach((input) => {
     input.addEventListener("input", () => {
       if (!state.selectedId) return;
-      state.fieldDrafts.set(`${state.selectedId}:${input.dataset.property}`, input.value);
+      state.fieldDrafts.set(inspectorFieldKey(input), input.type === "checkbox" ? input.checked : input.value);
     });
     input.addEventListener("keydown", (event) => {
       if (event.key !== "Escape" || !state.selectedId) return;
-      const key = `${state.selectedId}:${input.dataset.property}`;
+      const key = inspectorFieldKey(input);
       state.fieldDrafts.delete(key);
       state.fieldErrors.delete(key);
       render();
@@ -1259,6 +1343,7 @@ async function copySelectedNodeReference(button = null) {
 }
 
 function handleAccessRemoved() {
+  if (state.documentUnavailable?.reason === "deleted") return;
   state.accessRemoved = true;
   state.dialog = null;
   state.dialogFocusSelector = null;
@@ -1273,23 +1358,32 @@ function handleAccessRemoved() {
 function commitInspectorField(input) {
   if (!state.selectedId) return;
   const property = input.dataset.property;
-  const key = `${state.selectedId}:${property}`;
-  let value = input.value;
-  if (input.type === "number") {
-    value = Number(input.value);
-    if (!input.value.trim() || !Number.isFinite(value)) {
-      state.fieldDrafts.set(key, input.value);
-      state.fieldErrors.set(key, "Enter a valid number.");
-      render();
-      root.querySelector(`[data-property="${CSS.escape(property)}"]`)?.focus();
+  const path = input.dataset.path ? input.dataset.path.split(".") : [];
+  const key = inspectorFieldKey(input);
+  const raw = input.type === "checkbox" ? input.checked : input.value;
+  try {
+    const value = parsePencilAuthoringValue(
+      input.dataset.valueKind ?? input.type,
+      input.value,
+      input.checked,
+    );
+    if (path.length > 0) {
+      mutate(state.model, {
+        kind: "set-property-path",
+        nodeId: state.selectedId,
+        property,
+        path,
+        value,
+      }, LOCAL_ORIGIN);
+      state.fieldDrafts.delete(key);
+      state.fieldErrors.delete(key);
       return;
     }
-  }
-  try {
     const editor = state.engineSurface?.editor;
     const sceneNode = editor?.graph.getNode(state.selectedId);
     const changes = penPropertyToSceneChanges(sceneNode, property, value);
-    if (editor && changes) {
+    const sourceNode = currentDocumentNode(state.selectedId);
+    if (editor && changes && isOpenPencilEditableNode(sourceNode)) {
       editor.updateNodeWithUndo(state.selectedId, changes, `Set ${property}`);
     } else {
       mutate(state.model, { kind: "set-property", nodeId: state.selectedId, property, value }, LOCAL_ORIGIN);
@@ -1297,11 +1391,15 @@ function commitInspectorField(input) {
     state.fieldDrafts.delete(key);
     state.fieldErrors.delete(key);
   } catch (error) {
-    state.fieldDrafts.set(key, input.value);
+    state.fieldDrafts.set(key, raw);
     state.fieldErrors.set(key, message(error));
     render();
-    root.querySelector(`[data-property="${CSS.escape(property)}"]`)?.focus();
+    root.querySelector(`[data-property="${CSS.escape(property)}"][data-path="${CSS.escape(input.dataset.path ?? "")}"]`)?.focus();
   }
+}
+
+function inspectorFieldKey(input) {
+  return `${state.selectedId}:${input.dataset.property}:${input.dataset.path ?? ""}`;
 }
 
 function undo() {
@@ -1480,7 +1578,7 @@ function renderDialog() {
     return dialog("Document actions", `<div class="grant-list"><button class="button" data-action="download">Download .pen</button>${state.document?.access === "owner" ? `<button class="button danger" data-action="delete-document">Delete document</button>` : ""}</div>`);
   }
   if (state.dialog === "compatibility") {
-    return dialog("Compatibility review", `<p class="muted">Canvas keeps the original .pen data losslessly. The items below are not represented faithfully by the current OpenPencil adapter and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
+    return dialog("Compatibility review", `<p class="muted">Canvas keeps the original .pen data losslessly. The items below are not represented faithfully by the current Canvas renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
   }
   if (state.dialog === "share") {
     return dialog("Share document", `<p class="muted">Add editors by their Penkra Account email. No email will be sent.</p><div class="share-form"><input class="field" data-role="share-email" type="email" placeholder="name@example.com" aria-label="Collaborator email" /><button class="button primary" data-action="grant">Add editor</button></div><div class="grant-list">${state.grants.map((grant) => `<div class="grant-row"><div><strong>${escapeHtml(grant.email)}</strong><span>${grant.status === "active" ? "Editor" : "Pending account"}</span></div><button class="button danger" data-revoke-grant="${grant.id}">Remove</button></div>`).join("") || `<p class="muted">No other editors have access.</p>`}</div>`);

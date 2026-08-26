@@ -42,7 +42,7 @@
     },
     {
       "label": "Canvas current Pencil design",
-      "sha256": "ece5117ce01aea79271d19d1ca87573dfa7cb447f4b69b8cdb598b8b6db8f0b8",
+      "sha256": "8aa0c0e13385ecdc46efb551e9005a88cde0c34b34962a01b3e7c825d40446a8",
       "version": "2.15",
       "sourceNodes": 2340,
       "graphNodes": 2526,
@@ -60,10 +60,10 @@
     },
     {
       "label": "Browser current Pencil design",
-      "sha256": "0fc1c13f95bea5e06211639f3ad6c8dd52044f6b46724c2c43621b1ae58b6385",
-      "version": "2.15",
-      "sourceNodes": 271,
-      "graphNodes": 579,
+      "sha256": "c80c693306966c5f133929cc30e8621af9c36e88160307f1b736934f665cce08",
+      "version": "2.17",
+      "sourceNodes": 275,
+      "graphNodes": 601,
       "missingSourceIds": [],
       "pages": [{ "name": "Components Banner", "children": 16 }]
     },
@@ -72,7 +72,7 @@
       "sha256": "a9f8d577f08082b4e4898a37a2aef4ef9b22c0ffe0382d63a3e50787a886312c",
       "version": "2.15",
       "sourceNodes": 455,
-      "graphNodes": 991,
+      "graphNodes": 995,
       "missingSourceIds": [],
       "pages": [{ "name": "Components Banner", "children": 20 }]
     }

@@ -11,13 +11,6 @@ export function designValidationIssues(document) {
   const issues = [];
   const visit = (nodes = []) => {
     for (const node of nodes) {
-      if (node.type === "frame" && node.layout === undefined && (node.children?.length ?? 0) > 0) {
-        issues.push({
-          nodeId: node.id,
-          kind: "implicit-layout",
-          message: "This frame contains children but does not declare a layout. Set layout explicitly so future edits and renderers interpret it predictably.",
-        });
-      }
       if (node.type === "text") {
         if (typeof node.content !== "string" || node.content.length === 0) {
           issues.push({ nodeId: node.id, kind: "text-content", message: "This text node has no visible content." });

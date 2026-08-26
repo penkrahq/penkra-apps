@@ -1,3 +1,9 @@
+import {
+  collectPencilResourceReferences,
+  pencilResourceMimeType,
+  resolvePencilResourcePath,
+} from "./pencil-resources.mjs";
+
 const BINARY_CHUNK_BYTES = 1024 * 1024;
 
 export async function choosePenDocument(files = runtimeFiles()) {
@@ -15,7 +21,7 @@ export async function readDroppedPenDocument(dataTransfer, files = runtimeFiles(
   const file = item?.getAsFile?.();
   if (!file || !file.name.toLowerCase().endsWith(".pen")) throw new Error("Drop one .pen file to import it.");
   const source = parsePenSource(await readBrowserTextFile(file));
-  if (collectImageReferences(source).length === 0) {
+  if (collectPencilResourceReferences(source).length === 0) {
     return { source, assets: [], fallbackTitle: file.name.replace(/\.pen$/iu, "") };
   }
   const root = await files.pick("directory");
@@ -33,15 +39,32 @@ export async function readPenDocument(files, root, document) {
   const source = parsePenSource(await readTextFile(files, root.id, relative));
   const base = relative.split("/").slice(0, -1);
   const assets = [];
-  for (const reference of collectImageReferences(source)) {
-    const logicalPath = resolveReference(base, reference).join("/");
-    const bytes = await readBinaryFile(files, root.id, logicalPath, reference);
+  const seen = new Set();
+  const queue = collectPencilResourceReferences(source).map((resource) => ({
+    ...resource,
+    containerPath: "",
+  }));
+  while (queue.length > 0) {
+    const resource = queue.shift();
+    const path = resolvePencilResourcePath(resource.containerPath, resource.path);
+    if (seen.has(path)) continue;
+    seen.add(path);
+    const logicalPath = resolveReference(base, path).join("/");
+    const bytes = await readBinaryFile(files, root.id, logicalPath, path);
     assets.push({
-      path: reference,
+      path,
       bytes,
-      mimeType: mimeTypeFor(reference),
+      kind: resource.kind,
+      mimeType: pencilResourceMimeType(path, resource.kind),
       sha256: await sha256(bytes),
     });
+    if (resource.kind === "library") {
+      const library = parsePenSource(decodeResourceText(bytes, path));
+      queue.push(...collectPencilResourceReferences(library).map((dependency) => ({
+        ...dependency,
+        containerPath: path,
+      })));
+    }
   }
   return {
     source,
@@ -90,17 +113,9 @@ export function parsePenSource(text) {
 }
 
 export function collectImageReferences(source) {
-  const references = new Set();
-  const visit = (value) => {
-    if (!value || typeof value !== "object") return;
-    if (!Array.isArray(value) && value.type === "image" && typeof value.url === "string") {
-      validateReference(value.url);
-      references.add(value.url);
-    }
-    for (const child of Array.isArray(value) ? value : Object.values(value)) visit(child);
-  };
-  visit(source);
-  return [...references];
+  return collectPencilResourceReferences(source)
+    .filter(({ kind }) => kind === "image")
+    .map(({ path }) => path);
 }
 
 function resolveReference(base, reference) {
@@ -151,6 +166,14 @@ function validateReference(reference) {
   }
 }
 
+function decodeResourceText(bytes, reference) {
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    throw new Error(`Referenced Pencil resource ${reference} is not valid UTF-8 text.`);
+  }
+}
+
 async function readBinaryFile(files, handleId, relativePath, reference) {
   const chunks = [];
   let offset = 0;
@@ -163,11 +186,11 @@ async function readBinaryFile(files, handleId, relativePath, reference) {
       chunks.push(bytes);
       offset += bytes.byteLength;
       if (result.complete) break;
-      if (bytes.byteLength === 0) throw new Error(`Could not finish reading referenced asset ${reference}.`);
+      if (bytes.byteLength === 0) throw new Error(`Could not finish reading referenced Pencil resource ${reference}.`);
     }
   } catch (error) {
-    if (error?.message?.includes(`referenced asset ${reference}`)) throw error;
-    throw new Error(`Referenced asset ${reference} is missing.`);
+    if (error?.message?.includes(`referenced Pencil resource ${reference}`)) throw error;
+    throw new Error(`Referenced Pencil resource ${reference} is missing.`);
   }
   const output = new Uint8Array(chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0));
   let cursor = 0;
@@ -230,9 +253,4 @@ function runtimeFiles() {
 async function sha256(bytes) {
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
-function mimeTypeFor(name) {
-  const extension = name.split(".").at(-1)?.toLowerCase();
-  return ({ gif: "image/gif", jpeg: "image/jpeg", jpg: "image/jpeg", png: "image/png", svg: "image/svg+xml", webp: "image/webp" })[extension] ?? "application/octet-stream";
 }

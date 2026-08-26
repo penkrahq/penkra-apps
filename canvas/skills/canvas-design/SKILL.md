@@ -42,9 +42,10 @@ Use real media when it carries product meaning. Apply an existing local or remot
 `G(target, source)`, or generate one with `G(target, "ai", prompt)`. New local sources must be
 absolute paths or `file://` URLs; Canvas
 uploads every accepted source into the document before commit. Never draw a brand or interface icon
-from memory when a library glyph exists. Insert an `icon_font` node with an explicit
-`iconFontFamily`, `iconFontName`, width, height, fontSize, and fill. Prefer Material Symbols,
-Lucide, Feather, or Phosphor names you can identify confidently, then verify the rendered glyph.
+from memory when a library glyph exists. Insert a native `icon` node with exact `library`, `icon`,
+width, height, and fill fields. Valid library values are `lucide`, `feather`,
+`Material Symbols Outlined`, `Material Symbols Rounded`, `Material Symbols Sharp`, and `phosphor`.
+Use an icon name you can identify confidently, then verify the rendered glyph.
 
 ## Cover real states and accessibility
 
@@ -58,12 +59,14 @@ changes preserve task priority instead of merely shrinking the desktop compositi
 
 ## Verify after every coherent intent
 
-After a write, run a separate read-only execution over touched nodes, their parents, and the nearest
-clipping ancestor. Resolve unexpected hierarchy, bounds, overlap, clipping, missing text or fills,
-renderer approximations, and problems before unrelated work.
+After a write, inspect touched nodes, their parents, and the nearest clipping ancestor. Resolve
+unexpected hierarchy, bounds, overlap, clipping, missing text or fills, renderer approximations,
+and problems before unrelated work.
 
-Open the document and inspect the actual Canvas tab with Penkra's snapshot or screenshot operation.
-Review realistic viewport sizes, important states, text wrapping, alignment, spacing rhythm,
-contrast, and visual hierarchy. A successful mutation is not proof of a successful design. Iterate
-until both the semantic inspection and visible result support the requested outcome, then report
-what was created and what was visually exercised.
+Call `TakeScreenshot([target, ...])` after the mutations it should verify. It renders exact Canvas
+document nodes through the Pencil-compatible engine and returns a PNG without requiring a visible
+tab. Review realistic sizes, important states, text wrapping, alignment, spacing rhythm, contrast,
+and visual hierarchy. A successful mutation is not proof of a successful design. Iterate until both
+the semantic inspection and rendered result support the requested outcome, then report what was
+created and what was visually exercised. Open the document only when the user should view or work
+in the editor itself.

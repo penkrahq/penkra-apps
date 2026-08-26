@@ -15,6 +15,8 @@ workspace's authoritative `TODO.md`, not in this App directory.
 Format preservation research lives in [`compatibility/`](./compatibility/).
 The checked-in differential oracle tests the real OpenPencil parser at a pinned
 upstream commit.
+The current Pencil 2.17 rendering and authoring boundary is recorded in
+[`compatibility/pencil-2.17-support.md`](./compatibility/pencil-2.17-support.md).
 
 Local CRDT validation lives in [`collaboration/`](./collaboration/). It
 establishes the lossless Yjs document model and convergence/undo behavior.
@@ -30,9 +32,10 @@ establishes the lossless Yjs document model and convergence/undo behavior.
   reconnect.
 - Unknown `.pen` document fields, node types, and node properties remain in the
   Yjs source model and survive supported edits and export.
-- The visible editor uses a narrow OpenPencil scene/layout/CanvasKit/input seam
-  pinned to an audited upstream commit. Its normalized graph is disposable view
-  state; the lossless Yjs `.pen` model remains canonical.
+- The visible editor uses an audited, locally owned scene/layout/CanvasKit/input
+  engine derived from OpenPencil. Canvas extends that engine for Pencil 2.17;
+  its normalized graph is disposable view state and the lossless Yjs `.pen`
+  model remains canonical.
 - Canvas labels preserved unsupported visual behavior instead of silently
   approximating it or claiming full compatibility.
 

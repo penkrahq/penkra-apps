@@ -24,11 +24,17 @@ Canvas also bundles:
 - Lucide 1.31.0 under the ISC license — Copyright 2026 Lucide Icons and Contributors.
   Some icons are derived from Feather Icons under the MIT license.
   <https://github.com/lucide-icons/lucide>
-- The Phosphor Icons 2.1.1 push-pin vector under the MIT license — Copyright 2020
-  Phosphor Icons. <https://github.com/phosphor-icons/core>
+- Feather icon catalog under the MIT license — Copyright Cole Bemis.
+  <https://github.com/feathericons/feather>
+- Phosphor icon catalog under the MIT license — Copyright 2020 Phosphor Icons.
+  <https://github.com/phosphor-icons/core>
+- Material Symbols icon catalog and variable font files under the Apache License 2.0 — Copyright Google LLC.
+  <https://github.com/google/material-design-icons>
 - CanvasKit WASM 0.40.0 under the BSD 3-Clause license — Copyright 2018 Google LLC.
   <https://skia.org/docs/user/modules/canvaskit/>
 - Inter font files under the SIL Open Font License 1.1 — Copyright 2016 The Inter Project
   Authors. <https://github.com/rsms/inter>
+- JetBrains Mono font files under the SIL Open Font License 1.1 — Copyright 2020 The
+  JetBrains Mono Project Authors. <https://github.com/JetBrains/JetBrainsMono>
 
 The complete license texts are included in the packaged `licenses/` directory.

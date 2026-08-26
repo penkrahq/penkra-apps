@@ -10984,7 +10984,7 @@
                   "fill": "$color-text-secondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Typography controls appear only for an editable text selection.",
+                  "content": "Inspector sections follow the selected semantic Pencil type: typography for text; provider, name, and weight for icons; and structured resource controls for gradients, effects, scripts, shaders, meshes, themes, and slots.",
                   "fontFamily": "$font-ui",
                   "fontSize": 11
                 },
