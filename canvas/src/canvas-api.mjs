@@ -24,6 +24,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
   return {
     listDocuments: (cursor) =>
       request(`?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+    listTrash: (cursor) =>
+      request(`/trash?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
     createDocument: ({ source, initialUpdate, ...input }) =>
       uploadSnapshot(request, null, {
         ...input,
@@ -49,6 +51,10 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       request(`/${encodeURIComponent(id)}`, { method: "PATCH", body: { title } }),
     deleteDocument: (id) =>
       request(`/${encodeURIComponent(id)}`, { method: "DELETE" }),
+    restoreDocument: (id) =>
+      request(`/${encodeURIComponent(id)}/restore`, { method: "POST" }),
+    permanentlyDeleteDocument: (id) =>
+      request(`/${encodeURIComponent(id)}/permanent`, { method: "DELETE" }),
     appendUpdate: (id, input) =>
       request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: input }),
     createSnapshot: (id, { source, state, ...input }) =>

@@ -49,6 +49,11 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Map Pencil line nodes to native line geometry instead of treating them as generic paths.",
     "Register document-declared font resources in the shared CanvasKit and browser font providers.",
     "Expose the renderer and descendant visual-bounds primitives required for Pencil-compatible headless screenshots.",
+    "Resolve slash-separated component descendant overrides through exact cloned-component identity chains and regenerate overridden semantic icons.",
+    "Invalidate overridden text metrics before intrinsic layout and coordinate one exact-font layout before revealing the layered canvas.",
+    "Measure auto-width Pencil text intrinsically after fonts resolve so parent constraints cannot turn instance text overrides into wrapped multi-line text.",
+    "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",
+    "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
   assert.match(engine, /setScenePictureMode\(hasVolatileOverlays \? "volatile" : "direct", cacheMissReason\)/u);
@@ -64,10 +69,15 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(engine, /onPerformance\?\.\("engine\.fonts"/u);
   assert.match(engine, /onPerformance\?\.\("engine\.font-layout"/u);
   assert.match(engine, /recomputeLayoutAfterFonts !== false/u);
-  assert.match(surface, /recomputeLayoutAfterFonts: false/u);
+  assert.equal(surface.match(/recomputeLayoutAfterFonts: false/gu)?.length, 2);
+  assert.doesNotMatch(surface, /recomputeLayoutAfterFonts: true/u);
+  assert.match(surface, /for \(const page of editor\.graph\.getPages\(\)\) computeAllLayouts\(editor\.graph, page\.id\)/u);
+  assert.match(surface, /surfaceReady\.value = true/u);
   assert.match(surface, /layer: "scene"/u);
   assert.match(surface, /layer: "overlays"/u);
-  assert.match(surface, /readyLayers < 2/u);
+  assert.match(engine, /function drawFrameTitles\(/u);
+  assert.match(engine, /labelCache\.getFrames\(graph4, r4\.worldViewport\)/u);
+  assert.match(surface, /createLayeredSurfaceReadiness/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-ready"/u);
   assert.match(engine, /typeof json === "string" \? JSON\.parse\(json\) : json/u);

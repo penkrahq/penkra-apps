@@ -48,6 +48,16 @@ test("selection remains an internal UI concern without public tab handlers", asy
   assert.match(app, /function selectNode\(nodeId, options = \{\}\)[\s\S]*?editor\?\.graph\.getNode\(nodeId\)\) editor\.select\(\[nodeId\]\);[\s\S]*?renderSelection\(\);/u);
 });
 
+test("node shortcuts run from non-text controls without replacing native text copy", async () => {
+  const app = await readFile(new URL("./app.mjs", import.meta.url), "utf8");
+  const inputGuard = app.indexOf("target instanceof HTMLInputElement");
+  const copyShortcut = app.indexOf('command && event.key.toLowerCase() === "c"');
+  const controlGuard = app.indexOf('target.closest("button, select, a[href]")');
+
+  assert.ok(inputGuard >= 0 && inputGuard < copyShortcut);
+  assert.ok(copyShortcut < controlGuard);
+});
+
 test("editor undo explicitly persists nodes restored to the selected graph", async () => {
   const source = await readFile(new URL("app.mjs", import.meta.url), "utf8");
   assert.match(source, /editor\.undoAction\(\);\s*queueRestoredSelectedNodes\(state\.engineSurface\)/u);

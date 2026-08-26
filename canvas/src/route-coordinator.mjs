@@ -4,6 +4,7 @@ export function createRouteCoordinator({
   setRoute,
   showDocumentUnavailable,
   showLibrary,
+  showTrash,
 }) {
   let hostNavigationRequested = false;
   let transitions = Promise.resolve();
@@ -31,6 +32,7 @@ export function createRouteCoordinator({
       if (input.route === "/document-unavailable" && input.state?.documentId) {
         return showDocumentUnavailable(input.state);
       }
+      if (input.route === "/trash") return showTrash();
       return showLibrary();
     });
   };
@@ -48,6 +50,12 @@ export function createRouteCoordinator({
       await setRoute({ route: "/" });
     });
 
+  const navigateToTrash = () =>
+    enqueue(async () => {
+      await showTrash();
+      await setRoute({ route: "/trash" });
+    });
+
   const navigateToDocumentUnavailable = (input) =>
     enqueue(async () => {
       await showDocumentUnavailable(input);
@@ -59,6 +67,7 @@ export function createRouteCoordinator({
     navigateToDocument,
     navigateToDocumentUnavailable,
     navigateToLibrary,
+    navigateToTrash,
     showDefaultLibrary,
   };
 }

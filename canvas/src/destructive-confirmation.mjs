@@ -1,10 +1,20 @@
-export function documentDeleteConfirmation(document) {
+export function documentTrashConfirmation(document, options = {}) {
   return {
-    kind: "confirm-delete-document",
+    kind: "confirm-trash-document",
     documentId: document.id,
     title: document.title,
-    returnDialog: "menu",
-    returnFocusSelector: '[data-action="delete-document"]',
+    returnDialog: options.returnDialog ?? "menu",
+    returnFocusSelector: options.returnFocusSelector ?? '[data-action="trash-document"]',
+  };
+}
+
+export function documentPermanentDeleteConfirmation(document) {
+  return {
+    kind: "confirm-permanently-delete-document",
+    documentId: document.id,
+    title: document.title,
+    returnDialog: null,
+    returnFocusSelector: `[data-permanently-delete-document="${document.id}"]`,
   };
 }
 
@@ -19,13 +29,19 @@ export function collaboratorRemovalConfirmation(grant) {
 }
 
 export function isDestructiveConfirmation(dialog) {
-  return dialog?.kind === "confirm-delete-document" || dialog?.kind === "confirm-remove-collaborator";
+  return dialog?.kind === "confirm-trash-document"
+    || dialog?.kind === "confirm-permanently-delete-document"
+    || dialog?.kind === "confirm-remove-collaborator";
 }
 
 export async function executeDestructiveConfirmation(dialog, actions) {
-  if (dialog?.kind === "confirm-delete-document") {
-    await actions.deleteDocument(dialog.documentId);
-    return "deleted-document";
+  if (dialog?.kind === "confirm-trash-document") {
+    await actions.trashDocument(dialog.documentId);
+    return "trashed-document";
+  }
+  if (dialog?.kind === "confirm-permanently-delete-document") {
+    await actions.permanentlyDeleteDocument(dialog.documentId);
+    return "permanently-deleted-document";
   }
   if (dialog?.kind === "confirm-remove-collaborator") {
     await actions.removeCollaborator(dialog.grantId);

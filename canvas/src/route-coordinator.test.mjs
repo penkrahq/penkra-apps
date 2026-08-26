@@ -31,6 +31,10 @@ function fixture({ blockLibrary = false } = {}) {
       openDocumentId = null;
       if (blockLibrary) await library.promise;
     },
+    showTrash: async () => {
+      calls.push("trash");
+      openDocumentId = null;
+    },
   });
   return { calls, library, router };
 }
@@ -111,5 +115,18 @@ test("deleted-document replacement state is explicit and restorable", async () =
     { unavailable },
     { route: { route: "/document-unavailable", state: unavailable } },
     { unavailable },
+  ]);
+});
+
+test("Trash navigation is host-restorable", async () => {
+  const current = fixture();
+
+  await current.router.navigateToTrash();
+  await current.router.handleHostNavigation({ route: "/trash" });
+
+  assert.deepEqual(current.calls, [
+    "trash",
+    { route: { route: "/trash" } },
+    "trash",
   ]);
 });

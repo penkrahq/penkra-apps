@@ -24,8 +24,8 @@ rejects a stale source sequence, but there is no agent-facing undo. Inspect affe
 `Get`, and call `TakeScreenshot` after the mutations it should verify whenever appearance matters.
 The screenshot renders document nodes directly and does not require an open or visible Canvas tab.
 
-Document deletion is separate, permanent authority. Editing, repair, or general cleanup does not
-authorize it.
+Moving a document to recoverable Trash is separate authority. Editing, repair, or general cleanup
+does not authorize it. Agents cannot permanently delete Canvas documents.
 
 ## How to do the common thing
 
@@ -88,5 +88,5 @@ operations add or remove editor access by Penkra Account email and do not send e
   make a new focused correction and call `TakeScreenshot` again. Do not claim completion from
   `changed: true`.
 - Unreadable owned document: stop editing, retain the exact document ID and operation evidence, and
-  report the failure. If the user explicitly authorizes deletion, `documents.delete` can remove it
-  through metadata without decoding its content.
+  report the failure. If the user explicitly authorizes moving it to Trash, `documents.trash` can
+  do so through metadata without decoding its content.

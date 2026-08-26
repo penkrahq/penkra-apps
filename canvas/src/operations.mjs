@@ -33,7 +33,7 @@ runtime.operations.handle("documents.list", async (input = {}) => {
   };
 });
 
-runtime.operations.handle("documents.delete", async ({ documentId, confirmTitle }) => {
+runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }) => {
   let cursor;
   let document;
   do {
@@ -47,19 +47,19 @@ runtime.operations.handle("documents.delete", async ({ documentId, confirmTitle 
     throw error;
   }
   if (document.access !== "owner") {
-    const error = new Error(`Only the document owner can delete ${document.title}.`);
-    error.code = "CANVAS_DOCUMENT_DELETE_FORBIDDEN";
+    const error = new Error(`Only the document owner can move ${document.title} to Trash.`);
+    error.code = "CANVAS_DOCUMENT_TRASH_FORBIDDEN";
     throw error;
   }
   if (confirmTitle !== document.title) {
     const error = new Error(
-      `Deletion confirmation did not match the current title. Pass confirmTitle exactly as ${JSON.stringify(document.title)} after the user confirms permanent deletion.`,
+      `Trash confirmation did not match the current title. Pass confirmTitle exactly as ${JSON.stringify(document.title)} after the user confirms moving this document to Trash.`,
     );
-    error.code = "CANVAS_DOCUMENT_DELETE_CONFIRMATION_MISMATCH";
+    error.code = "CANVAS_DOCUMENT_TRASH_CONFIRMATION_MISMATCH";
     throw error;
   }
   await api.deleteDocument(documentId);
-  return { documentId, title: document.title, deleted: true };
+  return { documentId, title: document.title, trashed: true };
 });
 
 runtime.operations.handle("documents.create", async ({ title }) => {

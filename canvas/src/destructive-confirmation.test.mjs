@@ -2,34 +2,45 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   collaboratorRemovalConfirmation,
-  documentDeleteConfirmation,
+  documentPermanentDeleteConfirmation,
+  documentTrashConfirmation,
   executeDestructiveConfirmation,
   isDestructiveConfirmation,
 } from "./destructive-confirmation.mjs";
 
-test("opening a document deletion confirmation does not delete anything", () => {
+test("opening a document Trash confirmation does not move anything", () => {
   let calls = 0;
-  const confirmation = documentDeleteConfirmation({ id: "document-1", title: "Launch" });
+  const confirmation = documentTrashConfirmation({ id: "document-1", title: "Launch" });
   assert.equal(calls, 0);
   assert.equal(isDestructiveConfirmation(confirmation), true);
   assert.deepEqual(confirmation, {
-    kind: "confirm-delete-document",
+    kind: "confirm-trash-document",
     documentId: "document-1",
     title: "Launch",
     returnDialog: "menu",
-    returnFocusSelector: '[data-action="delete-document"]',
+    returnFocusSelector: '[data-action="trash-document"]',
   });
 });
 
-test("document deletion runs only after confirmation execution", async () => {
+test("moving a document to Trash runs only after confirmation execution", async () => {
   const calls = [];
-  const confirmation = documentDeleteConfirmation({ id: "document-1", title: "Launch" });
+  const confirmation = documentTrashConfirmation({ id: "document-1", title: "Launch" });
   const result = await executeDestructiveConfirmation(confirmation, {
-    deleteDocument: async (id) => calls.push(["delete", id]),
+    trashDocument: async (id) => calls.push(["trash", id]),
     removeCollaborator: async () => calls.push(["remove"]),
   });
-  assert.equal(result, "deleted-document");
-  assert.deepEqual(calls, [["delete", "document-1"]]);
+  assert.equal(result, "trashed-document");
+  assert.deepEqual(calls, [["trash", "document-1"]]);
+});
+
+test("permanent deletion is a separate explicit confirmation", async () => {
+  const calls = [];
+  const confirmation = documentPermanentDeleteConfirmation({ id: "document-1", title: "Launch" });
+  const result = await executeDestructiveConfirmation(confirmation, {
+    permanentlyDeleteDocument: async (id) => calls.push(["permanent", id]),
+  });
+  assert.equal(result, "permanently-deleted-document");
+  assert.deepEqual(calls, [["permanent", "document-1"]]);
 });
 
 test("opening a collaborator removal confirmation does not revoke access", () => {
@@ -50,7 +61,7 @@ test("collaborator removal runs only after confirmation execution", async () => 
   const calls = [];
   const confirmation = collaboratorRemovalConfirmation({ id: "grant-1", email: "person@example.com" });
   const result = await executeDestructiveConfirmation(confirmation, {
-    deleteDocument: async () => calls.push(["delete"]),
+    trashDocument: async () => calls.push(["trash"]),
     removeCollaborator: async (id) => calls.push(["remove", id]),
   });
   assert.equal(result, "removed-collaborator");

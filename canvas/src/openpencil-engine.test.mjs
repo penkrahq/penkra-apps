@@ -834,6 +834,112 @@ test("native icon nodes render from their provider while keeping Pencil semantic
   ]);
 });
 
+test("component overrides traverse exact nested descendant paths and regenerate semantic icons", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      {
+        id: "badge",
+        type: "frame",
+        reusable: true,
+        layout: "horizontal",
+        children: [{ id: "badge-label", type: "text", content: "queued", fontSize: 12 }],
+      },
+      {
+        id: "row",
+        type: "frame",
+        reusable: true,
+        layout: "horizontal",
+        children: [
+          { id: "row-status", type: "ref", ref: "badge" },
+          { id: "row-action", type: "icon", library: "lucide", icon: "play", width: 16, height: 16, fill: "#555555" },
+        ],
+      },
+      {
+        id: "blocked-row",
+        type: "ref",
+        ref: "row",
+        descendants: {
+          "row-status/badge-label": { content: "blocked", fill: "#D34A24" },
+          "row-action": { icon: "rotate-ccw", fill: "#D34A24" },
+        },
+      },
+    ],
+  };
+
+  const graph = createOpenPencilGraph(source);
+  const label = graph.getAllNodes().find((node) => node.text === "blocked");
+  const icon = graph.getAllNodes().find((node) => node.componentId === "row-action");
+
+  assert.equal(label?.text, "blocked");
+  assert.deepEqual(label?.fills[0].color, { r: 0.8274509803921568, g: 0.2901960784313726, b: 0.1411764705882353, a: 1 });
+  assert.ok(icon);
+  assert.notDeepEqual(icon.vectorNetwork, graph.getNode("row-action").vectorNetwork);
+  assert.deepEqual(icon.strokes[0].color, { r: 0.8274509803921568, g: 0.2901960784313726, b: 0.1411764705882353, a: 1 });
+});
+
+test("component text overrides invalidate cloned metrics before hug-content layout", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "button",
+        type: "frame",
+        reusable: true,
+        layout: "horizontal",
+        width: "hug_content",
+        padding: [8, 12],
+        children: [{ id: "button-label", type: "text", content: "Queue", fontSize: 13, fontWeight: 400 }],
+      },
+      {
+        id: "start-button",
+        type: "ref",
+        ref: "button",
+        descendants: { "button-label": { content: "Start foraging", fontWeight: 500 } },
+      },
+    ],
+  });
+  const component = graph.getNode("button");
+  const instance = graph.getNode("start-button");
+  const label = graph.getAllNodes().find((node) => node.componentId === "button-label");
+
+  assert.equal(label?.text, "Start foraging");
+  assert.equal(label?.fontWeight, 500);
+  assert.ok(label.width > graph.getNode("button-label").width);
+  assert.ok(instance.width > component.width);
+});
+
+test("an omitted instance width grows around an overridden auto-width label", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "state-chip",
+        type: "frame",
+        reusable: true,
+        width: 54,
+        height: 20,
+        padding: [3, 8],
+        alignItems: "center",
+        children: [{ id: "state-label", type: "text", content: "queued", fontSize: 11 }],
+      },
+      {
+        id: "add-entity-chip",
+        type: "ref",
+        ref: "state-chip",
+        descendants: { "state-label": { content: "add entity" } },
+      },
+    ],
+  });
+  const component = graph.getNode("state-chip");
+  const instance = graph.getNode("add-entity-chip");
+  const label = graph.getAllNodes().find((node) => node.componentId === "state-label");
+
+  assert.ok(instance.width > component.width);
+  assert.equal(instance.width, label.width + instance.paddingLeft + instance.paddingRight);
+  assert.equal(instance.height, 20);
+});
+
 test("weighted Material Symbols remain semantic text backed by the official variable font", () => {
   const source = {
     version: "2.17",

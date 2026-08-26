@@ -172,7 +172,44 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
   document.children.push(...prepareImportedComponents(source, assets, issues, containerPath, libraryTrail));
+  compileDescendantIcons(document.children, issues);
   return { document, issues };
+}
+
+function compileDescendantIcons(nodes, issues) {
+  const byId = new Map();
+  const visit = (node) => {
+    if (typeof node?.id === "string") byId.set(node.id, node);
+    for (const child of node?.children ?? []) visit(child);
+  };
+  for (const node of nodes ?? []) visit(node);
+
+  const apply = (node) => {
+    if (node?.type === "ref" && isRecord(node.descendants)) {
+      for (const [path, override] of Object.entries(node.descendants)) {
+        if (!isRecord(override)) continue;
+        const source = byId.get(path.split("/").at(-1));
+        if (source?.type !== "icon") continue;
+        const effective = {
+          type: "icon",
+          library: override.library ?? source.library,
+          icon: override.icon ?? source.icon,
+          weight: override.weight ?? source.weight,
+        };
+        const definition = pencilIconDefinition(effective.library, effective.icon, effective.weight);
+        if (definition) {
+          override.__canvasIcon = definition;
+          override.__canvasIconFill = structuredClone(override.fill ?? source.fill ?? "#000000");
+        }
+        else issues.push(iconIssue(
+          node.id,
+          `${effective.library ?? "Unknown"} icon ${effective.icon ?? "(unnamed)"} is not supported.`,
+        ));
+      }
+    }
+    for (const child of node?.children ?? []) apply(child);
+  };
+  for (const node of nodes ?? []) apply(node);
 }
 
 function compileStickyNode(node, prepareChild) {

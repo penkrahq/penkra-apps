@@ -50,10 +50,10 @@ test("registers only the public document lifecycle, execute, and sharing surface
   };
   assert.deepEqual([...handlers.keys()].sort(), [
     "documents.create",
-    "documents.delete",
     "documents.execute",
     "documents.list",
     "documents.open",
+    "documents.trash",
     "sharing.add",
     "sharing.list",
     "sharing.remove",
@@ -94,7 +94,7 @@ test("documents.create identifies the starter frame that later execution should 
   assert.match(result.starterFrameId, /^[0-9a-f-]{36}$/u);
 });
 
-test("documents.delete requires exact current-title confirmation without decoding the document", async () => {
+test("documents.trash requires exact current-title confirmation without decoding the document", async () => {
   const handlers = new Map();
   const requests = [];
   globalThis.penkra = {
@@ -127,14 +127,14 @@ test("documents.delete requires exact current-title confirmation without decodin
     },
   };
   await import(`./operations.mjs?delete-test=${Date.now()}`);
-  const remove = handlers.get("documents.delete");
+  const remove = handlers.get("documents.trash");
 
   await assert.rejects(
     remove({
       documentId: "bbae45e7-a867-42c6-9727-af47f4644c23",
       confirmTitle: "wrong title",
     }),
-    { code: "CANVAS_DOCUMENT_DELETE_CONFIRMATION_MISMATCH" },
+    { code: "CANVAS_DOCUMENT_TRASH_CONFIRMATION_MISMATCH" },
   );
   assert.equal(requests.some((request) => request.method === "DELETE"), false);
 
@@ -146,16 +146,12 @@ test("documents.delete requires exact current-title confirmation without decodin
     {
       documentId: "bbae45e7-a867-42c6-9727-af47f4644c23",
       title: "Unreadable draft",
-      deleted: true,
+      trashed: true,
     },
   );
-  assert.equal(
-    requests.some(
-      (request) =>
-        request.method === "DELETE" &&
-        request.path === "/projects/bbae45e7-a867-42c6-9727-af47f4644c23",
-    ),
-    true,
+  assert.deepEqual(
+    requests.filter((request) => request.method === "DELETE").map((request) => request.path),
+    ["/projects/bbae45e7-a867-42c6-9727-af47f4644c23"],
   );
 });
 

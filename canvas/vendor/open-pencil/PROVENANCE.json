@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "8d885e43e633fc9f900310ce1475910e4194c0a32ecf7ee7f7d22b3df2a1ca52",
+  "engineSha256": "bd806957e8243b0fd872b1462309039ec7dc088e37ca3342a995108b1b8fb03d",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -33,7 +33,12 @@
     "Render Pencil gradient strokes and stroke-paint blend modes without flattening them into solid strokes.",
     "Map Pencil line nodes to native line geometry instead of treating them as generic paths.",
     "Register document-declared font resources in the shared CanvasKit and browser font providers.",
-    "Expose the renderer and descendant visual-bounds primitives required for Pencil-compatible headless screenshots."
+    "Expose the renderer and descendant visual-bounds primitives required for Pencil-compatible headless screenshots.",
+    "Resolve slash-separated component descendant overrides through exact cloned-component identity chains and regenerate overridden semantic icons.",
+    "Invalidate overridden text metrics before intrinsic layout and coordinate one exact-font layout before revealing the layered canvas.",
+    "Measure auto-width Pencil text intrinsically after fonts resolve so parent constraints cannot turn instance text overrides into wrapped multi-line text.",
+    "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",
+    "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes."
   ],
   "exports": [
     "computeBounds",

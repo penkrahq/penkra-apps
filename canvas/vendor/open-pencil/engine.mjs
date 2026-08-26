@@ -40031,15 +40031,13 @@ function configureTextLeaf(yogaChild, child, parent, fixedDerivedMainAxis = fals
       yogaChild.setHeight(child.height);
       return;
     }
-    yogaChild.setMeasureFunc((width, widthMode, _height, _heightMode) => {
-      const maxW = widthMode === MeasureMode.Undefined ? undefined : width;
-      const cacheKey = maxW === undefined ? UNCONSTRAINED_KEY : Math.round(maxW);
-      const cached = cache.get(cacheKey);
+    yogaChild.setMeasureFunc((_width, _widthMode, _height, _heightMode) => {
+      const cached = cache.get(UNCONSTRAINED_KEY);
       if (cached)
         return cached;
-      const measured = getTextMeasurer()?.(child, maxW);
-      const result = measured ?? estimateTextSize(child, maxW);
-      cache.set(cacheKey, result);
+      const measured = getTextMeasurer()?.(child);
+      const result = measured ?? estimateTextSize(child);
+      cache.set(UNCONSTRAINED_KEY, result);
       return result;
     });
   } else if (autoResize === "HEIGHT") {
@@ -85156,6 +85154,55 @@ function applyRefProps(node, pen, graph4, componentIds, penSources, ctx) {
     inheritLayoutFromComp(node, pen, comp);
   applyRefVisuals(node, pen, penSources.get(pen.ref), ctx);
 }
+function applyCanvasIconDefinition(node, pen, ctx) {
+  const definition = pen.__canvasIcon;
+  if (!definition)
+    return;
+  const colorValue = Array.isArray(pen.fill) ? pen.fill.find((fill3) => fill3?.enabled !== false) : pen.fill;
+  const parsedColor = parseFillColor(colorValue ?? "#000000", ctx);
+  const color = { ...parsedColor, a: 1 };
+  if (definition.fontFamily) {
+    node.text = definition.content;
+    node.fontFamily = definition.fontFamily;
+    node.fontWeight = definition.weight;
+    node.fontSize = Math.min(node.width, node.height);
+    node.lineHeight = node.height;
+    node.textAlignHorizontal = "CENTER";
+    node.textAlignVertical = "CENTER";
+    node.textAutoResize = "NONE";
+    node.textPicture = null;
+    node.figmaDerivedTextGlyphs = null;
+  } else if (definition.layers) {
+    const networks = definition.layers.map((layer) => parseSVGPath(layer.geometry));
+    for (const network of networks)
+      scaleVectorNetwork2(network, node.width, node.height, definition.viewBox);
+    const vectorNetwork = mergeVectorNetworks(networks);
+    node.vectorNetwork = vectorNetwork;
+    const placeholders = definition.layers.flatMap((layer, index) => networks[index].regions.map((region) => ({
+      windingRule: region.windingRule,
+      commandsBlob: new Uint8Array(0),
+      fills: [{ type: "SOLID", visible: true, opacity: parsedColor.a * layer.opacity, color }]
+    })));
+    node.fillGeometry = regenerateFillGeometry(vectorNetwork, placeholders);
+    node.fills = [];
+  } else {
+    const vectorNetwork = parseSVGPath(definition.geometry);
+    node.vectorNetwork = vectorNetwork;
+    scaleVectorNetwork2(vectorNetwork, node.width, node.height, definition.viewBox);
+  }
+  if (definition.paint === "stroke") {
+    node.fills = [];
+    const viewWidth = definition.viewBox[2];
+    const viewHeight = definition.viewBox[3];
+    const scale = Math.min(node.width / viewWidth, node.height / viewHeight);
+    node.strokes = [{ visible: true, color, opacity: parsedColor.a, weight: definition.strokeWidth * scale, align: "CENTER", dashPattern: [] }];
+    node.strokeJoin = "ROUND";
+    node.strokeCap = "ROUND";
+  } else if (!definition.layers) {
+    node.strokes = [];
+    node.fills = [{ type: "SOLID", visible: true, opacity: parsedColor.a, color }];
+  }
+}
 function applyAllRefProps(penNodes, graph4, componentIds, penSources, ctx) {
   for (const pen of penNodes) {
     if (pen.type === "ref") {
@@ -85209,50 +85256,8 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
       node.width = estimatePenTextWidth(node.text, node.fontSize, node.letterSpacing ?? 0);
     }
   }
-  if (pen.type === "icon" && pen.__canvasIcon) {
-    const definition = pen.__canvasIcon;
-    const colorValue = Array.isArray(pen.fill) ? pen.fill.find((fill) => fill?.enabled !== false) : pen.fill;
-    const parsedColor = parseFillColor(colorValue ?? "#000000", ctx);
-    const color = { ...parsedColor, a: 1 };
-    if (definition.fontFamily) {
-      node.text = definition.content;
-      node.fontFamily = definition.fontFamily;
-      node.fontWeight = definition.weight;
-      node.fontSize = Math.min(node.width, node.height);
-      node.lineHeight = node.height;
-      node.textAlignHorizontal = "CENTER";
-      node.textAlignVertical = "CENTER";
-      node.textAutoResize = "NONE";
-    } else if (definition.layers) {
-      const networks = definition.layers.map((layer) => parseSVGPath(layer.geometry));
-      for (const network of networks)
-        scaleVectorNetwork2(network, node.width, node.height, definition.viewBox);
-      const vectorNetwork = mergeVectorNetworks(networks);
-      node.vectorNetwork = vectorNetwork;
-      const placeholders = definition.layers.flatMap((layer, index) => networks[index].regions.map((region) => ({
-        windingRule: region.windingRule,
-        commandsBlob: new Uint8Array(0),
-        fills: [{ type: "SOLID", visible: true, opacity: parsedColor.a * layer.opacity, color }]
-      })));
-      node.fillGeometry = regenerateFillGeometry(vectorNetwork, placeholders);
-      node.fills = [];
-    } else {
-      const vectorNetwork = parseSVGPath(definition.geometry);
-      node.vectorNetwork = vectorNetwork;
-      scaleVectorNetwork2(vectorNetwork, node.width, node.height, definition.viewBox);
-    }
-    if (definition.paint === "stroke") {
-      node.fills = [];
-      const viewWidth = definition.viewBox[2];
-      const viewHeight = definition.viewBox[3];
-      const scale = Math.min(node.width / viewWidth, node.height / viewHeight);
-      node.strokes = [{ visible: true, color, opacity: parsedColor.a, weight: definition.strokeWidth * scale, align: "CENTER", dashPattern: [] }];
-      node.strokeJoin = "ROUND";
-      node.strokeCap = "ROUND";
-    } else if (!definition.layers) {
-      node.fills = [{ type: "SOLID", visible: true, opacity: parsedColor.a, color }];
-    }
-  }
+  if (pen.type === "icon" && pen.__canvasIcon)
+    applyCanvasIconDefinition(node, pen, ctx);
   if (pen.type === "path" && pen.geometry) {
     const vectorNetwork = parseSVGPath(pen.geometry, pen.fillRule === "evenodd" ? "EVENODD" : "NONZERO");
     node.vectorNetwork = vectorNetwork;
@@ -85284,21 +85289,6 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
   }
   return node.id;
 }
-function collectByNameType(graph4, parentId, name50, type, out, depth) {
-  if (depth > 2)
-    return;
-  const parent = graph4.getNode(parentId);
-  if (!parent)
-    return;
-  for (const childId of parent.childIds) {
-    const child = graph4.getNode(childId);
-    if (!child)
-      continue;
-    if (child.name === name50 && child.type === type)
-      out.push(child);
-    collectByNameType(graph4, childId, name50, type, out, depth + 1);
-  }
-}
 function findCloneByComponentId(graph4, parentId, origId) {
   const parent = graph4.getNode(parentId);
   if (!parent)
@@ -85307,7 +85297,7 @@ function findCloneByComponentId(graph4, parentId, origId) {
     const child = graph4.getNode(childId);
     if (!child)
       continue;
-    if (child.componentId === origId)
+    if (cloneRepresentsComponent(graph4, child, origId))
       return child;
     const deep = findCloneByComponentId(graph4, childId, origId);
     if (deep)
@@ -85315,19 +85305,79 @@ function findCloneByComponentId(graph4, parentId, origId) {
   }
   return;
 }
-function findCloneByNameFallback(graph4, parentId, origId) {
-  const orig = graph4.getNode(origId);
-  if (!orig)
+function cloneRepresentsComponent(graph4, node, componentId) {
+  let currentId = node.componentId;
+  const visited = /* @__PURE__ */ new Set;
+  while (currentId && !visited.has(currentId)) {
+    if (currentId === componentId)
+      return true;
+    visited.add(currentId);
+    currentId = graph4.getNode(currentId)?.componentId;
+  }
+  return false;
+}
+function findCloneByComponentPath(graph4, instanceId, path) {
+  const parts = path.split("/").filter(Boolean);
+  if (parts.length === 0)
     return;
-  const matches = [];
-  collectByNameType(graph4, parentId, orig.name, orig.type, matches, 0);
-  return matches.length === 1 ? matches[0] : undefined;
+  let parentId = instanceId;
+  let match;
+  for (const componentId of parts) {
+    match = findCloneByComponentId(graph4, parentId, componentId);
+    if (!match)
+      return;
+    parentId = match.id;
+  }
+  return match;
 }
 function applyOverrideProps(target, overrideData, ctx) {
+  let textMetricsChanged = false;
   if (overrideData.fill !== undefined)
     target.fills = convertFill(overrideData.fill, ctx, target);
-  if (overrideData.content !== undefined)
+  if (overrideData.content !== undefined) {
     target.text = overrideData.content;
+    textMetricsChanged = true;
+  }
+  if (overrideData.fontFamily !== undefined) {
+    target.fontFamily = resolveFontFamily(overrideData.fontFamily, ctx);
+    textMetricsChanged = true;
+  }
+  if (overrideData.fontSize !== undefined) {
+    target.fontSize = overrideData.fontSize;
+    textMetricsChanged = true;
+  }
+  if (overrideData.fontWeight !== undefined) {
+    target.fontWeight = mapFontWeight(overrideData.fontWeight);
+    textMetricsChanged = true;
+  }
+  if (overrideData.fontStyle !== undefined) {
+    target.italic = overrideData.fontStyle === "italic" || overrideData.fontStyle === "oblique";
+    textMetricsChanged = true;
+  }
+  if (overrideData.lineHeight !== undefined) {
+    target.lineHeight = overrideData.lineHeight < 5 ? overrideData.lineHeight * target.fontSize : overrideData.lineHeight;
+    textMetricsChanged = true;
+  }
+  if (overrideData.letterSpacing !== undefined) {
+    target.letterSpacing = overrideData.letterSpacing;
+    textMetricsChanged = true;
+  }
+  if (overrideData.textAlign !== undefined)
+    target.textAlignHorizontal = mapTextAlign(overrideData.textAlign);
+  if (overrideData.textAlignVertical !== undefined)
+    target.textAlignVertical = mapTextAlignVertical(overrideData.textAlignVertical);
+  if (overrideData.textGrowth !== undefined) {
+    target.textAutoResize = overrideData.textGrowth === "fixed-width" ? "HEIGHT" : "WIDTH_AND_HEIGHT";
+    textMetricsChanged = true;
+  }
+  if (textMetricsChanged) {
+    target.textPicture = null;
+    target.figmaDerivedTextGlyphs = null;
+    if (target.textAutoResize === "WIDTH_AND_HEIGHT") {
+      target.width = estimatePenTextWidth(target.text, target.fontSize, target.letterSpacing ?? 0);
+      target.height = target.fontSize * (target.lineHeight ? target.lineHeight / target.fontSize : 1.2);
+    }
+  }
   if (overrideData.x !== undefined)
     target.x = overrideData.x;
   if (overrideData.y !== undefined)
@@ -85342,6 +85392,13 @@ function applyOverrideProps(target, overrideData, ctx) {
     target.rotation = overrideData.rotation;
   if (overrideData.name !== undefined)
     target.name = overrideData.name;
+  if (overrideData.__canvasIcon) {
+    applyCanvasIconDefinition(target, {
+      ...overrideData,
+      fill: overrideData.__canvasIconFill
+    }, ctx);
+  }
+  return textMetricsChanged && target.type === "TEXT" && target.textAutoResize === "WIDTH_AND_HEIGHT";
 }
 function populateInstances2(graph4) {
   for (const node of graph4.getAllNodes()) {
@@ -85358,8 +85415,9 @@ function applyDescendantOverrides(graph4, pen, ctx, componentIds, penSources) {
   const instanceNode = graph4.getNode(pen.id);
   if (!instanceNode)
     return;
+  let hasIntrinsicWidthOverride = false;
   for (const [origId, overrideData] of Object.entries(pen.descendants)) {
-    const clone2 = findCloneByComponentId(graph4, instanceNode.id, origId) ?? findCloneByNameFallback(graph4, instanceNode.id, origId);
+    const clone2 = findCloneByComponentPath(graph4, instanceNode.id, origId);
     if (clone2) {
       if (overrideData.children) {
         const toDelete = clone2.childIds.slice();
@@ -85369,12 +85427,16 @@ function applyDescendantOverrides(graph4, pen, ctx, componentIds, penSources) {
           createSceneNode(child, clone2.id, graph4, ctx, componentIds, penSources);
         }
       }
-      applyOverrideProps(clone2, overrideData, ctx);
+      hasIntrinsicWidthOverride = applyOverrideProps(clone2, overrideData, ctx) || hasIntrinsicWidthOverride;
       continue;
     }
     if (overrideData.type && overrideData.id) {
       createSceneNode(overrideData, instanceNode.id, graph4, ctx, componentIds, penSources);
     }
+  }
+  if (hasIntrinsicWidthOverride && pen.width === undefined) {
+    const widthAxis = instanceNode.layoutMode === "VERTICAL" ? "counterAxisSizing" : "primaryAxisSizing";
+    instanceNode[widthAxis] = "HUG";
   }
 }
 function walkAndApplyOverrides(nodes, graph4, ctx, componentIds, penSources) {
@@ -86313,6 +86375,7 @@ function collectVisibleLabels(graph4, viewport, cachedItems, metadata) {
 class LabelCache {
   sections = [];
   components = [];
+  frames = [];
   cachedSceneVersion = -1;
   cachedPositionPreviewVersion = -1;
   cachedPageId = null;
@@ -86331,6 +86394,7 @@ class LabelCache {
     this.cachedPageId = null;
     this.sections = [];
     this.components = [];
+    this.frames = [];
   }
   getSections(graph4, viewport) {
     return collectVisibleLabels(graph4, viewport, this.sections, (cached) => ({
@@ -86342,6 +86406,9 @@ class LabelCache {
       inside: false
     }));
   }
+  getFrames(graph4, viewport) {
+    return collectVisibleLabels(graph4, viewport, this.frames, () => ({}));
+  }
   getAllSections() {
     return this.sections;
   }
@@ -86351,6 +86418,7 @@ class LabelCache {
   rebuild(graph4, pageId) {
     this.sections = [];
     this.components = [];
+    this.frames = [];
     const pageNode = graph4.getNode(pageId ?? graph4.rootId);
     if (!pageNode)
       return;
@@ -86377,8 +86445,11 @@ class LabelCache {
         if (child.childIds.length > 0) {
           this.walkChildren(graph4, childId, ax, ay, insideSection);
         }
-      } else if (child.childIds.length > 0) {
-        this.walkChildren(graph4, childId, ax, ay, insideSection);
+      } else {
+        if (child.type === "FRAME" && COMPONENT_LABEL_PARENT_TYPES.has(parentType))
+          this.frames.push({ nodeId: childId, absX: ax, absY: ay, parentType });
+        if (child.childIds.length > 0)
+          this.walkChildren(graph4, childId, ax, ay, insideSection);
       }
     }
   }
@@ -87031,6 +87102,15 @@ function drawComponentLabels(r4, canvas, graph4) {
       path.delete();
     }
     canvas.drawText(displayText, labelX + iconS + COMPONENT_LABEL_ICON_GAP, labelY, r4.auxFill, font);
+  }
+}
+function drawFrameTitles(r4, canvas, graph4, selectedIds) {
+  if (!r4.labelFont)
+    return;
+  const color = r4.rulerTheme?.text ?? RULER_TEXT_COLOR;
+  for (const { node } of r4.labelCache.getFrames(graph4, r4.worldViewport)) {
+    if (!selectedIds.has(node.id))
+      drawSingleFrameTitle(r4, canvas, graph4, node, {}, r4.labelFont, color);
   }
 }
 
@@ -87852,7 +87932,7 @@ function accumulateSelectionBounds(graph4, selectedIds, overlays) {
   }
   return { nodes, minX, minY, maxX, maxY };
 }
-function drawSingleFrameTitle(r4, canvas, graph4, node, overlays, labelFont) {
+function drawSingleFrameTitle(r4, canvas, graph4, node, overlays, labelFont, color = r4.selColor()) {
   const parentNode = node.parentId ? graph4.getNode(node.parentId) : null;
   const isTopLevel = !parentNode || parentNode.type === "CANVAS" || parentNode.type === "SECTION";
   if (node.type !== "FRAME" || !isTopLevel)
@@ -87860,7 +87940,7 @@ function drawSingleFrameTitle(r4, canvas, graph4, node, overlays, labelFont) {
   const overlayRotation = getOverlayRotation(node, overlays);
   const world = getWorldMatrix({ ...node, rotation: overlayRotation }, graph4);
   const origin = r4.ck.Matrix.mapPoints(world, [0, 0]);
-  r4.auxFill.setColor(r4.selColor());
+  r4.auxFill.setColor(r4.ck.Color4f(color.r, color.g, color.b, color.a));
   const displayText = ellipsizeLabelText(labelFont, node.name, node.width * r4.zoom);
   if (!displayText)
     return;
@@ -90020,6 +90100,9 @@ var rendererMethods = {
   drawComponentLabels(canvas, graph4) {
     drawComponentLabels(this, canvas, graph4);
   },
+  drawFrameTitles(canvas, graph4, selectedIds) {
+    drawFrameTitles(this, canvas, graph4, selectedIds);
+  },
   renderNode(canvas, graph4, nodeId2, overlays, parentAbsX, parentAbsY) {
     renderNode2(this, canvas, graph4, nodeId2, overlays, parentAbsX, parentAbsY);
   },
@@ -90728,6 +90811,7 @@ function render(r4, graph4, selectedIds, overlays = {}, sceneVersion = -1, layer
     p4.beginPhase("render:componentLabels");
     r4.drawComponentLabels(canvas, graph4);
     p4.endPhase("render:componentLabels");
+    r4.drawFrameTitles(canvas, graph4, selectedIds);
     canvas.restore();
     canvas.save();
     canvas.scale(r4.dpr, r4.dpr);

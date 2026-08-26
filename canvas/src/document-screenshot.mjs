@@ -122,7 +122,12 @@ async function renderScreenshot(graph, pageId, nodeIds) {
     for (const nodeId of nodeIds) {
       const node = graph.getNode(nodeId);
       const absolute = graph.getAbsolutePosition(nodeId);
-      renderer.renderNode(canvas, graph, nodeId, {}, absolute.x - node.x, absolute.y - node.y);
+      const parentAbsoluteX = absolute.x - node.x;
+      const parentAbsoluteY = absolute.y - node.y;
+      canvas.save();
+      canvas.translate(parentAbsoluteX, parentAbsoluteY);
+      renderer.renderNode(canvas, graph, nodeId, {}, parentAbsoluteX, parentAbsoluteY);
+      canvas.restore();
     }
     surface.flush();
     const image = surface.makeImageSnapshot();

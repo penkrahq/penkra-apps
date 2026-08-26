@@ -24,7 +24,11 @@ import {
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
 import { createPerformanceMonitor } from "./performance-monitor.mjs";
 import { configureCanvasFonts } from "./font-runtime.mjs";
-import { copyTextToClipboard, formatCanvasNodeReference } from "./node-reference.mjs";
+import {
+  copyTextToClipboard,
+  formatCanvasNodeReference,
+  resolveCanvasNodeReferenceId,
+} from "./node-reference.mjs";
 import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
 import {
   ACCESS_REMOVED_HEADING,
@@ -33,7 +37,8 @@ import {
 } from "./access-removed.mjs";
 import {
   collaboratorRemovalConfirmation,
-  documentDeleteConfirmation,
+  documentPermanentDeleteConfirmation,
+  documentTrashConfirmation,
   executeDestructiveConfirmation,
   isDestructiveConfirmation,
 } from "./destructive-confirmation.mjs";
@@ -75,6 +80,7 @@ const state = {
   libraryFilter: "all",
   search: "",
   documents: [],
+  trashedDocuments: [],
   loading: true,
   error: null,
   document: null,
@@ -93,6 +99,7 @@ const state = {
   dialogFocusSelector: null,
   grants: [],
   toast: null,
+  contextMenu: null,
   unsubscribe: null,
   updateListener: null,
   lastSequence: 0,
@@ -135,6 +142,7 @@ const routes = createRouteCoordinator({
   setRoute: (input) => runtime.tab.setRoute(input),
   showDocumentUnavailable,
   showLibrary,
+  showTrash,
 });
 
 runtime.tab.onNavigate((input) => routes.handleHostNavigation(input));
@@ -203,12 +211,36 @@ async function showLibrary() {
   }
 }
 
+async function showTrash() {
+  closeDocument();
+  state.route = "trash";
+  state.loading = true;
+  state.error = null;
+  state.contextMenu = null;
+  render();
+  try {
+    const documents = [];
+    let cursor;
+    do {
+      const page = await api.listTrash(cursor);
+      documents.push(...page.items);
+      cursor = page.pageInfo.nextCursor ?? undefined;
+    } while (cursor);
+    state.trashedDocuments = documents;
+  } catch (error) {
+    state.error = message(error);
+  } finally {
+    state.loading = false;
+    render();
+  }
+}
+
 async function showDocumentUnavailable(input) {
   closeDocument();
   state.route = "document-unavailable";
   state.documentUnavailable = {
     documentId: input.documentId,
-    reason: input.reason === "deleted" ? "deleted" : "unavailable",
+    reason: ["deleted", "trashed"].includes(input.reason) ? input.reason : "unavailable",
     ...(typeof input.title === "string" && input.title ? { title: input.title } : {}),
   };
   state.loading = false;
@@ -218,6 +250,10 @@ async function showDocumentUnavailable(input) {
 
 async function navigateToLibrary() {
   await routes.navigateToLibrary();
+}
+
+async function navigateToTrash() {
+  await routes.navigateToTrash();
 }
 
 async function createBlankDocument(title = "Untitled") {
@@ -246,7 +282,10 @@ async function importDocument(source, fallbackTitle = "Imported design", assets 
     for (const asset of assets) await api.uploadAsset(document.id, asset);
     await navigateToDocument(document.id);
   } catch (error) {
-    if (document) await api.deleteDocument(document.id).catch(() => undefined);
+    if (document) {
+      await api.deleteDocument(document.id).catch(() => undefined);
+      await api.permanentlyDeleteDocument(document.id).catch(() => undefined);
+    }
     throw error;
   } finally {
     model.doc.destroy();
@@ -381,7 +420,7 @@ async function openDocument(documentId) {
         if (event.event === "project:deleted") {
           void routes.navigateToDocumentUnavailable({
             documentId,
-            reason: "deleted",
+            reason: event.payload?.recoverableUntil ? "trashed" : "deleted",
             ...(state.document?.title ? { title: state.document.title } : {}),
           });
         }
@@ -445,6 +484,7 @@ function closeDocument() {
   state.presence = null;
   state.realtimeConnection = REALTIME_RECONNECTING;
   state.dialog = null;
+  state.contextMenu = null;
   state.activeTool = "select";
   collapseEditorPanels();
   state.spacePressed = false;
@@ -707,7 +747,7 @@ function render() {
     ? renderEditor()
     : state.route === "document-unavailable" && state.documentUnavailable
       ? renderDocumentUnavailable()
-      : renderLibrary();
+      : state.route === "trash" ? renderTrash() : renderLibrary();
   if (retainedHost) {
     root.querySelector('[data-role="openpencil-surface"]')?.replaceWith(retainedHost);
   }
@@ -745,9 +785,12 @@ function render() {
 function renderDocumentUnavailable() {
   const unavailable = state.documentUnavailable;
   const deleted = unavailable.reason === "deleted";
-  const heading = deleted ? "This design was deleted" : "This design is unavailable";
+  const trashed = unavailable.reason === "trashed";
+  const heading = trashed ? "This design is in Trash" : deleted ? "This design was deleted" : "This design is unavailable";
   const subject = unavailable.title ? `“${unavailable.title}”` : "This Canvas design";
-  const detail = deleted
+  const detail = trashed
+    ? `${subject} was moved to Trash by its owner and can be restored from the Trash page for 30 days.`
+    : deleted
     ? `${subject} was permanently deleted and can no longer be opened.`
     : `${subject} no longer exists or you no longer have access to it.`;
   return `<main class="shell empty"><div>${icon("file")}<h2>${heading}</h2><p>${escapeHtml(detail)}</p><div class="library-actions"><button class="button primary" data-action="back">Back to files</button></div></div></main>`;
@@ -764,7 +807,7 @@ function renderLibrary() {
   return `<main class="shell library" data-drop-target="library"><div class="library-inner">
     <header class="library-header">
       <div class="library-title"><h1>Canvas</h1><p>Create, import, and collaborate on design documents.</p></div>
-      <div class="library-actions"><button class="button" data-action="import">Import .pen</button><button class="button primary" data-action="new">New design</button></div>
+      <div class="library-actions"><button class="button" data-action="open-trash">Trash</button><button class="button" data-action="import">Import .pen</button><button class="button primary" data-action="new">New design</button></div>
     </header>
     <div class="library-toolbar">
       <input class="search" data-role="search" type="search" value="${escapeHtml(state.search)}" placeholder="Search files" aria-label="Search files" />
@@ -774,6 +817,21 @@ function renderLibrary() {
     </div>
     ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
     ${documents.length ? `<section class="document-grid">${documents.map(documentCard).join("")}</section>` : `<section class="empty"><div>${icon("file")}<h2>No files here yet</h2><p>Create a design or import a .pen file. Shared files appear automatically when another owner adds your verified Account email.</p></div></section>`}
+  </div></main>${renderContextMenu()}${renderDialog()}${renderToast()}`;
+}
+
+function renderTrash() {
+  const query = state.search.trim().toLowerCase();
+  const documents = state.trashedDocuments.filter((document) =>
+    !query || document.title.toLowerCase().includes(query));
+  return `<main class="shell library"><div class="library-inner">
+    <header class="library-header">
+      <div class="library-title"><h1>Trash</h1><p>Items in Trash are permanently deleted after 30 days.</p></div>
+      <div class="library-actions"><button class="button" data-action="back-to-files">Back to files</button></div>
+    </header>
+    <div class="library-toolbar"><input class="search" data-role="search" type="search" value="${escapeHtml(state.search)}" placeholder="Search Trash" aria-label="Search Trash" /></div>
+    ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
+    ${documents.length ? `<section class="document-grid">${documents.map(trashCard).join("")}</section>` : `<section class="empty"><div>${icon("trash")}<h2>Trash is empty</h2><p>Files moved to Trash will appear here for 30 days.</p></div></section>`}
   </div></main>${renderDialog()}${renderToast()}`;
 }
 
@@ -784,6 +842,18 @@ function segment(key, label) {
 function documentCard(document) {
   const ownership = document.access === "owner" ? "Your file" : `Shared by ${document.ownerName ?? "another Account"}`;
   return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
+}
+
+function trashCard(document) {
+  return `<article class="document-card trash-card"><span class="document-preview">${icon("file")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span>Deleted ${escapeHtml(formatDate(document.deletedAt))}</span><span>Permanently deletes ${escapeHtml(formatDate(document.recoverableUntil))}</span></span><span class="trash-actions"><button class="button" data-restore-document="${document.id}">Restore</button><button class="button danger" data-permanently-delete-document="${document.id}">Delete permanently</button></span></article>`;
+}
+
+function renderContextMenu() {
+  const menu = state.contextMenu;
+  if (!menu) return "";
+  const document = state.documents.find((item) => item.id === menu.documentId);
+  if (!document || document.access !== "owner") return "";
+  return `<div class="context-menu-backdrop" data-action="close-context-menu"><div class="context-menu" role="menu" aria-label="${escapeHtml(document.title)} actions" style="left:${menu.x}px;top:${menu.y}px"><button role="menuitem" data-trash-document="${document.id}">${icon("trash")}<span>Move to Trash</span></button></div></div>`;
 }
 
 function renderEditor() {
@@ -1161,6 +1231,8 @@ function bindCommon() {
 }
 
 function bindLibrary() {
+  root.querySelector('[data-action="open-trash"]')?.addEventListener("click", () => void navigateToTrash());
+  root.querySelector('[data-action="back-to-files"]')?.addEventListener("click", () => void navigateToLibrary());
   root.querySelector('[data-action="new"]')?.addEventListener("click", () => void act(() => createBlankDocument()));
   root.querySelector('[data-action="import"]')?.addEventListener("click", () => void act(importFromHandle));
   root.querySelector('[data-role="search"]')?.addEventListener("input", (event) => {
@@ -1174,7 +1246,52 @@ function bindLibrary() {
     state.libraryFilter = button.dataset.filter;
     render();
   }));
-  root.querySelectorAll("[data-document-id]").forEach((button) => button.addEventListener("click", () => void navigateToDocument(button.dataset.documentId)));
+  root.querySelectorAll("[data-document-id]").forEach((button) => {
+    button.addEventListener("click", () => void navigateToDocument(button.dataset.documentId));
+    button.addEventListener("contextmenu", (event) => {
+      const document = state.documents.find((item) => item.id === button.dataset.documentId);
+      if (document?.access !== "owner") return;
+      event.preventDefault();
+      state.contextMenu = {
+        documentId: document.id,
+        x: Math.min(event.clientX, Math.max(8, innerWidth - 190)),
+        y: Math.min(event.clientY, Math.max(8, innerHeight - 70)),
+      };
+      render();
+    });
+  });
+  root.querySelector('[data-action="close-context-menu"]')?.addEventListener("click", (event) => {
+    if (event.target !== event.currentTarget) return;
+    state.contextMenu = null;
+    render();
+  });
+  root.querySelectorAll("[data-trash-document]").forEach((button) => button.addEventListener("click", () => {
+    const document = state.documents.find((item) => item.id === button.dataset.trashDocument);
+    if (!document) return;
+    state.contextMenu = null;
+    state.dialog = documentTrashConfirmation(document, {
+      returnDialog: null,
+      returnFocusSelector: `[data-document-id="${document.id}"]`,
+    });
+    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
+    render();
+  }));
+  root.querySelectorAll("[data-restore-document]").forEach((button) => button.addEventListener("click", () => void act(async () => {
+    await api.restoreDocument(button.dataset.restoreDocument);
+    state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== button.dataset.restoreDocument);
+    setToast("Document restored.");
+    render();
+  })));
+  root.querySelectorAll("[data-permanently-delete-document]").forEach((button) => button.addEventListener("click", () => {
+    const document = state.trashedDocuments.find((item) => item.id === button.dataset.permanentlyDeleteDocument);
+    if (!document) return;
+    state.dialog = documentPermanentDeleteConfirmation(document);
+    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
+    render();
+  }));
+  root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
+  root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
+  root.querySelector('[data-action="confirm-permanently-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
   const dropTarget = root.querySelector("[data-drop-target=library]");
   dropTarget?.addEventListener("dragover", (event) => { event.preventDefault(); });
   dropTarget?.addEventListener("drop", (event) => {
@@ -1250,8 +1367,8 @@ function bindEditor() {
   root.querySelector('[data-action="compatibility"]')?.addEventListener("click", () => openDialog("compatibility", '[data-action="compatibility"]'));
   root.querySelector('[data-action="menu"]')?.addEventListener("click", () => openDialog("menu", '[data-action="menu"]'));
   root.querySelector('[data-action="download"]')?.addEventListener("click", () => void act(downloadDocument));
-  root.querySelector('[data-action="delete-document"]')?.addEventListener("click", () => {
-    state.dialog = documentDeleteConfirmation(state.document);
+  root.querySelector('[data-action="trash-document"]')?.addEventListener("click", () => {
+    state.dialog = documentTrashConfirmation(state.document);
     state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
     render();
   });
@@ -1271,7 +1388,7 @@ function bindEditor() {
     render();
   }));
   root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
-  root.querySelector('[data-action="confirm-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
+  root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
   root.querySelector('[data-action="confirm-remove-collaborator"]')?.addEventListener("click", () => void confirmDestructiveAction());
 }
 
@@ -1318,10 +1435,17 @@ function bindInspectorControls() {
 }
 
 async function copySelectedNodeReference(button = null) {
-  const node = currentDocumentNode(state.selectedId);
-  if (!node || !state.document) return;
+  if (!state.document || !state.selectedId) return;
   try {
-    await copyTextToClipboard(formatCanvasNodeReference({ document: state.document, node }));
+    const nodeId = resolveCanvasNodeReferenceId({
+      document: currentMaterializedDocument(),
+      graph: state.engineSurface?.editor.graph,
+      selectedId: state.selectedId,
+    });
+    if (!nodeId) {
+      throw new Error("The selected visual does not have a stable .pen node address.");
+    }
+    await copyTextToClipboard(formatCanvasNodeReference({ nodeId }));
     if (button) {
       button.textContent = "Copied";
       button.setAttribute("aria-label", "Node reference copied");
@@ -1331,6 +1455,9 @@ async function copySelectedNodeReference(button = null) {
         button.removeAttribute("aria-label");
       }, 1_500);
     }
+    if (!button) {
+      showTransientToast("Node reference copied");
+    }
   } catch (error) {
     if (button) {
       button.textContent = "Copy failed";
@@ -1338,12 +1465,15 @@ async function copySelectedNodeReference(button = null) {
         if (button.isConnected) button.textContent = "Copy reference";
       }, 1_500);
     }
+    if (!button) {
+      showTransientToast(message(error), true);
+    }
     console.error("Canvas could not copy the selected node reference.", error);
   }
 }
 
 function handleAccessRemoved() {
-  if (state.documentUnavailable?.reason === "deleted") return;
+  if (["deleted", "trashed"].includes(state.documentUnavailable?.reason)) return;
   state.accessRemoved = true;
   state.dialog = null;
   state.dialogFocusSelector = null;
@@ -1461,13 +1591,6 @@ function handleKeyboardShortcut(event) {
   if (state.route !== "editor" || !state.model || event.defaultPrevented) return;
   const target = event.target;
   if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable) return;
-  if (target instanceof Element && target.closest("button, select, a[href]")) return;
-  if (event.code === "Space") {
-    event.preventDefault();
-    state.spacePressed = true;
-    root.querySelector('[data-role="viewport"]')?.classList.add("space-pan");
-    return;
-  }
   const command = event.metaKey || event.ctrlKey;
   if (command && event.key.toLowerCase() === "z") {
     event.preventDefault();
@@ -1483,6 +1606,13 @@ function handleKeyboardShortcut(event) {
   if (command && event.key.toLowerCase() === "c" && state.selectedId) {
     event.preventDefault();
     void copySelectedNodeReference();
+    return;
+  }
+  if (target instanceof Element && target.closest("button, select, a[href]")) return;
+  if (event.code === "Space") {
+    event.preventDefault();
+    state.spacePressed = true;
+    root.querySelector('[data-role="viewport"]')?.classList.add("space-pan");
     return;
   }
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key) && state.selectedId) {
@@ -1560,11 +1690,18 @@ async function openShare() {
 
 function renderDialog() {
   if (!state.dialog) return "";
-  if (state.dialog.kind === "confirm-delete-document") {
+  if (state.dialog.kind === "confirm-trash-document") {
     return dialog(
-      `Delete “${state.dialog.title}”?`,
-      `<p>It will be removed from everyone’s Canvas library. This action may be recoverable by support for a limited time.</p>`,
-      `<button class="button" data-action="cancel-confirmation" autofocus>Cancel</button><button class="button danger" data-action="confirm-delete-document">Delete file</button>`,
+      `Move “${state.dialog.title}” to Trash?`,
+      `<p>It will be removed from everyone’s Canvas library and can be restored for 30 days.</p>`,
+      `<button class="button" data-action="cancel-confirmation" autofocus>Cancel</button><button class="button danger" data-action="confirm-trash-document">Move to Trash</button>`,
+    );
+  }
+  if (state.dialog.kind === "confirm-permanently-delete-document") {
+    return dialog(
+      `Permanently delete “${state.dialog.title}”?`,
+      `<p>This immediately deletes the document and cannot be undone.</p>`,
+      `<button class="button" data-action="cancel-confirmation" autofocus>Cancel</button><button class="button danger" data-action="confirm-permanently-delete-document">Delete permanently</button>`,
     );
   }
   if (state.dialog.kind === "confirm-remove-collaborator") {
@@ -1575,7 +1712,7 @@ function renderDialog() {
     );
   }
   if (state.dialog === "menu") {
-    return dialog("Document actions", `<div class="grant-list"><button class="button" data-action="download">Download .pen</button>${state.document?.access === "owner" ? `<button class="button danger" data-action="delete-document">Delete document</button>` : ""}</div>`);
+    return dialog("Document actions", `<div class="grant-list"><button class="button" data-action="download">Download .pen</button>${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
   }
   if (state.dialog === "compatibility") {
     return dialog("Compatibility review", `<p class="muted">Canvas keeps the original .pen data losslessly. The items below are not represented faithfully by the current Canvas renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
@@ -1618,12 +1755,25 @@ async function confirmDestructiveAction() {
   const confirmation = state.dialog;
   await act(async () => {
     const result = await executeDestructiveConfirmation(confirmation, {
-      deleteDocument: (documentId) => api.deleteDocument(documentId),
+      trashDocument: (documentId) => api.deleteDocument(documentId),
+      permanentlyDeleteDocument: (documentId) => api.permanentlyDeleteDocument(documentId),
       removeCollaborator: (grantId) => api.revokeGrant(state.document.id, grantId),
     });
-    if (result === "deleted-document") {
+    if (result === "trashed-document") {
       state.dialog = null;
-      await navigateToLibrary();
+      if (state.route === "editor") await navigateToLibrary();
+      else {
+        state.documents = state.documents.filter((item) => item.id !== confirmation.documentId);
+        setToast("Moved to Trash.");
+        render();
+      }
+      return;
+    }
+    if (result === "permanently-deleted-document") {
+      state.dialog = null;
+      state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== confirmation.documentId);
+      setToast("Document permanently deleted.");
+      render();
       return;
     }
     state.grants = (await api.listGrants(state.document.id)).items;
@@ -1699,6 +1849,18 @@ function setToast(text, error = false) {
   setTimeout(() => { state.toast = null; render(); }, 3_000);
 }
 
+function showTransientToast(text, error = false) {
+  const toast = { text, error };
+  state.toast = toast;
+  root.querySelector(".toast")?.remove();
+  root.insertAdjacentHTML("beforeend", renderToast());
+  setTimeout(() => {
+    if (state.toast !== toast) return;
+    state.toast = null;
+    root.querySelector(".toast")?.remove();
+  }, 3_000);
+}
+
 function renderToast() {
   return state.toast ? `<div class="toast ${state.toast.error ? "error-copy" : ""}">${escapeHtml(state.toast.text)}</div>` : "";
 }
@@ -1721,6 +1883,16 @@ function relativeTime(value) {
   return new Date(value).toLocaleDateString();
 }
 
+function formatDate(value) {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "Unknown";
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
 function message(error) {
   return error instanceof Error ? error.message : String(error);
 }
@@ -1738,6 +1910,7 @@ function icon(name) {
     cursor: '<path d="m6 4 12 8-6 2-2 6z"/>',
     ellipse: '<ellipse cx="12" cy="12" rx="8" ry="6"/>',
     file: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/>',
+    trash: '<path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/>',
     frame: '<path d="M5 5h14v14H5z"/><path d="M3 8h4M17 8h4M8 3v4M8 17v4"/>',
     hand: '<path d="M7.5 11V6.5a1.5 1.5 0 0 1 3 0V10 5.5a1.5 1.5 0 0 1 3 0V10 7a1.5 1.5 0 0 1 3 0v4-2a1.5 1.5 0 0 1 3 0v5.5c0 4-2.5 6.5-6.5 6.5h-1.2a6 6 0 0 1-4.8-2.4L4.3 15a1.6 1.6 0 0 1 2.4-2.1L9 15"/>',
     more: '<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>',

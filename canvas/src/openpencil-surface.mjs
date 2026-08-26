@@ -1,5 +1,6 @@
 import { createApp, h, ref } from "vue";
 import {
+  computeAllLayouts,
   getCanvasKit,
   fontManager,
   provideEditor,
@@ -21,6 +22,7 @@ import {
 import { bindCanvasThemeBackground } from "./canvas-theme.mjs";
 import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
+import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
@@ -154,20 +156,28 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       provideEditor(editor);
       const sceneCanvasRef = ref(null);
       const overlayCanvasRef = ref(null);
-      let readyLayers = 0;
-      const onLayerReady = () => {
-        readyLayers += 1;
-        if (readyLayers < 2) return;
-        if (!callbacks.viewport) {
+      const surfaceReady = ref(false);
+      const onLayerReady = createLayeredSurfaceReadiness({
+        layerCount: 2,
+        finalizeLayout: () => {
+          for (const page of editor.graph.getPages()) computeAllLayouts(editor.graph, page.id);
+        },
+        prepareViewport: () => {
+          if (callbacks.viewport) return;
           if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
             editor.select([callbacks.selectedId]);
             editor.zoomToSelection();
           } else {
             fitDesignInView();
           }
-        }
-        callbacks.onReady?.();
-      };
+        },
+        requestRender: () => editor.requestRender(),
+        scheduleReveal: (reveal) => requestAnimationFrame(reveal),
+        reveal: () => {
+          surfaceReady.value = true;
+          callbacks.onReady?.();
+        },
+      });
       useCanvas(sceneCanvasRef, editor, {
         layer: "scene",
         showRulers: false,
@@ -182,9 +192,6 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const overlayCanvas = useCanvas(overlayCanvasRef, editor, {
         layer: "overlays",
         showRulers: true,
-        // Layout once while preparing the graph. Re-running Yoga for every
-        // expanded instance after fonts load blocks the main thread for large
-        // files and diverges from OpenPencil's own lifecycle.
         recomputeLayoutAfterFonts: false,
         onPerformance: (name, duration, details) => callbacks.onPerformance?.(
           name,
@@ -201,7 +208,9 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
         overlayCanvas.hitTestFrameTitle,
       );
       useTextEdit(overlayCanvasRef, editor);
-      return () => h("div", { class: "openpencil-surface-stack" }, [
+      return () => h("div", {
+        class: ["openpencil-surface-stack", { "is-ready": surfaceReady.value }],
+      }, [
         h("canvas", {
           ref: sceneCanvasRef,
           class: "openpencil-surface openpencil-scene-surface",

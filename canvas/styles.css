@@ -59,6 +59,14 @@ h1, h2, h3, p { margin: 0; }
 .document-meta { display: grid; gap: 3px; padding: 11px 12px; }
 .document-meta strong { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
 .document-meta span { color: var(--secondary); font-size: 11px; }
+.trash-card { cursor: default; }
+.trash-card .document-meta { padding-bottom: 7px; }
+.trash-actions { display: flex; gap: 7px; padding: 0 12px 12px; }
+.trash-actions .button { min-width: 0; flex: 1; padding: 0 8px; }
+.context-menu-backdrop { position: fixed; z-index: 15; inset: 0; }
+.context-menu { position: fixed; width: 180px; padding: 5px; border: 1px solid var(--border); border-radius: 9px; background: var(--panel); box-shadow: 0 12px 30px #0005; }
+.context-menu button { width: 100%; min-height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 9px; border-radius: 6px; background: transparent; color: var(--danger); font-size: 12px; text-align: left; cursor: pointer; }
+.context-menu button:hover, .context-menu button:focus-visible { background: var(--hover); outline: 0; }
 .empty { min-height: 300px; display: grid; place-items: center; text-align: center; }
 .empty > div { display: grid; justify-items: center; gap: 9px; max-width: 340px; }
 .empty .icon { width: 30px; height: 30px; color: var(--tertiary); }
@@ -101,7 +109,8 @@ h1, h2, h3, p { margin: 0; }
 .layer-type { width: 15px; color: var(--tertiary); font-size: 10px; text-align: center; }
 .viewport { position: relative; min-width: 0; min-height: 0; overflow: hidden; overscroll-behavior: none; touch-action: none; background-color: var(--canvas-background); }
 .openpencil-host { position: absolute; inset: 0; overflow: hidden; background-color: var(--canvas-background); transition: background-color 1ms linear; }
-.openpencil-surface-stack { position: relative; width: 100%; height: 100%; }
+.openpencil-surface-stack { position: relative; width: 100%; height: 100%; visibility: hidden; }
+.openpencil-surface-stack.is-ready { visibility: visible; }
 .openpencil-surface { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
 .openpencil-scene-surface { pointer-events: none; }
 .openpencil-surface:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
