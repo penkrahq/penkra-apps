@@ -57,6 +57,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Assign canonical slash-separated Pencil addresses to instance descendants so interaction and persistence share one stable identity.",
     "Hit-test transparent Pencil frames across their resolved bounds so empty interior space retains the authored hierarchy target.",
     "Grow every omitted-size instance on an overridden descendant path while preserving authored fixed dimensions.",
+    "Promote an entered container by exactly one hierarchy level when its own empty interior is clicked.",
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
@@ -80,6 +81,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(surface, /layer: "scene"/u);
   assert.match(surface, /layer: "overlays"/u);
   assert.match(engine, /function drawFrameTitles\(/u);
+  assert.match(engine, /if \(fns\.isInsideContainerBounds\(cx, cy, scopeId\)\) \{\s+const scopeNode = editor\.graph\.getNode\(scopeId\);\s+editor\.exitContainer\(\);\s+return scopeNode \?\? null;/u);
   assert.match(engine, /labelCache\.getFrames\(graph4, r4\.worldViewport\)/u);
   assert.match(surface, /createLayeredSurfaceReadiness/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);

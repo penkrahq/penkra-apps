@@ -93329,8 +93329,9 @@ function resolveHit(cx, cy, editor, fns) {
   if (!scopeId)
     return null;
   if (fns.isInsideContainerBounds(cx, cy, scopeId)) {
-    editor.clearSelection();
-    return null;
+    const scopeNode = editor.graph.getNode(scopeId);
+    editor.exitContainer();
+    return scopeNode ?? null;
   }
   editor.exitContainer();
   const afterExit = fns.hitTestInScope(cx, cy, false);
