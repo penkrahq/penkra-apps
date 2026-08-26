@@ -38,8 +38,17 @@ test("closed layers do not retain or rebuild the document tree", async () => {
 
   assert.match(app, /state\.layersOpen \? renderLayersPanelContent\(layerNodes\) : ""/u);
   assert.match(app, /function renderLayersTree\(\)[\s\S]*?if \(!state\.layersOpen\) \{\s*scroll\.replaceChildren\(\);\s*return;/u);
-  assert.match(app, /renderLayersPanelContent\(currentLayerNodes\(\)\)/u);
-  assert.match(app, /if \(panel === "layers" && !wasOpen\) renderLayersTree\(\);/u);
+  assert.match(app, /renderLayersPanelContent\(currentVisibleLayerNodes\(\)\)/u);
+  assert.match(app, /if \(panel === "layers" && !wasOpen\) \{\s*renderLayersTree\(\);\s*scrollSelectedLayerIntoView\(\);/u);
+});
+
+test("Layers expands and reveals the exact graph path selected on canvas", async () => {
+  const app = await readFile(new URL("src/app.mjs", root), "utf8");
+
+  assert.match(app, /canvasSceneLayerAncestorIds\(graph, pageId, nodeId\)/u);
+  assert.match(app, /if \(expandSelectedLayerAncestors\(nodeId\)\) renderLayersTree\(\);/u);
+  assert.match(app, /scrollIntoView\(\{ block: "nearest" \}\)/u);
+  assert.match(app, /data-action="toggle-layer"/u);
 });
 
 test("selection remains an internal UI concern without public tab handlers", async () => {

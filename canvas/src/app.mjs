@@ -22,7 +22,11 @@ import {
   savePenDocument,
 } from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
-import { listCanvasSceneLayers } from "./scene-layer-tree.mjs";
+import {
+  canvasSceneLayerAncestorIds,
+  listCanvasSceneLayers,
+  visibleCanvasSceneLayers,
+} from "./scene-layer-tree.mjs";
 import { createPerformanceMonitor } from "./performance-monitor.mjs";
 import { configureCanvasFonts } from "./font-runtime.mjs";
 import {
@@ -89,6 +93,7 @@ const state = {
   assets: new Map(),
   model: null,
   selectedId: null,
+  expandedLayerIds: new Set(),
   sync: "saved",
   syncMessage: "Saved",
   presence: null,
@@ -376,6 +381,7 @@ async function openDocument(documentId) {
       ...(payload.updates ?? []).map((update) => update.sequence),
     );
     state.selectedId = currentDocumentNodes()[0]?.node.id ?? null;
+    state.expandedLayerIds.clear();
     state.updateListener = (update, origin) => {
       const incrementalEngineUpdate = origin === ENGINE_ORIGIN && state.incrementalEngineUpdate;
       if (!incrementalEngineUpdate) invalidateDocumentProjection();
@@ -483,6 +489,7 @@ function closeDocument() {
   state.document = null;
   state.model = null;
   state.selectedId = null;
+  state.expandedLayerIds.clear();
   state.presence = null;
   state.realtimeConnection = REALTIME_RECONNECTING;
   state.dialog = null;
@@ -873,7 +880,7 @@ function renderEditor() {
   }
   const document = currentMaterializedDocument();
   const documentNodes = currentDocumentNodes();
-  const layerNodes = currentLayerNodes(documentNodes);
+  const layerNodes = currentVisibleLayerNodes(documentNodes);
   if (state.compatibilityDocument !== document) {
     state.compatibilityIssues = performanceMonitor.measure(
       "document.compatibility",
@@ -969,7 +976,9 @@ function mountEditorSurface() {
       onSelection: ([nodeId]) => {
         if (state.document?.id !== documentId || nodeId === state.selectedId) return;
         state.selectedId = nodeId ?? null;
+        if (expandSelectedLayerAncestors(nodeId)) renderLayersTree();
         renderSelection();
+        scrollSelectedLayerIntoView();
       },
       onViewport: (viewport) => {
         if (state.document?.id !== documentId) return;
@@ -1100,7 +1109,7 @@ function renderLayersTree() {
     scroll.replaceChildren();
     return;
   }
-  scroll.innerHTML = renderLayersPanelContent(currentLayerNodes());
+  scroll.innerHTML = renderLayersPanelContent(currentVisibleLayerNodes());
   bindLayersTree();
 }
 
@@ -1111,6 +1120,10 @@ function currentLayerNodes(fallback = currentDocumentNodes()) {
   const pageId = editor.state.currentPageId ?? graph.getPages()?.[0]?.id;
   const nodes = listCanvasSceneLayers(graph, pageId);
   return nodes.length > 0 ? nodes : fallback;
+}
+
+function currentVisibleLayerNodes(fallback = currentDocumentNodes()) {
+  return visibleCanvasSceneLayers(currentLayerNodes(fallback), state.expandedLayerIds);
 }
 
 function renderLayersPanelContent(nodes) {
@@ -1128,11 +1141,12 @@ function renderHistoryControls() {
   if (redoButton) redoButton.disabled = editor ? !editor.undo.canRedo : !state.undo?.canRedo();
 }
 
-function layerRow({ node, depth }) {
+function layerRow({ node, depth, hasChildren }) {
   const sourceId = node.pencilNodeId ?? node.id.split("/").at(-1);
   const issue = state.compatibilityNodeIds.has(sourceId);
   const type = String(node.type).toLowerCase();
-  return `<button class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span>${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</button>`;
+  const expanded = hasChildren && state.expandedLayerIds.has(node.id);
+  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
 }
 
 function renderInspector(selection) {
@@ -1175,11 +1189,12 @@ function selectionHeading(selection) {
 
 function renderSelection() {
   const startedAt = performance.now();
-  const previous = root.querySelector(".layer-row.selected");
+  const layersTree = currentLayersTree();
+  const previous = layersTree?.querySelector(".layer-row.selected");
   previous?.classList.remove("selected");
   previous?.setAttribute("aria-selected", "false");
   if (state.selectedId) {
-    const selected = root.querySelector(`[data-node-id="${CSS.escape(state.selectedId)}"]`);
+    const selected = layersTree?.querySelector(`[data-node-id="${CSS.escape(state.selectedId)}"]`);
     selected?.classList.add("selected");
     selected?.setAttribute("aria-selected", "true");
   }
@@ -1195,6 +1210,32 @@ function renderSelection() {
     documentId: state.document?.id,
     nodeId: state.selectedId,
   });
+}
+
+function expandSelectedLayerAncestors(nodeId) {
+  const editor = state.engineSurface?.editor;
+  const graph = editor?.graph;
+  const pageId = editor?.state.currentPageId ?? graph?.getPages?.()[0]?.id;
+  let changed = false;
+  for (const ancestorId of canvasSceneLayerAncestorIds(graph, pageId, nodeId)) {
+    if (state.expandedLayerIds.has(ancestorId)) continue;
+    state.expandedLayerIds.add(ancestorId);
+    changed = true;
+  }
+  return changed;
+}
+
+function scrollSelectedLayerIntoView() {
+  if (!state.layersOpen || !state.selectedId) return;
+  requestAnimationFrame(() => {
+    currentLayersTree()
+      ?.querySelector(`[data-node-id="${CSS.escape(state.selectedId)}"]`)
+      ?.scrollIntoView({ block: "nearest" });
+  });
+}
+
+function currentLayersTree() {
+  return root.querySelector('.side-panel.layers [role="tree"][aria-label="Document layers"]');
 }
 
 function syncPanelVisibility() {
@@ -1349,7 +1390,10 @@ function bindEditor() {
     state.activePanel = panel;
     state[`${panel}Open`] = true;
     syncPanelVisibility();
-    if (panel === "layers" && !wasOpen) renderLayersTree();
+    if (panel === "layers" && !wasOpen) {
+      renderLayersTree();
+      scrollSelectedLayerIntoView();
+    }
   }));
   root.querySelectorAll("[data-asset-panel]").forEach((button) => button.addEventListener("click", () => {
     state.assetPanel = button.dataset.assetPanel;
@@ -1427,21 +1471,51 @@ function bindEditor() {
 }
 
 function bindLayersTree() {
-  const tree = root.querySelector('[role="tree"][aria-label="Document layers"]');
+  const tree = currentLayersTree();
   if (!tree || tree.dataset.bound === "true") return;
   tree.dataset.bound = "true";
   tree.addEventListener("click", (event) => {
     const element = event.target.closest("[data-node-id]");
     if (!element) return;
     event.stopPropagation();
+    if (event.target.closest('[data-action="toggle-layer"]')) {
+      const nodeId = element.dataset.nodeId;
+      if (state.expandedLayerIds.has(nodeId)) state.expandedLayerIds.delete(nodeId);
+      else state.expandedLayerIds.add(nodeId);
+      renderLayersTree();
+      return;
+    }
     selectNode(element.dataset.nodeId, { openInspector: innerWidth < 960 });
   });
   tree.addEventListener("dblclick", (event) => {
+    if (event.target.closest('[data-action="toggle-layer"]')) return;
     const element = event.target.closest("[data-node-id]");
     if (!element) return;
     event.stopPropagation();
     const nodeId = element.dataset.nodeId;
     selectNode(nodeId, { focus: true });
+  });
+  tree.addEventListener("keydown", (event) => {
+    const element = event.target.closest("[data-node-id]");
+    if (!element) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectNode(element.dataset.nodeId, { openInspector: innerWidth < 960 });
+      return;
+    }
+    if (event.key === "ArrowRight" && element.getAttribute("aria-expanded") === "false") {
+      event.preventDefault();
+      state.expandedLayerIds.add(element.dataset.nodeId);
+      renderLayersTree();
+      currentLayersTree()?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)?.focus();
+      return;
+    }
+    if (event.key === "ArrowLeft" && element.getAttribute("aria-expanded") === "true") {
+      event.preventDefault();
+      state.expandedLayerIds.delete(element.dataset.nodeId);
+      renderLayersTree();
+      currentLayersTree()?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)?.focus();
+    }
   });
 }
 
@@ -1728,7 +1802,9 @@ function selectNode(nodeId, options = {}) {
   }
   const editor = state.engineSurface?.editor;
   if (editor?.graph.getNode(nodeId)) editor.select([nodeId]);
+  if (expandSelectedLayerAncestors(nodeId)) renderLayersTree();
   renderSelection();
+  scrollSelectedLayerIntoView();
   if (options.focus) requestAnimationFrame(() => focusNodeInViewport(nodeId));
 }
 
