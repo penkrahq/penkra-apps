@@ -55,6 +55,8 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",
     "Resolve selection hit tests one immediate hierarchy level at a time and enter containers without skipping directly to deep text editing.",
     "Assign canonical slash-separated Pencil addresses to instance descendants so interaction and persistence share one stable identity.",
+    "Hit-test transparent Pencil frames across their resolved bounds so empty interior space retains the authored hierarchy target.",
+    "Grow every omitted-size instance on an overridden descendant path while preserving authored fixed dimensions.",
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);

@@ -974,6 +974,94 @@ test("an omitted instance width grows around an overridden auto-width label", ()
   assert.equal(instance.height, 20);
 });
 
+test("a nested omitted instance grows around overridden text without overlapping its sibling", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "state-chip",
+        type: "frame",
+        reusable: true,
+        layout: "horizontal",
+        width: 54,
+        height: 20,
+        padding: [3, 8],
+        alignItems: "center",
+        children: [{ id: "state-label", type: "text", content: "queued", fontSize: 11 }],
+      },
+      {
+        id: "queue-row",
+        type: "frame",
+        reusable: true,
+        layout: "horizontal",
+        width: 300,
+        height: 24,
+        justifyContent: "space_between",
+        alignItems: "center",
+        children: [
+          { id: "row-id", type: "text", content: "fr-1042", fontSize: 11 },
+          {
+            id: "row-trailing",
+            type: "frame",
+            layout: "horizontal",
+            gap: 6,
+            alignItems: "center",
+            children: [
+              { id: "row-state", type: "ref", ref: "state-chip" },
+              { id: "row-action", type: "frame", width: 24, height: 24 },
+            ],
+          },
+        ],
+      },
+      {
+        id: "queue-row-instance",
+        type: "ref",
+        ref: "queue-row",
+        width: 300,
+        descendants: { "row-state/state-label": { content: "in progress" } },
+      },
+    ],
+  });
+  const state = graph.getNode("queue-row-instance/row-trailing/row-state");
+  const label = graph.getNode("queue-row-instance/row-trailing/row-state/state-label");
+  const trailing = graph.getNode("queue-row-instance/row-trailing");
+  const action = graph.getNode("queue-row-instance/row-trailing/row-action");
+
+  assert.equal(label.text, "in progress");
+  assert.equal(state.width, label.width + state.paddingLeft + state.paddingRight);
+  assert.equal(trailing.width, state.width + trailing.itemSpacing + action.width);
+  assert.ok(state.x + state.width <= action.x);
+  assert.ok(trailing.x + trailing.width <= graph.getNode("queue-row-instance").width);
+});
+
+test("an unfilled frame remains hittable throughout its resolved bounds", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "queue-row",
+        type: "frame",
+        reusable: true,
+        width: 300,
+        height: 24,
+        children: [
+          { id: "left-label", type: "text", x: 0, y: 4, content: "fr-1042", fontSize: 11 },
+          { id: "right-action", type: "frame", x: 276, y: 0, width: 24, height: 24, fill: "#eeeeee" },
+        ],
+      },
+      { id: "queue-row-instance", type: "ref", ref: "queue-row" },
+    ],
+  });
+  const pageId = graph.getPages()[0].id;
+  const row = graph.getNode("queue-row-instance");
+  const point = graph.getAbsolutePosition(row.id);
+  const x = point.x + row.width / 2;
+  const y = point.y + row.height / 2;
+
+  assert.equal(graph.hitTest(x, y, pageId)?.id, "queue-row-instance");
+  assert.equal(graph.hitTestDeep(x, y, pageId)?.id, "queue-row-instance");
+});
+
 test("weighted Material Symbols remain semantic text backed by the official variable font", () => {
   const source = {
     version: "2.17",

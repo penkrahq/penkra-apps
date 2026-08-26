@@ -1730,7 +1730,7 @@ function hitTestTransparentContainer(graph, px, py, child, childId, deep) {
       return child;
     return childHit;
   }
-  if (containsPoint(px, py, child, graph) && hasVisibleFillOrStroke(child))
+  if (containsPoint(px, py, child, graph))
     return child;
   return null;
 }
@@ -85265,6 +85265,8 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
   const node = graph4.createNode(sceneType, parentId, overrides);
   node.pencilNodeId = pen.id;
   node.pencilAddress = pen.id;
+  node.pencilWidthOmitted = pen.width === undefined;
+  node.pencilHeightOmitted = pen.height === undefined;
   if (pen.type === "polygon")
     node.pointCount = Math.max(3, Math.round(Number(pen.polygonCount ?? 3)));
   if (pen.fill !== undefined)
@@ -85360,6 +85362,7 @@ function findCloneByComponentPath(graph4, instanceId, path) {
   return match;
 }
 function applyOverrideProps(target, overrideData, ctx) {
+  const previousIntrinsicHeight = target.height;
   let textMetricsChanged = false;
   if (overrideData.fill !== undefined)
     target.fills = convertFill(overrideData.fill, ctx, target);
@@ -85427,7 +85430,38 @@ function applyOverrideProps(target, overrideData, ctx) {
       fill: overrideData.__canvasIconFill
     }, ctx);
   }
-  return textMetricsChanged && target.type === "TEXT" && target.textAutoResize === "WIDTH_AND_HEIGHT";
+  const intrinsicTextMetricsChanged = textMetricsChanged
+    && target.type === "TEXT"
+    && target.textAutoResize === "WIDTH_AND_HEIGHT";
+  return {
+    width: intrinsicTextMetricsChanged,
+    height: intrinsicTextMetricsChanged && target.height !== previousIntrinsicHeight,
+  };
+}
+
+function setInstanceAxisToHug(instance, axis) {
+  const vertical = instance.layoutMode === "VERTICAL";
+  const sizingKey = axis === "width"
+    ? vertical ? "counterAxisSizing" : "primaryAxisSizing"
+    : vertical ? "primaryAxisSizing" : "counterAxisSizing";
+  instance[sizingKey] = "HUG";
+}
+
+function applyIntrinsicOverrideSizing(graph4, target, instanceNode, changedAxes) {
+  let current = target;
+  const visited = /* @__PURE__ */ new Set;
+  while (current && !visited.has(current.id)) {
+    visited.add(current.id);
+    if (current.type === "INSTANCE") {
+      if (changedAxes.width && current.pencilWidthOmitted)
+        setInstanceAxisToHug(current, "width");
+      if (changedAxes.height && current.pencilHeightOmitted)
+        setInstanceAxisToHug(current, "height");
+    }
+    if (current.id === instanceNode.id)
+      break;
+    current = current.parentId ? graph4.getNode(current.parentId) : null;
+  }
 }
 function populateInstances2(graph4) {
   for (const node of graph4.getAllNodes()) {
@@ -85444,7 +85478,6 @@ function applyDescendantOverrides(graph4, pen, ctx, componentIds, penSources) {
   const instanceNode = graph4.getNode(pen.id);
   if (!instanceNode)
     return;
-  let hasIntrinsicWidthOverride = false;
   for (const [origId, overrideData] of Object.entries(pen.descendants)) {
     const clone2 = findCloneByComponentPath(graph4, instanceNode.id, origId);
     if (clone2) {
@@ -85456,16 +85489,13 @@ function applyDescendantOverrides(graph4, pen, ctx, componentIds, penSources) {
           createSceneNode(child, clone2.id, graph4, ctx, componentIds, penSources);
         }
       }
-      hasIntrinsicWidthOverride = applyOverrideProps(clone2, overrideData, ctx) || hasIntrinsicWidthOverride;
+      const changedAxes = applyOverrideProps(clone2, overrideData, ctx);
+      applyIntrinsicOverrideSizing(graph4, clone2, instanceNode, changedAxes);
       continue;
     }
     if (overrideData.type && overrideData.id) {
       createSceneNode(overrideData, instanceNode.id, graph4, ctx, componentIds, penSources);
     }
-  }
-  if (hasIntrinsicWidthOverride && pen.width === undefined) {
-    const widthAxis = instanceNode.layoutMode === "VERTICAL" ? "counterAxisSizing" : "primaryAxisSizing";
-    instanceNode[widthAxis] = "HUG";
   }
 }
 function walkAndApplyOverrides(nodes, graph4, ctx, componentIds, penSources) {
