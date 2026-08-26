@@ -6,6 +6,7 @@ import {
 } from "../vendor/open-pencil/engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { pencilResourceAsset } from "./pencil-resources.mjs";
+import { resolveCanvasNodeSelection } from "./node-reference.mjs";
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",
@@ -393,12 +394,20 @@ export function penPropertyToSceneChanges(node, property, value) {
 
 export function sceneEventToPenMutations(editor, document, nodeId, changes, previousSceneValues) {
   if (!editor.state.selectedIds.has(nodeId)) return [];
-  const sourceNode = findPenNode(document, nodeId);
-  if (!sourceNode || !isOpenPencilEditableNode(sourceNode)) return [];
-  return sceneUpdateToMutations(
+  const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
+  if (!selection?.effectiveNode || !isOpenPencilEditableNode(selection.effectiveNode)) return [];
+  const mutations = sceneUpdateToMutations(
     nodeId,
     changedSceneProperties(previousSceneValues, changes),
   );
+  if (!selection.isInstanceDescendant) return mutations;
+  return mutations.map((mutation) => ({
+    kind: "set-property-path",
+    nodeId: selection.instanceId,
+    property: "descendants",
+    path: [selection.descendantPath, mutation.property],
+    value: mutation.value,
+  }));
 }
 
 export function isOpenPencilEditableNode(node) {

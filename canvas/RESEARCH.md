@@ -53,6 +53,19 @@ be revisited against the implementation that inspired it.
   supported editor mutations into the lossless Yjs `.pen` model, which remains
   canonical for collaboration, offline recovery, and export. Unknown data is
   therefore never made dependent on OpenPencil's normalized representation.
+- Pencil's [format schema](https://docs.pencil.dev/for-developers/the-pen-format)
+  reserves `/` out of source node IDs and uses slash-separated keys in a
+  ref's `descendants` map to address nested instance content. Canvas uses that
+  authored address directly as the disposable scene node ID for an instance
+  descendant (for example, `instance/child/nested-child`). The same stable value
+  therefore drives hit testing, selection, Layers, Inspector, clipboard
+  references, refresh restoration, and the mechanical Yjs write to
+  `descendants[path]`; no name or geometry fallback is involved.
+- OpenPencil's own [Layers model](https://github.com/open-pencil/open-pencil/blob/master/packages/vue/src/primitives/LayerTree/model.ts)
+  is built from the live scene graph rather than
+  the source file's unexpanded tree. Canvas follows that architecture so
+  component-instance descendants remain visible and selectable in Layers while
+  the lossless `.pen` model remains the persistence authority.
 - Unsupported visual behavior is reported in the editor and preserved in source;
   Canvas does not hide it with compatibility heuristics.
 

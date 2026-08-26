@@ -67,8 +67,16 @@ export function setNodePropertyPath(
     );
   }
   transact(model, origin, () => {
-    let current = getNode(model, nodeId).get("properties").get(property);
+    const properties = getNode(model, nodeId).get("properties");
+    let current = properties.get(property);
+    if (current === undefined) {
+      current = new Y.Map();
+      properties.set(property, current);
+    }
     for (const key of path.slice(0, -1)) {
+      if (current instanceof Y.Map && current.get(key) === undefined) {
+        current.set(key, new Y.Map());
+      }
       if (!(current instanceof Y.Map)) {
         throw new Error(
           `${property}.${path.join(".")} is not an editable object path.`,

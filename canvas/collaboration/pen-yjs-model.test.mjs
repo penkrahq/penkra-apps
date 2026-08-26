@@ -131,6 +131,26 @@ test("declared nested object edits merge at field granularity", () => {
   });
 });
 
+test("a new component descendant override is created at its exact authored path", () => {
+  const model = createModel({
+    version: "2.17",
+    children: [{ id: "row-instance", type: "ref", ref: "row" }],
+  });
+
+  setNodePropertyPath(
+    model,
+    "row-instance",
+    "descendants",
+    ["row-meta/status-label", "content"],
+    "blocked",
+    "local",
+  );
+
+  assert.deepEqual(materializePen(model).children[0].descendants, {
+    "row-meta/status-label": { content: "blocked" },
+  });
+});
+
 test("concurrent inserts and competing moves converge to one deterministic hierarchy", () => {
   const base = createModel(fixture);
   const alice = cloneModel(base, { guid: "alice" });

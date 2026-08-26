@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "3660cc7eb965bfe4a06188ea717d330c8f4e1282e10bdc7dbb27a459d619754b",
+  "engineSha256": "8a0d65db3eef97d7a1e623bbc656061ec8c1a29d5b7972e930bc98b9edff0112",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -39,6 +39,7 @@
     "Measure auto-width Pencil text intrinsically after fonts resolve so parent constraints cannot turn instance text overrides into wrapped multi-line text.",
     "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",
     "Resolve selection hit tests one immediate hierarchy level at a time and enter containers without skipping directly to deep text editing.",
+    "Assign canonical slash-separated Pencil addresses to instance descendants so interaction and persistence share one stable identity.",
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes."
   ],
   "exports": [

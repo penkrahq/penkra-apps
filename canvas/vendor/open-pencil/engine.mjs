@@ -1846,6 +1846,23 @@ function copyProp(target, source, key) {
     setSceneProp(target, key, Array.isArray(value) ? structuredClone(value) : value);
   }
 }
+function createMappedComponentClone(graph, src, componentId, destParentId, mode = "deep") {
+  const parent = graph.nodes.get(destParentId);
+  const pencilNodeId = typeof src.pencilNodeId === "string" ? src.pencilNodeId : null;
+  const pencilAddress = typeof parent?.pencilAddress === "string" && pencilNodeId
+    ? `${parent.pencilAddress}/${pencilNodeId}`
+    : null;
+  const props = cloneNodeProps(src, componentId, mode);
+  if (!pencilAddress) return graph.createNode(src.type, destParentId, props);
+  if (graph.nodes.has(pencilAddress)) {
+    throw new Error(`Duplicate Pencil instance address: ${pencilAddress}`);
+  }
+  return graph.createNodeWithId(pencilAddress, src.type, destParentId, {
+    ...props,
+    pencilNodeId,
+    pencilAddress
+  });
+}
 function cloneChildrenWithMapping(graph, sourceParentId, destParentId, mode = "deep") {
   const sourceParent = graph.nodes.get(sourceParentId);
   if (!sourceParent)
@@ -1854,7 +1871,7 @@ function cloneChildrenWithMapping(graph, sourceParentId, destParentId, mode = "d
     const src = graph.nodes.get(childId);
     if (!src)
       continue;
-    const clone2 = graph.createNode(src.type, destParentId, cloneNodeProps(src, childId, mode));
+    const clone2 = createMappedComponentClone(graph, src, childId, destParentId, mode);
     if (src.childIds.length > 0)
       cloneChildrenWithMapping(graph, childId, clone2.id, mode);
   }
@@ -1879,7 +1896,7 @@ function syncChildren(graph, compParentId, instParentId, overrides) {
       const src = graph.nodes.get(compChildId);
       if (!src)
         continue;
-      const clone2 = graph.createNode(src.type, instParentId, cloneNodeProps(src, compChildId));
+      const clone2 = createMappedComponentClone(graph, src, compChildId, instParentId);
       if (src.childIds.length > 0)
         cloneChildrenWithMapping(graph, compChildId, clone2.id);
       instChildMap.set(compChildId, clone2);
@@ -85246,6 +85263,8 @@ function createSceneNode(pen, parentId, graph4, ctx, componentIds, penSources) {
     applyAutoLayout(overrides, layout, pen, widthSizing, heightSizing, ctx);
   }
   const node = graph4.createNode(sceneType, parentId, overrides);
+  node.pencilNodeId = pen.id;
+  node.pencilAddress = pen.id;
   if (pen.type === "polygon")
     node.pointCount = Math.max(3, Math.round(Number(pen.polygonCount ?? 3)));
   if (pen.fill !== undefined)

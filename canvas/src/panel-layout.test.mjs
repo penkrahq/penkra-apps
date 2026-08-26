@@ -36,8 +36,9 @@ test("documents open with layers and inspector collapsed", async () => {
 test("closed layers do not retain or rebuild the document tree", async () => {
   const app = await readFile(new URL("src/app.mjs", root), "utf8");
 
-  assert.match(app, /state\.layersOpen \? renderLayersPanelContent\(nodes\) : ""/u);
+  assert.match(app, /state\.layersOpen \? renderLayersPanelContent\(layerNodes\) : ""/u);
   assert.match(app, /function renderLayersTree\(\)[\s\S]*?if \(!state\.layersOpen\) \{\s*scroll\.replaceChildren\(\);\s*return;/u);
+  assert.match(app, /renderLayersPanelContent\(currentLayerNodes\(\)\)/u);
   assert.match(app, /if \(panel === "layers" && !wasOpen\) renderLayersTree\(\);/u);
 });
 

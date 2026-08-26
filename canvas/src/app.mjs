@@ -22,12 +22,14 @@ import {
   savePenDocument,
 } from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
+import { listCanvasSceneLayers } from "./scene-layer-tree.mjs";
 import { createPerformanceMonitor } from "./performance-monitor.mjs";
 import { configureCanvasFonts } from "./font-runtime.mjs";
 import {
   copyTextToClipboard,
   formatCanvasNodeReference,
   resolveCanvasNodeReferenceId,
+  resolveCanvasNodeSelection,
 } from "./node-reference.mjs";
 import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
 import {
@@ -728,6 +730,15 @@ function currentDocumentNode(nodeId) {
   return state.documentNodeById.get(nodeId) ?? null;
 }
 
+function currentCanvasSelection() {
+  if (!state.selectedId) return null;
+  return resolveCanvasNodeSelection({
+    document: currentMaterializedDocument(),
+    graph: state.engineSurface?.editor.graph,
+    selectedId: state.selectedId,
+  });
+}
+
 function render() {
   const renderStartedAt = performance.now();
   const retainedHost = state.route === "editor" && state.document && state.engineSurface
@@ -861,7 +872,8 @@ function renderEditor() {
     return `<main class="shell empty"><div>${icon("file")}<h2>${ACCESS_REMOVED_HEADING}</h2><p>${ACCESS_REMOVED_MESSAGE}</p><div class="library-actions"><button class="button primary" data-action="back">Back to files</button></div></div></main>${renderToast()}`;
   }
   const document = currentMaterializedDocument();
-  const nodes = currentDocumentNodes();
+  const documentNodes = currentDocumentNodes();
+  const layerNodes = currentLayerNodes(documentNodes);
   if (state.compatibilityDocument !== document) {
     state.compatibilityIssues = performanceMonitor.measure(
       "document.compatibility",
@@ -870,12 +882,12 @@ function renderEditor() {
         state.assets,
         currentPreparedRenderDocument(),
       ),
-      { documentId: state.document.id, nodes: nodes.length },
+      { documentId: state.document.id, nodes: documentNodes.length },
     );
     state.compatibilityNodeIds = new Set(state.compatibilityIssues.map((issue) => issue.nodeId));
     state.compatibilityDocument = document;
   }
-  const selected = currentDocumentNode(state.selectedId);
+  const selection = currentCanvasSelection();
   const unsupported = state.compatibilityIssues;
   const visiblePresence = visiblePresenceCount(state.realtimeConnection, state.presence);
   const presenceNoun = visiblePresence === 1 ? "person" : "people";
@@ -896,7 +908,7 @@ function renderEditor() {
     <div class="editor-body ${panelClass} ${panelVisibilityClass}">
       <aside class="side-panel layers" ${state.layersOpen ? "" : "hidden"}>
         <div class="panel-tabs"><button class="${state.assetPanel === "file" ? "active" : ""}" data-asset-panel="file">File</button><button class="${state.assetPanel === "assets" ? "active" : ""}" data-asset-panel="assets">Assets</button><button class="icon-button panel-close" data-action="close-layers" aria-label="Close layers">${icon("close")}</button></div>
-        <div class="panel-scroll">${state.layersOpen ? renderLayersPanelContent(nodes) : ""}</div>
+        <div class="panel-scroll">${state.layersOpen ? renderLayersPanelContent(layerNodes) : ""}</div>
       </aside>
       <section class="viewport" data-role="viewport" data-tool="${state.activeTool}" tabindex="0" aria-label="Canvas viewport">
         <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading" role="status" aria-live="polite">Rendering design…</div></div>
@@ -905,7 +917,7 @@ function renderEditor() {
         <div class="zoom-controls" aria-label="Canvas zoom"><button class="tool" data-action="zoom-out" aria-label="Zoom out">−</button><button class="zoom-label" data-action="fit" aria-label="Fit design in view">${Math.round((state.engineViewport?.zoom ?? 1) * 100)}%</button><button class="tool" data-action="zoom-in" aria-label="Zoom in">+</button></div>
         <div class="tool-palette" aria-label="Canvas tools"><button class="tool ${state.activeTool === "select" ? "active" : ""}" data-tool="SELECT" aria-label="Select tool" title="Select (V)">${icon("cursor")}</button><button class="tool ${state.activeTool === "hand" ? "active" : ""}" data-tool="HAND" aria-label="Pan canvas" title="Pan canvas (H or Space)">${icon("hand")}</button><span class="tool-separator"></span><button class="tool" data-tool="FRAME" aria-label="Frame tool" title="Frame (F)">${icon("frame")}</button><button class="tool" data-tool="RECTANGLE" aria-label="Rectangle tool" title="Rectangle (R)">${icon("rectangle")}</button><button class="tool" data-tool="ELLIPSE" aria-label="Ellipse tool" title="Ellipse (O)">${icon("ellipse")}</button><button class="tool" data-tool="TEXT" aria-label="Text tool" title="Text (T)">${icon("text")}</button></div>
       </section>
-      <aside class="side-panel inspector" ${state.inspectorOpen ? "" : "hidden"}><div class="panel-tabs"><button class="${state.inspectorTab === "design" ? "active" : ""}" data-inspector-tab="design">Design</button><button class="${state.inspectorTab === "code" ? "active" : ""}" data-inspector-tab="code">Code</button><button class="icon-button panel-close" data-action="close-inspector" aria-label="Close inspector">${icon("close")}</button></div><div class="panel-scroll">${state.inspectorTab === "design" ? renderInspector(selected) : renderCodeInspector(selected)}</div></aside>
+      <aside class="side-panel inspector" ${state.inspectorOpen ? "" : "hidden"}><div class="panel-tabs"><button class="${state.inspectorTab === "design" ? "active" : ""}" data-inspector-tab="design">Design</button><button class="${state.inspectorTab === "code" ? "active" : ""}" data-inspector-tab="code">Code</button><button class="icon-button panel-close" data-action="close-inspector" aria-label="Close inspector">${icon("close")}</button></div><div class="panel-scroll">${state.inspectorTab === "design" ? renderInspector(selection) : renderCodeInspector(selection)}</div></aside>
     </div>
   </main>${renderDialog()}${renderToast()}`;
 }
@@ -931,6 +943,7 @@ function mountEditorSurface() {
         if (state.engineSurface !== surface) return;
         state.engineReady = true;
         renderHistoryControls();
+        renderLayersTree();
         host.querySelector(".engine-loading")?.remove();
         performanceMonitor.record(
           "engine.first-frame",
@@ -1087,8 +1100,17 @@ function renderLayersTree() {
     scroll.replaceChildren();
     return;
   }
-  scroll.innerHTML = renderLayersPanelContent(currentDocumentNodes());
+  scroll.innerHTML = renderLayersPanelContent(currentLayerNodes());
   bindLayersTree();
+}
+
+function currentLayerNodes(fallback = currentDocumentNodes()) {
+  const editor = state.engineSurface?.editor;
+  const graph = editor?.graph;
+  if (!graph) return fallback;
+  const pageId = editor.state.currentPageId ?? graph.getPages()?.[0]?.id;
+  const nodes = listCanvasSceneLayers(graph, pageId);
+  return nodes.length > 0 ? nodes : fallback;
 }
 
 function renderLayersPanelContent(nodes) {
@@ -1107,29 +1129,33 @@ function renderHistoryControls() {
 }
 
 function layerRow({ node, depth }) {
-  const issue = state.compatibilityNodeIds.has(node.id);
-  return `<button class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"><span class="layer-type">${node.type === "text" ? "T" : node.type === "frame" ? "□" : "◇"}</span><span>${escapeHtml(node.name ?? node.content ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</button>`;
+  const sourceId = node.pencilNodeId ?? node.id.split("/").at(-1);
+  const issue = state.compatibilityNodeIds.has(sourceId);
+  const type = String(node.type).toLowerCase();
+  return `<button class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span>${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</button>`;
 }
 
-function renderInspector(node) {
+function renderInspector(selection) {
+  const node = selection?.effectiveNode;
   if (!node) return `<div class="inspector-empty">Select an object to inspect and edit its properties.</div>`;
   const sceneEditable = isOpenPencilEditableNode(node);
   if (!isPencilAuthorableNode(node, sceneEditable)) {
-    return `${selectionHeading(node)}<div class="inspector-empty">This unsupported object is preserved as opaque .pen source and cannot be edited in Canvas.</div>`;
+    return `${selectionHeading(selection)}<div class="inspector-empty">This unsupported object is preserved as opaque .pen source and cannot be edited in Canvas.</div>`;
   }
+  const fieldNodeId = selection.referenceId;
   const numeric = ["x", "y", "width", "height", "rotation"];
   const simpleFill = typeof node.fill === "string"
     || node.fill?.type === "color"
     || node.fill?.type === "solid"
     || node.fill == null;
-  return `${selectionHeading(node)}
-  <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, node.id)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("rotation", node.rotation ?? 0, "number", false, node.id)}</div></section>
-  <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, node.id)).join("")}${field("gap", node.gap ?? 0, "number", false, node.id)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, node.id)}</div></section>
-  <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, node.id) : ""}${field("opacity", node.opacity ?? 1, "number", false, node.id)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, node.id)}</div></section>
-  ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, node.id)}${field("fontFamily", node.fontFamily ?? "Inter", "text", true, node.id)}${field("fontSize", node.fontSize ?? 16, "number", false, node.id)}${field("fontWeight", node.fontWeight ?? "400", "text", false, node.id)}${field("lineHeight", node.lineHeight ?? 1.2, "number", false, node.id)}</div></section>` : ""}
-  ${pencilAuthoringSections(node).map((section) => renderAuthoringSection(section, node.id)).join("")}
+  return `${selectionHeading(selection)}
+  <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, fieldNodeId)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("rotation", node.rotation ?? 0, "number", false, fieldNodeId)}</div></section>
+  <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("gap", node.gap ?? 0, "number", false, fieldNodeId)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, fieldNodeId)}</div></section>
+  <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, fieldNodeId) : ""}${field("opacity", node.opacity ?? 1, "number", false, fieldNodeId)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, fieldNodeId)}</div></section>
+  ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, fieldNodeId)}${field("fontFamily", node.fontFamily ?? "Inter", "text", true, fieldNodeId)}${field("fontSize", node.fontSize ?? 16, "number", false, fieldNodeId)}${field("fontWeight", node.fontWeight ?? "400", "text", false, fieldNodeId)}${field("lineHeight", node.lineHeight ?? 1.2, "number", false, fieldNodeId)}</div></section>` : ""}
+  ${pencilAuthoringSections(node).map((section) => renderAuthoringSection(section, fieldNodeId)).join("")}
   ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved in the .pen source but is not represented faithfully. Review compatibility for details.</p></section>` : ""}
-  <div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`;
+  ${selection.isInstanceDescendant ? "" : `<div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`}`;
 }
 
 function renderAuthoringSection(section, nodeId) {
@@ -1142,8 +1168,9 @@ function authoringField(descriptor, nodeId) {
   return field(descriptor.property, descriptor.value, descriptor.kind, descriptor.full, nodeId, options);
 }
 
-function selectionHeading(node) {
-  return `<section class="selection-heading"><span class="layer-type">${node.type === "text" ? "T" : "◇"}</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(node.id)}</span></div><button class="button copy-reference" data-action="copy-node-reference" type="button" title="Copy a reference you can paste into a Thread or send to an agent">Copy reference</button></section>`;
+function selectionHeading(selection) {
+  const node = selection.effectiveNode;
+  return `<section class="selection-heading"><span class="layer-type">${node.type === "text" ? "T" : "◇"}</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(selection.referenceId)}</span></div><button class="button copy-reference" data-action="copy-node-reference" type="button" title="Copy a reference you can paste into a Thread or send to an agent">Copy reference</button></section>`;
 }
 
 function renderSelection() {
@@ -1158,10 +1185,10 @@ function renderSelection() {
   }
   const inspector = root.querySelector(".side-panel.inspector .panel-scroll");
   if (inspector) {
-    const node = currentDocumentNode(state.selectedId);
+    const selection = currentCanvasSelection();
     inspector.innerHTML = state.inspectorTab === "design"
-      ? renderInspector(node)
-      : renderCodeInspector(node);
+      ? renderInspector(selection)
+      : renderCodeInspector(selection);
     bindInspectorControls();
   }
   performanceMonitor.record("ui.selection", performance.now() - startedAt, {
@@ -1192,9 +1219,16 @@ function syncPanelVisibility() {
   });
 }
 
-function renderCodeInspector(node) {
-  if (!node) return `<div class="inspector-empty">Select an object to inspect its lossless .pen source.</div>`;
-  return `<section class="section code-section"><h3>.pen source</h3><pre>${escapeHtml(JSON.stringify(node, null, 2))}</pre></section>`;
+function renderCodeInspector(selection) {
+  if (!selection?.sourceNode) return `<div class="inspector-empty">Select an object to inspect its lossless .pen source.</div>`;
+  const source = selection.isInstanceDescendant
+    ? {
+      nodeId: selection.referenceId,
+      componentSource: selection.sourceNode,
+      instanceOverride: selection.override,
+    }
+    : selection.sourceNode;
+  return `<section class="section code-section"><h3>.pen source</h3><pre>${escapeHtml(JSON.stringify(source, null, 2))}</pre></section>`;
 }
 
 function field(property, value, type = "text", full = false, nodeId = "", options = {}) {
@@ -1487,6 +1521,8 @@ function handleAccessRemoved() {
 
 function commitInspectorField(input) {
   if (!state.selectedId) return;
+  const selection = currentCanvasSelection();
+  if (!selection?.effectiveNode) return;
   const property = input.dataset.property;
   const path = input.dataset.path ? input.dataset.path.split(".") : [];
   const key = inspectorFieldKey(input);
@@ -1498,13 +1534,24 @@ function commitInspectorField(input) {
       input.checked,
     );
     if (path.length > 0) {
-      mutate(state.model, {
-        kind: "set-property-path",
-        nodeId: state.selectedId,
-        property,
-        path,
-        value,
-      }, LOCAL_ORIGIN);
+      if (selection.isInstanceDescendant) {
+        const propertyValue = setObjectPath(selection.effectiveNode[property], path, value);
+        mutate(state.model, {
+          kind: "set-property-path",
+          nodeId: selection.instanceId,
+          property: "descendants",
+          path: [selection.descendantPath, property],
+          value: propertyValue,
+        }, LOCAL_ORIGIN);
+      } else {
+        mutate(state.model, {
+          kind: "set-property-path",
+          nodeId: state.selectedId,
+          property,
+          path,
+          value,
+        }, LOCAL_ORIGIN);
+      }
       state.fieldDrafts.delete(key);
       state.fieldErrors.delete(key);
       return;
@@ -1512,9 +1559,16 @@ function commitInspectorField(input) {
     const editor = state.engineSurface?.editor;
     const sceneNode = editor?.graph.getNode(state.selectedId);
     const changes = penPropertyToSceneChanges(sceneNode, property, value);
-    const sourceNode = currentDocumentNode(state.selectedId);
-    if (editor && changes && isOpenPencilEditableNode(sourceNode)) {
+    if (editor && changes && isOpenPencilEditableNode(selection.effectiveNode)) {
       editor.updateNodeWithUndo(state.selectedId, changes, `Set ${property}`);
+    } else if (selection.isInstanceDescendant) {
+      mutate(state.model, {
+        kind: "set-property-path",
+        nodeId: selection.instanceId,
+        property: "descendants",
+        path: [selection.descendantPath, property],
+        value,
+      }, LOCAL_ORIGIN);
     } else {
       mutate(state.model, { kind: "set-property", nodeId: state.selectedId, property, value }, LOCAL_ORIGIN);
     }
@@ -1526,6 +1580,17 @@ function commitInspectorField(input) {
     render();
     root.querySelector(`[data-property="${CSS.escape(property)}"][data-path="${CSS.escape(input.dataset.path ?? "")}"]`)?.focus();
   }
+}
+
+function setObjectPath(source, path, value) {
+  const output = source && typeof source === "object" ? structuredClone(source) : {};
+  let target = output;
+  for (const key of path.slice(0, -1)) {
+    const current = target[key];
+    target = target[key] = current && typeof current === "object" ? current : {};
+  }
+  target[path.at(-1)] = value;
+  return output;
 }
 
 function inspectorFieldKey(input) {
@@ -1630,6 +1695,10 @@ function handleKeyboardShortcut(event) {
 }
 
 function deleteSelectedNode() {
+  if (currentCanvasSelection()?.isInstanceDescendant) {
+    showTransientToast("A component descendant cannot be deleted independently.", true);
+    return;
+  }
   state.engineSurface?.editor.deleteSelected();
 }
 
@@ -1643,6 +1712,10 @@ function releaseSpacePan() {
 }
 
 function duplicateSelectedNode() {
+  if (currentCanvasSelection()?.isInstanceDescendant) {
+    showTransientToast("A component descendant cannot be duplicated independently.", true);
+    return;
+  }
   state.engineSurface?.editor.duplicateSelected();
 }
 

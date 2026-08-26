@@ -5,6 +5,7 @@ import {
   copyTextToClipboard,
   formatCanvasNodeReference,
   resolveCanvasNodeReferenceId,
+  resolveCanvasNodeSelection,
 } from "./node-reference.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 
@@ -90,6 +91,48 @@ describe("resolveCanvasNodeReferenceId", () => {
       graph: { getNode: (id) => nodes.get(id) },
       selectedId: "generated",
     }), null);
+  });
+});
+
+describe("Canvas canonical node identity", () => {
+  const document = {
+    version: "2.17",
+    children: [
+      {
+        id: "badge",
+        type: "frame",
+        reusable: true,
+        children: [{ id: "badge-label", type: "text", content: "queued", fill: "#555555" }],
+      },
+      {
+        id: "row",
+        type: "frame",
+        reusable: true,
+        children: [{ id: "row-status", type: "ref", ref: "badge" }],
+      },
+      {
+        id: "blocked-row",
+        type: "ref",
+        ref: "row",
+        descendants: { "row-status/badge-label": { content: "blocked" } },
+      },
+    ],
+  };
+
+  it("uses the authored path at runtime while resolving effective properties", () => {
+    const graph = createOpenPencilGraph(document);
+    const selected = graph.getAllNodes().find((node) => node.text === "blocked");
+    const selection = resolveCanvasNodeSelection({ document, graph, selectedId: selected.id });
+
+    assert.equal(selection.selectedId, selected.id);
+    assert.equal(selected.id, "blocked-row/row-status/badge-label");
+    assert.equal(selection.referenceId, "blocked-row/row-status/badge-label");
+    assert.equal(selection.instanceId, "blocked-row");
+    assert.equal(selection.descendantPath, "row-status/badge-label");
+    assert.equal(selection.sourceNode.id, "badge-label");
+    assert.equal(selection.effectiveNode.content, "blocked");
+    assert.equal(selection.effectiveNode.fill, "#555555");
+    assert.equal(selection.isInstanceDescendant, true);
   });
 });
 

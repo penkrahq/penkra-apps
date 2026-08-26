@@ -505,6 +505,40 @@ test("moving a selected supported node to zero remains an authored edit", () => 
   ]);
 });
 
+test("an instance-descendant edit persists at its canonical Pencil descendants path", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      {
+        id: "row-component",
+        type: "frame",
+        reusable: true,
+        children: [{ id: "row-label", type: "text", content: "Queued" }],
+      },
+      { id: "row-instance", type: "ref", ref: "row-component" },
+    ],
+  };
+  const editor = createOpenPencilEditor(source);
+  const nodeId = "row-instance/row-label";
+  const node = editor.graph.getNode(nodeId);
+  editor.select([nodeId]);
+  const before = sceneNodePropertySnapshot(node);
+
+  assert.deepEqual(sceneEventToPenMutations(
+    editor,
+    source,
+    nodeId,
+    { text: "Blocked" },
+    before,
+  ), [{
+    kind: "set-property-path",
+    nodeId: "row-instance",
+    property: "descendants",
+    path: ["row-label", "content"],
+    value: "Blocked",
+  }]);
+});
+
 test("Pencil gradients and blur effects map faithfully without changing the source", () => {
   const document = {
     version: "2.15",
