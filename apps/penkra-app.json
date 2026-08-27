@@ -4,9 +4,9 @@
   "slug": "apps",
   "name": "Apps",
   "summary": "Discover, install, update, and manage Apps in Penkra.",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "compatibility": {
-    "penkra": ">=0.11.11"
+    "penkra": ">=0.11.15"
   },
   "icons": [
     {
@@ -20,6 +20,46 @@
     "operations": "operations.js"
   },
   "operations": [
+    {
+      "key": "list",
+      "summary": "List the Apps installed in the current Space so their own operating help can be discovered by slug.",
+      "instructions": "This operation reports App identity and description only. Run `<slug> --help` for an installed App's operating instructions and operation catalog; do not infer an App's operations from this result.",
+      "input": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "apps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "slug": { "type": "string" },
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "version": { "type": "string" }
+              },
+              "required": ["id", "slug", "name", "description", "version"],
+              "additionalProperties": false
+            }
+          },
+          "pageInfo": {
+            "type": "object",
+            "properties": { "nextCursor": { "type": ["string", "null"] } },
+            "required": ["nextCursor"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["apps", "pageInfo"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Discover Apps installed in this Space", "input": {} }],
+      "handler": "list"
+    },
     {
       "key": "listings.open",
       "summary": "Read one exact registry App/version and its permissions before install or update; this does not change local state.",
@@ -38,7 +78,9 @@
         "required": ["appId", "tabId"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Inspect the Canvas listing", "input": { "appId": "com.penkra.canvas" } }],
+      "examples": [
+        { "name": "Inspect the Canvas listing", "input": { "appId": "com.penkra.canvas" } }
+      ],
       "handler": "listings.open"
     },
     {
@@ -79,7 +121,16 @@
           }
         }
       },
-      "examples": [{ "name": "Install Canvas with its required permissions", "input": { "slug": "canvas", "version": "0.2.19", "permissions": { "account-data": "granted", "network-fetch": "granted" } } }],
+      "examples": [
+        {
+          "name": "Install Canvas with its required permissions",
+          "input": {
+            "slug": "canvas",
+            "version": "0.2.19",
+            "permissions": { "account-data": "granted", "network-fetch": "granted" }
+          }
+        }
+      ],
       "handler": "installations.install"
     },
     {
@@ -109,7 +160,16 @@
         "required": ["appId", "spaceId", "state", "version"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Update Canvas to an exact version", "input": { "slug": "canvas", "version": "0.2.21", "permissions": { "account-data": "granted", "network-fetch": "granted" } } }],
+      "examples": [
+        {
+          "name": "Update Canvas to an exact version",
+          "input": {
+            "slug": "canvas",
+            "version": "0.2.21",
+            "permissions": { "account-data": "granted", "network-fetch": "granted" }
+          }
+        }
+      ],
       "handler": "installations.update"
     },
     {
@@ -134,58 +194,17 @@
         "required": ["appId", "spaceId", "state"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Uninstall Canvas while retaining its data", "input": { "appId": "com.penkra.canvas", "retainData": true } }],
+      "examples": [
+        {
+          "name": "Uninstall Canvas while retaining its data",
+          "input": { "appId": "com.penkra.canvas", "retainData": true }
+        }
+      ],
       "handler": "installations.uninstall"
     },
     {
-      "key": "installations.enable",
-      "summary": "Enable one already-installed App in the current Space; installation and permission grants are separate prerequisites.",
-      "input": {
-        "type": "object",
-        "properties": { "appId": { "type": "string", "minLength": 1 } },
-        "required": ["appId"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "appId": { "type": "string" },
-          "spaceId": { "type": "string" },
-          "state": { "const": "enabled" },
-          "version": { "type": "string" }
-        },
-        "required": ["appId", "spaceId", "state", "version"],
-        "additionalProperties": false
-      },
-      "examples": [{ "name": "Enable Canvas in the current Space", "input": { "appId": "com.penkra.canvas" } }],
-      "handler": "installations.enable"
-    },
-    {
-      "key": "installations.disable",
-      "summary": "Disable one installed App in the current Space without uninstalling it or erasing retained data.",
-      "input": {
-        "type": "object",
-        "properties": { "appId": { "type": "string", "minLength": 1 } },
-        "required": ["appId"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "appId": { "type": "string" },
-          "spaceId": { "type": "string" },
-          "state": { "const": "disabled" },
-          "version": { "type": "string" }
-        },
-        "required": ["appId", "spaceId", "state", "version"],
-        "additionalProperties": false
-      },
-      "examples": [{ "name": "Disable Canvas in the current Space", "input": { "appId": "com.penkra.canvas" } }],
-      "handler": "installations.disable"
-    },
-    {
       "key": "installations.remove-data",
-      "summary": "Permanently remove one inactive App's retained data from the current Space; disable it first and use only after explicit erasure authorization.",
+      "summary": "Permanently remove one uninstalled App's retained data from the current Space; use only after explicit erasure authorization.",
       "input": {
         "type": "object",
         "properties": { "appId": { "type": "string", "minLength": 1 } },
@@ -202,7 +221,9 @@
         "required": ["appId", "spaceId", "state"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Erase retained Canvas data", "input": { "appId": "com.penkra.canvas" } }],
+      "examples": [
+        { "name": "Erase retained Canvas data", "input": { "appId": "com.penkra.canvas" } }
+      ],
       "handler": "installations.remove-data"
     }
   ]

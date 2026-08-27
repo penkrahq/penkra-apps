@@ -5,6 +5,28 @@ export function registerAppsOperations(runtime) {
     throw new Error("The Apps operation runtime is unavailable.");
   }
   const registrations = [
+    runtime.operations.handle("list", async (_input, context) => {
+      const snapshot = await runtime.installations.getState();
+      const spaceId = context.invocation.spaceId;
+      const present = new Set(
+        snapshot.spaces
+          .filter((space) => space.spaceId === spaceId && space.enabled === true)
+          .map((space) => space.appId),
+      );
+      return {
+        apps: snapshot.installed
+          .filter((app) => app.spaceId === spaceId && present.has(app.id))
+          .map((app) => ({
+            id: app.id,
+            slug: app.slug,
+            name: app.name,
+            description: app.summary,
+            version: app.version,
+          }))
+          .sort((left, right) => left.slug.localeCompare(right.slug)),
+        pageInfo: { nextCursor: null },
+      };
+    }),
     runtime.operations.handle("listings.open", async (input, context) => {
       const appId = requireCanonicalAppId(requireString(requireRecord(input), "appId"));
       if (context.tab) {
@@ -48,28 +70,6 @@ export function registerAppsOperations(runtime) {
         retainData: requireBoolean(value, "retainData"),
       });
       return result(appId, context.invocation.spaceId, "uninstalled");
-    }),
-    runtime.operations.handle("installations.enable", async (input, context) => {
-      assertInstallationCaller(context);
-      const appId = requireManagedAppId(requireRecord(input));
-      const snapshot = await runtime.installations.setEnabled({
-        appId,
-        spaceId: context.invocation.spaceId,
-        enabled: true,
-      });
-      const installed = requireInstalledById(snapshot, appId);
-      return result(appId, context.invocation.spaceId, "enabled", installed.version);
-    }),
-    runtime.operations.handle("installations.disable", async (input, context) => {
-      assertInstallationCaller(context);
-      const appId = requireManagedAppId(requireRecord(input));
-      const snapshot = await runtime.installations.setEnabled({
-        appId,
-        spaceId: context.invocation.spaceId,
-        enabled: false,
-      });
-      const installed = requireInstalledById(snapshot, appId);
-      return result(appId, context.invocation.spaceId, "disabled", installed.version);
     }),
     runtime.operations.handle("installations.remove-data", async (input, context) => {
       assertInstallationCaller(context);
@@ -126,12 +126,14 @@ function requireCanonicalAppId(value) {
 
 function requirePermissions(value) {
   const permissions = requireRecord(value);
-  return Object.fromEntries(Object.entries(permissions).map(([name, grant]) => {
-    if (!name || (grant !== "granted" && grant !== "denied")) {
-      throw new TypeError("Permission grants must be granted or denied.");
-    }
-    return [name, grant];
-  }));
+  return Object.fromEntries(
+    Object.entries(permissions).map(([name, grant]) => {
+      if (!name || (grant !== "granted" && grant !== "denied")) {
+        throw new TypeError("Permission grants must be granted or denied.");
+      }
+      return [name, grant];
+    }),
+  );
 }
 
 function requireInstalledBySlug(snapshot, slug) {
@@ -141,16 +143,6 @@ function requireInstalledBySlug(snapshot, slug) {
       (!snapshot.currentSpaceId || candidate.spaceId === snapshot.currentSpaceId),
   );
   if (!installed) throw new Error(`${slug} is not installed.`);
-  return installed;
-}
-
-function requireInstalledById(snapshot, appId) {
-  const installed = snapshot.installed.find(
-    (candidate) =>
-      candidate.id === appId &&
-      (!snapshot.currentSpaceId || candidate.spaceId === snapshot.currentSpaceId),
-  );
-  if (!installed) throw new Error(`${appId} is not installed.`);
   return installed;
 }
 

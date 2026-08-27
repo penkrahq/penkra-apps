@@ -2,7 +2,9 @@
 
 ## What this App is
 
-Apps is Penkra's registry and installation manager. It inspects real registry listings and locally installed packages, then installs, updates, enables, disables, uninstalls, or removes retained App data in the invocation's Space. It cannot manage its own `com.penkra.apps` installation.
+Apps is Penkra's registry and installation manager. It inspects real registry listings and locally installed packages, then installs, updates, uninstalls, or removes retained App data in the invocation's Space. It cannot manage its own `com.penkra.apps` installation.
+
+Use `apps list` to discover which Apps are installed in the current Space. The result contains App identities and descriptions, not their operations. Run `<slug> --help` to read an installed App's own operating instructions and operation catalog.
 
 ## Before you write anything
 
@@ -10,12 +12,12 @@ Read the local installation snapshot and the selected immutable registry version
 
 ## How to do the common thing
 
-To install an App, open its listing with `["apps", "listings", "open"]` and the canonical reverse-domain App ID. Read the selected version and permissions, ask for any missing grants, then call `["apps", "installations", "install"]` with that version and the complete explicit grant set. Verify the returned installation snapshot before saying it is enabled or usable.
+To install an App, open its listing with `["apps", "listings", "open"]` and the canonical reverse-domain App ID. Read the selected version and permissions, ask for any missing grants, then call `["apps", "installations", "install"]` with that version and the complete explicit grant set. Verify the returned installation snapshot before saying it is installed or usable.
 
 ## Reference
 
-`listings.open` reads a listing and changes no installation. Install, enable, disable, update, uninstall, and remove-data apply only to the current Space. Update requires explicit grants for newly declared permissions; never copy grants silently. Uninstall requires an explicit `retainData` choice—use `true` unless the user explicitly requested erasure. Remove-data requires the App to be inactive. The generated operation help is authoritative for every validated input and output.
+`listings.open` reads a listing and changes no installation. Install, update, uninstall, and remove-data apply only to the current Space. Update requires explicit grants for newly declared permissions; never copy grants silently. Uninstall requires an explicit `retainData` choice—use `true` unless the user explicitly requested erasure. To erase retained data later, uninstall the App first and then call remove-data with separate, explicit erasure authorization. The generated operation help is authoritative for every validated input and output.
 
 ## When things fail
 
-A missing listing or version means the requested registry artifact is not available; do not substitute a similarly named App. A permission error names grants still requiring approval. An active-App error on remove-data requires disabling it in this Space first, but disabling is a separate effect and must remain within the user's request. A self-management or App-origin rejection is a trust-boundary result, not a reason to route around Apps through another caller.
+A missing listing or version means the requested registry artifact is not available; do not substitute a similarly named App. A permission error names grants still requiring approval. An installed-App error on remove-data means it must be uninstalled first; uninstalling remains a separate effect and must stay within the user's request. A self-management or App-origin rejection is a trust-boundary result, not a reason to route around Apps through another caller.
