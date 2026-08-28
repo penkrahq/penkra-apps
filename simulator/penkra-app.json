@@ -1,5 +1,4 @@
 {
-  "manifestVersion": 2,
   "id": "com.penkra.simulator",
   "slug": "simulator",
   "name": "Simulator",
@@ -7,7 +6,7 @@
   "version": "0.1.1",
   "compatibility": { "penkra": ">=0.8.0" },
   "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
-  "entrypoints": { "app": "app.html" },
+  "entrypoints": { "tab": "app.html" },
   "permissions": [
     {
       "name": "simulator-session",

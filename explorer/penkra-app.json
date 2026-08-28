@@ -1,5 +1,4 @@
 {
-  "manifestVersion": 2,
   "id": "com.penkra.explorer",
   "slug": "explorer",
   "name": "Explorer",
@@ -9,7 +8,7 @@
   "icons": [
     { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
   ],
-  "entrypoints": { "app": "app.html", "operations": "operations.js" },
+  "entrypoints": { "tab": "app.html", "controller": "operations.js" },
   "operations": [
     {
       "key": "resources.open",

@@ -1,5 +1,4 @@
 {
-  "manifestVersion": 2,
   "id": "com.penkra.apps",
   "slug": "apps",
   "name": "Apps",
@@ -16,8 +15,8 @@
     }
   ],
   "entrypoints": {
-    "app": "app.html",
-    "operations": "operations.js"
+    "tab": "app.html",
+    "controller": "operations.js"
   },
   "operations": [
     {
