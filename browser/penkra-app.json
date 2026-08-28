@@ -3,7 +3,7 @@
   "slug": "browser",
   "name": "Browser",
   "summary": "Browse the web in isolated pages that agents and people can use together.",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "compatibility": { "penkra": ">=0.11.11" },
   "icons": [
     { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }

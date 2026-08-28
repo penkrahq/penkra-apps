@@ -3,7 +3,7 @@
   "slug": "simulator",
   "name": "Simulator",
   "summary": "Create and interact with saved iPhone, iPad, and Android simulated devices.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "compatibility": { "penkra": ">=0.8.0" },
   "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
   "entrypoints": { "tab": "app.html" },

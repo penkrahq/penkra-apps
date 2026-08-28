@@ -3,7 +3,7 @@
   "slug": "apps",
   "name": "Apps",
   "summary": "Discover, install, update, and manage Apps in Penkra.",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "compatibility": {
     "penkra": ">=0.11.15"
   },
