@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 
-test("document collection subscribes before its authoritative initial load", async () => {
+test("document collection initiates subscription before loading and reconciles after its handshake", async () => {
   const order = [];
   const lifecycle = createDocumentCollectionLifecycle({
     subscribe: async () => {
@@ -20,7 +20,7 @@ test("document collection subscribes before its authoritative initial load", asy
     apply: (documents) => order.push(`apply:${documents.length}`),
   });
 
-  assert.deepEqual(order, ["subscribe", "load", "apply:1"]);
+  assert.deepEqual(order, ["subscribe", "load", "load", "apply:1"]);
   lifecycle.stop();
   assert.equal(order.at(-1), "unsubscribe");
 });
@@ -55,7 +55,28 @@ test("lifecycle events during a load coalesce into one fresh result", async () =
   assert.deepEqual(applied, [["load-2"]]);
 });
 
-test("stopping before subscription completion disposes it without loading", async () => {
+test("initial loading does not wait for subscription completion", async () => {
+  let resolveSubscription;
+  let loads = 0;
+  const applied = [];
+  const lifecycle = createDocumentCollectionLifecycle({
+    subscribe: () => new Promise((resolve) => { resolveSubscription = resolve; }),
+  });
+
+  await lifecycle.start({
+    load: async () => [`load-${++loads}`],
+    apply: (documents) => applied.push(documents),
+  });
+
+  assert.equal(loads, 1);
+  assert.deepEqual(applied, [["load-1"]]);
+  resolveSubscription(() => undefined);
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(loads, 2);
+  assert.deepEqual(applied, [["load-1"], ["load-2"]]);
+});
+
+test("stopping before subscription completion disposes it after the non-blocking load", async () => {
   let resolveSubscription;
   let unsubscribed = false;
   let loaded = false;
@@ -74,5 +95,5 @@ test("stopping before subscription completion disposes it without loading", asyn
   await started;
 
   assert.equal(unsubscribed, true);
-  assert.equal(loaded, false);
+  assert.equal(loaded, true);
 });
