@@ -71574,7 +71574,7 @@ function renderPencilShader(r4, definition, node, graph) {
   gl.clear(gl.COLOR_BUFFER_BIT);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   gl.finish();
-  const image = r4.ck.MakeImageFromCanvasImageSource(r4.pencilShaderCanvas);
+  const image = r4.surface.makeImageFromTextureSource(r4.pencilShaderCanvas, undefined, false);
   for (const texture of transientTextures) gl.deleteTexture(texture);
   return image;
 }

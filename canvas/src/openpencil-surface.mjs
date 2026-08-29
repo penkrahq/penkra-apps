@@ -23,6 +23,7 @@ import { bindCanvasThemeBackground } from "./canvas-theme.mjs";
 import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
+import { createTimeShaderAnimation } from "./time-shader-animation.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
@@ -52,7 +53,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   }
 
   let refreshingDocument = false;
-  let shaderAnimationFrame = 0;
+  let visible = callbacks.visible ?? true;
   const hasTimeShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
     (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
   ));
@@ -69,18 +70,13 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     for (const renderer of editor.canvasRenderers) renderer.pencilShaderMouseCanvas = point;
     editor.requestRepaint();
   };
-  const animateTimeShaders = () => {
-    shaderAnimationFrame = 0;
-    if (!hasTimeShader()) return;
-    editor.requestRepaint();
-    shaderAnimationFrame = requestAnimationFrame(animateTimeShaders);
+  const timeShaderAnimation = createTimeShaderAnimation({
+    requestRepaint: () => editor.requestRepaint(),
+  });
+  const reconcileTimeShaderAnimation = () => {
+    timeShaderAnimation.setActive(visible && hasTimeShader());
   };
-  const ensureTimeShaderAnimation = () => {
-    if (!shaderAnimationFrame && hasTimeShader()) {
-      shaderAnimationFrame = requestAnimationFrame(animateTimeShaders);
-    }
-  };
-  ensureTimeShaderAnimation();
+  reconcileTimeShaderAnimation();
   const fitDesignInView = () => {
     const viewport = fitOpenPencilDesign(editor, {
       width: element.clientWidth,
@@ -98,6 +94,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     editor.onEditorEvent("node:updated", (nodeId, changes) => {
       const previous = sceneValues.get(nodeId);
       sceneValues.set(nodeId, { ...previous, ...changes });
+      reconcileTimeShaderAnimation();
       const sourceNode = findPenNode(sourceDocument, nodeId);
       if (editor.state.selectedIds.has(nodeId) && sourceNode && !isOpenPencilEditableNode(sourceNode)) {
         callbacks.onUnsupportedEdit?.(`${sourceNode.type} cannot be edited faithfully; its source was left unchanged.`);
@@ -114,6 +111,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     }),
     editor.onEditorEvent("node:created", (node) => {
       sceneValues.set(node.id, sceneNodePropertySnapshot(node));
+      reconcileTimeShaderAnimation();
       const penNode = sceneNodeToPenNode(node);
       if (!penNode) {
         callbacks.onUnsupportedEdit?.(`${node.type} creation is not available for lossless .pen editing.`);
@@ -130,6 +128,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     editor.onEditorEvent("node:deleted", (nodeId) => {
       sceneValues.delete(nodeId);
       callbacks.onMutations?.([{ kind: "delete-node", nodeId }]);
+      reconcileTimeShaderAnimation();
     }),
     editor.onEditorEvent("node:reparented", (nodeId, _oldParentId, newParentId) => {
       const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
@@ -250,13 +249,17 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
           preparedDocument,
         );
         sceneValues = captureSceneValues(editor);
-        ensureTimeShaderAnimation();
+        reconcileTimeShaderAnimation();
       } finally {
         refreshingDocument = false;
       }
     },
+    setVisible(nextVisible) {
+      visible = nextVisible;
+      reconcileTimeShaderAnimation();
+    },
     unmount() {
-      if (shaderAnimationFrame) cancelAnimationFrame(shaderAnimationFrame);
+      timeShaderAnimation.stop();
       unbindCanvasTheme();
       for (const dispose of disposers) dispose?.();
       app.unmount();

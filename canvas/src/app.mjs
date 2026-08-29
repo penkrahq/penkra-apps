@@ -132,6 +132,7 @@ const state = {
   engineMountGeneration: 0,
   engineViewport: null,
   engineReady: false,
+  appTabActive: true,
   engineDocumentDirty: false,
   engineDocumentDirtyReason: null,
   compatibilityIssues: [],
@@ -157,6 +158,10 @@ const routes = createRouteCoordinator({
 });
 
 runtime.tab.onNavigate((input) => routes.handleHostNavigation(input));
+const releaseTabVisibility = runtime.tab.onVisibilityChange(({ active }) => {
+  state.appTabActive = active;
+  state.engineSurface?.setVisible(active);
+});
 window.addEventListener("online", () => {
   if (state.document) {
     const documentId = state.document.id;
@@ -176,6 +181,7 @@ window.addEventListener("offline", () => {
   applyDisconnectedState();
 });
 window.addEventListener("beforeunload", () => {
+  releaseTabVisibility();
   state.documentUnsubscribe?.();
   documentCollectionLifecycle.stop();
 });
@@ -963,6 +969,7 @@ function mountEditorSurface() {
   try {
     let surface;
     surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentMaterializedDocument(), {
+      visible: state.appTabActive,
       assets: state.assets,
       preparedDocument: currentPreparedRenderDocument(),
       selectedId: state.selectedId,

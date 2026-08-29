@@ -149,10 +149,16 @@ export function replaceModelContent(model, penDocument, origin) {
         model.documentFields.delete(key);
     }
     for (const [key, value] of Object.entries(penDocument)) {
-      if (key !== "children") model.documentFields.set(key, cloneJson(value));
+      if (
+        key !== "children" &&
+        !jsonValuesEqual(model.documentFields.get(key), value)
+      ) {
+        model.documentFields.set(key, cloneJson(value));
+      }
     }
     for (const [id, current] of model.nodes.entries()) {
-      if (!desired.has(id)) current.set("deleted", true);
+      if (!desired.has(id) && current.get("deleted") !== true)
+        current.set("deleted", true);
     }
     for (const [id, { node, parentId, position }] of desired) {
       let current = model.nodes.get(id);
@@ -160,11 +166,11 @@ export function replaceModelContent(model, penDocument, origin) {
         model.nodes.set(id, createYNode(node, parentId, position));
         continue;
       }
-      current.set("type", node.type);
-      current.set("parentId", parentId);
-      current.set("position", position);
-      current.set("deleted", false);
-      current.set("hadChildren", Array.isArray(node.children));
+      setYValueIfChanged(current, "type", node.type);
+      setYValueIfChanged(current, "parentId", parentId);
+      setYValueIfChanged(current, "position", position);
+      setYValueIfChanged(current, "deleted", false);
+      setYValueIfChanged(current, "hadChildren", Array.isArray(node.children));
       const properties = current.get("properties");
       if (!(properties instanceof Y.Map))
         throw new Error(`Node ${id} has invalid properties.`);
@@ -177,10 +183,48 @@ export function replaceModelContent(model, penDocument, origin) {
         if (!Object.hasOwn(nextProperties, key)) properties.delete(key);
       }
       for (const [key, value] of Object.entries(nextProperties)) {
-        properties.set(key, toYValue(value));
+        const currentValue = properties.get(key);
+        if (
+          currentValue === undefined ||
+          !jsonValuesEqual(fromYValue(currentValue), value)
+        ) {
+          properties.set(key, toYValue(value));
+        }
       }
     }
   });
+}
+
+function setYValueIfChanged(map, key, value) {
+  if (!Object.is(map.get(key), value)) map.set(key, value);
+}
+
+function jsonValuesEqual(left, right) {
+  if (Object.is(left, right)) return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    return (
+      Array.isArray(left) &&
+      Array.isArray(right) &&
+      left.length === right.length &&
+      left.every((value, index) => jsonValuesEqual(value, right[index]))
+    );
+  }
+  if (
+    left === null ||
+    right === null ||
+    typeof left !== "object" ||
+    typeof right !== "object"
+  ) {
+    return false;
+  }
+  const leftKeys = Object.keys(left);
+  const rightKeys = Object.keys(right);
+  return (
+    leftKeys.length === rightKeys.length &&
+    leftKeys.every(
+      (key) => Object.hasOwn(right, key) && jsonValuesEqual(left[key], right[key]),
+    )
+  );
 }
 
 export function materializePen(model) {

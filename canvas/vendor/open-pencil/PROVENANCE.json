@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "239a8fcb91cedfbb48501c6187954361dbc3d1410e7f4a9e5b9ecc776ad79266",
+  "engineSha256": "368337254c29d67b3cb5e9aaff46d0c48d421a688ec87d0df17760d59acb24a4",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -27,6 +27,7 @@
     "Apply inside-aligned Pencil strokes as Yoga borders when layoutIncludeStroke is enabled.",
     "Render Pencil Linear Burn and Linear Dodge through exact CanvasKit blend implementations.",
     "Execute Pencil shader fills in a bounded WebGL 1.0 runtime with uniforms, time, mouse, SDF, and backdrop bindings.",
+    "Import Pencil shader frames as CanvasKit GPU texture sources instead of synchronously reading pixels through a 2D canvas.",
     "Render Pencil mesh gradients from their exact point grid and Bezier handles with adaptive Coons-patch tessellation.",
     "Represent Pencil note, context, and prompt nodes as locked transient visuals backed by bundled JetBrains Mono faces.",
     "Draw Pencil slot semantics without adding persistent stroke data to component or instance nodes.",

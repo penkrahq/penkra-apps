@@ -42,6 +42,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Apply inside-aligned Pencil strokes as Yoga borders when layoutIncludeStroke is enabled.",
     "Render Pencil Linear Burn and Linear Dodge through exact CanvasKit blend implementations.",
     "Execute Pencil shader fills in a bounded WebGL 1.0 runtime with uniforms, time, mouse, SDF, and backdrop bindings.",
+    "Import Pencil shader frames as CanvasKit GPU texture sources instead of synchronously reading pixels through a 2D canvas.",
     "Render Pencil mesh gradients from their exact point grid and Bezier handles with adaptive Coons-patch tessellation.",
     "Represent Pencil note, context, and prompt nodes as locked transient visuals backed by bundled JetBrains Mono faces.",
     "Draw Pencil slot semantics without adding persistent stroke data to component or instance nodes.",
@@ -86,6 +87,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(surface, /createLayeredSurfaceReadiness/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-ready"/u);
+  assert.match(engine, /surface\.makeImageFromTextureSource\(r4\.pencilShaderCanvas, undefined, false\)/u);
   assert.match(engine, /typeof json === "string" \? JSON\.parse\(json\) : json/u);
   assert.match(engine, /while \(hit\.parentId && hit\.parentId !== scope\)/u);
   assert.match(engine, /return editor\.graph\.hitTest\(cx, cy, containerId\)/u);

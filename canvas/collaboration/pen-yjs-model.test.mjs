@@ -76,6 +76,46 @@ test("whole-document reconciliation produces one faithful Yjs transaction", () =
   assert.equal(updates[0].origin, "execute");
 });
 
+test("whole-document reconciliation emits no Yjs update for an identical document", () => {
+  const model = createModel(fixture);
+  const updates = [];
+  model.doc.on("update", (update, origin) => updates.push({ update, origin }));
+
+  replaceModelContent(model, structuredClone(fixture), "reconcile");
+
+  assert.deepEqual(materializePen(model), fixture);
+  assert.deepEqual(updates, []);
+});
+
+test("whole-document reconciliation writes only sparse changes and preserves exact output", () => {
+  const children = Array.from({ length: 2_000 }, (_, index) => ({
+    id: `sparse-${index}`,
+    type: "rectangle",
+    x: index,
+    y: index * 2,
+    width: 100,
+    height: 50,
+    fill: { type: "color", color: "#336699", opacity: 1 },
+  }));
+  const source = { version: "2.15", children };
+  const replacement = structuredClone(source);
+  for (let index = 0; index < 364; index += 1) {
+    replacement.children[index].width = 200 + index;
+  }
+  const model = createModel(source);
+  const updates = [];
+  model.doc.on("update", (update, origin) => updates.push({ update, origin }));
+
+  replaceModelContent(model, replacement, "reconcile");
+
+  assert.deepEqual(materializePen(model), replacement);
+  assert.equal(updates.length, 1);
+  assert.ok(
+    updates[0].update.byteLength < Y.encodeStateAsUpdate(model.doc).byteLength,
+    "a sparse reconciliation update must remain smaller than the full document state",
+  );
+});
+
 test("supported property edits cannot overwrite structural ID, type, or children fields", () => {
   const model = createModel(fixture);
   for (const property of ["id", "type", "children"]) {

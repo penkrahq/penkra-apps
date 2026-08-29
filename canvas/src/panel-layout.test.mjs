@@ -83,3 +83,13 @@ test("hidden tabs mount the editor without waiting for a paint frame", async () 
   assert.match(app, /requestAnimationFrame === "function" && document\.visibilityState !== "hidden"/u);
   assert.match(app, /requestAnimationFrame\(scheduleAfterPaint\);\s*\} else \{\s*scheduleAfterPaint\(\);/u);
 });
+
+test("host tab visibility directly gates retained Canvas shader animation", async () => {
+  const app = await readFile(new URL("src/app.mjs", root), "utf8");
+  const surface = await readFile(new URL("src/openpencil-surface.mjs", root), "utf8");
+
+  assert.match(app, /runtime\.tab\.onVisibilityChange\(\(\{ active \}\) => \{/u);
+  assert.match(app, /state\.engineSurface\?\.setVisible\(active\)/u);
+  assert.match(app, /visible: state\.appTabActive/u);
+  assert.match(surface, /timeShaderAnimation\.setActive\(visible && hasTimeShader\(\)\)/u);
+});
