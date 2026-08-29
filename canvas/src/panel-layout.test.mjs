@@ -30,7 +30,7 @@ test("documents open with layers and inspector collapsed", async () => {
   assert.match(app, /activePanel: null,\s+layersOpen: false,\s+inspectorOpen: false,/u);
   assert.match(app, /function closeDocument\(\)[\s\S]*?collapseEditorPanels\(\);/u);
   assert.match(app, /function collapseEditorPanels\(\)\s*\{\s*state\.activePanel = null;\s*state\.layersOpen = false;\s*state\.inspectorOpen = false;/u);
-  assert.match(app, /state\.unsubscribe = await performanceMonitor\.measureAsync\([\s\S]*?collapseEditorPanels\(\);\s*state\.loading = false;/u);
+  assert.match(app, /state\.documentUnsubscribe = await performanceMonitor\.measureAsync\([\s\S]*?collapseEditorPanels\(\);\s*state\.loading = false;/u);
 });
 
 test("closed layers do not retain or rebuild the document tree", async () => {

@@ -1,5 +1,6 @@
 import { createCanvasApi } from "./canvas-api.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
+import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
@@ -79,6 +80,9 @@ const root = document.querySelector("#app");
 if (!runtime || !root) throw new Error("Canvas requires the Penkra App runtime.");
 
 const api = createCanvasApi(runtime);
+const documentCollectionLifecycle = createDocumentCollectionLifecycle({
+  subscribe: (listener) => api.subscribeToDocuments(listener),
+});
 const performanceMonitor = createPerformanceMonitor();
 configureCanvasFonts(runtime, { performanceMonitor });
 const state = {
@@ -107,7 +111,7 @@ const state = {
   grants: [],
   toast: null,
   contextMenu: null,
-  unsubscribe: null,
+  documentUnsubscribe: null,
   updateListener: null,
   lastSequence: 0,
   updatesSinceSnapshot: 0,
@@ -171,7 +175,10 @@ window.addEventListener("offline", () => {
   state.presence = null;
   applyDisconnectedState();
 });
-window.addEventListener("beforeunload", () => state.unsubscribe?.());
+window.addEventListener("beforeunload", () => {
+  state.documentUnsubscribe?.();
+  documentCollectionLifecycle.stop();
+});
 window.addEventListener("keydown", handleKeyboardShortcut);
 window.addEventListener("keyup", handleKeyboardRelease);
 window.addEventListener("blur", releaseSpacePan);
@@ -201,21 +208,17 @@ async function showLibrary() {
   state.loading = true;
   state.error = null;
   render();
-  try {
-    const documents = [];
-    let cursor;
-    do {
-      const page = await api.listDocuments(cursor);
-      documents.push(...page.items);
-      cursor = page.pageInfo.nextCursor ?? undefined;
-    } while (cursor);
-    state.documents = documents;
-  } catch (error) {
-    state.error = message(error);
-  } finally {
-    state.loading = false;
-    render();
-  }
+  await documentCollectionLifecycle.start({
+    load: () => loadEveryDocumentPage(api.listDocuments),
+    apply: (documents) => {
+      if (state.route !== "library") return;
+      state.documents = documents;
+      state.loading = false;
+      state.error = null;
+      render();
+    },
+    onError: handleDocumentCollectionError,
+  });
 }
 
 async function showTrash() {
@@ -225,21 +228,38 @@ async function showTrash() {
   state.error = null;
   state.contextMenu = null;
   render();
-  try {
-    const documents = [];
-    let cursor;
-    do {
-      const page = await api.listTrash(cursor);
-      documents.push(...page.items);
-      cursor = page.pageInfo.nextCursor ?? undefined;
-    } while (cursor);
-    state.trashedDocuments = documents;
-  } catch (error) {
-    state.error = message(error);
-  } finally {
-    state.loading = false;
-    render();
+  await documentCollectionLifecycle.start({
+    load: () => loadEveryDocumentPage(api.listTrash),
+    apply: (documents) => {
+      if (state.route !== "trash") return;
+      state.trashedDocuments = documents;
+      state.loading = false;
+      state.error = null;
+      render();
+    },
+    onError: handleDocumentCollectionError,
+  });
+}
+
+async function loadEveryDocumentPage(loadPage) {
+  const documents = [];
+  let cursor;
+  do {
+    const page = await loadPage(cursor);
+    documents.push(...page.items);
+    cursor = page.pageInfo.nextCursor ?? undefined;
+  } while (cursor);
+  return documents;
+}
+
+function handleDocumentCollectionError(error, { phase }) {
+  if (phase === "subscribe") {
+    console.warn("Canvas document collection realtime is unavailable.", error);
+    return;
   }
+  state.loading = false;
+  state.error = message(error);
+  render();
 }
 
 async function showDocumentUnavailable(input) {
@@ -404,7 +424,7 @@ async function openDocument(documentId) {
     state.model.doc.on("update", state.updateListener);
     state.realtimeConnection = REALTIME_RECONNECTING;
     state.presence = null;
-    state.unsubscribe = await performanceMonitor.measureAsync(
+    state.documentUnsubscribe = await performanceMonitor.measureAsync(
       "document.realtime-subscribe",
       () => api.subscribe(
         documentId,
@@ -419,6 +439,10 @@ async function openDocument(documentId) {
           if (!changed) return;
           state.engineDocumentDirty = true;
           state.engineDocumentDirtyReason = "realtime-remote-update";
+          render();
+        }
+        if (event.event === "project:renamed" && typeof event.payload?.title === "string") {
+          state.document.title = event.payload.title;
           render();
         }
         if (event.event === "presence") {
@@ -471,9 +495,10 @@ async function openDocument(documentId) {
 }
 
 function closeDocument() {
+  documentCollectionLifecycle.stop();
   disposeEngineSurface();
-  state.unsubscribe?.();
-  state.unsubscribe = null;
+  state.documentUnsubscribe?.();
+  state.documentUnsubscribe = null;
   if (state.model && state.updateListener) state.model.doc.off("update", state.updateListener);
   state.updateListener = null;
   state.assets = new Map();
@@ -1586,8 +1611,8 @@ function handleAccessRemoved() {
   state.dialog = null;
   state.dialogFocusSelector = null;
   state.dialogReturnFocusSelector = null;
-  state.unsubscribe?.();
-  state.unsubscribe = null;
+  state.documentUnsubscribe?.();
+  state.documentUnsubscribe = null;
   state.pendingUpdates = [];
   setSync("error", "Access removed");
   render();

@@ -76,6 +76,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       ),
     subscribe: (id, listener, options) =>
       runtime.account.subscribe(`project:${id}`, listener, options),
+    subscribeToDocuments: (listener, options) =>
+      runtime.account.subscribe("projects", listener, options),
     uploadAsset: async (id, asset) => {
       const root = `/${encodeURIComponent(id)}/blobs/uploads`;
       const started = await request(root, {

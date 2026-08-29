@@ -138,6 +138,24 @@ test("Canvas API forwards realtime connection-state listeners", async () => {
   ]);
 });
 
+test("Canvas API subscribes to the account-scoped document collection", async () => {
+  const calls = [];
+  const listener = () => undefined;
+  const api = createCanvasApi({
+    account: {
+      request: async () => ({ status: 200, body: new Uint8Array() }),
+      subscribe: async (...input) => {
+        calls.push(input);
+        return () => undefined;
+      },
+    },
+  });
+
+  await api.subscribeToDocuments(listener);
+
+  assert.deepEqual(calls, [["projects", listener, undefined]]);
+});
+
 test("Canvas maps project projections and exact asset paths without changing the source", async () => {
   const calls = [];
   const responses = new Map([
