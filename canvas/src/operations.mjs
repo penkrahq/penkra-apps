@@ -2,12 +2,13 @@ import { createCanvasApi } from "./canvas-api.mjs";
 import {
   LOCAL_ORIGIN,
   Y,
+  applyRemoteUpdate,
+  createDocumentOperationUpdates,
   createDocumentModel,
   encodeState,
   encodeUpdate,
   listNodes,
   materialize,
-  replaceDocument,
   restoreDocumentModel,
 } from "./document-model.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
@@ -98,11 +99,6 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
   ]);
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
-  const updates = [];
-  const listener = (update, origin) => {
-    if (origin === LOCAL_ORIGIN) updates.push(update);
-  };
-  model.doc.on("update", listener);
   try {
     const before = materialize(model);
     const beforeInspection = inspectDocument(before, listNodes(model), 1_000);
@@ -181,6 +177,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
       return operationResult({
         documentId,
         changed: false,
+        operationId: null,
         sequence: authoritativeSequence(payload),
         prints: execution.prints,
         result: execution.result,
@@ -189,12 +186,17 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         issues,
       }, screenshots);
     }
-    model.doc.transact(() => replaceDocument(model, execution.document, LOCAL_ORIGIN), LOCAL_ORIGIN);
-    const combined = updates.length === 1 ? updates[0] : Y.mergeUpdates(updates);
+    const operationId = crypto.randomUUID();
+    const operationUpdates = createDocumentOperationUpdates(model, execution.document);
+    Y.applyUpdate(model.doc, operationUpdates.forward, LOCAL_ORIGIN);
     const appended = await api.appendUpdate(documentId, {
       clientUpdateId: crypto.randomUUID(),
-      update: encodeUpdate(combined),
+      update: encodeUpdate(operationUpdates.forward),
       expectedSequence: authoritativeSequence(payload),
+      operation: {
+        id: operationId,
+        inverseUpdate: encodeUpdate(operationUpdates.inverse),
+      },
     });
     await api.createSnapshot(documentId, {
       throughSequence: appended.sequence,
@@ -204,6 +206,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
     return operationResult({
       documentId,
       changed: true,
+      operationId,
       sequence: appended.sequence,
       prints: execution.prints,
       result: execution.result,
@@ -212,7 +215,32 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
       issues,
     }, screenshots);
   } finally {
-    model.doc.off("update", listener);
+    model.doc.destroy();
+  }
+});
+
+runtime.operations.handle("documents.undo", async ({ documentId, operationId }) => {
+  const payload = await api.getDocument(documentId);
+  const model = restoreDocumentModel(payload);
+  try {
+    const undone = await api.undoOperation(documentId, {
+      ...(operationId ? { operationId } : {}),
+      clientUpdateId: crypto.randomUUID(),
+      expectedSequence: authoritativeSequence(payload),
+    });
+    applyRemoteUpdate(model, undone.update);
+    await api.createSnapshot(documentId, {
+      throughSequence: undone.sequence,
+      state: encodeState(model),
+      source: materialize(model),
+    });
+    return {
+      documentId,
+      operationId: undone.operationId,
+      changed: true,
+      sequence: undone.sequence,
+    };
+  } finally {
     model.doc.destroy();
   }
 });

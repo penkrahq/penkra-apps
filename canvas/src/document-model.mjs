@@ -28,6 +28,33 @@ export function createUndoManager(model) {
   });
 }
 
+export function createDocumentOperationUpdates(model, document) {
+  const cloneDoc = new Y.Doc();
+  Y.applyUpdate(cloneDoc, Y.encodeStateAsUpdate(model.doc), REMOTE_ORIGIN);
+  const clone = openModel(cloneDoc);
+  const operationOrigin = Symbol("canvas-operation");
+  const undo = new Y.UndoManager([clone.nodes, clone.documentFields], {
+    trackedOrigins: new Set([operationOrigin]),
+    captureTimeout: 0,
+  });
+  try {
+    const beforeVector = Y.encodeStateVector(cloneDoc);
+    replaceDocument(clone, document, operationOrigin);
+    if (!undo.canUndo()) throw new Error("Canvas operation did not produce an undoable update.");
+    const forward = Y.encodeStateAsUpdate(cloneDoc, beforeVector);
+    const afterVector = Y.encodeStateVector(cloneDoc);
+    undo.undo();
+    const inverse = Y.encodeStateAsUpdate(cloneDoc, afterVector);
+    if (inverse.byteLength <= 2) {
+      throw new Error("Canvas operation did not produce a durable inverse update.");
+    }
+    return { forward, inverse };
+  } finally {
+    undo.destroy();
+    cloneDoc.destroy();
+  }
+}
+
 export function restoreDocumentModel(payload, options = {}) {
   const doc = new Y.Doc();
   const snapshotBytes = measureRestorePhase(

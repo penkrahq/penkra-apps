@@ -3,9 +3,12 @@ import test from "node:test";
 
 import {
   LOCAL_ORIGIN,
+  REMOTE_ORIGIN,
+  Y,
   applyRemoteUpdate,
   createDocumentModel,
   createUndoManager,
+  createDocumentOperationUpdates,
   encodeState,
   encodeUpdate,
   listNodes,
@@ -149,5 +152,36 @@ test("Canvas undo tracks local edits and leaves remote edits intact", () => {
   assert.equal(materialize(model).children[0].width, 100);
   assert.equal(materialize(model).children[0].fill, "#ffffff");
   undo.destroy();
+  model.doc.destroy();
+});
+
+test("Canvas captures an inverse update for one atomic agent document replacement", () => {
+  const original = {
+    version: "2.15",
+    title: "Before",
+    children: [{ id: "shape", type: "rectangle", width: 100, fill: "#000000" }],
+  };
+  const changed = {
+    version: "2.15",
+    title: "After",
+    children: [
+      { id: "shape", type: "rectangle", width: 240, fill: "#ffffff" },
+      { id: "label", type: "text", content: "New" },
+    ],
+  };
+  const model = createDocumentModel(original);
+  const initialState = Y.encodeStateAsUpdate(model.doc);
+  const { forward, inverse } = createDocumentOperationUpdates(model, changed);
+
+  const remote = restoreDocumentModel({
+    snapshot: { state: encodeUpdate(initialState), throughSequence: 0, source: original },
+    updates: [],
+  });
+  Y.applyUpdate(remote.doc, forward, REMOTE_ORIGIN);
+  assert.deepEqual(materialize(remote), changed);
+  Y.applyUpdate(remote.doc, inverse, REMOTE_ORIGIN);
+  assert.deepEqual(materialize(remote), original);
+
+  remote.doc.destroy();
   model.doc.destroy();
 });

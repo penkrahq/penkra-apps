@@ -57,6 +57,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       request(`/${encodeURIComponent(id)}/permanent`, { method: "DELETE" }),
     appendUpdate: (id, input) =>
       request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: input }),
+    undoOperation: (id, input) =>
+      request(`/${encodeURIComponent(id)}/undo`, { method: "POST", body: input }),
     createSnapshot: (id, { source, state, ...input }) =>
       uploadSnapshot(request, id, {
         ...input,

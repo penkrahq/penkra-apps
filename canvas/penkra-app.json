@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.30",
+  "version": "0.2.31",
   "compatibility": {
     "penkra": ">=0.11.15"
   },
@@ -164,7 +164,7 @@
     {
       "key": "documents.execute",
       "summary": "Read or change one Canvas document with bounded Pencil-style JavaScript; one execution should express one coherent design intent.",
-      "instructions": "Execute runs JavaScript against a private document clone. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, G, TakeScreenshot, and Print; the script cannot access files, network, Account data, timers, or the Penkra runtime directly. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get returns immutable contexts with node, parent, index, path, resolved pre-execution bounds, and problems; its optional limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. A newly created document already has the exact `starterFrameId` returned by documents.create; replace or update that frame for the first screen instead of inserting overlapping content. Update changes properties without replacing ID or children. Copy renews IDs recursively. Replace, Delete, and Move each require exactly one target. Print records bounded JSON values in the result.\n\nG(target, \"ai\", prompt) generates a low-quality GPT Image 2 asset using Canvas's global image-generation service. G(target, source) applies an absolute path, file:// URL, HTTP(S) URL, or data URL. Canvas stores the image before commit and replaces the transient source with a durable document asset; a new relative path is rejected unless it already names an uploaded asset.\n\nTakeScreenshot([target, ...]) renders one or more exact nodes together as a PNG and returns it as image content with dimensions in `screenshots`. Call it after the mutations it should verify, as in `const screen = Replace(\"#starter-frame-id\", {...}); TakeScreenshot([screen]);`. It renders document content through Canvas's Pencil-compatible engine; it does not capture editor chrome and does not require an open or visible tab.\n\nFor library icons, insert a native `type: \"icon\"` node with exact `library` and `icon` fields. Valid libraries are `lucide`, `feather`, `Material Symbols Outlined`, `Material Symbols Rounded`, `Material Symbols Sharp`, and `phosphor`. Set width, height, and fill explicitly.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete result and commits only when the source sequence is unchanged. Use one execution for one coherent design intent. Inspect relevant structure with Get and use TakeScreenshot whenever appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
+      "instructions": "Execute runs JavaScript against a private document clone. Available globals are Get, Insert, Copy, Update, Replace, Delete, Move, G, TakeScreenshot, and Print; the script cannot access files, network, Account data, timers, or the Penkra runtime directly. Selectors are exact: `#node-id`, `type:frame`, `name:Header`, `*`, a slash-separated ID path, or an unprefixed exact node ID. Get returns immutable contexts with node, parent, index, path, resolved pre-execution bounds, and problems; its optional limit defaults to 1,000 and cannot exceed 1,000.\n\nInsert(parent, node, position) adds one node tree; use null for the document root. A newly created document already has the exact `starterFrameId` returned by documents.create; replace or update that frame for the first screen instead of inserting overlapping content. Update changes properties without replacing ID or children. Copy renews IDs recursively. Replace, Delete, and Move each require exactly one target. Print records bounded JSON values in the result.\n\nG(target, \"ai\", prompt) generates a low-quality GPT Image 2 asset using Canvas's global image-generation service. G(target, source) applies an absolute path, file:// URL, HTTP(S) URL, or data URL. Canvas stores the image before commit and replaces the transient source with a durable document asset; a new relative path is rejected unless it already names an uploaded asset.\n\nTakeScreenshot([target, ...]) renders one or more exact nodes together as a PNG and returns it as image content with dimensions in `screenshots`. Call it after the mutations it should verify, as in `const screen = Replace(\"#starter-frame-id\", {...}); TakeScreenshot([screen]);`. It renders document content through Canvas's Pencil-compatible engine; it does not capture editor chrome and does not require an open or visible tab.\n\nFor library icons, insert a native `type: \"icon\"` node with exact `library` and `icon` fields. Valid libraries are `lucide`, `feather`, `Material Symbols Outlined`, `Material Symbols Rounded`, `Material Symbols Sharp`, and `phosphor`. Set width, height, and fill explicitly.\n\nA script may be at most 100,000 UTF-8 bytes and runs for at most five seconds with a 64 MiB heap and 4 MiB stack. Canvas validates the complete result and commits only when the source sequence is unchanged. A read-only execution returns `operationId: null`; a successful mutation returns the durable `operationId` accepted by documents.undo while that operation remains the document head. Any later edit invalidates it. Use one execution for one coherent design intent. Inspect relevant structure with Get and use TakeScreenshot whenever appearance matters. Never blindly replay a CANVAS_DOCUMENT_CHANGED failure.",
       "input": {
         "type": "object",
         "properties": {
@@ -195,6 +195,10 @@
           "sequence": {
             "type": "integer",
             "minimum": 0
+          },
+          "operationId": {
+            "type": ["string", "null"],
+            "description": "Durable ID for a committed mutation, or null for a read-only execution. The ID is undoable only while that mutation remains the document head."
           },
           "prints": {
             "type": "array",
@@ -243,6 +247,7 @@
         "required": [
           "documentId",
           "changed",
+          "operationId",
           "sequence",
           "prints",
           "result",
@@ -298,6 +303,49 @@
         }
       ],
       "handler": "documents.execute"
+    },
+    {
+      "key": "documents.undo",
+      "summary": "Undo the latest agent documents.execute mutation while it remains the exact document head.",
+      "instructions": "This reverses one complete mutating documents.execute operation; it does not manipulate the editor's local undo stack and does not reconstruct an older document. Pass the returned operationId when available. If an execute call timed out after committing and its result was lost, omit operationId to resolve and undo the exact current head agent operation. Canvas rejects the request if a UI, collaborator, or later agent edit has advanced the document, if the operation was already undone, or if the caller did not author it. After rejection, inspect the current document instead of guessing or replaying stale changes.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Exact document containing the agent operation to undo."
+          },
+          "operationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Durable operationId returned by the mutating documents.execute call. Omit only when its result was lost after a possible commit."
+          }
+        },
+        "required": ["documentId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "operationId": { "type": "string", "format": "uuid" },
+          "changed": { "const": true },
+          "sequence": { "type": "integer", "minimum": 1 }
+        },
+        "required": ["documentId", "operationId", "changed", "sequence"],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "name": "Undo one exact agent operation",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "operationId": "aa9a67db-63bf-4cba-937b-f9f0406eecb4"
+          }
+        }
+      ],
+      "handler": "documents.undo"
     },
     {
       "key": "documents.open",

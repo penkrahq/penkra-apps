@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { decodeJson, encodeJson } from "./codec.mjs";
-import { createDocumentModel, encodeState } from "./document-model.mjs";
+import {
+  createDocumentModel,
+  createDocumentOperationUpdates,
+  encodeState,
+  encodeUpdate,
+} from "./document-model.mjs";
 
 function response(status, value) {
   return { status, headers: {}, body: value === null ? new Uint8Array() : encodeJson(value) };
@@ -31,7 +36,7 @@ function readableDocumentAccount(source, requests) {
   };
 }
 
-test("registers only the public document lifecycle, execute, and sharing surface", async () => {
+test("registers only the public document lifecycle, editing, undo, and sharing surface", async () => {
   const handlers = new Map();
   globalThis.penkra = {
     account: { request() {}, subscribe() {} },
@@ -54,6 +59,7 @@ test("registers only the public document lifecycle, execute, and sharing surface
     "documents.list",
     "documents.open",
     "documents.trash",
+    "documents.undo",
     "sharing.add",
     "sharing.list",
     "sharing.remove",
@@ -177,6 +183,7 @@ test("read-only execute reports real inspection without advancing the source seq
   });
 
   assert.equal(result.changed, false);
+  assert.equal(result.operationId, null);
   assert.equal(result.sequence, 7);
   assert.deepEqual(result.touchedNodeIds, []);
   assert.equal(result.prints[0].width, 200);
@@ -299,6 +306,7 @@ test("execute uploads a direct image before committing its durable asset path", 
 
   assert.equal(result.structuredContent.changed, true);
   assert.equal(result.structuredContent.sequence, 8);
+  assert.match(result.structuredContent.operationId, /^[0-9a-f-]{36}$/u);
   assert.equal(result.content[0].mimeType, "image/png");
   const uploadIndex = requests.findIndex(
     (request) => request.path === "/projects/document-1/blobs/uploads",
@@ -307,6 +315,10 @@ test("execute uploads a direct image before committing its durable asset path", 
     (request) => request.path === "/projects/document-1/updates",
   );
   assert.ok(uploadIndex >= 0 && updateIndex > uploadIndex);
+  const updateBody = decodeJson(requests[updateIndex].body);
+  assert.equal(updateBody.operation.id, result.structuredContent.operationId);
+  assert.equal(typeof updateBody.operation.inverseUpdate, "string");
+  assert.ok(updateBody.operation.inverseUpdate.length > 0);
   const snapshotStart = requests.find(
     (request) => request.path === "/projects/document-1/snapshot-uploads",
   );
@@ -320,4 +332,91 @@ test("execute uploads a direct image before committing its durable asset path", 
     Buffer.concat(projectionParts.map((part) => Buffer.from(part.bytes, "base64"))),
   );
   assert.match(projection.children[0].fill.url, /^images\/[a-f0-9]{64}\.png$/u);
+});
+
+test("documents.undo applies the backend's exact inverse and snapshots the restored document", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const operationId = "aa9a67db-63bf-4cba-937b-f9f0406eecb4";
+  const original = {
+    version: "2.15",
+    children: [
+      { id: "frame", type: "frame", name: "Original", x: 0, y: 0, width: 120, height: 80, children: [] },
+    ],
+  };
+  const changed = {
+    version: "2.15",
+    children: [
+      { id: "frame", type: "frame", name: "Changed", x: 0, y: 0, width: 120, height: 80, children: [] },
+    ],
+  };
+  const changedModel = createDocumentModel(changed);
+  const inverse = createDocumentOperationUpdates(changedModel, original).forward;
+  const state = encodeState(changedModel);
+  changedModel.doc.destroy();
+  globalThis.penkra = {
+    account: {
+      async request(request) {
+        requests.push(request);
+        if (request.path === "/projects/document-1?chunked=auto") {
+          return response(200, {
+            id: "document-1",
+            title: "Design",
+            access: "owner",
+            ownerAccountId: "account-1",
+            snapshot: { throughSequence: 8, state, projection: changed },
+            updates: [],
+          });
+        }
+        if (request.path === "/projects/document-1/blobs") return response(200, { items: [] });
+        if (request.path === "/projects/document-1/undo") {
+          return response(200, {
+            sequence: 9,
+            duplicate: false,
+            operationId,
+            update: encodeUpdate(inverse),
+          });
+        }
+        if (request.path === "/projects/document-1/snapshot-uploads") {
+          return response(200, { uploadId: "snapshot-undo", chunkSize: 1024 * 1024 });
+        }
+        if (request.path === "/projects/snapshot-uploads/snapshot-undo/parts") {
+          return response(200, null);
+        }
+        if (request.path === "/projects/snapshot-uploads/snapshot-undo/complete") {
+          return response(200, { throughSequence: 9 });
+        }
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+      subscribe() {},
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?undo-test=${Date.now()}`);
+
+  const result = await handlers.get("documents.undo")({
+    documentId: "document-1",
+    operationId,
+  });
+
+  assert.deepEqual(result, { documentId: "document-1", operationId, changed: true, sequence: 9 });
+  const undoRequest = requests.find((request) => request.path === "/projects/document-1/undo");
+  assert.match(decodeJson(undoRequest.body).clientUpdateId, /^[0-9a-f-]{36}$/u);
+  assert.deepEqual(
+    { ...decodeJson(undoRequest.body), clientUpdateId: "<uuid>" },
+    { operationId, expectedSequence: 8, clientUpdateId: "<uuid>" },
+  );
+  const snapshotStart = requests.find(
+    (request) => request.path === "/projects/document-1/snapshot-uploads",
+  );
+  assert.equal(decodeJson(snapshotStart.body).throughSequence, 9);
+  const projectionParts = requests
+    .filter((request) => request.path === "/projects/snapshot-uploads/snapshot-undo/parts")
+    .map((request) => decodeJson(request.body))
+    .filter((part) => part.kind === "projection")
+    .sort((left, right) => left.part - right.part);
+  const projection = decodeJson(
+    Buffer.concat(projectionParts.map((part) => Buffer.from(part.bytes, "base64"))),
+  );
+  assert.deepEqual(projection, original);
 });

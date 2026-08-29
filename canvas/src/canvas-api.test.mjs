@@ -70,6 +70,30 @@ test("Canvas rename sends a bounded JSON PATCH body", async () => {
   assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), { title: "Renamed" });
 });
 
+test("Canvas undo posts the exact operation and optimistic head sequence", async () => {
+  const calls = [];
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input);
+        return response(200, { sequence: 9 });
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+  const input = {
+    operationId: "aa9a67db-63bf-4cba-937b-f9f0406eecb4",
+    clientUpdateId: "8696385d-b65e-4388-ac89-da9f12f12126",
+    expectedSequence: 8,
+  };
+
+  await api.undoOperation("document-id", input);
+
+  assert.equal(calls[0].path, "/projects/document-id/undo");
+  assert.equal(calls[0].method, "POST");
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), input);
+});
+
 test("Canvas requests global image generation inside its document namespace", async () => {
   const calls = [];
   const api = createCanvasApi({
