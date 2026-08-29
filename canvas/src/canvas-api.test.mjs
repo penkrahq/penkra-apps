@@ -94,6 +94,35 @@ test("Canvas undo posts the exact operation and optimistic head sequence", async
   assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), input);
 });
 
+test("Canvas snapshots use one direct Account-data request when the exact body fits", async () => {
+  const calls = [];
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input);
+        return response(201, { throughSequence: 9 });
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+  const source = { version: "2.15", children: [] };
+
+  await api.createSnapshot("document-id", {
+    throughSequence: 9,
+    state: "AQ==",
+    source,
+  });
+
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].path, "/projects/document-id/snapshots");
+  assert.equal(calls[0].method, "POST");
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), {
+    throughSequence: 9,
+    state: "AQ==",
+    projection: source,
+  });
+});
+
 test("Canvas requests global image generation inside its document namespace", async () => {
   const calls = [];
   const api = createCanvasApi({

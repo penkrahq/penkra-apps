@@ -284,13 +284,7 @@ test("execute uploads a direct image before committing its durable asset path", 
         if (request.path === "/projects/document-1/updates") {
           return response(200, { sequence: 8 });
         }
-        if (request.path === "/projects/document-1/snapshot-uploads") {
-          return response(200, { uploadId: "snapshot-1", chunkSize: 1024 * 1024 });
-        }
-        if (request.path === "/projects/snapshot-uploads/snapshot-1/parts") {
-          return response(200, null);
-        }
-        if (request.path === "/projects/snapshot-uploads/snapshot-1/complete") {
+        if (request.path === "/projects/document-1/snapshots") {
           return response(200, { throughSequence: 8 });
         }
         throw new Error(`Unexpected request ${request.method} ${request.path}`);
@@ -320,17 +314,9 @@ test("execute uploads a direct image before committing its durable asset path", 
   assert.equal(typeof updateBody.operation.inverseUpdate, "string");
   assert.ok(updateBody.operation.inverseUpdate.length > 0);
   const snapshotStart = requests.find(
-    (request) => request.path === "/projects/document-1/snapshot-uploads",
+    (request) => request.path === "/projects/document-1/snapshots",
   );
-  assert.match(decodeJson(snapshotStart.body).projection.sha256, /^[a-f0-9]{64}$/u);
-  const projectionParts = requests
-    .filter((request) => request.path === "/projects/snapshot-uploads/snapshot-1/parts")
-    .map((request) => decodeJson(request.body))
-    .filter((part) => part.kind === "projection")
-    .sort((left, right) => left.part - right.part);
-  const projection = decodeJson(
-    Buffer.concat(projectionParts.map((part) => Buffer.from(part.bytes, "base64"))),
-  );
+  const projection = decodeJson(snapshotStart.body).projection;
   assert.match(projection.children[0].fill.url, /^images\/[a-f0-9]{64}\.png$/u);
 });
 
@@ -377,13 +363,7 @@ test("documents.undo applies the backend's exact inverse and snapshots the resto
             update: encodeUpdate(inverse),
           });
         }
-        if (request.path === "/projects/document-1/snapshot-uploads") {
-          return response(200, { uploadId: "snapshot-undo", chunkSize: 1024 * 1024 });
-        }
-        if (request.path === "/projects/snapshot-uploads/snapshot-undo/parts") {
-          return response(200, null);
-        }
-        if (request.path === "/projects/snapshot-uploads/snapshot-undo/complete") {
+        if (request.path === "/projects/document-1/snapshots") {
           return response(200, { throughSequence: 9 });
         }
         throw new Error(`Unexpected request ${request.method} ${request.path}`);
@@ -407,16 +387,9 @@ test("documents.undo applies the backend's exact inverse and snapshots the resto
     { operationId, expectedSequence: 8, clientUpdateId: "<uuid>" },
   );
   const snapshotStart = requests.find(
-    (request) => request.path === "/projects/document-1/snapshot-uploads",
+    (request) => request.path === "/projects/document-1/snapshots",
   );
   assert.equal(decodeJson(snapshotStart.body).throughSequence, 9);
-  const projectionParts = requests
-    .filter((request) => request.path === "/projects/snapshot-uploads/snapshot-undo/parts")
-    .map((request) => decodeJson(request.body))
-    .filter((part) => part.kind === "projection")
-    .sort((left, right) => left.part - right.part);
-  const projection = decodeJson(
-    Buffer.concat(projectionParts.map((part) => Buffer.from(part.bytes, "base64"))),
-  );
+  const projection = decodeJson(snapshotStart.body).projection;
   assert.deepEqual(projection, original);
 });

@@ -1,5 +1,10 @@
 import { base64ToBytes, bytesToBase64, decodeJson, encodeJson } from "./codec.mjs";
 
+// This mirrors the host's documented Account-data request-body boundary. Use
+// the direct snapshot endpoint whenever the exact encoded request fits; the
+// multipart transfer remains the lossless path for larger valid snapshots.
+const ACCOUNT_DATA_MAX_REQUEST_BYTES = 24 * 1024 * 1024;
+
 export function createCanvasApi(runtime = globalThis.penkra) {
   if (!runtime?.account) throw new Error("Canvas requires Penkra Account data support.");
 
@@ -59,12 +64,16 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: input }),
     undoOperation: (id, input) =>
       request(`/${encodeURIComponent(id)}/undo`, { method: "POST", body: input }),
-    createSnapshot: (id, { source, state, ...input }) =>
-      uploadSnapshot(request, id, {
-        ...input,
-        projection: source,
-        state: base64ToBytes(state),
-      }),
+    createSnapshot: (id, { source, state, ...input }) => {
+      const snapshot = { ...input, state, projection: source };
+      return encodeJson(snapshot).byteLength <= ACCOUNT_DATA_MAX_REQUEST_BYTES
+        ? request(`/${encodeURIComponent(id)}/snapshots`, { method: "POST", body: snapshot })
+        : uploadSnapshot(request, id, {
+          ...input,
+          projection: source,
+          state: base64ToBytes(state),
+        });
+    },
     listGrants: (id) => request(`/${encodeURIComponent(id)}/grants`),
     grantAccess: (id, email) =>
       request(`/${encodeURIComponent(id)}/grants`, {
