@@ -62,6 +62,7 @@
     {
       "key": "listings.open",
       "summary": "Read one exact registry App/version and its permissions before install or update; this does not change local state.",
+      "instructionsPath": "operations/listings.open.md",
       "input": {
         "type": "object",
         "properties": { "appId": { "type": "string", "minLength": 1 } },
@@ -85,6 +86,7 @@
     {
       "key": "installations.install",
       "summary": "Install one exact registry version into the current Space after the user grants every declared permission; verify the returned snapshot before claiming it is usable.",
+      "instructionsPath": "operations/installations.install.md",
       "input": {
         "$ref": "#/$defs/installInput",
         "$defs": {
@@ -135,6 +137,7 @@
     {
       "key": "installations.update",
       "summary": "Update an installed App in the current Space to one exact registry version; newly declared permissions require explicit grants.",
+      "instructionsPath": "operations/installations.update.md",
       "input": {
         "type": "object",
         "properties": {
@@ -174,6 +177,7 @@
     {
       "key": "installations.uninstall",
       "summary": "Uninstall one App from the current Space with an explicit retainData choice; use remove-data separately when retained data must later be erased.",
+      "instructionsPath": "operations/installations.uninstall.md",
       "input": {
         "type": "object",
         "properties": {
@@ -204,6 +208,7 @@
     {
       "key": "installations.remove-data",
       "summary": "Permanently remove one uninstalled App's retained data from the current Space; use only after explicit erasure authorization.",
+      "instructionsPath": "operations/installations.remove-data.md",
       "input": {
         "type": "object",
         "properties": { "appId": { "type": "string", "minLength": 1 } },

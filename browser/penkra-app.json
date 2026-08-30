@@ -20,6 +20,7 @@
     {
       "key": "pages.open",
       "summary": "Open one HTTP(S) URL in a Browser tab and return its tab/page state; use penkra open instead when the user did not choose Browser.",
+      "instructionsPath": "operations/pages.open.md",
       "input": {
         "type": "object",
         "properties": { "url": { "type": "string", "minLength": 1 } },
@@ -56,6 +57,7 @@
     {
       "key": "pages.navigate",
       "summary": "Navigate an existing page in the explicitly targeted Browser tab; use a current pageId when choosing among multiple pages and snapshot again afterward.",
+      "instructionsPath": "operations/pages.navigate.md",
       "input": {
         "type": "object",
         "properties": {
@@ -72,6 +74,7 @@
     {
       "key": "pages.evaluate",
       "summary": "Evaluate one bounded JavaScript expression in an exact page and targeted Browser tab; use only when semantic operations and tab observation cannot express the task.",
+      "instructionsPath": "operations/pages.evaluate.md",
       "input": {
         "type": "object",
         "properties": {
@@ -92,6 +95,7 @@
     {
       "key": "pages.close",
       "summary": "Close one page in the explicitly targeted Browser tab; use its exact pageId and rediscover Browser state if it is stale.",
+      "instructionsPath": "operations/pages.close.md",
       "input": {
         "type": "object",
         "properties": { "pageId": { "type": "string", "minLength": 1 } },
