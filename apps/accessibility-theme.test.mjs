@@ -13,6 +13,11 @@ test("adapts to Penkra appearance tokens and reduced motion", () => {
   assert.match(styles, /color-scheme:\s*light dark/);
   assert.match(styles, /var\(--penkra-color-background/);
   assert.match(styles, /var\(--penkra-color-text-primary/);
+  assert.match(
+    styles,
+    /--apps-tertiary:\s*var\(--penkra-color-text-muted,\s*light-dark\(#767676,\s*#ffffff70\)\)/,
+  );
+  assert.doesNotMatch(styles, /--penkra-color-text-tertiary/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/);
 });
 
