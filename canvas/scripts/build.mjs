@@ -96,7 +96,7 @@ for (const file of [
   await cp(new URL(file, root), new URL(file, output));
 }
 await cp(new URL("assets/icon.svg", root), new URL("assets/icon.svg", output));
-await cp(new URL("skills/", root), new URL("skills/", output), { recursive: true });
+await cp(new URL("operations/", root), new URL("operations/", output), { recursive: true });
 await cp(
   new URL("node_modules/canvaskit-wasm/bin/canvaskit.wasm", root),
   new URL("canvaskit.wasm", output),

@@ -13,6 +13,7 @@
     {
       "key": "resources.open",
       "summary": "Open one host-minted file or directory handle in Explorer and return its tabId; use penkra open first when you have only a path, never a handle.",
+      "instructionsPath": "operations/resources.open.md",
       "input": {
         "type": "object",
         "properties": {
