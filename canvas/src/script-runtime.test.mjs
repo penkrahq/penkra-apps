@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { createDocumentModel } from "./document-model.mjs";
 import { executeCanvasScript } from "./script-runtime.mjs";
 
 test("execute scripts edit only their private JSON document", async () => {
@@ -143,13 +142,41 @@ test("execute scripts reject invalid and oversized code", async () => {
   );
 });
 
-test("a minimal invalid Insert is rejected by the pre-commit document validator", async () => {
-  const execution = await executeCanvasScript(
-    { version: "2.15", children: [] },
-    "Insert(null, { id: 'broken' });",
+test("Canvas script rejects invalid hierarchy and identity at the mutation boundary", async () => {
+  const document = {
+    version: "2.17",
+    children: [{ id: "screen", type: "frame", children: [] }],
+  };
+  await assert.rejects(
+    executeCanvasScript(document, "Insert(null, { id: 'broken' });"),
+    /requires a non-empty type/u,
   );
-  assert.throws(
-    () => createDocumentModel(execution.document),
-    /Node broken must have a non-empty string type/,
+  await assert.rejects(
+    executeCanvasScript(
+      document,
+      'Insert("#screen", { id: "input", type: "rectangle", children: [{ id: "label", type: "text", content: "Name" }] });',
+    ),
+    /cannot contain children; use a frame or group/u,
+  );
+  await assert.rejects(
+    executeCanvasScript(
+      document,
+      'Insert("#screen", { id: "card", type: "frame", children: [{ id: "screen", type: "text", content: "Duplicate" }] });',
+    ),
+    /Node screen already exists/u,
+  );
+  await assert.rejects(
+    executeCanvasScript(
+      document,
+      'Update("#screen", { children: [{ id: "duplicate", type: "text" }, { id: "duplicate", type: "text" }] });',
+    ),
+    /Node duplicate already exists/u,
+  );
+  await assert.rejects(
+    executeCanvasScript(
+      document,
+      'Insert(null, { id: "shape", type: "rectangle" }); Move("#screen", "#shape");',
+    ),
+    /cannot contain children; use a frame or group/u,
   );
 });

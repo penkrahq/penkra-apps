@@ -70,6 +70,7 @@ const __touched = new Set();
 const __generations = [];
 const __screenshots = [];
 let __copyCounter = 0;
+const __containerTypes = new Set(["frame", "group"]);
 const __clone = (value) => JSON.parse(JSON.stringify(value));
 const __readonly = (value) => {
   if (!value || typeof value !== "object") return value;
@@ -130,6 +131,37 @@ function __touchTree(node) {
   for (const child of node.children || []) __touchTree(child);
 }
 
+function __assertContainer(node) {
+  if (!__containerTypes.has(node.type)) {
+    throw new Error("Canvas node " + node.id + " of type " + node.type + " cannot contain children; use a frame or group.");
+  }
+}
+
+function __assertNodeTree(node, usedIds) {
+  if (!node || typeof node !== "object" || Array.isArray(node)) {
+    throw new TypeError("A Canvas node must be an object.");
+  }
+  if (typeof node.id !== "string" || node.id.length === 0) {
+    throw new Error("Every inserted or replaced Canvas node requires a non-empty id.");
+  }
+  if (typeof node.type !== "string" || node.type.length === 0) {
+    throw new Error("Canvas node " + node.id + " requires a non-empty type.");
+  }
+  if (usedIds.has(node.id)) throw new Error("Node " + node.id + " already exists.");
+  usedIds.add(node.id);
+  if (node.children !== undefined && !Array.isArray(node.children)) {
+    throw new TypeError("Canvas node " + node.id + " children must be an array.");
+  }
+  if (node.children !== undefined) __assertContainer(node);
+  for (const child of node.children || []) __assertNodeTree(child, usedIds);
+}
+
+function __assertParent(parent) {
+  const entry = __requireOne(parent);
+  __assertContainer(entry.node);
+  return entry;
+}
+
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
   const matches = __entries(selector);
   const limit = options.limit === undefined ? 1000 : Number(options.limit);
@@ -146,11 +178,10 @@ globalThis.Get = function Get(selector = "*", visitor, options = {}) {
 
 globalThis.Insert = function Insert(parent, node, position) {
   if (!node || typeof node !== "object" || Array.isArray(node)) throw new TypeError("Insert requires one node object.");
-  if (typeof node.id !== "string" || node.id.length === 0) throw new Error("Inserted nodes require a non-empty id.");
-  if (__entries("#" + node.id).length > 0) throw new Error("Node " + node.id + " already exists.");
+  __assertNodeTree(node, new Set(__walk().map((entry) => entry.node.id)));
   const children = parent === null || parent === undefined
     ? (__document.children ||= [])
-    : (__requireOne(parent).node.children ||= []);
+    : (__assertParent(parent).node.children ||= []);
   const index = position === undefined ? children.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > children.length) throw new RangeError("Insert position is outside the parent.");
   children.splice(index, 0, __clone(node));
@@ -162,11 +193,23 @@ globalThis.Insert = function Insert(parent, node, position) {
 globalThis.Update = function Update(target, properties) {
   if (!properties || typeof properties !== "object" || Array.isArray(properties)) throw new TypeError("Update requires a property object.");
   const node = __requireOne(target).node;
+  const previousSubtreeIds = new Set();
+  const collectPreviousIds = (current) => {
+    previousSubtreeIds.add(current.id);
+    for (const child of current.children || []) collectPreviousIds(child);
+  };
+  collectPreviousIds(node);
   if (Object.hasOwn(properties, "id") && properties.id !== node.id) throw new Error("Update cannot change a node id.");
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
     if (value === undefined) delete node[key];
     else node[key] = __clone(value);
+  }
+  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")) {
+    __assertNodeTree(
+      node,
+      new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !previousSubtreeIds.has(id))),
+    );
   }
   __touched.add(node.id);
   return node;
@@ -177,7 +220,16 @@ globalThis.Replace = function Replace(target, replacement) {
   if (!replacement || typeof replacement !== "object" || Array.isArray(replacement)) throw new TypeError("Replace requires one node object.");
   const next = __clone(replacement);
   next.id ??= entry.node.id;
-  if (next.id !== entry.node.id && __entries("#" + next.id).length > 0) throw new Error("Node " + next.id + " already exists.");
+  const replacedIds = new Set();
+  const collectReplacedIds = (node) => {
+    replacedIds.add(node.id);
+    for (const child of node.children || []) collectReplacedIds(child);
+  };
+  collectReplacedIds(entry.node);
+  __assertNodeTree(
+    next,
+    new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !replacedIds.has(id))),
+  );
   const siblings = entry.parent ? entry.parent.children : __document.children;
   siblings.splice(entry.index, 1, next);
   __touchTree(next);
@@ -200,7 +252,7 @@ globalThis.Move = function Move(target, parent, position) {
   source.splice(entry.index, 1);
   const destination = parent === null || parent === undefined
     ? __document.children
-    : (__requireOne(parent).node.children ||= []);
+    : (__assertParent(parent).node.children ||= []);
   const index = position === undefined ? destination.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > destination.length) throw new RangeError("Move position is outside the parent.");
   destination.splice(index, 0, entry.node);

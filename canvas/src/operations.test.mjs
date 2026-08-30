@@ -240,7 +240,7 @@ test("invalid execute output fails before any shared update or snapshot write", 
       documentId: "document-1",
       code: 'Insert(null, { id: "broken" });',
     }),
-    /non-empty string type/,
+    /requires a non-empty type/,
   );
   assert.equal(requests.some((request) => request.method === "POST"), false);
 });

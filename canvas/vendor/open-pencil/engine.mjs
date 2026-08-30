@@ -96063,7 +96063,13 @@ function createHiddenTextArea() {
   const textarea = document.createElement("textarea");
   textarea.setAttribute("aria-hidden", "true");
   textarea.tabIndex = -1;
-  textarea.className = "fixed left-0 top-0 h-px w-px opacity-0";
+  textarea.style.position = "fixed";
+  textarea.style.left = "0";
+  textarea.style.top = "0";
+  textarea.style.width = "1px";
+  textarea.style.height = "1px";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
   document.body.appendChild(textarea);
   return textarea;
 }
