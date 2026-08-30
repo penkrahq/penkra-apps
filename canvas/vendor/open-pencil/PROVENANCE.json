@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "368337254c29d67b3cb5e9aaff46d0c48d421a688ec87d0df17760d59acb24a4",
+  "engineSha256": "5283857721bcf375d152e74ccd6c390acedd6adc8835cbaf400d24f9b0ae5480",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -44,7 +44,8 @@
     "Hit-test transparent Pencil frames across their resolved bounds so empty interior space retains the authored hierarchy target.",
     "Grow every omitted-size instance on an overridden descendant path while preserving authored fixed dimensions.",
     "Promote an entered container by exactly one hierarchy level when its own empty interior is clicked.",
-    "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes."
+    "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
+    "Hide the text-edit input with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell."
   ],
   "exports": [
     "computeBounds",
