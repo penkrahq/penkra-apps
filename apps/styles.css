@@ -6,7 +6,7 @@
   --apps-control: var(--penkra-color-control, #262626);
   --apps-text: var(--penkra-color-text-primary, #fff);
   --apps-secondary: var(--penkra-color-text-secondary, #ffffff94);
-  --apps-tertiary: var(--penkra-color-text-tertiary, #ffffff54);
+  --apps-tertiary: var(--penkra-color-text-muted, light-dark(#767676, #ffffff70));
   --apps-border: var(--penkra-color-border, #ffffff12);
   --apps-accent: var(--penkra-color-accent, #5bafff);
   background: var(--apps-bg);
