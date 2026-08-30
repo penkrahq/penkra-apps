@@ -1,9 +1,11 @@
 import {
   computeBounds,
   computeAllLayouts,
+  createDefaultEditorState,
   createEditor,
   parsePenFile,
 } from "../vendor/open-pencil/engine.mjs";
+import { reactive } from "vue";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { pencilResourceAsset } from "./pencil-resources.mjs";
 import { resolveCanvasNodeSelection } from "./node-reference.mjs";
@@ -67,6 +69,7 @@ export function createOpenPencilEditor(document, options = {}) {
   );
   return createEditor({
     graph,
+    state: reactive(createDefaultEditorState(graph.getPages()[0].id)),
     getViewportSize: options.getViewportSize,
   });
 }

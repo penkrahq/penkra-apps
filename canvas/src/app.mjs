@@ -37,6 +37,7 @@ import {
   resolveCanvasNodeSelection,
 } from "./node-reference.mjs";
 import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
+import { beginSelectedTextEditing } from "./text-editing.mjs";
 import {
   ACCESS_REMOVED_HEADING,
   ACCESS_REMOVED_MESSAGE,
@@ -1530,7 +1531,16 @@ function bindLayersTree() {
   tree.addEventListener("keydown", (event) => {
     const element = event.target.closest("[data-node-id]");
     if (!element) return;
-    if (event.key === "Enter" || event.key === " ") {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      selectNode(element.dataset.nodeId, { openInspector: innerWidth < 960 });
+      beginSelectedTextEditing({
+        editor: state.engineSurface?.editor,
+        selection: currentCanvasSelection(),
+      });
+      return;
+    }
+    if (event.key === " ") {
       event.preventDefault();
       selectNode(element.dataset.nodeId, { openInspector: innerWidth < 960 });
       return;
@@ -1780,6 +1790,19 @@ function handleKeyboardShortcut(event) {
     return;
   }
   if (target instanceof Element && target.closest("button, select, a[href]")) return;
+  if (
+    event.key === "Enter"
+    && !event.shiftKey
+    && !event.altKey
+    && !command
+    && beginSelectedTextEditing({
+      editor: state.engineSurface?.editor,
+      selection: currentCanvasSelection(),
+    })
+  ) {
+    event.preventDefault();
+    return;
+  }
   if (event.code === "Space") {
     event.preventDefault();
     state.spacePressed = true;

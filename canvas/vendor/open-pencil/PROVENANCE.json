@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "5283857721bcf375d152e74ccd6c390acedd6adc8835cbaf400d24f9b0ae5480",
+  "engineSha256": "4d43ddaac06c8cfef4d19329b2fca37cf070584502023acb371cec67f02ec5e2",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -45,12 +45,14 @@
     "Grow every omitted-size instance on an overridden descendant path while preserving authored fixed dimensions.",
     "Promote an entered container by exactly one hierarchy level when its own empty interior is clicked.",
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
-    "Hide the text-edit input with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell."
+    "Hide the text-edit input visually with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell while keeping the focused editor available to accessibility clients.",
+    "Expose the upstream default editor-state factory so Canvas can supply Vue-reactive state to the editor integration."
   ],
   "exports": [
     "computeBounds",
     "computeAllLayouts",
     "computeDescendantVisualBounds",
+    "createDefaultEditorState",
     "createEditor",
     "fontManager",
     "getCanvasKit",

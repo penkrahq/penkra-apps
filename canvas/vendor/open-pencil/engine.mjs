@@ -96061,7 +96061,7 @@ function createTextKeyDownHandler(options) {
 import { watch as watch3 } from "vue";
 function createHiddenTextArea() {
   const textarea = document.createElement("textarea");
-  textarea.setAttribute("aria-hidden", "true");
+  textarea.setAttribute("aria-label", "Inline text editor");
   textarea.tabIndex = -1;
   textarea.style.position = "fixed";
   textarea.style.left = "0";
@@ -96153,6 +96153,7 @@ export {
   provideEditor,
   parsePenFile,
   getCanvasKit,
+  createDefaultEditorState,
   createEditor,
   computeBounds3 as computeBounds,
   computeAllLayouts,

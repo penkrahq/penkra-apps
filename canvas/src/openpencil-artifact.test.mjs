@@ -60,7 +60,8 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Grow every omitted-size instance on an overridden descendant path while preserving authored fixed dimensions.",
     "Promote an entered container by exactly one hierarchy level when its own empty interior is clicked.",
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
-    "Hide the text-edit input with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell.",
+    "Hide the text-edit input visually with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell while keeping the focused editor available to accessibility clients.",
+    "Expose the upstream default editor-state factory so Canvas can supply Vue-reactive state to the editor integration.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
   assert.match(engine, /setScenePictureMode\(hasVolatileOverlays \? "volatile" : "direct", cacheMissReason\)/u);
@@ -85,6 +86,8 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(surface, /useTextEdit\(overlayCanvasRef, editor\)/u);
   assert.match(engine, /function drawFrameTitles\(/u);
   assert.match(engine, /textarea\.style\.position = "fixed"/u);
+  assert.match(engine, /textarea\.setAttribute\("aria-label", "Inline text editor"\)/u);
+  assert.doesNotMatch(engine, /textarea\.setAttribute\("aria-hidden", "true"\)/u);
   assert.match(engine, /if \(fns\.isInsideContainerBounds\(cx, cy, scopeId\)\) \{\s+const scopeNode = editor\.graph\.getNode\(scopeId\);\s+editor\.exitContainer\(\);\s+return scopeNode \?\? null;/u);
   assert.match(engine, /labelCache\.getFrames\(graph4, r4\.worldViewport\)/u);
   assert.match(surface, /createLayeredSurfaceReadiness/u);
