@@ -201,6 +201,22 @@ test("reports unsupported icon libraries without changing their render node", ()
   assert.match(result.issues[0].message, /unknown icon custom is not supported/i);
 });
 
+test("resolves canonical underscore Material Symbols names without compatibility issues", () => {
+  const source = {
+    children: [
+      { id: "sparkle", type: "icon", library: "Material Symbols Outlined", icon: "auto_awesome" },
+      { id: "chat", type: "icon", library: "Material Symbols Rounded", icon: "chat_bubble" },
+    ],
+  };
+
+  const result = prepareOpenPencilRenderDocument(source);
+
+  assert.equal(result.document.children[0].__canvasIcon.content, "auto_awesome");
+  assert.equal(result.document.children[1].__canvasIcon.content, "chat_bubble");
+  assert.deepEqual(result.issues, []);
+  assert.deepEqual(source.children.map(({ icon }) => icon), ["auto_awesome", "chat_bubble"]);
+});
+
 test("compiles any catalogued Phosphor icon without a hardcoded path", () => {
   const source = {
     children: [{

@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.33",
+  "version": "0.2.37",
   "compatibility": {
     "penkra": ">=0.11.15"
   },

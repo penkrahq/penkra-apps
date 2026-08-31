@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "4d43ddaac06c8cfef4d19329b2fca37cf070584502023acb371cec67f02ec5e2",
+  "engineSha256": "d1f576a16de44aebd87c8d488e6800f76f0d5010738328973ce44e3789e35936",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -16,6 +16,7 @@
     "Relayout deleted-node parents only when the parent actually owns an auto-layout flow.",
     "Map Pencil 2.17 linear, radial, and angular gradients to native scene gradient paints.",
     "Render semantic Pencil icon nodes through provider geometry without changing their document type.",
+    "Carry semantic stroke-icon round caps and joins through the disposable scene graph and honor node-level vector stroke styles in CanvasKit.",
     "Honor numeric-string font weights, text styling, space-around layout, polygons, groups, and blur effects.",
     "Preserve and render every supported Pencil stroke fill instead of selecting the first fill.",
     "Leave unsupported Pencil node and fill types visually empty instead of approximating them with generic frames or colors.",

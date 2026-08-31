@@ -44,3 +44,13 @@ test("provider lookup never substitutes a different supported icon weight", () =
   assert.ok(pencilIconDefinition("Material Symbols Rounded", "home", 400));
   assert.ok(pencilIconDefinition("phosphor", "push-pin", 400));
 });
+
+test("Material Symbols canonical ligature names resolve through Iconify catalog keys", () => {
+  const outlined = pencilIconDefinition("Material Symbols Outlined", "auto_awesome", 400);
+  const rounded = pencilIconDefinition("Material Symbols Rounded", "chat_bubble", 400);
+
+  assert.equal(outlined.content, "auto_awesome");
+  assert.equal(outlined.fontFamily, "Material Symbols Outlined");
+  assert.equal(rounded.content, "chat_bubble");
+  assert.equal(rounded.fontFamily, "Material Symbols Rounded");
+});

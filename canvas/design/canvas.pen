@@ -1,5 +1,5 @@
 {
-  "version": "2.15",
+  "version": "2.17",
   "children": [
     {
       "type": "frame",
@@ -1460,7 +1460,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Editor",
                           "fontFamily": "$font-ui",
-                          "fontSize": 10
+                          "fontSize": 10,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -1580,7 +1581,8 @@
                   "fill": "$color-text-secondary",
                   "content": "Every icon-only instance carries the same accessible name as its tooltip. Shortcuts are supplemental, never the only label.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -1636,7 +1638,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Back to files",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -1645,7 +1648,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: —",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1698,7 +1702,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Select",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -1707,7 +1712,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: V",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1760,7 +1766,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Hand",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -1769,7 +1776,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: Space",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1822,7 +1830,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Frame",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -1831,7 +1840,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: F",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1884,7 +1894,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Rectangle",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -1893,7 +1904,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: R",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -1946,7 +1958,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Ellipse",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -1955,7 +1968,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: O",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -2008,7 +2022,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tooltip: Text",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "text",
@@ -2017,7 +2032,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Shortcut: T",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -10986,7 +11002,8 @@
                   "width": "fill_container",
                   "content": "Inspector sections follow the selected semantic Pencil type: typography for text; provider, name, and weight for icons; and structured resource controls for gradients, effects, scripts, shaders, meshes, themes, and slots.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -11076,8 +11093,8 @@
                               "height": 28,
                               "fill": "$color-accent",
                               "cornerRadius": 99,
-                              "alignItems": "center",
                               "justifyContent": "center",
+                              "alignItems": "center",
                               "children": [
                                 {
                                   "type": "text",
@@ -11099,8 +11116,8 @@
                               "height": 28,
                               "fill": "$color-success",
                               "cornerRadius": 99,
-                              "alignItems": "center",
                               "justifyContent": "center",
+                              "alignItems": "center",
                               "children": [
                                 {
                                   "type": "text",
@@ -11151,8 +11168,6 @@
                             "right": 1
                           },
                           "layout": "vertical",
-                          "gap": 0,
-                          "padding": 0,
                           "children": [
                             {
                               "type": "frame",
@@ -11283,7 +11298,8 @@
                                       "fill": "$color-text-primary",
                                       "content": "Frame 1",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 10
+                                      "fontSize": 10,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -11336,7 +11352,8 @@
                                       "fill": "$color-text-primary",
                                       "content": "Rectangle",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 10
+                                      "fontSize": 10,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -11364,8 +11381,11 @@
                             {
                               "type": "frame",
                               "id": "opTopRuler",
+                              "layoutPosition": "absolute",
+                              "x": 0,
+                              "y": 0,
                               "name": "Horizontal ruler",
-                              "width": "fill_container",
+                              "width": "fill_container(0)",
                               "height": 20,
                               "fill": "$color-background-control",
                               "padding": [
@@ -11383,17 +11403,17 @@
                                   "fontSize": 8,
                                   "fontWeight": "normal"
                                 }
-                              ],
-                              "layoutPosition": "absolute",
-                              "x": 0,
-                              "y": 0
+                              ]
                             },
                             {
                               "type": "frame",
                               "id": "opLeftRuler",
+                              "layoutPosition": "absolute",
+                              "x": 0,
+                              "y": 20,
                               "name": "Vertical ruler",
                               "width": 20,
-                              "height": "fill_container",
+                              "height": "fill_container(0)",
                               "fill": "$color-background-control",
                               "padding": [
                                 10,
@@ -11410,10 +11430,7 @@
                                   "fontSize": 8,
                                   "fontWeight": "normal"
                                 }
-                              ],
-                              "layoutPosition": "absolute",
-                              "x": 0,
-                              "y": 20
+                              ]
                             },
                             {
                               "type": "frame",
@@ -11530,12 +11547,26 @@
                             {
                               "type": "frame",
                               "id": "W8pk1d",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -11588,26 +11619,14 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             },
                             {
                               "type": "frame",
                               "id": "opZoom",
+                              "layoutPosition": "absolute",
+                              "x": 546,
+                              "y": 28,
                               "name": "Zoom menu",
                               "width": 48,
                               "height": 28,
@@ -11619,8 +11638,8 @@
                                 0,
                                 9
                               ],
-                              "alignItems": "center",
                               "justifyContent": "center",
+                              "alignItems": "center",
                               "children": [
                                 {
                                   "type": "text",
@@ -11632,10 +11651,7 @@
                                   "fontSize": 10,
                                   "fontWeight": "600"
                                 }
-                              ],
-                              "layoutPosition": "absolute",
-                              "x": 546,
-                              "y": 28
+                              ]
                             }
                           ]
                         },
@@ -11651,8 +11667,6 @@
                             "left": 1
                           },
                           "layout": "vertical",
-                          "gap": 0,
-                          "padding": 0,
                           "children": [
                             {
                               "type": "frame",
@@ -12020,7 +12034,8 @@
                   "width": "fill_container",
                   "content": "Document theme and variable bindings remain distinct from Canvas chrome.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -12140,7 +12155,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Frame 1",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -12193,7 +12209,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Rectangle",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -12257,12 +12274,26 @@
                             {
                               "type": "frame",
                               "id": "VujL4",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -12315,22 +12346,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         },
@@ -12448,7 +12464,8 @@
                   "width": "fill_container",
                   "content": "At compact width, Layers is the only open side panel.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -12568,7 +12585,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Frame 1",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -12621,7 +12639,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Rectangle",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -12754,12 +12773,26 @@
                             {
                               "type": "frame",
                               "id": "HH0mq",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -12812,22 +12845,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         }
@@ -12880,7 +12898,8 @@
                   "width": "fill_container",
                   "content": "Closing the active panel returns its width to the canvas.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -13080,12 +13099,26 @@
                             {
                               "type": "frame",
                               "id": "UfffH",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -13138,22 +13171,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         }
@@ -13196,7 +13214,8 @@
                   "width": "fill_container",
                   "content": "The phone-width default exposes essential tools without hover.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -13396,12 +13415,26 @@
                             {
                               "type": "frame",
                               "id": "AaFbN",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -13454,22 +13487,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         }
@@ -13512,7 +13530,8 @@
                   "width": "fill_container",
                   "content": "Layers opens as a dismissible full-height sheet without losing selection.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -13632,7 +13651,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Frame 1",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -13685,7 +13705,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Rectangle",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -13818,12 +13839,26 @@
                             {
                               "type": "frame",
                               "id": "iZkvL",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -13876,22 +13911,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         }
@@ -13944,7 +13964,8 @@
                   "width": "fill_container",
                   "content": "Inspect uses the same overlay model and keeps controls at touch size.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -14144,12 +14165,26 @@
                             {
                               "type": "frame",
                               "id": "rK8SO",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -14202,22 +14237,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         },
@@ -14319,7 +14339,8 @@
                   "width": "fill_container",
                   "content": "Locked values remain readable and explain why editing is disabled.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -14439,7 +14460,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Frame 1",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -14492,7 +14514,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Rectangle",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -14625,12 +14648,26 @@
                             {
                               "type": "frame",
                               "id": "D2JTwQ",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -14683,22 +14720,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         },
@@ -14812,7 +14834,8 @@
                   "width": "fill_container",
                   "content": "One frame shows the preserved object in Layers, canvas, and Inspect together.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -14932,7 +14955,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "Frame 1",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -15099,12 +15123,26 @@
                             {
                               "type": "frame",
                               "id": "Z7QpJa",
+                              "layoutPosition": "absolute",
+                              "x": 236,
+                              "y": 314,
                               "name": "Floating tool palette — OpenPencil baseline",
-                              "width": "fit_content",
                               "height": 56,
                               "fill": "$color-background-raised",
+                              "cornerRadius": 12,
                               "stroke": "$color-border",
                               "strokeWidth": 1,
+                              "effect": {
+                                "type": "shadow",
+                                "shadowType": "outer",
+                                "color": "#00000038",
+                                "offset": {
+                                  "x": 0,
+                                  "y": 8
+                                },
+                                "blur": 24,
+                                "spread": -8
+                              },
                               "gap": 4,
                               "padding": 8,
                               "alignItems": "center",
@@ -15157,22 +15195,7 @@
                                     }
                                   }
                                 }
-                              ],
-                              "cornerRadius": 12,
-                              "layoutPosition": "absolute",
-                              "x": 236,
-                              "y": 314,
-                              "effect": {
-                                "type": "shadow",
-                                "shadowType": "outer",
-                                "offset": {
-                                  "x": 0,
-                                  "y": 8
-                                },
-                                "blur": 24,
-                                "spread": -8,
-                                "color": "#00000038"
-                              }
+                              ]
                             }
                           ]
                         },
@@ -15361,7 +15384,8 @@
                       "width": "fill_container",
                       "content": "Owner grants edit access to a known Penkra account.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -15489,7 +15513,8 @@
                                   "fill": "$color-text-primary",
                                   "content": "alex@penkra.dev",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 12
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -15587,7 +15612,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Owner",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -15649,7 +15675,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Editor",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -15702,7 +15729,8 @@
                       "width": "fill_container",
                       "content": "Access is queued without pretending that an email was sent.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -15822,7 +15850,8 @@
                               "width": "fill_container",
                               "content": "Access activates after alex@example.com is verified on a Penkra Account.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -15882,7 +15911,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Pending account",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -15905,7 +15935,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Copy the document link and send it yourself if needed.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -15954,7 +15985,8 @@
                       "width": "fill_container",
                       "content": "Owner sees the consequence before confirming removal.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -16098,7 +16130,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Owner",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -16160,7 +16193,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Editor",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -16222,7 +16256,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Editor",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -16258,7 +16293,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Jordan will no longer be able to open or edit this file.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             },
                             {
                               "type": "frame",
@@ -16369,7 +16405,8 @@
                       "width": "fill_container",
                       "content": "Editors can inspect access but cannot change it.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -16489,7 +16526,8 @@
                               "width": "fill_container",
                               "content": "Ask Emmanuel to add or remove collaborators.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -16517,7 +16555,8 @@
                               "fill": "$color-text-primary",
                               "content": "name@example.com",
                               "fontFamily": "$font-ui",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -16614,7 +16653,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Owner",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -16676,7 +16716,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "You · Editor",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -16739,7 +16780,8 @@
                       "width": "fill_container",
                       "content": "Human presence shows one, three, and overflow; pending Accounts and agents never appear.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -16888,7 +16930,8 @@
                               "fill": "$color-text-secondary",
                               "content": "You and Alex are here",
                               "fontFamily": "$font-ui",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -16997,7 +17040,8 @@
                       "width": "fill_container",
                       "content": "Five or more collaborators collapse into a stable count.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -17193,7 +17237,8 @@
                               "fill": "$color-text-secondary",
                               "content": "6 people here",
                               "fontFamily": "$font-ui",
-                              "fontSize": 12
+                              "fontSize": 12,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -17302,7 +17347,8 @@
                       "width": "fill_container",
                       "content": "Editing remains available while connection state is explicit.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -17422,7 +17468,8 @@
                               "width": "fill_container",
                               "content": "Changes are saved on this device and sync when you reconnect.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -17508,7 +17555,8 @@
                               "fill": "$color-text-secondary",
                               "content": "3 changes waiting to sync",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -17559,7 +17607,8 @@
                       "width": "fill_container",
                       "content": "The document stays understandable when permission changes mid-session.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -17679,7 +17728,8 @@
                               "width": "fill_container",
                               "content": "Your Canvas tab remains open so you can understand what happened.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -17690,7 +17740,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Editing and sharing controls are unavailable.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 12
+                          "fontSize": 12,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -17801,7 +17852,8 @@
                   "width": "fill_container",
                   "content": "The owner enters Account email addresses; no delivery language is implied.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -17836,7 +17888,8 @@
                       "width": "fill_container",
                       "content": "Add editors by email. They need a Penkra Account to open this file. No email will be sent.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "frame",
@@ -17879,7 +17932,8 @@
                               "fill": "$color-text-primary",
                               "content": "alex@penkra.dev",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -17960,7 +18014,8 @@
                   "width": "fill_container",
                   "content": "A verified Account becomes an Editor and receives a precise confirmation.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -18063,7 +18118,8 @@
                   "width": "fill_container",
                   "content": "Malformed, owner, and already-shared addresses receive specific corrections.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -18130,7 +18186,8 @@
                               "fill": "$color-error",
                               "content": "alex@",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -18187,7 +18244,8 @@
                               "fill": "$color-error",
                               "content": "emmanuel@penkra.dev",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -18244,7 +18302,8 @@
                               "fill": "$color-error",
                               "content": "alex@penkra.dev",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -18356,7 +18415,8 @@
                       "width": "fill_container",
                       "content": "Canvas validates the local file before any cloud document is committed.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -18509,7 +18569,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Reading file… · 2.4 MB",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -18552,7 +18613,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Checking JSON structure, IDs, and referenced assets.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "id": "OM0Vq",
@@ -18615,7 +18677,8 @@
                       "width": "fill_container",
                       "content": "Upload progress is determinate only when the byte count is known.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -18768,7 +18831,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "1.5 of 2.4 MB uploaded",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -18811,7 +18875,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Cancel is available until the cloud document is committed.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "id": "DxiNM",
@@ -18874,7 +18939,8 @@
                       "width": "fill_container",
                       "content": "Canvas prepares the cloud document after upload without inventing a finish time.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -19025,7 +19091,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Reading nodes and assets",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -19103,7 +19170,8 @@
                           "fill": "$color-text-secondary",
                           "content": "642 of 1,008 nodes checked",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -19178,7 +19246,8 @@
                       "width": "fill_container",
                       "content": "Malformed content fails clearly without creating a phantom library item.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -19298,7 +19367,8 @@
                               "width": "fill_container",
                               "content": "dashboard.pen is not a valid .pen document.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -19309,7 +19379,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Choose another file, or fix the document structure and try again.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -19400,7 +19471,8 @@
                       "width": "fill_container",
                       "content": "Issues are summarized before the user enters the document.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -19636,7 +19708,8 @@
                           "width": "fill_container",
                           "content": "Downloading keeps preserved data unless you remove or replace it.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -19745,7 +19818,8 @@
                       "width": "fill_container",
                       "content": "Unsupported content stays in hierarchy, viewport, and read-only metadata together.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -19947,7 +20021,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Preserved · rendering limited",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 10
+                                      "fontSize": 10,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -20003,7 +20078,8 @@
                                       "fill": "$color-text-primary",
                                       "content": "Preserved",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 10
+                                      "fontSize": 10,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -20032,7 +20108,8 @@
                                       "fill": "$color-text-primary",
                                       "content": "Unavailable",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 10
+                                      "fontSize": 10,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -20061,7 +20138,8 @@
                                       "fill": "$color-text-primary",
                                       "content": "Included",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 10
+                                      "fontSize": 10,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -20116,7 +20194,8 @@
                       "width": "fill_container",
                       "content": "Export states what is included while sync is unavailable.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -20236,7 +20315,8 @@
                               "width": "fill_container",
                               "content": "The file is built from the latest local document, including 3 changes waiting to sync.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 11
+                              "fontSize": 11,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -20303,7 +20383,8 @@
                                   "fill": "$color-text-secondary",
                                   "content": "Ready to download · 1.8 MB",
                                   "fontFamily": "$font-ui",
-                                  "fontSize": 10
+                                  "fontSize": 10,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -20440,7 +20521,8 @@
                       "width": "fill_container",
                       "content": "Delete is owner-only and does not invent a visible trash or restore flow.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -20547,7 +20629,8 @@
                           "width": "fill_container",
                           "content": "It will be removed from everyone’s Canvas library. This action may be recoverable by support for a limited time.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         },
                         {
                           "type": "frame",
@@ -20633,7 +20716,8 @@
                   "width": "fill_container",
                   "content": "A newer version fails separately from malformed JSON.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -20714,7 +20798,8 @@
                           "width": "fill_container",
                           "content": "Canvas can preserve known versions only after compatibility validation.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -20725,7 +20810,8 @@
                       "fill": "$color-text-secondary",
                       "content": "Document version 3.0 · Canvas tested through 2.15",
                       "fontFamily": "$font-ui",
-                      "fontSize": 10
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     },
                     {
                       "id": "I8oP4",
@@ -20776,7 +20862,8 @@
                   "width": "fill_container",
                   "content": "A retryable upload interruption keeps the selected local file available.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -20857,7 +20944,8 @@
                           "width": "fill_container",
                           "content": "Check your connection, then try again.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -20926,7 +21014,8 @@
                               "fill": "$color-text-secondary",
                               "content": "2.4 MB · ready to retry",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -20981,7 +21070,8 @@
                   "width": "fill_container",
                   "content": "Review names the hierarchy path, limitation, and export behavior.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -21068,7 +21158,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Page / Hero / Legacy effect",
                           "fontFamily": "$font-ui",
-                          "fontSize": 10
+                          "fontSize": 10,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -21110,7 +21201,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Not rendered",
                           "fontFamily": "$font-ui",
-                          "fontSize": 10
+                          "fontSize": 10,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -21152,7 +21244,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Read-only metadata",
                           "fontFamily": "$font-ui",
-                          "fontSize": 10
+                          "fontSize": 10,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -21194,7 +21287,8 @@
                           "fill": "$color-text-secondary",
                           "content": "Preserved",
                           "fontFamily": "$font-ui",
-                          "fontSize": 10
+                          "fontSize": 10,
+                          "fontWeight": "normal"
                         }
                       ]
                     }
@@ -21235,7 +21329,8 @@
                   "width": "fill_container",
                   "content": "Export waits for pending changes and describes the active work.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -21316,7 +21411,8 @@
                           "width": "fill_container",
                           "content": "Waiting for 3 pending changes to reach the cloud.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -21357,7 +21453,8 @@
                       "fill": "$color-text-secondary",
                       "content": "Download starts only after the current state can be serialized safely.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 10
+                      "fontSize": 10,
+                      "fontWeight": "normal"
                     }
                   ]
                 }
@@ -21396,7 +21493,8 @@
                   "width": "fill_container",
                   "content": "Unsafe serialization blocks the download instead of producing a misleading file.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -21477,7 +21575,8 @@
                           "width": "fill_container",
                           "content": "Current local state cannot be serialized safely. Your document remains open.",
                           "fontFamily": "$font-ui",
-                          "fontSize": 11
+                          "fontSize": 11,
+                          "fontWeight": "normal"
                         }
                       ]
                     },
@@ -21611,7 +21710,8 @@
                       "width": "fill_container",
                       "content": "Wide reference keeps both side panels while the canvas stays dominant.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -21869,7 +21969,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Frame 1",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -21894,7 +21995,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Heading",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -21919,7 +22021,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Rectangle",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -22029,7 +22132,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Position",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -22054,7 +22158,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Size",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -22079,7 +22184,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Appearance",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -22134,7 +22240,8 @@
                       "width": "fill_container",
                       "content": "Compact reference shows one side panel at a time.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -22466,7 +22573,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Frame 1",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -22491,7 +22599,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Heading",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -22516,7 +22625,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Rectangle",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -22571,7 +22681,8 @@
                       "width": "fill_container",
                       "content": "Reduced motion removes decorative transitions while preserving every state change.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -22650,7 +22761,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Appear immediately; no sliding sheet animation.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -22693,7 +22805,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Jump or use a short crossfade; no animated pan/zoom.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -22736,7 +22849,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Status text changes normally; no pulsing or looping.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -22779,7 +22893,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Focus ring and handles remain visible without motion.",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -22840,7 +22955,8 @@
                       "width": "fill_container",
                       "content": "Narrow reference prioritizes the canvas and touch-sized essential controls.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -23175,7 +23291,8 @@
                       "width": "fill_container",
                       "content": "Layers use an overlay; closing it returns to the same canvas position.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -23507,7 +23624,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Frame 1",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -23532,7 +23650,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Heading",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 },
@@ -23557,7 +23676,8 @@
                                       "fill": "$color-text-secondary",
                                       "content": "Rectangle",
                                       "fontFamily": "$font-ui",
-                                      "fontSize": 9
+                                      "fontSize": 9,
+                                      "fontWeight": "normal"
                                     }
                                   ]
                                 }
@@ -23612,7 +23732,8 @@
                       "width": "fill_container",
                       "content": "Trusted host chrome remains outside a narrow Canvas surface.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -23817,7 +23938,8 @@
                       "width": "fill_container",
                       "content": "The same document moves from two panels, to one panel, to overlay controls.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -24170,7 +24292,8 @@
                       "width": "fill_container",
                       "content": "Focus moves through header, Layers, canvas, and Inspect without traversing every object.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -24255,7 +24378,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tab / Shift+Tab",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -24318,7 +24442,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tab / Shift+Tab",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -24381,7 +24506,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tab / Shift+Tab",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -24444,7 +24570,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Tab / Shift+Tab",
                               "fontFamily": "$font-ui",
-                              "fontSize": 10
+                              "fontSize": 10,
+                              "fontWeight": "normal"
                             }
                           ]
                         }
@@ -24495,7 +24622,8 @@
                       "width": "fill_container",
                       "content": "Canvas owns its content bar; Penkra owns the app boundary and trusted chrome.",
                       "fontFamily": "$font-ui",
-                      "fontSize": 11
+                      "fontSize": 11,
+                      "fontWeight": "normal"
                     }
                   ]
                 },
@@ -24614,7 +24742,8 @@
                               "fill": "$color-text-secondary",
                               "content": "Open project-atlas.pen",
                               "fontFamily": "$font-ui",
-                              "fontSize": 9
+                              "fontSize": 9,
+                              "fontWeight": "normal"
                             }
                           ]
                         },
@@ -24741,7 +24870,8 @@
                                           "fill": "$color-text-secondary",
                                           "content": "Frame 1",
                                           "fontFamily": "$font-ui",
-                                          "fontSize": 9
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -24766,7 +24896,8 @@
                                           "fill": "$color-text-secondary",
                                           "content": "Heading",
                                           "fontFamily": "$font-ui",
-                                          "fontSize": 9
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -24791,7 +24922,8 @@
                                           "fill": "$color-text-secondary",
                                           "content": "Rectangle",
                                           "fontFamily": "$font-ui",
-                                          "fontSize": 9
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -24901,7 +25033,8 @@
                                           "fill": "$color-text-secondary",
                                           "content": "Position",
                                           "fontFamily": "$font-ui",
-                                          "fontSize": 9
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -24926,7 +25059,8 @@
                                           "fill": "$color-text-secondary",
                                           "content": "Size",
                                           "fontFamily": "$font-ui",
-                                          "fontSize": 9
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     },
@@ -24951,7 +25085,8 @@
                                           "fill": "$color-text-secondary",
                                           "content": "Appearance",
                                           "fontFamily": "$font-ui",
-                                          "fontSize": 9
+                                          "fontSize": 9,
+                                          "fontWeight": "normal"
                                         }
                                       ]
                                     }
@@ -25007,7 +25142,8 @@
           "fill": "$color-text-secondary",
           "content": "Connected review paths for create, lossless import, sharing, offline collaboration, and agent-assisted editing.",
           "fontFamily": "$font-ui",
-          "fontSize": 15
+          "fontSize": 15,
+          "fontWeight": "normal"
         },
         {
           "type": "frame",
@@ -25050,7 +25186,8 @@
                   "width": "fill_container",
                   "content": "A blank cloud document becomes useful without a setup wizard.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -25454,7 +25591,8 @@
                   "width": "fill_container",
                   "content": "Unsupported content remains preserved and reviewable through export.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -25858,7 +25996,8 @@
                   "width": "fill_container",
                   "content": "The access grant is Account-scoped and sends no email.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -26222,7 +26361,8 @@
                   "width": "fill_container",
                   "content": "Pending access activates only after the same email is verified.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -26576,7 +26716,8 @@
                   "width": "fill_container",
                   "content": "Connection changes never discard the working document or claim false success.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",
@@ -26980,7 +27121,8 @@
                   "width": "fill_container",
                   "content": "The agent has no fake cursor or presence avatar.",
                   "fontFamily": "$font-ui",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 },
                 {
                   "type": "frame",

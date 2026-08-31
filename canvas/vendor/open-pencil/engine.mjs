@@ -85222,7 +85222,7 @@ function applyCanvasIconDefinition(node, pen, ctx) {
     const viewWidth = definition.viewBox[2];
     const viewHeight = definition.viewBox[3];
     const scale = Math.min(node.width / viewWidth, node.height / viewHeight);
-    node.strokes = [{ visible: true, color, opacity: parsedColor.a, weight: definition.strokeWidth * scale, align: "CENTER", dashPattern: [] }];
+    node.strokes = [{ visible: true, color, opacity: parsedColor.a, weight: definition.strokeWidth * scale, align: "CENTER", cap: "ROUND", join: "ROUND", dashPattern: [] }];
     node.strokeJoin = "ROUND";
     node.strokeCap = "ROUND";
   } else if (!definition.layers) {
@@ -89454,14 +89454,16 @@ function vectorStrokePaths(r4, node) {
   r4.vectorStrokePathCache.set(node.id, paths);
   return paths;
 }
-function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, miterLimit, outlineCacheKey) {
+function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, strokeCap, strokeJoin, miterLimit, outlineCacheKey) {
+  const cap = stroke.cap ?? strokeCap ?? "NONE";
+  const join = stroke.join ?? strokeJoin ?? "MITER";
   const dash = stroke.dashPattern;
   if (dash && dash.length > 0) {
     r4.strokePaint.setColor(r4.ck.Color4f(sc.r, sc.g, sc.b, sc.a));
     r4.strokePaint.setAlphaf(stroke.opacity);
     r4.strokePaint.setStrokeWidth(stroke.weight);
-    r4.strokePaint.setStrokeCap(getStrokeCapEntity(r4, stroke.cap ?? "NONE"));
-    r4.strokePaint.setStrokeJoin(getStrokeJoinEntity(r4, stroke.join ?? "MITER"));
+    r4.strokePaint.setStrokeCap(getStrokeCapEntity(r4, cap));
+    r4.strokePaint.setStrokeJoin(getStrokeJoinEntity(r4, join));
     r4.strokePaint.setStrokeMiter(miterLimit);
     const effect = r4.ck.PathEffect.MakeDash(dash, 0);
     r4.strokePaint.setPathEffect(effect);
@@ -89474,8 +89476,8 @@ function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, miterLimit, 
   const strokeOpts = {
     width: stroke.weight,
     miter_limit: miterLimit,
-    cap: getStrokeCapEntity(r4, stroke.cap ?? "NONE"),
-    join: getStrokeJoinEntity(r4, stroke.join ?? "MITER")
+    cap: getStrokeCapEntity(r4, cap),
+    join: getStrokeJoinEntity(r4, join)
   };
   r4.fillPaint.setColor(r4.ck.Color4f(sc.r, sc.g, sc.b, sc.a));
   r4.fillPaint.setAlphaf(stroke.opacity);
@@ -89510,12 +89512,12 @@ function drawNodeStroke2(r4, canvas, node, rect, hasRadius2, stroke, sc, sg, vec
   const shouldStrokeVectorCenterline = vectorStroke && stroke.align === "CENTER" && node.cornerRadius === 0 && node.type === "VECTOR" && !node.fills.some((fill3) => fill3.visible);
   if (shouldStrokeVectorCenterline) {
     const outlineKey = `${node.id}|${stroke.weight}|${stroke.cap ?? node.strokeCap}|${stroke.join ?? node.strokeJoin}|${node.strokeMiterLimit}`;
-    drawVectorPathStrokes(r4, canvas, vectorStroke, stroke, sc, node.strokeMiterLimit, outlineKey);
+    drawVectorPathStrokes(r4, canvas, vectorStroke, stroke, sc, node.strokeCap, node.strokeJoin, node.strokeMiterLimit, outlineKey);
     return;
   }
   if (!sg) {
     if (vectorPaths) {
-      drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, node.strokeMiterLimit);
+      drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, node.strokeCap, node.strokeJoin, node.strokeMiterLimit);
     } else
       drawRegularStroke(r4, canvas, node, rect, hasRadius2, stroke, sc);
     return;
@@ -89556,7 +89558,7 @@ function renderShapeUncached(r4, canvas, node, graph4) {
   forVisibleStrokes(r4, node, graph4, (stroke, color) => {
     if (stroke.dashPattern && stroke.dashPattern.length > 0 && node.type === "VECTOR" && node.vectorNetwork) {
       const centerline = vectorNetworkToCenterlinePath(r4.ck, node.vectorNetwork);
-      drawVectorPathStrokes(r4, canvas, [centerline], stroke, color, node.strokeMiterLimit);
+      drawVectorPathStrokes(r4, canvas, [centerline], stroke, color, node.strokeCap, node.strokeJoin, node.strokeMiterLimit);
       centerline.delete();
       return;
     }

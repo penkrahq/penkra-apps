@@ -31,6 +31,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Relayout deleted-node parents only when the parent actually owns an auto-layout flow.",
     "Map Pencil 2.17 linear, radial, and angular gradients to native scene gradient paints.",
     "Render semantic Pencil icon nodes through provider geometry without changing their document type.",
+    "Carry semantic stroke-icon round caps and joins through the disposable scene graph and honor node-level vector stroke styles in CanvasKit.",
     "Honor numeric-string font weights, text styling, space-around layout, polygons, groups, and blur effects.",
     "Preserve and render every supported Pencil stroke fill instead of selecting the first fill.",
     "Leave unsupported Pencil node and fill types visually empty instead of approximating them with generic frames or colors.",

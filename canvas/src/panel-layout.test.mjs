@@ -68,13 +68,16 @@ test("node shortcuts run from non-text controls without replacing native text co
   assert.ok(copyShortcut < controlGuard);
 });
 
-test("editor undo explicitly persists nodes restored to the selected graph", async () => {
-  const source = await readFile(new URL("app.mjs", import.meta.url), "utf8");
-  assert.match(source, /editor\.undoAction\(\);\s*queueRestoredSelectedNodes\(state\.engineSurface\)/u);
-  assert.match(source, /if \(existing\.has\(nodeId\)\) continue;/u);
-  assert.match(source, /state\.deletedNodeSnapshots\.set\(mutation\.nodeId/u);
-  assert.match(source, /const node = deleted\?\.node \?\? \(sceneNode && sceneNodeToPenNode\(sceneNode\)\)/u);
-  assert.match(source, /queueEngineMutations\(state\.document\.id, surface, mutations, \{ prepend: true \}\)/u);
+test("editor undo persists the exact history event stream through the surface", async () => {
+  const app = await readFile(new URL("app.mjs", import.meta.url), "utf8");
+  const surface = await readFile(new URL("openpencil-surface.mjs", import.meta.url), "utf8");
+
+  assert.match(app, /if \(state\.engineSurface\) \{\s*state\.engineSurface\.undo\(\);/u);
+  assert.match(app, /state\.deletedNodeSnapshots\.set\(mutation\.nodeId/u);
+  assert.match(app, /restoreDeletedNode: \(nodeId\) => \{/u);
+  assert.match(surface, /undo\(\) \{\s*return replayHistory\(\(\) => editor\.undoAction\(\)\);/u);
+  assert.match(surface, /if \(historyMutations\.length\) callbacks\.onMutations\?\.\(historyMutations\)/u);
+  assert.match(surface, /callbacks\.restoreDeletedNode\?\.\(node\.id\) \?\? sceneNodeInsertionMutation\(editor, node\)/u);
 });
 
 test("hidden tabs mount the editor without waiting for a paint frame", async () => {

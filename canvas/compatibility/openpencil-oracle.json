@@ -42,8 +42,8 @@
     },
     {
       "label": "Canvas current Pencil design",
-      "sha256": "8aa0c0e13385ecdc46efb551e9005a88cde0c34b34962a01b3e7c825d40446a8",
-      "version": "2.15",
+      "sha256": "1ebf6a67dd28a372e512608d4e1758956a46dce5fa1a0f92e2f50775f46fd751",
+      "version": "2.17",
       "sourceNodes": 2340,
       "graphNodes": 2526,
       "missingSourceIds": [],

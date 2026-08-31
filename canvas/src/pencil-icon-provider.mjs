@@ -33,14 +33,15 @@ function lucideIcon(name) {
 
 function materialIcon(name, suffix, weight) {
   if (weight < 100 || weight > 700) return null;
-  if (!resolveIconifyAlias(materialSymbols, `${name}-${suffix}`)) return null;
+  const catalogName = name.replaceAll("_", "-");
+  if (!resolveIconifyAlias(materialSymbols, `${catalogName}-${suffix}`)) return null;
   return {
     fontFamily: ({
       outline: "Material Symbols Outlined",
       "outline-rounded": "Material Symbols Rounded",
       "outline-sharp": "Material Symbols Sharp",
     })[suffix],
-    content: name.replaceAll("-", "_"),
+    content: catalogName.replaceAll("-", "_"),
     weight,
     paint: "font",
   };

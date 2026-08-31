@@ -8,7 +8,6 @@ import {
   analyzeOpenPencilCompatibility,
   isOpenPencilEditableNode,
   penPropertyToSceneChanges,
-  sceneNodeToPenNode,
 } from "./openpencil-engine.mjs";
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
@@ -1025,7 +1024,18 @@ function mountEditorSurface() {
           button.classList.toggle("active", button.dataset.tool === tool);
         });
       },
+      onTextEditStart: () => state.undo?.stopCapturing(),
       onMutations: (mutations) => queueEngineMutations(documentId, surface, mutations),
+      onTextEditCommit: () => queueMicrotask(() => state.undo?.stopCapturing()),
+      restoreDeletedNode: (nodeId) => {
+        const deleted = state.deletedNodeSnapshots.get(nodeId);
+        return deleted ? {
+          kind: "insert-node",
+          node: structuredClone(deleted.node),
+          parentId: deleted.parentId,
+          position: deleted.position,
+        } : null;
+      },
       onUnsupportedEdit: (text) => setToast(text, true),
       onError: (error) => {
         state.engineReady = false;
@@ -1715,38 +1725,13 @@ function inspectorFieldKey(input) {
 
 function undo() {
   if (state.engineSurface) {
-    state.engineSurface.editor.undoAction();
-    queueRestoredSelectedNodes(state.engineSurface);
+    state.engineSurface.undo();
   } else state.undo?.undo();
   renderHistoryControls();
 }
 
-function queueRestoredSelectedNodes(surface) {
-  if (!state.document || state.engineSurface !== surface) return;
-  const editor = surface.editor;
-  const existing = new Set(currentDocumentNodes().map(({ node }) => node.id));
-  const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
-  const mutations = [];
-  for (const nodeId of editor.state.selectedIds) {
-    if (existing.has(nodeId)) continue;
-    const sceneNode = editor.graph.getNode(nodeId);
-    const deleted = state.deletedNodeSnapshots.get(nodeId);
-    const node = deleted?.node ?? (sceneNode && sceneNodeToPenNode(sceneNode));
-    if (!node) continue;
-    mutations.push({
-      kind: "insert-node",
-      node,
-      parentId: deleted ? deleted.parentId : (pageIds.has(sceneNode.parentId) ? null : sceneNode.parentId),
-      position: deleted ? deleted.position : sceneNode.index,
-    });
-  }
-  if (mutations.length) {
-    queueEngineMutations(state.document.id, surface, mutations, { prepend: true });
-  }
-}
-
 function redo() {
-  if (state.engineSurface) state.engineSurface.editor.redoAction();
+  if (state.engineSurface) state.engineSurface.redo();
   else state.undo?.redo();
   renderHistoryControls();
 }

@@ -14,7 +14,9 @@ import {
   refreshOpenPencilEditor,
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
+  sceneNodeInsertionMutation,
   sceneNodeToPenNode,
+  sceneTextEditCommitMutations,
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
@@ -505,6 +507,28 @@ test("moving a selected supported node to zero remains an authored edit", () => 
   ]);
 });
 
+test("explicit history replay serializes an updated node regardless of later selection", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      { id: "label", type: "text", content: "Before" },
+      { id: "other", type: "frame", width: 100, height: 100 },
+    ],
+  };
+  const editor = createOpenPencilEditor(source);
+  const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
+  editor.select(["other"]);
+
+  assert.deepEqual(sceneEventToPenMutations(
+    editor,
+    source,
+    "label",
+    { text: "After" },
+    before,
+    { requireSelected: false },
+  ), [{ kind: "set-property", nodeId: "label", property: "content", value: "After" }]);
+});
+
 test("an instance-descendant edit persists at its canonical Pencil descendants path", () => {
   const source = {
     version: "2.17",
@@ -860,6 +884,10 @@ test("native icon nodes render from their provider while keeping Pencil semantic
   assert.equal(source.children[0].type, "icon");
   assert.equal(icon.type, "VECTOR");
   assert.equal(icon.strokes[0].weight, 1.25);
+  assert.equal(icon.strokes[0].cap, "ROUND");
+  assert.equal(icon.strokes[0].join, "ROUND");
+  assert.equal(icon.strokeCap, "ROUND");
+  assert.equal(icon.strokeJoin, "ROUND");
   assert.deepEqual(icon.vectorNetwork.vertices.slice(1, 5), [
     { x: 7.5, y: 11.875 },
     { x: 3.125, y: 7.5 },
@@ -1164,6 +1192,70 @@ test("new OpenPencil nodes map to explicit .pen nodes", () => {
     height: 120,
     fill: "#ff0000",
   });
+});
+
+test("new OpenPencil nodes use their exact authored sibling position", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{ id: "frame", type: "frame", width: 320, height: 240, children: [] }],
+  });
+  const nodeId = editor.createShape("TEXT", 24, 32, 180, 40);
+  const node = editor.graph.getNode(nodeId);
+
+  assert.equal(node.index, undefined);
+  assert.equal(sceneNodeInsertionMutation(editor, node).position, 1);
+});
+
+test("committing an existing text edit produces one source mutation from the session snapshot", () => {
+  const source = {
+    version: "2.17",
+    children: [{ id: "label", type: "text", content: "Before", fontSize: 14 }],
+  };
+  const editor = createOpenPencilEditor(source);
+  editor.select(["label"]);
+  const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
+  editor.graph.updateNode("label", { text: "After", width: 120 });
+
+  assert.deepEqual(sceneTextEditCommitMutations(editor, source, "label", before), [
+    { kind: "set-property", nodeId: "label", property: "width", value: 120 },
+    { kind: "set-property", nodeId: "label", property: "content", value: "After" },
+  ]);
+});
+
+test("committing a newly drawn text edit inserts its final semantic node", () => {
+  const source = {
+    version: "2.17",
+    children: [{ id: "frame", type: "frame", width: 320, height: 240, children: [] }],
+  };
+  const editor = createOpenPencilEditor(source);
+  const nodeId = editor.createShape("TEXT", 24, 32, 180, 40);
+  editor.graph.updateNode(nodeId, { text: "Created in Canvas" });
+  editor.select([nodeId]);
+
+  assert.deepEqual(sceneTextEditCommitMutations(
+    editor,
+    source,
+    nodeId,
+    sceneNodePropertySnapshot(editor.graph.getNode(nodeId)),
+  ), [{
+    kind: "insert-node",
+    node: {
+      id: nodeId,
+      type: "text",
+      name: "Text",
+      x: 24,
+      y: 32,
+      width: 180,
+      height: 40,
+      content: "Created in Canvas",
+      fontFamily: "Inter",
+      fontSize: 14,
+      fontWeight: 400,
+      fill: "#000000",
+    },
+    parentId: null,
+    position: 1,
+  }]);
 });
 
 test("selection hit testing advances exactly one frame hierarchy level", () => {

@@ -395,8 +395,15 @@ export function penPropertyToSceneChanges(node, property, value) {
   return null;
 }
 
-export function sceneEventToPenMutations(editor, document, nodeId, changes, previousSceneValues) {
-  if (!editor.state.selectedIds.has(nodeId)) return [];
+export function sceneEventToPenMutations(
+  editor,
+  document,
+  nodeId,
+  changes,
+  previousSceneValues,
+  { requireSelected = true } = {},
+) {
+  if (requireSelected && !editor.state.selectedIds.has(nodeId)) return [];
   const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
   if (!selection?.effectiveNode || !isOpenPencilEditableNode(selection.effectiveNode)) return [];
   const mutations = sceneUpdateToMutations(
@@ -411,6 +418,42 @@ export function sceneEventToPenMutations(editor, document, nodeId, changes, prev
     path: [selection.descendantPath, mutation.property],
     value: mutation.value,
   }));
+}
+
+export function sceneTextEditCommitMutations(editor, document, nodeId, previousSceneValues) {
+  const node = editor.graph.getNode(nodeId);
+  if (!node) return [];
+  const sourceNode = findPenNode(document, nodeId);
+  if (!sourceNode) {
+    const insertion = sceneNodeInsertionMutation(editor, node);
+    return insertion ? [insertion] : [];
+  }
+  return sceneEventToPenMutations(
+    editor,
+    document,
+    nodeId,
+    sceneNodePropertySnapshot(node),
+    previousSceneValues,
+  );
+}
+
+export function sceneNodeInsertionMutation(editor, node) {
+  const penNode = sceneNodeToPenNode(node);
+  const position = sceneNodePosition(editor, node);
+  if (!penNode || position === null) return null;
+  const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
+  return {
+    kind: "insert-node",
+    node: penNode,
+    parentId: pageIds.has(node.parentId) ? null : node.parentId,
+    position,
+  };
+}
+
+export function sceneNodePosition(editor, node) {
+  const parent = editor.graph.getNode(node.parentId);
+  const position = parent?.childIds?.indexOf(node.id) ?? -1;
+  return position < 0 ? null : position;
 }
 
 export function isOpenPencilEditableNode(node) {

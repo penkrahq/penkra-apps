@@ -86,6 +86,43 @@ test("an exact nested component-instance screenshot includes its overridden text
   }
 });
 
+test("a semantic Lucide icon renders its authored round line endings", async () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      type: "icon",
+      id: "check",
+      width: 24,
+      height: 24,
+      library: "lucide",
+      icon: "check",
+      fill: "#000000",
+    }],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["check"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image, "CanvasKit should decode the Lucide screenshot PNG");
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.equal(image.width(), 26);
+    assert.equal(image.height(), 26);
+    assert.ok(alphaAt(pixels, image.width(), 20, 6) > 150);
+    assert.ok(
+      alphaAt(pixels, image.width(), 21, 6) > 150,
+      "the final diagonal should extend past its centerline endpoint with a round cap",
+    );
+  } finally {
+    image.delete();
+  }
+});
+
 function pixelBounds(pixels, width, matches) {
   const bounds = { count: 0, minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
   for (let index = 0; index < pixels.length; index += 4) {
@@ -104,4 +141,8 @@ function pixelBounds(pixels, width, matches) {
 
 function centerY(bounds) {
   return (bounds.minY + bounds.maxY) / 2;
+}
+
+function alphaAt(pixels, width, x, y) {
+  return pixels[(y * width + x) * 4 + 3];
 }
