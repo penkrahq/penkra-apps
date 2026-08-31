@@ -3,7 +3,7 @@
   "slug": "explorer",
   "name": "Explorer",
   "summary": "Browse, search, preview, and manage files through scoped Penkra access.",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "compatibility": { "penkra": ">=0.11.11" },
   "icons": [
     { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
