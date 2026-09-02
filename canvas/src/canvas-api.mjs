@@ -52,6 +52,10 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         assets: assets.items,
       };
     },
+    listAssets: async (id) => {
+      const assets = await request(`/${encodeURIComponent(id)}/blobs`);
+      return assets.items;
+    },
     renameDocument: (id, title) =>
       request(`/${encodeURIComponent(id)}`, { method: "PATCH", body: { title } }),
     deleteDocument: (id) =>

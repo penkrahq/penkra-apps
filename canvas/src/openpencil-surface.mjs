@@ -127,7 +127,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
         ? callbacks.restoreDeletedNode?.(node.id) ?? sceneNodeInsertionMutation(editor, node)
         : sceneNodeInsertionMutation(editor, node);
       if (!insertion) {
-        callbacks.onUnsupportedEdit?.(`${node.type} creation is not available for lossless .pen editing.`);
+        callbacks.onUnsupportedEdit?.(`${node.type} creation is not currently available in Canvas.`);
         return;
       }
       emitMutations([insertion]);

@@ -1,6 +1,7 @@
 import { createCanvasApi } from "./canvas-api.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
+import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
@@ -350,14 +351,9 @@ async function openDocument(documentId) {
       ),
     ]);
     const assetDescriptors = payload.assets ?? [];
-    const assets = await performanceMonitor.measureAsync(
+    const { assets } = await performanceMonitor.measureAsync(
       "document.assets",
-      () => Promise.all(
-        assetDescriptors.map(async (asset) => [
-          asset.path,
-          { ...asset, bytes: await api.readAsset(documentId, asset) },
-        ]),
-      ),
+      () => hydrateDocumentAssets(api, documentId, assetDescriptors),
       {
         documentId,
         assets: assetDescriptors.length,
@@ -445,7 +441,15 @@ async function openDocument(documentId) {
           if (!changed) return;
           state.engineDocumentDirty = true;
           state.engineDocumentDirtyReason = "realtime-remote-update";
-          render();
+          if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
+            void refreshDocumentAssets(documentId)
+              .catch((error) => console.warn("Canvas could not refresh document assets.", error))
+              .finally(() => {
+                if (state.document?.id === documentId) render();
+              });
+          } else {
+            render();
+          }
         }
         if (event.event === "project:renamed" && typeof event.payload?.title === "string") {
           state.document.title = event.payload.title;
@@ -545,6 +549,18 @@ function closeDocument() {
   state.fieldErrors.clear();
   state.accessRemoved = false;
   state.documentUnavailable = null;
+}
+
+async function refreshDocumentAssets(documentId) {
+  const descriptors = await api.listAssets(documentId);
+  if (state.document?.id !== documentId) return;
+  const result = await hydrateDocumentAssets(api, documentId, descriptors, state.assets);
+  if (state.document?.id !== documentId || !result.changed) return;
+  state.assets = result.assets;
+  invalidateDocumentProjection();
+  state.compatibilityDocument = null;
+  state.engineDocumentDirty = true;
+  state.engineDocumentDirtyReason = "document-assets-refreshed";
 }
 
 function collapseEditorPanels() {
@@ -927,6 +943,7 @@ function renderEditor() {
   }
   const selection = currentCanvasSelection();
   const unsupported = state.compatibilityIssues;
+  const unsupportedNodeCount = state.compatibilityNodeIds.size;
   const visiblePresence = visiblePresenceCount(state.realtimeConnection, state.presence);
   const presenceNoun = visiblePresence === 1 ? "person" : "people";
   const panelClass = state.activePanel ? `show-${state.activePanel}` : "show-none";
@@ -951,7 +968,7 @@ function renderEditor() {
       <section class="viewport" data-role="viewport" data-tool="${state.activeTool}" tabindex="0" aria-label="Canvas viewport">
         <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading" role="status" aria-live="polite">Rendering design…</div></div>
         ${state.realtimeConnection === REALTIME_RECONNECTING && navigator.onLine ? `<div class="connection-banner">${icon("refresh")}<span>Reconnecting and merging changes</span></div>` : ""}
-        ${unsupported.length ? `<div class="compatibility-banner"><span>${unsupported.length} visual behavior${unsupported.length === 1 ? "" : "s"} preserved but not faithfully represented</span><button class="button" data-action="compatibility">Review</button></div>` : ""}
+        ${unsupported.length ? `<div class="compatibility-banner"><span>${unsupportedNodeCount} object${unsupportedNodeCount === 1 ? " needs" : "s need"} compatibility review</span><button class="button" data-action="compatibility">Review</button></div>` : ""}
         <div class="zoom-controls" aria-label="Canvas zoom"><button class="tool" data-action="zoom-out" aria-label="Zoom out">−</button><button class="zoom-label" data-action="fit" aria-label="Fit design in view">${Math.round((state.engineViewport?.zoom ?? 1) * 100)}%</button><button class="tool" data-action="zoom-in" aria-label="Zoom in">+</button></div>
         <div class="tool-palette" aria-label="Canvas tools"><button class="tool ${state.activeTool === "select" ? "active" : ""}" data-tool="SELECT" aria-label="Select tool" title="Select (V)">${icon("cursor")}</button><button class="tool ${state.activeTool === "hand" ? "active" : ""}" data-tool="HAND" aria-label="Pan canvas" title="Pan canvas (H or Space)">${icon("hand")}</button><span class="tool-separator"></span><button class="tool" data-tool="FRAME" aria-label="Frame tool" title="Frame (F)">${icon("frame")}</button><button class="tool" data-tool="RECTANGLE" aria-label="Rectangle tool" title="Rectangle (R)">${icon("rectangle")}</button><button class="tool" data-tool="ELLIPSE" aria-label="Ellipse tool" title="Ellipse (O)">${icon("ellipse")}</button><button class="tool" data-tool="TEXT" aria-label="Text tool" title="Text (T)">${icon("text")}</button></div>
       </section>
@@ -1197,7 +1214,7 @@ function renderInspector(selection) {
   if (!node) return `<div class="inspector-empty">Select an object to inspect and edit its properties.</div>`;
   const sceneEditable = isOpenPencilEditableNode(node);
   if (!isPencilAuthorableNode(node, sceneEditable)) {
-    return `${selectionHeading(selection)}<div class="inspector-empty">This unsupported object is preserved as opaque .pen source and cannot be edited in Canvas.</div>`;
+    return `${selectionHeading(selection)}<div class="inspector-empty">This unsupported object is preserved without alteration and cannot currently be edited in Canvas.</div>`;
   }
   const fieldNodeId = selection.referenceId;
   const numeric = ["x", "y", "width", "height", "rotation"];
@@ -1211,7 +1228,7 @@ function renderInspector(selection) {
   <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, fieldNodeId) : ""}${field("opacity", node.opacity ?? 1, "number", false, fieldNodeId)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, fieldNodeId)}</div></section>
   ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, fieldNodeId)}${field("fontFamily", node.fontFamily ?? "Inter", "text", true, fieldNodeId)}${field("fontSize", node.fontSize ?? 16, "number", false, fieldNodeId)}${field("fontWeight", node.fontWeight ?? "400", "text", false, fieldNodeId)}${field("lineHeight", node.lineHeight ?? 1.2, "number", false, fieldNodeId)}</div></section>` : ""}
   ${pencilAuthoringSections(node).map((section) => renderAuthoringSection(section, fieldNodeId)).join("")}
-  ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved in the .pen source but is not represented faithfully. Review compatibility for details.</p></section>` : ""}
+  ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved but not currently represented faithfully. Review compatibility for details.</p></section>` : ""}
   ${selection.isInstanceDescendant ? "" : `<div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`}`;
 }
 
@@ -1304,7 +1321,7 @@ function syncPanelVisibility() {
 }
 
 function renderCodeInspector(selection) {
-  if (!selection?.sourceNode) return `<div class="inspector-empty">Select an object to inspect its lossless .pen source.</div>`;
+  if (!selection?.sourceNode) return `<div class="inspector-empty">Select an object to inspect its stored properties.</div>`;
   const source = selection.isInstanceDescendant
     ? {
       nodeId: selection.referenceId,
@@ -1312,7 +1329,7 @@ function renderCodeInspector(selection) {
       instanceOverride: selection.override,
     }
     : selection.sourceNode;
-  return `<section class="section code-section"><h3>.pen source</h3><pre>${escapeHtml(JSON.stringify(source, null, 2))}</pre></section>`;
+  return `<section class="section code-section"><h3>Stored properties</h3><pre>${escapeHtml(JSON.stringify(source, null, 2))}</pre></section>`;
 }
 
 function field(property, value, type = "text", full = false, nodeId = "", options = {}) {
@@ -1603,7 +1620,7 @@ async function copySelectedNodeReference(button = null) {
       selectedId: state.selectedId,
     });
     if (!nodeId) {
-      throw new Error("The selected visual does not have a stable .pen node address.");
+      throw new Error("The selected visual does not have a stable node address.");
     }
     await copyTextToClipboard(formatCanvasNodeReference({ nodeId }));
     if (button) {
@@ -1904,7 +1921,7 @@ function renderDialog() {
     return dialog("Document actions", `<div class="grant-list"><button class="button" data-action="download">Download .pen</button>${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
   }
   if (state.dialog === "compatibility") {
-    return dialog("Compatibility review", `<p class="muted">Canvas keeps the original .pen data losslessly. The items below are not represented faithfully by the current Canvas renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
+    return dialog("Compatibility review", `<p class="muted">Canvas preserves the original design data. The objects below are not represented faithfully by the current renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
   }
   if (state.dialog === "share") {
     return dialog("Share document", `<p class="muted">Add editors by their Penkra Account email. No email will be sent.</p><div class="share-form"><input class="field" data-role="share-email" type="email" placeholder="name@example.com" aria-label="Collaborator email" /><button class="button primary" data-action="grant">Add editor</button></div><div class="grant-list">${state.grants.map((grant) => `<div class="grant-row"><div><strong>${escapeHtml(grant.email)}</strong><span>${grant.status === "active" ? "Editor" : "Pending account"}</span></div><button class="button danger" data-revoke-grant="${grant.id}">Remove</button></div>`).join("") || `<p class="muted">No other editors have access.</p>`}</div>`);

@@ -54,6 +54,21 @@ test("binds imported image bytes to their lossless Pencil URL fill", () => {
   );
 });
 
+test("treats image fills as supported while their asset bytes are loading", () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "hero",
+      type: "rectangle",
+      width: 320,
+      height: 180,
+      fill: { type: "image", url: "assets/hero.png", mode: "fill" },
+    }],
+  };
+
+  assert.deepEqual(analyzeOpenPencilCompatibility(source), []);
+});
+
 test("Pencil image opacity and blend mode survive asset binding", () => {
   const graph = createOpenPencilGraph({
     version: "2.17",

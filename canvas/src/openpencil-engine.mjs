@@ -275,21 +275,21 @@ export function analyzeOpenPencilCompatibility(document, assets = new Map(), pre
       issues.push({
         nodeId: node.id,
         kind: "node-type",
-        message: `${node.type} is preserved but Canvas does not render this Pencil node type.`,
+        message: `${node.type} is preserved but Canvas does not currently render this node type.`,
       });
     }
     for (const fill of Array.isArray(node.fill) ? node.fill : node.fill ? [node.fill] : []) {
-      const representedImage = fill?.type === "image" && Boolean(pencilResourceAsset(assets, fill.url));
       const supportedFill = ["solid", "color", "gradient"].includes(fill?.type)
+        || fill?.type === "image"
         || fill?.type === "shader" && Boolean(fill.__canvasShader)
         || fill?.type === "mesh_gradient" && Boolean(fill.__canvasMesh);
       if (fill?.type === "shader" && !supportedFill) continue;
       if (fill?.type === "mesh_gradient" && !supportedFill) continue;
-      if (typeof fill === "object" && fill.type && !supportedFill && !representedImage) {
+      if (typeof fill === "object" && fill.type && !supportedFill) {
         issues.push({
           nodeId: node.id,
           kind: "fill",
-          message: `${fill.type} fill is preserved but Canvas does not render this Pencil fill type.`,
+          message: `${fill.type} fill is preserved but Canvas does not currently render this fill type.`,
         });
       }
     }
@@ -298,7 +298,7 @@ export function analyzeOpenPencilCompatibility(document, assets = new Map(), pre
         issues.push({
           nodeId: node.id,
           kind: "effect",
-          message: `${effect.type} effect is preserved but Canvas does not render this Pencil effect type.`,
+          message: `${effect.type} effect is preserved but Canvas does not currently render this effect type.`,
         });
       }
     }
@@ -306,7 +306,7 @@ export function analyzeOpenPencilCompatibility(document, assets = new Map(), pre
       issues.push({
         nodeId: node.id,
         kind: "layout",
-        message: `${node.layout} layout is preserved but Canvas does not render this Pencil layout mode.`,
+        message: `${node.layout} layout is preserved but Canvas does not currently render this layout mode.`,
       });
     }
   });
