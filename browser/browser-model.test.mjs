@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { displayAddress, normalizeAddress, pageLabel } from "./browser-model.mjs";
+import { displayAddress, normalizeAddress } from "./browser-model.mjs";
 
 test("normalizes URLs and searches", () => {
   assert.equal(normalizeAddress("penkra.com"), "https://penkra.com");
@@ -10,5 +10,4 @@ test("normalizes URLs and searches", () => {
 
 test("represents blank pages without leaking about:blank into the address", () => {
   assert.equal(displayAddress("about:blank"), "");
-  assert.equal(pageLabel({ title: "", url: "about:blank" }), "New tab");
 });

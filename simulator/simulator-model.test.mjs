@@ -8,20 +8,18 @@ import {
   createSingleFlight,
   isReadyControlAction,
   isIntentionalStartupCancellation,
-  lifecycleCopy,
   newestInstallableRuntime,
   normalizedViewportPoint,
   reduceControlErrorNotice,
   resolveNewDeviceState,
-  runtimeSetupCopy,
   simulatorSetupRequest,
   splitDevices,
   targetIdentifier,
 } from "./simulator-model.mjs";
 
 test("exposes the platform-standard target identifier", () => {
-  assert.deepEqual(targetIdentifier({ platform: "ios", udid: "A-UDID" }), { label: "UDID", value: "A-UDID" });
-  assert.deepEqual(targetIdentifier({ platform: "android", serial: "emulator-5554" }), { label: "ADB serial", value: "emulator-5554" });
+  assert.equal(targetIdentifier({ platform: "ios", udid: "A-UDID" }).value, "A-UDID");
+  assert.equal(targetIdentifier({ platform: "android", serial: "emulator-5554" }).value, "emulator-5554");
 });
 
 test("classifies busy, setup, unsupported, and ordinary failures", () => {
@@ -234,12 +232,6 @@ test("responsive live controls preserve every action with unique form IDs", asyn
   assert.match(appSource, /type-input-\$\{surface\}/);
 });
 
-test("setup copy names the Android image and defers exact impact to the trusted prompt", () => {
-  const copy = runtimeSetupCopy({ platform: "android", name: "Android 16" });
-  assert.equal(copy.title, "Install Android 16 image");
-  assert.match(copy.impact, /trusted setup prompt/);
-});
-
 test("viewport input is normalized and clamped for the simulator contract", () => {
   const bounds = { left: 100, top: 50, width: 400, height: 800 };
   assert.deepEqual(normalizedViewportPoint({ x: 300, y: 450 }, bounds), { x: 0.5, y: 0.5 });
@@ -261,12 +253,6 @@ test("selection and platform grouping remain stable across refreshes", () => {
   assert.equal(chooseSelectedDevice(devices, "pixel").id, "pixel");
   assert.equal(chooseSelectedDevice(devices, "missing").id, "iphone");
   assert.deepEqual(splitDevices(devices), { apple: [devices[0]], android: [devices[1]] });
-});
-
-test("lifecycle copy distinguishes preparing, booting, and stopping", () => {
-  assert.match(lifecycleCopy("preparing", "Pixel 9").detail, /Pixel 9/);
-  assert.equal(lifecycleCopy("booting").progress, 68);
-  assert.match(lifecycleCopy("stopping").detail, /lease/);
 });
 
 test("a later action clears a recoverable control error without failing the ready session", () => {

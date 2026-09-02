@@ -200,16 +200,22 @@ globalThis.Update = function Update(target, properties) {
   };
   collectPreviousIds(node);
   if (Object.hasOwn(properties, "id") && properties.id !== node.id) throw new Error("Update cannot change a node id.");
+  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")) {
+    const next = __clone(node);
+    for (const [key, value] of Object.entries(properties)) {
+      if (key === "id") continue;
+      if (value === undefined) delete next[key];
+      else next[key] = __clone(value);
+    }
+    __assertNodeTree(
+      next,
+      new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !previousSubtreeIds.has(id))),
+    );
+  }
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
     if (value === undefined) delete node[key];
     else node[key] = __clone(value);
-  }
-  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")) {
-    __assertNodeTree(
-      node,
-      new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !previousSubtreeIds.has(id))),
-    );
   }
   __touched.add(node.id);
   return node;

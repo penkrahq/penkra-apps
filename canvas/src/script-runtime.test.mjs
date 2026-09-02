@@ -180,3 +180,40 @@ test("Canvas script rejects invalid hierarchy and identity at the mutation bound
     /cannot contain children; use a frame or group/u,
   );
 });
+
+test("Update validates a replacement child tree before applying it", async () => {
+  const document = {
+    version: "2.17",
+    children: [
+      {
+        id: "container",
+        type: "frame",
+        children: [{ id: "old-label", type: "text", content: "Old" }],
+      },
+      { id: "outside-label", type: "text", content: "Outside" },
+    ],
+  };
+  const result = await executeCanvasScript(
+    document,
+    `Update("#container", {
+      children: [
+        { id: "new-label", type: "text", content: "New" },
+        { id: "new-shape", type: "rectangle", width: 20, height: 20 }
+      ]
+    });
+    return Get("#container")[0].node.children.map((child) => child.id);`,
+  );
+
+  assert.deepEqual(result.result, ["new-label", "new-shape"]);
+  assert.deepEqual(result.document.children[0].children.map((child) => child.id), [
+    "new-label",
+    "new-shape",
+  ]);
+  await assert.rejects(
+    executeCanvasScript(
+      document,
+      'Update("#container", { children: [{ id: "outside-label", type: "text" }] });',
+    ),
+    /Node outside-label already exists/u,
+  );
+});

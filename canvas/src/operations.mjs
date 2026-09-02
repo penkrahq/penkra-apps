@@ -20,17 +20,18 @@ const api = createCanvasApi(runtime);
 
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
+  const limit = input.limit ?? 500;
+  const query = String(input.query ?? "").trim().toLowerCase();
   let cursor;
   do {
     const page = await api.listDocuments(cursor);
-    items.push(...page.items);
+    items.push(...page.items.filter(
+      (document) => !query || document.title.toLowerCase().includes(query),
+    ));
     cursor = page.pageInfo.nextCursor ?? undefined;
-  } while (cursor && items.length < (input.limit ?? 500));
-  const query = String(input.query ?? "").trim().toLowerCase();
+  } while (cursor && items.length < limit);
   return {
-    items: items
-      .filter((document) => !query || document.title.toLowerCase().includes(query))
-      .slice(0, input.limit ?? 500),
+    items: items.slice(0, limit),
   };
 });
 

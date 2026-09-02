@@ -70,6 +70,39 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
   );
 });
 
+test("documents.list continues through Account pages until it finds the requested matches", async () => {
+  const handlers = new Map();
+  const paths = [];
+  globalThis.penkra = {
+    account: {
+      async request(request) {
+        paths.push(request.path);
+        const secondPage = request.path.includes("cursor=page-2");
+        return response(200, secondPage
+          ? {
+              items: [{ id: "match", title: "Requested design" }],
+              pageInfo: { nextCursor: null },
+            }
+          : {
+              items: [{ id: "other", title: "Unrelated design" }],
+              pageInfo: { nextCursor: "page-2" },
+            });
+      },
+      subscribe() {},
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?list-test=${Date.now()}`);
+
+  const result = await handlers.get("documents.list")({ query: "requested", limit: 1 });
+
+  assert.deepEqual(result.items, [{ id: "match", title: "Requested design" }]);
+  assert.deepEqual(paths, [
+    "/projects?limit=100",
+    "/projects?limit=100&cursor=page-2",
+  ]);
+});
+
 test("documents.create identifies the starter frame that later execution should replace", async () => {
   const handlers = new Map();
   globalThis.penkra = {

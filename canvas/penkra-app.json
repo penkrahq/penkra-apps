@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.37",
+  "version": "0.2.38",
   "compatibility": {
     "penkra": ">=0.11.15"
   },
@@ -104,9 +104,9 @@
       },
       "examples": [
         {
-          "name": "Find Penut design documents",
+          "name": "Find documents by title",
           "input": {
-            "query": "Penut",
+            "query": "Draft",
             "limit": 20
           }
         }
@@ -116,7 +116,7 @@
     {
       "key": "documents.create",
       "summary": "Create a blank Account-owned Canvas document. Use documents.execute to add or inspect design content.",
-      "instructions": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI: one white 720×480 starter frame. The result identifies that frame as `starterFrameId`; replace or update it when building the first screen so it does not remain underneath new content. Creation does not open a tab or import `.pen` JSON. Call documents.execute for content, then documents.open when visible review matters.",
+      "instructions": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI: one white 720×480 starter frame. The result identifies that frame as `starterFrameId`; replace or update it when building the first composition so it does not remain underneath new content. Creation does not open a tab or add design content. Call documents.execute for content, then documents.open when visible review matters.",
       "input": {
         "type": "object",
         "properties": {
@@ -153,9 +153,9 @@
       },
       "examples": [
         {
-          "name": "Create a Penut mobile design document",
+          "name": "Create a Canvas document",
           "input": {
-            "title": "Penut Mobile"
+            "title": "New Canvas design"
           }
         }
       ],
@@ -163,7 +163,7 @@
     },
     {
       "key": "documents.execute",
-      "summary": "Read or change one Canvas document with bounded Pencil-style JavaScript; one execution should express one coherent design intent.",
+      "summary": "Read or change one Canvas design with bounded JavaScript; keep each execution focused on one coherent design intent.",
       "instructionsPath": "operations/documents.execute.md",
       "input": {
         "type": "object",
@@ -267,38 +267,38 @@
           }
         },
         {
-          "name": "Rename one exact frame",
+          "name": "Update one exact frame name",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Update(\"#frame-id\", { name: \"Sign in\" });\nreturn \"frame-id\";"
+            "code": "Update(\"#frame-id\", { name: \"Updated frame name\" });\nreturn \"frame-id\";"
           }
         },
         {
-          "name": "Insert one coherent mobile screen",
+          "name": "Insert one layout container",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Insert(null, { id: \"sign-in\", type: \"frame\", name: \"Sign in\", x: 0, y: 0, width: 393, height: 852, layout: \"vertical\", padding: 24, gap: 16, fill: \"#ffffff\", children: [] });\nreturn \"sign-in\";"
+            "code": "Insert(null, { id: \"content-frame\", type: \"frame\", name: \"Content frame\", x: 0, y: 0, width: 800, height: 600, layout: \"vertical\", padding: 24, gap: 16, fill: \"#ffffff\", children: [] });\nreturn \"content-frame\";"
           }
         },
         {
-          "name": "Generate an image for an existing frame",
+          "name": "Generate an image for an exact target",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "G(\"#hero\", \"ai\", \"editorial photograph of a quiet paper studio, warm morning light, no text\");\nreturn \"hero\";"
+            "code": "G(\"#image-target\", \"ai\", \"Specific subject and setting, intentional composition, defined visual style and palette, clear lighting, useful negative space, exact crop, no text\");\nreturn \"image-target\";"
           }
         },
         {
           "name": "Insert a standard library icon",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Insert(\"#toolbar\", { id: \"mail-icon\", type: \"icon\", library: \"Material Symbols Rounded\", icon: \"mail\", width: 20, height: 20, fill: \"#20211d\" });\nreturn \"mail-icon\";"
+            "code": "Insert(\"#icon-container\", { id: \"help-icon\", type: \"icon\", library: \"lucide\", icon: \"circle-help\", width: 20, height: 20, fill: \"#20211d\" });\nreturn \"help-icon\";"
           }
         },
         {
-          "name": "Replace a new document's starter frame and visually verify it",
+          "name": "Replace a starter frame and visually verify it",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "const starter = Get(\"type:frame\")[0];\nconst screen = Replace(`#${starter.node.id}`, { id: \"sign-in\", type: \"frame\", name: \"Sign in\", x: 0, y: 0, width: 393, height: 852, fill: \"#ffffff\", children: [] });\nTakeScreenshot([screen]);\nreturn screen;"
+            "code": "const starter = Get(\"type:frame\")[0];\nconst frame = Replace(`#${starter.node.id}`, { id: \"content-frame\", type: \"frame\", name: \"Content frame\", x: 0, y: 0, width: 800, height: 600, layout: \"none\", fill: \"#ffffff\", children: [] });\nTakeScreenshot([frame]);\nreturn frame;"
           }
         }
       ],
@@ -449,7 +449,25 @@
       },
       "output": {
         "type": "object",
-        "additionalProperties": true
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string", "format": "uuid" },
+                "email": { "type": "string", "format": "email" },
+                "status": { "enum": ["pending", "active"] },
+                "accountId": { "type": ["string", "null"] },
+                "createdAt": { "type": "string" }
+              },
+              "required": ["id", "email", "status", "accountId", "createdAt"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["items"],
+        "additionalProperties": false
       },
       "examples": [
         {
@@ -482,7 +500,15 @@
       },
       "output": {
         "type": "object",
-        "additionalProperties": true
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "email": { "type": "string", "format": "email" },
+          "status": { "enum": ["pending", "active"] },
+          "accountId": { "type": ["string", "null"] },
+          "createdAt": { "type": "string" }
+        },
+        "required": ["id", "email", "status", "accountId", "createdAt"],
+        "additionalProperties": false
       },
       "examples": [
         {
@@ -515,7 +541,12 @@
       },
       "output": {
         "type": "object",
-        "additionalProperties": true
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "revoked": { "const": true }
+        },
+        "required": ["id", "revoked"],
+        "additionalProperties": false
       },
       "examples": [
         {

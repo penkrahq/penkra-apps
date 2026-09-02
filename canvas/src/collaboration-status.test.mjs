@@ -28,14 +28,8 @@ test("presence counts are bounded to a truthful human count", () => {
 });
 
 test("connection loss distinguishes reconnecting transport from offline editing", () => {
-  assert.deepEqual(disconnectedSyncStatus(true), {
-    sync: "reconnecting",
-    message: "Reconnecting…",
-  });
-  assert.deepEqual(disconnectedSyncStatus(false), {
-    sync: "offline",
-    message: "Offline — changes stay on this device",
-  });
+  assert.equal(disconnectedSyncStatus(true).sync, "reconnecting");
+  assert.equal(disconnectedSyncStatus(false).sync, "offline");
 });
 
 test("only realtime transport signals change realtime connection state", () => {

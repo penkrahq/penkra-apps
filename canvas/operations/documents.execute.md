@@ -1,73 +1,344 @@
-# Editing a Canvas document
+# Creating and editing Canvas designs
 
-Use `documents.execute` when the requested result depends on the contents of one existing Canvas
-document: inspecting its hierarchy, creating or changing nodes, generating or attaching an image,
-or rendering exact document nodes for review. The operation runs one bounded JavaScript program
-against a private clone and commits the complete result atomically. It does not open or control the
-editor UI.
+Use `documents.execute` to inspect or change the contents of one Canvas document. It can create and
+edit complete visual compositions, generate or place images, and render exact document nodes for
+review. It runs one bounded JavaScript program against a private document clone and commits all
+changes atomically. It does not operate the editor UI.
 
-One execution should represent one coherent design intent. A complete screen, component, or focused
-repair may involve many nodes and still be one intent. Separate unrelated changes so each result can
-be inspected, reviewed, and—while it remains the document head—undone as one unit.
+Keep one execution focused on one coherent design intent. A full slide, screen, component, or
+focused repair can involve many nodes and still be one intent. Separate unrelated changes so each
+result can be reviewed and, while it remains the document head, undone as one unit.
 
-## The document model
+## A productive design loop
 
-Canvas preserves the Pencil `.pen` document model and targets Pencil 2.17 behavior. A document has
-top-level nodes. Every node has a stable string `id` and a `type`; other properties depend on that
-type. IDs are the durable identity used by selection, hierarchy, references, collaboration, later
-edits, and agent results. Unlike Pencil's MCP authoring surface, Canvas requires every inserted node
-in a supplied tree to already have a unique, nonempty ID. Use descriptive IDs and never manufacture
-an ID for a node that already exists.
+1. Inspect the relevant frame and nearby structure before editing an existing design.
+2. Decide the visual direction: hierarchy, composition, palette, typography, imagery, and repeated
+   patterns.
+3. Build or refine one meaningful section at a time.
+4. Use `TakeScreenshot` after the change and judge the rendered result, not merely the script result.
+5. Correct the underlying layout, hierarchy, sizing, or style when the review exposes a problem.
 
-Only `frame` and `group` nodes are containers in the Pencil model. Put visual children in their
-`children` arrays. A rectangle cannot contain a label, so an input, button, badge, card, or row that
-contains text must be a frame (or group) with text and other content as real children. Placing a text
-node beside a rectangle at overlapping coordinates only makes it look nested: moving, copying,
-laying out, or selecting the apparent control will expose the broken hierarchy.
+Preserve approved content, brand choices, reusable structure, and newer collaborative work. When
+creating multiple directions, make their concepts genuinely distinct rather than changing only
+colors or spacing.
 
-Use top-level frames for screens, sections, and reusable component definitions. A reusable
-definition is a frame with `reusable: true`; an instance is a `ref` node whose `ref` is the
-definition's ID. Instance-specific values belong in the ref's `descendants` overrides, keyed by the
-definition descendant ID. Do not duplicate a component merely to change a label or icon. The script
-selector walker traverses source `children`; it does not expand a ref into synthetic children.
-Therefore `Get` cannot select a rendered instance descendant. Inspect or update the ref itself and
-its `descendants` property, or edit the reusable source node when the change should affect every
-instance.
+## Document structure
 
-Canvas preserves document variables, themes, imported component libraries, unknown fields, and
-unsupported future node data. `documents.execute` currently has no document-root variable or theme
-authoring API. Preserve those fields and existing `$variable` references. Do not replace a whole
-document or component merely to change a supported node property.
+A document contains top-level nodes. Every node has a stable string `id` and a `type`; other
+properties depend on that type. Every inserted node, including every nested child, must already
+have a unique nonempty ID. Use descriptive IDs. Never invent a new ID for an existing node.
+
+Common properties include:
+
+| Property | Meaning |
+| --- | --- |
+| `id` | Stable node identity |
+| `type` | Node kind |
+| `name` | Human-readable layer name |
+| `x`, `y` | Position in the parent when layout does not place the node |
+| `width`, `height` | Numeric size or supported layout sizing value |
+| `rotation` | Rotation in degrees |
+| `opacity` | Opacity from `0` to `1` |
+| `enabled` | Whether the node is visible and active |
+| `clip` | Whether a frame clips content outside its bounds |
+| `flipX`, `flipY` | Horizontal or vertical reflection |
+| `theme` | Existing theme override retained with the node |
+
+Useful node types:
+
+| Type | Use |
+| --- | --- |
+| `frame` | Slides, screens, sections, cards, controls, and auto-layout containers |
+| `group` | A visual subtree that should move and transform together |
+| `rectangle` | Panels, backgrounds, dividers, bars, and geometric accents |
+| `ellipse` | Circles, rings, arcs, avatars, and radial shapes |
+| `polygon` | Regular polygons and geometric marks |
+| `line` | Straight rules and connectors |
+| `path` | Custom vector geometry |
+| `text` | Editable text |
+| `icon` | Editable icons from supported libraries |
+| `ref` | An instance of a reusable component |
+| `note`, `context`, `prompt` | Nonvisual design context stored with the document |
+| `script` | Existing generated content that should normally be preserved unchanged |
+
+Only `frame` and `group` nodes contain visual `children`. If a rectangle and label form a button,
+card, badge, or field, place both inside a frame or group. Overlapping siblings are not a real
+component hierarchy and will break when the design moves, copies, or lays out.
+
+`note`, `context`, and `prompt` nodes store a `content` string; a prompt may also retain a `model`
+string. They do not render as design layers, so create them only when the user wants that context
+stored with the document. A script node depends on an existing `scriptUri` resource and `inputs`;
+this operation cannot create that external resource, so preserve existing script nodes rather than
+inventing new ones.
+
+Use top-level frames for slides, screens, pages, and reusable component definitions. A new document
+already contains the `starterFrameId` returned by `documents.create`; update or replace that frame
+for the first design instead of leaving it underneath another frame.
 
 ## Layout and sizing
 
-Frames may use `layout: "horizontal"`, `layout: "vertical"`, or `layout: "none"`. Auto-layout
-frames use `gap`, `padding`, and alignment properties to place their direct children. A child can use
-`width: "fill_container"` or `height: "fill_container"` to consume available space, and containers
-can use `fit_content`. These are Pencil layout values, not CSS: percentages, margins, flex-wrap,
-baseline alignment, and CSS declarations are not supported. In an auto-layout frame, ordinary
-child `x` and `y` values do not control placement; use `layoutPositioning: "absolute"` only when the
-child deliberately leaves the layout flow.
+Frames support `layout: "horizontal"`, `layout: "vertical"`, and `layout: "none"`. A frame with no
+explicit layout defaults to horizontal, so always set `layout: "none"` for free-positioned
+composition. Horizontal and vertical layouts arrange their direct children with:
 
-Text sizing is explicit and is the most important distinction for reliable authoring:
+- `gap`: space between children;
+- `padding`: one number, `[vertical, horizontal]`, or `[top, right, bottom, left]`;
+- `justifyContent`: `"start"`, `"center"`, `"end"`, `"space-between"`, or `"space_around"`;
+- `alignItems`: `"start"`, `"center"`, `"end"`, or `"stretch"`;
+- `layoutIncludeStroke`: whether an inside stroke participates in layout sizing.
 
-- `textGrowth: "auto"` gives the text its intrinsic width and height. Explicit width and height are
-  ignored, and the text does not wrap.
-- `textGrowth: "fixed-width"` requires a width, wraps to that width, and grows in height to fit the
-  content. In an auto-layout row or column, use `width: "fill_container"` when the text should take
-  the remaining width and wrap responsively.
-- `textGrowth: "fixed-width-height"` requires width and height. It wraps horizontally but does not
-  grow vertically, so content can overflow when the height is insufficient.
+Children can use `width: "fill_container"` or `height: "fill_container"`. Containers can use
+`"fit_content"`. Avoid circular sizing—for example, a fit-content parent whose only child fills
+the parent on the same axis.
 
-If wrapping matters, never rely on the current string happening to fit. Give the text fixed-width
-growth and a real width constraint. If a button label should remain on one line, use intrinsic text
-inside a fit-content or sufficiently constrained frame; do not simulate padding with spaces or
+In an auto-layout frame, ordinary child `x` and `y` values do not control placement. Set
+`layoutPosition: "absolute"` only when a child deliberately leaves layout flow, such as a badge or
+decorative overlay. These values are not CSS: percentages, viewport units, `calc()`, margins,
+wrapping, and baseline alignment are unavailable.
+
+```js
+Insert("#container", {
+  id: "content-row",
+  type: "frame",
+  name: "Content row",
+  layout: "horizontal",
+  width: "fill_container",
+  padding: [16, 20],
+  gap: 12,
+  alignItems: "center",
+  fill: "#FFFFFF",
+  cornerRadius: 16,
+  children: [
+    {
+      id: "row-marker-wrap",
+      type: "frame",
+      width: 40,
+      height: 40,
+      layout: "horizontal",
+      justifyContent: "center",
+      alignItems: "center",
+      fill: "#EEF2FF",
+      cornerRadius: 12,
+      children: [{
+        id: "row-marker",
+        type: "icon",
+        library: "lucide",
+        icon: "sparkles",
+        width: 20,
+        height: 20,
+        fill: "#4F46E5"
+      }]
+    },
+    {
+      id: "row-label",
+      type: "text",
+      content: "Section label",
+      textGrowth: "fixed-width",
+      width: "fill_container",
+      fontFamily: "Inter",
+      fontSize: 16,
+      fontWeight: "600",
+      lineHeight: 1.25,
+      fill: "#18181B"
+    }
+  ]
+});
+```
+
+## Typography
+
+Text must have visible `fill`. Use `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`,
+`letterSpacing`, `lineHeight`, `textAlign`, and `textAlignVertical` deliberately. `lineHeight` is a
+multiplier such as `1.2`, not a pixel measurement.
+
+Set `underline: true` or `strikethrough: true` for those text decorations. Prefer fonts already
+used by the document when maintaining an existing design. For new work, use a real font family and
+verify the screenshot; font availability and metrics can affect wrapping and layout.
+
+Text sizing is controlled by `textGrowth`:
+
+- `"auto"` uses intrinsic width and height, does not wrap, and ignores explicit width and height;
+- `"fixed-width"` requires a width, wraps to it, and grows vertically;
+- `"fixed-width-height"` requires both dimensions and does not grow vertically, so content can
+  overflow.
+
+Use fixed-width text whenever wrapping matters. In an auto-layout row or column,
+`width: "fill_container"` lets fixed-width text take available width. For a single-line button
+label, use intrinsic text inside a padded fit-content frame. Never simulate padding with spaces or
 invisible characters.
 
-Use native `type: "icon"` nodes for library icons rather than converting them to paths. Supply the
-exact `library` and `icon`, plus explicit width, height, and fill. Supported libraries are `lucide`,
-`feather`, `Material Symbols Outlined`, `Material Symbols Rounded`, `Material Symbols Sharp`, and
-`phosphor`. Canvas keeps the semantic icon identity so the editor can render and later edit it.
+```js
+const displayText = {
+  id: "display-text",
+  type: "text",
+  content: "Primary message",
+  textGrowth: "fixed-width",
+  width: 560,
+  fontFamily: "Inter",
+  fontSize: 52,
+  fontWeight: "700",
+  letterSpacing: -1.2,
+  lineHeight: 1.05,
+  fill: "#F8FAFC"
+};
+```
+
+## Color, fills, gradients, and images
+
+`fill` accepts a color string, an existing `$variable` reference, a structured paint, or an array
+of paints. Solid colors may be written directly (`"#2563EB"`) or as
+`{ type: "color", color: "#2563EB", opacity: 0.8 }`.
+
+Use a gradient paint for smooth transitions. Stops use positions from `0` to `1`; gradient centers
+and sizes use normalized coordinates.
+
+```js
+const linearGradient = {
+  type: "gradient",
+  gradientType: "linear",
+  rotation: 135,
+  colors: [
+    { color: "#0F172A", position: 0 },
+    { color: "#312E81", position: 0.55 },
+    { color: "#7C3AED", position: 1 }
+  ]
+};
+
+const radialGlow = {
+  type: "gradient",
+  gradientType: "radial",
+  center: { x: 0.72, y: 0.22 },
+  size: { width: 0.9, height: 0.9 },
+  colors: [
+    { color: "#A78BFAAA", position: 0 },
+    { color: "#A78BFA00", position: 1 }
+  ]
+};
+```
+
+`gradientType` may be `"linear"`, `"radial"`, or `"angular"`. Paints also support `enabled`,
+`opacity`, and `blendMode`. Preserve existing shader or mesh-gradient paints when editing content
+around them; use ordinary gradients for new work unless the document already provides the advanced
+resource needed by those paints.
+
+Image fills use `{ type: "image", url, mode }`, where mode is `"fill"`, `"fit"`, `"stretch"`, or
+`"tile"`. Use `G` to import or generate an image and let Canvas create the durable asset path.
+
+## Strokes, shapes, and effects
+
+`stroke` accepts the same color and gradient paint forms as a fill. Configure it with:
+
+- `strokeWidth`: one number or `{ top, right, bottom, left }`;
+- `strokeAlignment`: `"inner"`, `"center"`, or `"outer"`;
+- `strokeLinecap`: `"round"`, `"square"`, or the default flat cap;
+- `strokeLinejoin`: `"round"`, `"bevel"`, or `"miter"`;
+- `strokeDashPattern`: numeric dash and gap lengths.
+
+Rectangles and frames use `cornerRadius`, either one number or
+`[topLeft, topRight, bottomRight, bottomLeft]`. Ellipses support `innerRadius` from `0` to `1`, plus
+`startAngle` and `sweepAngle` in degrees. Polygons use `polygonCount`. Paths use an SVG-compatible
+`geometry` string. Set `viewBox: [minX, minY, width, height]` when its source coordinates differ
+from the node's rendered `width` and `height`. Use `fillRule: "evenodd"` for paths whose overlapping
+subpaths should cut holes; the default is nonzero winding.
+
+`effect` accepts one effect or an array. Use shadows, layer blur, and background blur:
+
+```js
+const glassEffects = [
+  {
+    type: "shadow",
+    shadowType: "outer",
+    color: "#0F172A24",
+    offset: { x: 0, y: 12 },
+    blur: 30,
+    spread: -4
+  },
+  { type: "background_blur", radius: 18 }
+]
+```
+
+Effects can also use `enabled` and `blendMode`. Prefer subtle effects that reinforce depth or focus;
+do not use gradients, blur, and shadows as substitutes for hierarchy and composition.
+
+## Icons
+
+Use native `type: "icon"` nodes for interface and symbolic icons. They remain identifiable and
+editable. Supply the exact `library` and `icon`, explicit width and height, and a visible fill.
+Supported libraries are:
+
+- `lucide`;
+- `feather`;
+- `Material Symbols Outlined`;
+- `Material Symbols Rounded`;
+- `Material Symbols Sharp`;
+- `phosphor`.
+
+```js
+const continueIcon = {
+  id: "direction-icon",
+  type: "icon",
+  library: "Material Symbols Rounded",
+  icon: "arrow_forward",
+  weight: 500,
+  width: 22,
+  height: 22,
+  fill: "#FFFFFF"
+};
+```
+
+If an icon does not render, verify its exact library-specific name or choose a known equivalent
+from the same library. Do not replace ordinary interface icons with generated raster images.
+
+## Reusable components and instances
+
+A reusable component is a frame with `reusable: true`. An instance is a `ref` node whose `ref`
+points to that frame ID. Put per-instance changes in the ref's `descendants` object, keyed by a
+source descendant ID or slash-separated descendant path.
+
+```js
+Insert(null, {
+  id: "labeled-component",
+  type: "frame",
+  name: "Labeled component",
+  reusable: true,
+  layout: "horizontal",
+  width: "fit_content",
+  padding: [12, 18],
+  gap: 8,
+  justifyContent: "center",
+  alignItems: "center",
+  fill: "#4F46E5",
+  cornerRadius: 12,
+  children: [{
+    id: "component-label",
+    type: "text",
+    content: "Label",
+    textGrowth: "auto",
+    fontFamily: "Inter",
+    fontSize: 14,
+    fontWeight: "600",
+    fill: "#FFFFFF"
+  }]
+});
+
+Insert("#instance-container", {
+  id: "labeled-instance",
+  type: "ref",
+  ref: "labeled-component",
+  descendants: {
+    "component-label": { content: "Updated label" }
+  }
+});
+```
+
+The selector walker traverses source `children`; it does not expand an instance into synthetic
+children. Therefore `Get` cannot select a rendered instance descendant. Update the ref's
+`descendants`, or edit the reusable source when every instance should change.
+
+Canvas preserves existing variables, themes, imported resources, advanced content, and unknown
+future fields. This operation does not author document-root variables or themes. Keep existing
+`$variable` references and update the smallest supported node rather than replacing surrounding
+structures.
 
 ## Selecting and inspecting
 
@@ -79,24 +350,17 @@ exact `library` and `icon`, plus explicit width, height, and fill. Supported lib
 - `parent-id/child-id` for an exact source hierarchy path;
 - `*` for every source node.
 
-The default and maximum result limit is 1,000. Narrow the selector or pass
-`{ limit: number }`; a limit must be an integer from 1 through 1,000. Operations that require one
-target reject zero or multiple matches rather than guessing.
+The default and maximum result limit is 1,000. Narrow the selector or pass `{ limit: number }`.
+Operations that require one target reject zero or multiple matches rather than guessing.
 
-Without a visitor, `Get` returns immutable contexts. Each context contains a cloned `node`, its
-cloned `parent` or `null`, sibling `index`, slash-separated `path`, resolved `bounds`, and reported
-`problems`. With a visitor, Canvas invokes it once per context and returns the match count. The node
-and hierarchy reflect the private document clone at the time of that `Get`. Resolved bounds and
-problems come from the pre-execution render inspection; after mutations, use `TakeScreenshot` for
-visual verification and a following read-only execution when fresh resolved measurements or
-problem analysis matter.
-
-Examples:
+Without a visitor, `Get` returns immutable contexts. Each contains a cloned `node`, cloned `parent`
+or `null`, sibling `index`, slash-separated `path`, resolved `bounds`, and reported `problems`.
+With a visitor, Canvas invokes it once per match and returns the match count.
 
 ```js
-const [screen] = Get("#settings-screen");
-Print({ node: screen.node, bounds: screen.bounds, problems: screen.problems });
-return screen.path;
+const [frame] = Get("#selected-frame");
+Print({ node: frame.node, bounds: frame.bounds, problems: frame.problems });
+return frame.path;
 ```
 
 ```js
@@ -105,113 +369,125 @@ return Get("type:text", ({ node, parent, bounds }) => {
 }, { limit: 200 });
 ```
 
-## Changing nodes
+Node data reflects the private clone at the time of that `Get`. Resolved bounds and problems come
+from pre-execution render inspection. After mutations, use `TakeScreenshot` for visual review and a
+following read-only execution when fresh measurements or problem analysis matter.
 
-`Insert(parent, node, position?)` inserts one supplied node tree. Pass `null` for the document root;
-otherwise pass an exact selector, node, or Get context for the containing frame or group. Position
-is a zero-based child index and defaults to the end. Every inserted descendant must have a unique
-stable ID. A newly created Canvas document already contains the `starterFrameId` returned by
-`documents.create`; replace or update it for the first screen rather than inserting a second frame
-on top of it.
+## Editing operations
 
-`Update(target, properties)` changes properties on exactly one source node. It preserves omitted
-properties and cannot change the node ID. Set a property to `undefined` to remove it. Update the
-smallest semantic node that owns the change.
+`Insert(parent, node, position?)` inserts one supplied tree. Use `null` for the document root;
+otherwise provide an exact selector, node, or `Get` context for a containing frame or group.
+Position is a zero-based child index and defaults to the end.
+
+`Update(target, properties)` changes exactly one source node, preserves omitted properties, and
+cannot change its ID. Set a property to `undefined` to remove it. Supplying `children` replaces the
+complete child array after validating the new hierarchy and every ID. Prefer ordinary property
+updates when the existing child structure should remain intact.
 
 `Replace(target, node)` replaces exactly one source node. If the replacement omits `id`, Canvas
-keeps the target ID. Use replacement only when the node's complete structure is intentionally being
-redefined; `Update` is safer for ordinary property changes because it preserves children and
-unrecognized fields.
+keeps the target ID. Use it only when the node's complete structure is intentionally redefined.
 
-`Delete(target)` removes exactly one source subtree. `Move(target, parent, position?)` moves one
-source subtree to the document root or a new container. Both preserve the target ID in the touched
-node report; neither guesses among duplicate matches.
+`Delete(target)` removes exactly one subtree. `Move(target, parent, position?)` moves exactly one
+subtree to the root or another container. Both preserve the target ID.
 
-`Copy(target, parent, position?, properties?)` clones one source subtree and renews every ID in the
-copy. Optional property overrides apply to the copied root but cannot replace its ID or children.
-Use the returned new root ID for later calls in the same execution.
-
-Mutation calls return an ID or node as documented by their behavior, so retain those values instead
-of re-discovering a node by a broad name or type selector:
+`Copy(target, parent, position?, properties?)` clones one subtree and renews every copied ID.
+Optional overrides apply to the copied root but cannot replace its ID or children. Retain returned
+IDs instead of rediscovering nodes with broad selectors.
 
 ```js
-const cardId = Insert("#content", {
-  id: "security-card",
-  type: "frame",
-  name: "Security card",
-  layout: "vertical",
-  width: "fill_container",
-  padding: 20,
-  gap: 8,
-  fill: "#FFFFFF",
-  children: [
-    {
-      id: "security-card-title",
-      type: "text",
-      content: "Security",
-      textGrowth: "auto",
-      fontFamily: "Inter",
-      fontSize: 16,
-      fontWeight: "600",
-      fill: "#18181B"
-    },
-    {
-      id: "security-card-description",
-      type: "text",
-      content: "Control sign-in and recovery settings for this account.",
-      textGrowth: "fixed-width",
-      width: "fill_container",
-      fontFamily: "Inter",
-      fontSize: 13,
-      lineHeight: 20,
-      fill: "#71717A"
-    }
-  ]
+Update("#target-text", { content: "Updated text" });
+const copiedId = Copy("#source-item", "#destination-container", undefined, {
+  name: "Copied item"
 });
-TakeScreenshot([cardId]);
-return cardId;
+Print({ copiedId });
 ```
 
-## Images and screenshots
+## Importing and generating images
 
 `G(target, source, prompt?)` sets the exact target's fill to an image:
 
-- `G(target, "ai", prompt)` generates a low-quality GPT Image 2 asset. The prompt is required and
-  one execution may request at most 20 generated images.
-- `G(target, source)` accepts an absolute file path, `file://` URL, HTTP(S) URL, data URL, or an
-  already-uploaded relative asset path. A new relative path is rejected because Canvas cannot infer
-  which file it names.
+- `G(target, "ai", prompt)` generates a low-quality GPT Image 2 asset. A prompt is required, and
+  one execution can request at most 20 images.
+- `G(target, source)` imports an absolute file path, `file://` URL, HTTP(S) URL, data URL, or an
+  already stored relative asset path. A new unresolved relative path is rejected.
 
-Canvas stores the image before commit and replaces a transient source with a durable document asset.
-Use image generation only when the design calls for raster imagery; icons, shapes, gradients, and
-text should remain native editable nodes and paints.
+Canvas stores the image before commit and replaces a temporary source with a durable document
+asset. Give generation prompts concrete art direction: subject, composition, camera or illustration
+style, palette, lighting, negative space, and the intended crop. Avoid requesting text inside an
+image when editable Canvas text would be clearer.
 
-`TakeScreenshot([target, ...])` renders one or more exact source nodes together after all mutations
-in the execution. It returns one PNG as image content and reports its node IDs and dimensions in
-`screenshots`. It captures document content, not editor chrome, and does not require an open tab.
-Call it at most once per execution and include every review target in that one array. A screenshot
-is the evidence for appearance; the mutation succeeding is not evidence that text wraps, hierarchy
-reads correctly, or content remains unclipped.
+```js
+Insert("#image-container", {
+  id: "image-target",
+  type: "rectangle",
+  name: "Generated image",
+  width: 360,
+  height: "fill_container",
+  cornerRadius: 24
+});
+G("#image-target", "ai", "Specific subject and setting, intentional composition, defined visual style and palette, clear lighting, useful negative space, exact crop, no text");
+TakeScreenshot(["#image-container"]);
+return "image-target";
+```
 
-`Print(...values)` adds bounded JSON values to `prints`. It is limited to 1,000 entries. Return a
-small final value when the caller needs a concise operation result.
+Use generated or imported imagery when it materially advances the visual concept. Keep text,
+icons, shapes, and gradients native and editable.
 
-## Commit, limits, and recovery
+## Screenshots and quality review
 
-The script cannot access files, network, Account data, timers, the editor DOM, or Penkra runtime
-objects directly. Source code is limited to 100,000 UTF-8 bytes and runs for at most five seconds
-with a 64 MiB heap and 4 MiB stack. The serialized document, inspection input, and result have
-separate bounded sizes.
+`TakeScreenshot([target, ...])` renders exact source nodes together after all mutations. It returns
+one PNG and reports node IDs and dimensions. It captures document content without editor controls
+and does not require an open tab. Call it at most once per execution and include all review targets
+in that array.
 
-Canvas validates and materializes generated images before committing, then rejects the commit if
-the saved source sequence changed during the execution. A read-only program returns
-`operationId: null`. A successful mutation returns a durable `operationId` that
-`documents.undo` may reverse only while that mutation remains the exact document head and was
-authored by the same caller.
+Review the screenshot for:
 
-If the operation reports `CANVAS_DOCUMENT_CHANGED`, the document advanced while the script was
-running. Re-inspect the affected source and decide whether the intended change is still needed;
-never blindly replay stale code. If the script reports zero or multiple nodes for a one-target
-operation, narrow it to an exact ID or source path. If visual review reveals clipping, misplaced
-content, or a label that is not truly nested, correct the underlying text-growth, layout, or
-hierarchy property instead of offsetting the symptom with spaces, coordinates, or one-off widths.
+- clear hierarchy and a strong focal point;
+- intentional spacing, rhythm, alignment, and grouping;
+- typography that is readable, consistent, and appropriate to the concept;
+- sufficient contrast and a controlled palette;
+- content that fits its frame without clipping or accidental overflow;
+- imagery and icons that support the message;
+- repeated elements that are structurally consistent without becoming monotonous;
+- whether the result feels designed for the brief rather than assembled from generic cards.
+
+A successful mutation proves that the document saved, not that the design is good. Use the rendered
+result as the evidence for appearance.
+
+`Print(...values)` adds bounded JSON values to `prints` and is limited to 1,000 entries. Return a
+small final value when the caller needs a concise result.
+
+## Reading the result
+
+Use the structured result as evidence for what happened:
+
+- `changed` says whether the execution committed a document mutation;
+- `sequence` identifies the saved document revision;
+- `operationId` identifies the committed mutation for a possible immediate `documents.undo`, or is
+  `null` for a read-only execution;
+- `touchedNodeIds` lists nodes directly affected by mutation calls;
+- `prints` contains values sent through `Print`, while `result` contains the script's returned value;
+- `inspection` reports post-execution bounds and problems for touched nodes, including deletion
+  markers; the contexts returned by `Get` during the script use pre-execution inspection;
+- `issues` reports problems found while validating or rendering the resulting document;
+- `screenshots` describes the rendered PNG returned as image content.
+
+Do not infer visual correctness from `changed`, touched IDs, or an empty script error. Check
+`issues` and use a screenshot for appearance.
+
+## Execution limits and recovery
+
+Scripts cannot directly access files, network, Account data, timers, editor DOM, or Penkra runtime
+objects. Source code is limited to 100,000 UTF-8 bytes and runs for at most five seconds with a
+64 MiB heap and 4 MiB stack. Serialized input, document, and result sizes are also bounded.
+
+Canvas validates and materializes generated images before committing. A read-only program returns
+`operationId: null`; a successful mutation returns a durable `operationId`. `documents.undo` can
+reverse it only while it remains the exact document head and was authored by the same caller.
+
+If Canvas reports `CANVAS_DOCUMENT_CHANGED`, the document advanced while the script was running.
+Re-inspect the affected nodes and decide whether the intended change is still needed; do not replay
+stale code blindly. If a one-target operation reports zero or multiple matches, use an exact ID or
+source path. If review reveals clipping, misplaced content, or a visually nested label that is not
+structurally nested, fix the underlying text growth, layout, sizing, or hierarchy instead of
+offsetting the symptom with spaces or arbitrary coordinates.

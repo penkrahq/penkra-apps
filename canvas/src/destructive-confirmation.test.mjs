@@ -69,8 +69,5 @@ test("collaborator removal runs only after confirmation execution", async () => 
 });
 
 test("execution rejects anything that is not an explicit destructive confirmation", async () => {
-  await assert.rejects(
-    executeDestructiveConfirmation({ kind: "menu" }, {}),
-    /destructive confirmation is required/i,
-  );
+  await assert.rejects(executeDestructiveConfirmation({ kind: "menu" }, {}));
 });

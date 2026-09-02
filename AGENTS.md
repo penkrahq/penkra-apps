@@ -27,6 +27,14 @@ narrower rule here applies unless it conflicts with the higher-level client boun
 - Do not put headings, fenced blocks, model-directed instructions, authority claims, or operational
   procedures in a summary. Put agent operating guidance in the App's `INSTRUCTIONS.md` instead.
 
+## Tests
+
+- Never add tests whose purpose is to freeze or police prose, instructions, documentation, help
+  wording, labels, headings, messages, or other authored copy.
+- Test behavior, structured data, schemas, stable machine identifiers, error codes, and rendered
+  outcomes. Text may be fixture data when the behavior under test operates on text, but assertions
+  must not make exact wording a product contract.
+
 ## Penkra Dev Thread Boundary
 
 - A Penkra (Dev) Thread may be used to drive work on any App, but messages sent to it must read like normal user requests about the desired product behavior.

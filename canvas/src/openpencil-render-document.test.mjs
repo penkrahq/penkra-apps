@@ -146,7 +146,7 @@ test("uses safe fallbacks and reports missing render variables", () => {
   assert.equal(result.document.children[0].gap, 0);
   assert.equal(result.document.children[0].enabled, true);
   assert.equal(result.issues.length, 2);
-  assert.match(result.issues[0].message, /was not found/);
+  assert.equal(result.issues[0].kind, "variable");
 });
 
 test("compiles themed Lucide icons without changing their semantic node type", () => {
@@ -198,7 +198,6 @@ test("reports unsupported icon libraries without changing their render node", ()
   assert.equal(result.document.children[0].type, "icon");
   assert.equal(result.issues.length, 1);
   assert.equal(result.issues[0].kind, "icon");
-  assert.match(result.issues[0].message, /unknown icon custom is not supported/i);
 });
 
 test("resolves canonical underscore Material Symbols names without compatibility issues", () => {
