@@ -109,3 +109,71 @@ test("stops an unbounded remote response once it exceeds the image limit", async
   );
   assert.equal(value.uploads.length, 0);
 });
+
+test("materializes generated images with bounded parallelism", async () => {
+  const children = Array.from({ length: 6 }, (_, index) => ({
+    id: `image-${index}`,
+    type: "rectangle",
+    width: 100,
+    height: 100,
+    fill: { type: "image", url: `penkra-generation://${index}`, mode: "fill" },
+  }));
+  let active = 0;
+  let peak = 0;
+  const releases = [];
+  const completion = materializeDocumentImages({
+    api: {},
+    documentId: "document-1",
+    document: { version: "2.15", children },
+    generations: children.map((node, index) => ({
+      nodeId: node.id,
+      kind: "ai",
+      prompt: `image ${index}`,
+      url: `penkra-generation://${index}`,
+    })),
+    dependencies: {
+      generateAi: async ({ prompt }) => {
+        active += 1;
+        peak = Math.max(peak, active);
+        await new Promise((resolve) => releases.push(resolve));
+        active -= 1;
+        return { path: `images/${prompt}.png`, sha256: "a".repeat(64), size: 8, mimeType: "image/png" };
+      },
+    },
+  });
+
+  while (releases.length < 4) await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(peak, 4);
+  releases.splice(0, 4).forEach((release) => release());
+  while (releases.length < 2) await new Promise((resolve) => setImmediate(resolve));
+  releases.splice(0).forEach((release) => release());
+  await completion;
+
+  assert.equal(peak, 4);
+  assert.deepEqual(children.map((node) => node.fill.url), [
+    "images/image 0.png", "images/image 1.png", "images/image 2.png",
+    "images/image 3.png", "images/image 4.png", "images/image 5.png",
+  ]);
+});
+
+test("does not apply materialized paths after cancellation", async () => {
+  const controller = new AbortController();
+  const value = fixture({ type: "image", url: "penkra-generation://0", mode: "fill" });
+  await assert.rejects(
+    materializeDocumentImages({
+      api: value.api,
+      documentId: "document-1",
+      document: value.document,
+      generations: [{ nodeId: "hero", kind: "ai", prompt: "cancel me", url: "penkra-generation://0" }],
+      signal: controller.signal,
+      dependencies: {
+        generateAi: async () => {
+          controller.abort(new Error("caller disconnected"));
+          return { path: "images/generated.png", sha256: "a".repeat(64), size: 8, mimeType: "image/png" };
+        },
+      },
+    }),
+    /caller disconnected/,
+  );
+  assert.equal(value.document.children[0].fill.url, "penkra-generation://0");
+});

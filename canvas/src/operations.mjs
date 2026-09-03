@@ -86,7 +86,8 @@ runtime.operations.handle("documents.open", async ({ documentId }, context) => {
   return { documentId, tabId: tab.id };
 });
 
-runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
+runtime.operations.handle("documents.execute", async ({ documentId, code }, context) => {
+  const signal = context?.signal ?? new AbortController().signal;
   const [
     { executeCanvasScript },
     { reviewDocumentIssues },
@@ -135,6 +136,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         document: execution.document,
         existingAssets: payload.assets,
         generations: execution.generations,
+        signal,
         skipSources: new Set(collectImageFills(before).map((fill) => fill.url)),
       });
       uploadedAssets = materialized.uploaded;
@@ -187,6 +189,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }) => {
         issues,
       }, screenshots);
     }
+    signal.throwIfAborted();
     const operationId = crypto.randomUUID();
     const operationUpdates = createDocumentOperationUpdates(model, execution.document);
     Y.applyUpdate(model.doc, operationUpdates.forward, LOCAL_ORIGIN);

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const MAX_IMAGE_BYTES = 24 * 1024 * 1024;
 const REQUEST_TIMEOUT_MS = 60_000;
+const MAX_CONCURRENT_IMAGE_MATERIALIZATIONS = 4;
 
 export async function materializeDocumentImages({
   api,
@@ -13,6 +14,7 @@ export async function materializeDocumentImages({
   existingAssets = [],
   skipSources = new Set(),
   generations = [],
+  signal = new AbortController().signal,
   dependencies = {},
 }) {
   const fetchImage = dependencies.fetch ?? fetch;
@@ -20,42 +22,67 @@ export async function materializeDocumentImages({
   const generateAi = dependencies.generateAi ?? ((input) => api.generateImage(documentId, input));
   const existingPaths = new Set(existingAssets.map((asset) => asset.path));
   const generatedByUrl = new Map(generations.map((generation) => [generation.url, generation]));
-  const uploadedBySource = new Map();
+  const workBySource = new Map();
+  const fillsBySource = new Map();
   let changed = false;
 
   for (const fill of collectImageFills(document)) {
     const source = fill.url;
     if (existingPaths.has(source) || skipSources.has(source)) continue;
-    let uploaded = uploadedBySource.get(source);
-    if (!uploaded) {
+    const fills = fillsBySource.get(source) ?? [];
+    fills.push(fill);
+    fillsBySource.set(source, fills);
+    if (!workBySource.has(source)) {
       const generation = generatedByUrl.get(source);
-      if (generation) {
-        const generated = await resolveGeneration(generation, document, generateAi);
-        if (!generated || typeof generated.path !== "string" || generated.path.length === 0) {
-          throw imageError("CANVAS_IMAGE_GENERATION_FAILED", "Canvas image generation returned no asset path.");
+      workBySource.set(source, async () => {
+        signal.throwIfAborted();
+        if (generation) {
+          const generated = await resolveGeneration(generation, document, generateAi);
+          signal.throwIfAborted();
+          if (!generated || typeof generated.path !== "string" || generated.path.length === 0) {
+            throw imageError("CANVAS_IMAGE_GENERATION_FAILED", "Canvas image generation returned no asset path.");
+          }
+          return generated;
         }
-        uploaded = generated;
-        uploadedBySource.set(source, uploaded);
-        fill.url = uploaded.path;
-        changed = true;
-        continue;
-      }
-      const resolved = await resolveImageSource(source, { fetchImage, readLocalFile });
-      assertImageBytes(resolved.bytes, source);
-      const sha256 = createHash("sha256").update(resolved.bytes).digest("hex");
-      const path = `images/${sha256}${extensionForMimeType(resolved.mimeType)}`;
-      uploaded = await api.uploadAsset(documentId, {
-        path,
-        sha256,
-        bytes: resolved.bytes,
-        mimeType: resolved.mimeType,
+        const resolved = await resolveImageSource(source, { fetchImage, readLocalFile });
+        signal.throwIfAborted();
+        assertImageBytes(resolved.bytes, source);
+        const sha256 = createHash("sha256").update(resolved.bytes).digest("hex");
+        const path = `images/${sha256}${extensionForMimeType(resolved.mimeType)}`;
+        return api.uploadAsset(documentId, {
+          path,
+          sha256,
+          bytes: resolved.bytes,
+          mimeType: resolved.mimeType,
+        });
       });
-      uploadedBySource.set(source, uploaded);
     }
-    fill.url = uploaded.path;
+  }
+
+  const entries = [...workBySource.entries()];
+  const uploadedBySource = new Map();
+  let next = 0;
+  await Promise.all(Array.from(
+    { length: Math.min(MAX_CONCURRENT_IMAGE_MATERIALIZATIONS, entries.length) },
+    async () => {
+      while (next < entries.length) {
+        const index = next++;
+        const [source, materialize] = entries[index];
+        const uploaded = await materialize();
+        uploadedBySource.set(source, uploaded);
+      }
+    },
+  ));
+  signal.throwIfAborted();
+  for (const [source, fills] of fillsBySource) {
+    const uploaded = uploadedBySource.get(source);
+    for (const fill of fills) fill.url = uploaded.path;
     changed = true;
   }
-  return { changed, uploaded: [...uploadedBySource.values()] };
+  return {
+    changed,
+    uploaded: entries.map(([source]) => uploadedBySource.get(source)),
+  };
 }
 
 export function collectImageFills(value, output = []) {
