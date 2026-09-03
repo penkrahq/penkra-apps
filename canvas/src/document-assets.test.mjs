@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
 
-test("hydrates only document assets that are new or changed", async () => {
+test("hydrates new or changed assets into the live document asset map", async () => {
   const reads = [];
   const api = {
     readAsset: async (_documentId, descriptor) => {
@@ -27,8 +27,9 @@ test("hydrates only document assets that are new or changed", async () => {
 
   assert.deepEqual(reads, ["images/new.png"]);
   assert.equal(result.changed, true);
+  assert.equal(result.assets, current);
   assert.equal(result.assets.size, 2);
-  assert.deepEqual(result.assets.get("images/new.png").bytes, new Uint8Array([14]));
+  assert.deepEqual(current.get("images/new.png").bytes, new Uint8Array([14]));
 });
 
 test("detects image fills whose document assets have not loaded", () => {

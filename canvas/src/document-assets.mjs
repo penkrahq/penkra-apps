@@ -1,5 +1,5 @@
 export async function hydrateDocumentAssets(api, documentId, descriptors = [], current = new Map()) {
-  const assets = new Map(current);
+  const assets = current;
   let changed = false;
   await Promise.all(descriptors.map(async (descriptor) => {
     const existing = assets.get(descriptor.path);
