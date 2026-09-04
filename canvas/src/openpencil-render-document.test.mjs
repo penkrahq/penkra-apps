@@ -2,6 +2,44 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { migrateM1DelimitedVariables } from "./migrations.mjs";
+
+test("interpolates multiple delimited variables while leaving currency literal", () => {
+  const source = {
+    variables: {
+      school: { type: "string", value: "Universal International School" },
+      city: { type: "string", value: "Accra" },
+    },
+    children: [
+      { id: "title", type: "text", content: "YOU RUN ${school} IN ${city}." },
+      { id: "price", type: "text", content: "$18.40" },
+    ],
+  };
+  const result = prepareOpenPencilRenderDocument(source);
+  assert.equal(result.document.children[0].content, "YOU RUN Universal International School IN Accra.");
+  assert.equal(result.document.children[1].content, "$18.40");
+  assert.deepEqual(result.issues, []);
+});
+
+test("M1 migrates only whole legacy references on variable-able fields", () => {
+  const source = {
+    children: [{
+      id: "price",
+      type: "text",
+      name: "$name-is-not-variable-able",
+      content: "$18.40",
+      fill: "$brand-accent",
+      fontFamily: "$font-body",
+    }],
+  };
+  const { document, changes } = migrateM1DelimitedVariables(source);
+  assert.equal(changes, 2);
+  assert.equal(document.children[0].name, "$name-is-not-variable-able");
+  assert.equal(document.children[0].content, "$18.40");
+  assert.equal(document.children[0].fill, "${brand-accent}");
+  assert.equal(document.children[0].fontFamily, "${font-body}");
+  assert.deepEqual(source.children[0].fill, "$brand-accent");
+});
 
 test("resolves Pencil variables with inherited multi-axis themes without changing source", () => {
   const source = {

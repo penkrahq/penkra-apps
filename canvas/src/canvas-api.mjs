@@ -40,7 +40,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     getDocument: async (id) => {
       const encoded = encodeURIComponent(id);
       const [project, assets] = await Promise.all([
-        request(`/${encoded}?chunked=auto`),
+        request(`/${encoded}?chunked=auto&canvasSchemaVersion=3`),
         request(`/${encoded}/blobs`),
       ]);
       const snapshot = project.snapshot.chunked
@@ -51,6 +51,15 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         snapshot,
         assets: assets.items,
       };
+    },
+    getDocumentProjection: async (id) => {
+      const encoded = encodeURIComponent(id);
+      const project = await request(`/${encoded}?chunked=auto&canvasSchemaVersion=3`);
+      if ((project.updates ?? []).length > 0) return null;
+      const source = project.snapshot.chunked
+        ? decodeJson(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "projection"))
+        : project.snapshot.projection;
+      return { ...project, snapshot: { ...project.snapshot, source } };
     },
     listAssets: async (id) => {
       const assets = await request(`/${encodeURIComponent(id)}/blobs`);
@@ -65,7 +74,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     permanentlyDeleteDocument: (id) =>
       request(`/${encodeURIComponent(id)}/permanent`, { method: "DELETE" }),
     appendUpdate: (id, input) =>
-      request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: input }),
+      request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: { ...input, canvasSchemaVersion: 3 } }),
     undoOperation: (id, input) =>
       request(`/${encodeURIComponent(id)}/undo`, { method: "POST", body: input }),
     createSnapshot: (id, { source, state, ...input }) => {
@@ -89,8 +98,11 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         `/${encodeURIComponent(id)}/grants/${encodeURIComponent(grantId)}`,
         { method: "DELETE" },
       ),
-    subscribe: (id, listener, options) =>
-      runtime.account.subscribe(`project:${id}`, listener, options),
+    subscribe: (id, listener, options = {}) =>
+      runtime.account.subscribe(`project:${id}`, listener, {
+        ...options,
+        metadata: { ...options.metadata, canvasSchemaVersion: 3 },
+      }),
     subscribeToDocuments: (listener, options) =>
       runtime.account.subscribe("projects", listener, options),
     uploadAsset: async (id, asset) => {

@@ -7,6 +7,7 @@ const root = new URL("../", import.meta.url);
 
 test("pinned OpenPencil artifact has one core and CanvasKit singleton", async () => {
   const engine = await readFile(new URL("vendor/open-pencil/engine.mjs", root), "utf8");
+  const sourceEngine = await readFile(new URL("vendor/open-pencil/engine.source.mjs", root), "utf8");
   const surface = await readFile(new URL("src/openpencil-surface.mjs", root), "utf8");
   const provenance = JSON.parse(await readFile(
     new URL("vendor/open-pencil/PROVENANCE.json", root),
@@ -17,6 +18,16 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.equal(matches(engine, "function createEditor("), 1);
   assert.doesNotMatch(engine, /\bnew Function\s*\(|\bFunction\s*\(\s*["'`]return this/u);
   assert.equal(createHash("sha256").update(engine).digest("hex"), provenance.engineSha256);
+  assert.equal(
+    createHash("sha256").update(sourceEngine).digest("hex"),
+    provenance.sourceEngineSha256,
+  );
+  assert.doesNotMatch(sourceEngine, /\bnew Function\s*\(|\bFunction\s*\(\s*["'`]return this/u);
+  assert.match(sourceEngine, /function applyPencilShaderFill\(/u);
+  assert.match(sourceEngine, /surface\.makeImageFromTextureSource\([^,]+, undefined, false\)/u);
+  assert.match(sourceEngine, /function applyPencilMeshFill\(/u);
+  assert.match(sourceEngine, /graph\.nodes\.size > MAX_RETAINED_SCENE_NODES/u);
+  assert.match(sourceEngine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
   assert.deepEqual(provenance.localPatches, [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -63,6 +74,8 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
     "Hide the text-edit input visually with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell while keeping the focused editor available to accessibility clients.",
     "Expose the upstream default editor-state factory so Canvas can supply Vue-reactive state to the editor integration.",
+    "Expose Pencil wrap, min/max constraints, row/column gaps, and grid tracks and placement through the owned Yoga layout graph.",
+    "Render Canvas rich-text underline, strikethrough, word spacing, and combined per-run decoration through CanvasKit paragraph style runs.",
   ]);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
   assert.match(engine, /setScenePictureMode\(hasVolatileOverlays \? "volatile" : "direct", cacheMissReason\)/u);
@@ -90,7 +103,7 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(engine, /textarea\.setAttribute\("aria-label", [^)]+\)/u);
   assert.doesNotMatch(engine, /textarea\.setAttribute\("aria-hidden", "true"\)/u);
   assert.match(engine, /if \(fns\.isInsideContainerBounds\(cx, cy, scopeId\)\) \{\s+const scopeNode = editor\.graph\.getNode\(scopeId\);\s+editor\.exitContainer\(\);\s+return scopeNode \?\? null;/u);
-  assert.match(engine, /labelCache\.getFrames\(graph4, r4\.worldViewport\)/u);
+  assert.match(engine, /labelCache\.getFrames\([^,]+, [^)]+\.worldViewport\)/u);
   assert.match(surface, /createLayeredSurfaceReadiness/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-ready"/u);
@@ -99,6 +112,14 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
   assert.match(engine, /while \(hit\.parentId && hit\.parentId !== scope\)/u);
   assert.match(engine, /return editor\.graph\.hitTest\(cx, cy, containerId\)/u);
   assert.doesNotMatch(engine, /if \(hit2\?\.type === "TEXT"\)\s+startTextEditingAt\(hit2, cx, cy\)/u);
+});
+
+test("the pinned CanvasKit build carries ICU instead of requiring client ICU", async () => {
+  const { getCanvasKit } = await import("../vendor/open-pencil/engine.source.mjs");
+  const canvasKit = await getCanvasKit();
+  assert.equal(canvasKit.ParagraphBuilder.RequiresClientICU(), false);
+  const wasm = await readFile(new URL("node_modules/canvaskit-wasm/bin/canvaskit.wasm", root));
+  assert.ok(wasm.includes(Buffer.from("icudt74l")), "CanvasKit WASM must retain the pinned ICU 74 data symbol");
 });
 
 test("published OpenPencil packages and expr-eval are outside the dependency graph", async () => {

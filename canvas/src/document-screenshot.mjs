@@ -7,7 +7,7 @@ import {
   fontManager,
   getCanvasKit,
   SkiaRenderer,
-} from "../vendor/open-pencil/engine.mjs";
+} from "../vendor/open-pencil/engine.source.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { configureCanvasFonts } from "./font-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
@@ -28,7 +28,7 @@ const BUNDLED_FONT_FILES = new Map([
 let fontsConfigured = false;
 let canvasKitWasmPath;
 
-export async function takeDocumentScreenshots(document, requests, assets = new Map()) {
+export async function takeDocumentScreenshots(document, requests, assets = new Map(), options = {}) {
   if (requests.length === 0) return [];
   configureScreenshotFonts();
   for (const font of collectPencilDocumentFonts(document, assets)) {
@@ -39,7 +39,7 @@ export async function takeDocumentScreenshots(document, requests, assets = new M
   if (!page) throw screenshotError("CANVAS_SCREENSHOT_EMPTY", "The Canvas document has no page.");
   const screenshots = [];
   for (const request of requests) {
-    screenshots.push(await renderScreenshot(graph, page.id, request.nodeIds));
+    screenshots.push(await renderScreenshot(graph, page.id, request.nodeIds, options));
   }
   return screenshots;
 }
@@ -68,7 +68,7 @@ function configureScreenshotFonts() {
   });
 }
 
-async function renderScreenshot(graph, pageId, nodeIds) {
+async function renderScreenshot(graph, pageId, nodeIds, options = {}) {
   for (const nodeId of nodeIds) {
     if (!graph.getNode(nodeId)) {
       throw screenshotError("CANVAS_SCREENSHOT_NODE_NOT_FOUND", `Canvas node ${nodeId} is unavailable to the renderer.`);
@@ -100,7 +100,9 @@ async function renderScreenshot(graph, pageId, nodeIds) {
     }
     const sourceWidth = Math.max(1, bounds.maxX - bounds.minX);
     const sourceHeight = Math.max(1, bounds.maxY - bounds.minY);
-    const scale = Math.min(1, MAX_SCREENSHOT_DIMENSION / Math.max(sourceWidth, sourceHeight));
+    const maxDimension = options.maxDimension ?? MAX_SCREENSHOT_DIMENSION;
+    const requestedScale = options.scale ?? 1;
+    const scale = Math.min(requestedScale, maxDimension / Math.max(sourceWidth, sourceHeight));
     const width = Math.max(1, Math.ceil(sourceWidth * scale));
     const height = Math.max(1, Math.ceil(sourceHeight * scale));
     const surface = ck.MakeSurface(width, height);

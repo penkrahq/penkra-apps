@@ -69,6 +69,28 @@ test("treats image fills as supported while their asset bytes are loading", () =
   assert.deepEqual(analyzeOpenPencilCompatibility(source), []);
 });
 
+test("Canvas rich-text marks reach OpenPencil character style runs", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "rich", type: "text", width: 400, height: 80, content: "Bold and marked",
+      fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 15 }],
+      marks: [
+        { type: "weight", from: 0, to: 4, value: 700 },
+        { type: "fill", from: 0, to: 4, value: "#123456" },
+        { type: "underline", from: 9, to: 15, value: true },
+        { type: "strikethrough", from: 9, to: 15, value: true },
+        { type: "wordSpacing", from: 5, to: 8, value: 3 },
+      ],
+    }],
+  });
+  const runs = graph.getNode("rich").styleRuns;
+  assert.equal(runs[0].style.fontWeight, 700);
+  assert.deepEqual(runs[0].style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
+  assert.equal(runs.find((run) => run.style.wordSpacing)?.style.wordSpacing, 3);
+  assert.deepEqual(runs.at(-1).style, { underline: true, strikethrough: true });
+});
+
 test("Pencil image opacity and blend mode survive asset binding", () => {
   const graph = createOpenPencilGraph({
     version: "2.17",
@@ -1266,11 +1288,80 @@ test("committing a newly drawn text edit inserts its final semantic node", () =>
       fontFamily: "Inter",
       fontSize: 14,
       fontWeight: 400,
+      marks: [],
+      paragraphs: [{ from: 0, to: 17 }],
       fill: "#000000",
     },
     parentId: null,
     position: 1,
   }]);
+});
+
+test("rich-text edits persist style runs and remap nonvisual links in UTF-16 offsets", () => {
+  const source = {
+    canvasSchemaVersion: 3,
+    version: "2.17",
+    module: "web",
+    children: [{
+      id: "label",
+      type: "text",
+      content: "Go now",
+      fontSize: 14,
+      marks: [
+        { type: "link", from: 0, to: 2, value: "https://example.com" },
+        { type: "weight", from: 3, to: 6, value: 700 },
+      ],
+      paragraphs: [{ from: 0, to: 6, style: "body" }],
+    }],
+  };
+  const editor = createOpenPencilEditor(source);
+  editor.select(["label"]);
+  const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
+  editor.graph.updateNode("label", {
+    text: "Go right now",
+    styleRuns: [{
+      start: 3,
+      length: 5,
+      style: { fontWeight: 700, italic: true, underline: false, textLanguage: "fr" },
+    }],
+  });
+
+  assert.deepEqual(sceneTextEditCommitMutations(editor, source, "label", before), [
+    { kind: "set-property", nodeId: "label", property: "content", value: "Go right now" },
+    { kind: "set-property", nodeId: "label", property: "marks", value: [
+      { type: "link", from: 0, to: 2, value: "https://example.com" },
+      { type: "italic", from: 3, to: 8, value: true },
+      { type: "lang", from: 3, to: 8, value: "fr" },
+      { type: "underline", from: 3, to: 8, value: false },
+      { type: "weight", from: 3, to: 8, value: 700 },
+    ] },
+    { kind: "set-property", nodeId: "label", property: "paragraphs", value: [
+      { from: 0, to: 12, style: "body" },
+    ] },
+  ]);
+});
+
+test("newline edits expose the unspecified paragraph inheritance policy instead of inventing one", () => {
+  const source = {
+    canvasSchemaVersion: 3,
+    version: "2.17",
+    module: "web",
+    children: [{
+      id: "label",
+      type: "text",
+      content: "One",
+      marks: [],
+      paragraphs: [{ from: 0, to: 3, style: "body" }],
+    }],
+  };
+  const editor = createOpenPencilEditor(source);
+  editor.select(["label"]);
+  const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
+  editor.graph.updateNode("label", { text: "One\nTwo" });
+  assert.throws(
+    () => sceneTextEditCommitMutations(editor, source, "label", before),
+    (error) => error.code === "CANVAS_PARAGRAPH_EDIT_POLICY_UNSPECIFIED",
+  );
 });
 
 test("selection hit testing advances exactly one frame hierarchy level", () => {

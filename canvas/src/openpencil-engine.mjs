@@ -4,11 +4,12 @@ import {
   createDefaultEditorState,
   createEditor,
   parsePenFile,
-} from "../vendor/open-pencil/engine.mjs";
+} from "../vendor/open-pencil/engine.source.mjs";
 import { reactive } from "vue";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { pencilResourceAsset } from "./pencil-resources.mjs";
 import { resolveCanvasNodeSelection } from "./node-reference.mjs";
+import { flattenMarks } from "./rich-text.mjs";
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",
@@ -58,6 +59,7 @@ const TRACKED_SCENE_PROPERTIES = new Set([
   "textAlignHorizontal",
   "textAlignVertical",
   "fills",
+  "styleRuns",
 ]);
 
 export function createOpenPencilEditor(document, options = {}) {
@@ -144,6 +146,9 @@ function applyPencilSceneProperties(graph, document) {
     if (sourceNode.type === "text" && sourceNode.textGrowth === "fixed-width-height") {
       changes.textAutoResize = "NONE";
     }
+    if (sourceNode.type === "text" && Array.isArray(sourceNode.marks)) {
+      changes.styleRuns = canvasStyleRuns(sourceNode);
+    }
     if (sourceNode.type === "ellipse" && (
       sourceNode.innerRadius !== undefined
       || sourceNode.startAngle !== undefined
@@ -167,6 +172,24 @@ function applyPencilSceneProperties(graph, document) {
       graph.updateNode(sceneNode.id, { pencilSlotKind: "instance" });
     }
   }
+}
+
+function canvasStyleRuns(node) {
+  return flattenMarks(node.content ?? "", node.marks ?? []).flatMap((run) => {
+    const style = {};
+    if (run.weight !== undefined) style.fontWeight = Number(run.weight);
+    if (run.italic !== undefined) style.italic = Boolean(run.italic);
+    if (run.underline !== undefined) style.underline = Boolean(run.underline);
+    if (run.strikethrough !== undefined) style.strikethrough = Boolean(run.strikethrough);
+    if (run.fontFamily !== undefined) style.fontFamily = run.fontFamily;
+    if (run.fontSize !== undefined) style.fontSize = Number(run.fontSize);
+    if (run.letterSpacing !== undefined) style.letterSpacing = Number(run.letterSpacing);
+    if (run.wordSpacing !== undefined) style.wordSpacing = Number(run.wordSpacing);
+    if (run.lang !== undefined) style.textLanguage = run.lang;
+    const fill = parseHexColor(run.fill);
+    if (fill) style.fills = [{ type: "SOLID", visible: true, opacity: 1, color: fill }];
+    return Object.keys(style).length ? [{ start: run.from, length: run.to - run.from, style }] : [];
+  });
 }
 
 function degreesToRadians(value) {
@@ -428,13 +451,136 @@ export function sceneTextEditCommitMutations(editor, document, nodeId, previousS
     const insertion = sceneNodeInsertionMutation(editor, node);
     return insertion ? [insertion] : [];
   }
-  return sceneEventToPenMutations(
+  const mutations = sceneEventToPenMutations(
     editor,
     document,
     nodeId,
     sceneNodePropertySnapshot(node),
     previousSceneValues,
   );
+  const textChanged = previousSceneValues?.text !== node.text;
+  const runsChanged = !Object.is(previousSceneValues?.styleRuns, node.styleRuns);
+  if (!textChanged && !runsChanged) return mutations;
+
+  const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
+  const effectiveSource = selection?.effectiveNode ?? sourceNode;
+  const richMutations = [];
+  if (Array.isArray(effectiveSource.marks) || document.canvasSchemaVersion >= 3) {
+    richMutations.push({
+      kind: "set-property",
+      nodeId,
+      property: "marks",
+      value: sceneStyleRunsToMarks(node, effectiveSource, previousSceneValues?.text),
+    });
+  }
+  if (textChanged && (Array.isArray(effectiveSource.paragraphs) || document.canvasSchemaVersion >= 3)) {
+    richMutations.push({
+      kind: "set-property",
+      nodeId,
+      property: "paragraphs",
+      value: remapParagraphsForTextEdit(effectiveSource, node.text),
+    });
+  }
+  if (!selection?.isInstanceDescendant) return [...mutations, ...richMutations];
+  return [...mutations, ...richMutations.map((mutation) => ({
+    kind: "set-property-path",
+    nodeId: selection.instanceId,
+    property: "descendants",
+    path: [selection.descendantPath, mutation.property],
+    value: mutation.value,
+  }))];
+}
+
+export function sceneStyleRunsToMarks(sceneNode, sourceNode, previousText = sourceNode.content ?? "") {
+  const content = sceneNode.text ?? "";
+  const { from, to, inserted } = singleTextEdit(previousText, content);
+  const preserved = (sourceNode.marks ?? [])
+    .filter((mark) => mark.type === "link")
+    .map((mark) => remapRangeForReplacement(mark, from, to, inserted.length))
+    .filter(Boolean);
+  const marks = [...preserved];
+  for (const run of sceneNode.styleRuns ?? []) {
+    const range = { from: run.start, to: run.start + run.length };
+    const style = run.style ?? {};
+    appendSceneMark(marks, range, "weight", style.fontWeight);
+    appendSceneMark(marks, range, "italic", style.italic);
+    const underline = style.underline !== undefined
+      ? style.underline
+      : style.textDecoration !== undefined ? style.textDecoration === "UNDERLINE" : undefined;
+    const strikethrough = style.strikethrough !== undefined
+      ? style.strikethrough
+      : style.textDecoration !== undefined ? style.textDecoration === "STRIKETHROUGH" : undefined;
+    appendSceneMark(marks, range, "underline", underline);
+    appendSceneMark(marks, range, "strikethrough", strikethrough);
+    appendSceneMark(marks, range, "fontFamily", style.fontFamily);
+    appendSceneMark(marks, range, "fontSize", style.fontSize);
+    appendSceneMark(marks, range, "letterSpacing", style.letterSpacing);
+    appendSceneMark(marks, range, "wordSpacing", style.wordSpacing);
+    appendSceneMark(marks, range, "lang", style.textLanguage);
+    const solid = style.fills?.find((fill) => fill.visible !== false && fill.type === "SOLID");
+    appendSceneMark(marks, range, "fill", solid ? rgbaToHex(solid.color, solid.opacity) : undefined);
+  }
+  return mergeCanvasMarks(marks.filter((mark) => mark.from >= 0 && mark.from < mark.to && mark.to <= content.length));
+}
+
+function appendSceneMark(marks, range, type, value) {
+  if (value === undefined || value === null) return;
+  marks.push({ type, ...range, value });
+}
+
+function remapParagraphsForTextEdit(sourceNode, content) {
+  const previous = sourceNode.content ?? "";
+  const edit = singleTextEdit(previous, content);
+  if (previous.slice(edit.from, edit.to).includes("\n") || edit.inserted.includes("\n")) {
+    const error = new Error("Paragraph split/merge style inheritance is not specified by CANVAS-ARCHITECTURE.md.");
+    error.code = "CANVAS_PARAGRAPH_EDIT_POLICY_UNSPECIFIED";
+    throw error;
+  }
+  if (content.length === 0) return [];
+  const paragraphs = sourceNode.paragraphs?.length
+    ? sourceNode.paragraphs
+    : [{ from: 0, to: previous.length }];
+  return paragraphs
+    .map((paragraph) => remapRangeForReplacement(paragraph, edit.from, edit.to, edit.inserted.length, true))
+    .filter(Boolean);
+}
+
+function singleTextEdit(previous, next) {
+  let from = 0;
+  while (from < previous.length && from < next.length && previous[from] === next[from]) from += 1;
+  let oldEnd = previous.length;
+  let newEnd = next.length;
+  while (oldEnd > from && newEnd > from && previous[oldEnd - 1] === next[newEnd - 1]) {
+    oldEnd -= 1;
+    newEnd -= 1;
+  }
+  return { from, to: oldEnd, inserted: next.slice(from, newEnd) };
+}
+
+function remapRangeForReplacement(range, from, to, insertedLength, paragraph = false) {
+  const removed = to - from;
+  const mapDelete = (offset) => offset <= from ? offset : offset >= to ? offset - removed : from;
+  let mapped = { ...range, from: mapDelete(range.from), to: mapDelete(range.to) };
+  if (mapped.from >= mapped.to && !paragraph) return null;
+  const stickyEnd = paragraph || !["link", "lang"].includes(mapped.type);
+  if (mapped.to < from) return mapped;
+  if (mapped.from > from) mapped = { ...mapped, from: mapped.from + insertedLength, to: mapped.to + insertedLength };
+  else if (mapped.from < from && from < mapped.to) mapped = { ...mapped, to: mapped.to + insertedLength };
+  else if (mapped.to === from && stickyEnd) mapped = { ...mapped, to: mapped.to + insertedLength };
+  else if (mapped.from === from) mapped = { ...mapped, to: mapped.to + insertedLength };
+  return mapped.from < mapped.to ? mapped : null;
+}
+
+function mergeCanvasMarks(marks) {
+  const sorted = [...marks].sort((a, b) => a.from - b.from || a.to - b.to || a.type.localeCompare(b.type));
+  const result = [];
+  for (const mark of sorted) {
+    const previous = result.at(-1);
+    if (previous && previous.to === mark.from && previous.type === mark.type
+      && JSON.stringify(previous.value) === JSON.stringify(mark.value)) previous.to = mark.to;
+    else result.push({ ...mark });
+  }
+  return result;
 }
 
 export function sceneNodeInsertionMutation(editor, node) {
@@ -507,10 +653,25 @@ export function sceneNodeToPenNode(node) {
     pen.fontFamily = node.fontFamily;
     pen.fontSize = node.fontSize;
     pen.fontWeight = node.fontWeight;
+    pen.marks = sceneStyleRunsToMarks(node, { content: node.text, marks: [] });
+    pen.paragraphs = paragraphPartition(node.text ?? "");
   }
   const solid = node.fills?.find((fill) => fill.visible && fill.type === "SOLID");
   if (solid) pen.fill = rgbaToHex(solid.color, solid.opacity);
   return pen;
+}
+
+function paragraphPartition(content) {
+  if (!content) return [];
+  const paragraphs = [];
+  let from = 0;
+  for (let index = 0; index < content.length; index += 1) {
+    if (content[index] !== "\n") continue;
+    paragraphs.push({ from, to: index + 1 });
+    from = index + 1;
+  }
+  if (from < content.length) paragraphs.push({ from, to: content.length });
+  return paragraphs;
 }
 
 export function findPenNode(document, nodeId) {

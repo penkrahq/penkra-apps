@@ -38,7 +38,38 @@ export function setNodeProperty(model, nodeId, property, value, origin) {
     );
   }
   transact(model, origin, () => {
-    getNode(model, nodeId).get("properties").set(property, toYValue(value));
+    const properties = getNode(model, nodeId).get("properties");
+    if (property === "content" && typeof value === "string") {
+      const current = properties.get("content");
+      if (current instanceof Y.Text) {
+        current.delete(0, current.length);
+        current.insert(0, value);
+      } else {
+        properties.set("content", createYText(value));
+      }
+      return;
+    }
+    if (property === "marks" && Array.isArray(value)) {
+      setRichTextMarks(properties, value);
+      return;
+    }
+    properties.set(property, toYValue(value));
+  });
+}
+
+export function editText(model, nodeId, index, deleteCount, insert, origin) {
+  assertEditableModel(model);
+  if (![index, deleteCount].every(Number.isInteger) || index < 0 || deleteCount < 0)
+    throw new Error("Text edit offsets must be non-negative integers.");
+  if (typeof insert !== "string") throw new Error("Inserted text must be a string.");
+  transact(model, origin, () => {
+    const properties = getNode(model, nodeId).get("properties");
+    const text = properties.get("content");
+    if (!(text instanceof Y.Text)) throw new Error(`Node ${nodeId} has no collaborative text content.`);
+    if (index + deleteCount > text.length) throw new Error("Text edit range exceeds content length.");
+    const insertionAttributes = attributesForInsertion(text, index);
+    if (deleteCount) text.delete(index, deleteCount);
+    if (insert) text.insert(index, insert, insertionAttributes);
   });
 }
 
@@ -101,6 +132,7 @@ export function insertNode(model, node, parentId, position, origin) {
   validateNodeTree([node], new Set(model.nodes.keys()));
   transact(model, origin, () => {
     model.nodes.set(node.id, createYNode(node, parentId, position));
+    initializeNodeMarks(model.nodes.get(node.id), node);
     importChildren(model.nodes, node.children, node.id);
   });
 }
@@ -164,6 +196,7 @@ export function replaceModelContent(model, penDocument, origin) {
       let current = model.nodes.get(id);
       if (!(current instanceof Y.Map)) {
         model.nodes.set(id, createYNode(node, parentId, position));
+        initializeNodeMarks(model.nodes.get(id), node);
         continue;
       }
       setYValueIfChanged(current, "type", node.type);
@@ -180,9 +213,20 @@ export function replaceModelContent(model, penDocument, origin) {
         ),
       );
       for (const key of [...properties.keys()]) {
-        if (!Object.hasOwn(nextProperties, key)) properties.delete(key);
+        if (!Object.hasOwn(nextProperties, key) && !(key === "content" && node.type === "text"))
+          properties.delete(key);
       }
       for (const [key, value] of Object.entries(nextProperties)) {
+        if (node.type === "text" && key === "content" && typeof value === "string") {
+          const currentText = properties.get(key);
+          if (!(currentText instanceof Y.Text)) properties.set(key, createYText(value));
+          else if (currentText.toString() !== value) {
+            currentText.delete(0, currentText.length);
+            currentText.insert(0, value);
+          }
+          continue;
+        }
+        if (node.type === "text" && key === "marks") continue;
         const currentValue = properties.get(key);
         if (
           currentValue === undefined ||
@@ -191,6 +235,7 @@ export function replaceModelContent(model, penDocument, origin) {
           properties.set(key, toYValue(value));
         }
       }
+      if (node.type === "text" && Array.isArray(node.marks)) setRichTextMarks(properties, node.marks);
     }
   });
 }
@@ -269,16 +314,22 @@ export function materializePen(model) {
     if (visiting.has(id)) return null;
     visiting.add(id);
     const properties = node.get("properties");
+    const entries = [...properties.entries()];
     const value = {
       type: node.get("type"),
       id,
       ...Object.fromEntries(
-        [...properties.entries()].map(([key, property]) => [
+        entries.map(([key, property]) => [
           key,
           fromYValue(property),
         ]),
       ),
     };
+    const richText = properties.get("content");
+    if (richText instanceof Y.Text) {
+      const marks = marksFromYText(richText);
+      if (marks.length > 0) value.marks = marks;
+    }
     const children = (childrenByParent.get(id) ?? [])
       .map(build)
       .filter(Boolean);
@@ -317,6 +368,7 @@ function importChildren(nodes, children = [], parentId) {
   children.forEach((node, index) => {
     if (nodes.has(node.id)) throw new Error(`Duplicate node ID ${node.id}.`);
     nodes.set(node.id, createYNode(node, parentId, index));
+    initializeNodeMarks(nodes.get(node.id), node);
     importChildren(nodes, node.children, node.id);
   });
 }
@@ -339,11 +391,21 @@ function createYNode(node, parentId, position) {
   value.set("hadChildren", Array.isArray(node.children));
   for (const [key, property] of Object.entries(node)) {
     if (key !== "id" && key !== "type" && key !== "children") {
-      properties.set(key, toYValue(property));
+      if (node.type === "text" && key === "content" && typeof property === "string") {
+        properties.set(key, createYText(property));
+      }
+      else if (!(node.type === "text" && key === "marks"))
+        properties.set(key, toYValue(property));
     }
   }
   value.set("properties", properties);
   return value;
+}
+
+function initializeNodeMarks(value, node) {
+  if (node.type !== "text" || !Array.isArray(node.marks)) return;
+  const properties = value?.get("properties");
+  if (properties instanceof Y.Map) setRichTextMarks(properties, node.marks);
 }
 
 function getNode(model, nodeId) {
@@ -424,12 +486,78 @@ function toYValue(value) {
 }
 
 function fromYValue(value) {
+  if (value instanceof Y.Text) return value.toString();
   if (value instanceof Y.Map) {
     return Object.fromEntries(
       [...value.entries()].map(([key, nested]) => [key, fromYValue(nested)]),
     );
   }
   return cloneJson(value);
+}
+
+function createYText(content) {
+  const text = new Y.Text();
+  if (content) text.insert(0, content);
+  return text;
+}
+
+function setRichTextMarks(properties, marks) {
+  const text = properties.get("content");
+  if (!(text instanceof Y.Text)) throw new Error("Rich-text marks require collaborative text content.");
+  applyMarksToText(text, marks);
+}
+
+function applyMarksToText(text, marks) {
+  if (text.length) {
+    for (const key of richTextAttributeKeys(text)) text.format(0, text.length, { [key]: null });
+  }
+  for (const mark of marks) {
+    const key = `canvas:${mark.type}`;
+    text.format(mark.from, mark.to - mark.from, { [key]: cloneJson(mark.value) });
+  }
+}
+
+function richTextAttributeKeys(text) {
+  const keys = new Set();
+  for (const delta of text.toDelta())
+    for (const key of Object.keys(delta.attributes ?? {}))
+      if (key.startsWith("canvas:")) keys.add(key);
+  return keys;
+}
+
+function marksFromYText(text) {
+  const open = new Map();
+  const marks = [];
+  let offset = 0;
+  for (const delta of text.toDelta()) {
+    const attributes = new Map(Object.entries(delta.attributes ?? {}).filter(([key]) => key.startsWith("canvas:")));
+    for (const [key, current] of open) {
+      if (!attributes.has(key) || !jsonValuesEqual(attributes.get(key), current.value)) {
+        marks.push({ type: key.slice(7), from: current.from, to: offset, value: current.value });
+        open.delete(key);
+      }
+    }
+    for (const [key, value] of attributes) {
+      if (!open.has(key)) open.set(key, { from: offset, value: cloneJson(value) });
+    }
+    offset += delta.insert.length;
+  }
+  for (const [key, current] of open)
+    marks.push({ type: key.slice(7), from: current.from, to: offset, value: current.value });
+  return marks.sort((a, b) => a.from - b.from || a.to - b.to || a.type.localeCompare(b.type));
+}
+
+function attributesForInsertion(text, index) {
+  const attributes = {};
+  for (const mark of marksFromYText(text)) {
+    const atInterior = mark.from < index && index < mark.to;
+    const atEnd = mark.to === index;
+    const atStart = mark.from === index;
+    const boundaryAnchored = mark.type === "link" || mark.type === "lang";
+    if (atInterior || (atEnd && !boundaryAnchored) || (atStart && true))
+      attributes[`canvas:${mark.type}`] = cloneJson(mark.value);
+  }
+  return attributes;
 }
 
 function breakParentCycles(parentById) {

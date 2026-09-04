@@ -7,7 +7,7 @@ import {
   useCanvas,
   useCanvasInput,
   useTextEdit,
-} from "../vendor/open-pencil/engine.mjs";
+} from "../vendor/open-pencil/engine.source.mjs";
 
 import {
   createOpenPencilEditor,

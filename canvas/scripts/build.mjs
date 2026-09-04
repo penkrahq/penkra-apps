@@ -5,6 +5,7 @@ import { join } from "node:path";
 const root = new URL("../", import.meta.url);
 const output = new URL("../dist/", import.meta.url);
 const yjsEntry = new URL("node_modules/yjs/dist/yjs.mjs", root).pathname;
+const lazyOperationModules = ["document-inspection", "script-runtime", "document-screenshot"];
 const dedupeYjsPlugin = {
   name: "dedupe-yjs",
   setup(build) {
@@ -14,7 +15,7 @@ const dedupeYjsPlugin = {
 const lazyOperationModulesPlugin = {
   name: "lazy-operation-modules",
   setup(build) {
-    for (const module of ["document-inspection", "script-runtime", "document-review", "document-screenshot"]) {
+    for (const module of lazyOperationModules) {
       build.onResolve({ filter: new RegExp(`^\\./${module}\\.mjs$`) }, (args) => ({
         path: args.path,
         external: true,
@@ -50,7 +51,6 @@ const builds = await Promise.all([
     entrypoints: [
       new URL("src/document-inspection.mjs", root).pathname,
       new URL("src/script-runtime.mjs", root).pathname,
-      new URL("src/document-review.mjs", root).pathname,
       new URL("src/document-screenshot.mjs", root).pathname,
     ],
     outdir: output.pathname,
@@ -72,7 +72,7 @@ for (const build of builds) {
 
 const operationsBundleUrl = new URL("operations.js", output);
 let operationsBundle = await readFile(operationsBundleUrl, "utf8");
-for (const module of ["document-inspection", "script-runtime", "document-review", "document-screenshot"]) {
+for (const module of lazyOperationModules) {
   const sourceSpecifier = `./${module}.mjs`;
   const packagedSpecifier = `./${module}.js`;
   if (!operationsBundle.includes(sourceSpecifier)) {
@@ -96,6 +96,8 @@ for (const file of [
   await cp(new URL(file, root), new URL(file, output));
 }
 await cp(new URL("assets/icon.svg", root), new URL("assets/icon.svg", output));
+await mkdir(new URL("assets/color/", output), { recursive: true });
+await cp(new URL("assets/color/sRGB2014.icc", root), new URL("assets/color/sRGB2014.icc", output));
 await cp(new URL("operations/", root), new URL("operations/", output), { recursive: true });
 await cp(
   new URL("node_modules/canvaskit-wasm/bin/canvaskit.wasm", root),
@@ -142,6 +144,7 @@ await cp(
 );
 await cp(new URL("licenses/OpenPencil-LICENSE.txt", root), new URL("licenses/OpenPencil-LICENSE.txt", output));
 await cp(new URL("licenses/Inter-OFL.txt", root), new URL("licenses/Inter-OFL.txt", output));
+await cp(new URL("licenses/ICC-sRGB-profile.txt", root), new URL("licenses/ICC-sRGB-profile.txt", output));
 await cp(
   new URL("node_modules/@fontsource/jetbrains-mono/LICENSE", root),
   new URL("licenses/JetBrains-Mono-OFL.txt", output),
@@ -166,7 +169,6 @@ for (const file of [
   "app.js",
   "operations.js",
   "document-inspection.js",
-  "document-review.js",
   "document-screenshot.js",
   "script-runtime.js",
   "canvaskit.wasm",

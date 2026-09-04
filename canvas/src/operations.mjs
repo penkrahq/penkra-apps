@@ -64,8 +64,8 @@ runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }
   return { documentId, title: document.title, trashed: true };
 });
 
-runtime.operations.handle("documents.create", async ({ title }) => {
-  const source = createBlankDocumentSource();
+runtime.operations.handle("documents.create", async ({ title, module }) => {
+  const source = createBlankDocumentSource({ module });
   const starterFrameId = source.children[0].id;
   const model = createDocumentModel(source);
   try {
@@ -88,22 +88,22 @@ runtime.operations.handle("documents.open", async ({ documentId }, context) => {
 
 runtime.operations.handle("documents.execute", async ({ documentId, code }, context) => {
   const signal = context?.signal ?? new AbortController().signal;
-  const [
-    { executeCanvasScript },
-    { reviewDocumentIssues },
-    { inspectDocument },
-    { takeDocumentScreenshots },
-  ] = await Promise.all([
-    import("./script-runtime.mjs"),
-    import("./document-review.mjs"),
-    import("./document-inspection.mjs"),
-    import("./document-screenshot.mjs"),
-  ]);
-  const payload = await api.getDocument(documentId);
-  const model = restoreDocumentModel(payload);
+  const { executeCanvasScript, scriptNeedsInspection } = await import("./script-runtime.mjs");
+  const projected = await api.getDocumentProjection(documentId);
+  let payload = projected ?? await api.getDocument(documentId);
+  let model = projected ? null : restoreDocumentModel(payload);
   try {
-    const before = materialize(model);
-    const beforeInspection = inspectDocument(before, listNodes(model), 1_000);
+    const before = model ? materialize(model) : structuredClone(payload.snapshot.source);
+    const needsInitialInspection = scriptNeedsInspection(code);
+    const inspectDocument = needsInitialInspection
+      ? (await import("./document-inspection.mjs")).inspectDocument
+      : null;
+    let beforeInspection = { items: [] };
+    if (inspectDocument) {
+      const inspectionModel = model ?? createDocumentModel(before);
+      try { beforeInspection = inspectDocument(before, listNodes(inspectionModel), 1_000); }
+      finally { if (!model) inspectionModel.doc.destroy(); }
+    }
     const execution = await executeCanvasScript(
       before,
       code,
@@ -127,40 +127,46 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     }
     const structuralModel = createDocumentModel(execution.document);
     structuralModel.doc.destroy();
-    const changedByScript = JSON.stringify(before) !== JSON.stringify(execution.document);
+    const changedByScript = execution.changed;
     let uploadedAssets = [];
+    let assetDescriptors = payload.assets;
     if (changedByScript) {
+      assetDescriptors ??= (await api.listAssets(documentId));
       const materialized = await materializeDocumentImages({
         api,
         documentId,
         document: execution.document,
-        existingAssets: payload.assets,
+        existingAssets: assetDescriptors,
         generations: execution.generations,
         signal,
         skipSources: new Set(collectImageFills(before).map((fill) => fill.url)),
       });
       uploadedAssets = materialized.uploaded;
     }
-    const validationModel = createDocumentModel(execution.document);
-    let existingInspection;
-    let issues;
-    try {
-      issues = reviewDocumentIssues(execution.document);
-      if (issues.length > 10_000) {
-        const error = new Error(
-          `Canvas execution produced ${issues.length} review issues; the result limit is 10000. Narrow the design intent and correct structural problems first.`,
+    let existingInspection = [];
+    let issues = beforeInspection.issues ?? [];
+    if (changedByScript || touchedNodeIds.length > 0) {
+      const inspect = inspectDocument ?? (await import("./document-inspection.mjs")).inspectDocument;
+      const validationModel = createDocumentModel(execution.document);
+      try {
+        const inspected = inspect(
+          execution.document,
+          listNodes(validationModel),
+          1_000,
+          new Set(touchedNodeIds),
         );
-        error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
-        throw error;
+        existingInspection = inspected.items;
+        issues = inspected.issues;
+      } finally {
+        validationModel.doc.destroy();
       }
-      existingInspection = inspectDocument(
-        execution.document,
-        listNodes(validationModel),
-        1_000,
-        new Set(touchedNodeIds),
-      ).items;
-    } finally {
-      validationModel.doc.destroy();
+    }
+    if (issues.length > 10_000) {
+      const error = new Error(
+        `Canvas execution produced ${issues.length} review issues; the result limit is 10000. Narrow the design intent and correct structural problems first.`,
+      );
+      error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
+      throw error;
     }
     const inspectedIds = new Set(existingInspection.map((item) => item.id));
     const inspection = [
@@ -171,10 +177,10 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     ];
     const screenshots = execution.screenshots.length === 0
       ? []
-      : await takeDocumentScreenshots(
+      : await (await import("./document-screenshot.mjs")).takeDocumentScreenshots(
         execution.document,
         execution.screenshots,
-        await readDocumentAssets(api, documentId, [...payload.assets, ...uploadedAssets]),
+        await readDocumentAssets(api, documentId, [...(assetDescriptors ??= await api.listAssets(documentId)), ...uploadedAssets]),
       );
     if (!changedByScript) {
       return operationResult({
@@ -190,6 +196,16 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       }, screenshots);
     }
     signal.throwIfAborted();
+    if (!model) {
+      const hydrated = await api.getDocument(documentId);
+      if (authoritativeSequence(hydrated) !== authoritativeSequence(payload)) {
+        const error = new Error("Canvas document changed while the operation was executing. Read the current document and retry the edit.");
+        error.code = "CANVAS_DOCUMENT_CONFLICT";
+        throw error;
+      }
+      payload = hydrated;
+      model = restoreDocumentModel(payload);
+    }
     const operationId = crypto.randomUUID();
     const operationUpdates = createDocumentOperationUpdates(model, execution.document);
     Y.applyUpdate(model.doc, operationUpdates.forward, LOCAL_ORIGIN);
@@ -219,7 +235,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       issues,
     }, screenshots);
   } finally {
-    model.doc.destroy();
+    model?.doc.destroy();
   }
 });
 
@@ -247,6 +263,34 @@ runtime.operations.handle("documents.undo", async ({ documentId, operationId }) 
   } finally {
     model.doc.destroy();
   }
+});
+
+runtime.operations.handle("documents.export", async (input) => {
+  const { exportDocument } = await import("./export-service.mjs");
+  const payload = await api.getDocument(input.documentId);
+  const model = restoreDocumentModel(payload);
+  try {
+    const document = materialize(model);
+    const assets = await readDocumentAssets(api, input.documentId, payload.assets);
+    const sets = input.bindings?.length ? input.bindings : [null];
+    const destinations = resolveExportDestinations(input.destination, sets);
+    const reports = [];
+    for (let index = 0; index < sets.length; index += 1) {
+      const bindingSet = sets[index];
+      const bindings = bindingSet ? Object.fromEntries(Object.entries(bindingSet).filter(([key]) => key !== "output")) : {};
+      reports.push(await exportDocument(document, { ...input, destination: destinations[index], bindings }, { assets, title: payload.title }));
+    }
+    return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), rasterized: reports.flatMap((report) => report.rasterized) };
+  } finally { model.doc.destroy(); }
+});
+
+runtime.operations.handle("documents.export-image", async (input) => {
+  const { exportImage } = await import("./export-service.mjs");
+  const payload = await api.getDocument(input.documentId);
+  const model = restoreDocumentModel(payload);
+  try {
+    return await exportImage(materialize(model), input, { assets: await readDocumentAssets(api, input.documentId, payload.assets) });
+  } finally { model.doc.destroy(); }
 });
 
 function operationResult(structuredContent, screenshots) {
@@ -286,4 +330,25 @@ function authoritativeSequence(payload) {
     Number(payload.snapshot?.throughSequence ?? 0),
     ...(payload.updates ?? []).map((update) => Number(update.sequence ?? 0)),
   );
+}
+
+function resolveExportDestinations(pattern, sets) {
+  if (sets.length === 1 && !sets[0]) return [pattern];
+  const seen = new Map();
+  return sets.map((set, index) => {
+    if (!set || typeof set.output !== "string") throw new Error(`Binding set ${index} needs an explicit output value.`);
+    const destination = pattern.replace(/\$\{([A-Za-z][\w-]*)\}/gu, (token, name) => {
+      if (!Object.hasOwn(set, name)) throw new Error(`Destination token ${token} has no binding in set ${index}.`);
+      return validateBindingSegment(set[name], name, index);
+    });
+    const key = destination.normalize("NFC").toLowerCase();
+    if (seen.has(key)) throw new Error(`Binding sets ${seen.get(key)} and ${index} collide at ${destination}.`);
+    seen.set(key, index); return destination;
+  });
+}
+
+function validateBindingSegment(value, name, index) {
+  const segment = String(value);
+  if (!segment || segment !== segment.normalize("NFC") || /[\/\\\0-\x1f]/u.test(segment) || segment === "." || segment === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(segment) || new TextEncoder().encode(segment).length > 255) throw new Error(`Binding ${name} in set ${index} is not a safe filename segment: ${JSON.stringify(value)}.`);
+  return segment;
 }

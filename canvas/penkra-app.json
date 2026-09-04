@@ -125,9 +125,10 @@
             "minLength": 1,
             "maxLength": 255,
             "description": "Title shown in Canvas and document lists."
-          }
+          },
+          "module": { "enum": ["deck", "print", "web", "mobile"], "description": "Canvas module fixed for the lifetime of the document." }
         },
-        "required": ["title"],
+        "required": ["title", "module"],
         "additionalProperties": false
       },
       "output": {
@@ -155,7 +156,8 @@
         {
           "name": "Create a Canvas document",
           "input": {
-            "title": "New Canvas design"
+            "title": "New Canvas design",
+            "module": "web"
           }
         }
       ],
@@ -346,6 +348,79 @@
         }
       ],
       "handler": "documents.undo"
+    },
+    {
+      "key": "documents.export",
+      "summary": "Export explicit role-bearing Canvas frames to their native deck, print, web, or mobile artifact.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "role": { "enum": ["slide", "page", "route", "ios", "android"] },
+          "frames": { "type": "array", "minItems": 1, "maxItems": 1000, "items": { "type": "string", "minLength": 1 } },
+          "destination": { "type": "string", "minLength": 1, "description": "Absolute file path for slide/page or absolute directory path for route/ios/android. Existing destinations are rejected." },
+          "modes": { "type": "object", "additionalProperties": { "type": "string" } },
+          "profile": { "enum": ["PDF/A-3", "PDF/X-4", "PDF/UA-1", null] },
+          "bindings": { "type": "array", "maxItems": 1000, "items": { "type": "object", "required": ["output"], "properties": { "output": { "type": "string", "minLength": 1 } }, "additionalProperties": true } }
+        },
+        "required": ["documentId", "role", "frames", "destination"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "artifacts": { "type": "array", "items": { "type": "string" } },
+          "consequences": { "type": "array" },
+          "lowered": { "type": "array" },
+          "embeddedFonts": { "type": "array" },
+          "rasterized": { "type": "array" }
+        },
+        "required": ["artifacts", "consequences", "lowered", "embeddedFonts", "rasterized"],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "name": "Export selected slides as PowerPoint",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "role": "slide",
+            "frames": ["slide-1", "slide-2"],
+            "destination": "/Users/example/Downloads/deck.pptx"
+          }
+        }
+      ],
+      "handler": "documents.export"
+    },
+    {
+      "key": "documents.export-image",
+      "summary": "Export explicit Canvas subtrees as PNG or SVG.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "frames": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Exactly one subtree; destination names one output file." },
+          "format": { "enum": ["png", "svg"] },
+          "scale": { "type": "number", "exclusiveMinimum": 0, "maximum": 8 },
+          "destination": { "type": "string", "minLength": 1 },
+          "modes": { "type": "object", "additionalProperties": { "type": "string" } }
+        },
+        "required": ["documentId", "frames", "format", "destination"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [
+        {
+          "name": "Export one subtree as a two-times PNG",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "frames": ["frame-1"],
+            "format": "png",
+            "scale": 2,
+            "destination": "/Users/example/Downloads/frame-1.png"
+          }
+        }
+      ],
+      "handler": "documents.export-image"
     },
     {
       "key": "documents.open",

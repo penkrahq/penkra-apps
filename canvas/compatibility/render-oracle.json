@@ -1,0 +1,10 @@
+[
+  { "label": "OpenPencil public 2.8 button", "width": 129, "height": 48, "sha256": "437b008b08c4ba4fe29b553f53f64066356dc8db8d7f4d4b37be098879636494" },
+  { "label": "OpenPencil public 2.8 table", "width": 1440, "height": 268, "sha256": "8379a2666ac8403632447bec7d815a710225c7779030cda85b2537f53c9dad73" },
+  { "label": "synthetic unknown-content 2.15", "width": 320, "height": 180, "sha256": "ff9867d4c7b75a0aa1d381c9863acd0f81cf1974d13489a950acb3a9eb764bbf" },
+  { "label": "synthetic unknown-properties 2.15", "width": 320, "height": 180, "sha256": "fad8b47f317d07a70cd152209f2bef9d532117281880a1fe52f7b1e88e4ffaef" },
+  { "label": "Canvas current Pencil design", "width": 678, "height": 2048, "sha256": "87d63d4a54d4cab09df19e573235d4f1d0148a67bd5c66135619297a6d12ff0d" },
+  { "label": "Apps current Pencil design", "width": 1929, "height": 2048, "sha256": "52556dc5fe20b876808fae92ce2e89cf3d0bac4969c1cd4e996f10299fd14d86" },
+  { "label": "Browser current Pencil design", "width": 1735, "height": 2048, "sha256": "39a5cc4fd7eecb989a699bed63cd9d633be460ae728530b71860a19810fb10fc" },
+  { "label": "Explorer current Pencil design", "width": 645, "height": 2048, "sha256": "f661646aa0c1d2f15b0f5af04fc68c95228445723d0cfde3bdf0eef40724a212" }
+]

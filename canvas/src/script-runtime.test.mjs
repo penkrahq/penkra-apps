@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { executeCanvasScript } from "./script-runtime.mjs";
+import { executeCanvasScript, scriptNeedsInspection } from "./script-runtime.mjs";
+
+test("inspection context is requested only when scripts mention inspection fields", () => {
+  assert.equal(scriptNeedsInspection("Print(1);"), false);
+  assert.equal(scriptNeedsInspection('return Get("#a")[0].bounds;'), true);
+  assert.equal(scriptNeedsInspection('return Get("#a")[0]["problems"];'), true);
+});
 
 test("execute scripts edit only their private JSON document", async () => {
   const source = {
@@ -109,6 +115,42 @@ test("TakeScreenshot rejects ambiguous, empty, and duplicate targets", async () 
     executeCanvasScript(document, 'TakeScreenshot(["screen"]); TakeScreenshot(["screen"]);'),
     /once per execution/u,
   );
+});
+
+test("visitor-form Get streams beyond the materialized result cap", async () => {
+  const children = Array.from({ length: 1_250 }, (_, index) => ({
+    id: `node-${index}`,
+    type: "rectangle",
+  }));
+  const result = await executeCanvasScript(
+    { version: "2.15", children },
+    'let count = 0; Get("type:rectangle", () => { count += 1; }); return count;',
+  );
+  assert.equal(result.result, 1_250);
+  await assert.rejects(
+    executeCanvasScript({ version: "2.15", children }, 'return Get("type:rectangle");'),
+    /use visitor form for traversal/u,
+  );
+});
+
+test("unknown selector prefixes fail explicitly while bare IDs remain valid", async () => {
+  const document = { version: "2.15", children: [{ id: "frame", type: "frame" }] };
+  await assert.rejects(
+    executeCanvasScript(document, 'return Get("typo:frame");'),
+    /Unknown Canvas selector "typo:frame"/u,
+  );
+  const result = await executeCanvasScript(document, 'return Get("frame")[0].node.id;');
+  assert.equal(result.result, "frame");
+});
+
+test("scripts report semantic mutations without comparing the whole document", async () => {
+  const document = { version: "2.15", children: [{ id: "frame", type: "frame", name: "Same" }] };
+  const read = await executeCanvasScript(document, 'return Get("frame")[0].node.name;');
+  assert.equal(read.changed, false);
+  const noop = await executeCanvasScript(document, 'Update("frame", { name: "Same" });');
+  assert.equal(noop.changed, false);
+  const write = await executeCanvasScript(document, 'Update("frame", { name: "Different" });');
+  assert.equal(write.changed, true);
 });
 
 test("G rejects removed stock-photo generation", async () => {

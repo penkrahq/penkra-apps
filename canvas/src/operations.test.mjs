@@ -19,7 +19,7 @@ function readableDocumentAccount(source, requests) {
   return {
     async request(request) {
       requests.push(request);
-      if (request.path === "/projects/document-1?chunked=auto") {
+      if (request.path === "/projects/document-1?chunked=auto&canvasSchemaVersion=3") {
         return response(200, {
           id: "document-1",
           title: "Design",
@@ -55,8 +55,10 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
   };
   assert.deepEqual([...handlers.keys()].sort(), [
     "documents.create",
-    "documents.execute",
-    "documents.list",
+      "documents.execute",
+      "documents.export",
+      "documents.export-image",
+      "documents.list",
     "documents.open",
     "documents.trash",
     "documents.undo",
@@ -125,7 +127,7 @@ test("documents.create identifies the starter frame that later execution should 
   };
   await import(`./operations.mjs?create-test=${Date.now()}`);
 
-  const result = await handlers.get("documents.create")({ title: "New design" });
+  const result = await handlers.get("documents.create")({ title: "New design", module: "web" });
 
   assert.equal(result.documentId, "document-1");
   assert.equal(result.title, "New design");
@@ -377,7 +379,7 @@ test("documents.undo applies the backend's exact inverse and snapshots the resto
     account: {
       async request(request) {
         requests.push(request);
-        if (request.path === "/projects/document-1?chunked=auto") {
+        if (request.path === "/projects/document-1?chunked=auto&canvasSchemaVersion=3") {
           return response(200, {
             id: "document-1",
             title: "Design",

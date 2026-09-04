@@ -16,12 +16,22 @@ export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) 
   }
   const nodeById = new Map(nodes.map((entry) => [entry.node.id, entry.node]));
   const parentById = new Map(nodes.map((entry) => [entry.node.id, entry.parentId]));
-  const boundsById = new Map(
-    nodes.map((entry) => [entry.node.id, sceneBounds(graph, entry.node.id)]),
-  );
   const selectedNodes = nodeIds
     ? nodes.filter((entry) => nodeIds.has(entry.node.id))
     : nodes;
+  const boundsById = new Map();
+  const ensureBounds = (nodeId) => {
+    if (!boundsById.has(nodeId)) boundsById.set(nodeId, sceneBounds(graph, nodeId));
+    return boundsById.get(nodeId);
+  };
+  for (const { node } of selectedNodes) {
+    ensureBounds(node.id);
+    let parentId = parentById.get(node.id);
+    while (parentId) {
+      ensureBounds(parentId);
+      parentId = parentById.get(parentId);
+    }
+  }
   return {
     items: selectedNodes.slice(0, limit).map(({ node, depth, parentId, index }) => ({
       id: node.id,

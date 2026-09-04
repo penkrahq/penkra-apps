@@ -36,5 +36,8 @@ Canvas also bundles:
   Authors. <https://github.com/rsms/inter>
 - JetBrains Mono font files under the SIL Open Font License 1.1 — Copyright 2020 The
   JetBrains Mono Project Authors. <https://github.com/JetBrains/JetBrainsMono>
+- ICC sRGB2014 colour profile, distributed and embedded under the International
+  Color Consortium's unrestricted profile terms.
+  <https://registry.color.org/rgb-registry/srgbprofiles>
 
 The complete license texts are included in the packaged `licenses/` directory.

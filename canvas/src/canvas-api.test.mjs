@@ -187,7 +187,7 @@ test("Canvas API forwards realtime connection-state listeners", async () => {
   assert.deepEqual(calls[0], [
     "project:document-id",
     listener,
-    { onConnectionStateChange },
+    { onConnectionStateChange, metadata: { canvasSchemaVersion: 3 } },
   ]);
 });
 
@@ -215,7 +215,7 @@ test("Canvas maps project projections and exact asset paths without changing the
     ["/projects/snapshot-uploads", { uploadId: "upload-id", projectId: "project-id", chunkSize: 1024 }],
     ["/projects/snapshot-uploads/upload-id/parts", { receivedBytes: 1 }],
     ["/projects/snapshot-uploads/upload-id/complete", { id: "project-id" }],
-    ["/projects/project-id?chunked=auto", {
+    ["/projects/project-id?chunked=auto&canvasSchemaVersion=3", {
       id: "project-id",
       snapshot: { throughSequence: 0, chunked: true },
       updates: [],
@@ -271,7 +271,7 @@ test("Canvas accepts an automatically inlined snapshot without range requests", 
     account: {
       request: async (input) => {
         calls.push(input.path);
-        if (input.path === "/projects/project-id?chunked=auto") {
+        if (input.path === "/projects/project-id?chunked=auto&canvasSchemaVersion=3") {
           return response(200, {
             id: "project-id",
             snapshot: { throughSequence: 0, state: "AQ==", projection },
@@ -292,7 +292,7 @@ test("Canvas accepts an automatically inlined snapshot without range requests", 
   assert.deepEqual(opened.snapshot.source, projection);
   assert.deepEqual(calls.sort(), [
     "/projects/project-id/blobs",
-    "/projects/project-id?chunked=auto",
+    "/projects/project-id?chunked=auto&canvasSchemaVersion=3",
   ]);
 });
 

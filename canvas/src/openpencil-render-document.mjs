@@ -98,7 +98,52 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   const resolveValue = (value, property, theme, nodeId) => {
-    if (isVariableReference(value, property)) {
+    if (isInterpolatedVariableReference(value, property)) {
+      const references = [...value.matchAll(VARIABLE_INTERPOLATION_PATTERN)];
+      const isWholeReference = references.length === 1 && references[0][0] === value;
+      if (isWholeReference) {
+        const reference = `$${references[0][1]}`;
+        const resolved = resolveReference(reference, theme);
+        if (!resolved.ok) {
+          issues.push(variableIssue(nodeId, value, resolved.reason));
+          return safeFallback(property, value);
+        }
+        if (!validPropertyValue(property, resolved.value)) {
+          issues.push(variableIssue(
+            nodeId,
+            value,
+            `Variable ${value} resolved to an invalid ${property} value.`,
+          ));
+          return safeFallback(property, value);
+        }
+        return resolved.value;
+      }
+      if (!STRING_PROPERTIES.has(property)) return value;
+      let failed = false;
+      const interpolated = value.replace(VARIABLE_INTERPOLATION_PATTERN, (token, name) => {
+        const resolved = resolveReference(`$${name}`, theme);
+        if (!resolved.ok) {
+          issues.push(variableIssue(nodeId, token, resolved.reason));
+          failed = true;
+          return "";
+        }
+        if (!["string", "number", "boolean"].includes(typeof resolved.value)) {
+          issues.push(variableIssue(
+            nodeId,
+            token,
+            `Variable ${token} cannot be interpolated as text.`,
+          ));
+          failed = true;
+          return "";
+        }
+        return String(resolved.value);
+      });
+      return failed && !validPropertyValue(property, interpolated)
+        ? safeFallback(property, value)
+        : interpolated;
+    }
+    // Legacy references remain readable until M1 raises canvasSchemaVersion.
+    if (isLegacyVariableReference(value, property)) {
       const resolved = resolveReference(value, theme);
       if (!resolved.ok) {
         issues.push(variableIssue(nodeId, value, resolved.reason));
@@ -578,8 +623,18 @@ function selectVariableValue(value, theme) {
   return { ok: false, reason: "Variable has no values." };
 }
 
-function isVariableReference(value, property) {
-  return typeof value === "string" && value.startsWith("$") && VARIABLE_PROPERTIES.has(property);
+const VARIABLE_INTERPOLATION_PATTERN = /\$\{([A-Za-z][\w-]*)\}/g;
+
+function isInterpolatedVariableReference(value, property) {
+  return typeof value === "string"
+    && VARIABLE_PROPERTIES.has(property)
+    && value.match(VARIABLE_INTERPOLATION_PATTERN);
+}
+
+function isLegacyVariableReference(value, property) {
+  return typeof value === "string"
+    && /^\$[A-Za-z][\w-]*$/.test(value)
+    && VARIABLE_PROPERTIES.has(property);
 }
 
 function isKnownVariableReference(value, variables) {

@@ -9,6 +9,7 @@ import {
   cloneModel,
   createModel,
   deleteNode,
+  editText,
   insertNode,
   materializePen,
   moveNode,
@@ -144,6 +145,33 @@ test("concurrent property edits converge without collapsing independent properti
   assert.ok([240, 360].includes(left.children[0].width));
   assert.equal(left.children[0].opacity, 0.8);
   assert.equal(left.children[0].fill, "#000000");
+});
+
+test("concurrent character edits survive and preserve rich-text marks", () => {
+  const base = createModel({
+    version: "2.15",
+    children: [{
+      id: "copy",
+      type: "text",
+      content: "Hello world",
+      paragraphs: [{ from: 0, to: 11, align: "start" }],
+      marks: [{ type: "weight", from: 6, to: 11, value: 700 }],
+    }],
+  });
+  const alice = cloneModel(base, { guid: "rich-alice" });
+  const bob = cloneModel(base, { guid: "rich-bob" });
+
+  editText(alice, "copy", 5, 0, " brave", "alice");
+  editText(bob, "copy", 11, 0, "!", "bob");
+  syncModels(alice, bob);
+
+  const left = materializePen(alice);
+  const right = materializePen(bob);
+  assert.deepEqual(left, right);
+  assert.equal(left.children[0].content, "Hello brave world!");
+  assert.deepEqual(left.children[0].marks, [
+    { type: "weight", from: 12, to: 18, value: 700 },
+  ]);
 });
 
 test("declared nested object edits merge at field granularity", () => {
