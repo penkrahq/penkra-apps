@@ -83,11 +83,7 @@ function cssProperty(property, value) {
 function runStyle(run) { return [`font-family:${run.fontFamily ?? "inherit"}`, `font-size:${run.fontSize ?? 16}px`, Number(run.weight ?? run.fontWeight) >= 600 ? "font-weight:700" : "", run.fill ? `color:${run.fill}` : ""].filter(Boolean).join(";"); }
 function groupChildren(nodes) { const map = new Map(); for (const node of nodes) { const list = map.get(node.parent) ?? []; list.push(node); map.set(node.parent, list); } return map; }
 function orderedChildren(node, children) {
-  const values = children.get(node.id) ?? [];
-  const order = node.semantics?.readingOrder;
-  if (!Array.isArray(order)) return values;
-  const rank = new Map(order.map((id, index) => [id, index]));
-  return [...values].sort((a, b) => (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER) || a.z - b.z);
+  return children.get(node.id) ?? [];
 }
 function safeSlug(value) { const slug = String(value).normalize("NFC").toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-|-$/gu, ""); if (!slug) throw new Error(`Frame name ${value} cannot produce a filename.`); return slug; }
 function escape(value) { return String(value).replace(/[&<>"']/gu, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]); }

@@ -40,7 +40,7 @@ export function buildExporterIR(document, request) {
         type: "frame",
         geometry: { x: 0, y: 0, localX: 0, localY: 0, w: graphNode.width, h: graphNode.height, rotation: graphNode.rotation ?? 0 },
         paint: { fill: frame.fill ?? null, stroke: frame.stroke ?? null, effect: frame.effect ?? null, cornerRadius: frame.cornerRadius ?? null, opacity: graphNode.opacity, blendMode: frame.blendMode ?? "normal" },
-        semantics: { description: frame.description ?? null, decorative: frame.decorative === true, readingOrder: frame.readingOrder ?? null, landmark: frame.landmark ?? null },
+        semantics: { description: frame.description ?? null, decorative: frame.decorative === true, landmark: frame.landmark ?? null },
         layout: semanticLayout(frame),
         variants: semanticVariants(authoredById.get(frameId) ?? frame),
         capability: documentCapability,
@@ -106,7 +106,7 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
           rotation: node.rotation ?? 0,
         },
         paint: { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
-        semantics: source.type === "text" ? { content: source.content ?? "", runs: richTextRuns(source, paragraphStyles), paragraphs: (source.paragraphs ?? []).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined })), language: source.lang ?? source.language ?? null, description: source.description ?? null, decorative: source.decorative === true, readingOrder: source.readingOrder ?? null } : { description: source.description ?? null, decorative: source.decorative === true, readingOrder: source.readingOrder ?? null },
+        semantics: source.type === "text" ? { content: source.content ?? "", runs: richTextRuns(source, paragraphStyles), paragraphs: (source.paragraphs ?? []).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined })), language: source.lang ?? source.language ?? null, description: source.description ?? null, decorative: source.decorative === true } : { description: source.description ?? null, decorative: source.decorative === true },
         layout: semanticLayout(source),
         variants: semanticVariants(authoredSource),
         export: source.export ?? "live", capability: entry,
@@ -172,7 +172,7 @@ function applyRasterScopes(nodes, rasters) {
 
 function capabilityPaths(node, projection) {
   const paths = new Set([`nodes.${node.type}`]);
-  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "description", "decorative", "readingOrder"]) {
+  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "description", "decorative"]) {
     if (node[key] !== undefined) paths.add(`properties.${key}`);
   }
   const fills = Array.isArray(node.fill) ? node.fill : [node.fill];
@@ -238,7 +238,6 @@ function documentCapabilityPaths(document, role) {
   const nodes = [...indexNodes(document.children).values()];
   if (nodes.some((node) => node.type === "ref")) paths.add("relationships.ref");
   if (nodes.some((node) => node.notesFor !== undefined)) paths.add("relationships.notesFor");
-  if (nodes.some((node) => node.readingOrder !== undefined)) paths.add("relationships.readingOrder");
   return [...paths];
 }
 export function richTextRuns(node, paragraphStyles) {

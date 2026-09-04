@@ -72,7 +72,6 @@ function swiftGeometry(node, parentLayout) {
 function swiftAccessibility(node) {
   let value = node.semantics.description ? `.accessibilityLabel(${JSON.stringify(node.semantics.description)})` : node.semantics.decorative ? ".accessibilityHidden(true)" : "";
   if (node.type === "text" && node.semantics.paragraphs.some((paragraph) => paragraph.headingLevel)) value += ".accessibilityAddTraits(.isHeader)";
-  if (Number.isInteger(node.semantics.readingOrder)) value += `.accessibilitySortPriority(${node.semantics.readingOrder})`;
   return value;
 }
 
@@ -136,7 +135,7 @@ function composeModifier(node, parentLayout) {
 }
 
 function groupChildren(nodes) { const map = new Map(); for (const node of nodes) { const list = map.get(node.parent) ?? []; list.push(node); map.set(node.parent, list); } return map; }
-function orderedChildren(node, children) { const values = children.get(node.id) ?? []; const order = node.semantics?.readingOrder; if (!Array.isArray(order)) return values; const rank = new Map(order.map((id, index) => [id, index])); return [...values].sort((a, b) => (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER) || a.z - b.z); }
+function orderedChildren(node, children) { return children.get(node.id) ?? []; }
 function rootNode(output) { return { id: output.id, type: "frame", geometry: { x: 0, y: 0, localX: 0, localY: 0, w: output.width, h: output.height }, paint: {}, semantics: {}, layout: {} }; }
 function sourceName(value) { const name = String(value).normalize("NFC").replace(/[^A-Za-z0-9]+/gu, " ").trim().split(/\s+/u).map((part) => part[0]?.toUpperCase() + part.slice(1)).join(""); if (!/^[A-Za-z][A-Za-z0-9]*$/u.test(name)) throw new Error(`Frame name ${value} is not a safe source identifier.`); return name; }
 function identifier(value) { const result = String(value).replace(/[^A-Za-z0-9]/gu, ""); return result ? result[0].toUpperCase() + result.slice(1) : "Raster"; }

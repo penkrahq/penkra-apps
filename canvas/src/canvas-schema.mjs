@@ -7,7 +7,7 @@ export const CANVAS_NODE_TYPES = Object.freeze(["frame", "group", "rectangle", "
 
 export const CANVAS_SCHEMA = Object.freeze({
   root: ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
-  common: ["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "readingOrder", "notesFor"],
+  common: ["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "modes", "notesFor"],
   layout: ["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"],
   paint: ["fill", "stroke", "effect", "blendMode", "cornerRadius"],
   text: ["content", "style", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"],
@@ -25,14 +25,14 @@ export function capabilityPathInventory() {
       ...CANVAS_SCHEMA.text, ...CANVAS_SCHEMA.icon, ...CANVAS_SCHEMA.path, ...CANVAS_SCHEMA.ref]
       .map((path) => `properties.${path}`),
     "relationships.ref", "relationships.import", "relationships.notesFor",
-    "relationships.readingOrder", "relationships.flow",
+    "relationships.flow",
   ]);
   for (const path of [
     "fill.solid", "fill.image", "fill.gradient.linear", "fill.gradient.linear.transformed", "fill.gradient.radial", "fill.gradient.radial.transformed", "fill.gradient.angular", "fill.gradient.mesh", "fill.shader",
     "stroke.width", "stroke.align", "stroke.cap", "stroke.join", "stroke.dash", "stroke.fill",
     "effect.shadow", "effect.shadow.spread", "effect.blur", "effect.background_blur",
     "text.run.fill", "text.run.weight", "text.run.italic", "text.run.underline", "text.run.strikethrough", "text.run.fontFamily", "text.run.fontSize", "text.run.letterSpacing", "text.run.wordSpacing", "text.run.language", "text.run.link",
-    "text.paragraph.align", "text.paragraph.style", "text.paragraph.list", "text.paragraph.headingLevel", "accessibility.description", "accessibility.readingOrder", "flow.advance", "flow.tap", "flow.hover", "flow.keypress",
+    "text.paragraph.align", "text.paragraph.style", "text.paragraph.list", "text.paragraph.headingLevel", "accessibility.description", "flow.advance", "flow.tap", "flow.hover", "flow.keypress",
   ]) paths.add(`properties.${path}`);
   return [...paths].sort();
 }
@@ -63,11 +63,11 @@ export function validateCanvasDocument(document, options = {}) {
   });
   if (document.lang !== undefined && !validLanguage(document.lang)) errors.push("lang must be a valid BCP-47 language tag.");
   validateAxes(document.axes ?? {}, errors);
+  validateVariables(document.variables ?? {}, errors);
   validateImports(document.imports ?? {}, errors);
   validateRoleNesting(nodes, parents, errors);
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
-  validateMarkOverlapPolicy(nodes, errors);
   validateRefs(nodes, parents, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
@@ -103,6 +103,14 @@ function validateAxes(axes, errors) {
     const names = axis.modes.map((mode) => mode?.name);
     if (names.some((mode) => typeof mode !== "string" || !mode)) errors.push(`Axis ${name} modes need non-empty names.`);
     if (new Set(names).size !== names.length) errors.push(`Axis ${name} mode names must be unique.`);
+  }
+}
+
+function validateVariables(variables, errors) {
+  for (const [name, variable] of Object.entries(variables)) {
+    if (!plainObject(variable) || typeof variable.tokenType !== "string" || !variable.tokenType
+      || !Array.isArray(variable.cascade) || variable.cascade.length === 0)
+      errors.push(`Variable ${name} must declare tokenType and a non-empty cascade.`);
   }
 }
 
@@ -145,24 +153,11 @@ function validateAccessibility(document, nodes, errors) {
       if (paragraph.headingLevel !== undefined && (!Number.isInteger(paragraph.headingLevel) || paragraph.headingLevel < 1 || paragraph.headingLevel > 6)) errors.push(`${node.id}.paragraphs[${index}].headingLevel must be 1–6.`);
       if (paragraph.style !== undefined && !Object.hasOwn(document.paragraphStyles ?? {}, paragraph.style)) errors.push(`${node.id}.paragraphs[${index}] references missing paragraph style ${paragraph.style}.`);
     }
-    if (!node.role || node.readingOrder === undefined) continue;
-    if (!Array.isArray(node.readingOrder)) { errors.push(`${node.id}.readingOrder must be an array.`); continue; }
-    const descendants = [];
-    const visit = (candidate) => { for (const child of candidate.children ?? []) { if (child.decorative !== true) descendants.push(child.id); visit(child); } };
-    visit(node);
-    if (node.readingOrder.length !== descendants.length || new Set(node.readingOrder).size !== node.readingOrder.length || descendants.some((id) => !node.readingOrder.includes(id))) errors.push(`${node.id}.readingOrder must cover every non-decorative descendant exactly once.`);
-  }
-}
-
-function validateMarkOverlapPolicy(nodes, errors) {
-  for (const node of nodes.values()) {
-    const marks = node.marks ?? [];
-    for (let left = 0; left < marks.length; left += 1) {
-      for (let right = left + 1; right < marks.length; right += 1) {
-        if (marks[left].type !== marks[right].type) continue;
-        if (marks[left].from < marks[right].to && marks[right].from < marks[left].to) {
-          errors.push(`${node.id}.marks[${left}] and marks[${right}] overlap with the same type; precedence is not specified.`);
-        }
+    if (node.modes !== undefined) {
+      if (!plainObject(node.modes)) errors.push(`${node.id}.modes must be an object.`);
+      else for (const [axis, mode] of Object.entries(node.modes)) {
+        const names = document.axes?.[axis]?.modes?.map((entry) => entry.name) ?? [];
+        if (!names.includes(mode)) errors.push(`${node.id}.modes.${axis} references unknown axis mode ${mode}.`);
       }
     }
   }

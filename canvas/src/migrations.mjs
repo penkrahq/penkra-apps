@@ -31,6 +31,72 @@ export function migrateM1DelimitedVariables(source) {
   return { document: visit(document), changes };
 }
 
+export function migrateM14ThemesToAxes(source) {
+  const document = structuredClone(source);
+  let changes = 0;
+  if (document.themes && typeof document.themes === "object" && !Array.isArray(document.themes)) {
+    document.axes = Object.fromEntries(Object.entries(document.themes).map(([name, modes]) => [name, {
+      modes: (Array.isArray(modes) ? modes : []).map((mode) => ({ name: mode })),
+    }]));
+    delete document.themes;
+    changes += 1;
+  }
+  return { document, changes };
+}
+
+export function migrateM15NodeModes(source) {
+  const document = structuredClone(source);
+  let changes = 0;
+  walkNodes(document.children, (node) => {
+    if (!node.theme || typeof node.theme !== "object" || Array.isArray(node.theme)) return;
+    node.modes = { ...(node.modes ?? {}), ...node.theme };
+    delete node.theme;
+    changes += 1;
+  });
+  return { document, changes };
+}
+
+export function migrateM16VariableTokens(source) {
+  const document = structuredClone(source);
+  let changes = 0;
+  for (const [name, definition] of Object.entries(document.variables ?? {})) {
+    if (!definition || typeof definition !== "object" || Array.isArray(definition)
+      || !Object.hasOwn(definition, "type") || !Object.hasOwn(definition, "value")) continue;
+    document.variables[name] = {
+      tokenType: definition.type,
+      cascade: Array.isArray(definition.value) && definition.value.every((entry) => entry && typeof entry === "object" && Object.hasOwn(entry, "value"))
+        ? structuredClone(definition.value)
+        : [{ value: structuredClone(definition.value) }],
+    };
+    changes += 1;
+  }
+  return { document, changes };
+}
+
+export function migrateM17CascadeConditions(source) {
+  const document = structuredClone(source);
+  let changes = 0;
+  const visit = (value) => {
+    if (Array.isArray(value)) { value.forEach(visit); return; }
+    if (!value || typeof value !== "object") return;
+    if (Object.hasOwn(value, "value") && Object.hasOwn(value, "theme")) {
+      value.when = { ...(value.when ?? {}), ...value.theme };
+      delete value.theme;
+      changes += 1;
+    }
+    Object.values(value).forEach(visit);
+  };
+  visit(document);
+  return { document, changes };
+}
+
+function walkNodes(children, visitor) {
+  for (const node of children ?? []) {
+    visitor(node);
+    walkNodes(node.children, visitor);
+  }
+}
+
 const VARIABLE_KEYS = new Set([
   "x", "y", "width", "height", "gap", "opacity", "rotation", "strokeWidth",
   "fontSize", "lineHeight", "letterSpacing", "thickness", "weight", "radius",

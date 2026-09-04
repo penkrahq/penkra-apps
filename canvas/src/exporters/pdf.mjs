@@ -20,9 +20,7 @@ export async function exportPdf(ir, options = {}) {
     const width = physical ? toPoints(physical.w, physical.unit) : output.width * 0.75;
     const height = physical ? toPoints(physical.h, physical.unit) : output.height * 0.75;
     const page = pdf.addPage([width, height]);
-    const ordered = readingOrder(output);
-    if (tagging && !Array.isArray(output.root?.semantics?.readingOrder)) throw profileError("PDF/UA-1 requires readingOrder on every page frame.");
-    for (const node of ordered) {
+    for (const node of [...output.nodes].sort((a, b) => a.z - b.z)) {
       const tag = tagging?.begin(page, node);
       await drawNode(pdf, page, node, output, fonts, options);
       tagging?.end(page, tag);
@@ -166,12 +164,5 @@ function createTagging(pdf) {
   };
 }
 
-function readingOrder(output) {
-  const nodes = [...output.nodes];
-  const order = output.root?.semantics?.readingOrder;
-  if (!Array.isArray(order)) return nodes.sort((a, b) => a.z - b.z);
-  const rank = new Map(order.map((id, index) => [id, index]));
-  return nodes.sort((a, b) => (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER) || a.z - b.z);
-}
 function profileError(message) { const error = new Error(message); error.code = "CANVAS_PDF_PROFILE_INVALID"; return error; }
 function xmlEscape(value) { return String(value).replace(/[&<>"']/gu, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[character]); }

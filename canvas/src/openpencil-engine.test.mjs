@@ -16,6 +16,7 @@ import {
   sceneNodePropertySnapshot,
   sceneNodeInsertionMutation,
   sceneNodeToPenNode,
+  sceneStyleRunsToMarks,
   sceneTextEditCommitMutations,
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
@@ -1341,7 +1342,17 @@ test("rich-text edits persist style runs and remap nonvisual links in UTF-16 off
   ]);
 });
 
-test("newline edits expose the unspecified paragraph inheritance policy instead of inventing one", () => {
+test("scene text edits keep link marks non-inclusive at both boundaries", () => {
+  const source = { content: "abcd", marks: [{ type: "link", from: 1, to: 3, value: "https://example.com" }] };
+  assert.deepEqual(sceneStyleRunsToMarks({ text: "aXbcd", styleRuns: [] }, source, "abcd"), [
+    { type: "link", from: 2, to: 4, value: "https://example.com" },
+  ]);
+  assert.deepEqual(sceneStyleRunsToMarks({ text: "abcXd", styleRuns: [] }, source, "abcd"), [
+    { type: "link", from: 1, to: 3, value: "https://example.com" },
+  ]);
+});
+
+test("paragraph split inherits the split style and merge keeps the second style", () => {
   const source = {
     canvasSchemaVersion: 3,
     version: "2.17",
@@ -1358,10 +1369,21 @@ test("newline edits expose the unspecified paragraph inheritance policy instead 
   editor.select(["label"]);
   const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
   editor.graph.updateNode("label", { text: "One\nTwo" });
-  assert.throws(
-    () => sceneTextEditCommitMutations(editor, source, "label", before),
-    (error) => error.code === "CANVAS_PARAGRAPH_EDIT_POLICY_UNSPECIFIED",
-  );
+  const split = sceneTextEditCommitMutations(editor, source, "label", before);
+  assert.deepEqual(split.find((mutation) => mutation.property === "paragraphs").value, [
+    { from: 0, to: 4, style: "body" },
+    { from: 4, to: 7, style: "body" },
+  ]);
+  const mergeSource = { ...source, children: [{ ...source.children[0], content: "One\nTwo", paragraphs: [
+    { from: 0, to: 4, style: "first" }, { from: 4, to: 7, style: "second" },
+  ] }] };
+  const mergeEditor = createOpenPencilEditor(mergeSource);
+  const mergeBefore = sceneNodePropertySnapshot(mergeEditor.graph.getNode("label"));
+  mergeEditor.graph.updateNode("label", { text: "OneTwo" });
+  const merge = sceneTextEditCommitMutations(mergeEditor, mergeSource, "label", mergeBefore);
+  assert.deepEqual(merge.find((mutation) => mutation.property === "paragraphs").value, [
+    { from: 0, to: 6, style: "second" },
+  ]);
 });
 
 test("selection hit testing advances exactly one frame hierarchy level", () => {

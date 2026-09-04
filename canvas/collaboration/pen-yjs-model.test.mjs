@@ -174,6 +174,23 @@ test("concurrent character edits survive and preserve rich-text marks", () => {
   ]);
 });
 
+test("collaborative insertions use one inclusive mark policy at both boundaries", () => {
+  for (const [type, inclusive] of [["weight", true], ["link", false], ["lang", false]]) {
+    for (const [index, boundary] of [[2, "start"], [4, "end"]]) {
+      const value = type === "weight" ? 700 : "value";
+      const model = createModel({ version: "2.15", children: [{
+        id: "copy", type: "text", content: "abcdef",
+        marks: [{ type, from: 2, to: 4, value }],
+      }] });
+      editText(model, "copy", index, 0, "X", "alice");
+      const expected = inclusive
+        ? { type, from: 2, to: 5, value }
+        : boundary === "start" ? { type, from: 3, to: 5, value } : { type, from: 2, to: 4, value };
+      assert.deepEqual(materializePen(model).children[0].marks, [expected], `${type} ${boundary}`);
+    }
+  }
+});
+
 test("declared nested object edits merge at field granularity", () => {
   const base = createModel({
     version: "2.15",

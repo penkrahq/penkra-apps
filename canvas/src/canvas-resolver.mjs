@@ -42,6 +42,11 @@ export function resolveCascade(value, context) {
 
 function resolveNode(source, context) {
   if (source.type === "ref") return resolveRef(source, context);
+  if (source.modes) {
+    const modes = selectModes(context.owner.axes ?? {}, { ...context.modes, ...source.modes });
+    const bindings = Object.fromEntries(Object.entries(context.variableValues).filter(([name]) => !Object.hasOwn(context.owner.variables ?? {}, name)));
+    context = { ...context, modes, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings) };
+  }
   if (source.properties) {
     context = context.componentRoot
       ? { ...context, componentRoot: false }
@@ -111,7 +116,6 @@ function prefixResolvedNode(node, instanceId, sourceId, props) {
   collect(node, instanceId);
   const clone = (candidate) => {
     const result = { ...candidate, id: idMap.get(candidate.id), provenance: { from: candidate.id === node.id ? sourceId : candidate.id, props, lowered: true } };
-    if (Array.isArray(candidate.readingOrder)) result.readingOrder = candidate.readingOrder.map((id) => idMap.get(id) ?? id);
     if (typeof candidate.notesFor === "string") result.notesFor = idMap.get(candidate.notesFor) ?? candidate.notesFor;
     if (candidate.children) result.children = candidate.children.map(clone);
     return result;
@@ -164,7 +168,9 @@ function resolveVariables(variables, modes, bindings) {
     if (!Object.hasOwn(variables, name)) throw new Error(`Variable ${name} was not found.`);
     if (visiting.has(name)) throw new Error(`Variable cycle includes ${name}.`);
     visiting.add(name);
-    const raw = resolveCascade(variables[name], { modes, props: {} });
+    const definition = variables[name];
+    if (!definition || typeof definition !== "object" || !Array.isArray(definition.cascade)) throw new Error(`Variable ${name} must declare tokenType and cascade.`);
+    const raw = resolveCascade(definition.cascade, { modes, props: {} });
     const value = typeof raw === "string" ? raw.replace(/\$\{([A-Za-z][\w-]*)\}/gu, (_, dependency) => String(resolve(dependency))) : raw;
     visiting.delete(name); output[name] = value; return value;
   };

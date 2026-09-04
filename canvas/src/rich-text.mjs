@@ -1,7 +1,6 @@
-const MARK_STICKINESS = Object.freeze({
-  link: { startSticky: false, endSticky: false },
-  lang: { startSticky: false, endSticky: false },
-});
+const MARK_INCLUSIVE = Object.freeze({ link: false, lang: false });
+
+export function isMarkInclusive(type) { return MARK_INCLUSIVE[type] ?? true; }
 
 export function validateRichText(node) {
   const errors = [];
@@ -39,6 +38,13 @@ export function validateRichText(node) {
         errors.push(`${node.id}.marks[${index}] partially overlaps token [${token.from},${token.to}).`);
     }
   }
+  for (let left = 0; left < marks.length; left += 1) {
+    for (let right = left + 1; right < marks.length; right += 1) {
+      if (marks[left].type === marks[right].type
+        && marks[left].from < marks[right].to && marks[right].from < marks[left].to)
+        errors.push(`${node.id}.marks[${left}] and marks[${right}] overlap with the same type.`);
+    }
+  }
   return errors;
 }
 
@@ -67,17 +73,32 @@ export function flattenMarks(content, marks = [], base = {}) {
 
 export function mapRangesForInsert(ranges, index, count, kind = "mark") {
   return mergeAdjacent(ranges.map((range) => {
-    const sticky = kind === "paragraph" ? { startSticky: false, endSticky: true }
-      : MARK_STICKINESS[range.type] ?? { startSticky: false, endSticky: true };
+    const inclusive = kind === "paragraph" || isMarkInclusive(range.type);
     if (range.to < index) return { ...range };
     if (range.from > index) return { ...range, from: range.from + count, to: range.to + count };
     if (range.from < index && index < range.to) return { ...range, to: range.to + count };
-    if (range.to === index) return sticky.endSticky ? { ...range, to: range.to + count } : { ...range };
-    if (range.from === index) return sticky.startSticky
+    if (range.to === index) return inclusive ? { ...range, to: range.to + count } : { ...range };
+    if (range.from === index) return inclusive
       ? { ...range, to: range.to + count }
       : { ...range, from: range.from + count, to: range.to + count };
     return { ...range };
   }));
+}
+
+export function writeMark(node, nextMark) {
+  const content = node.content ?? "";
+  if (!validRange(nextMark, content.length)) throw validationError([`${node.id}.mark must be an integer [from,to) inside [0,${content.length}).`]);
+  const clipped = [];
+  for (const mark of node.marks ?? []) {
+    if (mark.type !== nextMark.type || mark.to <= nextMark.from || mark.from >= nextMark.to) {
+      clipped.push({ ...mark });
+      continue;
+    }
+    if (mark.from < nextMark.from) clipped.push({ ...mark, to: nextMark.from });
+    if (mark.to > nextMark.to) clipped.push({ ...mark, from: nextMark.to });
+  }
+  clipped.push({ ...nextMark });
+  return normalizeRichText({ ...node, marks: clipped });
 }
 
 export function mapRangesForDelete(ranges, from, to) {

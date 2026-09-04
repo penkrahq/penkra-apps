@@ -6,7 +6,7 @@ import { richTextRuns } from "./exporter-ir.mjs";
 
 test("named paragraph styles resolve variables and feed text runs", () => {
   const document = {
-    axes: {}, variables: { body: [{ value: "Inter" }] },
+    axes: {}, variables: { body: { tokenType: "fontFamily", cascade: [{ value: "Inter" }] } },
     paragraphStyles: { body: { fontFamily: "${body}", fontSize: 18, fill: "#123456" } },
     flows: [], children: [],
   };

@@ -3,7 +3,7 @@ import test from "node:test";
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 test("resolver selects axes, binds typed props, expands refs and interpolates variables", () => {
-  const source = { canvasSchemaVersion: 3, version: "2.15", module: "deck", axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } }, variables: { school: "Universal International School", ink: [{ value: "#111" }, { value: "#fff", when: { appearance: "dark" } }] }, paragraphStyles: {}, imports: {}, flows: [], children: [
+  const source = { canvasSchemaVersion: 3, version: "2.15", module: "deck", axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } }, variables: { school: { tokenType: "string", cascade: [{ value: "Universal International School" }] }, ink: { tokenType: "color", cascade: [{ value: "#111" }, { value: "#fff", when: { appearance: "dark" } }] } }, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "component", type: "frame", properties: { label: { type: "string", default: "Default" } }, fill: "${ink}", children: [{ id: "label", type: "text", bind: { content: "$props.label" }, paragraphs: [], marks: [] }] },
     { id: "slide", type: "frame", role: "slide", children: [{ id: "instance", type: "ref", ref: "component", props: { label: "${school}" } }] },
   ] };
@@ -21,7 +21,7 @@ test("condition AST has a closed evaluated operator set", () => {
 
 test("marks are not cascades and nested component properties are lexically scoped", () => {
   const source = { canvasSchemaVersion: 3, version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
-    { id: "outer", type: "frame", properties: { label: { type: "string", default: "outer" } }, readingOrder: ["inner", "outer-label"], children: [
+    { id: "outer", type: "frame", properties: { label: { type: "string", default: "outer" } }, children: [
       { id: "inner", type: "frame", properties: { label: { type: "string", default: "inner" } }, children: [
         { id: "inner-label", type: "text", bind: { content: "$props.label" }, marks: [], paragraphs: [] },
       ] },
@@ -33,7 +33,13 @@ test("marks are not cascades and nested component properties are lexically scope
   const instance = result.document.children[1].children[0];
   assert.equal(instance.children[0].children[0].content, "inner");
   assert.equal(instance.children[1].content, "supplied outer");
-  assert.deepEqual(instance.readingOrder, ["instance/inner", "instance/outer-label"]);
+});
+
+test("node modes override the selected mode for their subtree", () => {
+  const source = { canvasSchemaVersion: 3, version: "2.17", module: "web", axes: { theme: { modes: [{ name: "light" }, { name: "dark" }] } }, variables: { ink: { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#000", when: { theme: "dark" } }] } }, paragraphStyles: {}, imports: {}, flows: [], children: [
+    { id: "route", type: "frame", role: "route", modes: { theme: "dark" }, fill: "${ink}", children: [] },
+  ] };
+  assert.equal(resolveCanvasDocument(source).document.children[0].fill, "#000");
 });
 
 test("typed flow source paths remap to expanded instance ids", () => {

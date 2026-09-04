@@ -553,8 +553,8 @@ function attributesForInsertion(text, index) {
     const atInterior = mark.from < index && index < mark.to;
     const atEnd = mark.to === index;
     const atStart = mark.from === index;
-    const boundaryAnchored = mark.type === "link" || mark.type === "lang";
-    if (atInterior || (atEnd && !boundaryAnchored) || (atStart && true))
+    const inclusive = mark.type !== "link" && mark.type !== "lang";
+    if (atInterior || (inclusive && (atEnd || atStart)))
       attributes[`canvas:${mark.type}`] = cloneJson(mark.value);
   }
   return attributes;

@@ -10,16 +10,12 @@ test("canonical schema validates roots, rich text, roles, refs and flows", () =>
   assert.throws(() => validateCanvasDocument(bad), /inside/);
 });
 
-test("canonical schema enforces role, notes, reading-order and flow relationships", () => {
+test("canonical schema enforces role, notes, node modes and flow relationships", () => {
   const value = document();
-  value.children[0].readingOrder = ["copy"];
   value.children.push({ id: "notes", type: "text", notesFor: "slide", content: "Speak", marks: [], paragraphs: [{ from: 0, to: 5 }] });
   value.children.push({ id: "next", type: "frame", role: "slide", children: [] });
   value.flows.push({ id: "go", from: "slide", to: "next", trigger: { kind: "tap", source: { path: [], node: "copy" } } });
   assert.equal(validateCanvasDocument(value).valid, true);
-  value.children[0].readingOrder = [];
-  assert.throws(() => validateCanvasDocument(value), /readingOrder must cover/);
-  value.children[0].readingOrder = ["copy"];
   value.flows[0].trigger.source.node = "notes";
   assert.throws(() => validateCanvasDocument(value), /must live inside slide/);
 });
@@ -47,13 +43,23 @@ test("validation rejects mutual component recursion before resolver expansion", 
   assert.throws(() => validateCanvasDocument(value), /Component ref cycle/);
 });
 
-test("same-type overlapping marks block until precedence is specified", () => {
+test("same-type overlapping marks are invalid because writes must clip", () => {
   const value = document();
   value.children[0].children[0].marks = [
     { type: "fill", from: 0, to: 2, value: "red" },
     { type: "fill", from: 1, to: 2, value: "blue" },
   ];
-  assert.throws(() => validateCanvasDocument(value), /precedence is not specified/);
+  assert.throws(() => validateCanvasDocument(value), /overlap with the same type/);
+});
+
+test("variables carry tokenType beside cascade and node modes name an axis mode", () => {
+  const value = document();
+  value.axes.theme = { modes: [{ name: "light" }, { name: "dark" }] };
+  value.variables.brand = { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#000", when: { theme: "dark" } }] };
+  value.children[0].modes = { theme: "dark" };
+  assert.equal(validateCanvasDocument(value).valid, true);
+  value.variables.brand = [{ value: "#fff" }];
+  assert.throws(() => validateCanvasDocument(value), /tokenType and a non-empty cascade/);
 });
 
 test("flow instance paths validate every ref and final component descendant", () => {

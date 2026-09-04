@@ -9,7 +9,7 @@ import { reactive } from "vue";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { pencilResourceAsset } from "./pencil-resources.mjs";
 import { resolveCanvasNodeSelection } from "./node-reference.mjs";
-import { flattenMarks } from "./rich-text.mjs";
+import { flattenMarks, isMarkInclusive } from "./rich-text.mjs";
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",
@@ -531,18 +531,30 @@ function appendSceneMark(marks, range, type, value) {
 function remapParagraphsForTextEdit(sourceNode, content) {
   const previous = sourceNode.content ?? "";
   const edit = singleTextEdit(previous, content);
-  if (previous.slice(edit.from, edit.to).includes("\n") || edit.inserted.includes("\n")) {
-    const error = new Error("Paragraph split/merge style inheritance is not specified by CANVAS-ARCHITECTURE.md.");
-    error.code = "CANVAS_PARAGRAPH_EDIT_POLICY_UNSPECIFIED";
-    throw error;
-  }
   if (content.length === 0) return [];
   const paragraphs = sourceNode.paragraphs?.length
     ? sourceNode.paragraphs
     : [{ from: 0, to: previous.length }];
-  return paragraphs
-    .map((paragraph) => remapRangeForReplacement(paragraph, edit.from, edit.to, edit.inserted.length, true))
-    .filter(Boolean);
+  const result = [];
+  let from = 0;
+  while (from < content.length) {
+    const newline = content.indexOf("\n", from);
+    const to = newline < 0 ? content.length : newline + 1;
+    const contributors = new Set();
+    for (let offset = from; offset < to; offset += 1) {
+      if (offset >= edit.from && offset < edit.from + edit.inserted.length) continue;
+      const oldOffset = offset < edit.from ? offset : offset - edit.inserted.length + (edit.to - edit.from);
+      const paragraphIndex = paragraphs.findIndex((paragraph) => paragraph.from <= oldOffset && oldOffset < paragraph.to);
+      if (paragraphIndex >= 0) contributors.add(paragraphIndex);
+    }
+    let paragraphIndex = contributors.size ? Math.max(...contributors) : paragraphs.findIndex((paragraph) => paragraph.from <= edit.from && edit.from < paragraph.to);
+    if (paragraphIndex < 0) paragraphIndex = Math.max(0, paragraphs.length - 1);
+    const { from: ignoredFrom, to: ignoredTo, ...style } = paragraphs[paragraphIndex] ?? {};
+    void ignoredFrom; void ignoredTo;
+    result.push({ from, to, ...style });
+    from = to;
+  }
+  return result;
 }
 
 function singleTextEdit(previous, next) {
@@ -562,12 +574,14 @@ function remapRangeForReplacement(range, from, to, insertedLength, paragraph = f
   const mapDelete = (offset) => offset <= from ? offset : offset >= to ? offset - removed : from;
   let mapped = { ...range, from: mapDelete(range.from), to: mapDelete(range.to) };
   if (mapped.from >= mapped.to && !paragraph) return null;
-  const stickyEnd = paragraph || !["link", "lang"].includes(mapped.type);
+  const inclusive = paragraph || isMarkInclusive(mapped.type);
   if (mapped.to < from) return mapped;
   if (mapped.from > from) mapped = { ...mapped, from: mapped.from + insertedLength, to: mapped.to + insertedLength };
   else if (mapped.from < from && from < mapped.to) mapped = { ...mapped, to: mapped.to + insertedLength };
-  else if (mapped.to === from && stickyEnd) mapped = { ...mapped, to: mapped.to + insertedLength };
-  else if (mapped.from === from) mapped = { ...mapped, to: mapped.to + insertedLength };
+  else if (mapped.to === from && inclusive) mapped = { ...mapped, to: mapped.to + insertedLength };
+  else if (mapped.from === from) mapped = inclusive
+    ? { ...mapped, to: mapped.to + insertedLength }
+    : { ...mapped, from: mapped.from + insertedLength, to: mapped.to + insertedLength };
   return mapped.from < mapped.to ? mapped : null;
 }
 

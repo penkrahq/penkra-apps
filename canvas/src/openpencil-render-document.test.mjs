@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
-import { migrateM1DelimitedVariables } from "./migrations.mjs";
+import { migrateM1DelimitedVariables, migrateM14ThemesToAxes, migrateM15NodeModes, migrateM16VariableTokens, migrateM17CascadeConditions } from "./migrations.mjs";
 
 test("interpolates multiple delimited variables while leaving currency literal", () => {
   const source = {
@@ -51,6 +51,23 @@ test("M1 preserves whole-token rich-text and paragraph ranges", () => {
   assert.equal(document.children[0].content, "${name}");
   assert.deepEqual(document.children[0].marks, [{ type: "weight", from: 0, to: 7, value: 700 }]);
   assert.deepEqual(document.children[0].paragraphs, [{ from: 0, to: 7, style: "body" }]);
+});
+
+test("M14-M17 preserve token type and move node axis selections", () => {
+  const source = {
+    themes: { theme: ["light", "dark"] },
+    variables: { brand: { type: "color", value: [{ value: "#fff" }, { value: "#000", theme: { theme: "dark" } }] } },
+    children: [{ id: "hero", type: "frame", theme: { theme: "dark" }, children: [] }],
+  };
+  let result = migrateM14ThemesToAxes(source);
+  result = migrateM15NodeModes(result.document);
+  result = migrateM16VariableTokens(result.document);
+  result = migrateM17CascadeConditions(result.document);
+  assert.deepEqual(result.document.axes, { theme: { modes: [{ name: "light" }, { name: "dark" }] } });
+  assert.deepEqual(result.document.children[0].modes, { theme: "dark" });
+  assert.deepEqual(result.document.variables.brand, { tokenType: "color", cascade: [
+    { value: "#fff" }, { value: "#000", when: { theme: "dark" } },
+  ] });
 });
 
 test("resolves Pencil variables with inherited multi-axis themes without changing source", () => {
