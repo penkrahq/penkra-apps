@@ -74,8 +74,8 @@ export function mapRangesForInsert(ranges, index, count, kind = "mark") {
     if (range.from < index && index < range.to) return { ...range, to: range.to + count };
     if (range.to === index) return sticky.endSticky ? { ...range, to: range.to + count } : { ...range };
     if (range.from === index) return sticky.startSticky
-      ? { ...range, from: range.from + count, to: range.to + count }
-      : { ...range, to: range.to + count };
+      ? { ...range, to: range.to + count }
+      : { ...range, from: range.from + count, to: range.to + count };
     return { ...range };
   }));
 }

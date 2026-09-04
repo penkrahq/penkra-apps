@@ -1,7 +1,7 @@
 import { Buffer } from "node:buffer";
 import { readFile } from "node:fs/promises";
 import { buildExporterIR } from "./exporter-ir.mjs";
-import { writeAtomicBundle, writeAtomicFile } from "./export-bundle.mjs";
+import { validateOutputSegment, writeAtomicBundle, writeAtomicFile } from "./export-bundle.mjs";
 import { exportPptx } from "./exporters/pptx.mjs";
 import { exportPdf } from "./exporters/pdf.mjs";
 import { exportWeb } from "./exporters/web.mjs";
@@ -11,7 +11,7 @@ import { takeDocumentScreenshots } from "./document-screenshot.mjs";
 
 export async function exportDocument(document, request, options = {}) {
   const ir = buildExporterIR(document, request);
-  const screenshot = async (nodeId, scale = 2) => (await takeDocumentScreenshots(document, [{ nodeIds: [nodeId] }], options.assets, { scale, maxDimension: 8192 }))[0];
+  const screenshot = async (nodeId, scale = 2) => (await takeDocumentScreenshots(document, [{ nodeIds: [nodeId] }], options.assets, { scale, maxDimension: 8192, failOnDownscale: true }))[0];
   let artifact;
   if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "page") artifact = await exportPdf(ir, {
@@ -22,7 +22,7 @@ export async function exportDocument(document, request, options = {}) {
     rasterizeNode: async (id) => Buffer.from((await screenshot(id, 300 / 96)).data, "base64"),
   });
   else if (request.role === "route") {
-    const hrefs = new Map(ir.rasters.map((raster) => [raster.id, `assets/${safeAssetName(raster.id)}.png`]));
+    const hrefs = new Map(ir.rasters.map((raster) => [raster.id, `assets/${validateOutputSegment(raster.id)}.png`]));
     artifact = exportWeb(ir, { rasterHref: (id) => hrefs.get(id) });
     for (const [id, href] of hrefs) artifact.set(href, Buffer.from((await screenshot(id)).data, "base64"));
   }
@@ -49,7 +49,7 @@ export async function exportImage(document, request, options = {}) {
     throw error;
   }
   if (request.format === "png") {
-    const [image] = await takeDocumentScreenshots(document, [{ nodeIds: [request.frames[0]] }], options.assets, { scale: request.scale ?? 1, maxDimension: 8192 });
+    const [image] = await takeDocumentScreenshots(document, [{ nodeIds: [request.frames[0]] }], options.assets, { scale: request.scale ?? 1, maxDimension: 8192, failOnDownscale: true });
     await writeAtomicFile(request.destination, Buffer.from(image.data, "base64"));
     return { artifacts: [request.destination], width: image.width, height: image.height, format: "png" };
   }
@@ -63,7 +63,7 @@ export async function exportImage(document, request, options = {}) {
         document,
         [{ nodeIds: [raster.id] }],
         options.assets,
-        { scale: request.scale ?? raster.ppi / 96, maxDimension: 8192 },
+        { scale: request.scale ?? raster.ppi / 96, maxDimension: 8192, failOnDownscale: true },
       ).then((images) => images[0]);
       rasterHrefs.set(raster.id, `data:image/png;base64,${image.data}`);
     }
@@ -97,4 +97,3 @@ async function readBundledPptxFonts() {
   const sources = await readBundledPdfFonts();
   return [{ typeface: "Inter", faces: { regular: sources["Inter:400"], bold: sources["Inter:700"] } }];
 }
-function safeAssetName(value) { return encodeURIComponent(String(value).normalize("NFC")).replaceAll("%", "_"); }

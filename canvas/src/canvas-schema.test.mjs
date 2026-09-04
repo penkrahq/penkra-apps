@@ -36,3 +36,33 @@ test("capability totality is generated from the canonical inventory", () => {
   assert.ok(capabilityPathInventory().includes("relationships.ref"));
   assert.equal(capabilityPathInventory().includes("image"), false);
 });
+
+test("validation rejects mutual component recursion before resolver expansion", () => {
+  const value = document();
+  value.children.unshift(
+    { id: "a", type: "frame", children: [{ id: "a-to-b", type: "ref", ref: "b" }] },
+    { id: "b", type: "frame", children: [{ id: "b-to-a", type: "ref", ref: "a" }] },
+  );
+  value.children[2].children.push({ id: "use-a", type: "ref", ref: "a" });
+  assert.throws(() => validateCanvasDocument(value), /Component ref cycle/);
+});
+
+test("same-type overlapping marks block until precedence is specified", () => {
+  const value = document();
+  value.children[0].children[0].marks = [
+    { type: "fill", from: 0, to: 2, value: "red" },
+    { type: "fill", from: 1, to: 2, value: "blue" },
+  ];
+  assert.throws(() => validateCanvasDocument(value), /precedence is not specified/);
+});
+
+test("flow instance paths validate every ref and final component descendant", () => {
+  const value = document();
+  value.children.unshift({ id: "button-component", type: "frame", children: [{ id: "button-label", type: "text", content: "Go", marks: [], paragraphs: [{ from: 0, to: 2 }] }] });
+  value.children[1].children.push({ id: "button", type: "ref", ref: "button-component" });
+  value.children.push({ id: "next", type: "frame", role: "slide", children: [] });
+  value.flows = [{ id: "go", from: "slide", to: "next", trigger: { kind: "tap", source: { path: ["button"], node: "button-label" } } }];
+  assert.equal(validateCanvasDocument(value).valid, true);
+  value.flows[0].trigger.source.node = "missing";
+  assert.throws(() => validateCanvasDocument(value), /outside the final component/);
+});

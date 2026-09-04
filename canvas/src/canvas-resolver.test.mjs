@@ -18,3 +18,31 @@ test("condition AST has a closed evaluated operator set", () => {
   assert.equal(evaluateCondition({ op: "and", args: [{ op: "eq", arg: { prop: "tone" }, value: "primary" }, { op: "notNull", arg: { prop: "icon" } }] }, { props: { tone: "primary", icon: "check" } }), true);
   assert.throws(() => evaluateCondition({ op: "eval" }, { props: {} }), /Unknown condition/);
 });
+
+test("marks are not cascades and nested component properties are lexically scoped", () => {
+  const source = { canvasSchemaVersion: 3, version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
+    { id: "outer", type: "frame", properties: { label: { type: "string", default: "outer" } }, readingOrder: ["inner", "outer-label"], children: [
+      { id: "inner", type: "frame", properties: { label: { type: "string", default: "inner" } }, children: [
+        { id: "inner-label", type: "text", bind: { content: "$props.label" }, marks: [], paragraphs: [] },
+      ] },
+      { id: "outer-label", type: "text", bind: { content: "$props.label" }, marks: [], paragraphs: [] },
+    ] },
+    { id: "route", type: "frame", role: "route", children: [{ id: "instance", type: "ref", ref: "outer", props: { label: "supplied outer" } }] },
+  ] };
+  const result = resolveCanvasDocument(source);
+  const instance = result.document.children[1].children[0];
+  assert.equal(instance.children[0].children[0].content, "inner");
+  assert.equal(instance.children[1].content, "supplied outer");
+  assert.deepEqual(instance.readingOrder, ["instance/inner", "instance/outer-label"]);
+});
+
+test("typed flow source paths remap to expanded instance ids", () => {
+  const source = { canvasSchemaVersion: 3, version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [
+    { id: "go", from: "route-a", to: "route-b", trigger: { kind: "tap", source: { path: ["button"], node: "label" } } },
+  ], children: [
+    { id: "button-component", type: "frame", children: [{ id: "label", type: "text", content: "Go", marks: [], paragraphs: [{ from: 0, to: 2 }] }] },
+    { id: "route-a", type: "frame", role: "route", children: [{ id: "button", type: "ref", ref: "button-component", props: {} }] },
+    { id: "route-b", type: "frame", role: "route", children: [] },
+  ] };
+  assert.deepEqual(resolveCanvasDocument(source).document.flows[0].trigger.source, { path: [], node: "button/label" });
+});

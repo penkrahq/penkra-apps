@@ -13,9 +13,20 @@ export function migrateM1DelimitedVariables(source) {
     }
     if (Array.isArray(value)) return value.map((item) => visit(item, key));
     if (!value || typeof value !== "object") return value;
-    return Object.fromEntries(
+    const migrated = Object.fromEntries(
       Object.entries(value).map(([childKey, child]) => [childKey, visit(child, childKey)]),
     );
+    if (value.type === "text" && typeof value.content === "string" && migrated.content !== value.content) {
+      const beforeLength = value.content.length;
+      const afterLength = migrated.content.length;
+      migrated.marks = (value.marks ?? []).map((mark) => (
+        mark.from === 0 && mark.to === beforeLength ? { ...mark, to: afterLength } : { ...mark }
+      ));
+      migrated.paragraphs = (value.paragraphs ?? []).map((paragraph) => (
+        paragraph.from === 0 && paragraph.to === beforeLength ? { ...paragraph, to: afterLength } : { ...paragraph }
+      ));
+    }
+    return migrated;
   };
   return { document: visit(document), changes };
 }

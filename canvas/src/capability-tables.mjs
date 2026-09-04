@@ -4,6 +4,7 @@ const inventory = capabilityPathInventory();
 const native = () => ({ verdict: "native" });
 const raster = (why) => ({ verdict: "raster", reason: why });
 const ignore = (why) => ({ verdict: "ignore", reason: why });
+const unverified = () => ({ verdict: null, status: "unverified" });
 
 export const CAPABILITY_TABLES = Object.freeze({
   slide: table("select-at-export", {
@@ -54,10 +55,29 @@ export const CAPABILITY_TABLES = Object.freeze({
   }),
 });
 
-for (const tableValue of Object.values(CAPABILITY_TABLES)) assertCapabilityTotality(tableValue, inventory);
+export function unverifiedCapabilityEntries() {
+  return Object.entries(CAPABILITY_TABLES).flatMap(([target, tableValue]) =>
+    Object.entries(tableValue.properties)
+      .filter(([, entry]) => entry.verdict === null && entry.status === "unverified")
+      .map(([path]) => ({ target, path })));
+}
+
+export function assertAllCapabilityTables() {
+  const errors = [];
+  for (const [target, tableValue] of Object.entries(CAPABILITY_TABLES)) {
+    try { assertCapabilityTotality(tableValue, inventory); }
+    catch (error) { errors.push(`${target}: ${error.message}`); }
+  }
+  if (errors.length) {
+    const error = new Error(`Capability tables are not buildable:\n${errors.join("\n")}`);
+    error.code = "CANVAS_CAPABILITY_INCOMPLETE";
+    throw error;
+  }
+  return true;
+}
 
 function table(axisLowering, overrides) {
-  return { axes: axisLowering, properties: Object.fromEntries(inventory.map((path) => [path, overrides[path] ?? native()])) };
+  return { axes: axisLowering, properties: Object.fromEntries(inventory.map((path) => [path, overrides[path] ?? unverified()])) };
 }
 function rasterRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, raster(reason)])); }
 function ignoreRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, ignore(reason)])); }

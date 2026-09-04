@@ -103,6 +103,12 @@ async function renderScreenshot(graph, pageId, nodeIds, options = {}) {
     const maxDimension = options.maxDimension ?? MAX_SCREENSHOT_DIMENSION;
     const requestedScale = options.scale ?? 1;
     const scale = Math.min(requestedScale, maxDimension / Math.max(sourceWidth, sourceHeight));
+    if (options.failOnDownscale === true && scale < requestedScale) {
+      throw screenshotError(
+        "CANVAS_SCREENSHOT_RESOLUTION_LIMIT",
+        `Requested scale ${requestedScale} exceeds the ${maxDimension}px raster limit.`,
+      );
+    }
     const width = Math.max(1, Math.ceil(sourceWidth * scale));
     const height = Math.max(1, Math.ceil(sourceHeight * scale));
     const surface = ck.MakeSurface(width, height);

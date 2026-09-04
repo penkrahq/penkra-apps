@@ -67,6 +67,7 @@ export function validateCanvasDocument(document, options = {}) {
   validateRoleNesting(nodes, parents, errors);
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
+  validateMarkOverlapPolicy(nodes, errors);
   validateRefs(nodes, parents, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
@@ -140,7 +141,10 @@ function validateAccessibility(document, nodes, errors) {
   for (const node of nodes.values()) {
     if (node.lang !== undefined && !validLanguage(node.lang)) errors.push(`${node.id}.lang must be a valid BCP-47 language tag.`);
     for (const [index, mark] of (node.marks ?? []).entries()) if (mark.type === "lang" && !validLanguage(mark.value)) errors.push(`${node.id}.marks[${index}] lang must be a valid BCP-47 tag.`);
-    for (const [index, paragraph] of (node.paragraphs ?? []).entries()) if (paragraph.headingLevel !== undefined && (!Number.isInteger(paragraph.headingLevel) || paragraph.headingLevel < 1 || paragraph.headingLevel > 6)) errors.push(`${node.id}.paragraphs[${index}].headingLevel must be 1–6.`);
+    for (const [index, paragraph] of (node.paragraphs ?? []).entries()) {
+      if (paragraph.headingLevel !== undefined && (!Number.isInteger(paragraph.headingLevel) || paragraph.headingLevel < 1 || paragraph.headingLevel > 6)) errors.push(`${node.id}.paragraphs[${index}].headingLevel must be 1–6.`);
+      if (paragraph.style !== undefined && !Object.hasOwn(document.paragraphStyles ?? {}, paragraph.style)) errors.push(`${node.id}.paragraphs[${index}] references missing paragraph style ${paragraph.style}.`);
+    }
     if (!node.role || node.readingOrder === undefined) continue;
     if (!Array.isArray(node.readingOrder)) { errors.push(`${node.id}.readingOrder must be an array.`); continue; }
     const descendants = [];
@@ -148,7 +152,20 @@ function validateAccessibility(document, nodes, errors) {
     visit(node);
     if (node.readingOrder.length !== descendants.length || new Set(node.readingOrder).size !== node.readingOrder.length || descendants.some((id) => !node.readingOrder.includes(id))) errors.push(`${node.id}.readingOrder must cover every non-decorative descendant exactly once.`);
   }
-  void document;
+}
+
+function validateMarkOverlapPolicy(nodes, errors) {
+  for (const node of nodes.values()) {
+    const marks = node.marks ?? [];
+    for (let left = 0; left < marks.length; left += 1) {
+      for (let right = left + 1; right < marks.length; right += 1) {
+        if (marks[left].type !== marks[right].type) continue;
+        if (marks[left].from < marks[right].to && marks[right].from < marks[left].to) {
+          errors.push(`${node.id}.marks[${left}] and marks[${right}] overlap with the same type; precedence is not specified.`);
+        }
+      }
+    }
+  }
 }
 
 function validateRefs(nodes, parents, errors) {
@@ -169,6 +186,24 @@ function validateRefs(nodes, parents, errors) {
       seen.add(current); path.push(current); current = localRefs.get(current);
     }
   }
+  const componentIds = new Set([...localRefs.values()].filter((id) => nodes.has(id)));
+  const dependencies = new Map([...componentIds].map((id) => [id, new Set()]));
+  const collectDependencies = (componentId, candidate) => {
+    for (const child of candidate.children ?? []) {
+      if (child.type === "ref" && !child.ref.includes(":") && componentIds.has(child.ref)) dependencies.get(componentId).add(child.ref);
+      collectDependencies(componentId, child);
+    }
+  };
+  for (const componentId of componentIds) collectDependencies(componentId, nodes.get(componentId));
+  const visiting = new Set(); const visited = new Set();
+  const visit = (componentId, path = []) => {
+    if (visiting.has(componentId)) { errors.push(`Component ref cycle: ${[...path, componentId].join(" -> ")}.`); return; }
+    if (visited.has(componentId)) return;
+    visiting.add(componentId);
+    for (const dependency of dependencies.get(componentId) ?? []) visit(dependency, [...path, componentId]);
+    visiting.delete(componentId); visited.add(componentId);
+  };
+  for (const componentId of componentIds) visit(componentId);
 }
 
 function validateFlows(flows, nodes, parents, errors) {
@@ -183,13 +218,39 @@ function validateFlows(flows, nodes, parents, errors) {
       if (!Array.isArray(source.path) || source.path.some((id) => typeof id !== "string") || typeof source.node !== "string") errors.push(`Flow ${flow.id} source must be a typed instance path.`);
       else if (source.path.length === 0) {
         if (!nodes.has(source.node) || !isDescendant(source.node, flow.from, parents)) errors.push(`Flow ${flow.id} source ${source.node} must live inside ${flow.from}.`);
-      }
+      } else validateFlowInstancePath(flow, source, nodes, parents, errors);
     }
     const signature = JSON.stringify([flow.from, flow.trigger?.source, flow.trigger]);
     if (signatures.has(signature)) errors.push(`Flow ${flow.id} duplicates an existing flow.`);
     signatures.add(signature);
-    void parents;
   }
+}
+
+function validateFlowInstancePath(flow, source, nodes, parents, errors) {
+  let container = flow.from;
+  for (const [index, instanceId] of source.path.entries()) {
+    const instance = nodes.get(instanceId);
+    if (instance?.type !== "ref" || instance.ref.includes(":")) {
+      errors.push(`Flow ${flow.id} source path ${instanceId} must name a local ref instance.`);
+      return;
+    }
+    if (!isDescendant(instanceId, container, parents)) {
+      errors.push(`Flow ${flow.id} source path ${instanceId} is outside ${container}.`);
+      return;
+    }
+    const target = nodes.get(instance.ref);
+    if (!target) {
+      errors.push(`Flow ${flow.id} source path ${instanceId} targets missing ${instance.ref}.`);
+      return;
+    }
+    container = target.id;
+    if (index + 1 < source.path.length && !nodes.has(source.path[index + 1])) {
+      errors.push(`Flow ${flow.id} source path contains missing ${source.path[index + 1]}.`);
+      return;
+    }
+  }
+  if (!nodes.has(source.node) || (source.node !== container && !isDescendant(source.node, container, parents)))
+    errors.push(`Flow ${flow.id} source node ${source.node} is outside the final component ${container}.`);
 }
 
 function isDescendant(nodeId, ancestorId, parents) { let current = parents.get(nodeId); while (current) { if (current === ancestorId) return true; current = parents.get(current); } return false; }

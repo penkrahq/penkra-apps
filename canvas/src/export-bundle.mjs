@@ -33,4 +33,7 @@ export function validateOutputSegment(value) {
 }
 async function assertMissing(path) { try { await access(path); const error = new Error(`Destination already exists: ${path}.`); error.code = "CANVAS_EXPORT_EXISTS"; throw error; } catch (error) { if (error.code !== "ENOENT") throw error; } }
 function assertAbsolute(path) { if (typeof path !== "string" || !path.startsWith("/")) throw new Error("Export destination must be an absolute path."); }
-function validateRelativeFile(name) { if (name.startsWith("/") || name.split("/").some((part) => !part || part === "." || part === "..")) throw new Error(`Unsafe bundle filename ${name}.`); }
+function validateRelativeFile(name) {
+  if (name.startsWith("/")) throw new Error(`Unsafe bundle filename ${name}.`);
+  for (const part of name.split("/")) validateOutputSegment(part);
+}

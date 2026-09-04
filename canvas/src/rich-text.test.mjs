@@ -22,6 +22,20 @@ test("range insertion observes formatting and link boundary stickiness", () => {
   ], 2, 4), [{ type: "fill", from: 0, to: 4, value: "red" }]);
 });
 
+test("every mark kind obeys both declared boundaries", () => {
+  const formatting = ["fill", "weight", "italic", "underline", "strikethrough", "fontFamily", "fontSize", "letterSpacing", "wordSpacing"];
+  for (const type of formatting) {
+    const mark = { type, from: 5, to: 10, value: type === "weight" ? 700 : "value" };
+    assert.deepEqual(mapRangesForInsert([mark], 5, 3), [{ ...mark, from: 8, to: 13 }], `${type} start`);
+    assert.deepEqual(mapRangesForInsert([mark], 10, 3), [{ ...mark, to: 13 }], `${type} end`);
+  }
+  for (const type of ["link", "lang"]) {
+    const mark = { type, from: 5, to: 10, value: "value" };
+    assert.deepEqual(mapRangesForInsert([mark], 5, 3), [{ ...mark, from: 8, to: 13 }], `${type} start`);
+    assert.deepEqual(mapRangesForInsert([mark], 10, 3), [mark], `${type} end`);
+  }
+});
+
 test("interpolation shifts marks and paragraphs in UTF-16 units", () => {
   const result = interpolateRichText({
     id: "t", type: "text", content: "Hi ${name}!", paragraphs: [{ from: 0, to: 11 }],

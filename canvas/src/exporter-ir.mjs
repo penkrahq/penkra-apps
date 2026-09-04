@@ -1,5 +1,5 @@
 import { CAPABILITY_TABLES } from "./capability-tables.mjs";
-import { resolveCanvasDocument } from "./canvas-resolver.mjs";
+import { isCascade, resolveCanvasDocument } from "./canvas-resolver.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { flattenMarks } from "./rich-text.mjs";
 
@@ -11,12 +11,18 @@ export function buildExporterIR(document, request) {
   const graph = createOpenPencilGraph(resolved.document);
   const sourceById = indexNodes(resolved.document.children);
   const authoredById = projection === "semantic" ? indexNodes(document.children) : sourceById;
+  const documentCapability = evaluateCapabilities(documentCapabilityPaths(resolved.document, request.role), capability.properties);
   const outputs = request.frames.map((frameId, index) => {
     const frame = sourceById.get(frameId);
     if (!frame) throw exportError("CANVAS_EXPORT_FRAME", `Frame ${frameId} was not found.`);
     if (frame.role !== request.role) throw exportError("CANVAS_EXPORT_ROLE", `Frame ${frameId} carries role ${frame.role ?? "none"}, not ${request.role}.`);
     const graphNode = graph.getNode(frameId);
     const physical = frame.physical ?? physicalFor(frame.size, request.role);
+    if (["slide", "page"].includes(request.role) && !physical) {
+      const error = new Error(`Physical size is not declared for ${frameId}.`);
+      error.code = "CANVAS_PHYSICAL_SIZE_UNDECLARED";
+      throw error;
+    }
     return {
       kind: request.role,
       index,
@@ -37,21 +43,25 @@ export function buildExporterIR(document, request) {
         semantics: { description: frame.description ?? null, decorative: frame.decorative === true, readingOrder: frame.readingOrder ?? null, landmark: frame.landmark ?? null },
         layout: semanticLayout(frame),
         variants: semanticVariants(authoredById.get(frameId) ?? frame),
+        capability: documentCapability,
       },
-      nodes: collectOutputNodes(graph, sourceById, authoredById, graphNode, capability, frameId, projection),
+      nodes: collectOutputNodes(graph, sourceById, authoredById, graphNode, capability, frameId, projection, resolved.document.paragraphStyles ?? {}),
     };
   });
-  const rasters = rasterScopes(outputs.flatMap((output) => output.nodes), request.role);
+  const evaluatedNodes = outputs.flatMap((output) => output.nodes);
+  const rasters = rasterScopes(evaluatedNodes, request);
   for (const output of outputs) output.nodes = applyRasterScopes(output.nodes, rasters);
   const nodes = outputs.flatMap((output) => output.nodes);
   const consequences = [
     ...resolved.consequences,
-    ...nodes.filter((node) => node.capability.verdict !== "native" && node.export !== "image").map((node) => ({
+    ...(documentCapability.verdict === "native" ? [] : [{ node: "root", kind: documentCapability.verdict, why: documentCapability.reason }]),
+    ...evaluatedNodes.filter((node) => node.capability.verdict !== "native" && node.export !== "image").map((node) => ({
       node: node.id,
       kind: node.capability.verdict,
       why: node.capability.reason,
     })),
-    ...nodes.flatMap((node) => (node.capability.ignored ?? []).map((path) => ({
+    ...(documentCapability.ignored ?? []).map((path) => ({ node: "root", kind: "ignore", why: `${path} is intentionally omitted by the ${request.capability ?? request.role} exporter.` })),
+    ...evaluatedNodes.flatMap((node) => (node.capability.ignored ?? []).map((path) => ({
       node: node.id,
       kind: "ignore",
       why: `${path} is intentionally omitted by the ${request.capability ?? request.role} exporter.`,
@@ -73,7 +83,7 @@ export function buildExporterIR(document, request) {
   };
 }
 
-function collectOutputNodes(graph, sources, authored, root, capability, rootId, projection) {
+function collectOutputNodes(graph, sources, authored, root, capability, rootId, projection, paragraphStyles) {
   const result = [];
   const visit = (node, parent = null, z = 0) => {
     const source = sources.get(node.id) ?? {};
@@ -96,7 +106,7 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
           rotation: node.rotation ?? 0,
         },
         paint: { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
-        semantics: source.type === "text" ? { content: source.content ?? "", runs: richTextRuns(source), paragraphs: source.paragraphs ?? [], language: source.lang ?? source.language ?? null, description: source.description ?? null, decorative: source.decorative === true, readingOrder: source.readingOrder ?? null } : { description: source.description ?? null, decorative: source.decorative === true, readingOrder: source.readingOrder ?? null },
+        semantics: source.type === "text" ? { content: source.content ?? "", runs: richTextRuns(source, paragraphStyles), paragraphs: (source.paragraphs ?? []).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined })), language: source.lang ?? source.language ?? null, description: source.description ?? null, decorative: source.decorative === true, readingOrder: source.readingOrder ?? null } : { description: source.description ?? null, decorative: source.decorative === true, readingOrder: source.readingOrder ?? null },
         layout: semanticLayout(source),
         variants: semanticVariants(authoredSource),
         export: source.export ?? "live", capability: entry,
@@ -110,11 +120,10 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
 }
 function semanticVariants(node) {
   return Object.fromEntries(Object.entries(node).filter(([, value]) =>
-    Array.isArray(value) && value.length > 0 && value.every((entry) =>
-      entry && typeof entry === "object" && Object.hasOwn(entry, "value"))));
+    isCascade(value)));
 }
 
-function rasterScopes(nodes, role) {
+function rasterScopes(nodes, request) {
   const byId = new Map(nodes.map((node) => [node.id, node]));
   const scopes = new Set();
   for (const node of nodes.filter((item) => item.capability.verdict === "raster")) {
@@ -126,7 +135,19 @@ function rasterScopes(nodes, role) {
     scopes.add(scope.id);
   }
   const subsumed = (id) => { let parent = byId.get(id)?.parent; while (parent && byId.has(parent)) { if (scopes.has(parent)) return true; parent = byId.get(parent).parent; } return false; };
-  return [...scopes].filter((id) => !subsumed(id)).map((id) => { const node = byId.get(id); const ppi = role === "page" ? 300 : 144; return { id, bounds: node.geometry, reason: node.capability.reason, pixels: { w: Math.ceil(node.geometry.w * ppi / 96), h: Math.ceil(node.geometry.h * ppi / 96) }, ppi, colorSpace: "sRGB", alpha: "premultiplied", outset: { l: 0, t: 0, r: 0, b: 0 } }; });
+  for (const node of nodes.filter((item) => item.capability.verdict === "raster")) {
+    if ((Array.isArray(node.paint.effect) ? node.paint.effect : [node.paint.effect]).some(Boolean)) {
+      const error = new Error(`Effect outset is not specified for raster node ${node.id}.`);
+      error.code = "CANVAS_EFFECT_OUTSET_UNSPECIFIED";
+      throw error;
+    }
+  }
+  if (scopes.size) {
+    const error = new Error(`Raster PPI is not specified for ${request.role}.`);
+    error.code = "CANVAS_RASTER_PPI_UNSPECIFIED";
+    throw error;
+  }
+  return [];
 }
 function hasBackgroundBlur(effect) {
   return (Array.isArray(effect) ? effect : [effect]).some((item) =>
@@ -196,14 +217,42 @@ function capabilityPaths(node, projection) {
 
 function evaluateCapabilities(paths, table) {
   const entries = paths.map((path) => ({ path, ...(table[path] ?? { verdict: "raster", reason: `Capability ${path} is absent from the table.` }) }));
+  const unknown = entries.filter((entry) => entry.verdict === null || entry.status === "unverified");
+  if (unknown.length) {
+    const error = new Error(`Unverified capabilities: ${unknown.map((entry) => entry.path).join(", ")}.`);
+    error.code = "CANVAS_CAPABILITY_UNVERIFIED";
+    throw error;
+  }
   const raster = entries.filter((entry) => entry.verdict === "raster");
   if (raster.length) return { verdict: "raster", reason: raster.map((entry) => `${entry.path}: ${entry.reason ?? "not native"}`).join("; "), paths };
   const native = entries.filter((entry) => entry.verdict === "native");
   if (native.length) return { verdict: "native", paths, ignored: entries.filter((entry) => entry.verdict === "ignore").map((entry) => entry.path) };
   return { verdict: "ignore", reason: entries.map((entry) => `${entry.path}: ${entry.reason ?? "ignored"}`).join("; "), paths };
 }
-function richTextRuns(node) {
-  return flattenMarks(node.content ?? "", node.marks ?? [], textBase(node)).map((run) => {
+function documentCapabilityPaths(document, role) {
+  const paths = new Set([`roles.${role}`]);
+  for (const key of ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"])
+    if (document[key] !== undefined) paths.add(`root.${key}`);
+  if (Object.keys(document.imports ?? {}).length) paths.add("relationships.import");
+  if ((document.flows ?? []).length) paths.add("relationships.flow");
+  const nodes = [...indexNodes(document.children).values()];
+  if (nodes.some((node) => node.type === "ref")) paths.add("relationships.ref");
+  if (nodes.some((node) => node.notesFor !== undefined)) paths.add("relationships.notesFor");
+  if (nodes.some((node) => node.readingOrder !== undefined)) paths.add("relationships.readingOrder");
+  return [...paths];
+}
+export function richTextRuns(node, paragraphStyles) {
+  const content = node.content ?? "";
+  const paragraphs = node.paragraphs?.length ? node.paragraphs : content ? [{ from: 0, to: content.length }] : [];
+  return paragraphs.flatMap((paragraph) => {
+    const paragraphContent = content.slice(paragraph.from, paragraph.to);
+    const marks = (node.marks ?? []).flatMap((mark) => {
+      const from = Math.max(mark.from, paragraph.from); const to = Math.min(mark.to, paragraph.to);
+      return from < to ? [{ ...mark, from: from - paragraph.from, to: to - paragraph.from }] : [];
+    });
+    const base = { ...(paragraph.style ? paragraphStyles[paragraph.style] : {}), ...textBase(node) };
+    return flattenMarks(paragraphContent, marks, base).map((run) => ({ ...run, from: run.from + paragraph.from, to: run.to + paragraph.from }));
+  }).map((run) => {
     if (run.lang === undefined) return run;
     const { lang, ...rest } = run;
     return { ...rest, language: lang };
@@ -213,5 +262,5 @@ function textBase(node) { return Object.fromEntries(["fontFamily", "fontSize", "
 function semanticLayout(node) { return Object.fromEntries(["layout", "gap", "rowGap", "columnGap", "padding", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "width", "height"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]])); }
 function needsIsolation(node) { return Number(node.opacity ?? 1) < 1 || ![undefined, "normal", "pass_through"].includes(node.blendMode) || node.clip === true; }
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
-function physicalFor(size, role) { if (role === "slide") return { w: 13.333, h: 7.5, unit: "in" }; if (role === "page" && size === "a4") return { w: 210, h: 297, unit: "mm" }; if (role === "page" && size === "letter") return { w: 8.5, h: 11, unit: "in" }; return null; }
+function physicalFor(size, role) { if (role === "page" && size === "a4") return { w: 210, h: 297, unit: "mm" }; if (role === "page" && size === "letter") return { w: 8.5, h: 11, unit: "in" }; return null; }
 function exportError(code, message) { const error = new Error(message); error.code = code; return error; }

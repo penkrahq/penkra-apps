@@ -9,6 +9,7 @@ test("resolved IR retains tree, runs, physical size and scopes leaf raster fallb
   assert.equal(ir.outputs[0].nodes[0].semantics.runs[0].weight, 700);
   assert.equal(ir.outputs[0].nodes[0].semantics.runs[0].language, "fr");
   assert.ok(ir.outputs[0].nodes[0].capability.paths.includes("properties.text.run.language"));
+  assert.equal(ir.outputs[0].nodes[0].variants.marks, undefined);
   assert.deepEqual(ir.rasters.map(({ id }) => id), ["mesh"]);
   assert.equal(ir.consequences[0].kind, "raster");
 });

@@ -3,13 +3,16 @@ import { interpolateRichText } from "./rich-text.mjs";
 export function resolveCanvasDocument(document, options = {}) {
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
   const variableValues = resolveVariables(document.variables ?? {}, modes, options.bindings ?? {});
+  const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, { modes, props: {} }), variableValues)]));
   const localNodes = indexNodes(document.children);
   const imports = options.imports ?? {};
   const consequences = [];
   const lowered = [];
   const resolving = [];
-  const children = document.children.map((node) => resolveNode(node, { owner: document, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving })).filter(Boolean);
-  return { document: { ...document, children }, modes, consequences, lowered };
+  const baseContext = { owner: document, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving };
+  const children = document.children.map((node) => resolveNode(node, baseContext)).filter(Boolean);
+  const flows = (document.flows ?? []).map(remapResolvedFlowSource);
+  return { document: { ...document, paragraphStyles, children, flows }, modes, consequences, lowered };
 }
 
 export function evaluateCondition(condition, context) {
@@ -31,7 +34,7 @@ export function evaluateCondition(condition, context) {
 }
 
 export function resolveCascade(value, context) {
-  if (!Array.isArray(value) || !value.every((entry) => entry && typeof entry === "object" && Object.hasOwn(entry, "value"))) return value;
+  if (!isCascade(value)) return value;
   let resolved = value[0]?.value;
   for (const entry of value) if (matchesWhen(entry.when, context)) resolved = entry.value;
   return resolved;
@@ -39,8 +42,11 @@ export function resolveCascade(value, context) {
 
 function resolveNode(source, context) {
   if (source.type === "ref") return resolveRef(source, context);
-  if (source.properties && Object.keys(context.props ?? {}).length === 0)
-    context = { ...context, props: resolveProps(source.properties, {}) };
+  if (source.properties) {
+    context = context.componentRoot
+      ? { ...context, componentRoot: false }
+      : { ...context, props: resolveProps(source.properties, {}), componentRoot: false };
+  } else if (context.componentRoot) context = { ...context, componentRoot: false };
   const output = {};
   for (const [key, raw] of Object.entries(source)) {
     if (["children", "properties", "bind", "varies"].includes(key)) continue;
@@ -78,7 +84,7 @@ function resolveRef(instance, context) {
   const cycleKey = `${owner === context.owner ? "local" : instance.ref}:${target.id}`;
   if (context.resolving.includes(cycleKey)) throw new Error(`Ref cycle: ${[...context.resolving, cycleKey].join(" -> ")}.`);
   const props = resolveProps(target.properties ?? {}, instance.props ?? {});
-  const resolved = resolveNode(target, { ...context, owner, localNodes, variableValues, props, resolving: [...context.resolving, cycleKey] });
+  const resolved = resolveNode(target, { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] });
   context.lowered.push({ node: instance.id, from: instance.ref, why: "Reference expanded into target-native nodes." });
   return prefixResolvedNode(resolved, instance.id, target.id, props);
 }
@@ -97,9 +103,39 @@ function resolveProps(declarations, supplied) {
 }
 
 function prefixResolvedNode(node, instanceId, sourceId, props) {
-  const result = { ...node, id: instanceId, provenance: { from: sourceId, props, lowered: true } };
-  if (node.children) result.children = node.children.map((child) => prefixResolvedNode(child, `${instanceId}/${child.id}`, child.id, props));
-  return result;
+  const idMap = new Map();
+  const collect = (candidate, prefix) => {
+    idMap.set(candidate.id, prefix);
+    for (const child of candidate.children ?? []) collect(child, `${prefix}/${child.id}`);
+  };
+  collect(node, instanceId);
+  const clone = (candidate) => {
+    const result = { ...candidate, id: idMap.get(candidate.id), provenance: { from: candidate.id === node.id ? sourceId : candidate.id, props, lowered: true } };
+    if (Array.isArray(candidate.readingOrder)) result.readingOrder = candidate.readingOrder.map((id) => idMap.get(id) ?? id);
+    if (typeof candidate.notesFor === "string") result.notesFor = idMap.get(candidate.notesFor) ?? candidate.notesFor;
+    if (candidate.children) result.children = candidate.children.map(clone);
+    return result;
+  };
+  return clone(node);
+}
+
+function remapResolvedFlowSource(flow) {
+  const source = flow.trigger?.source;
+  if (!source || !Array.isArray(source.path) || source.path.length === 0) return flow;
+  return {
+    ...flow,
+    trigger: {
+      ...flow.trigger,
+      source: { path: [], node: [...source.path, source.node].join("/") },
+    },
+  };
+}
+
+export function isCascade(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry) || !Object.hasOwn(entry, "value")) return false;
+    return Object.keys(entry).every((key) => key === "value" || key === "when");
+  });
 }
 
 function compatible(value, declaration) {

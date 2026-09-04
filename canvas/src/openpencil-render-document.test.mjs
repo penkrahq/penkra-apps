@@ -41,6 +41,18 @@ test("M1 migrates only whole legacy references on variable-able fields", () => {
   assert.deepEqual(source.children[0].fill, "$brand-accent");
 });
 
+test("M1 preserves whole-token rich-text and paragraph ranges", () => {
+  const source = { children: [{
+    id: "label", type: "text", content: "$name",
+    marks: [{ type: "weight", from: 0, to: 5, value: 700 }],
+    paragraphs: [{ from: 0, to: 5, style: "body" }],
+  }] };
+  const { document } = migrateM1DelimitedVariables(source);
+  assert.equal(document.children[0].content, "${name}");
+  assert.deepEqual(document.children[0].marks, [{ type: "weight", from: 0, to: 7, value: 700 }]);
+  assert.deepEqual(document.children[0].paragraphs, [{ from: 0, to: 7, style: "body" }]);
+});
+
 test("resolves Pencil variables with inherited multi-axis themes without changing source", () => {
   const source = {
     version: "2.17",

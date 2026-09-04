@@ -4,6 +4,8 @@ import { join } from "node:path";
 
 const root = new URL("../", import.meta.url);
 const output = new URL("../dist/", import.meta.url);
+const { assertAllCapabilityTables } = await import(new URL("src/capability-tables.mjs", root));
+assertAllCapabilityTables();
 const yjsEntry = new URL("node_modules/yjs/dist/yjs.mjs", root).pathname;
 const lazyOperationModules = ["document-inspection", "script-runtime", "document-screenshot"];
 const dedupeYjsPlugin = {
