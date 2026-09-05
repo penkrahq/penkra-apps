@@ -234,7 +234,7 @@ async function readSnapshotContent(request, encodedProjectId, throughSequence, k
   let offset = 0;
   for (;;) {
     const result = await request(
-      `/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${offset}&length=${1024 * 1024}`,
+      `/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${offset}&length=${8 * 1024 * 1024}`,
     );
     const bytes = base64ToBytes(result.bytes);
     chunks.push(bytes);

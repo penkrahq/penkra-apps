@@ -288,33 +288,6 @@ export function migrateM18LogicalDirections(source) {
   return { document, changes };
 }
 
-export function runMechanicalMigrations(source, options = {}) {
-  const steps = [
-    (value) => migrateM1DelimitedVariables(value),
-    (value) => migrateM2AssignModule(value, options.m2),
-    migrateM3DropReusable,
-    migrateM5DeleteEditorSlots,
-    migrateM6UniformText,
-    (value) => migrateM7AssignRoles(value, options.m7),
-    migrateM8AddFlows,
-    migrateM12Contexts,
-    migrateM13Prompts,
-    migrateM14ThemesToAxes,
-    migrateM15NodeModes,
-    migrateM16VariableTokens,
-    migrateM17CascadeConditions,
-    migrateM18LogicalDirections,
-  ];
-  let document = structuredClone(source);
-  const changes = {};
-  for (const [index, step] of steps.entries()) {
-    const result = step(document);
-    document = result.document;
-    changes[index] = result.changes;
-  }
-  return { document, changes };
-}
-
 function walkNodes(children, visitor) {
   for (const node of children ?? []) {
     visitor(node);
@@ -390,17 +363,27 @@ function indexNodes(children, output = new Map()) {
 }
 
 function findPath(root, path) {
-  let current = root;
-  for (const id of path.split("/")) {
-    current = (current?.children ?? []).find((child) => child.id === id);
+  const parts = path.split("/");
+  let current = findDescendant(root, parts[0]);
+  for (const id of parts.slice(1)) {
+    current = (current?.children ?? []).find((child) => child.id === id) ?? findDescendant(current, id);
     if (!current) return null;
   }
   return current;
 }
 
+function findDescendant(root, id) {
+  if (!root) return null;
+  if (root.id === id) return root;
+  for (const child of root.children ?? []) {
+    const match = findDescendant(child, id);
+    if (match) return match;
+  }
+  return null;
+}
+
 function materializeLegacyInstance(instance, target) {
   const clone = structuredClone(target);
-  clone.id = instance.id;
   for (const key of ["name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "role", "size", "physical", "modes", "bind", "visible", "varies", "export"]) {
     if (Object.hasOwn(instance, key)) clone[key] = structuredClone(instance[key]);
   }
@@ -409,9 +392,22 @@ function materializeLegacyInstance(instance, target) {
     if (!candidate) throw migrationError("M4", `${instance.id} descendant path ${path} does not resolve.`);
     Object.assign(candidate, structuredClone(override));
   }
+  remapMaterializedIds(clone, instance.id);
   delete clone.reusable;
   delete clone.descendants;
   return clone;
+}
+
+function remapMaterializedIds(root, instanceId) {
+  const ids = new Map();
+  walkNodes([root], (node) => {
+    if (typeof node.id === "string") ids.set(node.id, node === root ? instanceId : `${instanceId}/${node.id}`);
+  });
+  walkNodes([root], (node) => {
+    if (typeof node.id === "string") node.id = ids.get(node.id);
+    if (typeof node.ref === "string" && ids.has(node.ref)) node.ref = ids.get(node.ref);
+    if (typeof node.notesFor === "string" && ids.has(node.notesFor)) node.notesFor = ids.get(node.notesFor);
+  });
 }
 
 function applyM4Properties(instance, target, decision) {
@@ -419,9 +415,28 @@ function applyM4Properties(instance, target, decision) {
   if (!isRecord(decision.bindings) || !isRecord(decision.definitions)) {
     throw migrationError("M4", `${instance.id} properties action needs definitions and bindings.`);
   }
-  target.properties = { ...(target.properties ?? {}), ...structuredClone(decision.definitions) };
+  target.properties = { ...(target.properties ?? {}) };
+  for (const [name, definition] of Object.entries(decision.definitions)) {
+    if (Object.hasOwn(target.properties, name)
+      && !sameJsonValue(target.properties[name], definition)) {
+      throw migrationError("M4", `${instance.id}.${name} conflicts with an existing component property definition.`);
+    }
+    target.properties[name] = structuredClone(definition);
+  }
   instance.props = { ...(instance.props ?? {}) };
   const consumed = new Set();
+  if (isRecord(decision.modes)) {
+    instance.modes = { ...(instance.modes ?? {}), ...structuredClone(decision.modes) };
+    for (const [path, override] of Object.entries(instance.descendants)) {
+      if (!isRecord(override?.theme)) continue;
+      for (const [axis, mode] of Object.entries(override.theme)) {
+        if (decision.modes[axis] !== mode) {
+          throw migrationError("M4", `${instance.id} mode ${path}.theme.${axis} is not accounted for.`);
+        }
+      }
+      consumed.add(`${path}\u0000theme`);
+    }
+  }
   for (const [name, binding] of Object.entries(decision.bindings)) {
     if (!isRecord(binding) || typeof binding.path !== "string" || typeof binding.property !== "string") {
       throw migrationError("M4", `${instance.id}.${name} has an invalid binding.`);
@@ -433,7 +448,12 @@ function applyM4Properties(instance, target, decision) {
     instance.props[name] = structuredClone(override[binding.property]);
     const targetNode = findPath(target, binding.path);
     if (!targetNode) throw migrationError("M4", `${instance.id}.${name} targets missing path ${binding.path}.`);
-    targetNode.bind = { ...(targetNode.bind ?? {}), [binding.property]: `$props.${name}` };
+    const expression = `$props.${name}`;
+    if (Object.hasOwn(targetNode.bind ?? {}, binding.property)
+      && targetNode.bind[binding.property] !== expression) {
+      throw migrationError("M4", `${instance.id}.${name} conflicts with the existing ${binding.path}.${binding.property} binding.`);
+    }
+    targetNode.bind = { ...(targetNode.bind ?? {}), [binding.property]: expression };
     consumed.add(`${binding.path}\u0000${binding.property}`);
   }
   for (const [path, override] of Object.entries(instance.descendants)) {
@@ -441,6 +461,10 @@ function applyM4Properties(instance, target, decision) {
       if (!consumed.has(`${path}\u0000${property}`)) throw migrationError("M4", `${instance.id} manifest leaves ${path}.${property} unresolved.`);
     }
   }
+}
+
+function sameJsonValue(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function replaceObject(target, source) {

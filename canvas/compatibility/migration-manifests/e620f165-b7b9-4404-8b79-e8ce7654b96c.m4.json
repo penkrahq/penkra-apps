@@ -1,0 +1,95 @@
+{
+  "migration": "M4",
+  "documentId": "e620f165-b7b9-4404-8b79-e8ce7654b96c",
+  "documentTitle": "design",
+  "sourceSequence": 0,
+  "reviewedAt": "2026-09-04",
+  "method": "Read-only Canvas documents.execute census. Each legacy descendant override was checked against its exact source node and the closed component property algebra. Any structural, missing-source, conflicting-mode, or unsupported typed override is an explicit clone; all others are explicit property bindings or instance modes.",
+  "entries": {
+    "aQ1Lv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aeDd3.fontWeight"
+    },
+    "bYct9": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "cjF9y": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zCqoy.fontWeight"
+    },
+    "gCvLl": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        }
+      }
+    },
+    "I2q8XV": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "L0PoPY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "LPjHl": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        }
+      }
+    },
+    "lvZLL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aeDd3.fontWeight"
+    },
+    "MnPjt": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "N1eai": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zCqoy.fontWeight"
+    },
+    "rvwsB": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "vzHYF": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zCqoy.fontWeight"
+    },
+    "zikVv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aeDd3.fontWeight"
+    },
+    "ZKO4H": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zCqoy.fontWeight"
+    },
+    "zojmw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    }
+  }
+}
+

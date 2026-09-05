@@ -220,11 +220,11 @@ test("Canvas maps project projections and exact asset paths without changing the
       snapshot: { throughSequence: 0, chunked: true },
       updates: [],
     }],
-    ["/projects/project-id/snapshots/0/content?kind=projection&offset=0&length=1048576", {
+    ["/projects/project-id/snapshots/0/content?kind=projection&offset=0&length=8388608", {
       bytes: "eyJjaGlsZHJlbiI6W119",
       complete: true,
     }],
-    ["/projects/project-id/snapshots/0/content?kind=state&offset=0&length=1048576", {
+    ["/projects/project-id/snapshots/0/content?kind=state&offset=0&length=8388608", {
       bytes: "AQ==",
       complete: true,
     }],

@@ -1,0 +1,4368 @@
+{
+  "migration": "M4",
+  "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+  "documentTitle": "penkra",
+  "sourceSequence": 1434,
+  "reviewedAt": "2026-09-04",
+  "method": "Read-only Canvas documents.execute census. Each legacy descendant override was checked against its exact source node and the closed component property algebra. Any structural, missing-source, conflicting-mode, or unsupported typed override is an explicit clone; all others are explicit property bindings or instance modes.",
+  "entries": {
+    "A6mac": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kNvwZ.enabled, Tmct9.type, Tmct9.id, Tmct9.name, Tmct9.children, qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "a7OhQD": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kWafJ.type, kWafJ.id, kWafJ.name, kWafJ.stroke, kWafJ.strokeWidth, kWafJ.layout, kWafJ.padding, kWafJ.justifyContent, kWafJ.alignItems, kWafJ.children"
+    },
+    "a7Z77x": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "AbLN3": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "ADJx7": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: T0JYmK.width, T0JYmK.height, T0JYmK.padding, T0JYmK.layout, PAD8i.x, PAD8i.y, qrW5C.enabled, qrW5C.x, qrW5C.y, qrW5C.width, qrW5C.height, qrW5C.padding, qrW5C.layout, NwDjX.x, NwDjX.y"
+    },
+    "aIHr8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "AjbJv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "AMt6H": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: FXtOq.enabled"
+    },
+    "amwLy": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "P17Kq__content": {
+          "type": "string",
+          "default": "Choose Folder"
+        }
+      },
+      "bindings": {
+        "P17Kq__content": {
+          "path": "P17Kq",
+          "property": "content"
+        }
+      }
+    },
+    "AsYsy": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "aT3f0": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "auiPw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "avH0s": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "aYrDT": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "h4Ddx3__icon": {
+          "type": "icon",
+          "default": "square-pen"
+        },
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "h4Ddx3__icon": {
+          "path": "h4Ddx3",
+          "property": "icon"
+        },
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "AZPpY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Ch1we.type, Ch1we.id, Ch1we.name, Ch1we.gap, Ch1we.children"
+    },
+    "B0OcC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zSwFv/mpj5n.<missing>, ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "b2YgXO": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GYlX9__content": {
+          "type": "string",
+          "default": "Connect to the internet"
+        },
+        "rhD2p__content": {
+          "type": "string",
+          "default": "\"Sync your invoices with your Ledger account.\""
+        }
+      },
+      "bindings": {
+        "GYlX9__content": {
+          "path": "GYlX9",
+          "property": "content"
+        },
+        "rhD2p__content": {
+          "path": "rhD2p",
+          "property": "content"
+        }
+      },
+      "modes": {
+        "state": "default"
+      }
+    },
+    "B3219w": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: akusD.enabled"
+    },
+    "B5Zh9U": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "B77fQ5": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: FMKUh.enabled"
+    },
+    "B9zmlw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "BFn6y": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk.id, Q9cWk.type, Q9cWk.ref, Q9cWk.name, n3r1hV.id, n3r1hV.type, n3r1hV.ref, n3r1hV.name, n3r1hV.descendants, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "bg387": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "BJHIm": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "bKZW6": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "boG0K": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: MY0Wi.theme.state"
+    },
+    "bv0J6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "BwtKt": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: GVIVx/aIHr8.<missing>, QPowY/n59JT/shIbm/P0Fhz.<missing>, QPowY/n59JT/shIbm/fPKBe/k16ybr.<missing>"
+    },
+    "bWvvr": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "FPPx1__content": {
+          "type": "string",
+          "default": "Title"
+        },
+        "QkN38__content": {
+          "type": "string",
+          "default": "Subtitle"
+        }
+      },
+      "bindings": {
+        "FPPx1__content": {
+          "path": "FPPx1",
+          "property": "content"
+        },
+        "QkN38__content": {
+          "path": "QkN38",
+          "property": "content"
+        }
+      }
+    },
+    "Byz5I": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "C1rucX": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "C2Yo8k": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>, IHe8Q.x, IHe8Q.y"
+    },
+    "C3Og8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "YkA4k__content": {
+          "type": "string",
+          "default": "Spend this month"
+        },
+        "ezVOz__content": {
+          "type": "string",
+          "default": "$18.40"
+        },
+        "W0P26r__content": {
+          "type": "string",
+          "default": "Limits aren't reported to Penkra."
+        }
+      },
+      "bindings": {
+        "YkA4k__content": {
+          "path": "YkA4k",
+          "property": "content"
+        },
+        "ezVOz__content": {
+          "path": "ezVOz",
+          "property": "content"
+        },
+        "W0P26r__content": {
+          "path": "W0P26r",
+          "property": "content"
+        }
+      }
+    },
+    "cff7D": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "Ch7DA": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "cHNiT": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "chpd8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "lszYy__content": {
+          "type": "string",
+          "default": "Claude Sonnet 5"
+        },
+        "f3XgC__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "lszYy__content": {
+          "path": "lszYy",
+          "property": "content"
+        },
+        "f3XgC__enabled": {
+          "path": "f3XgC",
+          "property": "enabled"
+        }
+      }
+    },
+    "cLs2Y": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "CnjHY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qrW5C.enabled"
+    },
+    "cP0td": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "CQn06": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "cRikk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: lMKHi/xvytl.<missing>, lMKHi/dTbQd.<missing>, lMKHi/dTbQd/g4cilK.<missing>, lMKHi/dTbQd/A0EUQq.<missing>, lMKHi/dTbQd/W8ElrI.<missing>, lMKHi/dTbQd/o5DVCX.<missing>"
+    },
+    "cxVkB": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "s1ZlG__content": {
+          "type": "string",
+          "default": "Personal"
+        },
+        "uaRbh__content": {
+          "type": "string",
+          "default": "↵"
+        }
+      },
+      "bindings": {
+        "s1ZlG__content": {
+          "path": "s1ZlG",
+          "property": "content"
+        },
+        "uaRbh__content": {
+          "path": "uaRbh",
+          "property": "content"
+        }
+      }
+    },
+    "czn54": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "d4n15": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: lMKHi.type, lMKHi.id, lMKHi.name, lMKHi.fill, lMKHi.layout, lMKHi.gap, lMKHi.children"
+    },
+    "D5gMiR": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>, IHe8Q.x, IHe8Q.y"
+    },
+    "d7Gs0": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Qoaut.theme.state, D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "D7oEM": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "FPPx1__content": {
+          "type": "string",
+          "default": "Title"
+        },
+        "QkN38__content": {
+          "type": "string",
+          "default": "Subtitle"
+        }
+      },
+      "bindings": {
+        "FPPx1__content": {
+          "path": "FPPx1",
+          "property": "content"
+        },
+        "QkN38__content": {
+          "path": "QkN38",
+          "property": "content"
+        }
+      }
+    },
+    "d86ma8": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>"
+    },
+    "D880qm": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: AsyPO/V0mFM.<missing>, AsyPO/JF5Gl.<missing>, AsyPO/fpeUT.<missing>, AsyPO/yo1tz.<missing>, AsyPO/IqJDT.<missing>, AsyPO/P3LMy.<missing>, AsyPO/uqKAv.<missing>"
+    },
+    "DA5iG": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "dajpG": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "h4Ddx3__icon": {
+          "type": "icon",
+          "default": "square-pen"
+        },
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "h4Ddx3__icon": {
+          "path": "h4Ddx3",
+          "property": "icon"
+        },
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "De6dz": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "demD9": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "DGjLV": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "q7dTkt__content": {
+          "type": "string",
+          "default": "Audit HIPAA compliance"
+        },
+        "WicxU__x": {
+          "type": "number",
+          "default": 190.09
+        },
+        "WicxU__width": {
+          "type": "number",
+          "default": 1043.91
+        }
+      },
+      "bindings": {
+        "q7dTkt__content": {
+          "path": "q7dTkt",
+          "property": "content"
+        },
+        "WicxU__x": {
+          "path": "WicxU",
+          "property": "x"
+        },
+        "WicxU__width": {
+          "path": "WicxU",
+          "property": "width"
+        }
+      }
+    },
+    "Dkhcv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zSwFv.type, zSwFv.id, zSwFv.name, zSwFv.width, zSwFv.layout, zSwFv.gap, zSwFv.padding, zSwFv.alignItems, zSwFv.children, ISa9R/fiR2o.<missing>, ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "Dp265": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: JlDCK/h4Ddx3.<missing>, JlDCK/pmhIT.<missing>, teLmz.enabled"
+    },
+    "dPIGb": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "DSDog": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.type, f8mp2.id, f8mp2.name, f8mp2.context, f8mp2.clip, f8mp2.fill"
+    },
+    "dTbQd": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "g4cilK__content": {
+          "type": "string",
+          "default": "Session"
+        },
+        "A0EUQq__content": {
+          "type": "string",
+          "default": "· resets in 2h 14m"
+        },
+        "W8ElrI__content": {
+          "type": "string",
+          "default": "62%"
+        },
+        "o5DVCX__width": {
+          "type": "number",
+          "default": 133
+        }
+      },
+      "bindings": {
+        "g4cilK__content": {
+          "path": "g4cilK",
+          "property": "content"
+        },
+        "A0EUQq__content": {
+          "path": "A0EUQq",
+          "property": "content"
+        },
+        "W8ElrI__content": {
+          "path": "W8ElrI",
+          "property": "content"
+        },
+        "o5DVCX__width": {
+          "path": "o5DVCX",
+          "property": "width"
+        }
+      }
+    },
+    "dtNXL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: JjZOf.id, JjZOf.type, JjZOf.ref, JjZOf.name, JjZOf.descendants, CtGxH.id, CtGxH.type, CtGxH.ref, CtGxH.name, CtGxH.descendants, X4yHf.id, X4yHf.type, X4yHf.ref, X4yHf.name, X4yHf.descendants"
+    },
+    "DUrFQ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: lMKHi.id, lMKHi.type, lMKHi.ref, lMKHi.name, lMKHi.descendants"
+    },
+    "DxWas": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: RPqic/nCmc5/k1S80.<missing>"
+    },
+    "E1QXu": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "e1VHTY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: FXtOq.enabled"
+    },
+    "e2FYbi": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "e3Hpk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "E3jeG": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: A5WMtZ.enabled"
+    },
+    "E5Muw7": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "e5pNv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "e7JAI4": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "E7z8ym": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>, IHe8Q.x, IHe8Q.y"
+    },
+    "E9mkR": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "EFMve": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "EHH0u": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xcAbR/WjkMK.<missing>, xcAbR/OwYkX.<missing>, xcAbR/Dtu7v.<missing>, xcAbR/qhZk7.<missing>, xcAbR/ckx6U.<missing>"
+    },
+    "ENOrs": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "EPoLv": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "Eq833__width": {
+          "type": "number",
+          "default": 16
+        },
+        "Eq833__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "Eq833__width": {
+          "path": "Eq833",
+          "property": "width"
+        },
+        "Eq833__height": {
+          "path": "Eq833",
+          "property": "height"
+        }
+      }
+    },
+    "eQt4v": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "f3XgC__enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "f3XgC__content": {
+          "type": "string",
+          "default": "Medium"
+        }
+      },
+      "bindings": {
+        "f3XgC__enabled": {
+          "path": "f3XgC",
+          "property": "enabled"
+        },
+        "f3XgC__content": {
+          "path": "f3XgC",
+          "property": "content"
+        }
+      }
+    },
+    "EQVyx": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "va2Qv__icon": {
+          "type": "icon",
+          "default": "package"
+        }
+      },
+      "bindings": {
+        "va2Qv__icon": {
+          "path": "va2Qv",
+          "property": "icon"
+        }
+      }
+    },
+    "ESdJH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: FXtOq.enabled"
+    },
+    "eXgcN": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "eXt4D": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "F1DYs0": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "f2vAn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "F6mtk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "f90qfN": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "f91B90": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "FABGK": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "szHuN__width": {
+          "type": "number",
+          "default": 16
+        },
+        "szHuN__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "szHuN__width": {
+          "path": "szHuN",
+          "property": "width"
+        },
+        "szHuN__height": {
+          "path": "szHuN",
+          "property": "height"
+        }
+      }
+    },
+    "fBqeg": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "fcwwM": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "YcQWy__content": {
+          "type": "string",
+          "default": "Best app to work with AI"
+        }
+      },
+      "bindings": {
+        "YcQWy__content": {
+          "path": "YcQWy",
+          "property": "content"
+        }
+      },
+      "modes": {
+        "state": "default"
+      }
+    },
+    "fFQF6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "FhdCZ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "fhJIP": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vTd4u__icon": {
+          "type": "icon",
+          "default": "arrow-left"
+        }
+      },
+      "bindings": {
+        "vTd4u__icon": {
+          "path": "vTd4u",
+          "property": "icon"
+        }
+      }
+    },
+    "fJi5t": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "FJKog": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zSwFv/mpj5n.<missing>, ISa9R/fiR2o.<missing>, ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "foUPP": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: WPGEa.enabled"
+    },
+    "FuB29": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "FV9KK": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "l5LNlW__content": {
+          "type": "string",
+          "default": "Sign in"
+        }
+      },
+      "bindings": {
+        "l5LNlW__content": {
+          "path": "l5LNlW",
+          "property": "content"
+        }
+      }
+    },
+    "FVVGC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>"
+    },
+    "FvVWd": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "fYgOB": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "G0F4HL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "G1GigO": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "g1ooB6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "g4Jyn2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.enabled, eg8Uz.width"
+    },
+    "g54R3Q": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "g5vknZ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "c662o__icon": {
+          "type": "icon",
+          "default": "grid-2x2"
+        }
+      },
+      "bindings": {
+        "c662o__icon": {
+          "path": "c662o",
+          "property": "icon"
+        }
+      }
+    },
+    "G63yDq": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: KfcxD.type, KfcxD.id, KfcxD.name, KfcxD.children, K9Ofk2.type, K9Ofk2.id, K9Ofk2.name, K9Ofk2.height, K9Ofk2.layout, K9Ofk2.children"
+    },
+    "GAMp6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "gbZOi": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        }
+      }
+    },
+    "GHEvu": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "gHPxI": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "va2Qv__icon": {
+          "type": "icon",
+          "default": "package"
+        },
+        "va2Qv__width": {
+          "type": "number",
+          "default": 20
+        },
+        "va2Qv__height": {
+          "type": "number",
+          "default": 20
+        }
+      },
+      "bindings": {
+        "va2Qv__icon": {
+          "path": "va2Qv",
+          "property": "icon"
+        },
+        "va2Qv__width": {
+          "path": "va2Qv",
+          "property": "width"
+        },
+        "va2Qv__height": {
+          "path": "va2Qv",
+          "property": "height"
+        }
+      }
+    },
+    "giqHx": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "Gk41i": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: CtGxH.theme.state, X4yHf.theme.state"
+    },
+    "gL1fX": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "gpe43": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: KfcxD.type, KfcxD.id, KfcxD.name, KfcxD.children, K9Ofk2.type, K9Ofk2.id, K9Ofk2.name, K9Ofk2.height, K9Ofk2.layout, K9Ofk2.children"
+    },
+    "GQH5P": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: IEsYn.id, IEsYn.type, IEsYn.ref, IEsYn.name, Lgvln.enabled, RZj3u.enabled, RZj3u.width, RZj3u.height, YeDPr/N9aKK5.<missing>"
+    },
+    "GRzfz": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "gsJks": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "GTRBK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "gtuEX": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "gTYdt": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/C2Yo8k.<missing>, DxWas/RPqic.<missing>, DxWas/eQt4v.<missing>, DxWas/iG4bz.<missing>, DxWas/E7z8ym.<missing>, DxWas/o7XzT.<missing>"
+    },
+    "gupf7": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "GVhap": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "or6Zk__width": {
+          "type": "number",
+          "default": 16
+        },
+        "or6Zk__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "or6Zk__width": {
+          "path": "or6Zk",
+          "property": "width"
+        },
+        "or6Zk__height": {
+          "path": "or6Zk",
+          "property": "height"
+        }
+      }
+    },
+    "GVIVx": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "GVqUv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: PCHyj/nd2S5.<missing>"
+    },
+    "GvYNk": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "tlyzy__height": {
+          "type": "number",
+          "default": 638
+        },
+        "iFhvv__width": {
+          "type": "number",
+          "default": 658
+        },
+        "iFhvv__height": {
+          "type": "number",
+          "default": 638
+        },
+        "i1xVJ__x": {
+          "type": "number",
+          "default": 9
+        },
+        "i1xVJ__width": {
+          "type": "number",
+          "default": 640
+        }
+      },
+      "bindings": {
+        "tlyzy__height": {
+          "path": "tlyzy",
+          "property": "height"
+        },
+        "iFhvv__width": {
+          "path": "iFhvv",
+          "property": "width"
+        },
+        "iFhvv__height": {
+          "path": "iFhvv",
+          "property": "height"
+        },
+        "i1xVJ__x": {
+          "path": "i1xVJ",
+          "property": "x"
+        },
+        "i1xVJ__width": {
+          "path": "i1xVJ",
+          "property": "width"
+        }
+      }
+    },
+    "GXa3A": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: T0JYmK.width, T0JYmK.height, T0JYmK.padding, T0JYmK.layout, PAD8i.x, PAD8i.y, qrW5C.enabled, qrW5C.x, qrW5C.y, qrW5C.width, qrW5C.height, qrW5C.padding, qrW5C.layout, NwDjX.x, NwDjX.y"
+    },
+    "gypLM": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vTd4u__icon": {
+          "type": "icon",
+          "default": "arrow-left"
+        }
+      },
+      "bindings": {
+        "vTd4u__icon": {
+          "path": "vTd4u",
+          "property": "icon"
+        }
+      }
+    },
+    "H6mDzK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "H6tK6D": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "Hetpo": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "heU9D": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>"
+    },
+    "hf5oZ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Vc15s.theme.state"
+    },
+    "HffgD": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "hfOpj": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: f5K8O.enabled"
+    },
+    "HFzMK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: u9lEj/NfP7X.<missing>, QPowY/n59JT/shIbm/fPKBe/k16ybr.<missing>"
+    },
+    "HHJCQ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: tMjKP.enabled, wiOaF.enabled"
+    },
+    "HTwkk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>"
+    },
+    "HWfWP": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QuKcP.enabled"
+    },
+    "i0zpy": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QPowY/rAOdE/ezIAu/R474tu.<missing>, QPowY/n59JT/shIbm.<missing>, QPowY/n59JT/shIbm/ratNe.<missing>, QPowY/n59JT/shIbm/L4ruG6.<missing>, QPowY/n59JT/shIbm/sMBeu/R474tu.<missing>, QPowY/n59JT/shIbm/P0Fhz.<missing>, QPowY/n59JT/shIbm/P0Fhz/R474tu.<missing>, QPowY/n59JT/shIbm/QbSHJ/R474tu.<missing>, QPowY/n59JT/shIbm/PxLo2/R474tu.<missing>"
+    },
+    "i1CWn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "I298BP": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xcAbR/kkyGm.<missing>, xcAbR/Dtu7v.<missing>, xcAbR/qhZk7.<missing>, xcAbR/T1MdW.<missing>"
+    },
+    "i3yqN": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "WBDAq__content": {
+          "type": "string",
+          "default": "name@example.com"
+        },
+        "N9aKK5__content": {
+          "type": "string",
+          "default": "Subscription"
+        },
+        "LLBGJ__content": {
+          "type": "string",
+          "default": "Disabled"
+        }
+      },
+      "bindings": {
+        "WBDAq__content": {
+          "path": "WBDAq",
+          "property": "content"
+        },
+        "N9aKK5__content": {
+          "path": "N9aKK5",
+          "property": "content"
+        },
+        "LLBGJ__content": {
+          "path": "LLBGJ",
+          "property": "content"
+        }
+      }
+    },
+    "I7pRgK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: VJwQ0.enabled"
+    },
+    "IckBq": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "ijzuZ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "feO8U__content": {
+          "type": "string",
+          "default": "Who gets the Patient onboarding completed mail on prod? Is it a list or just one person? I need to know who to contact if there's an issue with the onboarding flow."
+        }
+      },
+      "bindings": {
+        "feO8U__content": {
+          "path": "feO8U",
+          "property": "content"
+        }
+      }
+    },
+    "IN6u0": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "iPvUJ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "IQJu8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vTd4u__icon": {
+          "type": "icon",
+          "default": "arrow-left"
+        }
+      },
+      "bindings": {
+        "vTd4u__icon": {
+          "path": "vTd4u",
+          "property": "icon"
+        }
+      }
+    },
+    "IR0BU": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Qoaut.theme.state, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "ISa9R": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/C2Yo8k.<missing>, DxWas/RPqic.<missing>, DxWas/eQt4v.<missing>, DxWas/iG4bz.<missing>, DxWas/E7z8ym.<missing>, DxWas/o7XzT.<missing>"
+    },
+    "IwASW": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "z8uGgg__fill": {
+          "type": "color",
+          "default": "$color-text-foreground-tertiary"
+        },
+        "vbDge__fill": {
+          "type": "color",
+          "default": "$color-text-foreground"
+        }
+      },
+      "bindings": {
+        "z8uGgg__fill": {
+          "path": "z8uGgg",
+          "property": "fill"
+        },
+        "vbDge__fill": {
+          "path": "vbDge",
+          "property": "fill"
+        }
+      }
+    },
+    "ixC7P": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "IXqbS": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "J0ikY": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "j5jcV": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "j6GPiA": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "J91AxM": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "j9c4u": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "jcizq": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "i3NFu__width": {
+          "type": "number",
+          "default": 16
+        },
+        "i3NFu__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "i3NFu__width": {
+          "path": "i3NFu",
+          "property": "width"
+        },
+        "i3NFu__height": {
+          "path": "i3NFu",
+          "property": "height"
+        }
+      }
+    },
+    "jDxPe": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QuKcP.enabled"
+    },
+    "JgqBw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "jhisd": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "jJce7": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "JJEUs": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I298BP/FuB29.<missing>, I298BP/FuB29/t5EIcf.<missing>"
+    },
+    "jkSpX": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: tMjKP.enabled, wiOaF.enabled"
+    },
+    "jl1YB": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JwGS2__content": {
+          "type": "string",
+          "default": "Not connected"
+        }
+      },
+      "bindings": {
+        "JwGS2__content": {
+          "path": "JwGS2",
+          "property": "content"
+        }
+      }
+    },
+    "JlDCK": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "h4Ddx3__icon": {
+          "type": "icon",
+          "default": "square-pen"
+        },
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "h4Ddx3__icon": {
+          "path": "h4Ddx3",
+          "property": "icon"
+        },
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "JTXWM": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "r3B0GV__content": {
+          "type": "string",
+          "default": "GitHub"
+        },
+        "K9Ofk2__content": {
+          "type": "string",
+          "default": "⌃⇧G"
+        }
+      },
+      "bindings": {
+        "r3B0GV__content": {
+          "path": "r3B0GV",
+          "property": "content"
+        },
+        "K9Ofk2__content": {
+          "path": "K9Ofk2",
+          "property": "content"
+        }
+      }
+    },
+    "JvGL9": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "JyNaO": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "K11Jau": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "k3t0N": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "k5dbd6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "K8eCC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: WPGEa.enabled"
+    },
+    "kfiQE": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.type, fiR2o.id, fiR2o.name, fiR2o.context, fiR2o.height, fiR2o.cornerRadius, fiR2o.padding, fiR2o.justifyContent, fiR2o.children"
+    },
+    "kGz6w": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        }
+      }
+    },
+    "KIkqv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.type, BTDcy.id, BTDcy.icon, BTDcy.library"
+    },
+    "kJOtH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: x1XmZ.enabled"
+    },
+    "kjRSe": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: AsyPO/V0mFM.<missing>, AsyPO/JF5Gl.<missing>, AsyPO/fpeUT.<missing>, AsyPO/yo1tz.<missing>, AsyPO/P3LMy.<missing>, AsyPO/uqKAv.<missing>"
+    },
+    "kqawW": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "KsKIn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "KTIQj": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "kVPR9": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "KWpsr": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "l28d3": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default",
+        "harness": "claude",
+        "thread-level": "nested",
+        "work-status": "running"
+      }
+    },
+    "l6DIME": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "L8fGh": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "hX6Tx__icon": {
+          "type": "icon",
+          "default": "file-diff"
+        },
+        "H1j4Jt__content": {
+          "type": "string",
+          "default": "3 files changed"
+        },
+        "n5sIM__content": {
+          "type": "string",
+          "default": "+24 −8"
+        },
+        "SbvdI__content": {
+          "type": "string",
+          "default": "Review"
+        }
+      },
+      "bindings": {
+        "hX6Tx__icon": {
+          "path": "hX6Tx",
+          "property": "icon"
+        },
+        "H1j4Jt__content": {
+          "path": "H1j4Jt",
+          "property": "content"
+        },
+        "n5sIM__content": {
+          "path": "n5sIM",
+          "property": "content"
+        },
+        "SbvdI__content": {
+          "path": "SbvdI",
+          "property": "content"
+        }
+      }
+    },
+    "lhF2w": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "lhGcK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "lhZSw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kNvwZ.enabled, Tmct9.type, Tmct9.id, Tmct9.name, Tmct9.children, qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "lkNGL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zSwFv/mpj5n.<missing>, ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/bqXWl.<missing>, ISa9R/CnM59.<missing>, ISa9R/DxWas/eQt4v.<missing>"
+    },
+    "lnAdH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "LRqek": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "lTvMs": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: S1fwB.enabled, k7cyn.enabled, MjQAM.enabled"
+    },
+    "LUx5C": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: lMKHi.id, lMKHi.type, lMKHi.ref, lMKHi.name, lMKHi.descendants"
+    },
+    "lzI9J": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "m3uOz": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "jzedw__content": {
+          "type": "string",
+          "default": "emmanuel@penkra.com"
+        },
+        "r3nQb8__content": {
+          "type": "string",
+          "default": "e.atta@gigborg.com"
+        },
+        "Q2lYj__content": {
+          "type": "string",
+          "default": "sk-ant-…7Xq2"
+        }
+      },
+      "bindings": {
+        "jzedw__content": {
+          "path": "jzedw",
+          "property": "content"
+        },
+        "r3nQb8__content": {
+          "path": "r3nQb8",
+          "property": "content"
+        },
+        "Q2lYj__content": {
+          "path": "Q2lYj",
+          "property": "content"
+        }
+      }
+    },
+    "Mam3h": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "mCgZz": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "MdkCM": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "MDR9I": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: HZ1Ce.theme.state"
+    },
+    "mhFzm": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Qoaut.theme.state, D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "mhsDg": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/bqXWl.<missing>, ISa9R/CnM59.<missing>, ISa9R/DxWas/eQt4v/y6Ej2.<missing>, ISa9R/DxWas/eQt4v/lszYy.<missing>, ISa9R/DxWas/eQt4v/f3XgC.<missing>, ISa9R/DxWas/eQt4v/X3x2AU.<missing>, ISa9R/DxWas/eQt4v/X3x2AU/e2FYbi.<missing>, ISa9R/DxWas/eQt4v/X3x2AU/e2FYbi/JywZr.<missing>, ISa9R/DxWas/eQt4v/X3x2AU/V5YIRO.<missing>, ISa9R/DxWas/eQt4v/X3x2AU/SVDXt.<missing>, ISa9R/DxWas/eQt4v/X3x2AU/gupf7.<missing>"
+    },
+    "MjQAM": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>, IHe8Q.x, IHe8Q.y"
+    },
+    "mKgai": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: S1fwB.enabled"
+    },
+    "mKvon": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "MlXDf": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "z8uGgg__fill": {
+          "type": "color",
+          "default": "$color-text-foreground-tertiary"
+        },
+        "vbDge__fill": {
+          "type": "color",
+          "default": "$color-text-foreground"
+        }
+      },
+      "bindings": {
+        "z8uGgg__fill": {
+          "path": "z8uGgg",
+          "property": "fill"
+        },
+        "vbDge__fill": {
+          "path": "vbDge",
+          "property": "fill"
+        }
+      }
+    },
+    "MNoLr": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: mKvon/O5ZiWe.<missing>, mKvon/ncF0W.<missing>"
+    },
+    "mOn8t": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "va2Qv__icon": {
+          "type": "icon",
+          "default": "package"
+        },
+        "va2Qv__width": {
+          "type": "number",
+          "default": 20
+        },
+        "va2Qv__height": {
+          "type": "number",
+          "default": 20
+        }
+      },
+      "bindings": {
+        "va2Qv__icon": {
+          "path": "va2Qv",
+          "property": "icon"
+        },
+        "va2Qv__width": {
+          "path": "va2Qv",
+          "property": "width"
+        },
+        "va2Qv__height": {
+          "path": "va2Qv",
+          "property": "height"
+        }
+      }
+    },
+    "MPxN2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "mRXoD": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "FPPx1__content": {
+          "type": "string",
+          "default": "Title"
+        },
+        "QkN38__content": {
+          "type": "string",
+          "default": "Subtitle"
+        }
+      },
+      "bindings": {
+        "FPPx1__content": {
+          "path": "FPPx1",
+          "property": "content"
+        },
+        "QkN38__content": {
+          "path": "QkN38",
+          "property": "content"
+        }
+      }
+    },
+    "mt2Qs": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "V6ETK__content": {
+          "type": "string",
+          "default": "Section Title"
+        },
+        "dieUy__content": {
+          "type": "string",
+          "default": "Section description"
+        }
+      },
+      "bindings": {
+        "V6ETK__content": {
+          "path": "V6ETK",
+          "property": "content"
+        },
+        "dieUy__content": {
+          "path": "dieUy",
+          "property": "content"
+        }
+      }
+    },
+    "mToII": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JwGS2__content": {
+          "type": "string",
+          "default": "Not connected"
+        }
+      },
+      "bindings": {
+        "JwGS2__content": {
+          "path": "JwGS2",
+          "property": "content"
+        }
+      }
+    },
+    "mtQp7": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "MUjSw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "MXUOa": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        }
+      }
+    },
+    "myLAJ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kWafJ.type, kWafJ.id, kWafJ.name, kWafJ.content, kWafJ.fontFamily, kWafJ.fontSize, kWafJ.fontWeight"
+    },
+    "myZwt": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "N0hZk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: x1XmZ.enabled, c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "N18Xsn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: e5pNv.theme.state, vXfoZ.theme.state, H6mDzK.theme.state, qNnCw.theme.state, qKbV7.theme.state, RlWPm.theme.state, RlWPm/c4mVqp.<missing>, RlWPm/QAkpO.<missing>, RlWPm/eg8Uz.<missing>, vUMJL.theme.state, vUMJL/c4mVqp.<missing>, vUMJL/QAkpO.<missing>, vUMJL/eg8Uz.<missing>, Y2q95w.theme.state, Y2q95w/c4mVqp.<missing>, Y2q95w/QAkpO.<missing>, Y2q95w/eg8Uz.<missing>, kJOtH.theme.state, kJOtH/c4mVqp.<missing>, kJOtH/QAkpO.<missing>, kJOtH/eg8Uz.<missing>, g4Jyn2.theme.state, g4Jyn2/c4mVqp.<missing>, g4Jyn2/QAkpO.<missing>, g4Jyn2/eg8Uz.<missing>"
+    },
+    "N1ENo": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "N1zTAY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "n3r1hV": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kNvwZ.enabled, Tmct9.type, Tmct9.id, Tmct9.name, Tmct9.children, qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "n59JT": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ezIAu.enabled, shIbm/YKBd8.<missing>, shIbm/ratNe.<missing>, shIbm/sMBeu.<missing>, shIbm/P0Fhz.<missing>, shIbm/QbSHJ.<missing>, shIbm/PxLo2.<missing>"
+    },
+    "n5KhX": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "Z2qk0L__icon": {
+          "type": "icon",
+          "default": "user"
+        },
+        "WBDAq__content": {
+          "type": "string",
+          "default": "name@example.com"
+        },
+        "N9aKK5__content": {
+          "type": "string",
+          "default": "Subscription"
+        },
+        "E1Yfq__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "Z2qk0L__icon": {
+          "path": "Z2qk0L",
+          "property": "icon"
+        },
+        "WBDAq__content": {
+          "path": "WBDAq",
+          "property": "content"
+        },
+        "N9aKK5__content": {
+          "path": "N9aKK5",
+          "property": "content"
+        },
+        "E1Yfq__enabled": {
+          "path": "E1Yfq",
+          "property": "enabled"
+        }
+      }
+    },
+    "N82iN": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        }
+      }
+    },
+    "ncF0W": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: EccQ0.x"
+    },
+    "nCq54": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "nEH29": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "neXE4": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "NGt9f": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QeU5o.enabled"
+    },
+    "NH0Pr": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "NH1s2": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "nivhZ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "r3B0GV__content": {
+          "type": "string",
+          "default": "GitHub"
+        },
+        "K9Ofk2__content": {
+          "type": "string",
+          "default": "⌃⇧G"
+        }
+      },
+      "bindings": {
+        "r3B0GV__content": {
+          "path": "r3B0GV",
+          "property": "content"
+        },
+        "K9Ofk2__content": {
+          "path": "K9Ofk2",
+          "property": "content"
+        }
+      }
+    },
+    "NJr4s": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "NOjJM": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JwGS2__content": {
+          "type": "string",
+          "default": "Not connected"
+        }
+      },
+      "bindings": {
+        "JwGS2__content": {
+          "path": "JwGS2",
+          "property": "content"
+        }
+      }
+    },
+    "NoNgc": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "nSpvB": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qrW5C.enabled"
+    },
+    "NU9gY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: IEsYn.id, IEsYn.type, IEsYn.ref, IEsYn.name, Lgvln.enabled, RZj3u.enabled, RZj3u.width, RZj3u.height, YeDPr/N9aKK5.<missing>"
+    },
+    "NwWvh": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: JjZOf.id, JjZOf.type, JjZOf.ref, JjZOf.name, JjZOf.descendants, CtGxH.id, CtGxH.type, CtGxH.ref, CtGxH.name, CtGxH.theme.state, CtGxH.descendants, X4yHf.id, X4yHf.type, X4yHf.ref, X4yHf.name, X4yHf.theme.state, X4yHf.descendants"
+    },
+    "o0g6L": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GYlX9__content": {
+          "type": "string",
+          "default": "Connect to the internet"
+        },
+        "rhD2p__content": {
+          "type": "string",
+          "default": "\"Sync your invoices with your Ledger account.\""
+        }
+      },
+      "bindings": {
+        "GYlX9__content": {
+          "path": "GYlX9",
+          "property": "content"
+        },
+        "rhD2p__content": {
+          "path": "rhD2p",
+          "property": "content"
+        }
+      },
+      "modes": {
+        "state": "selected"
+      }
+    },
+    "o11MMc": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "o3r7N": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas/o7XzT.<missing>"
+    },
+    "o5ndx": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: gKtf1.padding"
+    },
+    "o5ry6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "o6y9E": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "O9iYg9": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vTd4u__icon": {
+          "type": "icon",
+          "default": "arrow-left"
+        }
+      },
+      "bindings": {
+        "vTd4u__icon": {
+          "path": "vTd4u",
+          "property": "icon"
+        }
+      }
+    },
+    "O9J2t": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "O9qmb": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>"
+    },
+    "ockCO": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Qoaut.theme.state, D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "Od8Zw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nCq54.theme.state, boG0K/DwtPM.<missing>, boG0K/MY0Wi.<missing>, wZDBO/DwtPM.<missing>, wZDBO/MY0Wi.<missing>"
+    },
+    "OIh0b": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "OLin1": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "OM3Bn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "oo054": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "oOLRZ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "Otv9J": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "P371H": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qrW5C.enabled"
+    },
+    "p3pY0": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zSwFv/mpj5n.<missing>, ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "P7INpU": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "HccPA__fill": {
+          "type": "color",
+          "default": "$color-background-button-secondary-active"
+        },
+        "feO8U__fill": {
+          "type": "color",
+          "default": "$color-text-foreground"
+        }
+      },
+      "bindings": {
+        "HccPA__fill": {
+          "path": "HccPA",
+          "property": "fill"
+        },
+        "feO8U__fill": {
+          "path": "feO8U",
+          "property": "fill"
+        }
+      }
+    },
+    "p7PQG": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JwGS2__content": {
+          "type": "string",
+          "default": "Not connected"
+        }
+      },
+      "bindings": {
+        "JwGS2__content": {
+          "path": "JwGS2",
+          "property": "content"
+        }
+      }
+    },
+    "P9NqX": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "PA3q9": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: KfcxD.type, KfcxD.id, KfcxD.name, KfcxD.children, K9Ofk2.type, K9Ofk2.id, K9Ofk2.name"
+    },
+    "pBXEI": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "PCHyj": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "focus"
+      }
+    },
+    "pEK6m": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "PesaX": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "FPPx1__content": {
+          "type": "string",
+          "default": "Title"
+        },
+        "QkN38__content": {
+          "type": "string",
+          "default": "Subtitle"
+        }
+      },
+      "bindings": {
+        "FPPx1__content": {
+          "path": "FPPx1",
+          "property": "content"
+        },
+        "QkN38__content": {
+          "path": "QkN38",
+          "property": "content"
+        }
+      }
+    },
+    "pglhY": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "pheTT": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "m9qox__width": {
+          "type": "number",
+          "default": 16
+        },
+        "m9qox__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "m9qox__width": {
+          "path": "m9qox",
+          "property": "width"
+        },
+        "m9qox__height": {
+          "path": "m9qox",
+          "property": "height"
+        }
+      }
+    },
+    "PIGSi": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "hX6Tx__icon": {
+          "type": "icon",
+          "default": "file-diff"
+        },
+        "H1j4Jt__content": {
+          "type": "string",
+          "default": "3 files changed"
+        },
+        "n5sIM__content": {
+          "type": "string",
+          "default": "+24 −8"
+        },
+        "SbvdI__content": {
+          "type": "string",
+          "default": "Review"
+        }
+      },
+      "bindings": {
+        "hX6Tx__icon": {
+          "path": "hX6Tx",
+          "property": "icon"
+        },
+        "H1j4Jt__content": {
+          "path": "H1j4Jt",
+          "property": "content"
+        },
+        "n5sIM__content": {
+          "path": "n5sIM",
+          "property": "content"
+        },
+        "SbvdI__content": {
+          "path": "SbvdI",
+          "property": "content"
+        }
+      }
+    },
+    "PKcS2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "PkyqI": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "PLFKz": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "plSun": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xnhch.justifyContent, FMKUh.enabled"
+    },
+    "pMgah": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "pNBpQ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "FPPx1__content": {
+          "type": "string",
+          "default": "Title"
+        },
+        "QkN38__content": {
+          "type": "string",
+          "default": "Subtitle"
+        }
+      },
+      "bindings": {
+        "FPPx1__content": {
+          "path": "FPPx1",
+          "property": "content"
+        },
+        "QkN38__content": {
+          "path": "QkN38",
+          "property": "content"
+        }
+      }
+    },
+    "pngMX": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "pnmcj": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "prKwH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "ptbv6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: FXtOq.enabled"
+    },
+    "PtBvf": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "pXTD0": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "r3B0GV__content": {
+          "type": "string",
+          "default": "GitHub"
+        },
+        "K9Ofk2__content": {
+          "type": "string",
+          "default": "⌃⇧G"
+        }
+      },
+      "bindings": {
+        "r3B0GV__content": {
+          "path": "r3B0GV",
+          "property": "content"
+        },
+        "K9Ofk2__content": {
+          "path": "K9Ofk2",
+          "property": "content"
+        }
+      }
+    },
+    "Q4NuMZ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "Q9cWk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "qBBre": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "qbQ0d": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: bwn7N.enabled"
+    },
+    "qdAWJ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "QEpnG": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "qFsEa": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "QHIUh": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "qhL7w": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: KfcxD.type, KfcxD.id, KfcxD.name, KfcxD.children, K9Ofk2.type, K9Ofk2.id, K9Ofk2.name, K9Ofk2.height, K9Ofk2.layout, K9Ofk2.children"
+    },
+    "QIDBM": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "qKbV7": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "qNnCw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "QNSa6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "Qoaut": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "qWLNd": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: WPGEa.enabled"
+    },
+    "QWmQN": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "QYW5F": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "R4BLe": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "DfPw6__fill": {
+          "type": "string",
+          "default": "$text-secondary"
+        },
+        "CywKu__fill": {
+          "type": "string",
+          "default": "$text-primary"
+        },
+        "CywKu__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "u7bBy__fill": {
+          "type": "string",
+          "default": "$accent"
+        }
+      },
+      "bindings": {
+        "DfPw6__fill": {
+          "path": "DfPw6",
+          "property": "fill"
+        },
+        "CywKu__fill": {
+          "path": "CywKu",
+          "property": "fill"
+        },
+        "CywKu__fontWeight": {
+          "path": "CywKu",
+          "property": "fontWeight"
+        },
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        },
+        "u7bBy__fill": {
+          "path": "u7bBy",
+          "property": "fill"
+        }
+      }
+    },
+    "R8Fwq": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JwGS2__content": {
+          "type": "string",
+          "default": "Not connected"
+        }
+      },
+      "bindings": {
+        "JwGS2__content": {
+          "path": "JwGS2",
+          "property": "content"
+        }
+      }
+    },
+    "rAOdE": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: shIbm.enabled"
+    },
+    "RCKE3": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "rdhzY": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        }
+      }
+    },
+    "Rgxau": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "HccPA__fill": {
+          "type": "color",
+          "default": "$color-background-button-secondary-active"
+        },
+        "feO8U__fill": {
+          "type": "color",
+          "default": "$color-text-foreground"
+        }
+      },
+      "bindings": {
+        "HccPA__fill": {
+          "path": "HccPA",
+          "property": "fill"
+        },
+        "feO8U__fill": {
+          "path": "feO8U",
+          "property": "fill"
+        }
+      }
+    },
+    "rI6C4": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xcAbR/WjkMK.<missing>, xcAbR/kkyGm.<missing>, xcAbR/Dtu7v.<missing>, xcAbR/qhZk7.<missing>, xcAbR/T1MdW.<missing>"
+    },
+    "rIDgB": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "RlWPm": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: x1XmZ.enabled"
+    },
+    "RMQNs": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "rnyF3": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "ROdjy": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "RQDpn": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "rv2O6": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "UAvIb__icon": {
+          "type": "icon",
+          "default": "$navigation-chevron-icon"
+        },
+        "Q2Ts7__content": {
+          "type": "string",
+          "default": "penkra"
+        }
+      },
+      "bindings": {
+        "UAvIb__icon": {
+          "path": "UAvIb",
+          "property": "icon"
+        },
+        "Q2Ts7__content": {
+          "path": "Q2Ts7",
+          "property": "content"
+        }
+      }
+    },
+    "Rvsko": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vTd4u__icon": {
+          "type": "icon",
+          "default": "arrow-left"
+        }
+      },
+      "bindings": {
+        "vTd4u__icon": {
+          "path": "vTd4u",
+          "property": "icon"
+        }
+      }
+    },
+    "rvWMu": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vTd4u__icon": {
+          "type": "icon",
+          "default": "arrow-left"
+        },
+        "vTd4u__width": {
+          "type": "number",
+          "default": 14
+        },
+        "vTd4u__height": {
+          "type": "number",
+          "default": 14
+        }
+      },
+      "bindings": {
+        "vTd4u__icon": {
+          "path": "vTd4u",
+          "property": "icon"
+        },
+        "vTd4u__width": {
+          "path": "vTd4u",
+          "property": "width"
+        },
+        "vTd4u__height": {
+          "path": "vTd4u",
+          "property": "height"
+        }
+      }
+    },
+    "S0RCe": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "s2h8I": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "s3hN8v": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "s3hZPT": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/C2Yo8k.<missing>, DxWas/RPqic.<missing>, DxWas/eQt4v.<missing>, DxWas/iG4bz.<missing>, DxWas/E7z8ym.<missing>, DxWas/o7XzT.<missing>"
+    },
+    "s5IyNY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QuKcP.enabled"
+    },
+    "s6nzqA": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "s7CGHX": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: myLAJ/FucHi.<missing>, myLAJ/j3yI5K.<missing>, a6kBA.<missing>, a7OhQD/FucHi.<missing>, a7OhQD/j3yI5K.<missing>, Bk929.<missing>"
+    },
+    "S7zmJD": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "vbDge__content": {
+          "type": "string",
+          "default": "Once approved, I'll read only the production ADMIN_EMAILS value and confirm the exact recipients."
+        }
+      },
+      "bindings": {
+        "vbDge__content": {
+          "path": "vbDge",
+          "property": "content"
+        }
+      }
+    },
+    "s9JwJH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "SBwWn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "scP3z": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "p6XEyb__fill": {
+          "type": "color",
+          "default": "#F4F5F7"
+        },
+        "Vmz4i__content": {
+          "type": "string",
+          "default": "Light"
+        }
+      },
+      "bindings": {
+        "p6XEyb__fill": {
+          "path": "p6XEyb",
+          "property": "fill"
+        },
+        "Vmz4i__content": {
+          "path": "Vmz4i",
+          "property": "content"
+        }
+      }
+    },
+    "SdNCv": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Qoaut.theme.state, D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "shIbm": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "ratNe__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "ratNe__content": {
+          "path": "ratNe",
+          "property": "content"
+        }
+      }
+    },
+    "shzI6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: aIHr8/m95FNh.<missing>, aIHr8/cwT9q.<missing>, aIHr8/AfY0d.<missing>"
+    },
+    "sJVny": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "sO74x": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "feO8U__content": {
+          "type": "string",
+          "default": "Who gets the Patient onboarding completed mail on prod? Is it a list or just one person? I need to know who to contact if there's an issue with the onboarding flow."
+        }
+      },
+      "bindings": {
+        "feO8U__content": {
+          "path": "feO8U",
+          "property": "content"
+        }
+      }
+    },
+    "sPkXG": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "sRprh": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "stjua": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "UAvIb__icon": {
+          "type": "icon",
+          "default": "$navigation-chevron-icon"
+        },
+        "Q2Ts7__content": {
+          "type": "string",
+          "default": "penkra"
+        }
+      },
+      "bindings": {
+        "UAvIb__icon": {
+          "path": "UAvIb",
+          "property": "icon"
+        },
+        "Q2Ts7__content": {
+          "path": "Q2Ts7",
+          "property": "content"
+        }
+      }
+    },
+    "such9": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "suiRU": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "SVDXt": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "SwD87": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "Syhmy": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "T43Ah": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "t5o8th": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "t5xgZm": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "T6TPc": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "t8Ca8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "T9pzG6": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "T9ZxL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: tMjKP.enabled, wiOaF.enabled"
+    },
+    "tdU0y": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kNvwZ.enabled, Tmct9.type, Tmct9.id, Tmct9.name, Tmct9.children, qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "teLmz": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "h4Ddx3__icon": {
+          "type": "icon",
+          "default": "square-pen"
+        },
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "h4Ddx3__icon": {
+          "path": "h4Ddx3",
+          "property": "icon"
+        },
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "tmi9P": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: RZj3u.type, RZj3u.id, RZj3u.name, RZj3u.children"
+    },
+    "TPMgp": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "DfPw6__fill": {
+          "type": "string",
+          "default": "$text-secondary"
+        },
+        "CywKu__fill": {
+          "type": "string",
+          "default": "$text-primary"
+        },
+        "CywKu__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "u7bBy__fill": {
+          "type": "string",
+          "default": "$accent"
+        }
+      },
+      "bindings": {
+        "DfPw6__fill": {
+          "path": "DfPw6",
+          "property": "fill"
+        },
+        "CywKu__fill": {
+          "path": "CywKu",
+          "property": "fill"
+        },
+        "CywKu__fontWeight": {
+          "path": "CywKu",
+          "property": "fontWeight"
+        },
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        },
+        "u7bBy__fill": {
+          "path": "u7bBy",
+          "property": "fill"
+        }
+      }
+    },
+    "TPoJC": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "tSYhD": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: t5EIcf.enabled"
+    },
+    "tt9SY": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "H04st__content": {
+          "type": "string",
+          "default": "penut"
+        }
+      },
+      "bindings": {
+        "H04st__content": {
+          "path": "H04st",
+          "property": "content"
+        }
+      }
+    },
+    "TWCR1": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "h4Ddx3__icon": {
+          "type": "icon",
+          "default": "square-pen"
+        },
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "h4Ddx3__icon": {
+          "path": "h4Ddx3",
+          "property": "icon"
+        },
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "TWDao": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "TWn8P": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "TwqcK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "txqR5": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: VmKT2.theme.state, ptbv6/f9x1Ft.<missing>, e1VHTY/f9x1Ft.<missing>"
+    },
+    "tY1pH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: A5WMtZ.enabled"
+    },
+    "U4rRQC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "u6zxT4": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "U7xEcA": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "O2Mve__content": {
+          "type": "string",
+          "default": "Feature Row Title"
+        }
+      },
+      "bindings": {
+        "O2Mve__content": {
+          "path": "O2Mve",
+          "property": "content"
+        }
+      }
+    },
+    "u8pnEj": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "u9lEj": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "p2SdN__content": {
+          "type": "string",
+          "default": "Codex"
+        }
+      },
+      "bindings": {
+        "p2SdN__content": {
+          "path": "p2SdN",
+          "property": "content"
+        }
+      }
+    },
+    "ub6b5": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "udWwd": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: KfcxD.type, KfcxD.id, KfcxD.name, KfcxD.children, K9Ofk2.type, K9Ofk2.id, K9Ofk2.name"
+    },
+    "UFLQM": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        },
+        "CnM59__fill": {
+          "type": "string",
+          "default": "$text-tertiary"
+        }
+      },
+      "bindings": {
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        },
+        "CnM59__fill": {
+          "path": "CnM59",
+          "property": "fill"
+        }
+      }
+    },
+    "uFObk": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "EccQ0__content": {
+          "type": "string",
+          "default": "Sign in"
+        }
+      },
+      "bindings": {
+        "EccQ0__content": {
+          "path": "EccQ0",
+          "property": "content"
+        }
+      }
+    },
+    "Ug3tk": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Aidds.type, Aidds.id, Aidds.name, Aidds.icon, Aidds.library, Aidds.fill"
+    },
+    "uJA5R": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: DxWas/o7XzT.<missing>"
+    },
+    "UMX4N": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: NukmO.enabled"
+    },
+    "UQsOR": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: TwqcK.theme.state"
+    },
+    "UtckH": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: A5WMtZ.enabled"
+    },
+    "utnMI": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: myLAJ/FucHi.<missing>, myLAJ/j3yI5K.<missing>, a6kBA.<missing>, a7OhQD.enabled"
+    },
+    "uvgSq": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xzXP5/PAD8i.<missing>, xzXP5/qrW5C.<missing>"
+    },
+    "Uyqzs": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, Zd9te.type, Zd9te.id, Zd9te.name, Zd9te.height, Zd9te.padding"
+    },
+    "v4gowy": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: I7pRgK/d86ma8.<missing>, I7pRgK/HTwkk.<missing>"
+    },
+    "V5YIRO": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "V6UYRt": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: A5WMtZ.enabled"
+    },
+    "V775Xw": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "u7bBy__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "u7bBy__enabled": {
+          "path": "u7bBy",
+          "property": "enabled"
+        }
+      }
+    },
+    "V8EV2D": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pmhIT__content": {
+          "type": "string",
+          "default": "New chat"
+        }
+      },
+      "bindings": {
+        "pmhIT__content": {
+          "path": "pmhIT",
+          "property": "content"
+        }
+      }
+    },
+    "v8o34": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "Vc9G8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "VgdHn": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "VmKT2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "vpGun": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "vqCqU": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: zSwFv.type, zSwFv.id, zSwFv.name, zSwFv.width, zSwFv.layout, zSwFv.gap, zSwFv.padding, zSwFv.alignItems, zSwFv.children, ISa9R/fiR2o.<missing>, ISa9R/Eewpn.<missing>, ISa9R/B1ZyM.<missing>, ISa9R/CnM59.<missing>"
+    },
+    "vUMJL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: x1XmZ.enabled"
+    },
+    "vXfoZ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "vzH7W": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "VZlFu": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: fiR2o.enabled"
+    },
+    "w2gli": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "MpY8k__width": {
+          "type": "number",
+          "default": 16
+        },
+        "MpY8k__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "MpY8k__width": {
+          "path": "MpY8k",
+          "property": "width"
+        },
+        "MpY8k__height": {
+          "path": "MpY8k",
+          "property": "height"
+        }
+      }
+    },
+    "w6JYDF": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "whu1F": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "WlTo7": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ta79X.geometry, ta79X.viewBox"
+    },
+    "wlU0o": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Qoaut.theme.state, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "WOFlO": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "hX6Tx__icon": {
+          "type": "icon",
+          "default": "file-diff"
+        },
+        "H1j4Jt__content": {
+          "type": "string",
+          "default": "3 files changed"
+        },
+        "n5sIM__content": {
+          "type": "string",
+          "default": "+24 −8"
+        },
+        "SbvdI__content": {
+          "type": "string",
+          "default": "Review"
+        }
+      },
+      "bindings": {
+        "hX6Tx__icon": {
+          "path": "hX6Tx",
+          "property": "icon"
+        },
+        "H1j4Jt__content": {
+          "path": "H1j4Jt",
+          "property": "content"
+        },
+        "n5sIM__content": {
+          "path": "n5sIM",
+          "property": "content"
+        },
+        "SbvdI__content": {
+          "path": "SbvdI",
+          "property": "content"
+        }
+      }
+    },
+    "wp6ox": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "pEb2d__content": {
+          "type": "string",
+          "default": "Install"
+        },
+        "pEb2d__fill": {
+          "type": "string",
+          "default": "$btn-install-text"
+        }
+      },
+      "bindings": {
+        "pEb2d__content": {
+          "path": "pEb2d",
+          "property": "content"
+        },
+        "pEb2d__fill": {
+          "path": "pEb2d",
+          "property": "fill"
+        }
+      }
+    },
+    "WQhEC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: GVIVx/aIHr8.<missing>"
+    },
+    "wv0D5": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "wXrx3": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "wZDBO": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: MY0Wi.theme.state"
+    },
+    "WZoMK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: ptosx/WicxU.<missing>, bX1vF.gap, bX1vF.padding, o5ry6/I7pRgK.<missing>, o5ry6/I7pRgK/d86ma8.<missing>, o5ry6/I7pRgK/HTwkk.<missing>, Zm7w4/qbQ0d.<missing>, Zm7w4/qbQ0d/FVVGC.<missing>, Zm7w4/qbQ0d/uvgSq.<missing>, CQn06/I7pRgK.<missing>, CQn06/I7pRgK/d86ma8.<missing>, CQn06/I7pRgK/HTwkk.<missing>, fYgOB/qbQ0d.<missing>, fYgOB/qbQ0d/FVVGC.<missing>, fYgOB/qbQ0d/uvgSq.<missing>, De6dz/I7pRgK.<missing>, De6dz/I7pRgK/d86ma8.<missing>, De6dz/I7pRgK/HTwkk.<missing>, pBXEI/qbQ0d.<missing>, pBXEI/qbQ0d/FVVGC.<missing>, pBXEI/qbQ0d/uvgSq.<missing>, PKcS2/I7pRgK.<missing>, PKcS2/I7pRgK/d86ma8.<missing>, PKcS2/I7pRgK/HTwkk.<missing>, A6mac/qbQ0d.<missing>, A6mac/qbQ0d/FVVGC.<missing>, A6mac/qbQ0d/uvgSq.<missing>, Otv9J/I7pRgK.<missing>, Otv9J/I7pRgK/d86ma8.<missing>, Otv9J/I7pRgK/HTwkk.<missing>, tdU0y/qbQ0d.<missing>, tdU0y/qbQ0d/FVVGC.<missing>, tdU0y/qbQ0d/uvgSq.<missing>, JIAes.padding, gTYdt/DxWas.<missing>, gTYdt/DxWas/C2Yo8k.<missing>, gTYdt/DxWas/RPqic.<missing>, gTYdt/DxWas/eQt4v.<missing>, gTYdt/DxWas/iG4bz.<missing>, gTYdt/DxWas/E7z8ym.<missing>"
+    },
+    "x1PcBs": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "r3B0GV__content": {
+          "type": "string",
+          "default": "GitHub"
+        },
+        "K9Ofk2__content": {
+          "type": "string",
+          "default": "⌃⇧G"
+        }
+      },
+      "bindings": {
+        "r3B0GV__content": {
+          "path": "r3B0GV",
+          "property": "content"
+        },
+        "K9Ofk2__content": {
+          "path": "K9Ofk2",
+          "property": "content"
+        }
+      }
+    },
+    "X1z7F": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "FPPx1__content": {
+          "type": "string",
+          "default": "Title"
+        },
+        "QkN38__content": {
+          "type": "string",
+          "default": "Subtitle"
+        }
+      },
+      "bindings": {
+        "FPPx1__content": {
+          "path": "FPPx1",
+          "property": "content"
+        },
+        "QkN38__content": {
+          "path": "QkN38",
+          "property": "content"
+        }
+      }
+    },
+    "X2q4x": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "omSbB__width": {
+          "type": "number",
+          "default": 16
+        },
+        "omSbB__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "omSbB__width": {
+          "path": "omSbB",
+          "property": "width"
+        },
+        "omSbB__height": {
+          "path": "omSbB",
+          "property": "height"
+        }
+      }
+    },
+    "X2x4Ad": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QuKcP.enabled"
+    },
+    "X4kKF": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "X8CREy": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: FMKUh.enabled"
+    },
+    "X9qoq3": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "xaXMo": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "WBDAq__content": {
+          "type": "string",
+          "default": "name@example.com"
+        },
+        "N9aKK5__content": {
+          "type": "string",
+          "default": "Subscription"
+        },
+        "E1Yfq__enabled": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "bindings": {
+        "WBDAq__content": {
+          "path": "WBDAq",
+          "property": "content"
+        },
+        "N9aKK5__content": {
+          "path": "N9aKK5",
+          "property": "content"
+        },
+        "E1Yfq__enabled": {
+          "path": "E1Yfq",
+          "property": "enabled"
+        }
+      }
+    },
+    "xD3Y3": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Vc15s.theme.state"
+    },
+    "XEsMs": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "xf5il": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "xH7N2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "xkskW": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "fiR2o__width": {
+          "type": "number",
+          "default": 608
+        },
+        "CnM59__content": {
+          "type": "string",
+          "default": "Do something"
+        }
+      },
+      "bindings": {
+        "fiR2o__width": {
+          "path": "fiR2o",
+          "property": "width"
+        },
+        "CnM59__content": {
+          "path": "CnM59",
+          "property": "content"
+        }
+      }
+    },
+    "XlZ0i": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "Xm84a": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "Cw0fT__width": {
+          "type": "number",
+          "default": 16
+        },
+        "Cw0fT__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "Cw0fT__width": {
+          "path": "Cw0fT",
+          "property": "width"
+        },
+        "Cw0fT__height": {
+          "path": "Cw0fT",
+          "property": "height"
+        }
+      }
+    },
+    "XnOyr": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "Xpgeo": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: HZ1Ce.theme.state"
+    },
+    "xpS1E": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "WicxU__x": {
+          "type": "number",
+          "default": 190.09
+        },
+        "WicxU__width": {
+          "type": "number",
+          "default": 1043.91
+        }
+      },
+      "bindings": {
+        "WicxU__x": {
+          "path": "WicxU",
+          "property": "x"
+        },
+        "WicxU__width": {
+          "path": "WicxU",
+          "property": "width"
+        }
+      }
+    },
+    "XrqPe": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "XuVh3": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "r3B0GV__content": {
+          "type": "string",
+          "default": "GitHub"
+        },
+        "K9Ofk2__content": {
+          "type": "string",
+          "default": "⌃⇧G"
+        }
+      },
+      "bindings": {
+        "r3B0GV__content": {
+          "path": "r3B0GV",
+          "property": "content"
+        },
+        "K9Ofk2__content": {
+          "path": "K9Ofk2",
+          "property": "content"
+        }
+      }
+    },
+    "XwcmO": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: iG4bz.theme.state, iG4bz/iE5nU/L3IhcP.<missing>"
+    },
+    "xwsNb": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "Xwxlw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: KfcxD.type, KfcxD.id, KfcxD.name, KfcxD.children, K9Ofk2.type, K9Ofk2.id, K9Ofk2.name"
+    },
+    "Y2q95w": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: x1XmZ.enabled"
+    },
+    "Y2v3ag": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "Y3Wuc": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: A5WMtZ.enabled"
+    },
+    "y8DVf": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "y8N7S6": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "JywZr__content": {
+          "type": "string",
+          "default": "Claude Haiku 4.5"
+        }
+      },
+      "bindings": {
+        "JywZr__content": {
+          "path": "JywZr",
+          "property": "content"
+        }
+      }
+    },
+    "yAUcl": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: nSpvB/PAD8i.<missing>, nSpvB/qrW5C.<missing>"
+    },
+    "YCmpC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "yejog": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: QuKcP.enabled"
+    },
+    "yF9Y3": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "YI5g1": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "yIEYV": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "c328j3__width": {
+          "type": "number",
+          "default": 16
+        },
+        "c328j3__height": {
+          "type": "number",
+          "default": 16
+        }
+      },
+      "bindings": {
+        "c328j3__width": {
+          "path": "c328j3",
+          "property": "width"
+        },
+        "c328j3__height": {
+          "path": "c328j3",
+          "property": "height"
+        }
+      }
+    },
+    "YkEtb": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: AsyPO/DeB11.<missing>, AsyPO/P3LMy.<missing>, AsyPO/nPp6o.<missing>"
+    },
+    "yMP7y": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "Vmz4i__content": {
+          "type": "string",
+          "default": "Light"
+        }
+      },
+      "bindings": {
+        "Vmz4i__content": {
+          "path": "Vmz4i",
+          "property": "content"
+        }
+      }
+    },
+    "yttSj": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "r3B0GV__content": {
+          "type": "string",
+          "default": "GitHub"
+        },
+        "K9Ofk2__content": {
+          "type": "string",
+          "default": "⌃⇧G"
+        }
+      },
+      "bindings": {
+        "r3B0GV__content": {
+          "path": "r3B0GV",
+          "property": "content"
+        },
+        "K9Ofk2__content": {
+          "path": "K9Ofk2",
+          "property": "content"
+        }
+      }
+    },
+    "YzLlT": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "L0dSu__icon": {
+          "type": "icon",
+          "default": "file-text"
+        },
+        "mPxnw__content": {
+          "type": "string",
+          "default": "Files"
+        }
+      },
+      "bindings": {
+        "L0dSu__icon": {
+          "path": "L0dSu",
+          "property": "icon"
+        },
+        "mPxnw__content": {
+          "path": "mPxnw",
+          "property": "content"
+        }
+      }
+    },
+    "z0BeIh": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: dWFSQ.enabled"
+    },
+    "Z1A0Vf": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: cCt1S.x"
+    },
+    "z28iHJ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: kWafJ.type, kWafJ.id, kWafJ.name, kWafJ.stroke, kWafJ.strokeWidth, kWafJ.layout, kWafJ.justifyContent, kWafJ.alignItems, kWafJ.children"
+    },
+    "z2xPDu": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: xpS1E/WicxU.<missing>, v4gowy/I7pRgK.<missing>, v4gowy/I7pRgK/d86ma8.<missing>, v4gowy/I7pRgK/HTwkk.<missing>, kqawW/qbQ0d.<missing>, kqawW/qbQ0d/FVVGC.<missing>, kqawW/qbQ0d/uvgSq.<missing>, suiRU/I7pRgK.<missing>, suiRU/I7pRgK/d86ma8.<missing>, suiRU/I7pRgK/HTwkk.<missing>, cLs2Y.theme.state, cLs2Y/qbQ0d.<missing>, cLs2Y/qbQ0d/FVVGC.<missing>, cLs2Y/qbQ0d/uvgSq.<missing>, NJr4s/I7pRgK.<missing>, NJr4s/I7pRgK/d86ma8.<missing>, NJr4s/I7pRgK/HTwkk.<missing>, e3Hpk/qbQ0d.<missing>, e3Hpk/qbQ0d/FVVGC.<missing>, e3Hpk/qbQ0d/uvgSq.<missing>, Q9cWk/I7pRgK.<missing>, Q9cWk/I7pRgK/d86ma8.<missing>, Q9cWk/I7pRgK/HTwkk.<missing>, n3r1hV/qbQ0d.<missing>, n3r1hV/qbQ0d/FVVGC.<missing>, n3r1hV/qbQ0d/uvgSq.<missing>, lnAdH/I7pRgK.<missing>, lnAdH/I7pRgK/d86ma8.<missing>, lnAdH/I7pRgK/HTwkk.<missing>, lhZSw/qbQ0d.<missing>, lhZSw/qbQ0d/FVVGC.<missing>, lhZSw/qbQ0d/uvgSq.<missing>, s3hZPT/DxWas.<missing>, s3hZPT/DxWas/C2Yo8k.<missing>, s3hZPT/DxWas/RPqic.<missing>, s3hZPT/DxWas/eQt4v.<missing>, s3hZPT/DxWas/iG4bz.<missing>, s3hZPT/DxWas/E7z8ym.<missing>"
+    },
+    "Z3cro": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "Zc1PF": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: rnyF3.theme.state, yrRyL/pBqq6.<missing>, yrRyL/rvWMu.<missing>, yrRyL/xnhch.<missing>, yrRyL/l9cXw.<missing>, yrRyL/aZCrl.<missing>, yrRyL/FMKUh.<missing>, yrRyL/kxEsN.<missing>, f8mp2.justifyContent, f8mp2.alignItems"
+    },
+    "zCNBw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Gk41i/JjZOf.<missing>, Gk41i/CtGxH.<missing>, Gk41i/X4yHf.<missing>, r9YqW.<missing>, Mmkyy.<missing>, Koduf.<missing>, ItHTy.<missing>, HEtIh.<missing>, C3foh.<missing>, aT3f0/Z1A0Vf.<missing>"
+    },
+    "zERT0": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "cCt1S__content": {
+          "type": "string",
+          "default": "Create an account"
+        }
+      },
+      "bindings": {
+        "cCt1S__content": {
+          "path": "cCt1S",
+          "property": "content"
+        }
+      }
+    },
+    "zEtay": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: eLlGZ.enabled, Kg6Ya.enabled, tqvoV.enabled"
+    },
+    "ZgeyQ": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    },
+    "ZiUvD": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "va2Qv__width": {
+          "type": "number",
+          "default": 20
+        },
+        "va2Qv__height": {
+          "type": "number",
+          "default": 20
+        }
+      },
+      "bindings": {
+        "va2Qv__width": {
+          "path": "va2Qv",
+          "property": "width"
+        },
+        "va2Qv__height": {
+          "path": "va2Qv",
+          "property": "height"
+        }
+      }
+    },
+    "ZIWnE": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: D7oEM/FPPx1.<missing>, D7oEM/QkN38.<missing>, Kca43.type, Kca43.id, Kca43.name, Kca43.children"
+    },
+    "Zm7w4": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: qbQ0d/FVVGC.<missing>, qbQ0d/uvgSq.<missing>"
+    },
+    "ZmT1H": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: BTDcy.geometry, BTDcy.viewBox"
+    },
+    "ZMv8e": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: akusD.enabled"
+    },
+    "Zr2I0": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: x1XmZ.enabled, c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "zSwFv": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {},
+      "bindings": {},
+      "modes": {
+        "state": "default"
+      }
+    },
+    "zTUZ2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "zWidL": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: A5WMtZ.enabled"
+    },
+    "ZwMs4": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: c4mVqp/DfPw6.<missing>, c4mVqp/CywKu.<missing>, c4mVqp/u7bBy.<missing>, QAkpO.theme.state, QAkpO/DfPw6.<missing>, QAkpO/CywKu.<missing>, QAkpO/u7bBy.<missing>, eg8Uz.theme.state, eg8Uz/DfPw6.<missing>, eg8Uz/CywKu.<missing>, eg8Uz/u7bBy.<missing>"
+    },
+    "zYjSC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: Lu2LA.type, Lu2LA.id, Lu2LA.name, Lu2LA.geometry, Lu2LA.viewBox"
+    }
+  }
+}
+

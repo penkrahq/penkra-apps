@@ -1,0 +1,1027 @@
+{
+  "migration": "M4",
+  "documentId": "09c0a937-3e64-478c-a7ff-4daa836bc169",
+  "documentTitle": "design",
+  "sourceSequence": 297,
+  "reviewedAt": "2026-09-04",
+  "method": "Read-only Canvas documents.execute census. Each legacy descendant override was checked against its exact source node and the closed component property algebra. Any structural, missing-source, conflicting-mode, or unsupported typed override is an explicit clone; all others are explicit property bindings or instance modes.",
+  "entries": {
+    "Ao3Zf": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "aQ1Lv": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "bEa1M": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "bYct9": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "CcVSM": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "eINC0": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "eJW2n": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "EOpGE": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "EwToj": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "eZLgZ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "gaPcO": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "gBXON": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "I2q8XV": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "jUJsK": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "k2UVZ8": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "K6j57r": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "k8k8XO": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "kvN6v": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "L0PoPY": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "lII1L": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "LPjHl": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        }
+      }
+    },
+    "lvZLL": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        }
+      }
+    },
+    "MnPjt": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "ndRC1": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "o8OIUS": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "oQIT1": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        }
+      }
+    },
+    "P5WEi7": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "pf5i2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "q5RYU": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "QbHhm": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "QIeyG": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "Qx9pb": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "rJMsV": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "rvwsB": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "SoGm2": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "T93eq": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "U8kSTC": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "Ue7jf": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "uzJyZ": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        }
+      }
+    },
+    "W64Oi": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "xGtZw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "XH3MR": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "XyH9F": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "YDzTH": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "YrFqd": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "Yw3xB": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    },
+    "yW5O6": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "k743R__fill": {
+          "type": "string",
+          "default": "$fog"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        },
+        "HlFDw__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "k743R__fill": {
+          "path": "k743R",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        },
+        "HlFDw__fill": {
+          "path": "HlFDw",
+          "property": "fill"
+        }
+      }
+    },
+    "zikVv": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "aeDd3__content": {
+          "type": "string",
+          "default": "Forager"
+        },
+        "aeDd3__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        },
+        "aeDd3__fill": {
+          "type": "string",
+          "default": "$graphite"
+        },
+        "HlFDw__content": {
+          "type": "string",
+          "default": "12"
+        }
+      },
+      "bindings": {
+        "aeDd3__content": {
+          "path": "aeDd3",
+          "property": "content"
+        },
+        "aeDd3__fontWeight": {
+          "path": "aeDd3",
+          "property": "fontWeight"
+        },
+        "aeDd3__fill": {
+          "path": "aeDd3",
+          "property": "fill"
+        },
+        "HlFDw__content": {
+          "path": "HlFDw",
+          "property": "content"
+        }
+      }
+    },
+    "ZKO4H": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "zCqoy__content": {
+          "type": "string",
+          "default": "Button"
+        },
+        "zCqoy__fontWeight": {
+          "type": "string",
+          "default": "normal"
+        }
+      },
+      "bindings": {
+        "zCqoy__content": {
+          "path": "zCqoy",
+          "property": "content"
+        },
+        "zCqoy__fontWeight": {
+          "path": "zCqoy",
+          "property": "fontWeight"
+        }
+      }
+    },
+    "zojmw": {
+      "action": "clone",
+      "evidence": "Structural, missing-source, conflicting-mode, or unsupported typed override: wo0XZ.fill, wo0XZ/GTaBD.<missing>"
+    },
+    "zQdbo": {
+      "action": "properties",
+      "evidence": "Every override has a compatible source default and maps to a typed property or axis mode.",
+      "definitions": {
+        "GTaBD__content": {
+          "type": "string",
+          "default": "queued"
+        },
+        "GTaBD__fill": {
+          "type": "string",
+          "default": "$graphite"
+        }
+      },
+      "bindings": {
+        "GTaBD__content": {
+          "path": "GTaBD",
+          "property": "content"
+        },
+        "GTaBD__fill": {
+          "path": "GTaBD",
+          "property": "fill"
+        }
+      }
+    }
+  }
+}
+

@@ -136,7 +136,28 @@ test("M4 refuses an incomplete manifest and deterministically applies property o
   assert.equal(document.children[2].type, "frame");
   assert.equal(document.children[2].id, "clone-instance");
   assert.equal(document.children[2].x, 20);
+  assert.equal(document.children[2].children[0].id, "clone-instance/label");
   assert.equal(document.children[2].children[0].content, "Cloned");
+});
+
+test("M4 remaps every materialized descendant id and its internal relationships", () => {
+  const source = { children: [
+    { id: "component", type: "frame", children: [
+      { id: "body", type: "frame", children: [
+        { id: "nested", type: "ref", ref: "body" },
+        { id: "note", type: "text", content: "Note", notesFor: "body" },
+      ] },
+    ] },
+    { id: "one", type: "ref", ref: "component", descendants: {} },
+    { id: "two", type: "ref", ref: "component", descendants: {} },
+  ] };
+  const { document } = migrateM4Descendants(source, { entries: {
+    one: { action: "clone", evidence: "reviewed structural clone" },
+    two: { action: "clone", evidence: "reviewed structural clone" },
+  } });
+  assert.deepEqual(document.children.slice(1).map((node) => node.children[0].id), ["one/body", "two/body"]);
+  assert.equal(document.children[1].children[0].children[0].ref, "one/body");
+  assert.equal(document.children[1].children[0].children[1].notesFor, "one/body");
 });
 
 test("M10 requires evidence and materializes recorded deterministic output with provenance", () => {
