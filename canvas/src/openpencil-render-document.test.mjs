@@ -4,11 +4,22 @@ import test from "node:test";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import {
   migrateM1DelimitedVariables,
+  migrateM2AssignModule,
+  migrateM3DropReusable,
+  migrateM4Descendants,
   migrateM5DeleteEditorSlots,
+  migrateM6UniformText,
+  migrateM7AssignRoles,
+  migrateM8AddFlows,
+  migrateM10Scripts,
+  migrateM11Notes,
+  migrateM12Contexts,
+  migrateM13Prompts,
   migrateM14ThemesToAxes,
   migrateM15NodeModes,
   migrateM16VariableTokens,
   migrateM17CascadeConditions,
+  migrateM18LogicalDirections,
 } from "./migrations.mjs";
 
 test("interpolates multiple delimited variables while leaving currency literal", () => {
@@ -74,6 +85,98 @@ test("M5 deletes Pencil editor slot metadata without changing other node data", 
   assert.equal(Object.hasOwn(document.children[0].children[0], "slot"), false);
   assert.equal(document.children[0].reusable, true);
   assert.deepEqual(source.children[0].slot, ["content"]);
+});
+
+test("M2, M3, M7 and M8 establish root module, export roles and closed vocabulary", () => {
+  let result = migrateM2AssignModule({
+    version: "2.17",
+    children: [{ id: "slide", type: "frame", width: 1280, height: 720, reusable: true }],
+  });
+  assert.equal(result.document.module, "deck");
+  result = migrateM3DropReusable(result.document);
+  result = migrateM7AssignRoles(result.document);
+  result = migrateM8AddFlows(result.document);
+  assert.equal(result.document.children[0].role, "slide");
+  assert.equal(Object.hasOwn(result.document.children[0], "reusable"), false);
+  assert.deepEqual(result.document.flows, []);
+});
+
+test("M6 partitions newline-terminated paragraphs and records the uniform named style", () => {
+  const source = { children: [{
+    id: "copy", type: "text", content: "First\nSecond", fontFamily: "Inter", fontSize: 20,
+  }] };
+  const { document } = migrateM6UniformText(source);
+  assert.deepEqual(document.paragraphStyles["m6-copy"], { fontFamily: "Inter", fontSize: 20 });
+  assert.deepEqual(document.children[0].paragraphs, [
+    { from: 0, to: 6, style: "m6-copy" },
+    { from: 6, to: 12, style: "m6-copy" },
+  ]);
+  assert.deepEqual(document.children[0].marks, []);
+});
+
+test("M4 refuses an incomplete manifest and deterministically applies property or clone entries", () => {
+  const source = { children: [
+    { id: "component", type: "frame", children: [{ id: "label", type: "text", content: "Default" }] },
+    { id: "property-instance", type: "ref", ref: "component", descendants: { label: { content: "Bound" } } },
+    { id: "clone-instance", type: "ref", ref: "component", x: 20, descendants: { label: { content: "Cloned" } } },
+  ] };
+  assert.throws(() => migrateM4Descendants(source, { entries: {} }), /Manifest mismatch/);
+  const { document } = migrateM4Descendants(source, { entries: {
+    "property-instance": {
+      action: "properties", evidence: "content-only override",
+      definitions: { label: { type: "string", default: "Default" } },
+      bindings: { label: { path: "label", property: "content" } },
+    },
+    "clone-instance": { action: "clone", evidence: "reviewed structural clone" },
+  } });
+  assert.deepEqual(document.children[0].properties, { label: { type: "string", default: "Default" } });
+  assert.deepEqual(document.children[0].children[0].bind, { content: "$props.label" });
+  assert.deepEqual(document.children[1].props, { label: "Bound" });
+  assert.equal(Object.hasOwn(document.children[1], "descendants"), false);
+  assert.equal(document.children[2].type, "frame");
+  assert.equal(document.children[2].id, "clone-instance");
+  assert.equal(document.children[2].x, 20);
+  assert.equal(document.children[2].children[0].content, "Cloned");
+});
+
+test("M10 requires evidence and materializes recorded deterministic output with provenance", () => {
+  const source = { children: [{ id: "chart", type: "script", scriptUri: "scripts/chart.js", inputs: { count: 2 } }] };
+  assert.throws(() => migrateM10Scripts(source), /reviewed manifest/);
+  const { document } = migrateM10Scripts(source, { entries: { chart: {
+    status: "materialize", evidence: "two consecutive outputs matched",
+    output: [{ id: "bar", type: "rectangle", width: 10, height: 20 }],
+  } } });
+  assert.equal(document.children[0].id, "bar");
+  assert.deepEqual(document.children[0].provenance, {
+    migration: "M10", scriptUri: "scripts/chart.js", inputs: { count: 2 }, outputIndex: 0,
+  });
+});
+
+test("M11-M13 preserve sticky content as canonical text and M11 records an explicit slide association", () => {
+  const source = { children: [
+    { id: "note", type: "note", content: "Speak" },
+    { id: "context", type: "context", content: "Reference" },
+    { id: "prompt", type: "prompt", content: "Generate", model: "default" },
+  ] };
+  let result = migrateM11Notes(source, { entries: { note: { evidence: "adjacent authored note", notesFor: "slide" } } });
+  result = migrateM12Contexts(result.document);
+  result = migrateM13Prompts(result.document);
+  assert.deepEqual(result.document.children.map((node) => node.type), ["text", "text", "text"]);
+  assert.equal(result.document.children[0].notesFor, "slide");
+  assert.deepEqual(result.document.children[0].paragraphs, [{ from: 0, to: 5 }]);
+});
+
+test("M18 changes logical edges and alignment but preserves absolute coordinates", () => {
+  const source = { children: [{
+    id: "row", type: "frame", x: 12, padding: { left: 10, right: 20 }, justifyContent: "left",
+    children: [{ id: "copy", type: "text", content: "Hi", textAlign: "right" }],
+  }] };
+  const { document, changes } = migrateM18LogicalDirections(source);
+  assert.equal(changes, 4);
+  assert.equal(document.children[0].x, 12);
+  assert.deepEqual(document.children[0].padding, { start: 10, end: 20 });
+  assert.equal(document.children[0].justifyContent, "start");
+  assert.equal(document.children[0].children[0].textAlign, "end");
 });
 
 test("M14-M17 preserve token type and move node axis selections", () => {

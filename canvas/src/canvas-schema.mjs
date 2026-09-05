@@ -5,52 +5,82 @@ export const CANVAS_MODULES = Object.freeze(["deck", "print", "web", "mobile"]);
 export const CANVAS_ROLES = Object.freeze({ deck: ["slide"], print: ["page"], web: ["route"], mobile: ["ios", "android"] });
 export const CANVAS_NODE_TYPES = Object.freeze(["frame", "group", "rectangle", "ellipse", "polygon", "line", "path", "text", "icon", "ref"]);
 
-export const CANVAS_SCHEMA = Object.freeze({
-  root: ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
-  common: ["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "modes", "notesFor"],
-  layout: ["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"],
-  paint: ["fill", "stroke", "effect", "blendMode", "cornerRadius"],
-  text: ["content", "style", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"],
-  icon: ["icon", "library", "weight"],
-  path: ["geometry", "viewBox", "fillRule"],
-  ref: ["ref", "props"],
+const fields = (names, overrides = {}) => Object.fromEntries(names.map((name) => [name, {
+  type: "canvas-value",
+  capability: true,
+  ...(overrides[name] ?? {}),
+}]));
+
+export const CANVAS_SCHEMA = deepFreeze({
+  schemaVersion: CANVAS_SCHEMA_VERSION,
+  root: {
+    type: "object",
+    required: ["canvasSchemaVersion", "version", "module", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
+    fields: fields(
+      ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
+      {
+        canvasSchemaVersion: { type: "integer", const: CANVAS_SCHEMA_VERSION },
+        version: { type: "string" },
+        module: { type: "enum", values: CANVAS_MODULES },
+        lang: { type: "string" },
+        axes: { type: "record" },
+        variables: { type: "record" },
+        paragraphStyles: { type: "record" },
+        imports: { type: "record" },
+        flows: { type: "array" },
+        children: { type: "array" },
+      },
+    ),
+  },
+  node: {
+    required: ["id", "type"],
+    groups: {
+      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
+        id: { type: "string" }, type: { type: "enum", values: CANVAS_NODE_TYPES },
+      }),
+      layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"]),
+      paint: fields(["fill", "stroke", "effect", "blendMode", "cornerRadius"]),
+      text: fields(["content", "style", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"]),
+      icon: fields(["icon", "library", "weight"]),
+      path: fields(["geometry", "viewBox", "fillRule"]),
+      ref: fields(["ref", "props"]),
+    },
+    variants: Object.fromEntries(CANVAS_NODE_TYPES.map((type) => [type, { type }])),
+  },
+  capability: {
+    roles: Object.values(CANVAS_ROLES).flat(),
+    relationships: ["ref", "import", "notesFor", "flow"],
+    properties: [
+      "fill.solid", "fill.image", "fill.gradient.linear", "fill.gradient.linear.transformed", "fill.gradient.radial", "fill.gradient.radial.transformed", "fill.gradient.angular", "fill.gradient.mesh", "fill.shader",
+      "stroke.width", "stroke.align", "stroke.cap", "stroke.join", "stroke.dash", "stroke.fill",
+      "effect.shadow", "effect.shadow.spread", "effect.blur", "effect.background_blur",
+      "text.run.fill", "text.run.weight", "text.run.italic", "text.run.underline", "text.run.strikethrough", "text.run.fontFamily", "text.run.fontSize", "text.run.letterSpacing", "text.run.wordSpacing", "text.run.language", "text.run.link",
+      "text.paragraph.align", "text.paragraph.style", "text.paragraph.list", "text.paragraph.headingLevel", "accessibility.description", "flow.advance", "flow.tap", "flow.hover", "flow.keypress",
+    ],
+  },
 });
 
 export function capabilityPathInventory() {
   const paths = new Set([
-    ...CANVAS_SCHEMA.root.map((path) => `root.${path}`),
-    ...Object.values(CANVAS_ROLES).flat().map((role) => `roles.${role}`),
-    ...CANVAS_NODE_TYPES.map((type) => `nodes.${type}`),
-    ...[...CANVAS_SCHEMA.common, ...CANVAS_SCHEMA.layout, ...CANVAS_SCHEMA.paint,
-      ...CANVAS_SCHEMA.text, ...CANVAS_SCHEMA.icon, ...CANVAS_SCHEMA.path, ...CANVAS_SCHEMA.ref]
-      .map((path) => `properties.${path}`),
-    "relationships.ref", "relationships.import", "relationships.notesFor",
-    "relationships.flow",
+    ...capabilityFields(CANVAS_SCHEMA.root.fields).map((path) => `root.${path}`),
+    ...CANVAS_SCHEMA.capability.roles.map((role) => `roles.${role}`),
+    ...Object.keys(CANVAS_SCHEMA.node.variants).map((type) => `nodes.${type}`),
+    ...Object.values(CANVAS_SCHEMA.node.groups).flatMap(capabilityFields).map((path) => `properties.${path}`),
+    ...CANVAS_SCHEMA.capability.relationships.map((path) => `relationships.${path}`),
   ]);
-  for (const path of [
-    "fill.solid", "fill.image", "fill.gradient.linear", "fill.gradient.linear.transformed", "fill.gradient.radial", "fill.gradient.radial.transformed", "fill.gradient.angular", "fill.gradient.mesh", "fill.shader",
-    "stroke.width", "stroke.align", "stroke.cap", "stroke.join", "stroke.dash", "stroke.fill",
-    "effect.shadow", "effect.shadow.spread", "effect.blur", "effect.background_blur",
-    "text.run.fill", "text.run.weight", "text.run.italic", "text.run.underline", "text.run.strikethrough", "text.run.fontFamily", "text.run.fontSize", "text.run.letterSpacing", "text.run.wordSpacing", "text.run.language", "text.run.link",
-    "text.paragraph.align", "text.paragraph.style", "text.paragraph.list", "text.paragraph.headingLevel", "accessibility.description", "flow.advance", "flow.tap", "flow.hover", "flow.keypress",
-  ]) paths.add(`properties.${path}`);
+  for (const path of CANVAS_SCHEMA.capability.properties) paths.add(`properties.${path}`);
   return [...paths].sort();
 }
 
 export function validateCanvasDocument(document, options = {}) {
   const errors = [];
   if (!document || typeof document !== "object" || Array.isArray(document)) return invalid(["Document must be an object."], options);
-  if (document.canvasSchemaVersion !== CANVAS_SCHEMA_VERSION) errors.push(`canvasSchemaVersion must be ${CANVAS_SCHEMA_VERSION}.`);
+  validateGeneratedShape(document, CANVAS_SCHEMA.root, "root", errors);
   if (typeof document.version !== "string") errors.push("version must preserve the OpenPencil string marker.");
-  if (!CANVAS_MODULES.includes(document.module)) errors.push(`module must be one of ${CANVAS_MODULES.join(", ")}.`);
-  for (const field of ["axes", "variables", "paragraphStyles", "imports"])
-    if (!plainObject(document[field])) errors.push(`${field} must be an object.`);
-  if (!Array.isArray(document.flows)) errors.push("flows must be an array.");
-  if (!Array.isArray(document.children)) errors.push("children must be an array.");
   const nodes = new Map();
   const parents = new Map();
   walk(document.children, null, (node, parent) => {
-    if (!CANVAS_NODE_TYPES.includes(node.type)) errors.push(`${node.id ?? "<missing>"}.type ${node.type} is not in the node vocabulary.`);
+    validateGeneratedNode(node, errors);
     if (typeof node.id !== "string" || !node.id) errors.push("Every node needs a non-empty id.");
     else if (nodes.has(node.id)) errors.push(`Duplicate node id ${node.id}.`);
     else { nodes.set(node.id, node); parents.set(node.id, parent); }
@@ -255,6 +285,35 @@ function walk(children = [], parent, visit) {
 }
 
 function plainObject(value) { return value && typeof value === "object" && !Array.isArray(value); }
+function capabilityFields(definition) { return Object.entries(definition).flatMap(([name, field]) => field.capability ? [name] : []); }
+function validateGeneratedNode(node, errors) {
+  const schema = {
+    type: "object",
+    required: CANVAS_SCHEMA.node.required,
+    fields: Object.assign({}, ...Object.values(CANVAS_SCHEMA.node.groups)),
+  };
+  validateGeneratedShape(node, schema, node?.id ?? "node", errors);
+}
+function validateGeneratedShape(value, schema, path, errors) {
+  if (!plainObject(value)) { errors.push(`${path} must be an object.`); return; }
+  for (const name of schema.required ?? []) if (!Object.hasOwn(value, name)) errors.push(`${path}.${name} is required.`);
+  for (const [name, field] of Object.entries(schema.fields ?? {})) {
+    if (!Object.hasOwn(value, name)) continue;
+    const candidate = value[name];
+    if (field.type === "canvas-value") continue;
+    if (field.type === "string" && typeof candidate !== "string") errors.push(`${path}.${name} must be a string.`);
+    if (field.type === "integer" && !Number.isInteger(candidate)) errors.push(`${path}.${name} must be an integer.`);
+    if (field.type === "array" && !Array.isArray(candidate)) errors.push(`${path}.${name} must be an array.`);
+    if (field.type === "record" && !plainObject(candidate)) errors.push(`${path}.${name} must be an object.`);
+    if (field.type === "enum" && !field.values.includes(candidate)) errors.push(`${path}.${name} must be one of ${field.values.join(", ")}.`);
+    if (Object.hasOwn(field, "const") && candidate !== field.const) errors.push(`${path}.${name} must be ${field.const}.`);
+  }
+}
+function deepFreeze(value) {
+  if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
+  for (const child of Object.values(value)) deepFreeze(child);
+  return Object.freeze(value);
+}
 function validLanguage(value) { try { return typeof value === "string" && Boolean(new Intl.Locale(value)); } catch { return false; } }
 function invalid(errors, options) {
   if (errors.length && options.throw !== false) { const error = new Error(errors.join("\n")); error.code = "CANVAS_SCHEMA_INVALID"; error.errors = errors; throw error; }
