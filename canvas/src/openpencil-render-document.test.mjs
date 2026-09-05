@@ -71,6 +71,19 @@ test("M1 preserves whole-token rich-text and paragraph ranges", () => {
   assert.deepEqual(document.children[0].paragraphs, [{ from: 0, to: 7, style: "body" }]);
 });
 
+test("M1 remaps partial rich-text ranges around the inserted delimiters", () => {
+  const source = { type: "text", content: "$name", marks: [
+    { type: "weight", from: 0, to: 1, value: 700 },
+    { type: "fill", from: 1, to: 5, value: "#f00" },
+  ], paragraphs: [{ from: 0, to: 5 }] };
+  const { document } = migrateM1DelimitedVariables(source);
+  assert.equal(document.content, "${name}");
+  assert.deepEqual(document.marks.map(({ from, to }) => ({ from, to })), [
+    { from: 0, to: 1 }, { from: 2, to: 6 },
+  ]);
+  assert.deepEqual(document.paragraphs, [{ from: 0, to: 7 }]);
+});
+
 test("M5 deletes Pencil editor slot metadata without changing other node data", () => {
   const source = { children: [{
     id: "component",

@@ -69,13 +69,13 @@ export function migrateM1DelimitedVariables(source) {
     );
     if (value.type === "text" && typeof value.content === "string" && migrated.content !== value.content) {
       const beforeLength = value.content.length;
-      const afterLength = migrated.content.length;
-      migrated.marks = (value.marks ?? []).map((mark) => (
-        mark.from === 0 && mark.to === beforeLength ? { ...mark, to: afterLength } : { ...mark }
-      ));
-      migrated.paragraphs = (value.paragraphs ?? []).map((paragraph) => (
-        paragraph.from === 0 && paragraph.to === beforeLength ? { ...paragraph, to: afterLength } : { ...paragraph }
-      ));
+      const mapStart = (offset) => offset === 0 ? 0 : offset + 1;
+      const mapEnd = (offset) => offset <= 1 ? offset : offset + 1;
+      const remap = (range) => range.from === 0 && range.to === beforeLength
+        ? { ...range, from: 0, to: beforeLength + 2 }
+        : { ...range, from: mapStart(range.from), to: mapEnd(range.to) };
+      migrated.marks = (value.marks ?? []).map(remap);
+      migrated.paragraphs = (value.paragraphs ?? []).map(remap);
     }
     return migrated;
   };
