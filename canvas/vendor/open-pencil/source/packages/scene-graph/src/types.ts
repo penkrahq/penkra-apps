@@ -534,7 +534,6 @@ export interface SceneNode {
   pencilAddress?: string
   pencilWidthOmitted?: boolean
   pencilHeightOmitted?: boolean
-  pencilSlotKind?: 'component' | 'instance'
 }
 
 export type ComponentPropertyType = 'VARIANT' | 'TEXT' | 'BOOLEAN' | 'INSTANCE_SWAP'

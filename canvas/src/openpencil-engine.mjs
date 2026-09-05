@@ -137,7 +137,6 @@ function recordGraphPerformance(name, durationMs, detail = {}) {
 }
 
 function applyPencilSceneProperties(graph, document) {
-  const slotIds = new Set();
   walkPenNodes(document.children, (sourceNode) => {
     const sceneNode = graph.getNode(sourceNode.id);
     if (!sceneNode) return;
@@ -161,17 +160,8 @@ function applyPencilSceneProperties(graph, document) {
         innerRadius: sourceNode.innerRadius ?? 0,
       };
     }
-    if (Array.isArray(sourceNode.slot)) {
-      changes.pencilSlotKind = "component";
-      slotIds.add(sourceNode.id);
-    }
     if (Object.keys(changes).length > 0) graph.updateNode(sourceNode.id, changes);
   });
-  for (const sceneNode of graph.nodes.values()) {
-    if (slotIds.has(sceneNode.componentId)) {
-      graph.updateNode(sceneNode.id, { pencilSlotKind: "instance" });
-    }
-  }
 }
 
 function canvasStyleRuns(node) {

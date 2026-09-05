@@ -417,30 +417,6 @@ test("Pencil 2.17 scene properties survive normalization into the render graph",
   assert.deepEqual(source.children[0].strokeWidth, 2);
 });
 
-test("Pencil slots retain their component and instance visual semantics without changing the source", () => {
-  const source = {
-    version: "2.17",
-    children: [{
-      id: "app-owned",
-      type: "frame",
-      width: 320,
-      height: 180,
-      slot: [],
-    }],
-  };
-
-  source.children.push({ id: "slot-instance", type: "ref", ref: "app-owned" });
-  source.children[0].reusable = true;
-  const before = structuredClone(source);
-  const graph = createOpenPencilGraph(source);
-  assert.deepEqual(graph.getNode("app-owned").fills, []);
-  assert.equal(graph.getNode("app-owned").pencilSlotKind, "component");
-  assert.equal(graph.getNode("slot-instance").pencilSlotKind, "instance");
-  assert.deepEqual(source.children[0].slot, []);
-  assert.equal(source.children[0].fill, undefined);
-  assert.deepEqual(source, before);
-});
-
 test("Pencil alpha colors are applied once and survive SVG export", () => {
   const source = {
     version: "2.17",

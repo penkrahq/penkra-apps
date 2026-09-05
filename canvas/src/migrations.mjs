@@ -31,6 +31,17 @@ export function migrateM1DelimitedVariables(source) {
   return { document: visit(document), changes };
 }
 
+export function migrateM5DeleteEditorSlots(source) {
+  const document = structuredClone(source);
+  let changes = 0;
+  walkNodes(document.children, (node) => {
+    if (!Object.hasOwn(node, "slot")) return;
+    delete node.slot;
+    changes += 1;
+  });
+  return { document, changes };
+}
+
 export function migrateM14ThemesToAxes(source) {
   const document = structuredClone(source);
   let changes = 0;

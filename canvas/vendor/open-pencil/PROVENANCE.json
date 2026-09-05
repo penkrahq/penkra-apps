@@ -1,8 +1,8 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "engineSha256": "d1f576a16de44aebd87c8d488e6800f76f0d5010738328973ce44e3789e35936",
-  "sourceEngineSha256": "3859ea90e8ac30053015fa1e1da67ecddbf7b378cb3b14cfef37b9165ea0ac7b",
+  "engineSha256": "f763c11132bc7521f20a6ee37429e8a19ca4bb4d7efef28c5adefa03d125529b",
+  "sourceEngineSha256": "00cb4dbd845191fe948de6f63673a0fef07b42efdaaf34d32623f3d2b2562cba",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -32,7 +32,6 @@
     "Import Pencil shader frames as CanvasKit GPU texture sources instead of synchronously reading pixels through a 2D canvas.",
     "Render Pencil mesh gradients from their exact point grid and Bezier handles with adaptive Coons-patch tessellation.",
     "Represent Pencil note, context, and prompt nodes as locked transient visuals backed by bundled JetBrains Mono faces.",
-    "Draw Pencil slot semantics without adding persistent stroke data to component or instance nodes.",
     "Render Pencil gradient strokes and stroke-paint blend modes without flattening them into solid strokes.",
     "Map Pencil line nodes to native line geometry instead of treating them as generic paths.",
     "Register document-declared font resources in the shared CanvasKit and browser font providers.",

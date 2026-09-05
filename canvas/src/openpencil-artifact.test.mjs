@@ -57,7 +57,6 @@ test("pinned OpenPencil artifact has one core and CanvasKit singleton", async ()
     "Import Pencil shader frames as CanvasKit GPU texture sources instead of synchronously reading pixels through a 2D canvas.",
     "Render Pencil mesh gradients from their exact point grid and Bezier handles with adaptive Coons-patch tessellation.",
     "Represent Pencil note, context, and prompt nodes as locked transient visuals backed by bundled JetBrains Mono faces.",
-    "Draw Pencil slot semantics without adding persistent stroke data to component or instance nodes.",
     "Render Pencil gradient strokes and stroke-paint blend modes without flattening them into solid strokes.",
     "Map Pencil line nodes to native line geometry instead of treating them as generic paths.",
     "Register document-declared font resources in the shared CanvasKit and browser font providers.",

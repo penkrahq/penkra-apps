@@ -2,7 +2,14 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
-import { migrateM1DelimitedVariables, migrateM14ThemesToAxes, migrateM15NodeModes, migrateM16VariableTokens, migrateM17CascadeConditions } from "./migrations.mjs";
+import {
+  migrateM1DelimitedVariables,
+  migrateM5DeleteEditorSlots,
+  migrateM14ThemesToAxes,
+  migrateM15NodeModes,
+  migrateM16VariableTokens,
+  migrateM17CascadeConditions,
+} from "./migrations.mjs";
 
 test("interpolates multiple delimited variables while leaving currency literal", () => {
   const source = {
@@ -51,6 +58,22 @@ test("M1 preserves whole-token rich-text and paragraph ranges", () => {
   assert.equal(document.children[0].content, "${name}");
   assert.deepEqual(document.children[0].marks, [{ type: "weight", from: 0, to: 7, value: 700 }]);
   assert.deepEqual(document.children[0].paragraphs, [{ from: 0, to: 7, style: "body" }]);
+});
+
+test("M5 deletes Pencil editor slot metadata without changing other node data", () => {
+  const source = { children: [{
+    id: "component",
+    type: "frame",
+    reusable: true,
+    slot: ["content"],
+    children: [{ id: "child", type: "frame", slot: [] }],
+  }] };
+  const { document, changes } = migrateM5DeleteEditorSlots(source);
+  assert.equal(changes, 2);
+  assert.equal(Object.hasOwn(document.children[0], "slot"), false);
+  assert.equal(Object.hasOwn(document.children[0].children[0], "slot"), false);
+  assert.equal(document.children[0].reusable, true);
+  assert.deepEqual(source.children[0].slot, ["content"]);
 });
 
 test("M14-M17 preserve token type and move node axis selections", () => {

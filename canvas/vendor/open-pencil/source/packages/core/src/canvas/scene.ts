@@ -183,8 +183,6 @@ function renderNodeContent(
     r.renderShape(canvas, node, graph)
   }
 
-  drawPencilSlotOutline(r, canvas, node)
-
   if (overlays.editingTextId === nodeId && overlays.textEditor?.state?.paragraph) {
     r.drawTextEditOverlay(canvas, node, overlays.textEditor)
   }
@@ -193,41 +191,6 @@ function renderNodeContent(
     r.auxStroke.setStrokeWidth(DROP_HIGHLIGHT_STROKE / r.zoom)
     r.auxStroke.setColor(r.selColor(DROP_HIGHLIGHT_ALPHA))
     canvas.drawRect(r.ck.LTRBRect(0, 0, node.width, node.height), r.auxStroke)
-  }
-}
-
-function drawPencilSlotOutline(r: SkiaRenderer, canvas: Canvas, node: SceneNode): void {
-  if (!node.pencilSlotKind || node.width <= 20 || node.height <= 20) return
-  const inset = 10
-  const slotNode = {
-    ...node,
-    width: node.width - inset * 2,
-    height: node.height - inset * 2,
-    cornerRadius: Math.max(0, node.cornerRadius - inset),
-    topLeftRadius: Math.max(0, node.topLeftRadius - inset),
-    topRightRadius: Math.max(0, node.topRightRadius - inset),
-    bottomRightRadius: Math.max(0, node.bottomRightRadius - inset),
-    bottomLeftRadius: Math.max(0, node.bottomLeftRadius - inset)
-  }
-  const path = r.makeNodeShapePath(
-    slotNode,
-    r.ck.LTRBRect(0, 0, slotNode.width, slotNode.height),
-    nodeHasRadius(slotNode)
-  )
-  try {
-    r.auxStroke.setStrokeWidth(1)
-    r.auxStroke.setPathEffect(null)
-    r.auxStroke.setColor(
-      node.pencilSlotKind === 'instance'
-        ? r.ck.Color4f(149 / 255, 128 / 255, 1, 1)
-        : r.ck.Color4f(212 / 255, 128 / 255, 1, 1)
-    )
-    canvas.save()
-    canvas.translate(inset, inset)
-    canvas.drawPath(path, r.auxStroke)
-    canvas.restore()
-  } finally {
-    path.delete()
   }
 }
 

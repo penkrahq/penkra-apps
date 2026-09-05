@@ -89191,7 +89191,6 @@ function renderNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
   } else {
     r4.renderShape(canvas, node, graph4);
   }
-  drawPencilSlotOutline(r4, canvas, node);
   if (overlays.editingTextId === nodeId2 && overlays.textEditor?.state?.paragraph) {
     r4.drawTextEditOverlay(canvas, node, overlays.textEditor);
   }
@@ -89199,33 +89198,6 @@ function renderNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
     r4.auxStroke.setStrokeWidth(DROP_HIGHLIGHT_STROKE / r4.zoom);
     r4.auxStroke.setColor(r4.selColor(DROP_HIGHLIGHT_ALPHA));
     canvas.drawRect(r4.ck.LTRBRect(0, 0, node.width, node.height), r4.auxStroke);
-  }
-}
-function drawPencilSlotOutline(r4, canvas, node) {
-  if (!node.pencilSlotKind || node.width <= 20 || node.height <= 20)
-    return;
-  const inset = 10;
-  const slotNode = {
-    ...node,
-    width: node.width - inset * 2,
-    height: node.height - inset * 2,
-    cornerRadius: Math.max(0, node.cornerRadius - inset),
-    topLeftRadius: Math.max(0, node.topLeftRadius - inset),
-    topRightRadius: Math.max(0, node.topRightRadius - inset),
-    bottomRightRadius: Math.max(0, node.bottomRightRadius - inset),
-    bottomLeftRadius: Math.max(0, node.bottomLeftRadius - inset)
-  };
-  const path = makeNodeShapePath(r4, slotNode, r4.ck.LTRBRect(0, 0, slotNode.width, slotNode.height), nodeHasRadius(slotNode));
-  try {
-    r4.auxStroke.setStrokeWidth(1);
-    r4.auxStroke.setPathEffect(null);
-    r4.auxStroke.setColor(node.pencilSlotKind === "instance" ? r4.ck.Color4f(149 / 255, 128 / 255, 1, 1) : r4.ck.Color4f(212 / 255, 128 / 255, 1, 1));
-    canvas.save();
-    canvas.translate(inset, inset);
-    canvas.drawPath(path, r4.auxStroke);
-    canvas.restore();
-  } finally {
-    path.delete();
   }
 }
 function renderMaskNodeContent(r4, canvas, graph4, node, nodeId2, overlays) {
