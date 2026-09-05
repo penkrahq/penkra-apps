@@ -25,8 +25,12 @@ test("capability totality is generated from the canonical inventory", () => {
   assert.equal(assertCapabilityTotality({ properties }), true);
   properties["properties.fill"] = { verdict: null, status: "unverified" };
   assert.throws(() => assertCapabilityTotality({ properties }), /unverified=properties\.fill/);
+  properties["properties.fill"] = { verdict: "native", status: "unverified" };
+  assert.throws(() => assertCapabilityTotality({ properties }), /unverified=properties\.fill/);
   assert.ok(capabilityPathInventory().includes("properties.fill.image"));
   assert.ok(capabilityPathInventory().includes("root.canvasSchemaVersion"));
+  assert.ok(capabilityPathInventory().includes("root.lang"));
+  assert.ok(capabilityPathInventory().includes("properties.layout"));
   assert.ok(capabilityPathInventory().includes("roles.slide"));
   assert.ok(capabilityPathInventory().includes("nodes.frame"));
   assert.ok(capabilityPathInventory().includes("relationships.ref"));

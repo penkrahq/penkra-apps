@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { spawn } from "node:child_process";
 import test from "node:test";
 
-import { buildExporterIR } from "../src/exporter-ir.mjs";
+import { buildCapabilityVerificationIR } from "../src/exporter-ir.mjs";
 import { exportCompose, exportSwiftUI } from "../src/exporters/mobile.mjs";
 
 const document = {
@@ -24,13 +24,19 @@ const document = {
     ],
   }],
 };
+const candidatePaths = [
+  "root.axes", "nodes.frame", "nodes.text", "nodes.rectangle",
+  "properties.accessibility.description", "properties.fill", "properties.fill.solid",
+  "properties.content", "properties.fontSize", "properties.marks", "properties.paragraphs",
+  "properties.text.paragraph.headingLevel", "properties.text.run.fontSize",
+];
 
 test("SwiftUI exporter output compiles in the pinned fixture", { timeout: 240_000 }, async () => {
   const root = await mkdtemp(join(tmpdir(), "canvas-swiftui-"));
   try {
     await cp(new URL("./mobile-fixtures/swiftui/", import.meta.url), root, { recursive: true });
     await rm(join(root, ".build"), { recursive: true, force: true });
-    const files = exportSwiftUI(buildExporterIR(document, { role: "ios", frames: ["screen"] }));
+    const files = exportSwiftUI(buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, candidatePaths));
     for (const [relative, source] of files) {
       const target = join(root, "Sources/CanvasSwiftUIFixture", relative);
       await mkdir(join(target, ".."), { recursive: true });
@@ -48,7 +54,7 @@ test("Compose exporter output assembles in the pinned fixture", { timeout: 180_0
     await rm(join(root, ".gradle"), { recursive: true, force: true });
     await rm(join(root, "app/build"), { recursive: true, force: true });
     const android = structuredClone(document); android.children[0].role = "android";
-    const files = exportCompose(buildExporterIR(android, { role: "android", frames: ["screen"] }));
+    const files = exportCompose(buildCapabilityVerificationIR(android, { role: "android", frames: ["screen"] }, candidatePaths));
     const sourceRoot = join(root, "app/src/main/java/generated/canvas");
     await mkdir(sourceRoot, { recursive: true });
     for (const [relative, source] of files) await writeFile(join(sourceRoot, relative.replace(/^_canvas\//u, "")), source);

@@ -37,10 +37,13 @@ export const CANVAS_SCHEMA = deepFreeze({
     groups: {
       common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
         id: { type: "string" }, type: { type: "enum", values: CANVAS_NODE_TYPES },
+        description: { capability: false },
       }),
       layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"]),
       paint: fields(["fill", "stroke", "effect", "blendMode", "cornerRadius"]),
-      text: fields(["content", "style", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"]),
+      text: fields(["content", "style", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"], {
+        landmark: { capability: false }, linkName: { capability: false },
+      }),
       icon: fields(["icon", "library", "weight"]),
       path: fields(["geometry", "viewBox", "fillRule"]),
       ref: fields(["ref", "props"]),
@@ -55,7 +58,7 @@ export const CANVAS_SCHEMA = deepFreeze({
       "stroke.width", "stroke.align", "stroke.cap", "stroke.join", "stroke.dash", "stroke.fill",
       "effect.shadow", "effect.shadow.spread", "effect.blur", "effect.background_blur",
       "text.run.fill", "text.run.weight", "text.run.italic", "text.run.underline", "text.run.strikethrough", "text.run.fontFamily", "text.run.fontSize", "text.run.letterSpacing", "text.run.wordSpacing", "text.run.language", "text.run.link",
-      "text.paragraph.align", "text.paragraph.style", "text.paragraph.list", "text.paragraph.headingLevel", "accessibility.description", "flow.advance", "flow.tap", "flow.hover", "flow.keypress",
+      "text.paragraph.align", "text.paragraph.style", "text.paragraph.list", "text.paragraph.headingLevel", "accessibility.description", "accessibility.landmark", "accessibility.linkName", "flow.advance", "flow.tap", "flow.hover", "flow.keypress",
     ],
   },
 });
@@ -110,7 +113,7 @@ export function assertCapabilityTotality(table, inventory = capabilityPathInvent
   const extra = Object.keys(table.properties ?? {}).filter((path) => !inventory.includes(path));
   const invalidVerdicts = Object.entries(table.properties ?? {}).filter(([, entry]) =>
     entry.verdict !== null && !["native", "raster", "ignore"].includes(entry.verdict));
-  const unverified = Object.entries(table.properties ?? {}).filter(([, entry]) => entry.verdict === null && entry.status === "unverified");
+  const unverified = Object.entries(table.properties ?? {}).filter(([, entry]) => entry.status === "unverified");
   if (missing.length || extra.length || invalidVerdicts.length || unverified.length) {
     const error = new Error(`Capability table is not buildable: missing=${missing.join(",")} extra=${extra.join(",")} invalid=${invalidVerdicts.map(([p]) => p).join(",")} unverified=${unverified.map(([p]) => p).join(",")}`);
     error.code = "CANVAS_CAPABILITY_INCOMPLETE";

@@ -3,6 +3,15 @@ import { isCascade, resolveCanvasDocument } from "./canvas-resolver.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { flattenMarks } from "./rich-text.mjs";
 
+const CAPABILITY_VERIFICATION = Symbol("canvas-capability-verification");
+
+export function buildCapabilityVerificationIR(document, request, assumedNativePaths) {
+  if (!Array.isArray(assumedNativePaths) || assumedNativePaths.some((path) => typeof path !== "string")) {
+    throw new TypeError("Capability verification requires an explicit array of property paths.");
+  }
+  return buildExporterIR(document, { ...request, [CAPABILITY_VERIFICATION]: new Set(assumedNativePaths) });
+}
+
 export function buildExporterIR(document, request) {
   const capability = CAPABILITY_TABLES[request.capability ?? request.role];
   if (!capability) throw exportError("CANVAS_EXPORT_ROLE", `No exporter exists for role ${request.role}.`);
@@ -11,7 +20,8 @@ export function buildExporterIR(document, request) {
   const graph = createOpenPencilGraph(resolved.document);
   const sourceById = indexNodes(resolved.document.children);
   const authoredById = projection === "semantic" ? indexNodes(document.children) : sourceById;
-  const documentCapability = evaluateCapabilities(documentCapabilityPaths(resolved.document, request.role), capability.properties);
+  const documentPaths = documentCapabilityPaths(resolved.document, request.role);
+  const verification = request[CAPABILITY_VERIFICATION] ?? null;
   const outputs = request.frames.map((frameId, index) => {
     const frame = sourceById.get(frameId);
     if (!frame) throw exportError("CANVAS_EXPORT_FRAME", `Frame ${frameId} was not found.`);
@@ -23,6 +33,7 @@ export function buildExporterIR(document, request) {
       error.code = "CANVAS_PHYSICAL_SIZE_UNDECLARED";
       throw error;
     }
+    const rootCapability = evaluateCapabilities([...documentPaths, ...capabilityPaths(frame, projection)], capability.properties, verification);
     return {
       kind: request.role,
       index,
@@ -43,9 +54,9 @@ export function buildExporterIR(document, request) {
         semantics: { description: frame.description ?? null, decorative: frame.decorative === true, landmark: frame.landmark ?? null },
         layout: semanticLayout(frame),
         variants: semanticVariants(authoredById.get(frameId) ?? frame),
-        capability: documentCapability,
+        capability: rootCapability,
       },
-      nodes: collectOutputNodes(graph, sourceById, authoredById, graphNode, capability, frameId, projection, resolved.document.paragraphStyles ?? {}),
+      nodes: collectOutputNodes(graph, sourceById, authoredById, graphNode, capability, frameId, projection, resolved.document.paragraphStyles ?? {}, resolved.document.lang ?? null, verification),
     };
   });
   const evaluatedNodes = outputs.flatMap((output) => output.nodes);
@@ -54,13 +65,13 @@ export function buildExporterIR(document, request) {
   const nodes = outputs.flatMap((output) => output.nodes);
   const consequences = [
     ...resolved.consequences,
-    ...(documentCapability.verdict === "native" ? [] : [{ node: "root", kind: documentCapability.verdict, why: documentCapability.reason }]),
+    ...outputs.filter((output) => output.root.capability.verdict !== "native").map((output) => ({ node: output.id, kind: output.root.capability.verdict, why: output.root.capability.reason })),
     ...evaluatedNodes.filter((node) => node.capability.verdict !== "native" && node.export !== "image").map((node) => ({
       node: node.id,
       kind: node.capability.verdict,
       why: node.capability.reason,
     })),
-    ...(documentCapability.ignored ?? []).map((path) => ({ node: "root", kind: "ignore", why: `${path} is intentionally omitted by the ${request.capability ?? request.role} exporter.` })),
+    ...outputs.flatMap((output) => (output.root.capability.ignored ?? []).map((path) => ({ node: output.id, kind: "ignore", why: `${path} is intentionally omitted by the ${request.capability ?? request.role} exporter.` }))),
     ...evaluatedNodes.flatMap((node) => (node.capability.ignored ?? []).map((path) => ({
       node: node.id,
       kind: "ignore",
@@ -84,7 +95,7 @@ export function buildExporterIR(document, request) {
   };
 }
 
-function collectOutputNodes(graph, sources, authored, root, capability, rootId, projection, paragraphStyles) {
+function collectOutputNodes(graph, sources, authored, root, capability, rootId, projection, paragraphStyles, documentLanguage, verification) {
   const result = [];
   const visit = (node, parent = null, z = 0) => {
     const source = sources.get(node.id) ?? {};
@@ -95,7 +106,7 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
       const paths = capabilityPaths(source, projection);
       const entry = source.export === "image"
         ? { verdict: "raster", reason: "Author requested image export.", paths: ["properties.export"] }
-        : evaluateCapabilities(paths, capability.properties);
+        : evaluateCapabilities(paths, capability.properties, verification);
       result.push({
         id: node.id, type: source.type ?? node.type.toLowerCase(), parent, z,
         geometry: {
@@ -108,7 +119,7 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
           rotation: node.rotation ?? 0,
         },
         paint: { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
-        semantics: source.type === "text" ? { content: source.content ?? "", runs: richTextRuns(source, paragraphStyles), paragraphs: (source.paragraphs ?? []).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined })), language: source.lang ?? source.language ?? null, description: source.description ?? null, decorative: source.decorative === true } : { description: source.description ?? null, decorative: source.decorative === true },
+        semantics: source.type === "text" ? { content: source.content ?? "", runs: richTextRuns(source, paragraphStyles, documentLanguage), paragraphs: (source.paragraphs ?? []).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined })), language: source.lang ?? source.language ?? documentLanguage, description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null } : { description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null },
         layout: semanticLayout(source),
         variants: semanticVariants(authoredSource),
         export: source.export ?? "live", capability: entry,
@@ -174,9 +185,12 @@ function applyRasterScopes(nodes, rasters) {
 
 function capabilityPaths(node, projection) {
   const paths = new Set([`nodes.${node.type}`]);
-  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "description", "decorative"]) {
+  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "decorative"]) {
     if (node[key] !== undefined) paths.add(`properties.${key}`);
   }
+  if (node.description !== undefined) paths.add("properties.accessibility.description");
+  if (node.landmark !== undefined) paths.add("properties.accessibility.landmark");
+  if (node.linkName !== undefined) paths.add("properties.accessibility.linkName");
   const fills = Array.isArray(node.fill) ? node.fill : [node.fill];
   if (node.fill !== undefined) paths.add("properties.fill");
   for (const fill of fills.filter(Boolean)) {
@@ -203,7 +217,15 @@ function capabilityPaths(node, projection) {
   }
   if (node.type === "text") {
     paths.add("properties.content");
-    for (const key of ["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
+    const baseRunPaths = {
+      fill: "fill", fontFamily: "fontFamily", fontSize: "fontSize", fontWeight: "weight",
+      fontStyle: "italic", letterSpacing: "letterSpacing", wordSpacing: "wordSpacing",
+      underline: "underline", strikethrough: "strikethrough", lang: "language",
+    };
+    for (const [key, mapped] of Object.entries(baseRunPaths)) if (node[key] !== undefined) paths.add(`properties.text.run.${mapped}`);
+    for (const key of ["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "paragraphs", "marks"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
+    if (node.textAlign !== undefined) paths.add("properties.text.paragraph.align");
+    if (node.headingLevel !== undefined) paths.add("properties.text.paragraph.headingLevel");
     for (const mark of node.marks ?? []) {
       const mapped = { fill: "fill", weight: "weight", italic: "italic", underline: "underline", strikethrough: "strikethrough", fontFamily: "fontFamily", fontSize: "fontSize", letterSpacing: "letterSpacing", wordSpacing: "wordSpacing", lang: "language", link: "link" }[mark.type];
       if (mapped) paths.add(`properties.text.run.${mapped}`);
@@ -217,8 +239,11 @@ function capabilityPaths(node, projection) {
   return [...paths];
 }
 
-function evaluateCapabilities(paths, table) {
-  const entries = paths.map((path) => ({ path, ...(table[path] ?? { verdict: "raster", reason: `Capability ${path} is absent from the table.` }) }));
+function evaluateCapabilities(paths, table, verification = null) {
+  const entries = paths.map((path) => {
+    const entry = table[path] ?? { verdict: "raster", reason: `Capability ${path} is absent from the table.` };
+    return { path, ...(verification?.has(path) && (entry.verdict === null || entry.status === "unverified") ? { verdict: "native", status: "verification-only" } : entry) };
+  });
   const unknown = entries.filter((entry) => entry.verdict === null || entry.status === "unverified");
   if (unknown.length) {
     const error = new Error(`Unverified capabilities: ${unknown.map((entry) => entry.path).join(", ")}.`);
@@ -233,8 +258,9 @@ function evaluateCapabilities(paths, table) {
 }
 function documentCapabilityPaths(document, role) {
   const paths = new Set([`roles.${role}`]);
-  for (const key of ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"])
+  for (const key of ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "children"])
     if (document[key] !== undefined) paths.add(`root.${key}`);
+  if ((document.flows ?? []).length) paths.add("root.flows");
   if (Object.keys(document.imports ?? {}).length) paths.add("relationships.import");
   if ((document.flows ?? []).length) paths.add("relationships.flow");
   const nodes = [...indexNodes(document.children).values()];
@@ -242,7 +268,7 @@ function documentCapabilityPaths(document, role) {
   if (nodes.some((node) => node.notesFor !== undefined)) paths.add("relationships.notesFor");
   return [...paths];
 }
-export function richTextRuns(node, paragraphStyles) {
+export function richTextRuns(node, paragraphStyles, documentLanguage = null) {
   const content = node.content ?? "";
   const paragraphs = node.paragraphs?.length ? node.paragraphs : content ? [{ from: 0, to: content.length }] : [];
   return paragraphs.flatMap((paragraph) => {
@@ -254,7 +280,7 @@ export function richTextRuns(node, paragraphStyles) {
     const base = { ...textBase(node), ...(paragraph.style ? paragraphStyles[paragraph.style] : {}) };
     return flattenMarks(paragraphContent, marks, base).map((run) => ({ ...run, from: run.from + paragraph.from, to: run.to + paragraph.from }));
   }).map((run) => {
-    if (run.lang === undefined) return run;
+    if (run.lang === undefined) return run.language === undefined && documentLanguage ? { ...run, language: documentLanguage } : run;
     const { lang, ...rest } = run;
     return { ...rest, language: lang };
   });

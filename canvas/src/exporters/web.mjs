@@ -24,7 +24,7 @@ function htmlNode(node, children, parent, options) {
   const heading = node.type === "text" && node.semantics.paragraphs.find((p) => p.headingLevel)?.headingLevel;
   const tag = heading ? `h${heading}` : node.type === "text" ? "p" : "div";
   const content = node.type === "text"
-    ? node.semantics.runs.map((run) => `<span style="${runStyle(run)}">${escape(node.semantics.content.slice(run.from, run.to))}</span>`).join("")
+    ? node.semantics.runs.map((run) => runHtml(run, node.semantics.content.slice(run.from, run.to))).join("")
     : orderedChildren(node, children).map((child) => htmlNode(child, children, node, options)).join("");
   const classes = ["node", node.type, node.layout.layout === "grid" ? "canvas-grid" : ["horizontal", "vertical"].includes(node.layout.layout) ? "canvas-flex" : ""].filter(Boolean).join(" ");
   return `<${tag} id="${escape(node.id)}" class="${classes}" style="${nodeStyle(node, parent)}"${node.semantics.description ? ` aria-label="${escape(node.semantics.description)}"` : node.semantics.decorative ? ` aria-hidden="true"` : ""}>${content}</${tag}>`;
@@ -80,7 +80,23 @@ function cssProperty(property, value) {
   if (!name) return null;
   return `${name}:${typeof value === "number" && ["gap", "rowGap", "columnGap", "width", "height"].includes(property) ? `${value}px` : value}!important`;
 }
-function runStyle(run) { return [`font-family:${run.fontFamily ?? "inherit"}`, `font-size:${run.fontSize ?? 16}px`, Number(run.weight ?? run.fontWeight) >= 600 ? "font-weight:700" : "", run.fill ? `color:${run.fill}` : ""].filter(Boolean).join(";"); }
+function runHtml(run, text) {
+  const tag = run.link ? "a" : "span";
+  const language = run.language ? ` lang="${escape(run.language)}"` : "";
+  const href = run.link ? ` href="${escape(run.link)}"` : "";
+  return `<${tag}${href}${language} style="${runStyle(run)}">${escape(text)}</${tag}>`;
+}
+function runStyle(run) {
+  const decoration = [run.underline ? "underline" : null, run.strikethrough ? "line-through" : null].filter(Boolean).join(" ");
+  return [
+    `font-family:${run.fontFamily ?? "inherit"}`, `font-size:${run.fontSize ?? 16}px`,
+    Number(run.weight ?? run.fontWeight) >= 600 ? "font-weight:700" : "",
+    run.italic || run.fontStyle === "italic" ? "font-style:italic" : "",
+    decoration ? `text-decoration:${decoration}` : "", run.fill ? `color:${run.fill}` : "",
+    run.letterSpacing != null ? `letter-spacing:${Number(run.letterSpacing)}px` : "",
+    run.wordSpacing != null ? `word-spacing:${Number(run.wordSpacing)}px` : "",
+  ].filter(Boolean).join(";");
+}
 function groupChildren(nodes) { const map = new Map(); for (const node of nodes) { const list = map.get(node.parent) ?? []; list.push(node); map.set(node.parent, list); } return map; }
 function orderedChildren(node, children) {
   return children.get(node.id) ?? [];
