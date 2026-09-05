@@ -1,4 +1,4 @@
-import { CAPABILITY_TABLES } from "./capability-tables.mjs";
+import { capabilityTableFor } from "./capability-tables.mjs";
 import { isCascade, resolveCanvasDocument } from "./canvas-resolver.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { flattenMarks } from "./rich-text.mjs";
@@ -13,7 +13,7 @@ export function buildCapabilityVerificationIR(document, request, assumedNativePa
 }
 
 export function buildExporterIR(document, request) {
-  const capability = CAPABILITY_TABLES[request.capability ?? request.role];
+  const capability = capabilityTableFor(request.capability ?? request.role, request.profile);
   if (!capability) throw exportError("CANVAS_EXPORT_ROLE", `No exporter exists for role ${request.role}.`);
   const projection = request.projection ?? (["route", "ios", "android"].includes(request.role) ? "semantic" : "resolved");
   const resolved = resolveCanvasDocument(document, { modes: request.modes, bindings: request.bindings, imports: request.imports });
@@ -27,7 +27,7 @@ export function buildExporterIR(document, request) {
     if (!frame) throw exportError("CANVAS_EXPORT_FRAME", `Frame ${frameId} was not found.`);
     if (frame.role !== request.role) throw exportError("CANVAS_EXPORT_ROLE", `Frame ${frameId} carries role ${frame.role ?? "none"}, not ${request.role}.`);
     const graphNode = graph.getNode(frameId);
-    const physical = frame.physical ?? physicalFor(frame.size, request.role);
+    const physical = frame.physical;
     if (["slide", "page"].includes(request.role) && !physical) {
       const error = new Error(`Physical size is not declared for ${frameId}.`);
       error.code = "CANVAS_PHYSICAL_SIZE_UNDECLARED";
@@ -289,5 +289,4 @@ function textBase(node) { return Object.fromEntries(["fontFamily", "fontSize", "
 function semanticLayout(node) { return Object.fromEntries(["layout", "gap", "rowGap", "columnGap", "padding", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "width", "height"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]])); }
 function needsIsolation(node) { return Number(node.opacity ?? 1) < 1 || ![undefined, "normal", "pass_through"].includes(node.blendMode) || node.clip === true; }
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
-function physicalFor(size, role) { if (role === "page" && size === "a4") return { w: 210, h: 297, unit: "mm" }; if (role === "page" && size === "letter") return { w: 8.5, h: 11, unit: "in" }; return null; }
 function exportError(code, message) { const error = new Error(message); error.code = code; return error; }

@@ -4,7 +4,8 @@ import { embedPresentationFonts, readOoxmlPackage, readXmlPart, writeOoxmlPackag
 export async function exportPptx(ir, options = {}) {
   const first = ir.outputs[0];
   if (!first) throw new Error("Deck export needs at least one output.");
-  const physical = first.physical ?? { w: first.width / 96, h: first.height / 96, unit: "in" };
+  const physical = first.physical;
+  if (!physical) throw new Error("PPTX slide physical size must be declared in the exporter IR.");
   const widthIn = physical.unit === "in" ? physical.w : physical.w / 25.4;
   const heightIn = physical.unit === "in" ? physical.h : physical.h / 25.4;
   const pptx = new pptxgen();

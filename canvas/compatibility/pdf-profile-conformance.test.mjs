@@ -20,7 +20,7 @@ test("PDF/A-3 output passes pinned veraPDF 1.30.2", async (context) => {
     const document = fixture();
     const outputIntent = await readFile(new URL("../assets/color/sRGB2014.icc", import.meta.url));
     const inter = await readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
-    const bytes = await exportPdf(buildExporterIR(document, { role: "page", frames: ["page"] }), {
+    const bytes = await exportPdf(buildExporterIR(document, { role: "page", profile: "PDF/A-3", frames: ["page"] }), {
       profile: "PDF/A-3", title: "Canvas PDF/A-3 fixture", outputIntent, fonts: { "Inter:400": inter },
     });
     const path = join(directory, "fixture.pdf");
@@ -41,7 +41,7 @@ test("PDF/UA-1 output passes pinned veraPDF 1.30.2", async (context) => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-pdfua1-"));
   try {
     const inter = await readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
-    const bytes = await exportPdf(buildExporterIR(fixture(), { role: "page", frames: ["page"] }), { profile: "PDF/UA-1", title: "Canvas PDF/UA-1 fixture", fonts: { "Inter:400": inter } });
+    const bytes = await exportPdf(buildExporterIR(fixture(), { role: "page", profile: "PDF/UA-1", frames: ["page"] }), { profile: "PDF/UA-1", title: "Canvas PDF/UA-1 fixture", fonts: { "Inter:400": inter } });
     await writeFile(join(directory, "fixture.pdf"), bytes);
     const validation = spawnSync("docker", ["run", "--rm", "--platform", "linux/amd64", "-v", `${directory}:/data`, IMAGE, "--format", "text", "--verbose", "--flavour", "ua1", "/data/fixture.pdf"], { encoding: "utf8" });
     assert.equal(validation.status, 0, validation.stderr);
@@ -55,5 +55,5 @@ test("unverified PDF/X-4 profile cannot be mislabeled", async () => {
 });
 
 function fixture() {
-  return { canvasSchemaVersion: 3, version: "2.15", module: "print", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "page", type: "frame", role: "page", size: "a4", width: 794, height: 1123, children: [{ id: "text", type: "text", x: 72, y: 72, width: 400, height: 60, content: "Canvas profile fixture", fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 22 }], marks: [] }] }] };
+  return { canvasSchemaVersion: 3, version: "2.15", module: "print", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "page", type: "frame", role: "page", size: "a4", physical: { w: 210, h: 297, unit: "mm" }, width: 794, height: 1123, children: [{ id: "text", type: "text", x: 72, y: 72, width: 400, height: 60, content: "Canvas profile fixture", fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 22 }], marks: [] }] }] };
 }

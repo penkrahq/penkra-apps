@@ -17,8 +17,9 @@ export async function exportPdf(ir, options = {}) {
   const tagging = options.profile === "PDF/UA-1" ? createTagging(pdf) : null;
   for (const output of ir.outputs) {
     const physical = output.physical;
-    const width = physical ? toPoints(physical.w, physical.unit) : output.width * 0.75;
-    const height = physical ? toPoints(physical.h, physical.unit) : output.height * 0.75;
+    if (!physical) throw new Error(`PDF page ${output.id} physical size must be declared in the exporter IR.`);
+    const width = toPoints(physical.w, physical.unit);
+    const height = toPoints(physical.h, physical.unit);
     const page = pdf.addPage([width, height]);
     for (const node of [...output.nodes].sort((a, b) => a.z - b.z)) {
       const tag = tagging?.begin(page, node);

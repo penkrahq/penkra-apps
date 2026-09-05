@@ -114,11 +114,54 @@ export const CAPABILITY_TABLES = Object.freeze({
   }),
 });
 
+export const PAGE_PROFILE_DELTAS = Object.freeze({
+  none: Object.freeze({ status: "verified", requires: [], errors: [], properties: {} }),
+  "PDF/A-3": Object.freeze({
+    status: "verified",
+    evidence: "Pinned veraPDF 1.30.2 validates the generated PDF/A-3b fixture.",
+    requires: ["embedded-fonts", "output-intent", "no-external-references"],
+    errors: ["unembeddable-font", "external-reference"],
+    properties: {},
+  }),
+  "PDF/UA-1": Object.freeze({
+    status: "verified",
+    evidence: "Pinned veraPDF 1.30.2 validates the generated PDF/UA-1 fixture and its tag tree.",
+    requires: ["description-on-every-non-decorative-node", "document-tree-order", "document-language", "heading-levels", "tagged-content"],
+    errors: ["missing-description"],
+    properties: {},
+  }),
+  "PDF/X-4": Object.freeze({
+    status: "unverified",
+    requires: ["embedded-fonts", "bleed-box", "trim-box", "output-intent"],
+    errors: ["unembeddable-font", "missing-bleed"],
+    properties: {},
+  }),
+});
+
+export function capabilityTableFor(role, profile = null) {
+  const base = CAPABILITY_TABLES[role];
+  if (!base) return null;
+  if (role !== "page") return base;
+  const key = profile ?? "none";
+  const delta = PAGE_PROFILE_DELTAS[key];
+  if (!delta) {
+    const error = new Error(`Unknown PDF profile ${String(profile)}.`);
+    error.code = "CANVAS_PDF_PROFILE_UNKNOWN";
+    throw error;
+  }
+  return { ...base, profile: key, requirements: delta, properties: { ...base.properties, ...delta.properties } };
+}
+
 export function unverifiedCapabilityEntries() {
-  return Object.entries(CAPABILITY_TABLES).flatMap(([target, tableValue]) =>
+  return [
+    ...Object.entries(CAPABILITY_TABLES).flatMap(([target, tableValue]) =>
     Object.entries(tableValue.properties)
       .filter(([, entry]) => entry.status === "unverified")
-      .map(([path, entry]) => ({ target, path, verdict: entry.verdict })));
+      .map(([path, entry]) => ({ target, path, verdict: entry.verdict }))),
+    ...Object.entries(PAGE_PROFILE_DELTAS).flatMap(([profile, entry]) => entry.status === "unverified"
+      ? [{ target: `page:${profile}`, path: "profile", verdict: null }]
+      : []),
+  ];
 }
 
 export function assertAllCapabilityTables() {
@@ -126,6 +169,11 @@ export function assertAllCapabilityTables() {
   for (const [target, tableValue] of Object.entries(CAPABILITY_TABLES)) {
     try { assertCapabilityTotality(tableValue, inventory); }
     catch (error) { errors.push(`${target}: ${error.message}`); }
+  }
+  for (const [profile, delta] of Object.entries(PAGE_PROFILE_DELTAS)) {
+    try { assertCapabilityTotality(capabilityTableFor("page", profile), inventory); }
+    catch (error) { errors.push(`page:${profile}: ${error.message}`); }
+    if (delta.status === "unverified") errors.push(`page:${profile}: profile evidence is unverified`);
   }
   if (errors.length) {
     const error = new Error(`Capability tables are not buildable:\n${errors.join("\n")}`);
