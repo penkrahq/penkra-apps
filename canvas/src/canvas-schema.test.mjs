@@ -30,6 +30,7 @@ test("canonical schema enforces role, notes, node modes and flow relationships",
 });
 
 test("capability totality is generated from the canonical inventory", () => {
+  assert.equal(capabilityPathInventory().length, 142);
   const properties = Object.fromEntries(capabilityPathInventory().map((path) => [path, { verdict: "native" }]));
   assert.equal(assertCapabilityTotality({ properties }), true);
   properties["properties.fill"] = { verdict: null, status: "unverified" };
