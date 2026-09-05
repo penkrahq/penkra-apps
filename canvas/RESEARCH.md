@@ -19,13 +19,11 @@ be revisited against the implementation that inspired it.
   [Yjs awareness model](https://docs.yjs.dev/api/about-awareness). The initial
   Canvas pass exposes a presence count, not remote cursors.
 
-## `.pen` and rendering
+## Owned engine and rendering
 
-- Pencil's live [`.pen` format](https://docs.pencil.dev/for-developers/the-pen-format)
-  is the semantic contract. Canvas currently targets schema 2.17, including
-  native icon nodes, gradients, frame defaults, variables/themes, refs, and
-  effects; the exact boundary is recorded in
-  `compatibility/pencil-2.17-support.md`.
+- Canvas has no Pencil file-compatibility contract. Earlier Pencil format research informed the
+  initial engine fork, but `.pen` import/export, format fixtures and parser exposure were deleted by
+  product decision on 2026-09-04. The canonical Canvas schema is the semantic contract.
 - Pencil [Code on Canvas](https://docs.pencil.dev/core-concepts/code-on-canvas)
   defines script nodes as a separate derived runtime: synchronous sandboxed
   JavaScript, schema-declared inputs, deterministic randomness, a two-second
@@ -37,22 +35,19 @@ be revisited against the implementation that inspired it.
   that node-targeted contract: the operation renders the post-mutation document
   directly and returns PNG evidence without requiring the editor tab to be
   visible.
-- [OpenPencil](https://github.com/open-pencil/open-pencil) is MIT licensed and is
-  the strongest public `.pen` implementation found. Canvas pins a real commit in
-  `compatibility/openpencil-oracle.json` and differentially checks import shape
-  and stable source IDs against that implementation.
+- [OpenPencil](https://github.com/open-pencil/open-pencil) is MIT licensed. Canvas owns a fork of its
+  scene graph, layout, renderer and editor integration; it does not retain OpenPencil file IO.
 - OpenPencil's documented architecture uses a normalized scene graph,
   CanvasKit, Yoga, and a WebRTC/Yjs collaboration layer. Its current `.pen`
   adapter imports but does not provide a lossless `.pen` export oracle.
 - Canvas adopts a narrow engine seam generated from audited OpenPencil commit
   [`4a5e7d5`](https://github.com/open-pencil/open-pencil/commit/4a5e7d557064d941fbac88bd492586db5257ff5f):
-  editor graph, Yoga layout, `.pen` reader, CanvasKit surface/input, and text
-  editing. It does not ship the stale published 0.13.2 packages, their tools
-  surface, or `expr-eval`.
-- The OpenPencil graph is regenerated disposable view state. Canvas writes
-  supported editor mutations into the lossless Yjs `.pen` model, which remains
-  canonical for collaboration, offline recovery, and export. Unknown data is
-  therefore never made dependent on OpenPencil's normalized representation.
+  editor graph, Yoga layout, Canvas-object scene adapter, CanvasKit surface/input, and text editing.
+  It does not ship a Pencil parser, the stale published 0.13.2 packages, their tools surface, or
+  `expr-eval`.
+- The OpenPencil-derived graph is regenerated disposable view state. Canvas writes supported editor
+  mutations into its Yjs-backed Canvas model, which remains canonical for collaboration, offline
+  recovery and export.
 - Pencil's [format schema](https://docs.pencil.dev/for-developers/the-pen-format)
   reserves `/` out of source node IDs and uses slash-separated keys in a
   ref's `descendants` map to address nested instance content. Canvas uses that
@@ -65,7 +60,7 @@ be revisited against the implementation that inspired it.
   is built from the live scene graph rather than
   the source file's unexpanded tree. Canvas follows that architecture so
   component-instance descendants remain visible and selectable in Layers while
-  the lossless `.pen` model remains the persistence authority.
+  the Canvas model remains the persistence authority.
 - Unsupported visual behavior is reported in the editor and preserved in source;
   Canvas does not hide it with compatibility heuristics.
 
@@ -74,7 +69,5 @@ be revisited against the implementation that inspired it.
 - Account credentials and App install receipts stay in the trusted Penkra main
   process. The App calls only the public `@penkra/sdk` runtime and its declared
   `account-data` permission.
-- File import uses the public scoped file-handle API. Canvas never reads a host
-  path directly.
 - App semantic operations are typed in the public manifest and route document
   opening through Penkra tabs; controller code does not depend on renderer DOM.
