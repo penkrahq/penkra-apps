@@ -1,6 +1,5 @@
 import { validateRichText } from "./rich-text.mjs";
 
-export const CANVAS_SCHEMA_VERSION = 3;
 export const CANVAS_MODULES = Object.freeze(["deck", "print", "web", "mobile"]);
 export const CANVAS_ROLES = Object.freeze({ deck: ["slide"], print: ["page"], web: ["route"], mobile: ["ios", "android"] });
 export const CANVAS_NODE_TYPES = Object.freeze(["frame", "group", "rectangle", "ellipse", "polygon", "line", "path", "text", "icon", "ref"]);
@@ -12,7 +11,6 @@ const fields = (names, overrides = {}) => Object.fromEntries(names.map((name) =>
 }]));
 
 export const CANVAS_SCHEMA = deepFreeze({
-  schemaVersion: CANVAS_SCHEMA_VERSION,
   definitions: {
     physical: { type: "object", required: ["w", "h", "unit"], additional: false, fields: {
       w: { type: "number" }, h: { type: "number" }, unit: { type: "enum", values: ["in", "mm"] },
@@ -46,12 +44,10 @@ export const CANVAS_SCHEMA = deepFreeze({
   },
   root: {
     type: "object",
-    required: ["canvasSchemaVersion", "version", "module", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
+    required: ["module", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
     fields: fields(
-      ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
+      ["module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
       {
-        canvasSchemaVersion: { type: "integer", const: CANVAS_SCHEMA_VERSION },
-        version: { type: "string" },
         module: { type: "enum", values: CANVAS_MODULES },
         lang: { type: "string" },
         axes: { type: "record", values: { ref: "axis" } },
@@ -66,13 +62,14 @@ export const CANVAS_SCHEMA = deepFreeze({
   node: {
     required: ["id", "type"],
     groups: {
-      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
+      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "bleed", "safeMargin", "folds", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
         id: { type: "string" }, type: { type: "enum", values: CANVAS_NODE_TYPES },
         name: { type: "string" }, x: { type: "number" }, y: { type: "number" },
         width: { type: "dimension" }, height: { type: "dimension" }, rotation: { type: "number" },
         flipX: { type: "boolean" }, flipY: { type: "boolean" }, opacity: { type: "number" }, enabled: { type: "boolean" },
         export: { type: "enum", values: ["live", "image"] }, description: { type: "string", capability: false }, decorative: { type: "boolean" },
         role: { type: "enum", values: Object.values(CANVAS_ROLES).flat() }, size: { type: "string" }, physical: { ref: "physical" },
+        bleed: { type: "number" }, safeMargin: { type: "number" }, folds: { type: "array", items: { type: "number" } },
         properties: { type: "record", values: { ref: "property" } }, bind: { type: "record", values: { type: "string" } },
         visible: { type: "object" }, varies: { type: "array", items: { type: "string" } }, modes: { type: "record", values: { type: "string" } }, notesFor: { type: "string" },
       }),
@@ -128,7 +125,6 @@ export function validateCanvasDocument(document, options = {}) {
   const errors = [];
   if (!document || typeof document !== "object" || Array.isArray(document)) return invalid(["Document must be an object."], options);
   validateGeneratedShape(document, CANVAS_SCHEMA.root, "root", errors);
-  if (typeof document.version !== "string") errors.push("version must preserve the OpenPencil string marker.");
   const nodes = new Map();
   const parents = new Map();
   walk(document.children, null, (node, parent) => {
@@ -140,6 +136,7 @@ export function validateCanvasDocument(document, options = {}) {
     if (node.decorative === true && node.description != null) errors.push(`${node.id}.description and decorative are mutually exclusive.`);
     if (node.role !== undefined && node.type !== "frame") errors.push(`${node.id}.role may only appear on a frame.`);
     else if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
+    validatePrintGeometry(node, errors);
     if (node.type === "text") errors.push(...validateRichText(node));
     if (node.type === "ref" && typeof node.ref !== "string") errors.push(`${node.id}.ref must be a string.`);
     validateProperties(node, errors);
@@ -155,6 +152,21 @@ export function validateCanvasDocument(document, options = {}) {
   validateComponentSemantics(document, nodes, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
+}
+
+function validatePrintGeometry(node, errors) {
+  const hasPrintGeometry = node.bleed !== undefined || node.safeMargin !== undefined || node.folds !== undefined;
+  if (!hasPrintGeometry) return;
+  if (node.type !== "frame" || node.role !== "page") errors.push(`${node.id}.bleed, safeMargin and folds may only appear on a page frame.`);
+  if (node.bleed !== undefined && (!Number.isFinite(node.bleed) || node.bleed < 0)) errors.push(`${node.id}.bleed must be a non-negative number of points.`);
+  if (node.safeMargin !== undefined && (!Number.isFinite(node.safeMargin) || node.safeMargin < 0)) errors.push(`${node.id}.safeMargin must be a non-negative number of points.`);
+  if (node.folds !== undefined) {
+    if (!Array.isArray(node.folds) || node.folds.some((fold) => !Number.isFinite(fold) || fold <= 0 || (typeof node.width === "number" && fold >= node.width))) {
+      errors.push(`${node.id}.folds must contain positions strictly inside the page width.`);
+    } else if (new Set(node.folds).size !== node.folds.length || node.folds.some((fold, index) => index > 0 && fold <= node.folds[index - 1])) {
+      errors.push(`${node.id}.folds must be unique and strictly increasing.`);
+    }
+  }
 }
 
 export function assertCapabilityTotality(table, inventory = capabilityPathInventory()) {

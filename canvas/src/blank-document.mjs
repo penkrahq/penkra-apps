@@ -2,10 +2,6 @@
 export function createBlankDocumentSource({ id = crypto.randomUUID(), module = "web" } = {}) {
   const preset = modulePreset(module);
   return {
-    // OpenPencil's file parser currently requires this format marker. It is a
-    // private serialization detail, not a caller-selected Canvas model version.
-    version: "2.15",
-    canvasSchemaVersion: 3,
     module,
     axes: {},
     variables: {},

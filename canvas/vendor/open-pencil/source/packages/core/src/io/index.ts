@@ -3,7 +3,6 @@ export { extractExportGraph } from './subgraph'
 export {
   BUILTIN_IO_FORMATS,
   figFormat,
-  penFormat,
   pngFormat,
   jpgFormat,
   webpFormat,
@@ -11,7 +10,6 @@ export {
   jsxFormat
 } from './formats'
 export { exportFigFile, parseFigFile, readFigFile, type ParseFigFileOptions } from './formats/fig'
-export { parsePenFile, readPenFile } from '@open-pencil/pen'
 export { sceneNodeToJSX, selectionToJSX, type JSXFormat } from './formats/jsx'
 export {
   computeContentBounds,

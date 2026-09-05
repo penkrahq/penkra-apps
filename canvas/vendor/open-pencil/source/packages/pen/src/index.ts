@@ -1,2 +1,2 @@
-export { parsePenFile, readPenFile } from './read'
+export { createCanvasSceneGraph } from './read'
 export * from './convert'

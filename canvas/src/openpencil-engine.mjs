@@ -3,7 +3,7 @@ import {
   computeAllLayouts,
   createDefaultEditorState,
   createEditor,
-  parsePenFile,
+  createCanvasSceneGraph,
 } from "../vendor/open-pencil/engine.source.mjs";
 import { reactive } from "vue";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
@@ -88,8 +88,8 @@ export function createOpenPencilGraph(
     () => (preparedDocument ?? prepareOpenPencilRenderDocument(document, { assets })).document,
   );
   const graph = measureGraphPhase(
-    "engine.graph.parse",
-    () => parsePenFile(renderDocument),
+    "engine.graph.adapt-model",
+    () => createCanvasSceneGraph(renderDocument),
   );
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
@@ -467,7 +467,7 @@ export function sceneTextEditCommitMutations(editor, document, nodeId, previousS
   const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
   const effectiveSource = selection?.effectiveNode ?? sourceNode;
   const richMutations = [];
-  if (Array.isArray(effectiveSource.marks) || document.canvasSchemaVersion >= 3) {
+  if (Array.isArray(effectiveSource.marks)) {
     richMutations.push({
       kind: "set-property",
       nodeId,
@@ -475,7 +475,7 @@ export function sceneTextEditCommitMutations(editor, document, nodeId, previousS
       value: sceneStyleRunsToMarks(node, effectiveSource, previousSceneValues?.text),
     });
   }
-  if (textChanged && (Array.isArray(effectiveSource.paragraphs) || document.canvasSchemaVersion >= 3)) {
+  if (textChanged && Array.isArray(effectiveSource.paragraphs)) {
     richMutations.push({
       kind: "set-property",
       nodeId,
@@ -600,7 +600,7 @@ function mergeCanvasMarks(marks) {
 }
 
 export function sceneNodeInsertionMutation(editor, node) {
-  const penNode = sceneNodeToPenNode(node);
+  const penNode = sceneNodeToCanvasNode(node);
   const position = sceneNodePosition(editor, node);
   if (!penNode || position === null) return null;
   const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
@@ -643,7 +643,7 @@ export function changedSceneProperties(previous, changes) {
   );
 }
 
-export function sceneNodeToPenNode(node) {
+export function sceneNodeToCanvasNode(node) {
   const type = ({
     FRAME: "frame",
     RECTANGLE: "rectangle",

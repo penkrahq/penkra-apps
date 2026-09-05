@@ -1,6 +1,4 @@
 import { base64ToBytes, bytesToBase64, decodeJson, encodeJson } from "./codec.mjs";
-import { commitCanvasMigration } from "./document-migration.mjs";
-import { migrationManifestFor } from "./migration-manifest-registry.mjs";
 
 // This mirrors the host's documented Account-data request-body boundary. Use
 // the direct snapshot endpoint whenever the exact encoded request fits; the
@@ -41,7 +39,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       }),
     getDocument: async (id) => {
       const encoded = encodeURIComponent(id);
-      const project = await getCurrentProject(request, api, id, encoded);
+      const project = await request(`/${encoded}?chunked=auto`);
       const assets = await request(`/${encoded}/blobs`);
       const snapshot = project.snapshot.chunked
         ? await readChunkedSnapshot(request, encoded, project.snapshot)
@@ -54,7 +52,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     },
     getDocumentProjection: async (id) => {
       const encoded = encodeURIComponent(id);
-      const project = await getCurrentProject(request, api, id, encoded);
+      const project = await request(`/${encoded}?chunked=auto`);
       if ((project.updates ?? []).length > 0) return null;
       const source = project.snapshot.chunked
         ? decodeJson(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "projection"))
@@ -74,7 +72,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     permanentlyDeleteDocument: (id) =>
       request(`/${encodeURIComponent(id)}/permanent`, { method: "DELETE" }),
     appendUpdate: (id, input) =>
-      request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: { ...input, canvasSchemaVersion: 3 } }),
+      request(`/${encodeURIComponent(id)}/updates`, { method: "POST", body: input }),
     undoOperation: (id, input) =>
       request(`/${encodeURIComponent(id)}/undo`, { method: "POST", body: input }),
     createSnapshot: (id, { source, state, ...input }) => {
@@ -87,18 +85,6 @@ export function createCanvasApi(runtime = globalThis.penkra) {
           state: base64ToBytes(state),
         });
     },
-    beginSchemaMigration: (id, input) =>
-      request(`/${encodeURIComponent(id)}/schema-migration/begin`, {
-        method: "POST",
-        body: input,
-      }),
-    completeSchemaMigration: (id, input) =>
-      request(`/${encodeURIComponent(id)}/schema-migration/complete`, {
-        method: "POST",
-        body: input,
-      }),
-    abortSchemaMigration: (id) =>
-      request(`/${encodeURIComponent(id)}/schema-migration`, { method: "DELETE" }),
     listGrants: (id) => request(`/${encodeURIComponent(id)}/grants`),
     grantAccess: (id, email) =>
       request(`/${encodeURIComponent(id)}/grants`, {
@@ -111,10 +97,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         { method: "DELETE" },
       ),
     subscribe: (id, listener, options = {}) =>
-      runtime.account.subscribe(`project:${id}`, listener, {
-        ...options,
-        metadata: { ...options.metadata, canvasSchemaVersion: 3 },
-      }),
+      runtime.account.subscribe(`project:${id}`, listener, options),
     subscribeToDocuments: (listener, options) =>
       runtime.account.subscribe("projects", listener, options),
     uploadAsset: async (id, asset) => {
@@ -168,22 +151,6 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     },
   };
   return api;
-}
-
-async function getCurrentProject(request, api, documentId, encodedProjectId) {
-  try {
-    return await request(`/${encodedProjectId}?chunked=auto&canvasSchemaVersion=3`);
-  } catch (error) {
-    if (error.code !== "CANVAS_SCHEMA_MIGRATION_REQUIRED") throw error;
-  }
-  const legacy = await request(`/${encodedProjectId}?chunked=auto`);
-  const snapshot = legacy.snapshot.chunked
-    ? await readChunkedSnapshot(request, encodedProjectId, legacy.snapshot)
-    : { ...legacy.snapshot, source: legacy.snapshot.projection };
-  const payload = { ...legacy, snapshot };
-  const manifest = migrationManifestFor(documentId, snapshot.throughSequence);
-  await commitCanvasMigration(api, documentId, payload, manifest);
-  return request(`/${encodedProjectId}?chunked=auto&canvasSchemaVersion=3`);
 }
 
 function uploadedAsset(blob, path) {

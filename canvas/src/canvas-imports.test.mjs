@@ -12,7 +12,7 @@ function payload(source, sequence, assets = []) {
 }
 
 test("Canvas imports enforce exact revisions and namespace library-owned assets", async () => {
-  const library = { canvasSchemaVersion: 3, version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
+  const library = { version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "hero", type: "rectangle", fill: { type: "image", url: "assets/hero.png" } },
   ] };
   const api = {

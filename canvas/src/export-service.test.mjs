@@ -7,7 +7,6 @@ import test from "node:test";
 import { exportImage } from "./export-service.mjs";
 
 const document = {
-  canvasSchemaVersion: 3,
   version: "2.17",
   module: "web",
   axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],

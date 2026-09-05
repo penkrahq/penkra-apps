@@ -18,34 +18,38 @@ export async function exportPdf(ir, options = {}) {
   for (const output of ir.outputs) {
     const physical = output.physical;
     if (!physical) throw new Error(`PDF page ${output.id} physical size must be declared in the exporter IR.`);
-    const width = toPoints(physical.w, physical.unit);
-    const height = toPoints(physical.h, physical.unit);
-    const page = pdf.addPage([width, height]);
+    const trimWidth = toPoints(physical.w, physical.unit);
+    const trimHeight = toPoints(physical.h, physical.unit);
+    const bleed = Number(output.bleed ?? 0);
+    if (!Number.isFinite(bleed) || bleed < 0) throw profileError(`PDF page ${output.id} has invalid point bleed.`);
+    if ((output.folds ?? []).length && bleed === 0) throw profileError(`PDF page ${output.id} needs positive bleed before fold marks can be placed outside trim.`);
+    const mediaWidth = trimWidth + bleed * 2;
+    const mediaHeight = trimHeight + bleed * 2;
+    const page = pdf.addPage([mediaWidth, mediaHeight]);
+    page.node.set(PDFName.of("CropBox"), pdf.context.obj([0, 0, mediaWidth, mediaHeight]));
+    page.node.set(PDFName.of("BleedBox"), pdf.context.obj([0, 0, mediaWidth, mediaHeight]));
+    page.node.set(PDFName.of("TrimBox"), pdf.context.obj([bleed, bleed, bleed + trimWidth, bleed + trimHeight]));
     for (const node of [...output.nodes].sort((a, b) => a.z - b.z)) {
       const tag = tagging?.begin(page, node);
-      await drawNode(pdf, page, node, output, fonts, options);
+      await drawNode(pdf, page, node, output, fonts, options, { bleed, trimWidth, trimHeight });
       tagging?.end(page, tag);
     }
-    const bleed = Number(output.bleed ?? 0) * 0.75;
-    if (bleed > 0) {
-      page.node.set(PDFName.of("TrimBox"), pdf.context.obj([bleed, bleed, width - bleed, height - bleed]));
-      page.node.set(PDFName.of("BleedBox"), pdf.context.obj([0, 0, width, height]));
-    }
     for (const fold of output.folds ?? []) {
-      const x = Number(fold) / output.width * width;
-      page.drawLine({ start: { x, y: 0 }, end: { x, y: height }, thickness: 0.25, opacity: 0.35 });
+      const x = bleed + Number(fold) / output.width * trimWidth;
+      page.drawLine({ start: { x, y: 0 }, end: { x, y: bleed }, thickness: 0.25, opacity: 0.35 });
+      page.drawLine({ start: { x, y: bleed + trimHeight }, end: { x, y: mediaHeight }, thickness: 0.25, opacity: 0.35 });
     }
   }
   tagging?.finish();
   return new Uint8Array(await pdf.save());
 }
 
-async function drawNode(pdf, page, node, output, fonts, options) {
+async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   if (node.capability.verdict === "ignore") return;
-  const sx = page.getWidth() / output.width;
-  const sy = page.getHeight() / output.height;
-  const x = node.geometry.x * sx;
-  const y = page.getHeight() - (node.geometry.y + node.geometry.h) * sy;
+  const sx = pageGeometry.trimWidth / output.width;
+  const sy = pageGeometry.trimHeight / output.height;
+  const x = pageGeometry.bleed + node.geometry.x * sx;
+  const y = pageGeometry.bleed + pageGeometry.trimHeight - (node.geometry.y + node.geometry.h) * sy;
   const width = node.geometry.w * sx;
   const height = node.geometry.h * sy;
   if (node.capability.verdict === "raster" || imageFill(node.paint.fill)) {
@@ -88,7 +92,10 @@ function drawText(page, node, box, fonts) {
 
 async function embedFonts(pdf, sources) {
   const result = new Map();
-  for (const [key, bytes] of Object.entries(sources)) result.set(key, await pdf.embedFont(bytes, { subset: true }));
+  // pdf-lib/fontkit's subset output preserves extraction but has rendered with
+  // missing glyphs in Poppler for the shipped Inter fixtures. A full embed is
+  // deterministic across the conformance and raster QA runners.
+  for (const [key, bytes] of Object.entries(sources)) result.set(key, await pdf.embedFont(bytes, { subset: false }));
   return result;
 }
 function selectFont(fonts, run) {

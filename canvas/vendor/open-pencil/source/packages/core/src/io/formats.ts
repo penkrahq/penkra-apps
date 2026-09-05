@@ -1,5 +1,3 @@
-import { parsePenFile } from '@open-pencil/pen'
-
 import { sceneNodeToJSX, selectionToJSX } from '#core/design-jsx'
 
 import { exportFigFile, parseFigFile } from './formats/fig'
@@ -198,26 +196,6 @@ export const figFormat: IOFormatAdapter = {
   }
 }
 
-export const penFormat: IOFormatAdapter = {
-  id: 'pen',
-  label: 'Pencil Document',
-  role: 'interchange-document',
-  category: 'document',
-  extensions: ['pen'],
-  mimeTypes: ['application/json', 'text/plain'],
-  support: {
-    readDocument: true
-  },
-  matchesFile(fileName, mimeType) {
-    return lowerExt(fileName) === 'pen' || mimeType === 'application/json'
-  },
-  async readDocument(input) {
-    const text = new TextDecoder().decode(input.data)
-    const graph = parsePenFile(text)
-    return { graph, sourceFormat: 'pen' }
-  }
-}
-
 export const pngFormat = rasterFormat('PNG')
 export const jpgFormat = rasterFormat('JPG')
 export const webpFormat = rasterFormat('WEBP')
@@ -372,7 +350,6 @@ export const jsxFormat: IOFormatAdapter = {
 
 export const BUILTIN_IO_FORMATS: IOFormatAdapter[] = [
   figFormat,
-  penFormat,
   pngFormat,
   jpgFormat,
   webpFormat,

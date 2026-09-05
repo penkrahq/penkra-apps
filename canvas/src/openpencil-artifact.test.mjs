@@ -5,112 +5,33 @@ import test from "node:test";
 
 const root = new URL("../", import.meta.url);
 
-test("pinned OpenPencil artifact has one core and CanvasKit singleton", async () => {
-  const engine = await readFile(new URL("vendor/open-pencil/engine.mjs", root), "utf8");
-  const sourceEngine = await readFile(new URL("vendor/open-pencil/engine.source.mjs", root), "utf8");
+test("owned engine artifact has one core and CanvasKit singleton", async () => {
+  const engine = await readFile(new URL("vendor/open-pencil/engine.source.mjs", root), "utf8");
   const surface = await readFile(new URL("src/openpencil-surface.mjs", root), "utf8");
   const provenance = JSON.parse(await readFile(
     new URL("vendor/open-pencil/PROVENANCE.json", root),
     "utf8",
   ));
+
   assert.equal(matches(engine, 'import CanvasKitInit from "canvaskit-wasm";'), 1);
   assert.equal(matches(engine, "async function getCanvasKit("), 1);
   assert.equal(matches(engine, "function createEditor("), 1);
+  assert.equal(createHash("sha256").update(engine).digest("hex"), provenance.sourceEngineSha256);
   assert.doesNotMatch(engine, /\bnew Function\s*\(|\bFunction\s*\(\s*["'`]return this/u);
-  assert.equal(createHash("sha256").update(engine).digest("hex"), provenance.engineSha256);
-  assert.equal(
-    createHash("sha256").update(sourceEngine).digest("hex"),
-    provenance.sourceEngineSha256,
-  );
-  assert.doesNotMatch(sourceEngine, /\bnew Function\s*\(|\bFunction\s*\(\s*["'`]return this/u);
-  assert.match(sourceEngine, /function applyPencilShaderFill\(/u);
-  assert.match(sourceEngine, /surface\.makeImageFromTextureSource\([^,]+, undefined, false\)/u);
-  assert.match(sourceEngine, /function applyPencilMeshFill\(/u);
-  assert.match(sourceEngine, /graph\.nodes\.size > MAX_RETAINED_SCENE_NODES/u);
-  assert.match(sourceEngine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
-  assert.deepEqual(provenance.localPatches, [
-    "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
-    "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
-    "Honor Pencil sizing fallbacks, padding shorthands, flex text growth, and instrument optional post-font layout.",
-    "Keep fill-less Pencil frames transparent instead of inheriting the scene graph's opaque default.",
-    "Interpret Kiwi schemas without dynamic JavaScript evaluation so the engine obeys the App CSP.",
-    "Render large scenes through cached descendant bounds and bounded subpixel detail culling instead of walking or recording every expanded node at overview zoom.",
-    "Report first-render, font-loading, post-font layout, and ready-render timings through the Canvas lifecycle callback.",
-    "Allow Pencil surfaces with authoritative stored geometry to skip the expensive post-font whole-graph layout, matching the upstream Canvas lifecycle.",
-    "Accept an already-parsed Pencil document so Canvas avoids a redundant large-scene JSON round trip.",
-    "Expose the upstream font manager so Canvas can configure host-mediated providers and a persistent downloaded-face cache.",
-    "Relayout deleted-node parents only when the parent actually owns an auto-layout flow.",
-    "Map Pencil 2.17 linear, radial, and angular gradients to native scene gradient paints.",
-    "Render semantic Pencil icon nodes through provider geometry without changing their document type.",
-    "Carry semantic stroke-icon round caps and joins through the disposable scene graph and honor node-level vector stroke styles in CanvasKit.",
-    "Honor numeric-string font weights, text styling, space-around layout, polygons, groups, and blur effects.",
-    "Preserve and render every supported Pencil stroke fill instead of selecting the first fill.",
-    "Leave unsupported Pencil node and fill types visually empty instead of approximating them with generic frames or colors.",
-    "Honor supported Pencil fill blend modes and path fill rules while leaving unsupported blend modes visually empty.",
-    "Represent successfully evaluated Pencil script nodes as transparent transient frames containing derived children.",
-    "Register imported Pencil library components outside the visible page while retaining them for instance resolution.",
-    "Render multi-opacity semantic icon layers as separate vector regions without flattening their provider geometry.",
-    "Render weighted Material Symbols icon nodes through bundled official variable fonts after exact catalog validation.",
-    "Apply inside-aligned Pencil strokes as Yoga borders when layoutIncludeStroke is enabled.",
-    "Render Pencil Linear Burn and Linear Dodge through exact CanvasKit blend implementations.",
-    "Execute Pencil shader fills in a bounded WebGL 1.0 runtime with uniforms, time, mouse, SDF, and backdrop bindings.",
-    "Import Pencil shader frames as CanvasKit GPU texture sources instead of synchronously reading pixels through a 2D canvas.",
-    "Render Pencil mesh gradients from their exact point grid and Bezier handles with adaptive Coons-patch tessellation.",
-    "Represent Pencil note, context, and prompt nodes as locked transient visuals backed by bundled JetBrains Mono faces.",
-    "Render Pencil gradient strokes and stroke-paint blend modes without flattening them into solid strokes.",
-    "Map Pencil line nodes to native line geometry instead of treating them as generic paths.",
-    "Register document-declared font resources in the shared CanvasKit and browser font providers.",
-    "Expose the renderer and descendant visual-bounds primitives required for Pencil-compatible headless screenshots.",
-    "Resolve slash-separated component descendant overrides through exact cloned-component identity chains and regenerate overridden semantic icons.",
-    "Invalidate overridden text metrics before intrinsic layout and coordinate one exact-font layout before revealing the layered canvas.",
-    "Measure auto-width Pencil text intrinsically after fonts resolve so parent constraints cannot turn instance text overrides into wrapped multi-line text.",
-    "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",
-    "Resolve selection hit tests one immediate hierarchy level at a time and enter containers without skipping directly to deep text editing.",
-    "Assign canonical slash-separated Pencil addresses to instance descendants so interaction and persistence share one stable identity.",
-    "Hit-test transparent Pencil frames across their resolved bounds so empty interior space retains the authored hierarchy target.",
-    "Grow every omitted-size instance on an overridden descendant path while preserving authored fixed dimensions.",
-    "Promote an entered container by exactly one hierarchy level when its own empty interior is clicked.",
-    "Render every visible top-level Pencil frame name as editor chrome without adding document text nodes.",
-    "Hide the text-edit input visually with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell while keeping the focused editor available to accessibility clients.",
-    "Expose the upstream default editor-state factory so Canvas can supply Vue-reactive state to the editor integration.",
-    "Expose Pencil wrap, min/max constraints, row/column gaps, and grid tracks and placement through the owned Yoga layout graph.",
-    "Render Canvas rich-text underline, strikethrough, word spacing, and combined per-run decoration through CanvasKit paragraph style runs.",
-  ]);
+  assert.match(engine, /function createCanvasSceneGraph\(/u);
+  assert.doesNotMatch(engine, /function parsePenFile\(/u);
   assert.match(engine, /MAX_RETAINED_SCENE_NODES = 1e4/u);
-  assert.match(engine, /setScenePictureMode\(hasVolatileOverlays \? "volatile" : "direct", cacheMissReason\)/u);
-  assert.match(engine, /cacheMissReason = retainFullScene \? .* : "large-scene"/u);
-  assert.match(engine, /layer === "scene" && retainFullScene && !hasVolatileOverlays/u);
   assert.match(engine, /function prepareSubtreeCullBounds\(/u);
-  assert.match(engine, /const subtreeBounds = r4\.subtreeCullBounds\.get\(node\.id\)/u);
-  assert.match(engine, /r4\.zoom >= 0\.25/u);
-  assert.match(engine, /function shouldRenderSubtreeDetail\(/u);
-  assert.match(engine, /screenArea \/ descendantCount < 0\.75/u);
-  assert.match(engine, /r4\.zoom < 0\.1 \? 6 : 2/u);
-  assert.match(engine, /subtreeNodeCounts = new Map/u);
-  assert.match(engine, /onPerformance\?\.\("engine\.fonts"/u);
-  assert.match(engine, /onPerformance\?\.\("engine\.font-layout"/u);
-  assert.match(engine, /recomputeLayoutAfterFonts !== false/u);
-  assert.equal(surface.match(/recomputeLayoutAfterFonts: false/gu)?.length, 2);
-  assert.doesNotMatch(surface, /recomputeLayoutAfterFonts: true/u);
-  assert.match(surface, /for \(const page of editor\.graph\.getPages\(\)\) computeAllLayouts\(editor\.graph, page\.id\)/u);
-  assert.match(surface, /surfaceReady\.value = true/u);
-  assert.match(surface, /layer: "scene"/u);
-  assert.match(surface, /layer: "overlays"/u);
-  assert.match(surface, /useTextEdit\(overlayCanvasRef, editor\)/u);
-  assert.match(engine, /function drawFrameTitles\(/u);
-  assert.match(engine, /textarea\.style\.position = "fixed"/u);
-  assert.match(engine, /textarea\.setAttribute\("aria-label", [^)]+\)/u);
-  assert.doesNotMatch(engine, /textarea\.setAttribute\("aria-hidden", "true"\)/u);
-  assert.match(engine, /if \(fns\.isInsideContainerBounds\(cx, cy, scopeId\)\) \{\s+const scopeNode = editor\.graph\.getNode\(scopeId\);\s+editor\.exitContainer\(\);\s+return scopeNode \?\? null;/u);
-  assert.match(engine, /labelCache\.getFrames\([^,]+, [^)]+\.worldViewport\)/u);
-  assert.match(surface, /createLayeredSurfaceReadiness/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-first"/u);
   assert.match(engine, /onPerformance\?\.\("engine\.render-ready"/u);
-  assert.match(engine, /surface\.makeImageFromTextureSource\(r4\.pencilShaderCanvas, undefined, false\)/u);
-  assert.match(engine, /typeof json === "string" \? JSON\.parse\(json\) : json/u);
+  assert.match(engine, /textarea\.setAttribute\("aria-label", [^)]+\)/u);
+  assert.doesNotMatch(engine, /textarea\.setAttribute\("aria-hidden", "true"\)/u);
   assert.match(engine, /while \(hit\.parentId && hit\.parentId !== scope\)/u);
   assert.match(engine, /return editor\.graph\.hitTest\(cx, cy, containerId\)/u);
-  assert.doesNotMatch(engine, /if \(hit2\?\.type === "TEXT"\)\s+startTextEditingAt\(hit2, cx, cy\)/u);
+  assert.match(surface, /createLayeredSurfaceReadiness/u);
+  assert.match(surface, /useTextEdit\(overlayCanvasRef, editor\)/u);
+  assert.equal(provenance.exports.includes("createCanvasSceneGraph"), true);
+  assert.equal(provenance.exports.includes("parsePenFile"), false);
 });
 
 test("the pinned CanvasKit build carries ICU instead of requiring client ICU", async () => {
@@ -124,7 +45,7 @@ test("the pinned CanvasKit build carries ICU instead of requiring client ICU", a
 test("published OpenPencil packages and expr-eval are outside the dependency graph", async () => {
   const packageJson = await readFile(new URL("package.json", root), "utf8");
   const lockfile = await readFile(new URL("bun.lock", root), "utf8");
-  const engine = await readFile(new URL("vendor/open-pencil/engine.mjs", root), "utf8");
+  const engine = await readFile(new URL("vendor/open-pencil/engine.source.mjs", root), "utf8");
   assert.doesNotMatch(`${packageJson}\n${lockfile}`, /@open-pencil\/(?:core|vue)|expr-eval/u);
   assert.doesNotMatch(engine, /(?:from|require\()["']expr-eval/u);
 });

@@ -127,24 +127,15 @@ test("M6 partitions newline-terminated paragraphs and records the uniform named 
   assert.deepEqual(document.children[0].marks, []);
 });
 
-test("M4 refuses an incomplete manifest and deterministically applies property or clone entries", () => {
+test("M4 materializes descendant overrides without a manifest", () => {
   const source = { children: [
     { id: "component", type: "frame", children: [{ id: "label", type: "text", content: "Default" }] },
     { id: "property-instance", type: "ref", ref: "component", descendants: { label: { content: "Bound" } } },
     { id: "clone-instance", type: "ref", ref: "component", x: 20, descendants: { label: { content: "Cloned" } } },
   ] };
-  assert.throws(() => migrateM4Descendants(source, { entries: {} }), /Manifest mismatch/);
-  const { document } = migrateM4Descendants(source, { entries: {
-    "property-instance": {
-      action: "properties", evidence: "content-only override",
-      definitions: { label: { type: "string", default: "Default" } },
-      bindings: { label: { path: "label", property: "content" } },
-    },
-    "clone-instance": { action: "clone", evidence: "reviewed structural clone" },
-  } });
-  assert.deepEqual(document.children[0].properties, { label: { type: "string", default: "Default" } });
-  assert.deepEqual(document.children[0].children[0].bind, { content: "$props.label" });
-  assert.deepEqual(document.children[1].props, { label: "Bound" });
+  const { document } = migrateM4Descendants(source);
+  assert.equal(document.children[1].type, "frame");
+  assert.equal(document.children[1].children[0].content, "Bound");
   assert.equal(Object.hasOwn(document.children[1], "descendants"), false);
   assert.equal(document.children[2].type, "frame");
   assert.equal(document.children[2].id, "clone-instance");
@@ -173,30 +164,24 @@ test("M4 remaps every materialized descendant id and its internal relationships"
   assert.equal(document.children[1].children[0].children[1].notesFor, "one/body");
 });
 
-test("M10 requires evidence and materializes recorded deterministic output with provenance", () => {
+test("M10 drops scripts whose output is not stored in the document", () => {
   const source = { children: [{ id: "chart", type: "script", scriptUri: "scripts/chart.js", inputs: { count: 2 } }] };
-  assert.throws(() => migrateM10Scripts(source), /reviewed manifest/);
-  const { document } = migrateM10Scripts(source, { entries: { chart: {
-    status: "materialize", evidence: "two consecutive outputs matched",
-    output: [{ id: "bar", type: "rectangle", width: 10, height: 20 }],
-  } } });
-  assert.equal(document.children[0].id, "bar");
-  assert.deepEqual(document.children[0].provenance, {
-    migration: "M10", scriptUri: "scripts/chart.js", inputs: { count: 2 }, outputIndex: 0,
-  });
+  const { document, notes } = migrateM10Scripts(source);
+  assert.deepEqual(document.children, []);
+  assert.match(notes[0], /Dropped script node/u);
 });
 
-test("M11-M13 preserve sticky content as canonical text and M11 records an explicit slide association", () => {
+test("M11-M13 preserve sticky content as canonical ordinary text", () => {
   const source = { children: [
     { id: "note", type: "note", content: "Speak" },
     { id: "context", type: "context", content: "Reference" },
     { id: "prompt", type: "prompt", content: "Generate", model: "default" },
   ] };
-  let result = migrateM11Notes(source, { entries: { note: { evidence: "adjacent authored note", notesFor: "slide" } } });
+  let result = migrateM11Notes(source);
   result = migrateM12Contexts(result.document);
   result = migrateM13Prompts(result.document);
   assert.deepEqual(result.document.children.map((node) => node.type), ["text", "text", "text"]);
-  assert.equal(result.document.children[0].notesFor, "slide");
+  assert.equal(result.document.children[0].notesFor, undefined);
   assert.deepEqual(result.document.children[0].paragraphs, [{ from: 0, to: 5 }]);
 });
 
@@ -232,7 +217,6 @@ test("M14-M17 preserve token type and move node axis selections", () => {
 
 test("canonical axes, variables and component bindings lower to the legacy engine seam", () => {
   const source = {
-    canvasSchemaVersion: 3,
     axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
     variables: { ink: { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#000", when: { appearance: "dark" } }] } },
     children: [

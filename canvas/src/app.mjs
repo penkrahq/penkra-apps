@@ -3,7 +3,6 @@ import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
-import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
 import {
   analyzeOpenPencilCompatibility,
@@ -17,11 +16,6 @@ import {
   parsePencilAuthoringValue,
   pencilAuthoringSections,
 } from "./pencil-authoring.mjs";
-import {
-  choosePenDocument,
-  readDroppedPenDocument,
-  savePenDocument,
-} from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
 import {
   canvasSceneLayerAncestorIds,
@@ -41,7 +35,6 @@ import { beginSelectedTextEditing } from "./text-editing.mjs";
 import {
   ACCESS_REMOVED_HEADING,
   ACCESS_REMOVED_MESSAGE,
-  assertExportAllowed,
 } from "./access-removed.mjs";
 import {
   collaboratorRemovalConfirmation,
@@ -296,31 +289,6 @@ async function createBlankDocument(title = "Untitled") {
   try {
     const document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
     await navigateToDocument(document.id);
-  } finally {
-    model.doc.destroy();
-  }
-}
-
-async function importFromHandle() {
-  const imported = await choosePenDocument();
-  if (!imported) return;
-  await importDocument(imported.source, imported.fallbackTitle, imported.assets);
-}
-
-async function importDocument(source, fallbackTitle = "Imported design", assets = []) {
-  const model = createDocumentModel(source);
-  const title = typeof source.name === "string" && source.name.trim() ? source.name : fallbackTitle;
-  let document = null;
-  try {
-    document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
-    for (const asset of assets) await api.uploadAsset(document.id, asset);
-    await navigateToDocument(document.id);
-  } catch (error) {
-    if (document) {
-      await api.deleteDocument(document.id).catch(() => undefined);
-      await api.permanentlyDeleteDocument(document.id).catch(() => undefined);
-    }
-    throw error;
   } finally {
     model.doc.destroy();
   }
@@ -869,10 +837,10 @@ function renderLibrary() {
       (state.libraryFilter === "owned" ? document.access === "owner" : document.access === "editor");
     return matchesGroup && (!query || document.title.toLowerCase().includes(query));
   });
-  return `<main class="shell library" data-drop-target="library"><div class="library-inner">
+  return `<main class="shell library"><div class="library-inner">
     <header class="library-header">
-      <div class="library-title"><h1>Canvas</h1><p>Create, import, and collaborate on design documents.</p></div>
-      <div class="library-actions"><button class="button" data-action="open-trash">Trash</button><button class="button" data-action="import">Import .pen</button><button class="button primary" data-action="new">New design</button></div>
+      <div class="library-title"><h1>Canvas</h1><p>Create and collaborate on design documents.</p></div>
+      <div class="library-actions"><button class="button" data-action="open-trash">Trash</button><button class="button primary" data-action="new">New design</button></div>
     </header>
     <div class="library-toolbar">
       <input class="search" data-role="search" type="search" value="${escapeHtml(state.search)}" placeholder="Search files" aria-label="Search files" />
@@ -881,7 +849,7 @@ function renderLibrary() {
       </div>
     </div>
     ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
-    ${documents.length ? `<section class="document-grid">${documents.map(documentCard).join("")}</section>` : `<section class="empty"><div>${icon("file")}<h2>No files here yet</h2><p>Create a design or import a .pen file. Shared files appear automatically when another owner adds your verified Account email.</p></div></section>`}
+    ${documents.length ? `<section class="document-grid">${documents.map(documentCard).join("")}</section>` : `<section class="empty"><div>${icon("file")}<h2>No files here yet</h2><p>Create a design here. Shared files appear automatically when another owner adds your verified Account email.</p></div></section>`}
   </div></main>${renderContextMenu()}${renderDialog()}${renderToast()}`;
 }
 
@@ -1369,7 +1337,6 @@ function bindLibrary() {
   root.querySelector('[data-action="open-trash"]')?.addEventListener("click", () => void navigateToTrash());
   root.querySelector('[data-action="back-to-files"]')?.addEventListener("click", () => void navigateToLibrary());
   root.querySelector('[data-action="new"]')?.addEventListener("click", () => void act(() => createBlankDocument()));
-  root.querySelector('[data-action="import"]')?.addEventListener("click", () => void act(importFromHandle));
   root.querySelector('[data-role="search"]')?.addEventListener("input", (event) => {
     state.search = event.target.value;
     render();
@@ -1427,16 +1394,6 @@ function bindLibrary() {
   root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
   root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
   root.querySelector('[data-action="confirm-permanently-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
-  const dropTarget = root.querySelector("[data-drop-target=library]");
-  dropTarget?.addEventListener("dragover", (event) => { event.preventDefault(); });
-  dropTarget?.addEventListener("drop", (event) => {
-    event.preventDefault();
-    void act(async () => {
-      const imported = await readDroppedPenDocument(event.dataTransfer);
-      if (!imported) return;
-      await importDocument(imported.source, imported.fallbackTitle, imported.assets);
-    });
-  });
 }
 
 function bindEditor() {
@@ -1504,7 +1461,6 @@ function bindEditor() {
   root.querySelector('[data-action="share"]')?.addEventListener("click", () => void openShare());
   root.querySelector('[data-action="compatibility"]')?.addEventListener("click", () => openDialog("compatibility", '[data-action="compatibility"]'));
   root.querySelector('[data-action="menu"]')?.addEventListener("click", () => openDialog("menu", '[data-action="menu"]'));
-  root.querySelector('[data-action="download"]')?.addEventListener("click", () => void act(downloadDocument));
   root.querySelector('[data-action="trash-document"]')?.addEventListener("click", () => {
     state.dialog = documentTrashConfirmation(state.document);
     state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
@@ -1918,7 +1874,7 @@ function renderDialog() {
     );
   }
   if (state.dialog === "menu") {
-    return dialog("Document actions", `<div class="grant-list"><button class="button" data-action="download">Download .pen</button>${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
+    return dialog("Document actions", `<div class="grant-list">${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
   }
   if (state.dialog === "compatibility") {
     return dialog("Compatibility review", `<p class="muted">Canvas preserves the original design data. The objects below are not represented faithfully by the current renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
@@ -2014,29 +1970,6 @@ function trapDialogFocus(event) {
   } else if (!event.shiftKey && document.activeElement === last) {
     event.preventDefault();
     first.focus();
-  }
-}
-
-async function downloadDocument() {
-  if (!state.model) return;
-  assertExportAllowed(state.accessRemoved);
-  await revalidateExportAccess();
-  assertExportAllowed(state.accessRemoved);
-  await revalidateExportAccess();
-  assertExportAllowed(state.accessRemoved);
-  const filename = safeDocumentName(state.document.title);
-  if (!(await savePenDocument(currentMaterializedDocument(), filename))) return;
-  state.dialog = null;
-  setToast(`Downloaded ${filename}.`);
-  render();
-}
-
-async function revalidateExportAccess() {
-  try {
-    await api.getDocument(state.document.id);
-  } catch (error) {
-    if (error?.status === 403 || error?.status === 404) handleAccessRemoved();
-    throw error;
   }
 }
 

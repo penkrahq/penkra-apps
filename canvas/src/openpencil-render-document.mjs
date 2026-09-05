@@ -66,9 +66,7 @@ const VARIABLE_PROPERTIES = new Set([
 ]);
 
 export function prepareOpenPencilRenderDocument(source, options = {}) {
-  const document = source?.canvasSchemaVersion >= 3
-    ? lowerCanvasModelForOpenPencil(source)
-    : structuredClone(source);
+  const document = lowerCanvasModelForOpenPencil(source);
   const variables = document?.variables && typeof document.variables === "object"
     ? document.variables
     : {};
@@ -80,7 +78,6 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   const issues = [];
   const assets = options.assets instanceof Map ? options.assets : new Map();
   const containerPath = typeof options.containerPath === "string" ? options.containerPath : "";
-  const libraryTrail = options.libraryTrail instanceof Set ? options.libraryTrail : new Set();
 
   const resolveReference = (reference, theme, trail = []) => {
     const name = reference.slice(1);
@@ -144,7 +141,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
         ? safeFallback(property, value)
         : interpolated;
     }
-    // Legacy references remain readable until M1 raises canvasSchemaVersion.
+    // Legacy whole-value references remain readable in unmigrated documents.
     if (isLegacyVariableReference(value, property)) {
       const resolved = resolveReference(value, theme);
       if (!resolved.ok) {
@@ -218,17 +215,18 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
-  document.children.push(...prepareImportedComponents(document, assets, issues, containerPath, libraryTrail));
   compileDescendantIcons(document.children, issues);
   return { document, issues };
 }
 
 export function lowerCanvasModelForOpenPencil(source) {
   const document = structuredClone(source);
-  document.themes = Object.fromEntries(Object.entries(document.axes ?? {}).map(([axis, definition]) => [
-    axis,
-    (definition?.modes ?? []).map((mode) => mode.name),
-  ]));
+  if (isRecord(document.axes)) {
+    document.themes = Object.fromEntries(Object.entries(document.axes).map(([axis, definition]) => [
+      axis,
+      (definition?.modes ?? []).map((mode) => mode.name),
+    ]));
+  }
   document.variables = Object.fromEntries(Object.entries(document.variables ?? {}).map(([name, definition]) => [
     name,
     definition && Array.isArray(definition.cascade)
@@ -475,64 +473,6 @@ function compileShader(fill, assets, issues, nodeId) {
   }
 }
 
-function prepareImportedComponents(source, assets, issues, containerPath, libraryTrail) {
-  const components = [];
-  const knownIds = collectNodeIds(source?.children);
-  const origins = new Set();
-  for (const [alias, reference] of Object.entries(source?.imports ?? {})) {
-    if (typeof alias !== "string" || alias.length === 0) {
-      issues.push(libraryIssue(null, "A Pencil library import has an empty alias."));
-      continue;
-    }
-    let path;
-    try {
-      path = resolvePencilResourcePath(containerPath, reference);
-    } catch (error) {
-      issues.push(libraryIssue(null, error?.message ?? String(error)));
-      continue;
-    }
-    if (libraryTrail.has(path)) {
-      issues.push(libraryIssue(null, `Pencil library import cycle reaches ${path}.`));
-      continue;
-    }
-    const asset = pencilResourceAsset(assets, path);
-    if (!asset) {
-      issues.push(libraryIssue(null, `Pencil library ${alias} resource ${path} is unavailable.`));
-      continue;
-    }
-    let library;
-    try {
-      library = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(asset.bytes));
-      if (!library || typeof library !== "object" || !Array.isArray(library.children)) throw new Error("invalid document");
-    } catch {
-      issues.push(libraryIssue(null, `Pencil library ${alias} at ${path} is not a valid UTF-8 .pen document.`));
-      continue;
-    }
-    const prepared = prepareOpenPencilRenderDocument(library, {
-      assets,
-      containerPath: path,
-      libraryTrail: new Set([...libraryTrail, path]),
-    });
-    issues.push(...prepared.issues);
-    for (const component of prepared.document.children.filter((node) => node?.reusable === true)) {
-      const origin = component.__canvasImportedOrigin ?? path;
-      if (origins.has(`${origin}\0${component.id}`)) continue;
-      const componentIds = collectNodeIds([component]);
-      const collision = [...componentIds].find((id) => knownIds.has(id));
-      if (collision) {
-        issues.push(libraryIssue(collision, `Imported Pencil component ${component.id} conflicts with existing node id ${collision}.`));
-        continue;
-      }
-      for (const id of componentIds) knownIds.add(id);
-      component.__canvasImported = true;
-      component.__canvasImportedOrigin = origin;
-      origins.add(`${origin}\0${component.id}`);
-      components.push(component);
-    }
-  }
-  return components;
-}
-
 function canonicalizeResourceReference(object, containerPath) {
   if ((object.type === "image" || object.type === "shader") && typeof object.url === "string") {
     object.url = resolvePencilResourcePath(containerPath, object.url);
@@ -540,14 +480,6 @@ function canonicalizeResourceReference(object, containerPath) {
   if (object.type === "script" && typeof object.scriptUri === "string") {
     object.scriptUri = resolvePencilResourcePath(containerPath, object.scriptUri);
   }
-}
-
-function collectNodeIds(nodes, output = new Set()) {
-  for (const node of nodes ?? []) {
-    if (typeof node?.id === "string") output.add(node.id);
-    collectNodeIds(node?.children, output);
-  }
-  return output;
 }
 
 function compileScript(node, assets, issues, nodeId, prepareChild) {
@@ -768,14 +700,6 @@ function meshIssue(nodeId, message) {
     nodeId,
     kind: "mesh-gradient",
     message: `${message} The original mesh gradient fill is preserved in the Canvas document.`,
-  };
-}
-
-function libraryIssue(nodeId, message) {
-  return {
-    nodeId,
-    kind: "library",
-    message: `${message} The original library import is preserved in the Canvas document.`,
   };
 }
 

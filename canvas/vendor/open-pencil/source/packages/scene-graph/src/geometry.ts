@@ -164,11 +164,15 @@ export function effectOverflow(effects?: Effect[]) {
     ) {
       continue
     }
-    const blurSpread = effect.radius + effect.spread
-    left = Math.max(left, blurSpread + Math.max(0, -effect.offset.x))
-    right = Math.max(right, blurSpread + Math.max(0, effect.offset.x))
-    top = Math.max(top, blurSpread + Math.max(0, -effect.offset.y))
-    bottom = Math.max(bottom, blurSpread + Math.max(0, effect.offset.y))
+    // CanvasKit renders these effects with sigma = radius / 2. Skia's
+    // Gaussian kernel reaches ceil(3 * sigma), so use that measured support
+    // rather than treating the authored radius itself as the outset.
+    const kernel = effect.radius / 2 <= 0.03 ? 0 : Math.ceil((3 * effect.radius) / 2)
+    const blurSpread = kernel + effect.spread
+    left = Math.max(left, blurSpread - effect.offset.x, 0)
+    right = Math.max(right, blurSpread + effect.offset.x, 0)
+    top = Math.max(top, blurSpread - effect.offset.y, 0)
+    bottom = Math.max(bottom, blurSpread + effect.offset.y, 0)
   }
 
   return { left, right, top, bottom }

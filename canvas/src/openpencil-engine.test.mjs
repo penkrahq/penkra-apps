@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { computeAllLayouts } from "../vendor/open-pencil/engine.mjs";
+import { computeAllLayouts } from "../vendor/open-pencil/engine.source.mjs";
+import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";
 
 import {
   analyzeOpenPencilCompatibility,
@@ -15,7 +16,7 @@ import {
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
   sceneNodeInsertionMutation,
-  sceneNodeToPenNode,
+  sceneNodeToCanvasNode,
   sceneStyleRunsToMarks,
   sceneTextEditCommitMutations,
   sceneUpdateToMutations,
@@ -94,7 +95,6 @@ test("Canvas rich-text marks reach OpenPencil character style runs", () => {
 
 test("canonical named paragraph styles reach CanvasKit runs and marks override them", () => {
   const graph = createOpenPencilGraph({
-    canvasSchemaVersion: 3,
     version: "2.17",
     module: "web",
     axes: {}, variables: {}, imports: {}, flows: [],
@@ -143,6 +143,22 @@ test("Pencil Linear Burn and Linear Dodge reach their exact renderer blend modes
   assert.equal(graph.getNode("burn").fills[0].blendMode, "LINEAR_BURN");
   assert.equal(graph.getNode("dodge").fills[0].blendMode, "LINEAR_DODGE");
   assert.equal(graph.getNode("shadow").effects[0].blendMode, "LINEAR_BURN");
+});
+
+test("the owned engine computes Skia three-sigma shadow visual bounds", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "shadow", type: "rectangle", x: 10, y: 20, width: 100, height: 60,
+      effect: { type: "shadow", blur: 12, spread: 2, offset: { x: 4, y: 6 }, color: "#00000080" },
+    }],
+  });
+  const bounds = computeDescendantVisualBounds(
+    ["shadow"],
+    (id) => graph.getNode(id) ?? undefined,
+    (id) => graph.getAbsolutePosition(id),
+  );
+  assert.deepEqual(bounds, { minX: -6, minY: 6, maxX: 134, maxY: 106 });
 });
 
 test("OpenPencil computes nested auto-layout instead of collapsing children at the origin", () => {
@@ -301,7 +317,7 @@ test("auto-sized text keeps hug-content flex layouts compact", () => {
   assert.ok(item.width < 150, `expected compact hug width, got ${item.width}`);
 });
 
-test("stored Pencil sizing fallbacks and fill-width text survive import", () => {
+test("Canvas native fill-width text preserves its declared parent sizing", () => {
   const editor = createOpenPencilEditor({
     version: "2.17",
     children: [{
@@ -499,15 +515,21 @@ test("inspector properties translate to incremental scene changes", () => {
   });
 });
 
-test("a selected frame edit does not serialize derived geometry onto untouched nodes", async () => {
-  const source = JSON.parse(await readFile(
-    new URL("../compatibility/fixtures/unknown-content-2.15.pen", import.meta.url),
-    "utf8",
-  ));
+test("a selected frame edit does not serialize derived geometry onto untouched nodes", () => {
+  const source = {
+    version: "2.17",
+    module: "web",
+    children: [{
+      id: "known-frame",
+      type: "frame",
+      width: 320,
+      height: 180,
+      children: [{ id: "untouched-child", type: "rectangle", width: 40, height: 20 }],
+    }],
+  };
   const editor = createOpenPencilEditor(source);
   editor.select(["known-frame"]);
   const knownBefore = sceneNodePropertySnapshot(editor.graph.getNode("known-frame"));
-  assert.equal(editor.graph.getNode("future-node"), undefined);
 
   assert.deepEqual(
     sceneEventToPenMutations(
@@ -519,9 +541,6 @@ test("a selected frame edit does not serialize derived geometry onto untouched n
     ),
     [{ kind: "set-property", nodeId: "known-frame", property: "width", value: 322 }],
   );
-  assert.deepEqual(analyzeOpenPencilCompatibility(source).map(({ nodeId, kind }) => [nodeId, kind]), [
-    ["future-node", "node-type"],
-  ]);
   assert.equal(Object.hasOwn(source.children[0].children[0], "x"), false);
   assert.equal(Object.hasOwn(source.children[0].children[0], "y"), false);
 });
@@ -832,40 +851,6 @@ test("Pencil mesh gradients retain their exact grid and normalized handles", () 
   assert.deepEqual(fill.pencilMesh.points[0].rightHandle, [0.25, 0]);
   assert.deepEqual(fill.pencilMesh.points[3].leftHandle, [-0.4, 0]);
   assert.deepEqual(source, before);
-});
-
-test("Pencil design-library imports provide reusable components without appearing on the page", () => {
-  const library = new TextEncoder().encode(JSON.stringify({
-    version: "2.17",
-    variables: { surface: { type: "color", value: "#abcdef" } },
-    children: [{
-      id: "library-card",
-      type: "frame",
-      reusable: true,
-      width: 120,
-      height: 60,
-      fill: "$surface",
-      children: [{ id: "library-label", type: "text", content: "Library" }],
-    }],
-  }));
-  const document = {
-    version: "2.17",
-    imports: { cards: "libraries/cards.lib.pen" },
-    children: [{ id: "card-instance", type: "ref", ref: "library-card", x: 20, y: 30 }],
-  };
-  const before = structuredClone(document);
-  const assets = new Map([["libraries/cards.lib.pen", { bytes: library, sha256: "c".repeat(64) }]]);
-  const prepared = prepareOpenPencilRenderDocument(document, { assets });
-  const graph = createOpenPencilGraph(document, assets, prepared);
-  const page = graph.getPages()[0];
-
-  assert.deepEqual(prepared.issues, []);
-  assert.equal(graph.getNode("library-card").parentId, graph.rootId);
-  assert.deepEqual(page.childIds, ["card-instance"]);
-  assert.equal(graph.getNode("card-instance").width, 120);
-  assert.equal(graph.getNode("card-instance").fills[0].color.r, 0xab / 255);
-  assert.deepEqual(analyzeOpenPencilCompatibility(document, assets, prepared), []);
-  assert.deepEqual(document, before);
 });
 
 test("Pencil gradient and blended stroke paints reach the renderer semantically", () => {
@@ -1206,8 +1191,8 @@ test("Pencil line nodes stay semantic and preserve horizontal, vertical, and dia
   assert.deepEqual(source, before);
 });
 
-test("new OpenPencil nodes map to explicit .pen nodes", () => {
-  assert.deepEqual(sceneNodeToPenNode({
+test("new engine scene nodes map to explicit Canvas nodes", () => {
+  assert.deepEqual(sceneNodeToCanvasNode({
     id: "shape",
     type: "RECTANGLE",
     name: "Card",
@@ -1296,7 +1281,6 @@ test("committing a newly drawn text edit inserts its final semantic node", () =>
 
 test("rich-text edits persist style runs and remap nonvisual links in UTF-16 offsets", () => {
   const source = {
-    canvasSchemaVersion: 3,
     version: "2.17",
     module: "web",
     children: [{
@@ -1350,7 +1334,6 @@ test("scene text edits keep link marks non-inclusive at both boundaries", () => 
 
 test("paragraph split inherits the split style and merge keeps the second style", () => {
   const source = {
-    canvasSchemaVersion: 3,
     version: "2.17",
     module: "web",
     children: [{

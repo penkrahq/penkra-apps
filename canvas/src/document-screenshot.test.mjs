@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import test from "node:test";
 
-import { getCanvasKit } from "../vendor/open-pencil/engine.mjs";
+import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
 import { takeDocumentScreenshots } from "./document-screenshot.mjs";
 
 test("an exact nested component-instance screenshot includes its overridden text", async () => {

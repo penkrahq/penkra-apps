@@ -12,7 +12,19 @@ import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 export async function exportDocument(document, request, options = {}) {
   const ir = buildExporterIR(document, request);
-  const screenshot = async (nodeId, scale = 2) => (await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [nodeId] }], options.assets, { scale, maxDimension: 8192, failOnDownscale: true }))[0];
+  const rasterById = new Map(ir.rasters.map((raster) => [raster.id, raster]));
+  const screenshot = async (nodeId) => {
+    const raster = rasterById.get(nodeId);
+    const variant = raster?.variants?.at(-1);
+    if (!variant) throw new Error(`Raster policy is missing for ${nodeId}.`);
+    const image = (await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [nodeId] }], options.assets, { scale: variant.scale, maxDimension: 8192, failOnDownscale: true }))[0];
+    if (image.width !== variant.pixelWidth || image.height !== variant.pixelHeight) {
+      const error = new Error(`Raster ${nodeId} rendered ${image.width}×${image.height}, expected ${variant.pixelWidth}×${variant.pixelHeight}.`);
+      error.code = "CANVAS_RASTER_DIMENSION_MISMATCH";
+      throw error;
+    }
+    return image;
+  };
   let artifact;
   if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "page") artifact = await exportPdf(ir, {
@@ -20,7 +32,7 @@ export async function exportDocument(document, request, options = {}) {
     profile: request.profile,
     outputIntent: await readBundledSrgbProfile(),
     fonts: await readBundledPdfFonts(),
-    rasterizeNode: async (id) => Buffer.from((await screenshot(id, 300 / 96)).data, "base64"),
+    rasterizeNode: async (id) => Buffer.from((await screenshot(id)).data, "base64"),
   });
   else if (request.role === "route") {
     const hrefs = new Map(ir.rasters.map((raster) => [raster.id, `assets/${validateOutputSegment(raster.id)}.png`]));
@@ -65,7 +77,7 @@ export async function exportImage(document, request, options = {}) {
         document,
         [{ nodeIds: [raster.id] }],
         options.assets,
-        { scale: request.scale ?? raster.ppi / 96, maxDimension: 8192, failOnDownscale: true },
+        { scale: request.scale ?? raster.variants.at(-1).scale, maxDimension: 8192, failOnDownscale: true },
       ).then((images) => images[0]);
       rasterHrefs.set(raster.id, `data:image/png;base64,${image.data}`);
     }

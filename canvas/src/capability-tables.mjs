@@ -4,7 +4,7 @@ const inventory = capabilityPathInventory();
 const native = (evidence) => ({ verdict: "native", ...(evidence ? { evidence } : {}) });
 const raster = (why) => ({ verdict: "raster", reason: why });
 const ignore = (why) => ({ verdict: "ignore", reason: why });
-const unverified = () => ({ verdict: null, status: "unverified" });
+const unverified = (reason) => ({ verdict: null, status: "unverified", ...(reason ? { reason } : {}) });
 
 export const CAPABILITY_TABLES = Object.freeze({
   slide: table("select-at-export", {
@@ -12,29 +12,23 @@ export const CAPABILITY_TABLES = Object.freeze({
     ...layoutLoweringRows("The pinned Yoga/OpenPencil geometry fixtures measure these layout inputs before PPTX emits absolute native shapes."),
     ...roleRows("slide", "OOXML package fixtures emit and LibreOffice reopens the selected slide sequence."),
     "root.lang": native("Generated DrawingML run language is inspected in the PPTX package fixture."),
-    "root.flows": native("Generated PPTX fixtures preserve supported flows as slide relationships."),
-    "relationships.flow": native("Generated PPTX tap-flow fixture contains an internal slide relationship."),
     "relationships.import": native("Imports resolve before PPTX emission and are recorded as lowered."),
     "relationships.notesFor": native("Generated PPTX fixture contains a notesSlide part for notesFor."),
     "relationships.ref": native("Refs resolve to duplicated native shapes and are recorded as lowered."),
-    ...nativeRows(["root.axes", "properties.modes", "properties.varies", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ellipse", "nodes.line", "nodes.ref", "nodes.text", "properties.accessibility.description", "properties.cornerRadius", "properties.effect", "properties.effect.shadow", "properties.fill", "properties.fill.solid", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.opacity", "properties.rotation", "properties.stroke", "properties.stroke.fill", "properties.stroke.width", "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight", "properties.letterSpacing", "properties.lang", "properties.marks", "properties.paragraphs", "properties.style", "properties.strikethrough", "properties.text.paragraph.align", "properties.text.paragraph.list", "properties.text.paragraph.style", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize", "properties.text.run.italic", "properties.text.run.language", "properties.text.run.letterSpacing", "properties.text.run.link", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.weight", "properties.underline", "properties.flow.tap"], "Generated OOXML fixtures inspect native shapes, editable run/paragraph properties, gradients, shadow, alt text and tap hyperlinks; LibreOffice reopens the package."),
+    ...nativeRows(["root.axes", "properties.modes", "properties.varies", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ellipse", "nodes.line", "nodes.ref", "nodes.text", "properties.accessibility.description", "properties.cornerRadius", "properties.effect", "properties.effect.shadow", "properties.fill", "properties.fill.solid", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.opacity", "properties.rotation", "properties.stroke", "properties.stroke.fill", "properties.stroke.width", "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight", "properties.letterSpacing", "properties.lang", "properties.marks", "properties.paragraphs", "properties.style", "properties.strikethrough", "properties.text.paragraph.align", "properties.text.paragraph.list", "properties.text.paragraph.style", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize", "properties.text.run.italic", "properties.text.run.language", "properties.text.run.letterSpacing", "properties.text.run.link", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.weight", "properties.underline"], "Generated OOXML fixtures inspect native shapes, editable run/paragraph properties, gradients, shadow and alt text; LibreOffice reopens the package."),
     ...rasterRows(["nodes.path", "nodes.polygon", "nodes.icon", "properties.fill.image", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.effect.shadow.spread", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.fillRule", "properties.geometry", "properties.viewBox", "properties.flipX", "properties.flipY", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.lineHeight", "properties.wordSpacing", "properties.textAlign", "properties.textAlignVertical", "properties.text.run.wordSpacing"], "The current PPTX writer has no measured native emission for this construct."),
     ...ignoreRows(["properties.headingLevel", "properties.accessibility.landmark", "properties.accessibility.linkName", "properties.decorative", "properties.text.paragraph.headingLevel"], "PresentationML has no native heading, landmark, or link-purpose semantic for ordinary slide shapes in the supported writer."),
     "properties.fill.gradient.angular": raster("DrawingML has no angular-gradient element."),
     "properties.fill.gradient.mesh": raster("DrawingML has no mesh-gradient element."),
     "properties.fill.shader": raster("DrawingML cannot execute shaders."),
     "properties.effect.background_blur": raster("DrawingML has no backdrop-filter effect."),
-    "properties.flow.hover": ignore("PowerPoint has no hover trigger."),
-    "properties.flow.keypress": ignore("The supported PowerPoint interaction subset has no keypress trigger."),
     ...rasterRows(["properties.icon", "properties.library", "properties.weight", "properties.textGrowth"], "The current PPTX writer has no measured native emission for this construct."),
-  }),
+  }, "slide"),
   page: table("select-at-export", {
     ...structuralRows("Schema, component, identity, geometry and selection fields are validated or lowered before PDF emission; the generated PDF fixture measures their resulting page objects."),
     ...layoutLoweringRows("The pinned Yoga/OpenPencil geometry fixtures measure these layout inputs before PDF emits absolute drawing operations."),
     ...roleRows("page", "PDF fixtures emit the selected page sequence with declared MediaBox dimensions."),
     "root.lang": native("The PDF/UA fixture emits the document Lang entry and passes veraPDF."),
-    "root.flows": ignore("Static PDF export omits Canvas flows."),
-    "relationships.flow": ignore("Static PDF export omits Canvas flows."),
     "relationships.import": native("Imports resolve before PDF emission and are recorded as lowered."),
     "relationships.notesFor": ignore("Speaker-note relationships have no meaning in static PDF output."),
     "relationships.ref": native("Refs resolve to native PDF drawing operations and are recorded as lowered."),
@@ -42,14 +36,10 @@ export const CAPABILITY_TABLES = Object.freeze({
     ...rasterRows(["nodes.path", "nodes.polygon", "nodes.icon", "properties.fill.image", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.angular", "properties.fill.gradient.mesh", "properties.effect", "properties.effect.shadow", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.fillRule", "properties.geometry", "properties.viewBox"], "The current PDF writer has no measured native emission for this construct."),
     "properties.fill.shader": raster("PDF cannot execute Canvas shaders."),
     "properties.effect.background_blur": raster("Backdrop blur is flattened for deterministic PDF output."),
-    "properties.flow.advance": ignore("Static PDF pages have no advance transition."),
-    "properties.flow.hover": ignore("Static PDF has no hover state."),
-    "properties.flow.keypress": ignore("Static PDF has no keypress flow."),
-    "properties.flow.tap": ignore("The supported static PDF writer emits no interactive Canvas flows."),
     ...ignoreRows(["properties.accessibility.landmark", "properties.accessibility.linkName", "properties.text.run.link"], "The supported static PDF profile has no lowering for this semantic."),
     ...rasterRows(["properties.cornerRadius", "properties.flipX", "properties.flipY", "properties.opacity", "properties.rotation", "properties.fontStyle", "properties.letterSpacing", "properties.lineHeight", "properties.strikethrough", "properties.text.paragraph.align", "properties.text.paragraph.list", "properties.text.run.italic", "properties.text.run.letterSpacing", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.wordSpacing", "properties.textAlign", "properties.textAlignVertical", "properties.textGrowth", "properties.underline", "properties.wordSpacing"], "The current PDF writer has no measured native emission for this construct."),
     ...rasterRows(["properties.effect.shadow.spread", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.headingLevel", "properties.icon", "properties.library", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.dash", "properties.stroke.join", "properties.weight"], "The current PDF writer has no measured native emission for this construct."),
-  }),
+  }, "page"),
   route: table("emit-conditional", {
     ...structuralRows("Schema, component and identity fields lower into the semantic IR; the Chrome fixture inspects the resulting hierarchy and geometry."),
     ...roleRows("route", "Chrome fixtures load one generated HTML file per selected route."),
@@ -64,7 +54,7 @@ export const CAPABILITY_TABLES = Object.freeze({
     "properties.fill.shader": raster("Static HTML/CSS export does not ship a shader runtime."),
     "properties.accessibility.linkName": ignore("No link-purpose field is emitted without a link element."),
     ...rasterRows(["properties.effect.shadow.spread", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.headingLevel", "properties.icon", "properties.layoutPosition", "properties.library", "properties.textGrowth", "properties.weight"], "The current HTML/CSS writer has no measured live emission for this construct."),
-  }),
+  }, "route"),
   ios: table("emit-conditional", {
     ...structuralRows("Schema, component and identity fields lower into the semantic IR and pinned Swift fixture."),
     ...roleRows("ios", "The pinned Swift fixture compiles one source file per selected iOS frame."),
@@ -75,8 +65,7 @@ export const CAPABILITY_TABLES = Object.freeze({
     "properties.fill.gradient.mesh": raster("SwiftUI target emits a rendered asset for mesh geometry."),
     "properties.fill.shader": raster("SwiftUI target does not ship a shader runtime."),
     "properties.effect.background_blur": raster("Canvas backdrop semantics are emitted as an isolated asset."),
-    "properties.flow.hover": ignore("Touch-first iOS output does not expose Canvas hover flows."),
-  }),
+  }, "ios"),
   android: table("emit-conditional", {
     ...structuralRows("Schema, component and identity fields lower into the semantic IR and pinned Compose fixture."),
     ...roleRows("android", "The pinned Compose fixture compiles one source file per selected Android frame."),
@@ -87,15 +76,12 @@ export const CAPABILITY_TABLES = Object.freeze({
     "properties.fill.gradient.mesh": raster("Compose target emits a rendered asset for mesh geometry."),
     "properties.fill.shader": raster("Compose target does not ship a shader runtime."),
     "properties.effect.background_blur": raster("Canvas backdrop semantics are emitted as an isolated asset."),
-    "properties.flow.hover": ignore("Touch-first Android output does not expose Canvas hover flows."),
-  }),
+  }, "android"),
   svg: table("select-at-export", {
     ...structuralRows("Schema, component, identity, geometry and selection fields lower before standalone SVG serialization."),
     ...layoutLoweringRows("The pinned Yoga/OpenPencil geometry fixtures measure these layout inputs before SVG serializes absolute geometry."),
     ...roleRows(null, "Standalone SVG serialization accepts a subtree selected through any Canvas export role."),
     "root.lang": native("Generated SVG carries the document language for accessible text."),
-    "root.flows": ignore("Standalone SVG export omits document flows."),
-    "relationships.flow": ignore("Standalone SVG export omits document flows."),
     "relationships.import": native("Imports resolve before SVG serialization and are recorded as lowered."),
     "relationships.notesFor": ignore("Standalone SVG export omits speaker-note relationships."),
     "relationships.ref": native("Refs resolve to SVG elements and are recorded as lowered."),
@@ -105,13 +91,9 @@ export const CAPABILITY_TABLES = Object.freeze({
     "properties.fill.gradient.mesh": raster("SVG 1.1 has no mesh-gradient primitive in the supported profile."),
     "properties.fill.shader": raster("SVG cannot execute Canvas shaders."),
     "properties.effect.background_blur": raster("Portable SVG has no backdrop blur."),
-    "properties.flow.advance": ignore("Standalone SVG export omits document flows."),
-    "properties.flow.tap": ignore("Standalone SVG export omits document flows."),
-    "properties.flow.hover": ignore("Standalone SVG export omits document flows."),
-    "properties.flow.keypress": ignore("Standalone SVG export omits document flows."),
     ...ignoreRows(["properties.accessibility.landmark", "properties.accessibility.linkName", "properties.headingLevel", "properties.text.paragraph.headingLevel"], "The supported standalone SVG profile does not emit this document semantic."),
     ...rasterRows(["properties.effect.shadow.spread", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.flipX", "properties.flipY", "properties.icon", "properties.library", "properties.lineHeight", "properties.textAlign", "properties.textAlignVertical", "properties.textGrowth", "properties.weight"], "The supported SVG writer profile has no measured native emission for this construct."),
-  }),
+  }, "svg"),
 });
 
 export const PAGE_PROFILE_DELTAS = Object.freeze({
@@ -183,8 +165,9 @@ export function assertAllCapabilityTables() {
   return true;
 }
 
-function table(axisLowering, overrides) {
-  return { axes: axisLowering, properties: Object.fromEntries(inventory.map((path) => [path, overrides[path] ?? unverified()])) };
+function table(axisLowering, overrides, target) {
+  const entries = { ...overrides, ...printGeometryRows(target), ...staticExportFlowRows() };
+  return { axes: axisLowering, properties: Object.fromEntries(inventory.map((path) => [path, entries[path] ?? unverified()])) };
 }
 function rasterRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, raster(reason)])); }
 function ignoreRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, ignore(reason)])); }
@@ -194,7 +177,7 @@ function layoutLoweringRows(evidence) {
 }
 function structuralRows(evidence) {
   return Object.fromEntries([
-    "root.canvasSchemaVersion", "root.version", "root.module", "root.variables",
+    "root.module", "root.variables",
     "root.paragraphStyles", "root.imports", "root.children",
     "properties.id", "properties.type", "properties.name", "properties.x", "properties.y",
     "properties.width", "properties.height", "properties.enabled", "properties.export",
@@ -208,4 +191,18 @@ function roleRows(target, evidence) {
     `roles.${role}`,
     target === null || role === target ? native(evidence) : ignore(`Role ${role} cannot occur in this exporter's module.`),
   ]));
+}
+function printGeometryRows(target) {
+  if (target === "page") return {
+    "properties.bleed": native("Generated PDF fixture measures MediaBox, CropBox, BleedBox and TrimBox against the declared point bleed."),
+    "properties.folds": native("Generated PDF fixture finds fold marks only in the top and bottom bleed bands."),
+    "properties.safeMargin": ignore("safeMargin is an authoring guide and is not a PDF page box."),
+  };
+  return ignoreRows(["properties.bleed", "properties.folds", "properties.safeMargin"], "Print production geometry does not apply to this export target.");
+}
+function staticExportFlowRows() {
+  return Object.fromEntries([
+    "root.flows", "relationships.flow", "properties.flow.advance", "properties.flow.tap",
+    "properties.flow.hover", "properties.flow.keypress",
+  ].map((path) => [path, ignore("Product decision 2026-09-04: Canvas exports static designs; prototype flows are not exported and exporter IR emits an empty flows array.")]));
 }

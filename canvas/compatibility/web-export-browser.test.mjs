@@ -12,7 +12,6 @@ import { exportWeb } from "../src/exporters/web.mjs";
 const chromePath = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const document = {
-  canvasSchemaVersion: 3,
   version: "2.15",
   module: "web",
   lang: "en-GB",

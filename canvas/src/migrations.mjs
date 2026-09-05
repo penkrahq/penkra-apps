@@ -13,7 +13,7 @@ export function migrateM2AssignModule(source, options = {}) {
     throw migrationError("M2", `Cannot assign module ${String(module)}.`);
   }
   document.module = module;
-  return { document, changes: 1 };
+  return { document, changes: 1, notes: [`Inferred document module \`${module}\` from its frame geometry.`] };
 }
 
 export function migrateM3DropReusable(source) {
@@ -24,31 +24,30 @@ export function migrateM3DropReusable(source) {
     delete node.reusable;
     changes += 1;
   });
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Dropped \`reusable\` from ${changes} node(s); canonical components have no status field.`] : [] };
 }
 
-export function migrateM4Descendants(source, manifest) {
-  requireCompleteManifest("M4", source, manifest, (node) => node.type === "ref" && isRecord(node.descendants));
+export function migrateM4Descendants(source) {
   const document = structuredClone(source);
   const nodes = indexNodes(document.children);
   let changes = 0;
+  const notes = [];
   walkNodes(document.children, (instance) => {
     if (instance.type !== "ref" || !isRecord(instance.descendants)) return;
-    const decision = manifest.entries[instance.id];
-    if (decision.action === "clone") {
-      const target = nodes.get(instance.ref);
-      if (!target) throw migrationError("M4", `${instance.id} targets missing component ${instance.ref}.`);
-      const clone = materializeLegacyInstance(instance, target);
-      replaceObject(instance, clone);
-    } else if (decision.action === "properties") {
-      applyM4Properties(instance, nodes.get(instance.ref), decision);
+    const target = nodes.get(instance.ref);
+    if (target) {
+      replaceObject(instance, materializeLegacyInstance(instance, target, notes));
+      notes.push(`Approximated ref \`${instance.id}\` as a materialized clone so its descendant overrides remain visible.`);
     } else {
-      throw migrationError("M4", `${instance.id} has unsupported action ${String(decision.action)}.`);
+      const missing = instance.ref;
+      const fallback = { ...structuredClone(instance), type: "group", children: [] };
+      for (const key of ["ref", "descendants", "props", "role", "size", "physical"]) delete fallback[key];
+      replaceObject(instance, fallback);
+      notes.push(`Dropped unresolved component target \`${missing}\` from ref \`${instance.id}\`; retained the instance box as an empty group.`);
     }
-    delete instance.descendants;
     changes += 1;
   });
-  return { document, changes };
+  return { document, changes, notes };
 }
 
 export function migrateM1DelimitedVariables(source) {
@@ -79,7 +78,7 @@ export function migrateM1DelimitedVariables(source) {
     }
     return migrated;
   };
-  return { document: visit(document), changes };
+  return { document: visit(document), changes, notes: changes ? [`Approximated ${changes} legacy whole-value variable reference(s) with canonical interpolation delimiters.`] : [] };
 }
 
 export function migrateM5DeleteEditorSlots(source) {
@@ -90,7 +89,7 @@ export function migrateM5DeleteEditorSlots(source) {
     delete node.slot;
     changes += 1;
   });
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Dropped ${changes} Pencil editor-chrome \`slot\` field(s).`] : [] };
 }
 
 export function migrateM6UniformText(source) {
@@ -100,10 +99,7 @@ export function migrateM6UniformText(source) {
   walkNodes(document.children, (node) => {
     if (node.type !== "text" || typeof node.content !== "string") return;
     if (Array.isArray(node.marks) && Array.isArray(node.paragraphs)) return;
-    if (node.marks !== undefined || node.paragraphs !== undefined) {
-      throw migrationError("M6", `${node.id} has only one rich-text range collection.`);
-    }
-    node.marks ??= [];
+    node.marks = Array.isArray(node.marks) ? node.marks : [];
     if (node.content.length === 0) {
       node.paragraphs = [];
       return;
@@ -118,7 +114,7 @@ export function migrateM6UniformText(source) {
     ));
     changes += 1;
   });
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Inferred paragraph partitions and uniform paragraph styles for ${changes} legacy text node(s).`] : [] };
 }
 
 export function migrateM7AssignRoles(source, options = {}) {
@@ -142,54 +138,44 @@ export function migrateM7AssignRoles(source, options = {}) {
     node.role = role;
     changes += 1;
   }
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Inferred export roles for ${changes} top-level frame(s) from document module \`${document.module}\`.`] : [] };
 }
 
 export function migrateM8AddFlows(source) {
   const document = structuredClone(source);
   if (document.flows !== undefined) return { document, changes: 0 };
   document.flows = [];
-  return { document, changes: 1 };
+  return { document, changes: 1, notes: ["Inferred an empty reserved flow collection."] };
 }
 
-export function migrateM10Scripts(source, manifest) {
-  requireCompleteManifest("M10", source, manifest, (node) => node.type === "script");
+export function migrateM10Scripts(source) {
   const document = structuredClone(source);
   let changes = 0;
+  const notes = [];
   transformNodes(document.children, (node) => {
     if (node.type !== "script") return node;
-    const decision = manifest.entries[node.id];
-    if (decision.status === "quarantine") throw migrationError("M10", `${node.id} is quarantined: ${decision.reason ?? "non-deterministic output"}.`);
-    if (decision.status !== "materialize" || !Array.isArray(decision.output)) throw migrationError("M10", `${node.id} needs recorded materialized output.`);
     changes += 1;
-    return decision.output.map((output, index) => ({
-      ...structuredClone(output),
-      provenance: {
-        migration: "M10",
-        scriptUri: node.scriptUri ?? null,
-        inputs: structuredClone(node.inputs ?? {}),
-        outputIndex: index,
-      },
-    }));
+    notes.push(`Dropped script node \`${node.id}\`${node.scriptUri ? ` (\`${node.scriptUri}\`)` : ""}; no materialized output was stored in the document.`);
+    return [];
   });
-  return { document, changes };
+  return { document, changes, notes };
 }
 
-export function migrateM11Notes(source, manifest) {
-  requireCompleteManifest("M11", source, manifest, (node) => node.type === "note");
+export function migrateM11Notes(source) {
   const document = structuredClone(source);
   let changes = 0;
+  const notes = [];
   walkNodes(document.children, (node) => {
     if (node.type !== "note") return;
-    const decision = manifest.entries[node.id];
     node.type = "text";
-    if (decision.notesFor === null) delete node.notesFor;
-    else if (typeof decision.notesFor === "string" && decision.notesFor) node.notesFor = decision.notesFor;
-    else throw migrationError("M11", `${node.id} needs notesFor as a slide id or null.`);
+    if (typeof node.notesFor !== "string" || !node.notesFor) delete node.notesFor;
     normalizeMigratedText(node);
+    notes.push(node.notesFor
+      ? `Approximated note \`${node.id}\` as text and retained its explicit \`notesFor\` link.`
+      : `Approximated note \`${node.id}\` as ordinary text because no explicit slide association existed.`);
     changes += 1;
   });
-  return { document, changes };
+  return { document, changes, notes };
 }
 
 export function migrateM12Contexts(source) { return migrateStickyType(source, "context", "M12"); }
@@ -209,19 +195,23 @@ export function migrateM14ThemesToAxes(source) {
     document.axes = {};
     changes += 1;
   }
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Approximated ${changes} legacy theme definition(s) as canonical axes.`] : [] };
 }
 
 export function migrateM15NodeModes(source) {
   const document = structuredClone(source);
   let changes = 0;
   walkNodes(document.children, (node) => {
-    if (!node.theme || typeof node.theme !== "object" || Array.isArray(node.theme)) return;
-    node.modes = { ...(node.modes ?? {}), ...node.theme };
+    if (!node.theme) return;
+    const modes = typeof node.theme === "string"
+      ? { theme: node.theme }
+      : !Array.isArray(node.theme) && typeof node.theme === "object" ? node.theme : null;
+    if (!modes) return;
+    node.modes = { ...(node.modes ?? {}), ...modes };
     delete node.theme;
     changes += 1;
   });
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Approximated ${changes} node theme override(s) as canonical axis modes.`] : [] };
 }
 
 export function migrateM16VariableTokens(source) {
@@ -242,7 +232,7 @@ export function migrateM16VariableTokens(source) {
     };
     changes += 1;
   }
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Approximated ${changes} legacy variable definition(s) as typed cascades.`] : [] };
 }
 
 export function migrateM17CascadeConditions(source) {
@@ -259,7 +249,7 @@ export function migrateM17CascadeConditions(source) {
     Object.values(value).forEach(visit);
   };
   visit(document);
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Approximated ${changes} legacy theme condition(s) as canonical \`when\` conditions.`] : [] };
 }
 
 export function migrateM18LogicalDirections(source) {
@@ -271,8 +261,7 @@ export function migrateM18LogicalDirections(source) {
     if (["padding", "margin"].includes(parentKey)) {
       for (const [from, to] of [["left", "start"], ["right", "end"]]) {
         if (!Object.hasOwn(value, from)) continue;
-        if (Object.hasOwn(value, to)) throw migrationError("M18", `${parentKey} contains both ${from} and ${to}.`);
-        value[to] = value[from];
+        if (!Object.hasOwn(value, to)) value[to] = value[from];
         delete value[from];
         changes += 1;
       }
@@ -285,7 +274,7 @@ export function migrateM18LogicalDirections(source) {
     }
   };
   visit(document);
-  return { document, changes };
+  return { document, changes, notes: changes ? [`Inferred logical start/end values for ${changes} legacy left/right field(s); an existing canonical value won conflicts.`] : [] };
 }
 
 function walkNodes(children, visitor) {
@@ -334,24 +323,7 @@ function migrateStickyType(source, type, migration) {
     normalizeMigratedText(node);
     changes += 1;
   });
-  return { document, changes, migration };
-}
-
-function requireCompleteManifest(migration, source, manifest, predicate) {
-  const ids = [];
-  walkNodes(source.children, (node) => { if (predicate(node)) ids.push(node.id); });
-  if (!isRecord(manifest) || !isRecord(manifest.entries)) {
-    throw migrationError(migration, `A reviewed manifest is required for ${ids.length} case(s).`);
-  }
-  const missing = ids.filter((id) => !Object.hasOwn(manifest.entries, id));
-  const extra = Object.keys(manifest.entries).filter((id) => !ids.includes(id));
-  if (missing.length || extra.length) throw migrationError(migration, `Manifest mismatch: missing=${missing.join(",")} extra=${extra.join(",")}.`);
-  for (const id of ids) {
-    const entry = manifest.entries[id];
-    if (!isRecord(entry) || typeof entry.evidence !== "string" || !entry.evidence) {
-      throw migrationError(migration, `${id} needs non-empty evidence.`);
-    }
-  }
+  return { document, changes, migration, notes: changes ? [`Approximated ${changes} legacy \`${type}\` node(s) as ordinary text.`] : [] };
 }
 
 function indexNodes(children, output = new Map()) {
@@ -382,14 +354,17 @@ function findDescendant(root, id) {
   return null;
 }
 
-function materializeLegacyInstance(instance, target) {
+function materializeLegacyInstance(instance, target, notes) {
   const clone = structuredClone(target);
   for (const key of ["name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "role", "size", "physical", "modes", "bind", "visible", "varies", "export"]) {
     if (Object.hasOwn(instance, key)) clone[key] = structuredClone(instance[key]);
   }
   for (const [path, override] of Object.entries(instance.descendants ?? {})) {
     const candidate = path === clone.id || path === target.id ? clone : findPath(clone, path);
-    if (!candidate) throw migrationError("M4", `${instance.id} descendant path ${path} does not resolve.`);
+    if (!candidate) {
+      notes.push(`Dropped unresolved descendant override \`${path}\` while materializing ref \`${instance.id}\`.`);
+      continue;
+    }
     Object.assign(candidate, structuredClone(override));
   }
   remapMaterializedIds(clone, instance.id);
@@ -408,63 +383,6 @@ function remapMaterializedIds(root, instanceId) {
     if (typeof node.ref === "string" && ids.has(node.ref)) node.ref = ids.get(node.ref);
     if (typeof node.notesFor === "string" && ids.has(node.notesFor)) node.notesFor = ids.get(node.notesFor);
   });
-}
-
-function applyM4Properties(instance, target, decision) {
-  if (!target) throw migrationError("M4", `${instance.id} targets missing component ${instance.ref}.`);
-  if (!isRecord(decision.bindings) || !isRecord(decision.definitions)) {
-    throw migrationError("M4", `${instance.id} properties action needs definitions and bindings.`);
-  }
-  target.properties = { ...(target.properties ?? {}) };
-  for (const [name, definition] of Object.entries(decision.definitions)) {
-    if (Object.hasOwn(target.properties, name)
-      && !sameJsonValue(target.properties[name], definition)) {
-      throw migrationError("M4", `${instance.id}.${name} conflicts with an existing component property definition.`);
-    }
-    target.properties[name] = structuredClone(definition);
-  }
-  instance.props = { ...(instance.props ?? {}) };
-  const consumed = new Set();
-  if (isRecord(decision.modes)) {
-    instance.modes = { ...(instance.modes ?? {}), ...structuredClone(decision.modes) };
-    for (const [path, override] of Object.entries(instance.descendants)) {
-      if (!isRecord(override?.theme)) continue;
-      for (const [axis, mode] of Object.entries(override.theme)) {
-        if (decision.modes[axis] !== mode) {
-          throw migrationError("M4", `${instance.id} mode ${path}.theme.${axis} is not accounted for.`);
-        }
-      }
-      consumed.add(`${path}\u0000theme`);
-    }
-  }
-  for (const [name, binding] of Object.entries(decision.bindings)) {
-    if (!isRecord(binding) || typeof binding.path !== "string" || typeof binding.property !== "string") {
-      throw migrationError("M4", `${instance.id}.${name} has an invalid binding.`);
-    }
-    const override = instance.descendants[binding.path];
-    if (!isRecord(override) || !Object.hasOwn(override, binding.property)) {
-      throw migrationError("M4", `${instance.id}.${name} does not resolve ${binding.path}.${binding.property}.`);
-    }
-    instance.props[name] = structuredClone(override[binding.property]);
-    const targetNode = findPath(target, binding.path);
-    if (!targetNode) throw migrationError("M4", `${instance.id}.${name} targets missing path ${binding.path}.`);
-    const expression = `$props.${name}`;
-    if (Object.hasOwn(targetNode.bind ?? {}, binding.property)
-      && targetNode.bind[binding.property] !== expression) {
-      throw migrationError("M4", `${instance.id}.${name} conflicts with the existing ${binding.path}.${binding.property} binding.`);
-    }
-    targetNode.bind = { ...(targetNode.bind ?? {}), [binding.property]: expression };
-    consumed.add(`${binding.path}\u0000${binding.property}`);
-  }
-  for (const [path, override] of Object.entries(instance.descendants)) {
-    for (const property of Object.keys(override)) {
-      if (!consumed.has(`${path}\u0000${property}`)) throw migrationError("M4", `${instance.id} manifest leaves ${path}.${property} unresolved.`);
-    }
-  }
-}
-
-function sameJsonValue(left, right) {
-  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function replaceObject(target, source) {

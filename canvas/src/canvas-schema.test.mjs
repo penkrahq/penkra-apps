@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { assertCapabilityTotality, capabilityPathInventory, validateCanvasDocument } from "./canvas-schema.mjs";
 
-function document() { return { canvasSchemaVersion: 3, version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", children: [{ id: "copy", type: "text", content: "Hi", paragraphs: [{ from: 0, to: 2 }], marks: [] }] }] }; }
+function document() { return { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", children: [{ id: "copy", type: "text", content: "Hi", paragraphs: [{ from: 0, to: 2 }], marks: [] }] }] }; }
 
 test("canonical schema validates roots, rich text, roles, refs and flows", () => {
   assert.equal(validateCanvasDocument(document()).valid, true);
@@ -30,7 +30,7 @@ test("canonical schema enforces role, notes, node modes and flow relationships",
 });
 
 test("capability totality is generated from the canonical inventory", () => {
-  assert.equal(capabilityPathInventory().length, 142);
+  assert.equal(capabilityPathInventory().length, 143);
   const properties = Object.fromEntries(capabilityPathInventory().map((path) => [path, { verdict: "native" }]));
   assert.equal(assertCapabilityTotality({ properties }), true);
   properties["properties.fill"] = { verdict: null, status: "unverified" };
@@ -38,7 +38,6 @@ test("capability totality is generated from the canonical inventory", () => {
   properties["properties.fill"] = { verdict: "native", status: "unverified" };
   assert.throws(() => assertCapabilityTotality({ properties }), /unverified=properties\.fill/);
   assert.ok(capabilityPathInventory().includes("properties.fill.image"));
-  assert.ok(capabilityPathInventory().includes("root.canvasSchemaVersion"));
   assert.ok(capabilityPathInventory().includes("root.lang"));
   assert.ok(capabilityPathInventory().includes("properties.layout"));
   assert.ok(capabilityPathInventory().includes("roles.slide"));

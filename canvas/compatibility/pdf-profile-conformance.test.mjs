@@ -55,5 +55,5 @@ test("unverified PDF/X-4 profile cannot be mislabeled", async () => {
 });
 
 function fixture() {
-  return { canvasSchemaVersion: 3, version: "2.15", module: "print", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "page", type: "frame", role: "page", size: "a4", physical: { w: 210, h: 297, unit: "mm" }, width: 794, height: 1123, children: [{ id: "text", type: "text", x: 72, y: 72, width: 400, height: 60, content: "Canvas profile fixture", fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 22 }], marks: [] }] }] };
+  return { version: "2.15", module: "print", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "page", type: "frame", role: "page", size: "a4", physical: { w: 210, h: 297, unit: "mm" }, width: 794, height: 1123, children: [{ id: "text", type: "text", x: 72, y: 72, width: 400, height: 60, content: "Canvas profile fixture", fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 22 }], marks: [] }] }] };
 }

@@ -23,14 +23,6 @@ A process launched with those exact flags wrote and reread an absolute temporary
 `canvas-controller-write`. `documents.export` may therefore use `node:fs` with absolute paths.
 Destination validation, collision rejection and atomic rename remain Canvas responsibilities.
 
-## Version/write handshake
-
-`compatibility/schema-handshake-spike.test.mjs` executes the protocol with two clients. Migration
-first marks the document quiescing, disconnects both sessions, applies one atomic version change,
-then reopens. The old schema cannot reconnect and a current client can reconnect and write. The
-test passes under Node 24.19.0. Stage 4 moves this executable protocol into the backend write and
-subscription paths; this spike is not itself the production gate.
-
 ## OOXML injection seam
 
 Chosen seam: let PptxGenJS 4.0.1 generate the package, then mutate ZIP parts with fflate 0.8.3.

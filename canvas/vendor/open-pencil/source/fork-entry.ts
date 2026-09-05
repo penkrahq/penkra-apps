@@ -3,7 +3,7 @@ export { fontManager } from '@open-pencil/core'
 export { computeAllLayouts } from '@open-pencil/core/layout'
 export { getCanvasKit } from '@open-pencil/core/canvaskit'
 export { SkiaRenderer } from '@open-pencil/core/canvas/renderer'
-export { parsePenFile } from '@open-pencil/pen'
+export { createCanvasSceneGraph } from '@open-pencil/pen'
 export {
   computeBounds,
   computeDescendantVisualBounds

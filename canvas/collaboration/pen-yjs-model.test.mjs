@@ -1,9 +1,7 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 import { test } from "node:test";
 
-import { corpusFiles } from "../compatibility/corpus-files.mjs";
 import {
   Y,
   cloneModel,
@@ -35,9 +33,32 @@ const fixture = {
   ],
 };
 
-for (const { label, url } of corpusFiles) {
-  test(`${label} round-trips through the normalized Yjs model`, async () => {
-    const document = JSON.parse(await readFile(url, "utf8"));
+const canvasNativeFixtures = [
+  {
+    label: "fixed frame",
+    document: {
+      module: "web",
+      children: [{ id: "fixed", type: "frame", width: 1280, height: 720, children: [] }],
+    },
+  },
+  {
+    label: "intrinsic text in fill-width layout",
+    document: {
+      module: "web",
+      children: [{
+        id: "column",
+        type: "frame",
+        width: 640,
+        height: "fit_content",
+        layout: "vertical",
+        children: [{ id: "copy", type: "text", width: "fill_container", height: "fit_content", content: "Canvas native sizing", paragraphs: [{ from: 0, to: 20 }] }],
+      }],
+    },
+  },
+];
+
+for (const { label, document } of canvasNativeFixtures) {
+  test(`${label} Canvas fixture round-trips through the normalized Yjs model`, () => {
     assert.deepEqual(materializePen(createModel(document)), document);
   });
 }

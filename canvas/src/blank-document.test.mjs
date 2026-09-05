@@ -20,7 +20,6 @@ test("operation and UI creation share one minimal valid blank document", () => {
       children: [],
     },
   ]);
-  assert.equal(source.canvasSchemaVersion, 3);
   assert.equal(source.module, "web");
   assert.deepEqual(source.flows, []);
   const model = createDocumentModel(source);

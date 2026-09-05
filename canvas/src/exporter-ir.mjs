@@ -1,7 +1,9 @@
 import { capabilityTableFor } from "./capability-tables.mjs";
 import { isCascade, resolveCanvasDocument } from "./canvas-resolver.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
+import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";
 import { flattenMarks } from "./rich-text.mjs";
+import { PRINT_BLEED_POINTS, rasterPolicyFor } from "./raster-policy.mjs";
 
 const CAPABILITY_VERIFICATION = Symbol("canvas-capability-verification");
 
@@ -43,7 +45,7 @@ export function buildExporterIR(document, request) {
       height: graphNode.height,
       unit: "px",
       ...(physical ? { physical } : {}),
-      ...(frame.bleed !== undefined ? { bleed: frame.bleed } : {}),
+      ...(request.role === "page" ? { bleed: frame.bleed ?? PRINT_BLEED_POINTS } : frame.bleed !== undefined ? { bleed: frame.bleed } : {}),
       ...(frame.safeMargin !== undefined ? { safeMargin: frame.safeMargin } : {}),
       ...(frame.folds !== undefined ? { folds: structuredClone(frame.folds) } : {}),
       root: {
@@ -60,7 +62,7 @@ export function buildExporterIR(document, request) {
     };
   });
   const evaluatedNodes = outputs.flatMap((output) => output.nodes);
-  const rasters = rasterScopes(evaluatedNodes, request);
+  const rasters = rasterScopes(evaluatedNodes, request, graph, outputs);
   for (const output of outputs) output.nodes = applyRasterScopes(output.nodes, rasters);
   const nodes = outputs.flatMap((output) => output.nodes);
   const consequences = [
@@ -87,7 +89,10 @@ export function buildExporterIR(document, request) {
     modes: resolved.modes,
     outputs,
     notes,
-    flows: structuredClone(document.flows ?? []),
+    // Flow lowering is a forward feature. Keeping the IR field stable costs
+    // nothing, while emitting authored flows before its vocabulary is settled
+    // would make each target invent incompatible semantics.
+    flows: [],
     rasters,
     consequences,
     lowered: resolved.lowered,
@@ -136,7 +141,7 @@ function semanticVariants(node) {
     isCascade(value)));
 }
 
-function rasterScopes(nodes, request) {
+function rasterScopes(nodes, request, graph, outputs) {
   const byId = new Map(nodes.map((node) => [node.id, node]));
   const scopes = new Set();
   for (const node of nodes.filter((item) => item.capability.verdict === "raster")) {
@@ -148,19 +153,46 @@ function rasterScopes(nodes, request) {
     scopes.add(scope.id);
   }
   const subsumed = (id) => { let parent = byId.get(id)?.parent; while (parent && byId.has(parent)) { if (scopes.has(parent)) return true; parent = byId.get(parent).parent; } return false; };
-  for (const node of nodes.filter((item) => item.capability.verdict === "raster")) {
-    if ((Array.isArray(node.paint.effect) ? node.paint.effect : [node.paint.effect]).some(Boolean)) {
-      const error = new Error(`Effect outset is not specified for raster node ${node.id}.`);
-      error.code = "CANVAS_EFFECT_OUTSET_UNSPECIFIED";
-      throw error;
-    }
-  }
-  if (scopes.size) {
-    const error = new Error(`Raster PPI is not specified for ${request.role}.`);
-    error.code = "CANVAS_RASTER_PPI_UNSPECIFIED";
-    throw error;
-  }
-  return [];
+  const policy = rasterPolicyFor(request.role);
+  return [...scopes].filter((id) => !subsumed(id)).map((id) => {
+    const scope = byId.get(id);
+    const output = outputs.find((candidate) => candidate.id === scope.parent || candidate.nodes.some((node) => node.id === id));
+    const rootAbsolute = graph.getAbsolutePosition(output.id);
+    const visual = computeDescendantVisualBounds(
+      [id],
+      (nodeId) => graph.getNode(nodeId) ?? undefined,
+      (nodeId) => graph.getAbsolutePosition(nodeId),
+    );
+    if (!visual) throw exportError("CANVAS_RASTER_EMPTY", `Raster scope ${id} has no visual bounds.`);
+    const visualLeft = visual.minX - rootAbsolute.x;
+    const visualTop = visual.minY - rootAbsolute.y;
+    const visualRight = visual.maxX - rootAbsolute.x;
+    const visualBottom = visual.maxY - rootAbsolute.y;
+    const outset = {
+      left: Math.max(0, scope.geometry.x - visualLeft),
+      top: Math.max(0, scope.geometry.y - visualTop),
+      right: Math.max(0, visualRight - scope.geometry.x - scope.geometry.w),
+      bottom: Math.max(0, visualBottom - scope.geometry.y - scope.geometry.h),
+    };
+    const logicalWidth = scope.geometry.w + outset.left + outset.right;
+    const logicalHeight = scope.geometry.h + outset.top + outset.bottom;
+    const variants = policy.map((variant) => ({
+      ...variant,
+      pixelWidth: Math.max(1, Math.ceil(logicalWidth * variant.scale)),
+      pixelHeight: Math.max(1, Math.ceil(logicalHeight * variant.scale)),
+    }));
+    return {
+      id,
+      reason: scope.capability.reason ?? "Raster compositing scope.",
+      outset,
+      colorSpace: "sRGB",
+      alpha: "unpremultiplied",
+      ppi: variants.at(-1).ppi,
+      pixelWidth: variants.at(-1).pixelWidth,
+      pixelHeight: variants.at(-1).pixelHeight,
+      variants,
+    };
+  });
 }
 function hasBackgroundBlur(effect) {
   return (Array.isArray(effect) ? effect : [effect]).some((item) =>
@@ -179,13 +211,28 @@ function applyRasterScopes(nodes, rasters) {
     return false;
   };
   return nodes.filter((node) => !insideScope(node)).map((node) => scopes.has(node.id)
-    ? { ...node, capability: { verdict: "raster", reason: scopes.get(node.id).reason ?? "Raster compositing scope." } }
+    ? (() => {
+      const raster = scopes.get(node.id);
+      return {
+        ...node,
+        geometry: {
+          ...node.geometry,
+          x: node.geometry.x - raster.outset.left,
+          y: node.geometry.y - raster.outset.top,
+          localX: Number(node.geometry.localX ?? node.geometry.x) - raster.outset.left,
+          localY: Number(node.geometry.localY ?? node.geometry.y) - raster.outset.top,
+          w: node.geometry.w + raster.outset.left + raster.outset.right,
+          h: node.geometry.h + raster.outset.top + raster.outset.bottom,
+        },
+        capability: { verdict: "raster", reason: raster.reason ?? "Raster compositing scope." },
+      };
+    })()
     : node);
 }
 
 function capabilityPaths(node, projection) {
   const paths = new Set([`nodes.${node.type}`]);
-  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "decorative"]) {
+  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "decorative", "bleed", "safeMargin", "folds"]) {
     if (node[key] !== undefined) paths.add(`properties.${key}`);
   }
   if (node.description !== undefined) paths.add("properties.accessibility.description");
@@ -258,7 +305,7 @@ function evaluateCapabilities(paths, table, verification = null) {
 }
 function documentCapabilityPaths(document, role) {
   const paths = new Set([`roles.${role}`]);
-  for (const key of ["canvasSchemaVersion", "version", "module", "lang", "axes", "variables", "paragraphStyles", "imports", "children"])
+  for (const key of ["module", "lang", "axes", "variables", "paragraphStyles", "imports", "children"])
     if (document[key] !== undefined) paths.add(`root.${key}`);
   if ((document.flows ?? []).length) paths.add("root.flows");
   if (Object.keys(document.imports ?? {}).length) paths.add("relationships.import");

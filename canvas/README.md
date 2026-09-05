@@ -1,7 +1,7 @@
 # Canvas
 
-Canvas is Penkra's Account-scoped collaborative editor for cloud-hosted design
-documents. Its first supported interchange format is `.pen`.
+Canvas is Penkra's Account-scoped collaborative editor for cloud-hosted design documents. It owns
+its document model and does not import, export, or preserve Pencil files.
 
 ## Design authority
 
@@ -9,14 +9,10 @@ documents. Its first supported interchange format is `.pen`.
 hierarchy, language, states, and visual composition. Keep implementation behavior and copy
 reconciled with that file; historical design briefs live only in Git history.
 
-Platform architecture and implementation work remain tracked in the client
-workspace's authoritative `TODO.md`, not in this App directory.
-
-Format preservation research lives in [`compatibility/`](./compatibility/).
-The checked-in differential oracle tests the real OpenPencil parser at a pinned
-upstream commit.
-The current Pencil 2.17 rendering and authoring boundary is recorded in
-[`compatibility/pencil-2.17-support.md`](./compatibility/pencil-2.17-support.md).
+The implemented model and runtime contract are documented in
+[`ARCHITECTURE.md`](./ARCHITECTURE.md). Unfinished Canvas work belongs only in
+the ignored local `TODO.md`; tracked research and QA files are evidence, not
+parallel plans.
 
 Local CRDT validation lives in [`collaboration/`](./collaboration/). It
 establishes the lossless Yjs document model and convergence/undo behavior.
@@ -30,14 +26,10 @@ establishes the lossless Yjs document model and convergence/undo behavior.
 - The App combines its network provider with official `y-indexeddb` persistence
   so a previously opened document remains editable offline and merges on
   reconnect.
-- Unknown `.pen` document fields, node types, and node properties remain in the
-  Yjs source model and survive supported edits and export.
 - The visible editor uses an audited, locally owned scene/layout/CanvasKit/input
-  engine derived from OpenPencil. Canvas extends that engine for Pencil 2.17;
-  its normalized graph is disposable view state and the lossless Yjs `.pen`
+  engine derived from OpenPencil. Its normalized graph is disposable view state and the Canvas Yjs
   model remains canonical.
-- Canvas labels preserved unsupported visual behavior instead of silently
-  approximating it or claiming full compatibility.
+- Unsupported Canvas behavior fails visibly instead of being silently approximated.
 
 OpenPencil provenance and the reproducible narrow-bundle entrypoint live in
 [`vendor/open-pencil/`](./vendor/open-pencil/). Canvas does not depend on the

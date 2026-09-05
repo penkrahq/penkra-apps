@@ -1307,11 +1307,11 @@ function effectOverflow(effects) {
       continue;
     if (effect.type !== "DROP_SHADOW" && effect.type !== "LAYER_BLUR" && effect.type !== "FOREGROUND_BLUR")
       continue;
-    const blurSpread = effect.radius + effect.spread;
-    left = Math.max(left, blurSpread + Math.max(0, -effect.offset.x));
-    right = Math.max(right, blurSpread + Math.max(0, effect.offset.x));
-    top = Math.max(top, blurSpread + Math.max(0, -effect.offset.y));
-    bottom = Math.max(bottom, blurSpread + Math.max(0, effect.offset.y));
+    const blurSpread = (effect.radius / 2 <= 0.03 ? 0 : Math.ceil(3 * effect.radius / 2)) + effect.spread;
+    left = Math.max(left, blurSpread - effect.offset.x, 0);
+    right = Math.max(right, blurSpread + effect.offset.x, 0);
+    top = Math.max(top, blurSpread - effect.offset.y, 0);
+    bottom = Math.max(bottom, blurSpread + effect.offset.y, 0);
   }
   return {
     left,
@@ -70192,7 +70192,7 @@ class SkiaRenderer {
     for (const e4 of node.effects) {
       if (!e4.visible)
         continue;
-      const blur = e4.radius;
+      const blur = e4.radius / 2 <= 0.03 ? 0 : Math.ceil(3 * e4.radius / 2);
       const spread = e4.spread;
       const ox = Math.abs(e4.offset.x);
       const oy = Math.abs(e4.offset.y);
@@ -89064,9 +89064,6 @@ function selectionAllHasDecoration(runs, start, end, deco, nodeDeco) {
 
 // vendor/open-pencil/source/packages/core/src/index.ts
 init_fonts();
-
-// vendor/open-pencil/source/packages/scene-graph/dist/instances.js
-init_types();
 // vendor/open-pencil/source/fork-entry.ts
 init_renderer();
 await init_layout2();
@@ -89074,6 +89071,11 @@ await init_layout2();
 // vendor/open-pencil/source/packages/pen/src/read.ts
 init_dist();
 init_copy2();
+
+// vendor/open-pencil/source/packages/scene-graph/dist/instances.js
+init_types();
+
+// vendor/open-pencil/source/packages/pen/src/read.ts
 init_parse_path();
 
 // vendor/open-pencil/source/packages/pen/src/convert.ts
@@ -90240,8 +90242,7 @@ function fixTextWidths(graph) {
     node.width = node.text.length * node.fontSize * 0.65;
   }
 }
-function parsePenFile(json) {
-  const doc = typeof json === "string" ? JSON.parse(json) : json;
+function createCanvasSceneGraph(doc) {
   const graph = new SceneGraph;
   for (const page2 of graph.getPages(true)) {
     graph.deleteNode(page2.id);
@@ -90362,11 +90363,12 @@ function effectOverflow3(effects) {
     if (effect.type !== "DROP_SHADOW" && effect.type !== "LAYER_BLUR" && effect.type !== "FOREGROUND_BLUR") {
       continue;
     }
-    const blurSpread = effect.radius + effect.spread;
-    left = Math.max(left, blurSpread + Math.max(0, -effect.offset.x));
-    right = Math.max(right, blurSpread + Math.max(0, effect.offset.x));
-    top = Math.max(top, blurSpread + Math.max(0, -effect.offset.y));
-    bottom = Math.max(bottom, blurSpread + Math.max(0, effect.offset.y));
+    const kernel = effect.radius / 2 <= 0.03 ? 0 : Math.ceil(3 * effect.radius / 2);
+    const blurSpread = kernel + effect.spread;
+    left = Math.max(left, blurSpread - effect.offset.x, 0);
+    right = Math.max(right, blurSpread + effect.offset.x, 0);
+    top = Math.max(top, blurSpread - effect.offset.y, 0);
+    bottom = Math.max(bottom, blurSpread + effect.offset.y, 0);
   }
   return { left, right, top, bottom };
 }
@@ -95242,11 +95244,11 @@ export {
   computeAllLayouts,
   computeBounds3 as computeBounds,
   computeDescendantVisualBounds3 as computeDescendantVisualBounds,
+  createCanvasSceneGraph,
   createDefaultEditorState,
   createEditor,
   fontManager,
   getCanvasKit,
-  parsePenFile,
   provideEditor,
   useCanvas,
   useCanvasInput,

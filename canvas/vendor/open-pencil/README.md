@@ -1,10 +1,10 @@
 # OpenPencil engine seam
 
 Canvas uses a deliberately narrow, tree-shaken engine module generated from
-OpenPencil commit `4a5e7d557064d941fbac88bd492586db5257ff5f`, with the narrowly scoped Pencil
-compatibility patches recorded in `PROVENANCE.json`. The exported seam is limited to
-the editor graph, Yoga layout, scene bounds, `.pen` reader, CanvasKit loader, canvas input,
-and text-edit hooks listed in `PROVENANCE.json`.
+OpenPencil commit `4a5e7d557064d941fbac88bd492586db5257ff5f`, with the Canvas-specific
+patches recorded in `PROVENANCE.json`. The exported seam is limited to the editor graph,
+Yoga layout, scene bounds, Canvas document adapter, CanvasKit loader, canvas input, and
+text-edit hooks listed in `PROVENANCE.json`. It intentionally exposes no Pencil file parser.
 
 The published OpenPencil 0.13.2 packages are not runtime dependencies. In
 particular, Canvas does not include the OpenPencil calculator/tools surface or

@@ -188,7 +188,7 @@ test("Canvas API forwards realtime connection-state listeners", async () => {
   assert.deepEqual(calls[0], [
     "project:document-id",
     listener,
-    { onConnectionStateChange, metadata: { canvasSchemaVersion: 3 } },
+    { onConnectionStateChange },
   ]);
 });
 
@@ -216,7 +216,7 @@ test("Canvas maps project projections and exact asset paths without changing the
     ["/projects/snapshot-uploads", { uploadId: "upload-id", projectId: "project-id", chunkSize: 1024 }],
     ["/projects/snapshot-uploads/upload-id/parts", { receivedBytes: 1 }],
     ["/projects/snapshot-uploads/upload-id/complete", { id: "project-id" }],
-    ["/projects/project-id?chunked=auto&canvasSchemaVersion=3", {
+    ["/projects/project-id?chunked=auto", {
       id: "project-id",
       snapshot: { throughSequence: 0, chunked: true },
       updates: [],
@@ -272,7 +272,7 @@ test("Canvas accepts an automatically inlined snapshot without range requests", 
     account: {
       request: async (input) => {
         calls.push(input.path);
-        if (input.path === "/projects/project-id?chunked=auto&canvasSchemaVersion=3") {
+        if (input.path === "/projects/project-id?chunked=auto") {
           return response(200, {
             id: "project-id",
             snapshot: { throughSequence: 0, state: "AQ==", projection },
@@ -293,34 +293,19 @@ test("Canvas accepts an automatically inlined snapshot without range requests", 
   assert.deepEqual(opened.snapshot.source, projection);
   assert.deepEqual(calls.sort(), [
     "/projects/project-id/blobs",
-    "/projects/project-id?chunked=auto&canvasSchemaVersion=3",
+    "/projects/project-id?chunked=auto",
   ]);
 });
 
-test("an owner opening a legacy document runs the fenced atomic migration once", async () => {
+test("opening an unmigrated document returns its projection without side effects", async () => {
   const source = { version: "2.17", children: [{ id: "home", type: "frame", width: 720, height: 480, children: [] }] };
-  const legacyModel = createDocumentModel(source);
-  const state = encodeState(legacyModel);
-  legacyModel.doc.destroy();
   const calls = [];
-  let migratedProjection = null;
   const api = createCanvasApi({
     account: {
       request: async (input) => {
         calls.push(input.path);
-        if (input.path === "/projects/legacy?chunked=auto&canvasSchemaVersion=3" && !migratedProjection) {
-          return response(409, { code: "CANVAS_SCHEMA_MIGRATION_REQUIRED", message: "migration required" });
-        }
         if (input.path === "/projects/legacy?chunked=auto") {
-          return response(200, { id: "legacy", access: "owner", snapshot: { throughSequence: 0, state, projection: source }, updates: [] });
-        }
-        if (input.path === "/projects/legacy/schema-migration/begin") return response(202, { migrating: true });
-        if (input.path === "/projects/legacy/schema-migration/complete") {
-          migratedProjection = JSON.parse(new TextDecoder().decode(input.body)).projection;
-          return response(200, { migrating: false, sequence: 0, canvasSchemaVersion: 3 });
-        }
-        if (input.path === "/projects/legacy?chunked=auto&canvasSchemaVersion=3") {
-          return response(200, { id: "legacy", snapshot: { throughSequence: 0, state, projection: migratedProjection }, updates: [] });
+          return response(200, { id: "legacy", title: "Legacy", snapshot: { throughSequence: 0, state: "AQ==", projection: source }, updates: [] });
         }
         if (input.path === "/projects/legacy/blobs") return response(200, { items: [] });
         throw new Error(`Unexpected request ${input.path}`);
@@ -331,13 +316,9 @@ test("an owner opening a legacy document runs the fenced atomic migration once",
 
   const opened = await api.getDocument("legacy");
 
-  assert.equal(opened.snapshot.source.canvasSchemaVersion, 3);
+  assert.deepEqual(opened.snapshot.source, source);
   assert.deepEqual(calls, [
-    "/projects/legacy?chunked=auto&canvasSchemaVersion=3",
     "/projects/legacy?chunked=auto",
-    "/projects/legacy/schema-migration/begin",
-    "/projects/legacy/schema-migration/complete",
-    "/projects/legacy?chunked=auto&canvasSchemaVersion=3",
     "/projects/legacy/blobs",
   ]);
 });

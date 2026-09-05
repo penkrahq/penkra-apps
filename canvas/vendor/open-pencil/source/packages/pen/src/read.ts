@@ -747,8 +747,7 @@ function fixTextWidths(graph: SceneGraph): void {
   }
 }
 
-export function parsePenFile(json: string | PenDocument): SceneGraph {
-  const doc: PenDocument = typeof json === 'string' ? JSON.parse(json) : json
+export function createCanvasSceneGraph(doc: PenDocument): SceneGraph {
   const graph = new SceneGraph()
 
   for (const page of graph.getPages(true)) {
@@ -786,8 +785,4 @@ export function parsePenFile(json: string | PenDocument): SceneGraph {
   }
 
   return graph
-}
-
-export async function readPenFile(file: File): Promise<SceneGraph> {
-  return parsePenFile(await file.text())
 }

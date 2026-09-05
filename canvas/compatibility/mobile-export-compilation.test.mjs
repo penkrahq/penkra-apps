@@ -9,7 +9,6 @@ import { buildCapabilityVerificationIR } from "../src/exporter-ir.mjs";
 import { exportCompose, exportSwiftUI } from "../src/exporters/mobile.mjs";
 
 const document = {
-  canvasSchemaVersion: 3,
   version: "2.17",
   module: "mobile",
   axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],

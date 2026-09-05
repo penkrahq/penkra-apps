@@ -10,7 +10,7 @@ import { exportWeb } from "./web.mjs";
 import { exportCompose, exportSwiftUI } from "./mobile.mjs";
 import { exportSvg } from "./svg.mjs";
 
-const document = { canvasSchemaVersion: 3, version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", name: "Title", width: 1280, height: 720, layout: "none", children: [{ id: "title", type: "text", x: 80, y: 60, width: 600, height: 80, content: "Editable title", fontFamily: "Inter", fontSize: 48, paragraphs: [{ from: 0, to: 14, headingLevel: 1 }], marks: [{ type: "weight", from: 0, to: 8, value: 700 }], description: "Deck title" }, { id: "box", type: "rectangle", x: 80, y: 180, width: 300, height: 120, fill: "#123456", effect: { type: "shadow", shadowType: "outer", color: "#00000055", offset: { x: 4, y: 6 }, blur: 12 } }] }] };
+const document = { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", name: "Title", width: 1280, height: 720, layout: "none", children: [{ id: "title", type: "text", x: 80, y: 60, width: 600, height: 80, content: "Editable title", fontFamily: "Inter", fontSize: 48, paragraphs: [{ from: 0, to: 14, headingLevel: 1 }], marks: [{ type: "weight", from: 0, to: 8, value: 700 }], description: "Deck title" }, { id: "box", type: "rectangle", x: 80, y: 180, width: 300, height: 120, fill: "#123456", effect: { type: "shadow", shadowType: "outer", color: "#00000055", offset: { x: 4, y: 6 }, blur: 12 } }] }] };
 const interRegular = await readFile(new URL("../../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
 const interBold = await readFile(new URL("../../vendor/open-pencil/fonts/Inter-Bold.ttf", import.meta.url));
 document.children[0].physical = { w: 13.333, h: 7.5, unit: "in" };
@@ -27,18 +27,16 @@ test("PPTX contains editable DrawingML text and native shapes", async () => {
   assert.doesNotMatch(xml, /<p:pic>/u);
 });
 
-test("PPTX emits speaker notes and internal tap-flow hyperlinks", async () => {
+test("PPTX emits speaker notes while flow lowering remains deferred", async () => {
   const deck = structuredClone(document);
   deck.children.push(
     { id: "slide-2", type: "frame", role: "slide", name: "Second", x: 1400, width: 1280, height: 720, children: [] },
     { id: "slide-notes", type: "text", notesFor: "slide", x: 0, y: 800, width: 600, height: 80, content: "Say this aloud.", paragraphs: [{ from: 0, to: 15 }], marks: [] },
   );
   deck.children.find((node) => node.id === "slide-2").physical = { w: 13.333, h: 7.5, unit: "in" };
-  deck.flows = [{ id: "next", from: "slide", to: "slide-2", trigger: { kind: "tap", source: { path: [], node: "box" } } }];
   const bytes = await exportDeck(buildExporterIR(deck, { role: "slide", frames: ["slide", "slide-2"] }));
   const parts = readOoxmlPackage(bytes);
-  assert.match(readXmlPart(parts, "ppt/slides/slide1.xml"), /hlinkClick/u);
-  assert.match(readXmlPart(parts, "ppt/slides/_rels/slide1.xml.rels"), /Target="slide2.xml"/u);
+  assert.doesNotMatch(readXmlPart(parts, "ppt/slides/slide1.xml"), /hlinkClick/u);
   assert.match(readXmlPart(parts, "ppt/notesSlides/notesSlide1.xml"), /Say this aloud\./u);
 });
 
@@ -68,6 +66,7 @@ test("PPTX emits measured DrawingML linear and radial gradients for the native s
 test("PDF output has the declared A4 physical dimensions", async () => {
   const pageDocument = structuredClone(document); pageDocument.module = "print"; pageDocument.children[0].role = "page"; pageDocument.children[0].size = "a4"; pageDocument.children[0].width = 794; pageDocument.children[0].height = 1123;
   pageDocument.children[0].physical = { w: 210, h: 297, unit: "mm" };
+  pageDocument.children[0].bleed = 0;
   pageDocument.children[0].children[1].effect = undefined;
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lQw3WQAAAABJRU5ErkJggg==", "base64");
   const outputIntent = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
@@ -77,6 +76,29 @@ test("PDF output has the declared A4 physical dimensions", async () => {
   assert.ok(Math.abs(page.getHeight() - 841.89) < 0.01);
   assert.ok(pdf.catalog.lookup(PDFName.of("OutputIntents")));
   assert.ok(pdf.context.enumerateIndirectObjects().some(([, object]) => object?.has?.(PDFName.of("FontFile2"))));
+});
+
+test("PDF bleed expands the medium while preserving the declared trim box", async () => {
+  const pageDocument = structuredClone(document);
+  Object.assign(pageDocument, { module: "print" });
+  Object.assign(pageDocument.children[0], {
+    role: "page", size: "a4", width: 794, height: 1123,
+    physical: { w: 210, h: 297, unit: "mm" }, bleed: 9, folds: [397],
+  });
+  pageDocument.children[0].children[1].effect = undefined;
+  const outputIntent = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
+  const bytes = await exportPdf(buildExporterIR(pageDocument, { role: "page", frames: ["slide"] }), {
+    outputIntent, fonts: { "Inter:400": interRegular },
+  });
+  const pdf = await PDFDocument.load(bytes); const [page] = pdf.getPages();
+  const media = page.getMediaBox();
+  assert.ok(Math.abs(media.width - 613.2755905511812) < 0.001 && Math.abs(media.height - 859.8897637795277) < 0.001);
+  assert.deepEqual(page.getCropBox(), page.getMediaBox());
+  assert.deepEqual(page.getBleedBox(), page.getMediaBox());
+  const trim = page.getTrimBox();
+  assert.ok(Math.abs(trim.x - 9) < 0.001 && Math.abs(trim.y - 9) < 0.001);
+  assert.ok(Math.abs(trim.width - 595.2755905511812) < 0.001 && Math.abs(trim.height - 841.8897637795277) < 0.001);
+  assert.equal(page.node.has(PDFName.of("ArtBox")), false);
 });
 
 test("web source retains semantic constructs and accessibility", () => {

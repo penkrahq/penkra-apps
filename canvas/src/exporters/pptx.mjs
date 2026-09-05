@@ -11,15 +11,13 @@ export async function exportPptx(ir, options = {}) {
   const pptx = new pptxgen();
   pptx.defineLayout({ name: "CANVAS", width: widthIn, height: heightIn });
   pptx.layout = "CANVAS";
-  const slideNumber = new Map(ir.outputs.map((output, index) => [output.id, index + 1]));
   for (const output of ir.outputs) {
     if (output.width !== first.width || output.height !== first.height) throw new Error("PPTX requires uniform slide dimensions.");
     const slide = pptx.addSlide();
     const background = solidFill(output.root?.paint?.fill);
     if (background.transparency !== 100) slide.background = { color: background.color };
-    const links = flowLinks(ir.flows ?? [], output.id, slideNumber);
     for (const node of output.nodes.sort((a, b) => a.z - b.z)) {
-      await addNode(slide, node, output, widthIn, heightIn, { ...options, hyperlink: links.get(node.id) });
+      await addNode(slide, node, output, widthIn, heightIn, options);
     }
     const notes = ir.notes?.filter((note) => note.notesFor === output.id).map((note) => note.content).join("\n");
     if (notes) slide.addNotes(notes);
@@ -33,7 +31,7 @@ async function addNode(slide, node, output, widthIn, heightIn, options) {
   const y = node.geometry.y / output.height * heightIn;
   const w = node.geometry.w / output.width * widthIn;
   const h = node.geometry.h / output.height * heightIn;
-  const common = { x, y, w, h, rotate: node.geometry.rotation, objectName: node.id, altText: node.semantics.description ?? undefined, hyperlink: options.hyperlink, shadow: shadowOptions(node.paint.effect) };
+  const common = { x, y, w, h, rotate: node.geometry.rotation, objectName: node.id, altText: node.semantics.description ?? undefined, shadow: shadowOptions(node.paint.effect) };
   if (node.capability.verdict === "ignore") return;
   if (node.capability.verdict === "raster") {
     if (!options.rasterize) throw new Error(`Rasterizer is required for ${node.id}.`);
@@ -123,17 +121,6 @@ function shadowOptions(effects) {
   return { type: effect.shadowType === "inner" ? "inner" : "outer", color: colorHex(effect.color ?? "#000000"), opacity: alpha, blur: Number(effect.blur ?? 0) * 0.75, angle: (Math.atan2(y, x) * 180 / Math.PI + 360) % 360, offset: Math.hypot(x, y) * 0.75, rotateWithShape: false };
 }
 function colorHex(value) { return typeof value === "string" ? value.replace(/^#/u, "").slice(0, 6).toUpperCase() : undefined; }
-function flowLinks(flows, outputId, slideNumber) {
-  const links = new Map();
-  for (const flow of flows) {
-    if (flow.from !== outputId || flow.trigger?.kind !== "tap") continue;
-    const source = flow.trigger.source?.node ?? flow.trigger.source;
-    const slide = slideNumber.get(flow.to);
-    if (typeof source === "string" && slide) links.set(source, { slide });
-  }
-  return links;
-}
-
 function injectNativeDrawingMl(bytes, ir) {
   const parts = readOoxmlPackage(bytes);
   ir.outputs.forEach((output, index) => {

@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
-import { commitCanvasMigration, migrateCanvasDocument } from "./document-migration.mjs";
+import { createCanvasMigrationCopy, migrateCanvasDocument } from "./document-migration.mjs";
 import { createDocumentModel, encodeState } from "./document-model.mjs";
 
 test("the complete migration pipeline produces one schema-valid canonical document", () => {
@@ -17,17 +20,12 @@ test("the complete migration pipeline produces one schema-valid canonical docume
       ] },
     ],
   };
-  const result = migrateCanvasDocument(source, { m4: { entries: {
-    instance: {
-      action: "properties", evidence: "content-only override verified from source",
-      definitions: { label: { type: "string", default: "Default" } },
-      bindings: { label: { path: "label", property: "content" } },
-    },
-  } } });
-  assert.equal(result.document.canvasSchemaVersion, 3);
+  const result = migrateCanvasDocument(source);
   assert.equal(result.document.module, "web");
   assert.equal(result.document.children[0].role, undefined);
   assert.equal(result.document.children[1].role, "route");
+  assert.equal(result.document.children[1].children[0].type, "frame");
+  assert.equal(result.document.children[1].children[0].children[0].content, "Changed");
   assert.equal(result.document.children[1].children[1].type, "text");
   assert.deepEqual(result.document.children[1].padding, { start: 10, end: 20 });
   assert.deepEqual(result.document.variables.ink, { tokenType: "color", cascade: [
@@ -35,27 +33,38 @@ test("the complete migration pipeline produces one schema-valid canonical docume
   ] });
 });
 
-test("atomic migration begins, completes with regenerated state and aborts after a failed completion", async () => {
+test("copy migration verifies the copy before renaming the untouched original", async () => {
   const calls = [];
+  let createdSource;
   const api = {
-    beginSchemaMigration: async (...args) => { calls.push(["begin", ...args]); },
-    completeSchemaMigration: async (...args) => { calls.push(["complete", ...args]); return { migrating: false, sequence: 7 }; },
-    abortSchemaMigration: async (...args) => { calls.push(["abort", ...args]); },
+    createDocument: async (input) => { calls.push(["create", input.title]); createdSource = input.source; return { id: "copy-id" }; },
+    listAssets: async () => [{ path: "images/a.png", sha256: "abc", size: 3, mimeType: "image/png" }],
+    readAsset: async () => new Uint8Array([1, 2, 3]),
+    uploadAsset: async (id, asset) => { calls.push(["asset", id, asset.path, [...asset.bytes]]); },
+    getDocumentProjection: async () => ({ snapshot: { source: createdSource } }),
+    renameDocument: async (...args) => { calls.push(["rename", ...args]); },
+    deleteDocument: async (...args) => { calls.push(["trash", ...args]); },
   };
   const source = {
     version: "2.15", children: [{ id: "home", type: "frame", width: 720, height: 480, children: [] }],
   };
   const legacyModel = createDocumentModel(source);
-  const payload = { snapshot: { throughSequence: 7, source, state: encodeState(legacyModel) }, updates: [] };
+  const payload = { id: "document", title: "Legacy", snapshot: { throughSequence: 7, source, state: encodeState(legacyModel) }, updates: [] };
   legacyModel.doc.destroy();
-  const result = await commitCanvasMigration(api, "document", payload);
-  assert.equal(result.migrating, false);
-  assert.deepEqual(calls.map(([name]) => name), ["begin", "complete"]);
-  assert.equal(calls[1][2].projection.canvasSchemaVersion, 3);
-  assert.equal(typeof calls[1][2].state, "string");
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-"));
+  const result = await createCanvasMigrationCopy(api, "document", payload, { reportDirectory });
+  assert.equal(result.documentId, "copy-id");
+  assert.deepEqual(calls.map(([name]) => name), ["create", "asset", "rename"]);
+  assert.deepEqual(calls[1], ["asset", "copy-id", "images/a.png", [1, 2, 3]]);
+  assert.deepEqual(calls[2], ["rename", "document", "Legacy — superseded by copy-id"]);
 
   calls.length = 0;
-  api.completeSchemaMigration = async () => { throw new Error("complete failed"); };
-  await assert.rejects(() => commitCanvasMigration(api, "document", payload), /complete failed/);
-  assert.deepEqual(calls.map(([name]) => name), ["begin", "abort"]);
+  api.getDocumentProjection = async () => ({ snapshot: { source: { wrong: true } } });
+  await assert.rejects(() => createCanvasMigrationCopy(api, "document", payload, { reportDirectory }), /did not round-trip/u);
+  assert.deepEqual(calls.map(([name]) => name), ["create", "asset", "trash"]);
+});
+
+test("best-effort migration preserves existing import identifiers", () => {
+  const source = { version: "2.15", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: { shared: { documentId: "another-document" } }, flows: [], children: [] };
+  assert.deepEqual(migrateCanvasDocument(source).document.imports, source.imports);
 });
