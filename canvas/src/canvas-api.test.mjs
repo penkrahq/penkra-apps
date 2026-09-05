@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { createCanvasApi } from "./canvas-api.mjs";
+import { createDocumentModel, encodeState } from "./document-model.mjs";
 
 test("Canvas API stays inside the generic project namespace", async () => {
   const calls = [];
@@ -293,6 +294,51 @@ test("Canvas accepts an automatically inlined snapshot without range requests", 
   assert.deepEqual(calls.sort(), [
     "/projects/project-id/blobs",
     "/projects/project-id?chunked=auto&canvasSchemaVersion=3",
+  ]);
+});
+
+test("an owner opening a legacy document runs the fenced atomic migration once", async () => {
+  const source = { version: "2.17", children: [{ id: "home", type: "frame", width: 720, height: 480, children: [] }] };
+  const legacyModel = createDocumentModel(source);
+  const state = encodeState(legacyModel);
+  legacyModel.doc.destroy();
+  const calls = [];
+  let migratedProjection = null;
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input.path);
+        if (input.path === "/projects/legacy?chunked=auto&canvasSchemaVersion=3" && !migratedProjection) {
+          return response(409, { code: "CANVAS_SCHEMA_MIGRATION_REQUIRED", message: "migration required" });
+        }
+        if (input.path === "/projects/legacy?chunked=auto") {
+          return response(200, { id: "legacy", access: "owner", snapshot: { throughSequence: 0, state, projection: source }, updates: [] });
+        }
+        if (input.path === "/projects/legacy/schema-migration/begin") return response(202, { migrating: true });
+        if (input.path === "/projects/legacy/schema-migration/complete") {
+          migratedProjection = JSON.parse(new TextDecoder().decode(input.body)).projection;
+          return response(200, { migrating: false, sequence: 0, canvasSchemaVersion: 3 });
+        }
+        if (input.path === "/projects/legacy?chunked=auto&canvasSchemaVersion=3") {
+          return response(200, { id: "legacy", snapshot: { throughSequence: 0, state, projection: migratedProjection }, updates: [] });
+        }
+        if (input.path === "/projects/legacy/blobs") return response(200, { items: [] });
+        throw new Error(`Unexpected request ${input.path}`);
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  const opened = await api.getDocument("legacy");
+
+  assert.equal(opened.snapshot.source.canvasSchemaVersion, 3);
+  assert.deepEqual(calls, [
+    "/projects/legacy?chunked=auto&canvasSchemaVersion=3",
+    "/projects/legacy?chunked=auto",
+    "/projects/legacy/schema-migration/begin",
+    "/projects/legacy/schema-migration/complete",
+    "/projects/legacy?chunked=auto&canvasSchemaVersion=3",
+    "/projects/legacy/blobs",
   ]);
 });
 

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { commitCanvasMigration, migrateCanvasDocument } from "./document-migration.mjs";
+import { createDocumentModel, encodeState } from "./document-model.mjs";
 
 test("the complete migration pipeline produces one schema-valid canonical document", () => {
   const source = {
@@ -41,9 +42,12 @@ test("atomic migration begins, completes with regenerated state and aborts after
     completeSchemaMigration: async (...args) => { calls.push(["complete", ...args]); return { migrating: false, sequence: 7 }; },
     abortSchemaMigration: async (...args) => { calls.push(["abort", ...args]); },
   };
-  const payload = { snapshot: { throughSequence: 7, source: {
+  const source = {
     version: "2.15", children: [{ id: "home", type: "frame", width: 720, height: 480, children: [] }],
-  } }, updates: [] };
+  };
+  const legacyModel = createDocumentModel(source);
+  const payload = { snapshot: { throughSequence: 7, source, state: encodeState(legacyModel) }, updates: [] };
+  legacyModel.doc.destroy();
   const result = await commitCanvasMigration(api, "document", payload);
   assert.equal(result.migrating, false);
   assert.deepEqual(calls.map(([name]) => name), ["begin", "complete"]);

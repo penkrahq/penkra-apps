@@ -8,10 +8,11 @@ import { exportWeb } from "./exporters/web.mjs";
 import { exportCompose, exportSwiftUI } from "./exporters/mobile.mjs";
 import { exportSvg } from "./exporters/svg.mjs";
 import { takeDocumentScreenshots } from "./document-screenshot.mjs";
+import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 export async function exportDocument(document, request, options = {}) {
   const ir = buildExporterIR(document, request);
-  const screenshot = async (nodeId, scale = 2) => (await takeDocumentScreenshots(document, [{ nodeIds: [nodeId] }], options.assets, { scale, maxDimension: 8192, failOnDownscale: true }))[0];
+  const screenshot = async (nodeId, scale = 2) => (await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [nodeId] }], options.assets, { scale, maxDimension: 8192, failOnDownscale: true }))[0];
   let artifact;
   if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "page") artifact = await exportPdf(ir, {
@@ -49,14 +50,15 @@ export async function exportImage(document, request, options = {}) {
     throw error;
   }
   if (request.format === "png") {
-    const [image] = await takeDocumentScreenshots(document, [{ nodeIds: [request.frames[0]] }], options.assets, { scale: request.scale ?? 1, maxDimension: 8192, failOnDownscale: true });
+    const renderDocument = resolveCanvasDocument(document, { modes: request.modes, imports: options.imports }).document;
+    const [image] = await takeDocumentScreenshots(renderDocument, [{ nodeIds: [request.frames[0]] }], options.assets, { scale: request.scale ?? 1, maxDimension: 8192, failOnDownscale: true });
     await writeAtomicFile(request.destination, Buffer.from(image.data, "base64"));
     return { artifacts: [request.destination], width: image.width, height: image.height, format: "png" };
   }
   if (request.format === "svg") {
     const frame = request.frames[0]; const source = findNode(document.children, frame);
     if (!source?.role) throw new Error(`SVG frame ${frame} needs an export role for IR resolution.`);
-    const svgIr = buildExporterIR(document, { role: source.role, capability: "svg", frames: [frame], modes: request.modes });
+    const svgIr = buildExporterIR(document, { role: source.role, capability: "svg", frames: [frame], modes: request.modes, imports: options.imports });
     const rasterHrefs = new Map();
     for (const raster of svgIr.rasters) {
       const image = await takeDocumentScreenshots(

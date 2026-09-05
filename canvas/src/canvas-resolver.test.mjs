@@ -52,3 +52,18 @@ test("typed flow source paths remap to expanded instance ids", () => {
   ] };
   assert.deepEqual(resolveCanvasDocument(source).document.flows[0].trigger.source, { path: [], node: "button/label" });
 });
+
+test("qualified refs use the library namespace and namespace its owned image assets", () => {
+  const library = { axes: {}, variables: { ink: { tokenType: "color", cascade: [{ value: "#abcdef" }] } }, children: [
+    { id: "card", type: "frame", fill: "${ink}", children: [
+      { id: "photo", type: "rectangle", fill: { type: "image", url: "assets/photo.png" } },
+    ] },
+  ] };
+  const source = { canvasSchemaVersion: 3, version: "2.17", module: "web", axes: {}, variables: { ink: { tokenType: "color", cascade: [{ value: "#000000" }] } }, paragraphStyles: {}, imports: { ui: { documentId: "library", pin: "live" } }, flows: [], children: [
+    { id: "route", type: "frame", role: "route", children: [{ id: "instance", type: "ref", ref: "ui:card" }] },
+  ] };
+  const resolved = resolveCanvasDocument(source, { imports: { ui: { document: library, imports: {} } } });
+  const instance = resolved.document.children[0].children[0];
+  assert.equal(instance.fill, "#abcdef");
+  assert.equal(instance.children[0].fill.url, "imports/ui/assets/photo.png");
+});

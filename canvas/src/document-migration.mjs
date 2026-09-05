@@ -1,5 +1,5 @@
 import { validateCanvasDocument } from "./canvas-schema.mjs";
-import { createDocumentModel, encodeState } from "./document-model.mjs";
+import { createDocumentModel, encodeState, materialize, restoreDocumentModel } from "./document-model.mjs";
 import {
   migrateM1DelimitedVariables,
   migrateM2AssignModule,
@@ -54,8 +54,10 @@ export function migrateCanvasDocument(source, manifest = {}, targetVersion = 3) 
 }
 
 export async function commitCanvasMigration(api, documentId, payload, manifest = {}, targetVersion = 3) {
-  const source = payload.snapshot?.source;
-  if (!source || typeof source !== "object") throw migrationError("Canvas migration needs a source projection.");
+  if (!payload.snapshot?.source || typeof payload.snapshot.source !== "object") throw migrationError("Canvas migration needs a source projection.");
+  const legacyModel = restoreDocumentModel(payload);
+  const source = materialize(legacyModel);
+  legacyModel.doc.destroy();
   const fromVersion = Number(source.canvasSchemaVersion ?? 0);
   if (!Number.isInteger(fromVersion) || fromVersion < 0 || targetVersion <= fromVersion) {
     throw migrationError(`Invalid schema transition ${fromVersion} → ${targetVersion}.`);

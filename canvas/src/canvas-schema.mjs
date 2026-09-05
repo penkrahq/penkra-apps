@@ -86,7 +86,8 @@ export function validateCanvasDocument(document, options = {}) {
     else { nodes.set(node.id, node); parents.set(node.id, parent); }
     if (node.export !== undefined && !["live", "image"].includes(node.export)) errors.push(`${node.id}.export must be live or image.`);
     if (node.decorative === true && node.description != null) errors.push(`${node.id}.description and decorative are mutually exclusive.`);
-    if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
+    if (node.role !== undefined && node.type !== "frame") errors.push(`${node.id}.role may only appear on a frame.`);
+    else if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
     if (node.type === "text") errors.push(...validateRichText(node));
     if (node.type === "ref" && typeof node.ref !== "string") errors.push(`${node.id}.ref must be a string.`);
     validateProperties(node, errors);
@@ -99,6 +100,7 @@ export function validateCanvasDocument(document, options = {}) {
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
   validateRefs(nodes, parents, errors);
+  validateComponentSemantics(document, nodes, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
 }
@@ -124,6 +126,8 @@ function validateProperties(node, errors) {
     if (!plainObject(property) || !["string", "number", "boolean", "color", "enum", "icon", "node"].includes(property.type)) errors.push(`${node.id}.properties.${name} has an invalid type.`);
     if (property?.optional === true && Object.hasOwn(property, "default")) errors.push(`${node.id}.properties.${name} cannot be optional and have a default.`);
     if (property?.type === "enum" && (!Array.isArray(property.values) || property.values.length === 0)) errors.push(`${node.id}.properties.${name} enum needs values.`);
+    if (property?.type === "number" && property.min !== undefined && property.max !== undefined && property.min > property.max) errors.push(`${node.id}.properties.${name} min exceeds max.`);
+    if (Object.hasOwn(property ?? {}, "default") && !propertyValueCompatible(property.default, property)) errors.push(`${node.id}.properties.${name} default does not satisfy ${property.type}.`);
   }
 }
 
@@ -137,10 +141,12 @@ function validateAxes(axes, errors) {
 }
 
 function validateVariables(variables, errors) {
+  const tokenTypes = new Set(["color", "dimension", "number", "string", "fontFamily", "duration"]);
   for (const [name, variable] of Object.entries(variables)) {
     if (!plainObject(variable) || typeof variable.tokenType !== "string" || !variable.tokenType
       || !Array.isArray(variable.cascade) || variable.cascade.length === 0)
       errors.push(`Variable ${name} must declare tokenType and a non-empty cascade.`);
+    else if (!tokenTypes.has(variable.tokenType)) errors.push(`Variable ${name} has unsupported tokenType ${variable.tokenType}.`);
   }
 }
 
@@ -229,6 +235,129 @@ function validateRefs(nodes, parents, errors) {
     visiting.delete(componentId); visited.add(componentId);
   };
   for (const componentId of componentIds) visit(componentId);
+}
+
+function validateComponentSemantics(document, nodes, errors) {
+  const visit = (node, inheritedDeclarations = {}) => {
+    const declarations = node.properties ?? inheritedDeclarations;
+    for (const [property, binding] of Object.entries(node.bind ?? {})) {
+      if (typeof binding !== "string" || !binding.startsWith("$props.")) {
+        errors.push(`${node.id}.bind.${property} must be a $props name.`);
+        continue;
+      }
+      const name = binding.slice(7);
+      const declaration = declarations[name];
+      if (!declaration) errors.push(`${node.id}.bind.${property} references undeclared property ${name}.`);
+      else if (!bindingDestinationAccepts(property, declaration.type)) {
+        errors.push(`${node.id}.bind.${property} cannot accept ${declaration.type} property ${name}.`);
+      }
+    }
+    if (node.visible !== undefined) validateConditionAst(node.visible, declarations, `${node.id}.visible`, errors);
+    if (node.varies !== undefined) {
+      if (!Array.isArray(node.varies)) errors.push(`${node.id}.varies must be an array of axis names.`);
+      else for (const axis of node.varies) if (!Object.hasOwn(document.axes ?? {}, axis)) errors.push(`${node.id}.varies references unknown axis ${axis}.`);
+    }
+    for (const [key, value] of Object.entries(node)) {
+      if (isCascadeValue(value)) validateCascadeValue(value, document.axes ?? {}, declarations, `${node.id}.${key}`, errors);
+    }
+    if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
+      const target = nodes.get(node.ref);
+      if (target) validateSuppliedProps(node, target.properties ?? {}, errors);
+    }
+    for (const child of node.children ?? []) visit(child, declarations);
+  };
+  for (const node of document.children ?? []) visit(node);
+  for (const [name, variable] of Object.entries(document.variables ?? {})) {
+    if (Array.isArray(variable?.cascade)) validateCascadeValue(variable.cascade, document.axes ?? {}, {}, `variables.${name}.cascade`, errors);
+  }
+}
+
+function validateSuppliedProps(instance, declarations, errors) {
+  if (!plainObject(instance.props ?? {})) {
+    errors.push(`${instance.id}.props must be an object.`);
+    return;
+  }
+  for (const [name, declaration] of Object.entries(declarations)) {
+    if (!Object.hasOwn(instance.props ?? {}, name)) {
+      if (!Object.hasOwn(declaration, "default") && declaration.optional !== true) errors.push(`${instance.id}.props is missing required property ${name}.`);
+      continue;
+    }
+    const value = instance.props[name];
+    if (isCascadeValue(value)) errors.push(`${instance.id}.props.${name} may not be a cascade.`);
+    else if (!propertyValueCompatible(value, declaration)) errors.push(`${instance.id}.props.${name} does not satisfy ${declaration.type}.`);
+  }
+  for (const name of Object.keys(instance.props ?? {})) if (!Object.hasOwn(declarations, name)) errors.push(`${instance.id}.props supplies undeclared property ${name}.`);
+}
+
+function validateConditionAst(condition, declarations, path, errors) {
+  if (!plainObject(condition) || !["eq", "neq", "notNull", "isNull", "in", "gt", "lt", "and", "or", "not"].includes(condition.op)) {
+    errors.push(`${path} has an invalid condition operator.`);
+    return;
+  }
+  if (["and", "or"].includes(condition.op)) {
+    if (!Array.isArray(condition.args) || condition.args.length === 0) errors.push(`${path}.${condition.op} needs non-empty args.`);
+    else condition.args.forEach((entry, index) => validateConditionAst(entry, declarations, `${path}.args[${index}]`, errors));
+    return;
+  }
+  if (condition.op === "not") {
+    validateConditionAst(condition.arg, declarations, `${path}.arg`, errors);
+    return;
+  }
+  const prop = condition.arg?.prop;
+  const declaration = declarations[prop];
+  if (typeof prop !== "string" || !declaration) {
+    errors.push(`${path} references undeclared property ${String(prop)}.`);
+    return;
+  }
+  if (["gt", "lt"].includes(condition.op) && declaration.type !== "number") errors.push(`${path}.${condition.op} requires a number property.`);
+  if (condition.op === "in" && !Array.isArray(condition.value)) errors.push(`${path}.in requires an array value.`);
+  if (["eq", "neq", "gt", "lt"].includes(condition.op) && !propertyValueCompatible(condition.value, declaration)) errors.push(`${path}.value does not satisfy ${declaration.type}.`);
+  if (condition.op === "in" && Array.isArray(condition.value) && condition.value.some((value) => !propertyValueCompatible(value, declaration))) errors.push(`${path}.value contains an item that does not satisfy ${declaration.type}.`);
+}
+
+function validateCascadeValue(cascade, axes, declarations, path, errors) {
+  for (const [index, entry] of cascade.entries()) {
+    if (!plainObject(entry) || !Object.hasOwn(entry, "value") || Object.keys(entry).some((key) => !["value", "when"].includes(key))) {
+      errors.push(`${path}[${index}] is not a cascade entry.`);
+      continue;
+    }
+    for (const [axis, mode] of Object.entries(entry.when ?? {})) {
+      if (axis === "props") {
+        if (!plainObject(mode)) errors.push(`${path}[${index}].when.props must be an object.`);
+        else for (const [name, value] of Object.entries(mode)) {
+          if (!declarations[name]) errors.push(`${path}[${index}].when.props references undeclared property ${name}.`);
+          else if (!propertyValueCompatible(value, declarations[name])) errors.push(`${path}[${index}].when.props.${name} does not satisfy ${declarations[name].type}.`);
+        }
+      } else {
+        const names = axes[axis]?.modes?.map((item) => item.name) ?? [];
+        if (!names.includes(mode)) errors.push(`${path}[${index}].when references unknown mode ${axis}:${mode}.`);
+      }
+    }
+  }
+}
+
+function isCascadeValue(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((entry) => plainObject(entry) && Object.hasOwn(entry, "value"));
+}
+
+function propertyValueCompatible(value, declaration) {
+  if (value === null) return declaration.optional === true;
+  if (declaration.type === "number") return typeof value === "number" && Number.isFinite(value) && (declaration.min === undefined || value >= declaration.min) && (declaration.max === undefined || value <= declaration.max);
+  if (declaration.type === "boolean") return typeof value === "boolean";
+  if (["string", "color", "icon"].includes(declaration.type)) return typeof value === "string";
+  if (declaration.type === "enum") return declaration.values?.includes(value);
+  if (declaration.type === "node") return plainObject(value) && typeof value.type === "string";
+  return false;
+}
+
+function bindingDestinationAccepts(property, type) {
+  if (["content", "name", "fontFamily", "fontStyle", "lang", "linkName", "library"].includes(property)) return type === "string";
+  if (property === "icon") return type === "icon" || type === "string";
+  if (["enabled", "clip", "flipX", "flipY", "underline", "strikethrough"].includes(property)) return type === "boolean";
+  if (["x", "y", "width", "height", "gap", "rowGap", "columnGap", "opacity", "rotation", "fontSize", "lineHeight", "letterSpacing", "wordSpacing", "weight"].includes(property)) return type === "number";
+  if (["fill", "stroke"].includes(property)) return type === "color";
+  if (property === "children") return type === "node";
+  return true;
 }
 
 function validateFlows(flows, nodes, parents, errors) {

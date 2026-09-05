@@ -1,4 +1,6 @@
 import { base64ToBytes, bytesToBase64, decodeJson, encodeJson } from "./codec.mjs";
+import { commitCanvasMigration } from "./document-migration.mjs";
+import { migrationManifestFor } from "./migration-manifest-registry.mjs";
 
 // This mirrors the host's documented Account-data request-body boundary. Use
 // the direct snapshot endpoint whenever the exact encoded request fits; the
@@ -26,7 +28,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     return value;
   };
 
-  return {
+  const api = {
     listDocuments: (cursor) =>
       request(`?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
     listTrash: (cursor) =>
@@ -39,10 +41,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       }),
     getDocument: async (id) => {
       const encoded = encodeURIComponent(id);
-      const [project, assets] = await Promise.all([
-        request(`/${encoded}?chunked=auto&canvasSchemaVersion=3`),
-        request(`/${encoded}/blobs`),
-      ]);
+      const project = await getCurrentProject(request, api, id, encoded);
+      const assets = await request(`/${encoded}/blobs`);
       const snapshot = project.snapshot.chunked
         ? await readChunkedSnapshot(request, encoded, project.snapshot)
         : { ...project.snapshot, source: project.snapshot.projection };
@@ -54,7 +54,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     },
     getDocumentProjection: async (id) => {
       const encoded = encodeURIComponent(id);
-      const project = await request(`/${encoded}?chunked=auto&canvasSchemaVersion=3`);
+      const project = await getCurrentProject(request, api, id, encoded);
       if ((project.updates ?? []).length > 0) return null;
       const source = project.snapshot.chunked
         ? decodeJson(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "projection"))
@@ -167,6 +167,23 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       return output;
     },
   };
+  return api;
+}
+
+async function getCurrentProject(request, api, documentId, encodedProjectId) {
+  try {
+    return await request(`/${encodedProjectId}?chunked=auto&canvasSchemaVersion=3`);
+  } catch (error) {
+    if (error.code !== "CANVAS_SCHEMA_MIGRATION_REQUIRED") throw error;
+  }
+  const legacy = await request(`/${encodedProjectId}?chunked=auto`);
+  const snapshot = legacy.snapshot.chunked
+    ? await readChunkedSnapshot(request, encodedProjectId, legacy.snapshot)
+    : { ...legacy.snapshot, source: legacy.snapshot.projection };
+  const payload = { ...legacy, snapshot };
+  const manifest = migrationManifestFor(documentId, snapshot.throughSequence);
+  await commitCanvasMigration(api, documentId, payload, manifest);
+  return request(`/${encodedProjectId}?chunked=auto&canvasSchemaVersion=3`);
 }
 
 function uploadedAsset(blob, path) {

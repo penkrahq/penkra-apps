@@ -22,7 +22,7 @@ export function createDocumentModel(source) {
 }
 
 export function createUndoManager(model) {
-  return new Y.UndoManager(model.nodes, {
+  return new Y.UndoManager([model.nodes, model.documentFields], {
     trackedOrigins: new Set([LOCAL_ORIGIN, ENGINE_ORIGIN]),
     captureTimeout: 500,
   });

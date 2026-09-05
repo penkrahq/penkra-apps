@@ -13,6 +13,7 @@ import {
 } from "./document-model.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
+import { loadCanvasImports } from "./canvas-imports.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -271,14 +272,16 @@ runtime.operations.handle("documents.export", async (input) => {
   const model = restoreDocumentModel(payload);
   try {
     const document = materialize(model);
-    const assets = await readDocumentAssets(api, input.documentId, payload.assets);
+    const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
+    const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
+    const assets = new Map([...rootAssets, ...imported.assets]);
     const sets = input.bindings?.length ? input.bindings : [null];
     const destinations = resolveExportDestinations(input.destination, sets);
     const reports = [];
     for (let index = 0; index < sets.length; index += 1) {
       const bindingSet = sets[index];
       const bindings = bindingSet ? Object.fromEntries(Object.entries(bindingSet).filter(([key]) => key !== "output")) : {};
-      reports.push(await exportDocument(document, { ...input, destination: destinations[index], bindings }, { assets, title: payload.title }));
+      reports.push(await exportDocument(document, { ...input, destination: destinations[index], bindings, imports: imported.imports }, { assets, title: payload.title }));
     }
     return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), rasterized: reports.flatMap((report) => report.rasterized) };
   } finally { model.doc.destroy(); }
@@ -289,7 +292,13 @@ runtime.operations.handle("documents.export-image", async (input) => {
   const payload = await api.getDocument(input.documentId);
   const model = restoreDocumentModel(payload);
   try {
-    return await exportImage(materialize(model), input, { assets: await readDocumentAssets(api, input.documentId, payload.assets) });
+    const document = materialize(model);
+    const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
+    const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
+    return await exportImage(document, input, {
+      assets: new Map([...rootAssets, ...imported.assets]),
+      imports: imported.imports,
+    });
   } finally { model.doc.destroy(); }
 });
 

@@ -146,7 +146,7 @@ function applyPencilSceneProperties(graph, document) {
       changes.textAutoResize = "NONE";
     }
     if (sourceNode.type === "text" && Array.isArray(sourceNode.marks)) {
-      changes.styleRuns = canvasStyleRuns(sourceNode);
+      changes.styleRuns = canvasStyleRuns(sourceNode, document.paragraphStyles ?? {});
     }
     if (sourceNode.type === "ellipse" && (
       sourceNode.innerRadius !== undefined
@@ -164,18 +164,30 @@ function applyPencilSceneProperties(graph, document) {
   });
 }
 
-function canvasStyleRuns(node) {
-  return flattenMarks(node.content ?? "", node.marks ?? []).flatMap((run) => {
+function canvasStyleRuns(node, paragraphStyles) {
+  const content = node.content ?? "";
+  const paragraphs = node.paragraphs?.length ? node.paragraphs : content ? [{ from: 0, to: content.length }] : [];
+  const flattened = paragraphs.flatMap((paragraph) => {
+    const marks = (node.marks ?? []).flatMap((mark) => {
+      const from = Math.max(mark.from, paragraph.from);
+      const to = Math.min(mark.to, paragraph.to);
+      return from < to ? [{ ...mark, from: from - paragraph.from, to: to - paragraph.from }] : [];
+    });
+    const base = paragraph.style ? paragraphStyles[paragraph.style] ?? {} : {};
+    return flattenMarks(content.slice(paragraph.from, paragraph.to), marks, base)
+      .map((run) => ({ ...run, from: run.from + paragraph.from, to: run.to + paragraph.from }));
+  });
+  return flattened.flatMap((run) => {
     const style = {};
-    if (run.weight !== undefined) style.fontWeight = Number(run.weight);
-    if (run.italic !== undefined) style.italic = Boolean(run.italic);
+    if (run.weight !== undefined || run.fontWeight !== undefined) style.fontWeight = Number(run.weight ?? run.fontWeight);
+    if (run.italic !== undefined || run.fontStyle !== undefined) style.italic = Boolean(run.italic ?? run.fontStyle === "italic");
     if (run.underline !== undefined) style.underline = Boolean(run.underline);
     if (run.strikethrough !== undefined) style.strikethrough = Boolean(run.strikethrough);
     if (run.fontFamily !== undefined) style.fontFamily = run.fontFamily;
     if (run.fontSize !== undefined) style.fontSize = Number(run.fontSize);
     if (run.letterSpacing !== undefined) style.letterSpacing = Number(run.letterSpacing);
     if (run.wordSpacing !== undefined) style.wordSpacing = Number(run.wordSpacing);
-    if (run.lang !== undefined) style.textLanguage = run.lang;
+    if (run.lang !== undefined || run.language !== undefined) style.textLanguage = run.lang ?? run.language;
     const fill = parseHexColor(run.fill);
     if (fill) style.fills = [{ type: "SOLID", visible: true, opacity: 1, color: fill }];
     return Object.keys(style).length ? [{ start: run.from, length: run.to - run.from, style }] : [];

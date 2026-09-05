@@ -71,8 +71,26 @@ function resolveNode(source, context) {
       output.paragraphs = [{ from: 0, to: output.content.length, ...(source.style ? { style: source.style } : {}) }];
     }
   }
+  if (context.assetPrefix) {
+    for (const key of ["fill", "stroke", "effect"]) {
+      if (output[key] !== undefined) output[key] = namespaceAssetReferences(output[key], context.assetPrefix);
+    }
+  }
   output.children = (source.children ?? []).map((child) => resolveNode(child, context)).filter(Boolean);
   if (source.children === undefined) delete output.children;
+  return output;
+}
+
+function namespaceAssetReferences(value, prefix) {
+  if (Array.isArray(value)) return value.map((item) => namespaceAssetReferences(item, prefix));
+  if (!value || typeof value !== "object") return value;
+  const output = Object.fromEntries(Object.entries(value).map(([key, nested]) => [
+    key,
+    namespaceAssetReferences(nested, prefix),
+  ]));
+  if (output.type === "image" && typeof output.url === "string" && !/^(?:data:|https?:|file:|\/)/u.test(output.url)) {
+    output.url = `${prefix}/${output.url}`;
+  }
   return output;
 }
 
@@ -82,8 +100,15 @@ function resolveRef(instance, context) {
   if (qualified.length > 1) {
     const alias = qualified.shift(); const imported = context.imports[alias];
     if (!imported) throw new Error(`Import ${alias} is missing or unreadable.`);
-    owner = imported; localNodes = indexNodes(imported.children); target = localNodes.get(qualified.join(":"));
-    variableValues = resolveVariables(imported.variables ?? {}, context.modes, {});
+    owner = imported.document ?? imported;
+    localNodes = indexNodes(owner.children);
+    target = localNodes.get(qualified.join(":"));
+    variableValues = resolveVariables(owner.variables ?? {}, context.modes, {});
+    context = {
+      ...context,
+      imports: imported.imports ?? {},
+      assetPrefix: [context.assetPrefix, "imports", alias].filter(Boolean).join("/"),
+    };
   } else target = localNodes.get(instance.ref);
   if (!target) throw new Error(`Ref ${instance.id} target ${instance.ref} was not found.`);
   const cycleKey = `${owner === context.owner ? "local" : instance.ref}:${target.id}`;

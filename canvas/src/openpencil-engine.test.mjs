@@ -92,6 +92,26 @@ test("Canvas rich-text marks reach OpenPencil character style runs", () => {
   assert.deepEqual(runs.at(-1).style, { underline: true, strikethrough: true });
 });
 
+test("canonical named paragraph styles reach CanvasKit runs and marks override them", () => {
+  const graph = createOpenPencilGraph({
+    canvasSchemaVersion: 3,
+    version: "2.17",
+    module: "web",
+    axes: {}, variables: {}, imports: {}, flows: [],
+    paragraphStyles: { body: { fontFamily: "Inter", fontSize: 20, fontWeight: 500, fill: "#123456" } },
+    children: [{
+      id: "styled", type: "text", width: 400, height: 80, content: "Styled",
+      paragraphs: [{ from: 0, to: 6, style: "body" }],
+      marks: [{ type: "weight", from: 0, to: 2, value: 700 }],
+    }],
+  });
+  const runs = graph.getNode("styled").styleRuns;
+  assert.equal(runs[0].style.fontWeight, 700);
+  assert.equal(runs.at(-1).style.fontWeight, 500);
+  assert.equal(runs.at(-1).style.fontSize, 20);
+  assert.deepEqual(runs.at(-1).style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
+});
+
 test("Pencil image opacity and blend mode survive asset binding", () => {
   const graph = createOpenPencilGraph({
     version: "2.17",

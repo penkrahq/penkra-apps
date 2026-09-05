@@ -69,6 +69,7 @@ export function buildExporterIR(document, request) {
   ];
   const notes = [...sourceById.values()].filter((node) => node.type === "text" && typeof node.notesFor === "string");
   return {
+    renderDocument: resolved.document,
     projection,
     lang: document.lang ?? null,
     axes: structuredClone(document.axes ?? {}),
@@ -88,6 +89,7 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
   const visit = (node, parent = null, z = 0) => {
     const source = sources.get(node.id) ?? {};
     const authoredSource = authored.get(node.id) ?? source;
+    if (source.enabled === false) return;
     if (node.id !== rootId) {
       const absolute = graph.getAbsolutePosition(node.id);
       const paths = capabilityPaths(source, projection);
@@ -249,7 +251,7 @@ export function richTextRuns(node, paragraphStyles) {
       const from = Math.max(mark.from, paragraph.from); const to = Math.min(mark.to, paragraph.to);
       return from < to ? [{ ...mark, from: from - paragraph.from, to: to - paragraph.from }] : [];
     });
-    const base = { ...(paragraph.style ? paragraphStyles[paragraph.style] : {}), ...textBase(node) };
+    const base = { ...textBase(node), ...(paragraph.style ? paragraphStyles[paragraph.style] : {}) };
     return flattenMarks(paragraphContent, marks, base).map((run) => ({ ...run, from: run.from + paragraph.from, to: run.to + paragraph.from }));
   }).map((run) => {
     if (run.lang === undefined) return run;
