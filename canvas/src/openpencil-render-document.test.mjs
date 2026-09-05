@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { lowerCanvasModelForOpenPencil, prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import {
   migrateM1DelimitedVariables,
   migrateM2AssignModule,
@@ -194,6 +194,29 @@ test("M14-M17 preserve token type and move node axis selections", () => {
   assert.deepEqual(result.document.variables.brand, { tokenType: "color", cascade: [
     { value: "#fff" }, { value: "#000", when: { theme: "dark" } },
   ] });
+});
+
+test("canonical axes, variables and component bindings lower to the legacy engine seam", () => {
+  const source = {
+    canvasSchemaVersion: 3,
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: { ink: { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#000", when: { appearance: "dark" } }] } },
+    children: [
+      {
+        id: "component", type: "frame", properties: { label: { type: "string", default: "Default" } },
+        children: [{ id: "label", type: "text", content: "Default", bind: { content: "$props.label" } }],
+      },
+      { id: "instance", type: "ref", ref: "component", props: { label: "Changed" }, modes: { appearance: "dark" } },
+    ],
+  };
+  const lowered = lowerCanvasModelForOpenPencil(source);
+  assert.deepEqual(lowered.themes, { appearance: ["light", "dark"] });
+  assert.deepEqual(lowered.variables.ink, { type: "color", value: [
+    { value: "#fff" }, { value: "#000", theme: { appearance: "dark" } },
+  ] });
+  assert.deepEqual(lowered.children[1].theme, { appearance: "dark" });
+  assert.deepEqual(lowered.children[1].descendants, { label: { content: "Changed" } });
+  assert.equal(Object.hasOwn(source.children[1], "descendants"), false);
 });
 
 test("resolves Pencil variables with inherited multi-axis themes without changing source", () => {

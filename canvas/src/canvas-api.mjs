@@ -87,6 +87,18 @@ export function createCanvasApi(runtime = globalThis.penkra) {
           state: base64ToBytes(state),
         });
     },
+    beginSchemaMigration: (id, input) =>
+      request(`/${encodeURIComponent(id)}/schema-migration/begin`, {
+        method: "POST",
+        body: input,
+      }),
+    completeSchemaMigration: (id, input) =>
+      request(`/${encodeURIComponent(id)}/schema-migration/complete`, {
+        method: "POST",
+        body: input,
+      }),
+    abortSchemaMigration: (id) =>
+      request(`/${encodeURIComponent(id)}/schema-migration`, { method: "DELETE" }),
     listGrants: (id) => request(`/${encodeURIComponent(id)}/grants`),
     grantAccess: (id, email) =>
       request(`/${encodeURIComponent(id)}/grants`, {

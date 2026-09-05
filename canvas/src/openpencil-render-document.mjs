@@ -66,12 +66,14 @@ const VARIABLE_PROPERTIES = new Set([
 ]);
 
 export function prepareOpenPencilRenderDocument(source, options = {}) {
-  const document = structuredClone(source);
-  const variables = source?.variables && typeof source.variables === "object"
-    ? source.variables
+  const document = source?.canvasSchemaVersion >= 3
+    ? lowerCanvasModelForOpenPencil(source)
+    : structuredClone(source);
+  const variables = document?.variables && typeof document.variables === "object"
+    ? document.variables
     : {};
   const defaultTheme = Object.fromEntries(
-    Object.entries(source?.themes ?? {})
+    Object.entries(document?.themes ?? {})
       .filter(([, values]) => Array.isArray(values) && typeof values[0] === "string")
       .map(([axis, values]) => [axis, values[0]]),
   );
@@ -216,9 +218,70 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
-  document.children.push(...prepareImportedComponents(source, assets, issues, containerPath, libraryTrail));
+  document.children.push(...prepareImportedComponents(document, assets, issues, containerPath, libraryTrail));
   compileDescendantIcons(document.children, issues);
   return { document, issues };
+}
+
+export function lowerCanvasModelForOpenPencil(source) {
+  const document = structuredClone(source);
+  document.themes = Object.fromEntries(Object.entries(document.axes ?? {}).map(([axis, definition]) => [
+    axis,
+    (definition?.modes ?? []).map((mode) => mode.name),
+  ]));
+  document.variables = Object.fromEntries(Object.entries(document.variables ?? {}).map(([name, definition]) => [
+    name,
+    definition && Array.isArray(definition.cascade)
+      ? {
+          type: definition.tokenType,
+          value: definition.cascade.map((entry) => ({
+            value: structuredClone(entry.value),
+            ...(entry.when ? { theme: structuredClone(entry.when) } : {}),
+          })),
+        }
+      : structuredClone(definition),
+  ]));
+  const nodes = new Map();
+  walkCanvasNodes(document.children, (node) => {
+    if (typeof node?.id === "string") nodes.set(node.id, node);
+    if (isRecord(node?.modes)) {
+      node.theme = structuredClone(node.modes);
+      delete node.modes;
+    }
+  });
+  walkCanvasNodes(document.children, (instance) => {
+    if (instance?.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) return;
+    const target = nodes.get(instance.ref);
+    if (!target) return;
+    const supplied = instance.props ?? {};
+    const props = {};
+    for (const [name, declaration] of Object.entries(target.properties ?? {})) {
+      props[name] = Object.hasOwn(supplied, name)
+        ? structuredClone(supplied[name])
+        : structuredClone(Object.hasOwn(declaration, "default") ? declaration.default : null);
+    }
+    const descendants = { ...(instance.descendants ?? {}) };
+    const visit = (node, path = []) => {
+      for (const [property, binding] of Object.entries(node.bind ?? {})) {
+        if (typeof binding !== "string" || !binding.startsWith("$props.")) continue;
+        const name = binding.slice(7);
+        if (!Object.hasOwn(props, name) || path.length === 0) continue;
+        const key = path.join("/");
+        descendants[key] = { ...(descendants[key] ?? {}), [property]: structuredClone(props[name]) };
+      }
+      for (const child of node.children ?? []) visit(child, [...path, child.id]);
+    };
+    visit(target);
+    if (Object.keys(descendants).length > 0) instance.descendants = descendants;
+  });
+  return document;
+}
+
+function walkCanvasNodes(children, visit) {
+  for (const node of children ?? []) {
+    visit(node);
+    walkCanvasNodes(node?.children, visit);
+  }
 }
 
 function compileDescendantIcons(nodes, issues) {

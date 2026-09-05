@@ -99,6 +99,10 @@ export function migrateM6UniformText(source) {
   let changes = 0;
   walkNodes(document.children, (node) => {
     if (node.type !== "text" || typeof node.content !== "string") return;
+    if (Array.isArray(node.marks) && Array.isArray(node.paragraphs)) return;
+    if (node.marks !== undefined || node.paragraphs !== undefined) {
+      throw migrationError("M6", `${node.id} has only one rich-text range collection.`);
+    }
     node.marks ??= [];
     if (node.content.length === 0) {
       node.paragraphs = [];
@@ -122,9 +126,15 @@ export function migrateM7AssignRoles(source, options = {}) {
   const roleById = options.roleById ?? {};
   const defaultRole = { deck: "slide", print: "page", web: "route", mobile: "ios" }[document.module];
   if (!defaultRole) throw migrationError("M7", `Document module ${String(document.module)} cannot supply roles.`);
+  const componentTargets = new Set();
+  walkNodes(document.children, (node) => {
+    if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
+      componentTargets.add(node.ref);
+    }
+  });
   let changes = 0;
   for (const node of document.children ?? []) {
-    if (node?.type !== "frame" || node.role !== undefined) continue;
+    if (node?.type !== "frame" || node.role !== undefined || componentTargets.has(node.id)) continue;
     const role = roleById[node.id] ?? defaultRole;
     if (document.module === "mobile" && !["ios", "android"].includes(role)) {
       throw migrationError("M7", `${node.id} needs role ios or android.`);
@@ -195,6 +205,10 @@ export function migrateM14ThemesToAxes(source) {
     delete document.themes;
     changes += 1;
   }
+  if (!isRecord(document.axes)) {
+    document.axes = {};
+    changes += 1;
+  }
   return { document, changes };
 }
 
@@ -213,6 +227,10 @@ export function migrateM15NodeModes(source) {
 export function migrateM16VariableTokens(source) {
   const document = structuredClone(source);
   let changes = 0;
+  if (!isRecord(document.variables)) {
+    document.variables = {};
+    changes += 1;
+  }
   for (const [name, definition] of Object.entries(document.variables ?? {})) {
     if (!definition || typeof definition !== "object" || Array.isArray(definition)
       || !Object.hasOwn(definition, "type") || !Object.hasOwn(definition, "value")) continue;
