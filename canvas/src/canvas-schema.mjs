@@ -13,6 +13,37 @@ const fields = (names, overrides = {}) => Object.fromEntries(names.map((name) =>
 
 export const CANVAS_SCHEMA = deepFreeze({
   schemaVersion: CANVAS_SCHEMA_VERSION,
+  definitions: {
+    physical: { type: "object", required: ["w", "h", "unit"], additional: false, fields: {
+      w: { type: "number" }, h: { type: "number" }, unit: { type: "enum", values: ["in", "mm"] },
+    } },
+    mark: { type: "object", required: ["from", "to", "type", "value"], additional: false, fields: {
+      from: { type: "integer" }, to: { type: "integer" },
+      type: { type: "enum", values: ["fill", "weight", "italic", "underline", "strikethrough", "fontFamily", "fontSize", "letterSpacing", "wordSpacing", "lang", "link"] },
+      value: { type: "json" },
+    } },
+    paragraph: { type: "object", required: ["from", "to"], additional: false, fields: {
+      from: { type: "integer" }, to: { type: "integer" }, style: { type: "string" },
+      align: { type: "enum", values: ["start", "center", "end", "justify"] },
+      headingLevel: { type: "integer" }, list: { type: "object" },
+    } },
+    import: { type: "object", required: ["documentId"], additional: false, fields: {
+      documentId: { type: "string" }, pin: { type: "enum", values: ["exact", "live"] }, version: { type: "integer" },
+    } },
+    flow: { type: "object", required: ["id", "from", "to", "trigger"], additional: false, fields: {
+      id: { type: "string" }, from: { type: "string" }, to: { type: "string" }, trigger: { type: "object" },
+    } },
+    axis: { type: "object", required: ["modes"], fields: { modes: { type: "array", items: { type: "object" }, minItems: 1 } } },
+    variable: { type: "object", required: ["tokenType", "cascade"], fields: {
+      tokenType: { type: "enum", values: ["color", "dimension", "number", "string", "fontFamily", "duration"] },
+      cascade: { type: "array", items: { type: "object" }, minItems: 1 },
+    } },
+    property: { type: "object", required: ["type"], fields: {
+      type: { type: "enum", values: ["string", "number", "boolean", "color", "enum", "icon", "node"] },
+      optional: { type: "boolean" }, default: { type: "json" }, values: { type: "array", items: { type: "json" } },
+      min: { type: "number" }, max: { type: "number" },
+    } },
+  },
   root: {
     type: "object",
     required: ["canvasSchemaVersion", "version", "module", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
@@ -23,12 +54,12 @@ export const CANVAS_SCHEMA = deepFreeze({
         version: { type: "string" },
         module: { type: "enum", values: CANVAS_MODULES },
         lang: { type: "string" },
-        axes: { type: "record" },
-        variables: { type: "record" },
+        axes: { type: "record", values: { ref: "axis" } },
+        variables: { type: "record", values: { ref: "variable" } },
         paragraphStyles: { type: "record" },
-        imports: { type: "record" },
-        flows: { type: "array" },
-        children: { type: "array" },
+        imports: { type: "record", values: { ref: "import" } },
+        flows: { type: "array", items: { ref: "flow" } },
+        children: { type: "array", items: { ref: "node" } },
       },
     ),
   },
@@ -37,16 +68,34 @@ export const CANVAS_SCHEMA = deepFreeze({
     groups: {
       common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
         id: { type: "string" }, type: { type: "enum", values: CANVAS_NODE_TYPES },
-        description: { capability: false },
+        name: { type: "string" }, x: { type: "number" }, y: { type: "number" },
+        width: { type: "dimension" }, height: { type: "dimension" }, rotation: { type: "number" },
+        flipX: { type: "boolean" }, flipY: { type: "boolean" }, opacity: { type: "number" }, enabled: { type: "boolean" },
+        export: { type: "enum", values: ["live", "image"] }, description: { type: "string", capability: false }, decorative: { type: "boolean" },
+        role: { type: "enum", values: Object.values(CANVAS_ROLES).flat() }, size: { type: "string" }, physical: { ref: "physical" },
+        properties: { type: "record", values: { ref: "property" } }, bind: { type: "record", values: { type: "string" } },
+        visible: { type: "object" }, varies: { type: "array", items: { type: "string" } }, modes: { type: "record", values: { type: "string" } }, notesFor: { type: "string" },
       }),
-      layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"]),
-      paint: fields(["fill", "stroke", "effect", "blendMode", "cornerRadius"]),
+      layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"], {
+        layout: { type: "enum", values: ["none", "horizontal", "vertical", "grid"] }, gap: { type: "canvas-value" }, rowGap: { type: "canvas-value" }, columnGap: { type: "canvas-value" },
+        wrap: { type: "boolean" }, minWidth: { type: "dimension" }, maxWidth: { type: "dimension" }, minHeight: { type: "dimension" }, maxHeight: { type: "dimension" },
+        gridTemplateColumns: { type: "array", items: { type: "dimension" } }, gridTemplateRows: { type: "array", items: { type: "dimension" } },
+        gridColumn: { type: "integer" }, gridRow: { type: "integer" }, layoutPosition: { type: "enum", values: ["absolute", "relative"] }, clip: { type: "boolean" },
+      }),
+      paint: fields(["fill", "stroke", "effect", "blendMode", "cornerRadius"], {
+        blendMode: { type: "string" },
+      }),
       text: fields(["content", "style", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth", "underline", "strikethrough", "lang", "headingLevel", "landmark", "linkName", "paragraphs", "marks"], {
-        landmark: { capability: false }, linkName: { capability: false },
+        content: { type: "string" }, style: { type: "string" }, fontFamily: { type: "string" }, fontSize: { type: "number" },
+        fontWeight: { type: "number-or-string" }, fontStyle: { type: "string" }, lineHeight: { type: "number" }, letterSpacing: { type: "number" }, wordSpacing: { type: "number" },
+        textAlign: { type: "enum", values: ["start", "center", "end", "justify"] }, textAlignVertical: { type: "enum", values: ["top", "center", "bottom"] },
+        textGrowth: { type: "enum", values: ["auto", "fixed-width", "fixed-width-height"] }, underline: { type: "boolean" }, strikethrough: { type: "boolean" },
+        lang: { type: "string" }, headingLevel: { type: "integer" }, landmark: { type: "string", capability: false }, linkName: { type: "string", capability: false },
+        paragraphs: { type: "array", items: { ref: "paragraph" } }, marks: { type: "array", items: { ref: "mark" } },
       }),
-      icon: fields(["icon", "library", "weight"]),
-      path: fields(["geometry", "viewBox", "fillRule"]),
-      ref: fields(["ref", "props"]),
+      icon: fields(["icon", "library", "weight"], { icon: { type: "string" }, library: { type: "string" }, weight: { type: "number" } }),
+      path: fields(["geometry", "viewBox", "fillRule"], { geometry: { type: "string" }, viewBox: { type: "array", items: { type: "number" } }, fillRule: { type: "enum", values: ["nonzero", "evenodd"] } }),
+      ref: fields(["ref", "props"], { ref: { type: "string" }, props: { type: "record" } }),
     },
     variants: Object.fromEntries(CANVAS_NODE_TYPES.map((type) => [type, { type }])),
   },
@@ -427,17 +476,41 @@ function validateGeneratedNode(node, errors) {
   validateGeneratedShape(node, schema, node?.id ?? "node", errors);
 }
 function validateGeneratedShape(value, schema, path, errors) {
+  if (schema?.ref) {
+    if (schema.ref === "node") { validateGeneratedNode(value, errors); return; }
+    const resolved = CANVAS_SCHEMA.definitions[schema.ref];
+    if (!resolved) { errors.push(`${path} references unknown schema ${schema.ref}.`); return; }
+    validateGeneratedShape(value, resolved, path, errors);
+    return;
+  }
+  if (schema?.type === "json" || schema?.type === "canvas-value") return;
+  if (schema?.type === "string") { if (typeof value !== "string") errors.push(`${path} must be a string.`); return; }
+  if (schema?.type === "number") { if (typeof value !== "number" || !Number.isFinite(value)) errors.push(`${path} must be a finite number.`); return; }
+  if (schema?.type === "integer") { if (!Number.isInteger(value)) errors.push(`${path} must be an integer.`); return; }
+  if (schema?.type === "boolean") { if (typeof value !== "boolean") errors.push(`${path} must be a boolean.`); return; }
+  if (schema?.type === "number-or-string") { if (!((typeof value === "number" && Number.isFinite(value)) || typeof value === "string")) errors.push(`${path} must be a finite number or string.`); return; }
+  if (schema?.type === "dimension") { if (!((typeof value === "number" && Number.isFinite(value)) || ["fill_container", "fit_content"].includes(value))) errors.push(`${path} must be a finite number, fill_container or fit_content.`); return; }
+  if (schema?.type === "enum") { if (!schema.values.includes(value)) errors.push(`${path} must be one of ${schema.values.join(", ")}.`); return; }
+  if (schema?.type === "array") {
+    if (!Array.isArray(value)) { errors.push(`${path} must be an array.`); return; }
+    if (schema.minItems !== undefined && value.length < schema.minItems) errors.push(`${path} needs at least ${schema.minItems} item(s).`);
+    if (schema.items) value.forEach((item, index) => validateGeneratedShape(item, schema.items, `${path}[${index}]`, errors));
+    return;
+  }
+  if (schema?.type === "record") {
+    if (!plainObject(value)) { errors.push(`${path} must be an object.`); return; }
+    if (schema.values) for (const [name, item] of Object.entries(value)) validateGeneratedShape(item, schema.values, `${path}.${name}`, errors);
+    return;
+  }
+  if (schema?.type === "object" && !plainObject(value)) { errors.push(`${path} must be an object.`); return; }
   if (!plainObject(value)) { errors.push(`${path} must be an object.`); return; }
   for (const name of schema.required ?? []) if (!Object.hasOwn(value, name)) errors.push(`${path}.${name} is required.`);
+  if (schema.additional === false) for (const name of Object.keys(value)) if (!Object.hasOwn(schema.fields ?? {}, name)) errors.push(`${path}.${name} is not allowed.`);
   for (const [name, field] of Object.entries(schema.fields ?? {})) {
     if (!Object.hasOwn(value, name)) continue;
     const candidate = value[name];
-    if (field.type === "canvas-value") continue;
-    if (field.type === "string" && typeof candidate !== "string") errors.push(`${path}.${name} must be a string.`);
-    if (field.type === "integer" && !Number.isInteger(candidate)) errors.push(`${path}.${name} must be an integer.`);
-    if (field.type === "array" && !Array.isArray(candidate)) errors.push(`${path}.${name} must be an array.`);
-    if (field.type === "record" && !plainObject(candidate)) errors.push(`${path}.${name} must be an object.`);
-    if (field.type === "enum" && !field.values.includes(candidate)) errors.push(`${path}.${name} must be one of ${field.values.join(", ")}.`);
+    if (isCascadeValue(candidate) && !["array", "record", "object"].includes(field.type) && !field.ref) continue;
+    validateGeneratedShape(candidate, field, `${path}.${name}`, errors);
     if (Object.hasOwn(field, "const") && candidate !== field.const) errors.push(`${path}.${name} must be ${field.const}.`);
   }
 }

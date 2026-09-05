@@ -10,6 +10,15 @@ test("canonical schema validates roots, rich text, roles, refs and flows", () =>
   assert.throws(() => validateCanvasDocument(bad), /inside/);
 });
 
+test("generated nested schemas reject malformed geometry, physical sizes and rich-text records", () => {
+  const geometry = document(); geometry.children[0].x = "12px";
+  assert.throws(() => validateCanvasDocument(geometry), /slide\.x must be a finite number/);
+  const physical = document(); physical.children[0].physical = { w: 13.333, h: 7.5 };
+  assert.throws(() => validateCanvasDocument(physical), /physical\.unit is required/);
+  const mark = document(); mark.children[0].children[0].marks = [{ type: "weight", from: 0, to: 2, value: 700, sticky: true }];
+  assert.throws(() => validateCanvasDocument(mark), /marks\[0\]\.sticky is not allowed/);
+});
+
 test("canonical schema enforces role, notes, node modes and flow relationships", () => {
   const value = document();
   value.children.push({ id: "notes", type: "text", notesFor: "slide", content: "Speak", marks: [], paragraphs: [{ from: 0, to: 5 }] });
