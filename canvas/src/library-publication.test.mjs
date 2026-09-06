@@ -92,3 +92,15 @@ test("public change detection includes referenced private token values but exclu
   const third = createLibraryRelease(source, { libraryId: "ui", releaseId: "three" });
   assert.deepEqual(compareLibraryReleases(second, third).changed, []);
 });
+
+test("public image resources require owned bytes and include their identity in change detection", () => {
+  const document = library();
+  document.children[0].fill = { type: "image", url: "images/logo.png" };
+  const publish = (assets, releaseId) => createLibraryRelease(document, { libraryId: "ui", releaseId, assets });
+  assert.throws(() => publish([], "one"), /no owned asset descriptor/);
+  const first = publish([{ path: "images/logo.png", sha256: hash, size: 1 }], "one");
+  const second = publish([{ path: "images/logo.png", sha256: "1".repeat(64), size: 1 }], "two");
+  assert.deepEqual(compareLibraryReleases(first, second).changed, ["component:card"]);
+  document.children[0].fill.url = "https://example.test/mutable.png";
+  assert.throws(() => publish([], "three"), /materialize its bytes before publication/);
+});

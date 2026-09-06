@@ -30,6 +30,9 @@ test("plain DTCG imports inherit group types and preserve structured values", ()
 });
 
 test("token validation rejects missing, cyclic and cross-typed aliases", () => {
+  for (const definition of [{ tokenType: "number", cascade: [] }, { tokenType: "unknown", cascade: [] }, { tokenType: "number", cascade: null }]) {
+    assert.throws(() => validateCanvasVariables({ empty: definition }), /supported tokenType and non-empty cascade/);
+  }
   assert.throws(() => validateCanvasVariables({ a: { tokenType: "number", cascade: [{ value: "${missing}" }] } }), /missing variable/);
   assert.throws(() => validateCanvasVariables({
     a: { tokenType: "number", cascade: [{ value: "${b}" }] },
@@ -62,6 +65,27 @@ test("invalid five- and seven-digit hex colors fail validation", () => {
   for (const value of ["#12345", "#1234567"]) {
     assert.throws(() => validateCanvasVariables({ color: { tokenType: "color", cascade: [{ value }] } }), { code: "CANVAS_TOKEN_INVALID" });
   }
+});
+
+test("DTCG structured colors validate component counts, space ranges, and fallback syntax", () => {
+  const validate = (value) => validateCanvasVariables({ color: { tokenType: "color", cascade: [{ value }] } });
+  for (const value of [
+    { colorSpace: "invented", components: [0, 0, 0] },
+    { colorSpace: "srgb", components: [] },
+    { colorSpace: "srgb", components: [0, 0, 0, 1] },
+    { colorSpace: "srgb", components: [1.1, 0, 0] },
+    { colorSpace: "hsl", components: [360, 0, 50] },
+    { colorSpace: "oklch", components: [0.5, -0.1, 30] },
+    { colorSpace: "lab", components: [101, 0, 0] },
+    { colorSpace: "srgb", components: [0, 0, 0], hex: "#000" },
+    { colorSpace: "srgb", components: [0, 0, 0], alpha: "none" },
+  ]) assert.throws(() => validate(value), { code: "CANVAS_TOKEN_INVALID" });
+  for (const value of [
+    { colorSpace: "hsl", components: ["none", 0, 100] },
+    { colorSpace: "lab", components: [50, -200, 200] },
+    { colorSpace: "oklch", components: [0.5, 2, 359.9] },
+    { colorSpace: "display-p3", components: [1, 0, 0], alpha: 0, hex: "#ff0000" },
+  ]) assert.equal(validate(value), true);
 });
 
 test("Canvas strings remain valid internally but are not emitted as an invented DTCG type", () => {

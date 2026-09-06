@@ -176,7 +176,8 @@ function publicItemClosure(document, item, dependencies, assets) {
       if (typeof value.style === "string") addReference("paragraphStyle", value.style);
       if (value.type === "image" && typeof value.url === "string") {
         const asset = assets.find((entry) => entry.path === value.url);
-        if (asset) usedAssets.set(asset.path, asset);
+        if (!asset) throw libraryError(`Published image ${value.url} has no owned asset descriptor; materialize its bytes before publication.`);
+        usedAssets.set(asset.path, asset);
       }
       Object.values(value).forEach(inspect);
     }

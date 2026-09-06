@@ -90,7 +90,8 @@ export function validateCanvasVariables(variables) {
     return resolved;
   };
   for (const [name, definition] of Object.entries(variables)) {
-    if (!plainObject(definition) || !Array.isArray(definition.cascade)) {
+    if (!plainObject(definition) || !CANVAS_TOKEN_TYPES.includes(definition.tokenType)
+      || !Array.isArray(definition.cascade) || definition.cascade.length === 0) {
       throw tokenError(`Variable ${name} must declare a supported tokenType and non-empty cascade.`);
     }
     definition.cascade.forEach((_, index) => resolveEntry(name, index));
@@ -126,10 +127,27 @@ function assertTokenValue(type, value, name) {
   else if (type === "dimension") valid = finite(value) || (plainObject(value) && finite(value.value) && ["px", "rem"].includes(value.unit));
   else if (type === "duration") valid = finite(value) || (plainObject(value) && finite(value.value) && ["ms", "s"].includes(value.unit));
   else if (type === "color") valid = (typeof value === "string" && /^#(?:[\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/iu.test(value))
-    || (plainObject(value) && typeof value.colorSpace === "string" && Array.isArray(value.components)
-      && value.components.every((item) => item === "none" || finite(item))
-      && (value.alpha === undefined || (finite(value.alpha) && value.alpha >= 0 && value.alpha <= 1)));
+    || validDtcgColor(value);
   if (!valid) throw tokenError(`Variable ${name} value does not satisfy ${type}.`);
+}
+
+function validDtcgColor(value) {
+  // DTCG Color Module 2025.10, sections 4.1 and 4.2:
+  // https://www.designtokens.org/tr/2025.10/color/#supported-color-spaces
+  if (!plainObject(value) || !Array.isArray(value.components) || value.components.length !== 3) return false;
+  const unit = (n) => Number.isFinite(n) && n >= 0 && n <= 1;
+  const percent = (n) => Number.isFinite(n) && n >= 0 && n <= 100;
+  const hue = (n) => Number.isFinite(n) && n >= 0 && n < 360;
+  const chroma = (n) => Number.isFinite(n) && n >= 0;
+  const ranges = new Map([
+    ...["srgb", "srgb-linear", "display-p3", "a98-rgb", "prophoto-rgb", "rec2020", "xyz-d65", "xyz-d50"].map((space) => [space, [unit, unit, unit]]),
+    ["hsl", [hue, percent, percent]], ["hwb", [hue, percent, percent]],
+    ["lab", [percent, Number.isFinite, Number.isFinite]], ["lch", [percent, chroma, hue]],
+    ["oklab", [unit, Number.isFinite, Number.isFinite]], ["oklch", [unit, chroma, hue]],
+  ]).get(value.colorSpace);
+  return Boolean(ranges) && value.components.every((component, index) => component === "none" || ranges[index](component))
+    && (value.alpha === undefined || unit(value.alpha))
+    && (value.hex === undefined || (typeof value.hex === "string" && /^#[\da-f]{6}$/iu.test(value.hex)));
 }
 
 function hexColor(value) {
