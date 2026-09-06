@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { unlinkSync, writeFileSync } from "node:fs";
+import { renameSync, writeFileSync } from "node:fs";
 import { lstat, mkdir, mkdtemp, readFile, readlink, readdir, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -56,7 +56,7 @@ test("A: output segments reject every unsafe table entry and preserve valid NFC 
     ...controls.map((value, index) => [`ASCII control U+${String(index + 1).padStart(4, "0")}`, value]),
     ["DEL", "\x7f"], ["non-NFC combining", "e\u0301"],
     ...["con", "CON.txt", "PrN.md", "aux.svg", "NUL.bin", "Com1.csv", "lPt9.tar.gz"].map((value) => [`reserved ${value}`, value]),
-    ["UTF-8 length 256", "a".repeat(256)],
+    ["UTF-8 length 256 ASCII", "a".repeat(256)], ["UTF-8 length 256 multibyte", "é".repeat(128)],
   ];
   for (const [label, value] of invalid) {
     let error;
@@ -65,7 +65,7 @@ test("A: output segments reject every unsafe table entry and preserve valid NFC 
     assert.equal(error.code, "CANVAS_EXPORT_NAME_INVALID", label);
     assert.match(error.message, /Unsafe output segment/u, label);
   }
-  for (const value of ["a".repeat(255), "café", "hello world.txt"]) assert.equal(validateOutputSegment(value), value);
+  for (const value of ["a".repeat(255), "é".repeat(127) + "a", "café", "hello world.txt"]) assert.equal(validateOutputSegment(value), value);
 });
 
 test("B: every occupied final destination rejects without changing its filesystem entry", async (context) => {
@@ -130,8 +130,10 @@ test("D: bundle entries reject duplicate/collision/unsafe names and publish empt
     ["unsafe nested backslash", [["assets\\escape", "a"]]],
   ];
   for (const [label, files] of invalidCases) {
-    const error = await expectCode(() => publishExclusiveBundle(join(root, label.replaceAll(" ", "-")), files), label.startsWith("unsafe") ? "CANVAS_EXPORT_NAME_INVALID" : "CANVAS_EXPORT_COLLISION");
+    const destination = join(root, label.replaceAll(" ", "-"));
+    const error = await expectCode(() => publishExclusiveBundle(destination, files), label.startsWith("unsafe") ? "CANVAS_EXPORT_NAME_INVALID" : "CANVAS_EXPORT_COLLISION");
     assert.ok(error.code, label);
+    await absent(destination);
   }
   const destination = join(root, "valid");
   const receipt = await publishExclusiveBundle(destination, [["zero.bin", Buffer.alloc(0)], ["nested/valid.txt", Buffer.from("valid")]]);
@@ -155,14 +157,14 @@ test("E: receipt cleanup is identity-safe, preserves replacements, and reports e
   assert.deepEqual(await cleanupPublishedExport(owned), []);
 
   const replaced = await publishAtomicFile(join(root, "replaced"), "original");
-  unlinkSync(replaced.destination);
+  renameSync(replaced.destination, join(root, "replaced.retained-original"));
   writeFileSync(replaced.destination, "replacement", { flag: "wx" });
   const replacedFailure = await cleanupPublishedExport(replaced);
   assert.deepEqual(replacedFailure, [{ path: replaced.destination, reason: "identity-changed" }]);
   assert.equal(await readFile(replaced.destination, "utf8"), "replacement");
 
   const replacedSymlink = await publishAtomicFile(join(root, "replaced-link"), "original");
-  unlinkSync(replacedSymlink.destination);
+  renameSync(replacedSymlink.destination, join(root, "replaced-link.retained-original"));
   await symlink(join(root, "symlink-target"), replacedSymlink.destination);
   assert.deepEqual(await cleanupPublishedExport(replacedSymlink), [{ path: replacedSymlink.destination, reason: "identity-changed" }]);
   assert.equal(await readlink(replacedSymlink.destination), join(root, "symlink-target"));
@@ -173,14 +175,14 @@ test("E: receipt cleanup is identity-safe, preserves replacements, and reports e
   assert.deepEqual(await readdir(bundle.destination), ["foreign"]);
 
   const replacedDirectory = await publishExclusiveBundle(join(root, "replaced-directory"), []);
-  await rm(replacedDirectory.destination, { recursive: true });
+  renameSync(replacedDirectory.destination, join(root, "replaced-directory.retained-original"));
   await mkdir(replacedDirectory.destination);
   assert.deepEqual(await cleanupPublishedExport(replacedDirectory), [{ path: replacedDirectory.destination, reason: "identity-changed" }]);
 
   const mixedSafe = await publishAtomicFile(join(root, "mixed-safe"), "safe");
   const mixedMissing = { path: join(root, "mixed-missing"), identity: { dev: 0, ino: 0 } };
   const mixedReplaced = await publishAtomicFile(join(root, "mixed-replaced"), "original");
-  unlinkSync(mixedReplaced.destination);
+  renameSync(mixedReplaced.destination, join(root, "mixed-replaced.retained-original"));
   writeFileSync(mixedReplaced.destination, "replacement", { flag: "wx" });
   assert.deepEqual(await cleanupPublishedExport({
     destination: root,
@@ -216,7 +218,7 @@ test("F: an earlier replacement survives batch cleanup with an identity failure"
   for (const destination of destinations) prepared.push(await prepareDocumentExport(deck, { role: "slide", frames: ["slide"], destination }, { assets: new Map(), title: "Replacement" }));
   const sequence = (function* deterministicLateFailure() {
     yield prepared[0];
-    unlinkSync(destinations[0]);
+    renameSync(destinations[0], join(root, "first.pptx.retained-original"));
     writeFileSync(destinations[0], "original replacement", { flag: "wx" });
     writeFileSync(destinations[1], "competitor", { flag: "wx" });
     yield prepared[1];
