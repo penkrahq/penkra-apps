@@ -59,7 +59,7 @@ export function bindingsForExportSet(set) {
 
 function validateBindingSegment(value, name, index) {
   const segment = String(value);
-  if (!segment || segment !== segment.normalize("NFC") || /[\/\\\0-\x1f]/u.test(segment) || segment === "." || segment === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(segment) || new TextEncoder().encode(segment).length > 255) {
+  if (!segment || segment !== segment.normalize("NFC") || /[\/\\\0-\x1f\x7f]/u.test(segment) || segment === "." || segment === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(segment) || new TextEncoder().encode(segment).length > 255) {
     const error = new Error(`Binding ${name} in set ${index} is not a safe filename segment: ${JSON.stringify(value)}.`);
     error.code = "CANVAS_EXPORT_OUTPUT_NAME";
     throw error;
@@ -68,7 +68,7 @@ function validateBindingSegment(value, name, index) {
 }
 
 function validateDerivedSegment(segment, index) {
-  if (!segment || segment !== segment.normalize("NFC") || /[\/\\\0-\x1f]/u.test(segment) || segment === "." || segment === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(segment) || new TextEncoder().encode(segment).length > 255) {
+  if (!segment || segment !== segment.normalize("NFC") || /[\/\\\0-\x1f\x7f]/u.test(segment) || segment === "." || segment === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(segment) || new TextEncoder().encode(segment).length > 255) {
     const error = new Error(`Binding set ${index} produces an unsafe output segment: ${JSON.stringify(segment)}.`);
     error.code = "CANVAS_EXPORT_OUTPUT_NAME";
     throw error;
