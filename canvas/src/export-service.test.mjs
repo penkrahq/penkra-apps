@@ -126,6 +126,7 @@ test("forty binding sets produce distinct editable decks after independent resol
   }));
   const result = await exportDocumentBatch(template, requests, { assets: new Map(), title: "Forty schools" });
   assert.equal(result.artifacts.length, 40);
+  assert.equal((await readdir(directory)).length, 40);
   const observedPositions = new Set();
   for (let index = 0; index < result.artifacts.length; index += 1) {
     const xml = readXmlPart(readOoxmlPackage(await readFile(result.artifacts[index])), "ppt/slides/slide1.xml");
