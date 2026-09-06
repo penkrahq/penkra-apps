@@ -6,9 +6,10 @@ import { join } from "node:path";
 import test from "node:test";
 import { createHash } from "node:crypto";
 import { PDFDocument, PDFName } from "pdf-lib";
-import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
+import { getCanvasKit, SkiaRenderer } from "../vendor/open-pencil/engine.source.mjs";
 import { buildCapabilityVerificationIR } from "../src/exporter-ir.mjs";
 import { takeDocumentScreenshots } from "../src/document-screenshot.mjs";
+import { createOpenPencilGraph } from "../src/openpencil-engine.mjs";
 import { exportPdf } from "../src/exporters/pdf.mjs";
 import { compareUniformInterior } from "../scripts/luna-pdf-extraction-matrix.mjs";
 
@@ -189,7 +190,7 @@ test("closed ring remains on the existing closed-vector stroke path", async () =
   }
 });
 
-test("repeated cached-path rendering is byte-stable", async () => {
+test("fresh-render repeatability is byte-stable", async () => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-open-path-join-"));
   try {
     const document = makeDocument(CASES[0][1]);
@@ -204,4 +205,90 @@ test("repeated cached-path rendering is byte-stable", async () => {
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+test("same graph and renderer reuse open-path caches across repeated draws", async () => {
+  const document = {
+    version: "2.17",
+    module: "generic",
+    axes: {},
+    variables: {},
+    paragraphStyles: {},
+    imports: {},
+    flows: [],
+    children: [{
+      id: "page",
+      type: "frame",
+      layout: "none",
+      width: PAGE_WIDTH,
+      height: PAGE_HEIGHT,
+      fill: "#E8EEF4",
+      children: [
+        {
+          id: "connected",
+          type: "path",
+          x: 20,
+          y: 30,
+          width: 100,
+          height: 100,
+          geometry: CASES[0][1],
+          viewBox: [0, 0, 100, 100],
+          stroke: { fill: "#123456", thickness: 8 },
+        },
+        {
+          id: "disconnected",
+          type: "path",
+          x: 170,
+          y: 30,
+          width: 100,
+          height: 100,
+          geometry: CASES[1][1],
+          viewBox: [0, 0, 100, 100],
+          stroke: { fill: "#123456", thickness: 8 },
+        },
+      ],
+    }],
+  };
+  const canvasKit = await getCanvasKit();
+  const graph = createOpenPencilGraph(document);
+  const initialSurface = canvasKit.MakeSurface(PAGE_WIDTH, PAGE_HEIGHT);
+  assert.ok(initialSurface, "CanvasKit created the cache-reuse surface");
+  const renderer = new SkiaRenderer(canvasKit, initialSurface, null);
+  let restoreTextMeasurer;
+  try {
+    await renderer.loadFonts();
+    restoreTextMeasurer = await renderer.prepareForExport(graph, "page", ["page"]);
+    renderer.pageId = "page";
+    renderer.worldViewport = { x: -1e9, y: -1e9, w: 2e9, h: 2e9 };
+
+    const draw = () => {
+      const canvas = renderer.surface.getCanvas();
+      canvas.clear(canvasKit.TRANSPARENT);
+      renderer.renderNode(canvas, graph, "page", {});
+      renderer.surface.flush();
+      const image = renderer.surface.makeImageSnapshot();
+      try {
+        const bytes = image.encodeToBytes(canvasKit.ImageFormat.PNG, 100);
+        assert.ok(bytes, "CanvasKit encoded the repeated draw");
+        return decodePng(bytes, canvasKit);
+      } finally {
+        image.delete();
+      }
+    };
+
+    const first = draw();
+    assert.equal(renderer.vectorPathCache.has("connected"), true, "connected path entered the reusable vector cache");
+    assert.equal(renderer.vectorPathCache.has("disconnected"), true, "disconnected paths entered the reusable vector cache");
+    assert.notDeepEqual(pixelAt(first, 120, 80), BACKGROUND, "connected join remains drawn");
+    assert.deepEqual(pixelAt(first, 220, 80), BACKGROUND, "disconnected subpaths remain separate");
+
+    const second = draw();
+    assert.equal(pixelHash(second), pixelHash(first), "same renderer and graph produce the same cached-path pixels");
+    assert.notDeepEqual(pixelAt(second, 120, 80), BACKGROUND, "connected join survives cache reuse");
+    assert.deepEqual(pixelAt(second, 220, 80), BACKGROUND, "disconnected controls remain separate after cache reuse");
+  } finally {
+    restoreTextMeasurer?.();
+    renderer.destroy();
+  }
+  assert.equal(renderer.isDestroyed(), true, "renderer resources are destroyed after the repeated-render case");
 });
