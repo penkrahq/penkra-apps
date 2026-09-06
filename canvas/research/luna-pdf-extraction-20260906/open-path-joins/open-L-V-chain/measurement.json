@@ -1,0 +1,24 @@
+{
+  "name": "open-L-V-chain",
+  "geometry": "M0 0L100 50L0 100",
+  "page": {
+    "width": 300,
+    "height": 220,
+    "dpi": 72
+  },
+  "imageXObjects": false,
+  "measurement": {
+    "width": 300,
+    "height": 220,
+    "actualWidth": 300,
+    "actualHeight": 220,
+    "boundaryPhysicalPixels": 2,
+    "boundaryRasterPixels": 2,
+    "channelTolerance": 2,
+    "comparedPixels": 58046,
+    "comparedChannels": 232184,
+    "mismatchPixels": 0,
+    "mismatchChannels": 0,
+    "maxObservedChannelDifference": 0
+  }
+}

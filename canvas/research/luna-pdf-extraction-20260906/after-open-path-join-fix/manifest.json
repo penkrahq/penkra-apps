@@ -1,0 +1,1505 @@
+{
+  "schema": 1,
+  "kind": "ordinary-pdf-extraction-rendering",
+  "generatedAt": "2026-09-06T08:32:56.340Z",
+  "poppler": "pdftoppm version 26.08.0",
+  "page": {
+    "width": 300,
+    "height": 220,
+    "dpi": [
+      72,
+      144,
+      216
+    ]
+  },
+  "comparison": {
+    "boundaryPhysicalPixels": 2,
+    "boundaryRasterPixels": 2,
+    "channelTolerance": 2,
+    "noRegistration": true,
+    "uniformInteriorOnly": true
+  },
+  "counts": {
+    "fixtures": 8,
+    "scales": 3,
+    "comparisons": 24,
+    "passed": 24,
+    "mismatches": 0,
+    "errors": 0
+  },
+  "cases": [
+    {
+      "fixture": "rectangle-path",
+      "nodeId": "page-1",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/rectangle-path.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/rectangle-path-scale-1.png",
+      "popplerPath": "poppler/rectangle-path-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/rectangle-path.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/rectangle-path-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+      "popplerPixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 61696,
+        "comparedChannels": 246784,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 866,
+        "poppler": 580
+      }
+    },
+    {
+      "fixture": "rectangle-path",
+      "nodeId": "page-1",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/rectangle-path.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/rectangle-path-scale-2.png",
+      "popplerPath": "poppler/rectangle-path-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/rectangle-path.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/rectangle-path-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "bb5a83aed08639f4e802a96862f6694cc63a9e923e64aa84b8d19ac98851ca4c",
+      "popplerPixelHash": "bb5a83aed08639f4e802a96862f6694cc63a9e923e64aa84b8d19ac98851ca4c",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 255376,
+        "comparedChannels": 1021504,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 2132,
+        "poppler": 1458
+      }
+    },
+    {
+      "fixture": "rectangle-path",
+      "nodeId": "page-1",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/rectangle-path.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/rectangle-path-scale-3.png",
+      "popplerPath": "poppler/rectangle-path-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/rectangle-path.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/rectangle-path-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "2a6315ef7c70664d577415c3a38947f845cadaac54e02b4671cf6776d3a42e29",
+      "popplerPixelHash": "2a6315ef7c70664d577415c3a38947f845cadaac54e02b4671cf6776d3a42e29",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 581056,
+        "comparedChannels": 2324224,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3862,
+        "poppler": 2777
+      }
+    },
+    {
+      "fixture": "rectangle-polygon",
+      "nodeId": "page-2",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/rectangle-polygon.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/rectangle-polygon-scale-1.png",
+      "popplerPath": "poppler/rectangle-polygon-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/rectangle-polygon.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/rectangle-polygon-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+      "popplerPixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 61696,
+        "comparedChannels": 246784,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 866,
+        "poppler": 580
+      }
+    },
+    {
+      "fixture": "rectangle-polygon",
+      "nodeId": "page-2",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/rectangle-polygon.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/rectangle-polygon-scale-2.png",
+      "popplerPath": "poppler/rectangle-polygon-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/rectangle-polygon.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/rectangle-polygon-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "bb5a83aed08639f4e802a96862f6694cc63a9e923e64aa84b8d19ac98851ca4c",
+      "popplerPixelHash": "bb5a83aed08639f4e802a96862f6694cc63a9e923e64aa84b8d19ac98851ca4c",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 255376,
+        "comparedChannels": 1021504,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 2132,
+        "poppler": 1458
+      }
+    },
+    {
+      "fixture": "rectangle-polygon",
+      "nodeId": "page-2",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/rectangle-polygon.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/rectangle-polygon-scale-3.png",
+      "popplerPath": "poppler/rectangle-polygon-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/rectangle-polygon.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/rectangle-polygon-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "2a6315ef7c70664d577415c3a38947f845cadaac54e02b4671cf6776d3a42e29",
+      "popplerPixelHash": "2a6315ef7c70664d577415c3a38947f845cadaac54e02b4671cf6776d3a42e29",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 581056,
+        "comparedChannels": 2324224,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3862,
+        "poppler": 2777
+      }
+    },
+    {
+      "fixture": "ring-evenodd",
+      "nodeId": "page-3",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/ring-evenodd.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/ring-evenodd-scale-1.png",
+      "popplerPath": "poppler/ring-evenodd-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/ring-evenodd.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/ring-evenodd-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "c4639da848d6ca87d26a2cb009f689b1b255ada8ca6635b6ae0e932b6a5e9d40",
+      "popplerPixelHash": "86faa4eb976d991189ff6eb1eee7424aecb970020b7f68612d309e58f5b4c321",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 60576,
+        "comparedChannels": 242304,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 888,
+        "poppler": 645
+      }
+    },
+    {
+      "fixture": "ring-evenodd",
+      "nodeId": "page-3",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/ring-evenodd.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/ring-evenodd-scale-2.png",
+      "popplerPath": "poppler/ring-evenodd-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/ring-evenodd.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/ring-evenodd-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "5ffe1dd9a3af6e3b6a9dde6564d8b3ba1b29e72cbb440125bdc12f6962839a4e",
+      "popplerPixelHash": "35395428e718660565542b64d561eb1f49b9d4db9d5c37d09c027c424b688aa3",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 253136,
+        "comparedChannels": 1012544,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 2154,
+        "poppler": 1524
+      }
+    },
+    {
+      "fixture": "ring-evenodd",
+      "nodeId": "page-3",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/ring-evenodd.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/ring-evenodd-scale-3.png",
+      "popplerPath": "poppler/ring-evenodd-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/ring-evenodd.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/ring-evenodd-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "6f372d9f42b753fc47733d67dd819083ac8cc779af8a613164ead5dedd2e522a",
+      "popplerPixelHash": "2770457e6458f0bfc7f3e91b7fba5820bfdba55464518791c1021560669e7d5d",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 577696,
+        "comparedChannels": 2310784,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3884,
+        "poppler": 2845
+      }
+    },
+    {
+      "fixture": "ring-nonzero",
+      "nodeId": "page-4",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/ring-nonzero.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/ring-nonzero-scale-1.png",
+      "popplerPath": "poppler/ring-nonzero-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/ring-nonzero.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/ring-nonzero-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "1c6b7cc3c154e7e9fb4901ddd65bbd7256ec5afc275521f319ef6467c62e83af",
+      "popplerPixelHash": "50ea4d5012306d9c37d409871a97d6a015b01ac6efdcdc67069b7f702736f200",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 61696,
+        "comparedChannels": 246784,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 866,
+        "poppler": 605
+      }
+    },
+    {
+      "fixture": "ring-nonzero",
+      "nodeId": "page-4",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/ring-nonzero.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/ring-nonzero-scale-2.png",
+      "popplerPath": "poppler/ring-nonzero-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/ring-nonzero.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/ring-nonzero-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "911372d7eb66c50ce9d77437f4e58b439a221fe99bb63f7ed180135aaaad9834",
+      "popplerPixelHash": "35c2478beed7ae97ddd576ce7a53217bf10f85d8005550189aab4ba9da58a4ac",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 255376,
+        "comparedChannels": 1021504,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 2132,
+        "poppler": 1485
+      }
+    },
+    {
+      "fixture": "ring-nonzero",
+      "nodeId": "page-4",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/ring-nonzero.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/ring-nonzero-scale-3.png",
+      "popplerPath": "poppler/ring-nonzero-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/ring-nonzero.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/ring-nonzero-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "fc14c30bf226b72ce5505291a68a3e4e11baa4895f513907e66cf132017896de",
+      "popplerPixelHash": "fe7e0bb288b29ebe6825ccfead06d0b5a3d4cf9188410cd296615a26fe38e9b4",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 581056,
+        "comparedChannels": 2324224,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3862,
+        "poppler": 2806
+      }
+    },
+    {
+      "fixture": "cubic-ring-evenodd",
+      "nodeId": "page-5",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/cubic-ring-evenodd.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/cubic-ring-evenodd-scale-1.png",
+      "popplerPath": "poppler/cubic-ring-evenodd-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/cubic-ring-evenodd.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/cubic-ring-evenodd-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "4481f884ce57f5e98da79048c1fc822c8ec6b3d1ec721f0cde2fd3f0b761d2de",
+      "popplerPixelHash": "fa15172b117674f3f7ba0e340ac3a74d252111dd2781663e79949a5d16576238",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 60398,
+        "comparedChannels": 241592,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 4564,
+        "poppler": 2867
+      }
+    },
+    {
+      "fixture": "cubic-ring-evenodd",
+      "nodeId": "page-5",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/cubic-ring-evenodd.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/cubic-ring-evenodd-scale-2.png",
+      "popplerPath": "poppler/cubic-ring-evenodd-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/cubic-ring-evenodd.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/cubic-ring-evenodd-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "0fae26289f3049e1bb3d1c8d4e354963581072cae7d230f1ae28d0fd42f972bf",
+      "popplerPixelHash": "b560dd4b229c807616c3d7e1d583d76277965e0bf1a54a736465f299d1263aa8",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 252793,
+        "comparedChannels": 1011172,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 9677,
+        "poppler": 5898
+      }
+    },
+    {
+      "fixture": "cubic-ring-evenodd",
+      "nodeId": "page-5",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/cubic-ring-evenodd.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/cubic-ring-evenodd-scale-3.png",
+      "popplerPath": "poppler/cubic-ring-evenodd-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/cubic-ring-evenodd.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/cubic-ring-evenodd-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "ab487c0a96b83c624d1abfe672b86d4dc6db0f5019565d02a617a27cef4c2f93",
+      "popplerPixelHash": "8c8e68b777f39ae892c66a531aaf296c09b257055cc342bf4eddce2b58bfdc3a",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 577088,
+        "comparedChannels": 2308352,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 15267,
+        "poppler": 9326
+      }
+    },
+    {
+      "fixture": "open-stroked-path",
+      "nodeId": "page-6",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/open-stroked-path.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/open-stroked-path-scale-1.png",
+      "popplerPath": "poppler/open-stroked-path-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/open-stroked-path.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/open-stroked-path-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "d54350d06d5b76f4369c0746c3d78279f635af8e4e439551adddad0b3a3df915",
+      "popplerPixelHash": "d5f2b525b152a30bad7c90244e5d7efde8da0cb53dc5916b124745846e052696",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 60544,
+        "comparedChannels": 242176,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 1809,
+        "poppler": 902
+      }
+    },
+    {
+      "fixture": "open-stroked-path",
+      "nodeId": "page-6",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/open-stroked-path.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/open-stroked-path-scale-2.png",
+      "popplerPath": "poppler/open-stroked-path-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/open-stroked-path.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/open-stroked-path-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "f1146262f66874e7b045f9d29b53f5379d2f11d72f11fad7ab5883b0d5afddce",
+      "popplerPixelHash": "a124f98f39d077b2a9030522222733386926cb1c0febccfc17b81ff5f241cfbb",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 251619,
+        "comparedChannels": 1006476,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3821,
+        "poppler": 2066
+      }
+    },
+    {
+      "fixture": "open-stroked-path",
+      "nodeId": "page-6",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/open-stroked-path.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/open-stroked-path-scale-3.png",
+      "popplerPath": "poppler/open-stroked-path-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/open-stroked-path.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/open-stroked-path-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "ef6abd5e069d9fe56026e9195c148b41422a470fff853210d202c31cc82228bb",
+      "popplerPixelHash": "f14cb59fd1186bd4ad8ef3825041e382dd44384c136db87086dae1e0808623fb",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 575485,
+        "comparedChannels": 2301940,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 6639,
+        "poppler": 3798
+      }
+    },
+    {
+      "fixture": "alpha-behind-green",
+      "nodeId": "page-7",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/alpha-behind-green.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/alpha-behind-green-scale-1.png",
+      "popplerPath": "poppler/alpha-behind-green-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/alpha-behind-green.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/alpha-behind-green-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "f873d1109709e40bd59584d063b8b297ff252abd58683837ec7d399647156848",
+      "popplerPixelHash": "2152830ce16f669302e89a0fe057699fa326fabb9ab81cfd27c044c0d5c922a3",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 61072,
+        "comparedChannels": 244288,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 1
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 893,
+        "poppler": 601
+      }
+    },
+    {
+      "fixture": "alpha-behind-green",
+      "nodeId": "page-7",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/alpha-behind-green.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/alpha-behind-green-scale-2.png",
+      "popplerPath": "poppler/alpha-behind-green-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/alpha-behind-green.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/alpha-behind-green-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "0209c68a3e92398b8ec4d34a41fa2ff12a2765b55693c3b6c43cdc37e825cb9c",
+      "popplerPixelHash": "5d71fe21452523854ac76a20c9e4c1c4444f122732bc6c4e01b0b407fac787d8",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 254112,
+        "comparedChannels": 1016448,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 1
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 2158,
+        "poppler": 1480
+      }
+    },
+    {
+      "fixture": "alpha-behind-green",
+      "nodeId": "page-7",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/alpha-behind-green.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/alpha-behind-green-scale-3.png",
+      "popplerPath": "poppler/alpha-behind-green-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/alpha-behind-green.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/alpha-behind-green-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "7c35b58c10aae1faeb78f2ef0f829006bbab99d1377b2a6bde5531a03bbd05c3",
+      "popplerPixelHash": "e619f50bb69d6a5f9d4c68e8a8d5719b3d05bcace28a394dfbed8c25ee4db628",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 579152,
+        "comparedChannels": 2316608,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 1
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3890,
+        "poppler": 2805
+      }
+    },
+    {
+      "fixture": "transparent-child-frame",
+      "nodeId": "page-8",
+      "scale": 1,
+      "dpi": 72,
+      "pdfPath": "pdfs/transparent-child-frame.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/transparent-child-frame-scale-1.png",
+      "popplerPath": "poppler/transparent-child-frame-scale-1.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "72",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/transparent-child-frame.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/transparent-child-frame-scale-1"
+      ],
+      "referenceWidth": 300,
+      "referenceHeight": 220,
+      "popplerWidth": 300,
+      "popplerHeight": 220,
+      "referencePixelHash": "09a193479c6d05e37b68188aad377806e686a32edd462f0ee893d4a615d2980e",
+      "popplerPixelHash": "b352819dbd9c6ad1d3803bd7b90c3c4cd7dd68b80d958e91d330b573c8453195",
+      "measurement": {
+        "width": 300,
+        "height": 220,
+        "actualWidth": 300,
+        "actualHeight": 220,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 57536,
+        "comparedChannels": 230144,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 922,
+        "poppler": 661
+      }
+    },
+    {
+      "fixture": "transparent-child-frame",
+      "nodeId": "page-8",
+      "scale": 2,
+      "dpi": 144,
+      "pdfPath": "pdfs/transparent-child-frame.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/transparent-child-frame-scale-2.png",
+      "popplerPath": "poppler/transparent-child-frame-scale-2.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "144",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/transparent-child-frame.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/transparent-child-frame-scale-2"
+      ],
+      "referenceWidth": 600,
+      "referenceHeight": 440,
+      "popplerWidth": 600,
+      "popplerHeight": 440,
+      "referencePixelHash": "fb18427b585ea4f1cb51ea8e5339d8d2440bcb074bb0af9e56a38cab0077b74a",
+      "popplerPixelHash": "d4fe965c09040861869328cc2061cc7b7f765e2cf8faf8d81f3aa33bdbbbaf87",
+      "measurement": {
+        "width": 600,
+        "height": 440,
+        "actualWidth": 600,
+        "actualHeight": 440,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 247056,
+        "comparedChannels": 988224,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 2182,
+        "poppler": 1539
+      }
+    },
+    {
+      "fixture": "transparent-child-frame",
+      "nodeId": "page-8",
+      "scale": 3,
+      "dpi": 216,
+      "pdfPath": "pdfs/transparent-child-frame.pdf",
+      "pdfInspection": {
+        "pageCount": 1,
+        "width": 300,
+        "height": 220,
+        "imageXObjects": false
+      },
+      "expectedPage": {
+        "width": 300,
+        "height": 220,
+        "count": 1,
+        "imageXObjects": false
+      },
+      "referencePath": "canvas-references/transparent-child-frame-scale-3.png",
+      "popplerPath": "poppler/transparent-child-frame-scale-3.png",
+      "popplerCommand": [
+        "pdftoppm",
+        "-r",
+        "216",
+        "-singlefile",
+        "-png",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/pdfs/transparent-child-frame.pdf",
+        "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/poppler/transparent-child-frame-scale-3"
+      ],
+      "referenceWidth": 900,
+      "referenceHeight": 660,
+      "popplerWidth": 900,
+      "popplerHeight": 660,
+      "referencePixelHash": "1af29bba97875a8ef8fbd1b5692563b4b30a3b9ba201afb0a8b6f8bc0e95a953",
+      "popplerPixelHash": "693b878f2466a6277e561fe098a3bb6587148144fed4b5eae0690201d0420f3d",
+      "measurement": {
+        "width": 900,
+        "height": 660,
+        "actualWidth": 900,
+        "actualHeight": 660,
+        "boundaryPhysicalPixels": 2,
+        "boundaryRasterPixels": 2,
+        "channelTolerance": 2,
+        "comparedPixels": 568576,
+        "comparedChannels": 2274304,
+        "mismatchPixels": 0,
+        "mismatchChannels": 0,
+        "maxObservedChannelDifference": 0
+      },
+      "status": "pass",
+      "artifactBytes": {
+        "reference": 3912,
+        "poppler": 2861
+      }
+    }
+  ],
+  "multiNode": {
+    "path": "multi-node-8-pages.pdf",
+    "bytes": 898567,
+    "pageCount": 8,
+    "pageInfo": [
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      },
+      {
+        "width": 300,
+        "height": 220
+      }
+    ],
+    "command": [
+      "pdftoppm",
+      "-r",
+      "72",
+      "-png",
+      "-f",
+      "1",
+      "-l",
+      "8",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/multi-node-8-pages.pdf",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-pdf-extraction-20260906/after-open-path-join-fix/multi-node-pages/page"
+    ],
+    "authoredNodeOrder": [
+      "page-1",
+      "page-2",
+      "page-3",
+      "page-4",
+      "page-5",
+      "page-6",
+      "page-7",
+      "page-8"
+    ],
+    "pages": [
+      {
+        "index": 1,
+        "nodeId": "page-1",
+        "path": "multi-node-pages/page-1.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+        "singleUnitPixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+        "matchesSingleUnit": true,
+        "bytes": 580
+      },
+      {
+        "index": 2,
+        "nodeId": "page-2",
+        "path": "multi-node-pages/page-2.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+        "singleUnitPixelHash": "cad94c96820b2a5a17a02ec3fde44b6b745cca2220cf868e2b149e11201c6f9d",
+        "matchesSingleUnit": true,
+        "bytes": 580
+      },
+      {
+        "index": 3,
+        "nodeId": "page-3",
+        "path": "multi-node-pages/page-3.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "86faa4eb976d991189ff6eb1eee7424aecb970020b7f68612d309e58f5b4c321",
+        "singleUnitPixelHash": "86faa4eb976d991189ff6eb1eee7424aecb970020b7f68612d309e58f5b4c321",
+        "matchesSingleUnit": true,
+        "bytes": 645
+      },
+      {
+        "index": 4,
+        "nodeId": "page-4",
+        "path": "multi-node-pages/page-4.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "50ea4d5012306d9c37d409871a97d6a015b01ac6efdcdc67069b7f702736f200",
+        "singleUnitPixelHash": "50ea4d5012306d9c37d409871a97d6a015b01ac6efdcdc67069b7f702736f200",
+        "matchesSingleUnit": true,
+        "bytes": 605
+      },
+      {
+        "index": 5,
+        "nodeId": "page-5",
+        "path": "multi-node-pages/page-5.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "fa15172b117674f3f7ba0e340ac3a74d252111dd2781663e79949a5d16576238",
+        "singleUnitPixelHash": "fa15172b117674f3f7ba0e340ac3a74d252111dd2781663e79949a5d16576238",
+        "matchesSingleUnit": true,
+        "bytes": 2867
+      },
+      {
+        "index": 6,
+        "nodeId": "page-6",
+        "path": "multi-node-pages/page-6.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "d5f2b525b152a30bad7c90244e5d7efde8da0cb53dc5916b124745846e052696",
+        "singleUnitPixelHash": "d5f2b525b152a30bad7c90244e5d7efde8da0cb53dc5916b124745846e052696",
+        "matchesSingleUnit": true,
+        "bytes": 902
+      },
+      {
+        "index": 7,
+        "nodeId": "page-7",
+        "path": "multi-node-pages/page-7.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "2152830ce16f669302e89a0fe057699fa326fabb9ab81cfd27c044c0d5c922a3",
+        "singleUnitPixelHash": "2152830ce16f669302e89a0fe057699fa326fabb9ab81cfd27c044c0d5c922a3",
+        "matchesSingleUnit": true,
+        "bytes": 601
+      },
+      {
+        "index": 8,
+        "nodeId": "page-8",
+        "path": "multi-node-pages/page-8.png",
+        "width": 300,
+        "height": 220,
+        "pixelHash": "b352819dbd9c6ad1d3803bd7b90c3c4cd7dd68b80d958e91d330b573c8453195",
+        "singleUnitPixelHash": "b352819dbd9c6ad1d3803bd7b90c3c4cd7dd68b80d958e91d330b573c8453195",
+        "matchesSingleUnit": true,
+        "bytes": 661
+      }
+    ],
+    "distinctPixelHashes": 7,
+    "orderedHashesMatch": true
+  }
+}
