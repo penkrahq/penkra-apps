@@ -268,6 +268,11 @@ runtime.operations.handle("documents.undo", async ({ documentId, operationId }) 
 });
 
 runtime.operations.handle("documents.export", async (input) => {
+  if (input.bindings !== undefined && (!Array.isArray(input.bindings) || input.bindings.length === 0 || input.bindings.length > 1000)) {
+    const error = new Error("Export bindings must contain between one and 1000 binding sets.");
+    error.code = "CANVAS_EXPORT_BINDINGS";
+    throw error;
+  }
   const { exportDocumentBatch } = await import("./export-service.mjs");
   const payload = await api.getDocument(input.documentId);
   const model = restoreDocumentModel(payload);
@@ -285,7 +290,7 @@ runtime.operations.handle("documents.export", async (input) => {
       error.code = "CANVAS_EXPORT_NO_FRAMES";
       throw error;
     }
-    const sets = input.bindings?.length ? input.bindings : [null];
+    const sets = input.bindings ?? [null];
     const destinations = resolveExportDestinations(input.destination, sets, input.format);
     const requests = sets.map((bindingSet, index) => ({
       ...input,

@@ -153,6 +153,10 @@ test("public documents.export derives role from format, defaults matching frames
     operations: { handle: (name, handler) => handlers.set(name, handler) },
   };
   await import(`./operations.mjs?export-test=${Date.now()}`);
+  for (const bindings of [[], {}, Array(1001).fill({ output: "one" })]) {
+    await assert.rejects(handlers.get("documents.export")({ documentId: "document-1", format: "pptx", destination: `${directory}/`, bindings }), { code: "CANVAS_EXPORT_BINDINGS" });
+  }
+  assert.equal(requests.length, 0);
   const result = await handlers.get("documents.export")({
     documentId: "document-1", format: "pptx", destination: `${directory}/`,
     bindings: [{ output: "one", schoolName: "One School" }, { output: "two", schoolName: "Two School" }],

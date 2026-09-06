@@ -6,7 +6,7 @@ import { measureMobileColorRegions } from "../scripts/measure-mobile-color-regio
 // Geometry-only evidence for the authored --clipping fixture: an overflow child
 // starts at x=240, width=100 in a width=300 container. Clipping leaves width=60.
 // Ellipse edge antialiasing is not used to infer full pixel fidelity.
-for (const [device, scale] of [["iphone", 3], ["ipad", 2], ["android", 2.625]]) {
+for (const [device, scale] of [["iphone", 3], ["ipad", 2], ["android", 2.625], ["android-320", 2]]) {
   test(`${device} clips rectangle overflow at the authored container edge`, async () => {
     const path = fileURLToPath(new URL(`../research/local-clipping-20260906/${device}.png`, import.meta.url));
     const { regions } = await measureMobileColorRegions(path);

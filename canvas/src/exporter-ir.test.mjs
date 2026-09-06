@@ -6,10 +6,10 @@ import { measureDocumentText } from "./document-screenshot.mjs";
 import { capabilityPathInventory } from "./canvas-schema.mjs";
 
 test("text semantics retain alignment precedence without inventing unspecified defaults", () => {
-  const source = { module: "mobile", axes: {}, variables: {}, paragraphStyles: { body: { align: "right" } }, imports: {}, flows: [], children: [
+  const source = { module: "mobile", axes: {}, variables: {}, paragraphStyles: { body: { align: "end" } }, imports: {}, flows: [], children: [
     { id: "screen", type: "frame", role: "ios", width: 300, height: 300, children: [
       { id: "text", type: "text", width: 200, height: 100, content: "a\nb\nc", textAlign: "center", textAlignVertical: "bottom", paragraphs: [
-        { from: 0, to: 2, style: "body", align: "left" }, { from: 2, to: 4, style: "body" }, { from: 4, to: 5 },
+        { from: 0, to: 2, style: "body", align: "start" }, { from: 2, to: 4, style: "body" }, { from: 4, to: 5 },
       ] },
       { id: "unset", type: "text", width: 100, height: 30, content: "x" },
     ] },
@@ -18,7 +18,7 @@ test("text semantics retain alignment precedence without inventing unspecified d
   const text = nodes.find((node) => node.id === "text").semantics;
   assert.equal(text.textAlign, "center");
   assert.equal(text.textAlignVertical, "bottom");
-  assert.deepEqual(text.paragraphs.map((paragraph) => paragraph.effectiveAlign), ["left", "right", "center"]);
+  assert.deepEqual(text.paragraphs.map((paragraph) => paragraph.effectiveAlign), ["start", "end", "center"]);
   const unset = nodes.find((node) => node.id === "unset").semantics;
   assert.equal(unset.textAlign, undefined);
   assert.equal(unset.textAlignVertical, undefined);
