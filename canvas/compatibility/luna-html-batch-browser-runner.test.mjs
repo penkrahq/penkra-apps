@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { connectCdp, measurementCount, runnerExitCode, waitForChildExit } from "../scripts/luna-html-batch-browser.mjs";
+import { connectCdp, createPageController, measurementCount, runnerExitCode, waitForChildExit } from "../scripts/luna-html-batch-browser.mjs";
 
 function successfulResult() {
   return {
@@ -101,4 +101,107 @@ test("CDP open, command, and event waits are bounded and reject with stable time
   await assert.rejects(connected.send("Runtime.enable", {}, { timeoutMs: 2 }), { code: "CANVAS_BROWSER_TIMEOUT" });
   await assert.rejects(connected.once("Page.loadEventFired", { timeoutMs: 2 }), { code: "CANVAS_BROWSER_TIMEOUT" });
   await connected.close();
+});
+
+class FakeNavigationPage {
+  constructor(mode) {
+    this.mode = mode;
+    this.waiters = new Set();
+  }
+
+  on(_method, _listener) {}
+
+  once(_method) {
+    let resolvePromise;
+    let rejectPromise;
+    let timer;
+    const waiter = {
+      cancel: () => {
+        clearTimeout(timer);
+        this.waiters.delete(waiter);
+        resolvePromise({ cancelled: true });
+      },
+    };
+    const promise = new Promise((resolve, reject) => {
+      resolvePromise = resolve;
+      rejectPromise = reject;
+      if (this.mode === "stall") {
+        timer = setTimeout(() => {
+          this.waiters.delete(waiter);
+          rejectPromise(new Error("event timeout"));
+        }, 2);
+      }
+    });
+    this.waiters.add(waiter);
+    promise.cancel = waiter.cancel;
+    return promise;
+  }
+
+  async send(method) {
+    if (method === "Emulation.setDeviceMetricsOverride") return {};
+    if (method === "Page.navigate") {
+      if (this.mode === "reject") throw new Error("navigation rejected");
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      return {};
+    }
+    if (method === "Runtime.evaluate") {
+      if (arguments.length === 0) return { result: { value: true } };
+      return { result: { value: { school: { textContent: "School 1", tag: "P", bounds: { left: 0, top: 0, width: 100, height: 50 } }, marker: { textContent: "", tag: "DIV", bounds: { left: 110, top: 0, width: 20, height: 20 } }, fontFamily: "Inter", fontSize: "24px", visibleText: "School 1", tags: ["P", "DIV"] } } };
+    }
+    return {};
+  }
+
+  async close() {}
+}
+
+async function assertNoUnhandledRejection(action) {
+  const rejections = [];
+  const listener = (reason) => rejections.push(reason);
+  process.on("unhandledRejection", listener);
+  try {
+    await action();
+    await new Promise((resolve) => setImmediate(resolve));
+  } finally {
+    process.off("unhandledRejection", listener);
+  }
+  assert.deepEqual(rejections, []);
+}
+
+test("navigation rejection cancels the load waiter without an unhandled rejection", async () => {
+  const page = new FakeNavigationPage("reject");
+  const controller = createPageController(page);
+  let observation;
+  await assertNoUnhandledRejection(async () => { observation = await controller.measure({ schoolIndex: 1, width: 800, url: "file:///fake", displayPath: "bundles/School 1/slide.html" }); });
+  assert.ok(observation.navigationError);
+  assert.equal(page.waiters.size, 0);
+});
+
+test("load event timeout while navigation is pending is observed and cleans its waiter", async () => {
+  const page = new FakeNavigationPage("stall");
+  const controller = createPageController(page);
+  let observation;
+  await assertNoUnhandledRejection(async () => { observation = await controller.measure({ schoolIndex: 1, width: 800, url: "file:///fake", displayPath: "bundles/School 1/slide.html" }); });
+  assert.ok(observation.navigationError);
+  assert.equal(page.waiters.size, 0);
+});
+
+test("synchronous CDP socket send failure rejects and removes its pending request", async () => {
+  class ThrowingSocket extends FakeSocket {
+    send() { throw new Error("send failure"); }
+  }
+  const cdp = connectCdp("ws://fake", { WebSocketImpl: ThrowingSocket, openTimeoutMs: 20 });
+  await assert.rejects(cdp.send("Runtime.enable"));
+  await cdp.close();
+});
+
+test("CDP close before open rejects immediately and does not wait for open timeout", async () => {
+  class ClosesSocket extends FakeSocket {
+    constructor(url) {
+      super(url, false);
+      queueMicrotask(() => this.emit("close", {}));
+    }
+  }
+  const cdp = connectCdp("ws://fake", { WebSocketImpl: ClosesSocket, openTimeoutMs: 100 });
+  await assert.rejects(cdp.send("Runtime.enable"));
+  await cdp.close();
 });
