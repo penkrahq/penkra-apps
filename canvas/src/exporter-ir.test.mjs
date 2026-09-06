@@ -3,6 +3,27 @@ import test from "node:test";
 import { buildExporterIR, buildExtractionIR, buildCapabilityVerificationIR } from "./exporter-ir.mjs";
 import { exportSvg } from "./exporters/svg.mjs";
 import { measureDocumentText } from "./document-screenshot.mjs";
+import { capabilityPathInventory } from "./canvas-schema.mjs";
+
+test("text semantics retain alignment precedence without inventing unspecified defaults", () => {
+  const source = { module: "mobile", axes: {}, variables: {}, paragraphStyles: { body: { align: "right" } }, imports: {}, flows: [], children: [
+    { id: "screen", type: "frame", role: "ios", width: 300, height: 300, children: [
+      { id: "text", type: "text", width: 200, height: 100, content: "a\nb\nc", textAlign: "center", textAlignVertical: "bottom", paragraphs: [
+        { from: 0, to: 2, style: "body", align: "left" }, { from: 2, to: 4, style: "body" }, { from: 4, to: 5 },
+      ] },
+      { id: "unset", type: "text", width: 100, height: 30, content: "x" },
+    ] },
+  ] };
+  const nodes = buildCapabilityVerificationIR(source, { role: "ios", frames: ["screen"] }, capabilityPathInventory()).outputs[0].nodes;
+  const text = nodes.find((node) => node.id === "text").semantics;
+  assert.equal(text.textAlign, "center");
+  assert.equal(text.textAlignVertical, "bottom");
+  assert.deepEqual(text.paragraphs.map((paragraph) => paragraph.effectiveAlign), ["left", "right", "center"]);
+  const unset = nodes.find((node) => node.id === "unset").semantics;
+  assert.equal(unset.textAlign, undefined);
+  assert.equal(unset.textAlignVertical, undefined);
+  assert.equal(unset.paragraphs[0].effectiveAlign, undefined);
+});
 
 test("measured PDF text preserves author image overrides and unrelated raster requirements", async () => {
   const source = { version: "2.17", module: "generic", children: [{ id: "text", type: "text", width: 100, height: 40, content: "Text", fontFamily: "Inter", textAlign: "center", textGrowth: "fixed-width-height" }] };
