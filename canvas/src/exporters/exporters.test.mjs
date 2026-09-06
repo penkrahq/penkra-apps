@@ -251,6 +251,13 @@ test("mobile clipping is applied after container paint and before compositing", 
   mobile.children[0].role = "android";
   const kotlin = exportCompose(buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory())).get("Title.kt");
   assert.match(kotlin, /\.background\([^\n]+\)\.canvasClipToBounds\(\)/u);
+  mobile.children[0].children[0].cornerRadius = [30, 10, 40, 0];
+  const roundedKotlin = exportCompose(buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory())).get("Title.kt");
+  assert.match(roundedKotlin, /canvasClipShape\(androidx\.compose\.foundation\.shape\.GenericShape/u);
+  mobile.children[0].role = "ios";
+  const roundedSwift = exportSwiftUI(buildCapabilityVerificationIR(mobile, { role: "ios", frames: ["slide"] }, capabilityPathInventory())).get("Title.swift");
+  assert.match(roundedSwift, /\.clipShape\(Path \{ path in/u);
+  assert.match(roundedSwift, /path\.addCurve/u);
 });
 
 test("mobile shape and container opacity includes background paint; ellipses are not capsules", () => {

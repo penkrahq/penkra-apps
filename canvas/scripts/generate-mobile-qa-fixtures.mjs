@@ -131,7 +131,7 @@ if (process.argv.includes("--solid-colors")) {
     "transparent",
   ].map((fill, index) => ({ id: `color-${index}`, type: "rectangle", width: 300, height: 90, fill }));
 }
-if (process.argv.includes("--clipping")) {
+if (process.argv.includes("--clipping") || process.argv.includes("--rounded-clipping")) {
   source.children[0].padding = [80, 20, 20, 20];
   source.children[0].children = [false, true].flatMap((clip, row) => ["rectangle", "ellipse"].map((shape, column) => ({
     id: `clip-${clip}-${shape}`, type: "frame", width: 300, height: 140, layout: "none", clip, fill: "#0B4A6F", children: [
@@ -139,6 +139,12 @@ if (process.argv.includes("--clipping")) {
       { id: `clip-${row}-${column}-overflow`, type: shape, x: 240, y: 35, width: 100, height: 70, fill: "#F4A261" },
     ],
   })));
+  if (process.argv.includes("--rounded-clipping")) {
+    for (const frame of source.children[0].children) {
+      frame.cornerRadius = [30, 10, 40, 0];
+      frame.children.push({ id: `${frame.id}-corner`, type: "rectangle", x: 0, y: 0, width: 50, height: 50, fill: "#2A9D8F" });
+    }
+  }
 }
 const composeDir = resolve(root, "compatibility/mobile-fixtures/compose/app/src/main/java/generated/canvas");
 if (process.argv.includes("--vectors")) Object.assign(source, mobileVectorFixture());

@@ -60,14 +60,18 @@ function swiftNode(node, children, options, depth, parentLayout) {
   return `${indent}${shape}.fill(${swiftColor(solid(node.paint.fill))}).opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
 }
 
-function swiftVector(node) {
+function swiftPath(node) {
   const statements = scaledVectorCommands(node.vector, node.geometry.w, node.geometry.h).map((command) => {
     if (command.type === "move") return `path.move(to: CGPoint(x: ${n(command.x)}, y: ${n(command.y)}))`;
     if (command.type === "line") return `path.addLine(to: CGPoint(x: ${n(command.x)}, y: ${n(command.y)}))`;
     if (command.type === "cubic") return `path.addCurve(to: CGPoint(x: ${n(command.x)}, y: ${n(command.y)}), control1: CGPoint(x: ${n(command.c1x)}, y: ${n(command.c1y)}), control2: CGPoint(x: ${n(command.c2x)}, y: ${n(command.c2y)}))`;
     return "path.closeSubpath()";
   }).join("; ");
-  const path = `Path { path in ${statements} }`;
+  return `Path { path in ${statements} }`;
+}
+
+function swiftVector(node) {
+  const path = swiftPath(node);
   const stroke = mobileVectorStroke(node);
   const fill = `${path}.fill(${swiftColor(solid(node.paint.fill))}, style: FillStyle(eoFill: ${node.vector.fillRule === "evenodd"}))`;
   let overlay = "";
@@ -101,7 +105,9 @@ function swiftContainer(node, descendants, children, options, depth, root = fals
   const insets = mobilePadding(node);
   const padding = insets ? `.padding(EdgeInsets(top: ${n(insets[0])}, leading: ${n(insets[3])}, bottom: ${n(insets[2])}, trailing: ${n(insets[1])}))` : "";
   const rootFrame = root ? `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)})` : "";
-  const clip = node.clip ? ".clipped()" : "";
+  const clip = !node.clip ? "" : node.paint.cornerRadius != null
+    ? `.clipShape(${swiftPath({ ...node, vector: roundedRectangleVector(node) })})`
+    : ".clipped()";
   const paint = `${background}${clip}.compositingGroup().opacity(${n(node.paint.opacity ?? 1)})`;
   const geometry = root ? `${rootFrame}${paint}` : swiftGeometry(node, parentLayout, paint);
   const childSemantics = !root && descendants.length ? ".accessibilityElement(children: .contain)" : "";
@@ -208,7 +214,7 @@ function composeContainer(node, descendants, children, options, depth, root = fa
   let modifier = root ? composeModifier(node, "vertical") : suppliedModifier;
   if (node.paint.opacity != null) modifier += `.alpha(${kotlinFloat(node.paint.opacity)})`;
   if (solid(node.paint.fill)) modifier += `.background(${composeColor(solid(node.paint.fill))}${node.paint.cornerRadius != null ? `, ${composeRoundedShape(node)}` : ""})`;
-  if (node.clip) modifier += ".canvasClipToBounds()";
+  if (node.clip) modifier += node.paint.cornerRadius != null ? `.canvasClipShape(${composeRoundedShape(node)})` : ".canvasClipToBounds()";
   const insets = mobilePadding(node);
   if (insets) modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
   if (node.layout.layout === "grid") {
@@ -371,4 +377,4 @@ public struct FlowLayout: Layout {
  }
 }
 `;
-const composeFlowHelper = `package generated.canvas\nimport androidx.compose.foundation.layout.ExperimentalLayoutApi\nimport androidx.compose.foundation.layout.FlowRow\nimport androidx.compose.runtime.Composable\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.clipToBounds\nfun Modifier.canvasClipToBounds(): Modifier = clipToBounds()\n@OptIn(ExperimentalLayoutApi::class)\n@Composable fun CanvasFlowLayout(content: @Composable () -> Unit) { FlowRow { content() } }\n`;
+const composeFlowHelper = `package generated.canvas\nimport androidx.compose.foundation.layout.ExperimentalLayoutApi\nimport androidx.compose.foundation.layout.FlowRow\nimport androidx.compose.runtime.Composable\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.clipToBounds\nimport androidx.compose.ui.draw.clip\nimport androidx.compose.ui.graphics.Shape\nfun Modifier.canvasClipToBounds(): Modifier = clipToBounds()\nfun Modifier.canvasClipShape(shape: Shape): Modifier = clip(shape)\n@OptIn(ExperimentalLayoutApi::class)\n@Composable fun CanvasFlowLayout(content: @Composable () -> Unit) { FlowRow { content() } }\n`;
