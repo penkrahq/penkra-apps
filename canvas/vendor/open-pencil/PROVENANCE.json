@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "sourceEngineSha256": "0a484a36421cb516466df4b58a42537b580d7053f0ebd994af787e57b0767b5d",
+  "sourceEngineSha256": "2a218ac2d18f32d34b6dc81a0871c09893660d3cf813d9019974fe0877bfd4b1",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",

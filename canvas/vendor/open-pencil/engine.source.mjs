@@ -45508,7 +45508,7 @@ var init_dist3 = __esm(() => {
   JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
 });
 
-// vendor/open-pencil/source/node_modules/.bun/ufo@1.6.4/node_modules/ufo/dist/index.mjs
+// vendor/open-pencil/source/node_modules/.bun/ufo@1.6.3/node_modules/ufo/dist/index.mjs
 function encode4(text) {
   return encodeURI("" + text).replace(ENC_PIPE_RE, "|");
 }
@@ -68699,7 +68699,8 @@ function drawNodeStroke2(r4, canvas, node, rect, hasRadius2, stroke, sc, sg, vec
   const shouldStrokeVectorCenterline = vectorStroke && stroke.align === "CENTER" && node.cornerRadius === 0 && node.type === "VECTOR" && !node.fills.some((fill3) => fill3.visible);
   if (shouldStrokeVectorCenterline) {
     const outlineKey = `${node.id}|${stroke.weight}|${stroke.cap ?? node.strokeCap}|${stroke.join ?? node.strokeJoin}|${node.strokeMiterLimit}`;
-    drawVectorPathStrokes(r4, canvas, vectorStroke, stroke, sc, node.strokeCap, node.strokeJoin, node.strokeMiterLimit, outlineKey);
+    const centerlinePaths = node.vectorNetwork?.regions.length === 0 && vectorPaths ? vectorPaths : vectorStroke;
+    drawVectorPathStrokes(r4, canvas, centerlinePaths, stroke, sc, node.strokeCap, node.strokeJoin, node.strokeMiterLimit, outlineKey);
     return;
   }
   if (!sg) {
@@ -90605,7 +90606,10 @@ function nodeVisualBounds3(node, getAbsolutePosition2, getNode2) {
         const x2 = current.flipX ? -result.x : result.x;
         const y = current.flipY ? -result.y : result.y;
         const angle2 = degToRad4(current.rotation ?? 0);
-        result = { x: x2 * Math.cos(angle2) - y * Math.sin(angle2), y: x2 * Math.sin(angle2) + y * Math.cos(angle2) };
+        result = {
+          x: x2 * Math.cos(angle2) - y * Math.sin(angle2),
+          y: x2 * Math.sin(angle2) + y * Math.cos(angle2)
+        };
         current = current.parentId ? getNode2(current.parentId) : undefined;
       }
       return { x: abs2.x + result.x, y: abs2.y + result.y };
@@ -90622,7 +90626,12 @@ function nodeVisualBounds3(node, getAbsolutePosition2, getNode2) {
       const fontSize = node.fontSize ?? 14;
       bottom += (node.textUnderlineOffset ?? fontSize * 0.18) + (node.textDecorationThickness ?? Math.max(1, fontSize / 16)) + fontSize * 0.35;
     }
-    const points = [{ x: left, y: top }, { x: right, y: top }, { x: right, y: bottom }, { x: left, y: bottom }].map(transform);
+    const points = [
+      { x: left, y: top },
+      { x: right, y: top },
+      { x: right, y: bottom },
+      { x: left, y: bottom }
+    ].map(transform);
     const stroke = strokeOverflow3(node.strokes);
     const effects = effectOverflow3(node.effects);
     const bounds2 = {
