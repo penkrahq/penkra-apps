@@ -13,6 +13,11 @@ export const chromePath = "/Applications/Google Chrome.app/Contents/MacOS/Google
 export const viewportWidths = [800, 1200, 1600];
 export const viewportHeight = 600;
 export const fortyCount = 40;
+export const measurementCount = fortyCount * viewportWidths.length;
+const DEVTOOLS_TIMEOUT_MS = 10_000;
+const CDP_OPEN_TIMEOUT_MS = 10_000;
+const CDP_COMMAND_TIMEOUT_MS = 15_000;
+const CDP_EVENT_TIMEOUT_MS = 15_000;
 
 // This is the exact forty-school fixture used by export-four-format-batch.test.mjs.
 // Keep the axes, text, layout, and geometry intact for browser acceptance.
@@ -85,40 +90,56 @@ export function classifyObservation(observation) {
   return { status: failures.length ? "mismatch" : "pass", failures };
 }
 
+export function runnerExitCode(result) {
+  if (result.infrastructureFailures?.length) return 1;
+  if (result.browser?.terminated !== true || result.browser?.observedExit !== true) return 1;
+  if (result.observations?.length !== measurementCount) return 1;
+  const expected = new Set(Array.from({ length: fortyCount }, (_, index) => viewportWidths.map((width) => `${index + 1}:${width}`)).flat());
+  const seen = new Set();
+  for (const observation of result.observations) {
+    const key = `${observation.schoolIndex}:${observation.width}`;
+    if (!expected.has(key) || seen.has(key) || observation.status !== "pass" || !observation.screenshot?.relativePath) return 1;
+    seen.add(key);
+  }
+  if (seen.size !== expected.size || result.screenshotCount !== measurementCount) return 1;
+  return 0;
+}
+
 export async function runHtmlBatchBrowserAcceptance({ evidenceRoot: requestedRoot } = {}) {
   const evidenceRoot = requestedRoot ?? await mkdtemp(join(tmpdir(), "canvas-luna-html-batch-browser-"));
   const bundleRoot = join(evidenceRoot, "bundles");
   const screenshotRoot = join(evidenceRoot, "screenshots");
-  await mkdir(bundleRoot, { recursive: true });
-  await mkdir(screenshotRoot, { recursive: true });
-  await writeFile(join(bundleRoot, "unrelated-preserved.txt"), "preserve this unrelated entry\n", { flag: "wx" });
-
-  const document = deepFreeze(fortySchoolTemplate());
-  const before = structuredClone(document);
-  const sets = fortySchoolSets();
-  const destinations = resolveExportDestinations(`${bundleRoot}/`, sets, "html");
-  const requests = sets.map((set, index) => ({
-    role: "route", frames: ["slide"], destination: destinations[index], bindings: bindingsForExportSet(set),
-  }));
-  await exportDocumentBatch(document, requests, { assets: new Map(), title: "Forty-school HTML browser acceptance" });
-  if (JSON.stringify(document) !== JSON.stringify(before)) throw new Error("HTML acceptance template was mutated during export.");
-
-  const topLevel = (await readdir(bundleRoot)).sort();
-  const expectedTopLevel = ["unrelated-preserved.txt", ...sets.map((set) => set.output)].sort();
-  if (JSON.stringify(topLevel) !== JSON.stringify(expectedTopLevel)) throw new Error("HTML export left unexpected top-level artifacts.");
-  for (const destination of destinations) {
-    const entries = await readdir(destination);
-    if (!entries.includes("slide.html")) throw new Error(`HTML bundle is missing slide.html: ${destination}`);
-  }
-
-  const browser = await openOwnedChrome(join(evidenceRoot, "chrome-profile"));
-  let browserExit;
+  const infrastructureFailures = [];
   const observations = [];
   const screenshotNames = new Set();
+  let destinations = [];
+  let browser;
+  let browserExit;
   try {
+    await mkdir(bundleRoot, { recursive: true });
+    await mkdir(screenshotRoot, { recursive: true });
+    await writeFile(join(bundleRoot, "unrelated-preserved.txt"), "preserve this unrelated entry\n", { flag: "wx" });
+    const document = deepFreeze(fortySchoolTemplate());
+    const before = structuredClone(document);
+    const sets = fortySchoolSets();
+    destinations = resolveExportDestinations(`${bundleRoot}/`, sets, "html");
+    const requests = sets.map((set, index) => ({
+      role: "route", frames: ["slide"], destination: destinations[index], bindings: bindingsForExportSet(set),
+    }));
+    await exportDocumentBatch(document, requests, { assets: new Map(), title: "Forty-school HTML browser acceptance" });
+    if (JSON.stringify(document) !== JSON.stringify(before)) throw new Error("HTML acceptance template was mutated during export.");
+    const topLevel = (await readdir(bundleRoot)).sort();
+    const expectedTopLevel = ["unrelated-preserved.txt", ...sets.map((set) => set.output)].sort();
+    if (JSON.stringify(topLevel) !== JSON.stringify(expectedTopLevel)) throw new Error("HTML export left unexpected top-level artifacts.");
+    for (const destination of destinations) {
+      const entries = await readdir(destination);
+      if (!entries.includes("slide.html")) throw new Error(`HTML bundle is missing slide.html: ${destination}`);
+    }
+
+    browser = await openOwnedChrome(join(evidenceRoot, "chrome-profile"));
     const page = await browser.openPage();
     try {
-      for (let index = 0; index < sets.length; index += 1) {
+      for (let index = 0; index < fortyCount; index += 1) {
         for (const width of viewportWidths) {
           const observation = await page.measure({
             schoolIndex: index + 1,
@@ -146,8 +167,16 @@ export async function runHtmlBatchBrowserAcceptance({ evidenceRoot: requestedRoo
     } finally {
       await page.close();
     }
+  } catch (error) {
+    infrastructureFailures.push({ message: error?.message ?? String(error), code: error?.code });
   } finally {
-    browserExit = await browser.close();
+    if (browser) {
+      try {
+        browserExit = await browser.close();
+      } catch (error) {
+        infrastructureFailures.push({ message: `Browser cleanup failed: ${error?.message ?? String(error)}`, code: error?.code });
+      }
+    }
   }
 
   const result = {
@@ -160,7 +189,8 @@ export async function runHtmlBatchBrowserAcceptance({ evidenceRoot: requestedRoo
     generatedBundles: destinations.map((destination) => relativePath(evidenceRoot, destination)),
     preservedUnrelatedEntry: relativePath(evidenceRoot, join(bundleRoot, "unrelated-preserved.txt")),
     screenshotCount: screenshotNames.size,
-    browser: { executable: chromePath, terminated: true, exit: browserExit },
+    infrastructureFailures,
+    browser: { executable: chromePath, ...(browserExit ?? { terminated: false, observedExit: false, exit: null }) },
   };
   await writeFile(join(evidenceRoot, "measurements.json"), safeJson({
     ...result,
@@ -203,13 +233,13 @@ async function openOwnedChrome(profileDirectory) {
         } catch {}
         await browser.close();
         if (!child.killed) child.kill("SIGTERM");
-        return waitForChild(closed, child);
+        return waitForChildExit(closed, child);
       },
     };
   } catch (error) {
     await browser?.close();
     if (!child.killed) child.kill("SIGTERM");
-    await waitForChild(closed, child);
+    await waitForChildExit(closed, child);
     throw error;
   }
 }
@@ -294,45 +324,94 @@ function createPageController(page) {
   };
 }
 
-async function waitForChild(closed, child) {
-  const exited = await Promise.race([
-    closed.then(() => true),
-    new Promise((resolve) => setTimeout(() => resolve(false), 5000)),
-  ]);
-  if (exited) return closed;
-  if (!exited) {
-    child.kill("SIGKILL");
-    const forcedExit = await Promise.race([closed, new Promise((resolve) => setTimeout(resolve, 1000))]);
-    return forcedExit ?? { code: null, signal: "SIGKILL", forced: true };
-  }
+export async function waitForChildExit(exitPromise, child, { gracefulTimeoutMs = 5000, forcedTimeoutMs = 1000 } = {}) {
+  const observed = await settleWithin(exitPromise, gracefulTimeoutMs);
+  if (!observed.timedOut) return { terminated: true, observedExit: true, forced: false, exit: observed.value };
+  child.kill("SIGKILL");
+  const forcedExit = await settleWithin(exitPromise, forcedTimeoutMs);
+  if (!forcedExit.timedOut) return { terminated: true, observedExit: true, forced: true, exit: forcedExit.value };
+  return {
+    terminated: false,
+    observedExit: false,
+    forced: true,
+    exit: null,
+    failure: "Child exit was not observed after forced termination.",
+  };
 }
 
-async function devtoolsUrl(child) {
-  let output = "";
-  for await (const chunk of child.stderr) {
-    output += chunk;
-    const match = output.match(/DevTools listening on (ws:\/\/[^\s]+)/u);
-    if (match) return match[1];
-    if (output.length > 32_000) output = output.slice(-16_000);
-  }
-  throw new Error(`Chrome exited before exposing DevTools: ${output}`);
+function settleWithin(promise, timeoutMs) {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      resolve({ timedOut: true });
+    }, timeoutMs);
+    Promise.resolve(promise).then((value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve({ timedOut: false, value });
+    }, (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(error);
+    });
+  });
 }
 
-async function waitForTarget(browserWs, targetId) {
+export function timeoutError(label) {
+  const error = new Error(`${label} timed out.`);
+  error.code = "CANVAS_BROWSER_TIMEOUT";
+  return error;
+}
+
+async function devtoolsUrl(child, { timeoutMs = DEVTOOLS_TIMEOUT_MS } = {}) {
+  return new Promise((resolvePromise, rejectPromise) => {
+    let output = "";
+    let settled = false;
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      child.stderr.off("data", onData);
+      child.off("exit", onExit);
+      child.off("error", onError);
+      callback(value);
+    };
+    const onData = (chunk) => {
+      output += chunk;
+      const match = output.match(/DevTools listening on (ws:\/\/[^\s]+)/u);
+      if (match) finish(resolvePromise, match[1]);
+      if (output.length > 32_000) output = output.slice(-16_000);
+    };
+    const onExit = () => finish(rejectPromise, new Error(`Chrome exited before exposing DevTools: ${output}`));
+    const onError = (error) => finish(rejectPromise, error);
+    const timer = setTimeout(() => finish(rejectPromise, timeoutError("DevTools discovery")), timeoutMs);
+    child.stderr.on("data", onData);
+    child.once("exit", onExit);
+    child.once("error", onError);
+  });
+}
+
+async function waitForTarget(browserWs, targetId, { timeoutMs = DEVTOOLS_TIMEOUT_MS } = {}) {
   const endpoint = new URL(browserWs);
-  for (let attempt = 0; attempt < 100; attempt += 1) {
-    const response = await fetch(`http://${endpoint.host}/json/list`).catch(() => null);
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const remaining = Math.max(1, deadline - Date.now());
+    const response = await fetch(`http://${endpoint.host}/json/list`, { signal: AbortSignal.timeout(Math.min(1000, remaining)) }).catch(() => null);
     if (response?.ok) {
       const target = (await response.json()).find((candidate) => candidate.id === targetId);
       if (target) return target;
     }
-    await new Promise((resolve) => setTimeout(resolve, 25));
+    await new Promise((resolve) => setTimeout(resolve, Math.min(25, remaining)));
   }
-  throw new Error(`Chrome target ${targetId} did not become available.`);
+  throw timeoutError(`Chrome target ${targetId} discovery`);
 }
 
-function connectCdp(url) {
-  const socket = new WebSocket(url);
+export function connectCdp(url, { openTimeoutMs = CDP_OPEN_TIMEOUT_MS, WebSocketImpl = WebSocket } = {}) {
+  const socket = new WebSocketImpl(url);
   let nextId = 1;
   const pending = new Map();
   const listeners = new Map();
@@ -341,16 +420,34 @@ function connectCdp(url) {
   let socketClosedResolve;
   const closed = new Promise((resolve) => { socketClosedResolve = resolve; });
   const opened = new Promise((resolve, reject) => {
-    socket.addEventListener("open", resolve, { once: true });
-    socket.addEventListener("error", reject, { once: true });
+    let settled = false;
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      socket.removeEventListener("open", onOpen);
+      socket.removeEventListener("error", onError);
+      callback(value);
+    };
+    const onOpen = () => finish(resolve);
+    const onError = (error) => finish(reject, error);
+    const timer = setTimeout(() => finish(reject, timeoutError("CDP connection open")), openTimeoutMs);
+    socket.addEventListener("open", onOpen);
+    socket.addEventListener("error", onError);
   });
   socket.addEventListener("close", () => {
     socketClosed = true;
     socketClosedResolve();
     const error = new Error("Browser connection closed");
-    for (const waiter of pending.values()) waiter.reject(error);
+    for (const waiter of pending.values()) {
+      clearTimeout(waiter.timer);
+      waiter.reject(error);
+    }
     pending.clear();
-    for (const entries of waiters.values()) for (const waiter of entries) waiter.reject(error);
+    for (const entries of waiters.values()) for (const waiter of entries) {
+      clearTimeout(waiter.timer);
+      waiter.reject(error);
+    }
     waiters.clear();
   });
   socket.addEventListener("message", (event) => {
@@ -367,17 +464,37 @@ function connectCdp(url) {
     for (const listener of listeners.get(message.method) ?? []) listener(message.params);
   });
   return {
-    async send(method, params = {}) {
+    async send(method, params = {}, { timeoutMs = CDP_COMMAND_TIMEOUT_MS } = {}) {
       await opened;
       const id = nextId++;
-      const result = new Promise((resolve, reject) => pending.set(id, { resolve, reject }));
+      const result = new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+          pending.delete(id);
+          reject(timeoutError(`CDP command ${method}`));
+        }, timeoutMs);
+        pending.set(id, {
+          timer,
+          resolve: (value) => { clearTimeout(timer); resolve(value); },
+          reject: (error) => { clearTimeout(timer); reject(error); },
+        });
+      });
       socket.send(JSON.stringify({ id, method, params }));
       return result;
     },
-    once(method) {
+    once(method, { timeoutMs = CDP_EVENT_TIMEOUT_MS } = {}) {
       return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+          const current = waiters.get(method) ?? [];
+          waiters.set(method, current.filter((entry) => entry !== waiter));
+          reject(timeoutError(`CDP event ${method}`));
+        }, timeoutMs);
+        const waiter = {
+          timer,
+          resolve: (value) => { clearTimeout(timer); resolve(value); },
+          reject: (error) => { clearTimeout(timer); reject(error); },
+        };
         const current = waiters.get(method) ?? [];
-        current.push({ resolve, reject });
+        current.push(waiter);
         waiters.set(method, current);
       });
     },
@@ -388,6 +505,11 @@ function connectCdp(url) {
     },
     async close() {
       if (!socketClosed) {
+        const error = new Error("Browser connection closed");
+        for (const waiter of pending.values()) waiter.reject(error);
+        pending.clear();
+        for (const entries of waiters.values()) for (const waiter of entries) waiter.reject(error);
+        waiters.clear();
         socket.close();
         await Promise.race([closed, new Promise((resolve) => setTimeout(resolve, 1000))]);
       }
@@ -399,6 +521,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const researchRoot = fileURLToPath(new URL("../research/luna-html-batch-browser-20260906/", import.meta.url));
   await mkdir(researchRoot, { recursive: true });
   const evidenceRoot = await mkdtemp(join(researchRoot, "run-"));
-  const result = await runHtmlBatchBrowserAcceptance({ evidenceRoot });
-  console.log(safeJson({ evidenceRoot: relativePath(researchRoot, evidenceRoot), browser: result.browser, observations: result.observations.length, pass: result.observations.filter((entry) => entry.status === "pass").length, mismatch: result.observations.filter((entry) => entry.status !== "pass").length }));
+  try {
+    const result = await runHtmlBatchBrowserAcceptance({ evidenceRoot });
+    const exitCode = runnerExitCode(result);
+    process.exitCode = exitCode;
+    console.log(safeJson({ evidenceRoot: relativePath(researchRoot, evidenceRoot), browser: result.browser, observations: result.observations.length, pass: result.observations.filter((entry) => entry.status === "pass").length, mismatch: result.observations.filter((entry) => entry.status !== "pass").length, infrastructureFailures: result.infrastructureFailures.length, exitCode }));
+  } catch (error) {
+    process.exitCode = 1;
+    console.error(`HTML batch browser runner failed: ${error?.stack ?? error}`);
+  }
 }
