@@ -197,11 +197,20 @@ test("resolved resource object types and subtypes are checked per operator", asy
 });
 
 test("Form XObjects retain the explicit outside-subset error while non-images get subtype errors", async () => {
-  const form = await resourceFixture("/Form Do", "XObject", "Form", (pdf) => pdf.context.obj({ Type: "XObject", Subtype: "Form" }));
+  const form = await resourceFixture("/Form Do", "XObject", "Form", (pdf) => pdf.context.stream(new Uint8Array(), { Type: "XObject", Subtype: "Form" }));
   const formReport = await preflightPdfx4(form);
   assert.ok(contentIssues(formReport).includes("FORM_XOBJECT_OUTSIDE_SUBSET"));
+  const dictionaryForm = await resourceFixture("/Form Do", "XObject", "Form", (pdf) => pdf.context.obj({ Type: "XObject", Subtype: "Form" }));
+  assert.ok(contentIssues(await preflightPdfx4(dictionaryForm)).includes("CONTENT_RESOURCE_TYPE_INVALID"));
   const nonImage = await resourceFixture("/Other Do", "XObject", "Other", (pdf) => pdf.context.stream(new Uint8Array(), { Type: "XObject", Subtype: "PS" }));
   assert.ok(contentIssues(await preflightPdfx4(nonImage)).includes("CONTENT_RESOURCE_SUBTYPE_INVALID"));
+});
+
+test("dangling indirect named resources remain unresolved after serialized lookup", async () => {
+  const bytes = await resourceFixture("/GS gs", "ExtGState", "GS", (pdf) => pdf.context.nextRef());
+  const report = await preflightPdfx4(bytes);
+  assert.ok(contentIssues(report).includes("CONTENT_RESOURCE_UNRESOLVED"));
+  assert.ok(!contentIssues(report).includes("CONTENT_RESOURCE_TYPE_INVALID"));
 });
 
 test("graphics, text, and marked-content state spans 2-3 content streams", async () => {

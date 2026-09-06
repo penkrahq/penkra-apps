@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFRawStream, PDFRef, PDFString, decodePDFRawStream } from "pdf-lib";
+import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNull, PDFNumber, PDFRawStream, PDFRef, PDFString, decodePDFRawStream } from "pdf-lib";
 import { inspectPdfxMetadata } from "./pdfx-metadata.mjs";
 import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
 import { readPdfContent } from "./pdf-content.mjs";
@@ -323,15 +323,18 @@ function inspectNamedContentResource(operator, resourceName, resources, location
   const category = get(resources, categories[operator]);
   const raw = category instanceof PDFDict ? category.get(PDFName.of(resourceName)) : undefined;
   if (raw === undefined) { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
-  const value = resolve(raw);
+  let value;
+  try { value = resolve(raw); }
+  catch { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
+  if (value === undefined || value === null || value === PDFNull) { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
   if (operator === "gs") {
     if (!(value instanceof PDFDict)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
     else if (get(value, "Type") !== undefined && name(get(value, "Type")) !== "ExtGState") add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
     return;
   }
   if (operator === "Do") {
-    if (value instanceof PDFDict && name(get(value, "Subtype")) === "Form") add("FORM_XOBJECT_OUTSIDE_SUBSET", "6.1", location);
-    else if (!(value instanceof PDFRawStream)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    if (!(value instanceof PDFRawStream)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    else if (name(get(value.dict, "Subtype")) === "Form") add("FORM_XOBJECT_OUTSIDE_SUBSET", "6.1", location);
     else if (name(get(value.dict, "Subtype")) !== "Image") add("CONTENT_RESOURCE_SUBTYPE_INVALID", "6.1", location);
     return;
   }
