@@ -1,0 +1,39 @@
+{
+  "caseId": "10",
+  "density": 320,
+  "fontScale": 1,
+  "scale": 2,
+  "referencePath": "canvas/research/luna-android-layout-20260906/case-10/reference-320.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-android/canvas/research/luna-android-layout-20260906/case-10/capture-320-font-1.png",
+  "expectedBounds": {
+    "ellipse": {
+      "x": 240,
+      "y": 100,
+      "width": 192,
+      "height": 192,
+      "color": "#f4a261"
+    }
+  },
+  "observedBounds": {
+    "ellipse": {
+      "x": 20,
+      "y": 100,
+      "width": 192,
+      "height": 192,
+      "interiorPixels": 28656
+    }
+  },
+  "comparedPixels": 28458,
+  "mismatchedPixels": 3,
+  "status": "fail",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": [
+    {
+      "id": "ellipse",
+      "coordinate": "x",
+      "expected": 240,
+      "observed": 20
+    }
+  ]
+}

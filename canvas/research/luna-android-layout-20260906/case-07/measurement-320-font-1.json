@@ -1,0 +1,79 @@
+{
+  "caseId": "07",
+  "density": 320,
+  "fontScale": 1,
+  "scale": 2,
+  "referencePath": "canvas/research/luna-android-layout-20260906/case-07/reference-320.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-android/canvas/research/luna-android-layout-20260906/case-07/capture-320-font-1.png",
+  "expectedBounds": {
+    "child-1": {
+      "x": 200,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 300,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 400,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "color": "#2a9d8f"
+    }
+  },
+  "observedBounds": {
+    "child-1": {
+      "x": 20,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "child-2": {
+      "x": 120,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "child-3": {
+      "x": 220,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    }
+  },
+  "comparedPixels": 12768,
+  "mismatchedPixels": 0,
+  "status": "fail",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": [
+    {
+      "id": "child-1",
+      "coordinate": "x",
+      "expected": 200,
+      "observed": 20
+    },
+    {
+      "id": "child-2",
+      "coordinate": "x",
+      "expected": 300,
+      "observed": 120
+    },
+    {
+      "id": "child-3",
+      "coordinate": "x",
+      "expected": 400,
+      "observed": 220
+    }
+  ]
+}

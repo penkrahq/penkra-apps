@@ -1,0 +1,99 @@
+{
+  "caseId": "11",
+  "density": 320,
+  "fontScale": 2,
+  "scale": 2,
+  "referencePath": "canvas/research/luna-android-layout-20260906/case-11/reference-320.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-android/canvas/research/luna-android-layout-20260906/case-11/capture-320-font-2.png",
+  "expectedBounds": {
+    "child-1": {
+      "x": 190,
+      "y": 100,
+      "width": 120,
+      "height": 60,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 310,
+      "y": 100,
+      "width": 120,
+      "height": 60,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 190,
+      "y": 160,
+      "width": 120,
+      "height": 60,
+      "color": "#2a9d8f"
+    },
+    "child-4": {
+      "x": 310,
+      "y": 160,
+      "width": 120,
+      "height": 60,
+      "color": "#cc5500"
+    }
+  },
+  "observedBounds": {
+    "child-1": {
+      "x": 190,
+      "y": 100,
+      "width": 120,
+      "height": 60,
+      "interiorPixels": 7200
+    },
+    "child-2": {
+      "x": 330,
+      "y": 100,
+      "width": 120,
+      "height": 60,
+      "interiorPixels": 7200
+    },
+    "child-3": {
+      "x": 190,
+      "y": 200,
+      "width": 120,
+      "height": 60,
+      "interiorPixels": 7200
+    },
+    "child-4": {
+      "x": 330,
+      "y": 200,
+      "width": 120,
+      "height": 60,
+      "interiorPixels": 7200
+    }
+  },
+  "comparedPixels": 25984,
+  "mismatchedPixels": 0,
+  "status": "fail",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": [
+    {
+      "id": "child-2",
+      "coordinate": "x",
+      "expected": 310,
+      "observed": 330
+    },
+    {
+      "id": "child-3",
+      "coordinate": "y",
+      "expected": 160,
+      "observed": 200
+    },
+    {
+      "id": "child-4",
+      "coordinate": "x",
+      "expected": 310,
+      "observed": 330
+    },
+    {
+      "id": "child-4",
+      "coordinate": "y",
+      "expected": 160,
+      "observed": 200
+    }
+  ]
+}

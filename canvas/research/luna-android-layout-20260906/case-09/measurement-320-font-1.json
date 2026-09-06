@@ -1,0 +1,99 @@
+{
+  "caseId": "09",
+  "density": 320,
+  "fontScale": 1,
+  "scale": 2,
+  "referencePath": "canvas/research/luna-android-layout-20260906/case-09/reference-320.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-android/canvas/research/luna-android-layout-20260906/case-09/capture-320-font-1.png",
+  "expectedBounds": {
+    "cell-1": {
+      "x": 20,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "color": "#123456"
+    },
+    "cell-2": {
+      "x": 240,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "color": "#f4a261"
+    },
+    "cell-3": {
+      "x": 20,
+      "y": 250,
+      "width": 80,
+      "height": 60,
+      "color": "#2a9d8f"
+    },
+    "cell-4": {
+      "x": 240,
+      "y": 250,
+      "width": 80,
+      "height": 60,
+      "color": "#cc5500"
+    }
+  },
+  "observedBounds": {
+    "cell-1": {
+      "x": 20,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "cell-2": {
+      "x": 350,
+      "y": 100,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "cell-3": {
+      "x": 20,
+      "y": 190,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "cell-4": {
+      "x": 350,
+      "y": 190,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    }
+  },
+  "comparedPixels": 17024,
+  "mismatchedPixels": 0,
+  "status": "fail",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": [
+    {
+      "id": "cell-2",
+      "coordinate": "x",
+      "expected": 240,
+      "observed": 350
+    },
+    {
+      "id": "cell-3",
+      "coordinate": "y",
+      "expected": 250,
+      "observed": 190
+    },
+    {
+      "id": "cell-4",
+      "coordinate": "x",
+      "expected": 240,
+      "observed": 350
+    },
+    {
+      "id": "cell-4",
+      "coordinate": "y",
+      "expected": 250,
+      "observed": 190
+    }
+  ]
+}

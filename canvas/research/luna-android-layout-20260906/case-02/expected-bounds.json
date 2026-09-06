@@ -1,0 +1,26 @@
+{
+  "caseId": "02",
+  "expectedBounds": {
+    "child-1": {
+      "x": 110,
+      "y": 45,
+      "width": 40,
+      "height": 30,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 110,
+      "y": 87,
+      "width": 40,
+      "height": 30,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 110,
+      "y": 129,
+      "width": 40,
+      "height": 30,
+      "color": "#2a9d8f"
+    }
+  }
+}

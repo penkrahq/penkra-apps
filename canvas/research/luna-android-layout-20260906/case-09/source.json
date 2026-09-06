@@ -1,0 +1,83 @@
+{
+  "version": "2.17",
+  "module": "mobile",
+  "axes": {},
+  "variables": {},
+  "paragraphStyles": {},
+  "imports": {},
+  "flows": [],
+  "children": [
+    {
+      "id": "luna-case-09",
+      "type": "frame",
+      "role": "android",
+      "name": "Mobile Fixture",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 300,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "container",
+          "type": "frame",
+          "x": 10,
+          "y": 50,
+          "width": 320,
+          "height": 200,
+          "fill": "#FFFFFF",
+          "layout": "grid",
+          "gridTemplateColumns": [
+            100,
+            180
+          ],
+          "gridTemplateRows": [
+            60,
+            100
+          ],
+          "columnGap": 10,
+          "rowGap": 15,
+          "children": [
+            {
+              "id": "cell-1",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#123456",
+              "gridColumn": 1,
+              "gridRow": 1
+            },
+            {
+              "id": "cell-2",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#f4a261",
+              "gridColumn": 2,
+              "gridRow": 1
+            },
+            {
+              "id": "cell-3",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#2a9d8f",
+              "gridColumn": 1,
+              "gridRow": 2
+            },
+            {
+              "id": "cell-4",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#cc5500",
+              "gridColumn": 2,
+              "gridRow": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

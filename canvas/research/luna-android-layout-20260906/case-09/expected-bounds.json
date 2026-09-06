@@ -1,0 +1,33 @@
+{
+  "caseId": "09",
+  "expectedBounds": {
+    "cell-1": {
+      "x": 10,
+      "y": 50,
+      "width": 40,
+      "height": 30,
+      "color": "#123456"
+    },
+    "cell-2": {
+      "x": 120,
+      "y": 50,
+      "width": 40,
+      "height": 30,
+      "color": "#f4a261"
+    },
+    "cell-3": {
+      "x": 10,
+      "y": 125,
+      "width": 40,
+      "height": 30,
+      "color": "#2a9d8f"
+    },
+    "cell-4": {
+      "x": 120,
+      "y": 125,
+      "width": 40,
+      "height": 30,
+      "color": "#cc5500"
+    }
+  }
+}

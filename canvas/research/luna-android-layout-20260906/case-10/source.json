@@ -1,0 +1,56 @@
+{
+  "version": "2.17",
+  "module": "mobile",
+  "axes": {},
+  "variables": {},
+  "paragraphStyles": {},
+  "imports": {},
+  "flows": [],
+  "children": [
+    {
+      "id": "luna-case-10",
+      "type": "frame",
+      "role": "android",
+      "name": "Mobile Fixture",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 300,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "container",
+          "type": "frame",
+          "x": 10,
+          "y": 50,
+          "width": 320,
+          "height": 200,
+          "fill": "#FFFFFF",
+          "layout": "grid",
+          "gridTemplateColumns": [
+            100,
+            180
+          ],
+          "gridTemplateRows": [
+            60,
+            100
+          ],
+          "columnGap": 10,
+          "rowGap": 15,
+          "children": [
+            {
+              "id": "ellipse",
+              "type": "ellipse",
+              "width": 96,
+              "height": 96,
+              "fill": "#f4a261",
+              "gridColumn": 2,
+              "gridRow": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

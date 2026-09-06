@@ -1,0 +1,99 @@
+{
+  "caseId": "09",
+  "density": 420,
+  "fontScale": 2,
+  "scale": 2.625,
+  "referencePath": "canvas/research/luna-android-layout-20260906/case-09/reference-420.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-android/canvas/research/luna-android-layout-20260906/case-09/capture-420-font-2.png",
+  "expectedBounds": {
+    "cell-1": {
+      "x": 26,
+      "y": 131,
+      "width": 105,
+      "height": 79,
+      "color": "#123456"
+    },
+    "cell-2": {
+      "x": 315,
+      "y": 131,
+      "width": 105,
+      "height": 79,
+      "color": "#f4a261"
+    },
+    "cell-3": {
+      "x": 26,
+      "y": 328,
+      "width": 105,
+      "height": 79,
+      "color": "#2a9d8f"
+    },
+    "cell-4": {
+      "x": 315,
+      "y": 328,
+      "width": 105,
+      "height": 79,
+      "color": "#cc5500"
+    }
+  },
+  "observedBounds": {
+    "cell-1": {
+      "x": 26,
+      "y": 131,
+      "width": 105,
+      "height": 79,
+      "interiorPixels": 8295
+    },
+    "cell-2": {
+      "x": 459,
+      "y": 131,
+      "width": 105,
+      "height": 79,
+      "interiorPixels": 8295
+    },
+    "cell-3": {
+      "x": 26,
+      "y": 249,
+      "width": 105,
+      "height": 79,
+      "interiorPixels": 8295
+    },
+    "cell-4": {
+      "x": 459,
+      "y": 249,
+      "width": 105,
+      "height": 79,
+      "interiorPixels": 8295
+    }
+  },
+  "comparedPixels": 30300,
+  "mismatchedPixels": 0,
+  "status": "fail",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": [
+    {
+      "id": "cell-2",
+      "coordinate": "x",
+      "expected": 315,
+      "observed": 459
+    },
+    {
+      "id": "cell-3",
+      "coordinate": "y",
+      "expected": 328,
+      "observed": 249
+    },
+    {
+      "id": "cell-4",
+      "coordinate": "x",
+      "expected": 315,
+      "observed": 459
+    },
+    {
+      "id": "cell-4",
+      "coordinate": "y",
+      "expected": 328,
+      "observed": 249
+    }
+  ]
+}

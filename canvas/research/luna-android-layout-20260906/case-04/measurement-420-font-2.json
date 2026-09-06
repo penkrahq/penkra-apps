@@ -1,0 +1,60 @@
+{
+  "caseId": "04",
+  "density": 420,
+  "fontScale": 2,
+  "scale": 2.625,
+  "referencePath": "canvas/research/luna-android-layout-20260906/case-04/reference-420.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-android/canvas/research/luna-android-layout-20260906/case-04/capture-420-font-2.png",
+  "expectedBounds": {
+    "child-1": {
+      "x": 26,
+      "y": 263,
+      "width": 105,
+      "height": 53,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 131,
+      "y": 236,
+      "width": 105,
+      "height": 105,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 236,
+      "y": 210,
+      "width": 105,
+      "height": 158,
+      "color": "#2a9d8f"
+    }
+  },
+  "observedBounds": {
+    "child-1": {
+      "x": 26,
+      "y": 262,
+      "width": 105,
+      "height": 53,
+      "interiorPixels": 5565
+    },
+    "child-2": {
+      "x": 131,
+      "y": 236,
+      "width": 105,
+      "height": 105,
+      "interiorPixels": 11025
+    },
+    "child-3": {
+      "x": 236,
+      "y": 210,
+      "width": 105,
+      "height": 158,
+      "interiorPixels": 16590
+    }
+  },
+  "comparedPixels": 30704,
+  "mismatchedPixels": 0,
+  "status": "pass",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": []
+}
