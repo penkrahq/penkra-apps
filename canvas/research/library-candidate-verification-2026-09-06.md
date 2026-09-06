@@ -2,6 +2,10 @@
 
 This records implementation evidence, not a replacement plan. The protected Canvas TODO and architecture/operation instructions were not edited.
 
+## Accepted-content retention decision
+
+On 2026-09-06 the user approved preserving content already accepted into a consuming document after source-library deletion or access revocation. New imports and future updates still require source access. Sharing the consuming document must not require its readers to separately acquire the original library. Retention concerns accepted imported content and its dependencies, not continuing authority to fetch other source resources. Immutable content may be shared internally; this decision does not require copying an entire source library into every consuming document. The existing in-memory registry and source-access resolver do not yet implement this durable retention contract.
+
 The isolated libraries branch passed **452 tests**, zero failures/cancellations/skips, exit 0, in 146147 ms. Actual Swift and Compose compilation gates ran. Log: `/tmp/canvas-libraries-full-suite-20260906.log`. Focused resolver/publication/token checks passed 38 tests.
 
 The candidate now checks canonical relative asset paths, MIME metadata, byte hashes, duplicate paths, import namespaces, and public resource dependency identities. Public images must have owned asset descriptors; mutable external image URLs cannot enter a public resource without materialization. Change detection includes private tokens and asset identities used by a public resource, but excludes unrelated private edits.
