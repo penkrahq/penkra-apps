@@ -1,18 +1,24 @@
+import { createHash } from "node:crypto";
 import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFRawStream, PDFRef, PDFString, decodePDFRawStream } from "pdf-lib";
 import { inspectPdfxMetadata } from "./pdfx-metadata.mjs";
 import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
+import { readPdfContent } from "./pdf-content.mjs";
+import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
 // Checks serialized objects, not the caller's requested export settings. This is
 // intentionally NOT a general-purpose PDF/X certifier. Remaining checks are
 // returned as data so a clean partial report cannot unlock the profile gate.
 export const PDFX_UNCOVERED = Object.freeze([
-  "6.1/PDF-1.6: complete syntax, operator/resource and architectural-limit validation",
-  "6.4: ICC transform validity and content colour-space compatibility",
-  "6.5: non-Identity-H/TrueType fonts and text in Form XObjects are outside the checked writer subset",
+  "Documents outside the Canvas writer subset: complete PDF 1.6 syntax, operator/resource and architectural-limit validation",
+  "Output profiles other than the hash-pinned ICC Registry GRACoL2013 CRPC6 profile",
+  "Colour spaces other than Canvas DefaultRGB/sRGB2014, DeviceGray and the CMYK output intent",
+  "Non-Identity-H/TrueType fonts and text or graphics in Form XObjects",
   "6.6: font and separation name UTF-8 encoding",
-  "6.10: non-document XMP packets and provenance across incremental updates",
-  "6.13/6.16/6.20/6.23: graphics state, image, transparency and rendering-intent semantics",
+  "Non-document XMP packets and provenance across incremental updates",
+  "Optional content, annotations, forms, embedded files, halftones, transfer functions, PostScript and external streams",
 ]);
+
+const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "m", "l", "c", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
 
 export function inspectPdfxOutputProfile(input) {
   const bytes = new Uint8Array(input);
@@ -36,7 +42,7 @@ export function inspectPdfxOutputProfile(input) {
     const length = view.getUint32(140 + index * 12);
     if (offset < 132 + count * 12 || length < 8 || offset % 4 !== 0 || offset + length > bytes.length) issue("ICC_TAG_RANGE_INVALID");
   }
-  return { deviceClass, colorSpace, channels, issues };
+  return { deviceClass, colorSpace, channels, sha256: createHash("sha256").update(bytes).digest("hex"), issues };
 }
 
 export async function preflightPdfx4(bytes) {
@@ -49,7 +55,14 @@ export async function preflightPdfx4(bytes) {
 async function inspectPdfx4(bytes) {
   const issues = [];
   const add = (code, clause, object) => issues.push({ code, clause, object });
-  const result = () => ({ profile: "PDF/X-4", standard: "ISO 15930-7:2010", status: issues.length ? "invalid" : "incomplete", conformant: false, issues, uncovered: [...PDFX_UNCOVERED] });
+  const result = () => ({
+    profile: "PDF/X-4", standard: "ISO 15930-7:2010",
+    status: issues.length ? "invalid" : "verified-canvas-writer-subset",
+    // This deterministic checker is not a universal third-party PDF/X certifier.
+    conformant: false,
+    canvasWriterSubset: { verified: issues.length === 0, outputCondition: PDFX4_OUTPUT_CONDITION.identifier },
+    issues, uncovered: [...PDFX_UNCOVERED],
+  });
   let pdf;
   try { pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true }); }
   catch { add("PDF_PARSE_FAILED", "6.1", "file"); return result(); }
@@ -58,11 +71,16 @@ async function inspectPdfx4(bytes) {
   const name = (value) => value instanceof PDFName ? value.decodeText() : undefined;
   const string = (value) => typeof value?.decodeText === "function" ? value.decodeText() : undefined;
   if (pdf.isEncrypted || pdf.context.trailerInfo.Encrypt) add("ENCRYPTION_FORBIDDEN", "6.15", "trailer");
+  if (!/^%PDF-1\.6(?:\r\n|\r|\n)/u.test(Buffer.from(bytes).subarray(0, 10).toString("latin1"))) add("PDF_VERSION_UNSUPPORTED", "6.1", "header");
+  const catalogVersion = name(get(pdf.catalog, "Version"));
+  if (catalogVersion && catalogVersion !== "1.6") add("PDF_VERSION_UNSUPPORTED", "6.1", "Catalog/Version");
   const intents = get(pdf.catalog, "OutputIntents");
   const xIntents = intents instanceof PDFArray ? intents.asArray().map(resolve).filter((item) => name(get(item, "S")) === "GTS_PDFX") : [];
-  if (xIntents.length !== 1) add("OUTPUT_INTENT_COUNT", "6.4.2.1", "Catalog/OutputIntents");
+  if (!(intents instanceof PDFArray) || intents.size() !== 1 || xIntents.length !== 1) add("OUTPUT_INTENT_COUNT", "6.4.2.1", "Catalog/OutputIntents");
   for (const intent of xIntents) {
-    if (!string(get(intent, "OutputConditionIdentifier"))?.trim()) add("OUTPUT_CONDITION_MISSING", "6.4.2.1", "OutputIntent");
+    if (string(get(intent, "OutputConditionIdentifier")) !== PDFX4_OUTPUT_CONDITION.identifier
+      || string(get(intent, "RegistryName")) !== PDFX4_OUTPUT_CONDITION.registryName
+      || string(get(intent, "Info")) !== PDFX4_OUTPUT_CONDITION.info) add("OUTPUT_CONDITION_UNSUPPORTED", "6.4.2.1", "OutputIntent");
     if (get(intent, "DestOutputProfileRef")) add("EXTERNAL_OUTPUT_PROFILE", "6.4.2.1", "OutputIntent");
     const profile = get(intent, "DestOutputProfile");
     if (!(profile instanceof PDFRawStream)) add("OUTPUT_PROFILE_MISSING", "6.4.2.1", "OutputIntent");
@@ -71,6 +89,7 @@ async function inspectPdfx4(bytes) {
         const inspection = inspectPdfxOutputProfile(decodePDFRawStream(profile).decode());
         for (const issue of inspection.issues) add(issue.code, issue.clause, "OutputIntent/DestOutputProfile");
         if (get(profile.dict, "N")?.asNumber?.() !== inspection.channels) add("ICC_CHANNEL_COUNT_MISMATCH", "6.4.2.1", "OutputIntent/DestOutputProfile");
+        if (inspection.sha256 !== PDFX4_OUTPUT_CONDITION.profileSha256) add("OUTPUT_PROFILE_UNSUPPORTED", "6.4.2.1", "OutputIntent/DestOutputProfile");
       } catch { add("OUTPUT_PROFILE_UNREADABLE", "6.4.2.1", "OutputIntent/DestOutputProfile"); }
     }
   }
@@ -110,6 +129,8 @@ async function inspectPdfx4(bytes) {
     for (const key of ["CropBox", "BleedBox", "TrimBox", "ArtBox"]) if (boxes.MediaBox && boxes[key] && !encloses(boxes.MediaBox, boxes[key])) add("BOX_OUTSIDE_MEDIA", "6.12", `${path}/${key}`);
     for (const key of ["TrimBox", "ArtBox"]) if (boxes.BleedBox && boxes[key] && !encloses(boxes.BleedBox, boxes[key])) add("TRIM_OUTSIDE_BLEED", "6.12", `${path}/${key}`);
     for (const key of ["TrimBox", "ArtBox", "BleedBox"]) if (boxes.CropBox && boxes[key] && !encloses(boxes.CropBox, boxes[key])) add("BOX_OUTSIDE_CROP", "6.12", `${path}/${key}`);
+    inspectPageColorManagement(page, path, { resolve, get, name, add });
+    inspectPageContent(page, path, { resolve, get, name, add });
   }
   // Traverse inline and indirect dictionaries, including unreachable objects.
   // Rejecting optional features here is a Canvas subset restriction, not a claim
@@ -131,9 +152,17 @@ async function inspectPdfx4(bytes) {
     if (name(get(dict, "Subtype")) === "PS" || name(get(dict, "Subtype2")) === "PS") add("POSTSCRIPT_FORBIDDEN", "6.14", path);
     if (get(dict, "PresSteps")) add("PRESENTATION_FORBIDDEN", "6.22", path);
     if (name(get(dict, "Type")) === "ExtGState") {
-      for (const key of ["TR", "HTP"]) if (get(dict, key)) add("GRAPHICS_STATE_KEY_FORBIDDEN", "6.13", `${path}/${key}`);
+      for (const key of ["TR", "HT", "HTP", "BG", "BG2", "UCR", "UCR2"]) if (get(dict, key)) add("GRAPHICS_STATE_KEY_FORBIDDEN", "6.13", `${path}/${key}`);
       if (get(dict, "TR2") && name(get(dict, "TR2")) !== "Default") add("TRANSFER_FUNCTION_FORBIDDEN", "6.13", path);
       if (get(dict, "RI") && !["RelativeColorimetric", "AbsoluteColorimetric", "Perceptual", "Saturation"].includes(name(get(dict, "RI")))) add("RENDERING_INTENT_INVALID", "6.23", path);
+      for (const key of ["ca", "CA"]) {
+        const value = get(dict, key);
+        if (value !== undefined && (!(value instanceof PDFNumber) || value.asNumber() < 0 || value.asNumber() > 1)) add("TRANSPARENCY_ALPHA_INVALID", "6.20", `${path}/${key}`);
+      }
+      const blend = get(dict, "BM");
+      if (blend && !["Normal", "Compatible"].includes(name(blend))) add("BLEND_MODE_OUTSIDE_SUBSET", "6.20", `${path}/BM`);
+      const mask = get(dict, "SMask");
+      if (mask && name(mask) !== "None") add("SOFT_MASK_OUTSIDE_SUBSET", "6.20", `${path}/SMask`);
     }
     if (get(dict, "OPI") || (name(get(dict, "Subtype")) === "Form" && get(dict, "Ref"))) add("EXTERNAL_RESOURCE_FORBIDDEN", "6.7", path);
     if (name(get(dict, "Type")) === "Font" && name(get(dict, "Subtype")) !== "Type0") {
@@ -153,4 +182,70 @@ async function inspectPdfx4(bytes) {
   const fontReport = inspectPdfxFonts(pdf);
   issues.push(...fontReport.issues);
   return result();
+}
+
+function inspectPageColorManagement(page, path, context) {
+  const { resolve, get, name, add } = context;
+  const resources = resolve(page.node.Resources());
+  const defaultRgb = get(get(resources, "ColorSpace"), "DefaultRGB");
+  const profile = iccProfileFromColorSpace(defaultRgb, resolve, name);
+  if (!(profile instanceof PDFRawStream)) add("DEFAULT_RGB_MISSING", "6.4", `${path}/Resources/ColorSpace/DefaultRGB`);
+  else {
+    try {
+      const bytes = decodePDFRawStream(profile).decode();
+      const hash = createHash("sha256").update(bytes).digest("hex");
+      const header = inspectIccHeader(bytes);
+      if (hash !== CANVAS_SRGB_SOURCE_PROFILE.profileSha256 || header.deviceClass !== "mntr" || header.colorSpace !== CANVAS_SRGB_SOURCE_PROFILE.colorSpace || get(profile.dict, "N")?.asNumber?.() !== 3) add("DEFAULT_RGB_PROFILE_UNSUPPORTED", "6.4", `${path}/Resources/ColorSpace/DefaultRGB`);
+    } catch { add("DEFAULT_RGB_PROFILE_UNREADABLE", "6.4", `${path}/Resources/ColorSpace/DefaultRGB`); }
+  }
+  const group = get(page.node, "Group");
+  if (!(group instanceof PDFDict) || name(get(group, "S")) !== "Transparency" || !(iccProfileFromColorSpace(get(group, "CS"), resolve, name) instanceof PDFRawStream)) add("TRANSPARENCY_GROUP_INVALID", "6.20", `${path}/Group`);
+}
+
+function inspectPageContent(page, path, context) {
+  const { resolve, get, name, add } = context;
+  const contents = get(page.node, "Contents");
+  const streams = contents instanceof PDFArray ? contents.asArray().map(resolve) : contents ? [contents] : [];
+  for (const [index, stream] of streams.entries()) {
+    if (!(stream instanceof PDFRawStream)) { add("CONTENT_STREAM_INVALID", "6.1", `${path}/Contents[${index}]`); continue; }
+    try {
+      const operations = readPdfContent(decodePDFRawStream(stream).decode());
+      for (const operation of operations) {
+        // pdf-lib emits [] 0 d when drawing Canvas's solid rectangle outlines.
+        // Only this reset is established by our writer; other dash patterns
+        // remain outside the generated subset until separately validated.
+        const solidDashReset = operation.operator === "d" && operation.operands.length === 2
+          && operation.operands[0].kind === "array" && operation.operands[0].value.length === 0
+          && operation.operands[1].kind === "number" && operation.operands[1].value === 0;
+        if (!solidDashReset && !ALLOWED_CONTENT_OPERATORS.has(operation.operator)) add("CONTENT_OPERATOR_OUTSIDE_SUBSET", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
+      }
+    } catch { add("CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED", "6.1", `${path}/Contents[${index}]`); }
+  }
+  const xobjects = get(resolve(page.node.Resources()), "XObject");
+  if (!(xobjects instanceof PDFDict)) return;
+  for (const [key, value] of xobjects.entries()) {
+    const object = resolve(value);
+    const objectPath = `${path}/Resources/XObject/${key.decodeText()}`;
+    if (!(object instanceof PDFRawStream)) { add("XOBJECT_UNRESOLVED", "6.3", objectPath); continue; }
+    if (name(get(object.dict, "Subtype")) === "Form") { add("FORM_XOBJECT_OUTSIDE_SUBSET", "6.1", objectPath); continue; }
+    if (name(get(object.dict, "Subtype")) !== "Image") { add("XOBJECT_SUBTYPE_UNSUPPORTED", "6.1", objectPath); continue; }
+    for (const dimension of ["Width", "Height"]) if (!(get(object.dict, dimension) instanceof PDFNumber) || !Number.isInteger(get(object.dict, dimension).asNumber()) || get(object.dict, dimension).asNumber() <= 0) add("IMAGE_DIMENSION_INVALID", "6.16", `${objectPath}/${dimension}`);
+    const bits = get(object.dict, "BitsPerComponent");
+    if (bits && (!(bits instanceof PDFNumber) || ![1, 2, 4, 8, 16].includes(bits.asNumber()))) add("IMAGE_BITS_INVALID", "6.16", `${objectPath}/BitsPerComponent`);
+    const colorSpace = name(get(object.dict, "ColorSpace"));
+    if (colorSpace && !["DeviceRGB", "DeviceGray"].includes(colorSpace)) add("IMAGE_COLOR_SPACE_OUTSIDE_SUBSET", "6.4", `${objectPath}/ColorSpace`);
+  }
+}
+
+function iccProfileFromColorSpace(value, resolve, name) {
+  const space = resolve(value);
+  if (!(space instanceof PDFArray) || space.size() !== 2 || name(resolve(space.get(0))) !== "ICCBased") return null;
+  return resolve(space.get(1));
+}
+
+function inspectIccHeader(input) {
+  const bytes = new Uint8Array(input);
+  if (bytes.length < 128) return {};
+  const ascii = (from, to) => String.fromCharCode(...bytes.subarray(from, to));
+  return { deviceClass: ascii(12, 16), colorSpace: ascii(16, 20) };
 }

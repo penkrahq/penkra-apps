@@ -1,8 +1,11 @@
 import fontkit from "@pdf-lib/fontkit";
-import { createHash } from "node:crypto";
-import { PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rgb, scale, setFillingColor, setFontAndSize, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
+import { createHash, randomUUID } from "node:crypto";
+import { PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rgb, scale, setFillingColor, setFontAndSize, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
 import { scaledVectorCommands } from "../vector-path.mjs";
 import { parseCssColor } from "../canvas-theme.mjs";
+import { preflightPdfx4 } from "./pdfx-preflight.mjs";
+import { PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
+import { serializePdf16 } from "./pdf16-writer.mjs";
 const fontPrograms = new WeakMap();
 
 export async function exportPdf(ir, options = {}) {
@@ -11,12 +14,9 @@ export async function exportPdf(ir, options = {}) {
   pdf.setTitle(options.title ?? "Canvas export");
   if (options.profile === "PDF/A-3") addPdfa3Metadata(pdf, options.title ?? "Canvas export");
   if (options.profile === "PDF/UA-1") addPdfuaMetadata(pdf, options.title ?? "Canvas export", ir.lang ?? "en");
-  if (options.profile === "PDF/X-4") {
-    const error = new Error(`${options.profile} export is blocked until the Canvas standards-based preflight covers and verifies its emitted structure.`);
-    error.code = "CANVAS_PDF_PROFILE_UNVERIFIED";
-    throw error;
-  }
-  if (options.outputIntent) addSrgbOutputIntent(pdf, options.outputIntent, options.profile);
+  if (options.profile === "PDF/X-4") addPdfx4Metadata(pdf, options.title ?? "Canvas export");
+  if (options.outputIntent) addOutputIntent(pdf, options.outputIntent, options.profile);
+  const sourceRgb = options.profile === "PDF/X-4" ? addIccColorSpace(pdf, options.sourceColorProfile, 3, "DeviceRGB") : null;
   const fonts = await embedFonts(pdf, options.fonts ?? {});
   const tagging = options.profile === "PDF/UA-1" ? createTagging(pdf) : null;
   for (const output of ir.outputs) {
@@ -29,6 +29,7 @@ export async function exportPdf(ir, options = {}) {
     const mediaWidth = trimWidth + bleed * 2;
     const mediaHeight = trimHeight + bleed * 2;
     const page = pdf.addPage([mediaWidth, mediaHeight]);
+    if (sourceRgb) addPdfxPageColorManagement(pdf, page, sourceRgb);
     page.node.set(PDFName.of("CropBox"), pdf.context.obj([0, 0, mediaWidth, mediaHeight]));
     page.node.set(PDFName.of("BleedBox"), pdf.context.obj([0, 0, mediaWidth, mediaHeight]));
     page.node.set(PDFName.of("TrimBox"), pdf.context.obj([bleed, bleed, bleed + trimWidth, bleed + trimHeight]));
@@ -62,7 +63,23 @@ export async function exportPdf(ir, options = {}) {
       widths.push(pdf.context.obj([program.font.getGlyph(id).advanceWidth * 1000 / program.font.unitsPerEm]));
     }
   }
-  return new Uint8Array(await pdf.save());
+  const bytes = new Uint8Array(options.profile === "PDF/X-4" ? await serializePdf16(pdf) : await pdf.save());
+  if (options.profile === "PDF/X-4") {
+    const report = await preflightPdfx4(bytes);
+    if (!report.canvasWriterSubset?.verified) {
+      const error = new Error("PDF/X-4 serialization did not pass the Canvas generated-subset preflight.");
+      error.code = "CANVAS_PDF_PROFILE_INVALID";
+      error.preflight = report;
+      throw error;
+    }
+    if (!report.conformant) {
+      const error = new Error("The PDF/X-4 checker still reports incomplete conformance coverage; subset verification cannot authorize publication.");
+      error.code = "CANVAS_PDF_PROFILE_UNVERIFIED";
+      error.preflight = report;
+      throw error;
+    }
+  }
+  return bytes;
 }
 
 async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
@@ -227,11 +244,58 @@ function pdfColor(value) { const { r, g, b } = colorChannels(value); return rgb(
 function colorAlpha(value) { return value ? colorChannels(value).a : 1; }
 function toPoints(value, unit) { if (unit === "in") return value * 72; if (unit === "mm") return value / 25.4 * 72; return value * 0.75; }
 
-function addSrgbOutputIntent(pdf, profileBytes, profile) {
-  const stream = pdf.context.flateStream(profileBytes, { N: PDFNumber.of(3), Alternate: PDFName.of("DeviceRGB") });
+function addOutputIntent(pdf, profileBytes, profile) {
+  const pdfx = profile === "PDF/X-4";
+  const channels = pdfx ? PDFX4_OUTPUT_CONDITION.channels : 3;
+  const alternate = pdfx ? "DeviceCMYK" : "DeviceRGB";
+  const stream = pdf.context.flateStream(profileBytes, { N: PDFNumber.of(channels), Alternate: PDFName.of(alternate) });
   const streamRef = pdf.context.register(stream);
-  const intent = pdf.context.obj({ Type: "OutputIntent", S: profile === "PDF/X-4" ? "GTS_PDFX" : "GTS_PDFA1", OutputConditionIdentifier: PDFString.of("sRGB IEC61966-2.1"), RegistryName: PDFString.of("https://www.color.org"), Info: PDFString.of("ICC sRGB2014"), DestOutputProfile: streamRef });
+  const intent = pdf.context.obj(pdfx ? {
+    Type: "OutputIntent", S: "GTS_PDFX",
+    OutputCondition: PDFString.of(PDFX4_OUTPUT_CONDITION.condition),
+    OutputConditionIdentifier: PDFString.of(PDFX4_OUTPUT_CONDITION.identifier),
+    RegistryName: PDFString.of(PDFX4_OUTPUT_CONDITION.registryName),
+    Info: PDFString.of(PDFX4_OUTPUT_CONDITION.info), DestOutputProfile: streamRef,
+  } : { Type: "OutputIntent", S: "GTS_PDFA1", OutputConditionIdentifier: PDFString.of("sRGB IEC61966-2.1"), RegistryName: PDFString.of("https://www.color.org"), Info: PDFString.of("ICC sRGB2014"), DestOutputProfile: streamRef });
   pdf.catalog.set(PDFName.of("OutputIntents"), pdf.context.obj([intent]));
+}
+
+function addIccColorSpace(pdf, profileBytes, channels, alternate) {
+  if (!profileBytes) throw profileError("PDF/X-4 requires the bundled source RGB profile.");
+  const stream = pdf.context.register(pdf.context.flateStream(profileBytes, { N: PDFNumber.of(channels), Alternate: PDFName.of(alternate) }));
+  return pdf.context.register(pdf.context.obj([PDFName.of("ICCBased"), stream]));
+}
+
+function addPdfxPageColorManagement(pdf, page, sourceRgb) {
+  const resources = page.node.Resources();
+  let colorSpaces = resources.lookupMaybe(PDFName.of("ColorSpace"), PDFDict);
+  if (!colorSpaces) {
+    colorSpaces = pdf.context.obj({});
+    resources.set(PDFName.of("ColorSpace"), colorSpaces);
+  }
+  colorSpaces.set(PDFName.of("DefaultRGB"), sourceRgb);
+  page.node.set(PDFName.of("Group"), pdf.context.obj({ S: "Transparency", CS: sourceRgb, I: false, K: false }));
+}
+
+function addPdfx4Metadata(pdf, title) {
+  const now = new Date();
+  // PDF Info dates have second precision; XMP must describe the same instant.
+  now.setUTCMilliseconds(0);
+  const timestamp = now.toISOString();
+  const documentId = `uuid:${randomUUID()}`;
+  const fileId = PDFHexString.of(createHash("md5").update(documentId).digest("hex"));
+  pdf.setTitle(title);
+  pdf.setCreator("Canvas");
+  pdf.setProducer("Canvas PDF exporter");
+  pdf.setCreationDate(now);
+  pdf.setModificationDate(now);
+  pdf.context.trailerInfo.ID = pdf.context.obj([fileId, fileId]);
+  const info = pdf.context.lookup(pdf.context.trailerInfo.Info);
+  info.set(PDFName.of("Trapped"), PDFName.of("False"));
+  info.set(PDFName.of("GTS_PDFXVersion"), PDFString.of("PDF/X-4"));
+  const xml = `<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>\n<x:xmpmeta xmlns:x="adobe:ns:meta/"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Description rdf:about="" xmlns:pdfxid="http://www.npes.org/pdfx/ns/id/" xmlns:pdf="http://ns.adobe.com/pdf/1.3/" xmlns:xmp="http://ns.adobe.com/xap/1.0/" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/" xmlns:dc="http://purl.org/dc/elements/1.1/" pdfxid:GTS_PDFXVersion="PDF/X-4" pdf:Trapped="False" pdf:Producer="Canvas PDF exporter" xmp:CreatorTool="Canvas" xmp:CreateDate="${timestamp}" xmp:ModifyDate="${timestamp}" xmp:MetadataDate="${timestamp}" xmpMM:DocumentID="${documentId}" xmpMM:VersionID="1" xmpMM:RenditionClass="proof:pdfx"><dc:title><rdf:Alt><rdf:li xml:lang="x-default">${xmlEscape(title)}</rdf:li></rdf:Alt></dc:title></rdf:Description></rdf:RDF></x:xmpmeta>\n<?xpacket end="w"?>`;
+  const stream = pdf.context.stream(new TextEncoder().encode(xml), { Type: PDFName.of("Metadata"), Subtype: PDFName.of("XML") });
+  pdf.catalog.set(PDFName.of("Metadata"), pdf.context.register(stream));
 }
 
 function addPdfa3Metadata(pdf, title) {

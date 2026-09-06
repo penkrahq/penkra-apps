@@ -39,5 +39,8 @@ Canvas also bundles:
 - ICC sRGB2014 colour profile, distributed and embedded under the International
   Color Consortium's unrestricted profile terms.
   <https://registry.color.org/rgb-registry/srgbprofiles>
+- GRACoL2013 CRPC6 output profile, provided by Idealliance with permission of
+  X-Rite, Inc.; used unchanged as the PDF/X-4 printing output condition.
+  <https://registry.color.org/profile-registry/GRACoL2013_CRPC6>
 
 The complete license texts are included in the packaged `licenses/` directory.

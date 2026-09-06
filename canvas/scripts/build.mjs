@@ -102,6 +102,7 @@ for (const file of [
 await cp(new URL("assets/icon.svg", root), new URL("assets/icon.svg", output));
 await mkdir(new URL("assets/color/", output), { recursive: true });
 await cp(new URL("assets/color/sRGB2014.icc", root), new URL("assets/color/sRGB2014.icc", output));
+await cp(new URL("assets/color/GRACoL2013_CRPC6.icc", root), new URL("assets/color/GRACoL2013_CRPC6.icc", output));
 await cp(new URL("operations/", root), new URL("operations/", output), { recursive: true });
 await cp(new URL("skills/", root), new URL("skills/", output), { recursive: true });
 await cp(
@@ -150,6 +151,7 @@ await cp(
 await cp(new URL("licenses/OpenPencil-LICENSE.txt", root), new URL("licenses/OpenPencil-LICENSE.txt", output));
 await cp(new URL("licenses/Inter-OFL.txt", root), new URL("licenses/Inter-OFL.txt", output));
 await cp(new URL("licenses/ICC-sRGB-profile.txt", root), new URL("licenses/ICC-sRGB-profile.txt", output));
+await cp(new URL("licenses/GRACoL2013-CRPC6-profile.txt", root), new URL("licenses/GRACoL2013-CRPC6-profile.txt", output));
 await cp(
   new URL("node_modules/@fontsource/jetbrains-mono/LICENSE", root),
   new URL("licenses/JetBrains-Mono-OFL.txt", output),

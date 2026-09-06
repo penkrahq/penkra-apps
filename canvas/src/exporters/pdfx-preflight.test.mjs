@@ -8,6 +8,20 @@ import { exportPdf } from "./pdf.mjs";
 const srgb = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
 const codes = (report) => report.issues.map((issue) => issue.code);
 
+test("a clean generated-subset report cannot publish PDF/X while conformance coverage is incomplete", async () => {
+  const printer = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
+  await assert.rejects(() => exportPdf({ outputs: [{ id: "frame", width: 200, height: 300, nodes: [] }] }, {
+    profile: "PDF/X-4", outputIntent: printer, sourceColorProfile: srgb,
+  }), (error) => {
+    assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED");
+    assert.deepEqual(error.preflight.issues, []);
+    assert.equal(error.preflight.canvasWriterSubset.verified, true);
+    assert.equal(error.preflight.conformant, false);
+    assert.ok(error.preflight.uncovered.length > 0);
+    return true;
+  });
+});
+
 test("PDF/X output profile inspection rejects the actual bundled monitor profile", () => {
   const report = inspectPdfxOutputProfile(srgb);
   assert.equal(report.deviceClass, "mntr");
@@ -42,6 +56,15 @@ test("preflight reads serialized bytes and reports missing profile and XMP", asy
   assert.equal((await preflightPdfx4(new Uint8Array([1, 2, 3]))).status, "invalid");
 });
 
+test("PDF 1.6 header is recognized without treating following bytes as part of the version", async () => {
+  const validHeader = await fixture();
+  // Header parser fixture only: this does not establish document conformance.
+  validHeader.set(Buffer.from("%PDF-1.6"));
+  assert.ok(!codes(await preflightPdfx4(validHeader)).includes("PDF_VERSION_UNSUPPORTED"));
+  const wrongVersion = await fixture();
+  assert.ok(codes(await preflightPdfx4(wrongVersion)).includes("PDF_VERSION_UNSUPPORTED"));
+});
+
 test("negative serialized fixtures exercise boxes, actions, font embedding and stream filters", async () => {
   const cases = [
     ["TRIM_OR_ART_REQUIRED", (pdf, page) => page.setArtBox(10, 10, 100, 100)],
@@ -54,6 +77,15 @@ test("negative serialized fixtures exercise boxes, actions, font embedding and s
     ["POSTSCRIPT_FORBIDDEN", (pdf) => pdf.context.register(pdf.context.stream(new Uint8Array(), { Type: "XObject", Subtype: "PS" }))],
   ];
   for (const [expected, change] of cases) assert.ok(codes(await preflightPdfx4(await fixture(change))).includes(expected), expected);
+});
+
+test("content subset permits the emitted solid dash reset but rejects other dash operands", async () => {
+  for (const [content, accepted] of [["[] 0 d", true], ["[2 3] 0 d", false], ["[] 1 d", false], ["0 d", false], ["[] /zero d", false]]) {
+    const bytes = await fixture((pdf, page) => {
+      page.node.set(PDFName.of("Contents"), pdf.context.register(pdf.context.flateStream(Buffer.from(content))));
+    });
+    assert.equal(codes(await preflightPdfx4(bytes)).includes("CONTENT_OPERATOR_OUTSIDE_SUBSET"), !accepted, content);
+  }
 });
 
 test("serialized output intent resolves its compressed ICC bytes, not its label", async () => {

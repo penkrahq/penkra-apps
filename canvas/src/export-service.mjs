@@ -211,9 +211,12 @@ async function buildPdfExtractionIR(document, request, options) {
 }
 
 async function renderPdfExtraction(ir, request, options) {
+  const pdfx = request.profile === "PDF/X-4";
   return exportPdf(ir, {
     title: options.title, profile: request.profile,
-    outputIntent: await readBundledSrgbProfile(), fonts: await readBundledPdfFonts(),
+    outputIntent: pdfx ? await readBundledPdfxProfile() : await readBundledSrgbProfile(),
+    sourceColorProfile: pdfx ? await readBundledSrgbProfile() : undefined,
+    fonts: await readBundledPdfFonts(),
     rasterizeNode: async (id) => {
       const [image] = await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [id] }], options.assets, { scale: 1, maxDimension: 8192, failOnDownscale: true });
       return Buffer.from(image.data, "base64");
@@ -235,6 +238,13 @@ async function readBundledSrgbProfile() {
   catch (error) {
     if (error?.code !== "ENOENT") throw error;
     return readFile(new URL("./assets/color/sRGB2014.icc", import.meta.url));
+  }
+}
+async function readBundledPdfxProfile() {
+  try { return await readFile(new URL("../assets/color/GRACoL2013_CRPC6.icc", import.meta.url)); }
+  catch (error) {
+    if (error?.code !== "ENOENT") throw error;
+    return readFile(new URL("./assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
   }
 }
 async function readBundledPdfFonts() {
