@@ -2,8 +2,9 @@ import { resolveVariableReferences, variableReferences } from "./variable-refere
 
 const CANVAS_EXTENSION = "com.penkra.canvas";
 export const PORTABLE_TOKEN_TYPES = Object.freeze([
-  "color", "dimension", "number", "string", "fontFamily", "duration",
+  "color", "dimension", "number", "fontFamily", "duration",
 ]);
+const CANVAS_TOKEN_TYPES = [...PORTABLE_TOKEN_TYPES, "string"];
 
 export function exportDtcgTokens(variables) {
   validateCanvasVariables(variables);
@@ -23,6 +24,7 @@ export function exportDtcgTokens(variables) {
     const leaf = segments.at(-1);
     if (Object.hasOwn(group, leaf)) throw tokenError(`Token path ${name} collides with another token or group.`);
     const definition = variables[name];
+    if (!PORTABLE_TOKEN_TYPES.includes(definition.tokenType)) throw tokenError(`Canvas token ${name} has no supported DTCG type mapping for ${definition.tokenType}.`);
     Object.defineProperty(group, leaf, { enumerable: true, writable: true, configurable: true, value: {
       $type: definition.tokenType,
       $value: toDtcgValue(definition.cascade[0].value, definition.tokenType),
@@ -68,7 +70,7 @@ export function validateCanvasVariables(variables) {
   const resolveEntry = (owner, index, trail = []) => {
     if (trail.includes(owner)) throw tokenError(`Variable cycle: ${[...trail, owner].join(" -> ")}.`);
     const definition = variables[owner];
-    if (!plainObject(definition) || !PORTABLE_TOKEN_TYPES.includes(definition.tokenType)
+    if (!plainObject(definition) || !CANVAS_TOKEN_TYPES.includes(definition.tokenType)
       || !Array.isArray(definition.cascade) || definition.cascade.length === 0) {
       throw tokenError(`Variable ${owner} must declare a supported tokenType and non-empty cascade.`);
     }

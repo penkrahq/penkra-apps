@@ -63,3 +63,10 @@ test("invalid five- and seven-digit hex colors fail validation", () => {
     assert.throws(() => validateCanvasVariables({ color: { tokenType: "color", cascade: [{ value }] } }), { code: "CANVAS_TOKEN_INVALID" });
   }
 });
+
+test("Canvas strings remain valid internally but are not emitted as an invented DTCG type", () => {
+  const variables = { title: { tokenType: "string", cascade: [{ value: "Title" }] } };
+  assert.equal(validateCanvasVariables(variables), true);
+  assert.throws(() => exportDtcgTokens(variables), { code: "CANVAS_TOKEN_INVALID" });
+  assert.throws(() => importDtcgTokens({ title: { $type: "string", $value: "Title" } }), { code: "CANVAS_TOKEN_INVALID" });
+});
