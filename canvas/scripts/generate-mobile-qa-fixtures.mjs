@@ -131,6 +131,15 @@ if (process.argv.includes("--solid-colors")) {
     "transparent",
   ].map((fill, index) => ({ id: `color-${index}`, type: "rectangle", width: 300, height: 90, fill }));
 }
+if (process.argv.includes("--clipping")) {
+  source.children[0].padding = [80, 20, 20, 20];
+  source.children[0].children = [false, true].flatMap((clip, row) => ["rectangle", "ellipse"].map((shape, column) => ({
+    id: `clip-${clip}-${shape}`, type: "frame", width: 300, height: 140, layout: "none", clip, fill: "#0B4A6F", children: [
+      { id: `clip-${row}-${column}-inside`, type: shape, x: 20, y: 20, width: 80, height: 80, fill: "#F4A261" },
+      { id: `clip-${row}-${column}-overflow`, type: shape, x: 240, y: 35, width: 100, height: 70, fill: "#F4A261" },
+    ],
+  })));
+}
 const composeDir = resolve(root, "compatibility/mobile-fixtures/compose/app/src/main/java/generated/canvas");
 if (process.argv.includes("--vectors")) Object.assign(source, mobileVectorFixture());
 if (process.argv.includes("--surfaces")) Object.assign(source, mobileSurfaceFixture());

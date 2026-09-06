@@ -240,6 +240,19 @@ test("SwiftUI container paint follows authored sizing and precedes absolute posi
   assert.match(source, /frame\(width: 300, height: 90, alignment: \.topTrailing\)\.background\(Color\([^\n]+?\), ignoresSafeAreaEdges: \[\]\)\.compositingGroup\(\)\.opacity\(1\)\.position\(x: 162, y: 61\)/u);
 });
 
+test("mobile clipping is applied after container paint and before compositing", () => {
+  const mobile = structuredClone(document); mobile.module = "mobile";
+  mobile.children[0].children = [{ id: "clip", type: "frame", x: 12, y: 16, width: 100, height: 80, layout: "none", clip: true, fill: "#0B4A6F", children: [
+    { id: "overflow", type: "rectangle", x: 70, y: 20, width: 60, height: 30, fill: "#F4A261" },
+  ] }];
+  mobile.children[0].role = "ios";
+  const swift = exportSwiftUI(buildCapabilityVerificationIR(mobile, { role: "ios", frames: ["slide"] }, capabilityPathInventory())).get("Title.swift");
+  assert.match(swift, /background\([^\n]+\)\.clipped\(\)\.compositingGroup\(\)/u);
+  mobile.children[0].role = "android";
+  const kotlin = exportCompose(buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory())).get("Title.kt");
+  assert.match(kotlin, /\.background\([^\n]+\)\.canvasClipToBounds\(\)/u);
+});
+
 test("mobile shape and container opacity includes background paint; ellipses are not capsules", () => {
   const mobile = structuredClone(document); mobile.module = "mobile";
   Object.assign(mobile.children[0], { opacity: 0.5, fill: "#0B4A6F", children: [
