@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -38,7 +38,9 @@ test("copy migration verifies the copy before renaming the untouched original", 
   let createdSource;
   const api = {
     createDocument: async (input) => { calls.push(["create", input.title]); createdSource = input.source; return { id: "copy-id" }; },
-    listAssets: async () => [{ path: "images/a.png", sha256: "abc", size: 3, mimeType: "image/png" }],
+    listAssets: async (id) => id === "document"
+      ? [{ path: "images/a.png", sha256: "abc", size: 3, mimeType: "image/png" }]
+      : [{ path: "images/a.png", sha256: "abc", size: 3, mimeType: "image/png" }],
     readAsset: async () => new Uint8Array([1, 2, 3]),
     uploadAsset: async (id, asset) => { calls.push(["asset", id, asset.path, [...asset.bytes]]); },
     getDocumentProjection: async () => ({ snapshot: { source: createdSource } }),
@@ -54,6 +56,7 @@ test("copy migration verifies the copy before renaming the untouched original", 
   const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-"));
   const result = await createCanvasMigrationCopy(api, "document", payload, { reportDirectory });
   assert.equal(result.documentId, "copy-id");
+  assert.equal(result.assetCount, 1);
   assert.deepEqual(calls.map(([name]) => name), ["create", "asset", "rename"]);
   assert.deepEqual(calls[1], ["asset", "copy-id", "images/a.png", [1, 2, 3]]);
   assert.deepEqual(calls[2], ["rename", "document", "Legacy — superseded by copy-id"]);
@@ -62,6 +65,58 @@ test("copy migration verifies the copy before renaming the untouched original", 
   api.getDocumentProjection = async () => ({ snapshot: { source: { wrong: true } } });
   await assert.rejects(() => createCanvasMigrationCopy(api, "document", payload, { reportDirectory }), /did not round-trip/u);
   assert.deepEqual(calls.map(([name]) => name), ["create", "asset", "trash"]);
+});
+
+test("copy migration rejects source identity and asset round-trip mismatches without renaming", async () => {
+  const source = { module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [] };
+  const model = createDocumentModel(source);
+  const payload = { id: "source", title: "Legacy", snapshot: { source, state: encodeState(model) }, updates: [] };
+  model.doc.destroy();
+  const calls = [];
+  const api = {
+    createDocument: async () => { calls.push("create"); return { id: "copy" }; },
+    listAssets: async (id) => id === "source"
+      ? [{ path: "images/a.png", sha256: "abc", size: 3, mimeType: "image/png" }]
+      : [{ path: "images/a.png", sha256: "changed", size: 3, mimeType: "image/png" }],
+    readAsset: async () => new Uint8Array([1, 2, 3]),
+    uploadAsset: async () => { calls.push("asset"); },
+    getDocumentProjection: async () => ({ snapshot: { source } }),
+    renameDocument: async () => { calls.push("rename"); },
+    deleteDocument: async () => { calls.push("trash"); },
+  };
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-assets-"));
+  await assert.rejects(
+    createCanvasMigrationCopy(api, "different", payload, { reportDirectory }),
+    /does not match source document/u,
+  );
+  assert.deepEqual(calls, []);
+  await assert.rejects(
+    createCanvasMigrationCopy(api, "source", payload, { reportDirectory }),
+    /did not round-trip its asset inventory/u,
+  );
+  assert.deepEqual(calls, ["create", "asset", "trash"]);
+});
+
+test("migration report collision preserves the existing file and leaves source unrenamed", async () => {
+  const source = { module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [] };
+  const model = createDocumentModel(source);
+  const payload = { id: "source", title: "Legacy", snapshot: { source, state: encodeState(model) }, updates: [] };
+  model.doc.destroy();
+  const calls = [];
+  const api = {
+    createDocument: async () => { calls.push("create"); return { id: "copy" }; },
+    listAssets: async () => [],
+    getDocumentProjection: async () => ({ snapshot: { source } }),
+    renameDocument: async () => { calls.push("rename"); },
+    deleteDocument: async (id) => { calls.push(["trash", id]); },
+  };
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-collision-"));
+  const reportPath = join(reportDirectory, "migration-source-to-copy.md");
+  const existing = Buffer.from([1, 7, 9, 3]);
+  await writeFile(reportPath, existing, { flag: "wx" });
+  await assert.rejects(createCanvasMigrationCopy(api, "source", payload, { reportDirectory }), { code: "EEXIST" });
+  assert.deepEqual(await readFile(reportPath), existing);
+  assert.deepEqual(calls, ["create", ["trash", "copy"]]);
 });
 
 test("best-effort migration preserves existing import identifiers", () => {

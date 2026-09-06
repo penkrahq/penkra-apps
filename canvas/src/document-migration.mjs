@@ -109,6 +109,9 @@ function renameAppearanceConditions(value) {
 }
 
 export async function createCanvasMigrationCopy(api, documentId, payload, { reportDirectory } = {}) {
+  if (payload.id !== undefined && payload.id !== documentId) {
+    throw migrationError(`Canvas migration payload ${payload.id} does not match source document ${documentId}.`);
+  }
   if (!payload.snapshot?.source || typeof payload.snapshot.source !== "object") throw migrationError("Canvas migration needs a source projection.");
   if (typeof reportDirectory !== "string" || !reportDirectory) throw migrationError("Canvas migration needs a report directory for its Markdown record.");
   const legacyModel = restoreDocumentModel(payload);
@@ -118,35 +121,66 @@ export async function createCanvasMigrationCopy(api, documentId, payload, { repo
   const model = createDocumentModel(migrated.document);
   let copy = null;
   let reportPath = null;
+  let reportCreated = false;
   try {
+    const sourceAssets = validateAssetInventory(await api.listAssets(documentId), documentId);
     const title = String(payload.title ?? "Untitled");
     copy = await api.createDocument({ title, source: migrated.document, initialUpdate: encodeState(model) });
-    for (const asset of await api.listAssets(documentId)) {
+    for (const asset of sourceAssets) {
       await api.uploadAsset(copy.id, { ...asset, bytes: await api.readAsset(documentId, asset) });
     }
     const verified = await api.getDocumentProjection(copy.id);
     if (!verified?.snapshot?.source || !sameProjection(verified.snapshot.source, migrated.document)) {
       throw migrationError(`Migrated copy ${copy.id} did not round-trip its canonical projection.`);
     }
+    const copiedAssets = validateAssetInventory(await api.listAssets(copy.id), copy.id);
+    if (!sameAssetInventory(sourceAssets, copiedAssets)) {
+      throw migrationError(`Migrated copy ${copy.id} did not round-trip its asset inventory.`);
+    }
     reportPath = join(resolve(reportDirectory), `migration-${documentId}-to-${copy.id}.md`);
     await mkdir(resolve(reportDirectory), { recursive: true });
-    await writeFile(reportPath, migrationMarkdown(title, documentId, copy.id, migrated), { encoding: "utf8", flag: "wx" });
+    await writeFile(reportPath, migrationMarkdown(title, documentId, copy.id, migrated, sourceAssets), { encoding: "utf8", flag: "wx" });
+    reportCreated = true;
     const supersededTitle = `${title} — superseded by ${copy.id}`;
     if (new TextEncoder().encode(supersededTitle).length > 255) throw migrationError("The superseded-document title exceeds 255 UTF-8 bytes.");
     await api.renameDocument(documentId, supersededTitle);
-    return { documentId: copy.id, reportPath };
+    return { documentId: copy.id, reportPath, assetCount: sourceAssets.length };
   } catch (error) {
     if (copy?.id) await api.deleteDocument(copy.id).catch(() => undefined);
-    if (reportPath) await unlink(reportPath).catch(() => undefined);
+    if (reportCreated) await unlink(reportPath).catch(() => undefined);
     throw error;
   } finally {
     model.doc.destroy();
   }
 }
 
-function migrationMarkdown(title, sourceId, copyId, migrated) {
+function migrationMarkdown(title, sourceId, copyId, migrated, assets) {
   const notes = migrated.notes.length ? migrated.notes.map((note) => `- ${note}`).join("\n") : "- No content was dropped, approximated or inferred.";
-  return `# Canvas migration: ${title}\n\nSource document: \`${sourceId}\`\n\nMigrated copy: \`${copyId}\`\n\nThe source content was left untouched and renamed only after the copy round-tripped successfully.\n\n## Dropped, approximated and inferred\n\n${notes}\n`;
+  return `# Canvas migration: ${title}\n\nSource document: \`${sourceId}\`\n\nMigrated copy: \`${copyId}\`\n\nValidated assets transferred: ${assets.length}\n\nThe source content was left untouched and renamed only after the copy and asset inventory round-tripped successfully.\n\n## Dropped, approximated and inferred\n\n${notes}\n`;
+}
+
+function validateAssetInventory(value, documentId) {
+  if (!Array.isArray(value)) throw migrationError(`Canvas document ${documentId} returned an invalid asset inventory.`);
+  const paths = new Set();
+  for (const asset of value) {
+    if (!asset || typeof asset !== "object" || typeof asset.path !== "string" || !asset.path
+      || typeof asset.sha256 !== "string" || !asset.sha256 || !Number.isSafeInteger(asset.size) || asset.size < 0
+      || typeof asset.mimeType !== "string" || !asset.mimeType) {
+      throw migrationError(`Canvas document ${documentId} returned an invalid asset descriptor.`);
+    }
+    if (paths.has(asset.path)) throw migrationError(`Canvas document ${documentId} returned duplicate asset path ${asset.path}.`);
+    paths.add(asset.path);
+  }
+  return value;
+}
+
+function sameAssetInventory(left, right) {
+  if (left.length !== right.length) return false;
+  const byPath = new Map(right.map((asset) => [asset.path, asset]));
+  return left.every((asset) => {
+    const copy = byPath.get(asset.path);
+    return copy?.sha256 === asset.sha256 && copy.size === asset.size && copy.mimeType === asset.mimeType;
+  });
 }
 
 function sameProjection(left, right) {
