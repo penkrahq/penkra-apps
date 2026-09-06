@@ -22,7 +22,7 @@ export async function loadCanvasImports(api, document, options = {}) {
       && (release.releaseId !== normalized.releaseId || release.contentHash !== normalized.contentHash)) {
       throw importError(`Pinned import ${normalized.documentId}@${normalized.releaseId} did not resolve to its exact published content.`, "CANVAS_IMPORT_INTEGRITY");
     }
-    const identityKey = `${release.libraryId}@${release.releaseId}`;
+    const identityKey = JSON.stringify([release.libraryId, release.releaseId]);
     const prior = selected.get(identityKey);
     if (prior && prior.contentHash !== release.contentHash) throw importError(`Library release ${identityKey} resolved with inconsistent content.`, "CANVAS_IMPORT_CACHE_INCONSISTENT");
     selected.set(identityKey, releaseIdentity(release));
@@ -30,8 +30,9 @@ export async function loadCanvasImports(api, document, options = {}) {
   };
 
   const load = async (owner, trail, prefix) => {
-    const imports = {};
+    const imports = Object.create(null);
     for (const [alias, record] of Object.entries(owner.imports ?? {})) {
+      if (!/^[A-Za-z][\w-]*$/u.test(alias)) throw importError(`Import alias ${alias} is invalid.`);
       const release = await select(record);
       if (trail.includes(release.libraryId)) throw importError(`Import cycle: ${[...trail, release.libraryId].join(" -> ")}.`);
       const ownedPrefix = [prefix, "imports", alias].filter(Boolean).join("/");
@@ -52,7 +53,10 @@ export async function loadCanvasImports(api, document, options = {}) {
 }
 
 export function normalizeImportRecord(record) {
-  if (!record?.documentId) throw importError("Import has no documentId.");
+  if (!record || typeof record !== "object" || Array.isArray(record)
+    || typeof record.documentId !== "string" || !record.documentId || /[\u0000-\u001f\u007f]/u.test(record.documentId)) {
+    throw importError("Import must have a non-empty documentId string.");
+  }
   if (record.pin !== undefined || record.version !== undefined) {
     throw importError(`Import ${record.documentId} uses a legacy CRDT-sequence pin; migrate it to a published release identity.`, "CANVAS_IMPORT_LEGACY_PIN");
   }

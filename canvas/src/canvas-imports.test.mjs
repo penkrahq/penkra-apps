@@ -6,6 +6,18 @@ import { loadCanvasImports } from "./canvas-imports.mjs";
 import { createLibraryRegistry, createLibraryRelease } from "./library-publication.mjs";
 
 const emptyApi = {};
+
+test("import aliases and document identities are validated before release reads", async () => {
+  let reads = 0;
+  const options = { resolveRelease: async () => { reads += 1; throw new Error("must not read"); } };
+  for (const alias of ["../escape", "a/b", "a\\b", "__proto__", "a:b", ""]) {
+    await assert.rejects(loadCanvasImports(emptyApi, source(Object.fromEntries([[alias, { documentId: "lib", updatePolicy: "follow" }]])), options), /alias .* invalid/);
+  }
+  for (const documentId of [4, {}, [], "", "lib\u0000"]) {
+    await assert.rejects(loadCanvasImports(emptyApi, source({ ui: { documentId, updatePolicy: "follow" } }), options), /documentId string/);
+  }
+  assert.equal(reads, 0);
+});
 function source(imports = {}, children = [], options = {}) {
   return { module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports, flows: [], children, ...options };
 }
