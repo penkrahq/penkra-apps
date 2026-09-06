@@ -218,6 +218,22 @@ function mobileVectorStroke(node) {
 function composeContainer(node, descendants, children, options, depth, root = false, suppliedModifier = "Modifier") {
   const indent = "  ".repeat(depth);
   const { row, column } = mobileGaps(node);
+  const horizontalJustify = node.layout.justifyContent;
+  const horizontalArrangement = horizontalJustify == null || horizontalJustify === "start"
+    ? `Arrangement.spacedBy(${column}.dp, androidx.compose.ui.Alignment.Start)`
+    : horizontalJustify === "center"
+      ? `Arrangement.spacedBy(${column}.dp, androidx.compose.ui.Alignment.CenterHorizontally)`
+      : horizontalJustify === "end"
+        ? `Arrangement.spacedBy(${column}.dp, androidx.compose.ui.Alignment.End)`
+        : `Arrangement.spacedBy(${column}.dp)`;
+  const verticalJustify = node.layout.justifyContent;
+  const verticalArrangement = verticalJustify == null || verticalJustify === "start"
+    ? `Arrangement.spacedBy(${row}.dp, androidx.compose.ui.Alignment.Top)`
+    : verticalJustify === "center"
+      ? `Arrangement.spacedBy(${row}.dp, androidx.compose.ui.Alignment.CenterVertically)`
+      : verticalJustify === "end"
+        ? `Arrangement.spacedBy(${row}.dp, androidx.compose.ui.Alignment.Bottom)`
+        : `Arrangement.spacedBy(${row}.dp)`;
   const parentLayout = node.layout.layout || (node.layout.wrap ? "wrap" : "none");
   const overlays = parentLayout !== "none" ? descendants.filter((child) => child.layout.layoutPosition === "absolute") : [];
   const flowDescendants = overlays.length ? descendants.filter((child) => child.layout.layoutPosition !== "absolute") : descendants;
@@ -236,8 +252,8 @@ function composeContainer(node, descendants, children, options, depth, root = fa
     return overlays.length ? withOverlays(grid) : grid;
   }
   if (node.layout.wrap) return withOverlays(`${indent}FlowRow(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`);
-  if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
-  if (node.layout.layout === "vertical") return withOverlays(`${indent}Column(modifier = ${overlays.length ? "Modifier" : modifier}, verticalArrangement = Arrangement.spacedBy(${row}.dp), horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`);
+  if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = ${horizontalArrangement}, verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
+  if (node.layout.layout === "vertical") return withOverlays(`${indent}Column(modifier = ${overlays.length ? "Modifier" : modifier}, verticalArrangement = ${verticalArrangement}, horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`);
   return `${indent}Box(modifier = ${modifier}) {\n${content}\n${indent}}`;
 }
 
