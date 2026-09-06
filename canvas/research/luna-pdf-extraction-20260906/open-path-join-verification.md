@@ -45,9 +45,12 @@ The repeat-render test produced byte-stable Canvas PNGs. The direct join suite r
 
 ## Vendor quality gates
 
-- `bun run check` in `vendor/open-pencil/source` — exit 1 at `lint:structure`/`lint`; 57 repository diagnostics were reported in unrelated existing source and test files. The changed `scene.ts` had no diagnostic at the added selector line.
+- Aggregate baseline corroboration: coordinator independently ran `bun1.3.10 --frozen-lockfile` dependency setup on the combined pre-fix branch, with no tracked vendor source changes, then ran `bun run check`; it exited 1 at `lint:structure` with **57 errors, 5 warnings, 1,802 files**, matching this worktree's aggregate failure. This establishes the aggregate gate failure as baseline, not caused by the renderer patch.
+- `bun run check` in `vendor/open-pencil/source` — exit 1 at `lint:structure`/`lint`; the same 57 repository diagnostics were reported in unrelated existing source and test files. The changed `scene.ts` had no diagnostic at the added selector line.
 - Focused `bunx oxlint -c oxlint.json --type-aware --type-check packages/core/src/canvas/scene.ts` — exit 1 with 6 existing diagnostics in `scene.ts` (complexity, nullability/type annotations, and unrelated type checks); no new diagnostic was reported for the one-line path selection.
 - `bun run test:unit` in `vendor/open-pencil/source` — exit 1: 2,355 passed, 1 skipped, 100 failed, 2 errors across 2,456 tests. The failures were fixture/import, headless-window/Tauri, network font-provider, and related pre-existing environment cases; no renderer join test failed.
+
+The source worktree's locked `bun.lock` resolves UFO to `ufo@1.6.3`; the earlier `ufo@1.6.4` observation was build-environment drift, not a lockfile change. No generated bundle was hand-edited.
 
 The aggregate vendor quality results are retained as failures, not represented as green. No native compiler, device, process cleanup, or profile-gate operation was used.
 
