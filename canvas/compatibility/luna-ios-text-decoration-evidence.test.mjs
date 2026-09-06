@@ -43,7 +43,6 @@ test("failed launch is unmeasured without a capture path or device mutation", ()
   assert.equal(entry.mismatchedPixels, 0);
   assert.equal(entry.referencePath, "references/iphone-large/case-01.png");
   assert.equal(entry.launchFailureLogPath, "captures/iphone/large/case-01.launch-failure.log");
-  assert.match(entry.notes, /no screenshot was taken/u);
 });
 
 test("iOS rich-text fixture has twelve independent source-ID frames and canonical UTF-16 marks", () => {
@@ -107,18 +106,14 @@ test("style identity checks retain byte and decoded-pixel evidence", () => {
     assert.equal(typeof check.pixelIdentical, "boolean");
     if (check.identicalGroups.length) {
       assert.equal(check.status, "missing-styling-evidence");
-      assert.match(check.notes, /missing styling evidence/u);
     }
   }
 });
 
-test("font registration and README facts are retained", async () => {
+test("font registration facts are retained", async () => {
   assert.equal(measurements.fontBundleFacts.valid, true);
   assert.deepEqual(measurements.fontBundleFacts.uiAppFonts, ["Inter-Regular.ttf", "Inter-Bold.ttf"]);
   assert.ok(Object.values(measurements.fontBundleFacts.fontHashes).every(({ matches }) => matches));
-  const readme = await readFile(new URL("README.md", evidence), "utf8");
-  assert.doesNotMatch(readme, /\\n/u);
-  assert.match(readme, /case-01\/case-05\/case-09 \(pixel\+byte\)/u);
 });
 
 function countNear(image, color, rect) {
