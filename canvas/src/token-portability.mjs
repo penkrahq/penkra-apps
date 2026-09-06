@@ -1,4 +1,5 @@
 import { resolveVariableReferences, variableReferences } from "./variable-references.mjs";
+import { resolveCascade } from "./canvas-resolver.mjs";
 
 const CANVAS_EXTENSION = "com.penkra.canvas";
 export const PORTABLE_TOKEN_TYPES = Object.freeze([
@@ -27,7 +28,7 @@ export function exportDtcgTokens(variables) {
     if (!PORTABLE_TOKEN_TYPES.includes(definition.tokenType)) throw tokenError(`Canvas token ${name} has no supported DTCG type mapping for ${definition.tokenType}.`);
     Object.defineProperty(group, leaf, { enumerable: true, writable: true, configurable: true, value: {
       $type: definition.tokenType,
-      $value: toDtcgValue(definition.cascade[0].value, definition.tokenType),
+      $value: toDtcgValue(resolveCascade(definition.cascade, { modes: {}, props: {} }), definition.tokenType),
       $extensions: {
         [CANVAS_EXTENSION]: {
           tokenType: definition.tokenType,
@@ -67,24 +68,44 @@ export function importDtcgTokens(source) {
 export function validateCanvasVariables(variables) {
   if (!plainObject(variables)) throw tokenError("Canvas variables must be an object.");
   for (const name of Object.keys(variables)) tokenPath(name);
-  const resolveEntry = (owner, index, trail = []) => {
+  const modeValues = new Map();
+  for (const [name, definition] of Object.entries(variables)) {
+    if (!plainObject(definition) || !CANVAS_TOKEN_TYPES.includes(definition.tokenType)
+      || !Array.isArray(definition.cascade) || definition.cascade.length === 0) {
+      throw tokenError(`Variable ${name} must declare a supported tokenType and non-empty cascade.`);
+    }
+    for (const entry of definition.cascade) {
+      if (!plainObject(entry) || !Object.hasOwn(entry, "value")) throw tokenError(`Variable ${name} has an invalid cascade entry.`);
+      if (entry.when !== undefined && !plainObject(entry.when)) throw tokenError(`Variable ${name} has invalid mode conditions.`);
+      for (const [axis, mode] of Object.entries(entry.when ?? {})) {
+        if (!["appearance", "viewport"].includes(axis) || typeof mode !== "string" || !mode) throw tokenError(`Variable ${name} has invalid mode conditions.`);
+        if (!modeValues.has(axis)) modeValues.set(axis, new Set());
+        modeValues.get(axis).add(mode);
+      }
+    }
+  }
+  let contexts = [{}];
+  for (const [axis, values] of modeValues) {
+    if (contexts.length * (values.size + 1) > 1024) throw tokenError("Variable mode combinations exceed the validation limit of 1024.");
+    contexts = contexts.flatMap((modes) => [modes, ...[...values].map((mode) => ({ ...modes, [axis]: mode }))]);
+  }
+  const resolveEntry = (owner, modes, trail = []) => {
     if (trail.includes(owner)) throw tokenError(`Variable cycle: ${[...trail, owner].join(" -> ")}.`);
     const definition = variables[owner];
     if (!plainObject(definition) || !CANVAS_TOKEN_TYPES.includes(definition.tokenType)
       || !Array.isArray(definition.cascade) || definition.cascade.length === 0) {
       throw tokenError(`Variable ${owner} must declare a supported tokenType and non-empty cascade.`);
     }
-    const entry = definition.cascade[index] ?? definition.cascade[0];
-    if (!plainObject(entry) || !Object.hasOwn(entry, "value")) throw tokenError(`Variable ${owner} has an invalid cascade entry.`);
-    const resolved = resolveVariableReferences(entry.value, (reference) => {
+    const value = resolveCascade(definition.cascade, { modes, props: {} });
+    const resolved = resolveVariableReferences(value, (reference) => {
       if (!Object.hasOwn(variables, reference)) throw tokenError(`Variable ${owner} references missing variable ${reference}.`);
       const target = variables[reference];
-      const whole = typeof entry.value === "string" && variableReferences(entry.value).length === 1
-        && variableReferences(entry.value)[0][0] === entry.value;
+      const whole = typeof value === "string" && variableReferences(value).length === 1
+        && variableReferences(value)[0][0] === value;
       if (whole && target.tokenType !== definition.tokenType) {
         throw tokenError(`Variable ${owner} (${definition.tokenType}) aliases ${reference} (${target.tokenType}).`);
       }
-      return resolveEntry(reference, index, [...trail, owner]);
+      return resolveEntry(reference, modes, [...trail, owner]);
     });
     assertTokenValue(definition.tokenType, resolved, owner);
     return resolved;
@@ -94,7 +115,7 @@ export function validateCanvasVariables(variables) {
       || !Array.isArray(definition.cascade) || definition.cascade.length === 0) {
       throw tokenError(`Variable ${name} must declare a supported tokenType and non-empty cascade.`);
     }
-    definition.cascade.forEach((_, index) => resolveEntry(name, index));
+    for (const modes of contexts) resolveEntry(name, modes);
   }
   return true;
 }

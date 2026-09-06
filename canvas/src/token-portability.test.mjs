@@ -52,6 +52,17 @@ test("token paths reject empty segments and token/group collisions", () => {
   }), /collides/);
 });
 
+test("alias validation follows matching mode conditions rather than cascade array indices", () => {
+  const variables = {
+    a: { tokenType: "number", cascade: [{ value: 1 }, { value: "${b}", when: { appearance: "light" } }] },
+    b: { tokenType: "number", cascade: [{ value: 2 }, { value: "${a}", when: { appearance: "dark" } }] },
+  };
+  assert.equal(validateCanvasVariables(variables), true);
+  variables.b.cascade[1].when.appearance = "light";
+  assert.throws(() => validateCanvasVariables(variables), /Variable cycle/);
+  assert.equal(exportDtcgTokens({ a: { tokenType: "number", cascade: [{ value: 1 }, { value: 2 }] } }).a.$value, 2);
+});
+
 test("token groups treat inherited property names as data without modifying prototypes", () => {
   const key = "canvasTokenPollutionProbe";
   assert.equal(Object.hasOwn(Object.prototype, key), false);

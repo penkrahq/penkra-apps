@@ -1,6 +1,29 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+test("qualified public tokens use source bindings with consumer-selected compatible modes", () => {
+  const axes = { appearance: { modes: [{ name: "light" }, { name: "dark" }] } };
+  const library = {
+    axes, children: [], variables: {
+      privateInk: { tokenType: "color", cascade: [{ value: "#123456" }, { value: "#abcdef", when: { appearance: "dark" } }] },
+      brand: { tokenType: "color", cascade: [{ value: "${privateInk}" }] },
+    },
+  };
+  const source = { axes, variables: { privateInk: { tokenType: "color", cascade: [{ value: "#ff0000" }] }, semantic: { tokenType: "color", cascade: [{ value: "${ui:brand}" }] } }, children: [{ id: "box", type: "rectangle", fill: "${semantic}" }] };
+  const imports = { ui: { document: library, release: { publicItems: [{ kind: "variable", id: "brand" }] } } };
+  assert.equal(resolveCanvasDocument(source, { imports, modes: { appearance: "dark" } }).document.children[0].fill, "#abcdef");
+  assert.equal(resolveCanvasDocument(source, { imports }).document.children[0].fill, "#123456");
+  source.children[0].fill = "${ui:privateInk}";
+  assert.throws(() => resolveCanvasDocument(source, { imports }), /ui:privateInk was not found/);
+});
+
+test("raw imported variable cycles fail explicitly without recursive overflow", () => {
+  const owner = { axes: {}, variables: {}, children: [] };
+  const imported = { document: owner, imports: {} };
+  imported.imports.self = imported;
+  assert.throws(() => resolveCanvasDocument({ axes: {}, variables: {}, children: [] }, { imports: { ui: imported } }), /Variable import cycle/);
+});
+
 test("component expansion preserves instance placement, sizing, opacity and image override", () => {
   const component = { id: "component", type: "frame", x: 1000, y: 2000, width: 300, height: 70, opacity: 1, fill: "#123456", children: [{ id: "ink", type: "rectangle", x: 50, y: 15, width: 200, height: 40 }] };
   const source = { axes: {}, variables: {}, children: [component,

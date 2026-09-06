@@ -3,7 +3,7 @@ import { resolveVariableReferences } from "./variable-references.mjs";
 
 export function resolveCanvasDocument(document, options = {}) {
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
-  const variableValues = resolveVariables(document.variables ?? {}, modes, options.bindings ?? {});
+  const variableValues = resolveVariables(document.variables ?? {}, modes, options.bindings ?? {}, options.imports ?? {});
   const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, { modes, props: {} }), variableValues)]));
   const localNodes = indexNodes(document.children);
   const imports = options.imports ?? {};
@@ -49,7 +49,7 @@ function resolveNode(source, context) {
     const inherited = Object.fromEntries(Object.entries(context.modes).filter(([name]) => Object.hasOwn(axes, name)));
     const modes = { ...context.modes, ...selectModes(axes, { ...inherited, ...source.modes }) };
     const bindings = Object.fromEntries(Object.entries(context.variableValues).filter(([name]) => !Object.hasOwn(context.owner.variables ?? {}, name)));
-    context = { ...context, modes, scopedModes: true, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings) };
+    context = { ...context, modes, scopedModes: true, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings, context.imports) };
   }
   if (source.properties) {
     context = context.componentRoot
@@ -129,7 +129,7 @@ function resolveRef(instance, context) {
     for (const [name, axis] of Object.entries(owner.axes ?? {})) {
       if (!axis.modes.some((mode) => mode.name === modes[name])) modes[name] = axis.modes[0]?.name;
     }
-    variableValues = resolveVariables(owner.variables ?? {}, modes, {});
+    variableValues = resolveVariables(owner.variables ?? {}, modes, {}, imported.imports ?? {});
     context = {
       ...context,
       modes,
@@ -220,8 +220,22 @@ function resolveBinding(binding, props) {
   return structuredClone(props[name]);
 }
 
-function resolveVariables(variables, modes, bindings) {
-  const output = { ...bindings };
+function resolveVariables(variables, modes, bindings, imports = {}, owners = new Set()) {
+  const output = {};
+  for (const [alias, imported] of Object.entries(imports)) {
+    const owner = imported.document ?? imported;
+    if (owners.has(owner)) throw new Error(`Variable import cycle includes ${alias}.`);
+    const sourceModes = { ...modes };
+    for (const [name, axis] of Object.entries(owner.axes ?? {})) {
+      if (!axis.modes.some((mode) => mode.name === sourceModes[name])) sourceModes[name] = axis.modes[0]?.name;
+    }
+    const values = resolveVariables(owner.variables ?? {}, sourceModes, {}, imported.imports ?? {}, new Set([...owners, owner]));
+    const names = imported.release
+      ? imported.release.publicItems.filter((item) => item.kind === "variable").map((item) => item.id)
+      : Object.keys(owner.variables ?? {});
+    for (const name of names) output[`${alias}:${name}`] = values[name];
+  }
+  for (const [name, value] of Object.entries(bindings)) Object.defineProperty(output, name, { value, enumerable: true, writable: true, configurable: true });
   const visiting = new Set();
   const resolve = (name) => {
     if (Object.hasOwn(bindings, name)) return bindings[name];
