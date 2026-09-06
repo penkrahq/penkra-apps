@@ -244,7 +244,7 @@ async function openOwnedChrome(profileDirectory) {
   }
 }
 
-function createPageController(page) {
+export function createPageController(page) {
   let diagnostics = { console: [], failedLocalResources: [], navigationError: undefined, readinessError: undefined };
   page.on("Runtime.consoleAPICalled", (params) => {
     diagnostics.console.push({ kind: "console", type: params.type, text: params.args?.map((arg) => arg.value ?? arg.description ?? "").join(" ") ?? "" });
@@ -260,13 +260,15 @@ function createPageController(page) {
       diagnostics = { console: [], failedLocalResources: [], navigationError: undefined, readinessError: undefined };
       await page.send("Emulation.setDeviceMetricsOverride", { width, height: viewportHeight, deviceScaleFactor: 1, mobile: false });
       const observation = { schoolIndex, width, height: viewportHeight, deviceScaleFactor: 1, url: `file://<evidence-root>/${displayPath}`, ...diagnostics };
+      const loaded = page.once("Page.loadEventFired");
+      loaded.catch(() => {});
       try {
-        const loaded = page.once("Page.loadEventFired");
         const navigation = await page.send("Page.navigate", { url });
         if (navigation.errorText) observation.navigationError = navigation.errorText;
         await loaded;
       } catch (error) {
-        observation.navigationError = error.message;
+        observation.navigationError ??= error.message;
+        loaded.cancel?.();
       }
       try {
         const ready = await page.send("Runtime.evaluate", {
@@ -419,6 +421,7 @@ export function connectCdp(url, { openTimeoutMs = CDP_OPEN_TIMEOUT_MS, WebSocket
   let socketClosed = false;
   let socketClosedResolve;
   const closed = new Promise((resolve) => { socketClosedResolve = resolve; });
+  let failOpen;
   const opened = new Promise((resolve, reject) => {
     let settled = false;
     const finish = (callback, value) => {
@@ -431,6 +434,7 @@ export function connectCdp(url, { openTimeoutMs = CDP_OPEN_TIMEOUT_MS, WebSocket
     };
     const onOpen = () => finish(resolve);
     const onError = (error) => finish(reject, error);
+    failOpen = (error) => finish(reject, error);
     const timer = setTimeout(() => finish(reject, timeoutError("CDP connection open")), openTimeoutMs);
     socket.addEventListener("open", onOpen);
     socket.addEventListener("error", onError);
@@ -439,6 +443,7 @@ export function connectCdp(url, { openTimeoutMs = CDP_OPEN_TIMEOUT_MS, WebSocket
     socketClosed = true;
     socketClosedResolve();
     const error = new Error("Browser connection closed");
+    failOpen?.(error);
     for (const waiter of pending.values()) {
       clearTimeout(waiter.timer);
       waiter.reject(error);
@@ -478,17 +483,26 @@ export function connectCdp(url, { openTimeoutMs = CDP_OPEN_TIMEOUT_MS, WebSocket
           reject: (error) => { clearTimeout(timer); reject(error); },
         });
       });
-      socket.send(JSON.stringify({ id, method, params }));
+      try {
+        socket.send(JSON.stringify({ id, method, params }));
+      } catch (error) {
+        const waiter = pending.get(id);
+        pending.delete(id);
+        waiter?.reject(error);
+      }
       return result;
     },
     once(method, { timeoutMs = CDP_EVENT_TIMEOUT_MS } = {}) {
-      return new Promise((resolve, reject) => {
+      let waiter;
+      let resolvePromise;
+      const promise = new Promise((resolve, reject) => {
+        resolvePromise = resolve;
         const timer = setTimeout(() => {
           const current = waiters.get(method) ?? [];
           waiters.set(method, current.filter((entry) => entry !== waiter));
           reject(timeoutError(`CDP event ${method}`));
         }, timeoutMs);
-        const waiter = {
+        waiter = {
           timer,
           resolve: (value) => { clearTimeout(timer); resolve(value); },
           reject: (error) => { clearTimeout(timer); reject(error); },
@@ -497,6 +511,14 @@ export function connectCdp(url, { openTimeoutMs = CDP_OPEN_TIMEOUT_MS, WebSocket
         current.push(waiter);
         waiters.set(method, current);
       });
+      promise.cancel = () => {
+        if (!waiter) return;
+        const current = waiters.get(method) ?? [];
+        waiters.set(method, current.filter((entry) => entry !== waiter));
+        clearTimeout(waiter.timer);
+        resolvePromise({ cancelled: true });
+      };
+      return promise;
     },
     on(method, listener) {
       const current = listeners.get(method) ?? [];
