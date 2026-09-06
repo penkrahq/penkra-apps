@@ -48,6 +48,20 @@ test("ICC inspection rejects truncated headers, tag ranges and invalid channels"
   assert.ok(codes(inspectPdfxOutputProfile(changed)).includes("ICC_TAG_RANGE_INVALID"));
 });
 
+test("font and separation names require UTF-8 after PDF name escapes are decoded", async () => {
+  for (const [rawName, rejected] of [["Inter-Bold", false], ["Caf\xc3\xa9", false], ["Caf\xe9", true], ["Bad\xc0\xaf", true], ["Bad\xed\xa0\x80", true]]) {
+    const bytes = await fixture((pdf) => {
+      pdf.context.register(pdf.context.obj({ Type: "FontDescriptor", FontName: PDFName.of(rawName) }));
+      pdf.context.register(pdf.context.obj(["Separation", PDFName.of(rawName), "DeviceCMYK", {}]));
+      pdf.context.register(pdf.context.obj(["DeviceN", [PDFName.of(rawName)], "DeviceCMYK", {}]));
+    });
+    const report = await preflightPdfx4(bytes);
+    assert.equal(report.issues.filter((issue) => issue.code === "FONT_OR_SEPARATION_NAME_UTF8_INVALID").length, rejected ? 3 : 0);
+  }
+  const invalidType = await fixture((pdf) => pdf.context.register(pdf.context.obj({ Type: "FontDescriptor", FontName: PDFString.of("Inter") })));
+  assert.ok(codes(await preflightPdfx4(invalidType)).includes("FONT_OR_SEPARATION_NAME_TYPE_INVALID"));
+});
+
 async function fixture(change = () => {}) {
   const pdf = await PDFDocument.create();
   const page = pdf.addPage([200, 300]);

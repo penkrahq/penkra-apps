@@ -47,6 +47,8 @@ The integrated full suite passed **461 tests**, zero failures/cancellations/skip
 
 The development build passed (`/tmp/canvas-pdf-content-checks-dev-build-20260906.log`). A subsequent transparency-group regression closes another partial-check gap: the blending profile must match the pinned sRGB source bytes and three-channel declaration, rather than merely being an ICCBased stream. The resulting focused PDF/extraction suite passed 22 tests, zero failures/cancellations/skips; the 461-test full run predates that additional regression.
 
+Font and Separation/DeviceN colorant names are now checked as decoded UTF-8 bytes under [ISO 15930-7:2010 clause 6.6](https://previewnorm.com/iso/ISO%2015930-7-2010%20PDF.pdf). Negative serialized fixtures reject Latin-1-only, overlong and surrogate encodings; escaped valid UTF-8 is accepted. The parser normalizes original name spelling, so original-byte escaping remains explicitly uncovered. This does not open the conformance gate. The focused PDF/font/extraction run passed 29 tests with zero failures/cancellations/skips.
+
 ## Mobile alignment candidate
 
 Authored top-level text alignment now reaches SwiftUI multiline alignment plus its authored frame anchor, and Compose TextStyle. SwiftUI justification is explicitly rejected by this candidate rather than silently becoming leading alignment. Per-paragraph overrides and justification through another native text implementation are not established here.

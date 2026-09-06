@@ -13,7 +13,7 @@ export const PDFX_UNCOVERED = Object.freeze([
   "Output profiles other than the hash-pinned ICC Registry GRACoL2013 CRPC6 profile",
   "Colour spaces other than Canvas DefaultRGB/sRGB2014, DeviceGray and the CMYK output intent",
   "Non-Identity-H/TrueType fonts and text or graphics in Form XObjects",
-  "6.6: font and separation name UTF-8 encoding",
+  "6.6: original-byte escaping of font and separation names before parser normalization",
   "Non-document XMP packets and provenance across incremental updates",
   "Optional content, annotations, forms, embedded files, halftones, transfer functions, PostScript and external streams",
 ]);
@@ -156,13 +156,30 @@ async function inspectPdfx4(bytes) {
   // Rejecting optional features here is a Canvas subset restriction, not a claim
   // that ISO prohibits every possible use of annotations/forms/embedded files.
   const seen = new Set();
+  const checkNameEncoding = (value, path) => {
+    const object = resolve(value);
+    if (!(object instanceof PDFName)) { add("FONT_OR_SEPARATION_NAME_TYPE_INVALID", "6.6", path); return; }
+    try { new TextDecoder("utf-8", { fatal: true }).decode(object.asBytes()); }
+    catch { add("FONT_OR_SEPARATION_NAME_UTF8_INVALID", "6.6", path); }
+  };
   const visit = (raw, path) => {
     const object = resolve(raw);
     if (!object || seen.has(object)) return;
     seen.add(object);
-    if (object instanceof PDFArray) { object.asArray().forEach((item, i) => visit(item, `${path}[${i}]`)); return; }
+    if (object instanceof PDFArray) {
+      const family = name(resolve(object.asArray()[0]));
+      if (family === "Separation") checkNameEncoding(object.asArray()[1], `${path}[1]`);
+      if (family === "DeviceN") {
+        const colorants = resolve(object.asArray()[1]);
+        if (!(colorants instanceof PDFArray)) add("FONT_OR_SEPARATION_NAME_TYPE_INVALID", "6.6", `${path}[1]`);
+        else colorants.asArray().forEach((item, i) => checkNameEncoding(item, `${path}[1][${i}]`));
+      }
+      object.asArray().forEach((item, i) => visit(item, `${path}[${i}]`)); return;
+    }
     const dict = object instanceof PDFRawStream ? object.dict : object;
     if (!(dict instanceof PDFDict)) return;
+    if (name(get(dict, "Type")) === "Font" && get(dict, "BaseFont") !== undefined) checkNameEncoding(get(dict, "BaseFont"), `${path}/BaseFont`);
+    if (name(get(dict, "Type")) === "FontDescriptor" && get(dict, "FontName") !== undefined) checkNameEncoding(get(dict, "FontName"), `${path}/FontName`);
     for (const key of ["OpenAction", "AA", "JavaScript", "JS"]) if (get(dict, key)) add("ACTION_FORBIDDEN", "6.18", `${path}/${key}`);
     for (const key of ["OCProperties", "Annots", "AcroForm", "XFA", "AlternatePresentations", "EmbeddedFiles"]) {
       const value = get(dict, key);
