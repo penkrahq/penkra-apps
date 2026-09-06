@@ -1,0 +1,18 @@
+{
+  "referencePath": "references/ipad-large/case-09.png",
+  "capturePath": "captures/ipad/large/case-09.png",
+  "registration": {
+    "method": "center-cropped-authored-frame",
+    "dx": 0,
+    "dy": 0,
+    "boundaryTolerancePixels": 2
+  },
+  "comparedPixels": 227358,
+  "mismatchedPixels": 431,
+  "status": "mismatch",
+  "notes": "Native mismatch retained; first samples: [{\"x\":226,\"y\":54,\"expected\":[255,255,255,255],\"actual\":[195,203,212,255]},{\"x\":227,\"y\":54,\"expected\":[255,255,255,255],\"actual\":[152,168,182,255]},{\"x\":295,\"y\":54,\"expected\":[255,255,255,255],\"actual\":[195,203,212,255]}]",
+  "caseId": "case-09",
+  "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+  "contentSize": "large",
+  "scale": 2
+}

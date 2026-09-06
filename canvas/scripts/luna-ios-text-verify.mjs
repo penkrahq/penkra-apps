@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
 import { takeDocumentScreenshots } from "../src/document-screenshot.mjs";
@@ -67,6 +68,24 @@ export async function measureCapture(referencePath, capturePath, scale) {
     referencePath, capturePath, registration: { method: "center-cropped-authored-frame", dx: 0, dy: 0, boundaryTolerancePixels: 2 },
     comparedPixels: comparison.comparedPixels, mismatchedPixels: comparison.mismatchedPixels, status,
     notes: comparison.mismatchedPixels ? `Native mismatch retained; first samples: ${JSON.stringify(comparison.samples.slice(0, 3))}` : "All uniform interiors match within two channel steps.",
+  };
+}
+
+export async function imageIdentity(paths) {
+  const ck = await getCanvasKit();
+  const encoded = await Promise.all(paths.map((path) => readFile(path)));
+  const hashes = encoded.map((bytes) => createHash("sha256").update(bytes).digest("hex"));
+  const decoded = encoded.map((bytes) => decode(ck, bytes));
+  const pixelHashes = decoded.map((image) => createHash("sha256").update(Buffer.from(image.pixels)).digest("hex"));
+  const first = decoded[0];
+  const pixelIdentical = decoded.every((image) => image.width === first.width && image.height === first.height && Buffer.compare(Buffer.from(image.pixels), Buffer.from(first.pixels)) === 0);
+  return {
+    byteSizes: encoded.map((bytes) => bytes.byteLength),
+    sha256: hashes,
+    pixelSha256: pixelHashes,
+    pixelDimensions: { width: first.width, height: first.height },
+    byteIdentical: hashes.every((hash) => hash === hashes[0]),
+    pixelIdentical,
   };
 }
 

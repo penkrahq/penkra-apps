@@ -1,0 +1,37 @@
+{
+  "bundlePath": "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-nyki5Z/DerivedData/Build/Products/Debug-iphonesimulator/CanvasTextEvidence.app",
+  "bundleIdentifier": "com.penkra.canvas.qa.text",
+  "uiAppFonts": [
+    "Inter-Regular.ttf",
+    "Inter-Bold.ttf"
+  ],
+  "bundledFontFiles": [
+    "Inter-Bold.ttf",
+    "Inter-Regular.ttf"
+  ],
+  "uiAppFontsDeclared": true,
+  "uiAppFontsAllPresent": true,
+  "requiredFonts": [
+    "Inter-Regular.ttf",
+    "Inter-Bold.ttf"
+  ],
+  "missingBundleFonts": [],
+  "missingUIAppFonts": [],
+  "fontHashes": {
+    "Inter-Regular.ttf": {
+      "vendoredSha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+      "bundledSha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+      "matches": true
+    },
+    "Inter-Bold.ttf": {
+      "vendoredSha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+      "bundledSha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+      "matches": true
+    }
+  },
+  "valid": true,
+  "installedDevices": [
+    "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "8F053C2C-958D-4CC5-AB38-E838CFAC9442"
+  ]
+}

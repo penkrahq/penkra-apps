@@ -1,0 +1,18 @@
+{
+  "referencePath": "references/iphone-large/case-01.png",
+  "capturePath": "captures/iphone/large/case-01.png",
+  "registration": {
+    "method": "center-cropped-authored-frame",
+    "dx": 0,
+    "dy": 0,
+    "boundaryTolerancePixels": 2
+  },
+  "comparedPixels": 521734,
+  "mismatchedPixels": 1127,
+  "status": "mismatch",
+  "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]}]",
+  "caseId": "case-01",
+  "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+  "contentSize": "large",
+  "scale": 3
+}
