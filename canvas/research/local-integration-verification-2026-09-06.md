@@ -16,6 +16,8 @@ Mobile clipping compilation/fixtures are integrated without a native capability 
 
 ## Subsequent measured checks
 
+- Combined suite including rounded clipping: **450 passed**, zero failed/cancelled/skipped, exit 0, 113516 ms; `/tmp/canvas-rounded-combined-suite-20260906.log`. Swift test/build and Compose assembly gates actually completed.
+
 - Pre-rounded-change combined suite: 446 passed, zero failed/cancelled/skipped, exit 0, 97752 ms; `/tmp/canvas-local-combined-suite-final-20260906.log`.
 - Rounded container clipping now uses the authored independent corner geometry in SwiftUI and Compose. Actual simulator/application builds succeeded (`/tmp/canvas-rounded-clipping-swift-build-20260906.log`, `/tmp/canvas-rounded-clipping-compose-build-20260906.log`).
 - Retained rounded-clipping captures cover iPhone at 3x, iPad at 2x, and Android at 420 and 320 dpi. All four were visually inspected. Pixel controls verify corner artwork is excluded only when clipping is enabled, while interior artwork remains. These are bounded geometry controls, not full renderer-difference certification. Android density was restored to its physical 420 dpi afterward.
