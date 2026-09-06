@@ -37,13 +37,13 @@ export async function publishExclusiveBundle(destination, files) {
   for (const [name] of entries) {
     validateRelativeFile(name);
     const normalized = name.normalize("NFC").toLowerCase();
-    if (names.has(normalized)) throw new Error(`Export filename collision: ${name}.`);
+    if (names.has(normalized)) throw collision(`Export filename collision: ${name}.`);
     names.add(normalized);
   }
   for (const name of names) {
     const parts = name.split("/");
     for (let index = 1; index < parts.length; index++) {
-      if (names.has(parts.slice(0, index).join("/"))) throw new Error(`Export file/directory collision: ${name}.`);
+      if (names.has(parts.slice(0, index).join("/"))) throw collision(`Export file/directory collision: ${name}.`);
     }
   }
   assertAbsolute(destination); await assertMissing(destination);
@@ -128,14 +128,28 @@ export async function cleanupPublishedExport(receipt) {
 }
 
 export function validateOutputSegment(value) {
-  if (typeof value !== "string" || !value || value !== value.normalize("NFC") || /[\/\\\0-\x1f]/u.test(value) || value === "." || value === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(value) || new TextEncoder().encode(value).length > 255) throw new Error(`Unsafe output segment ${JSON.stringify(value)}.`);
+  if (typeof value !== "string" || !value || value !== value.normalize("NFC") || /[\/\\\0-\x1f\x7f]/u.test(value) || value === "." || value === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(value) || new TextEncoder().encode(value).length > 255) {
+    const error = new Error(`Unsafe output segment ${JSON.stringify(value)}.`);
+    error.code = "CANVAS_EXPORT_NAME_INVALID";
+    throw error;
+  }
   return value;
 }
 async function assertMissing(path) { try { await lstat(path); const error = new Error(`Destination already exists: ${path}.`); error.code = "CANVAS_EXPORT_EXISTS"; throw error; } catch (error) { if (error.code !== "ENOENT") throw error; } }
 function assertAbsolute(path) { if (typeof path !== "string" || !path.startsWith("/")) throw new Error("Export destination must be an absolute path."); }
 function validateRelativeFile(name) {
-  if (name.startsWith("/")) throw new Error(`Unsafe bundle filename ${name}.`);
+  if (typeof name !== "string" || name.startsWith("/")) {
+    const error = new Error(`Unsafe bundle filename ${name}.`);
+    error.code = "CANVAS_EXPORT_NAME_INVALID";
+    throw error;
+  }
   for (const part of name.split("/")) validateOutputSegment(part);
+}
+
+function collision(message) {
+  const error = new Error(message);
+  error.code = "CANVAS_EXPORT_COLLISION";
+  return error;
 }
 
 async function canonicalDestinationKey(destination) {
