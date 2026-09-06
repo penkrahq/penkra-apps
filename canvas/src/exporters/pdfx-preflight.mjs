@@ -20,6 +20,26 @@ export const PDFX_UNCOVERED = Object.freeze([
 
 const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "m", "l", "c", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
 
+// PDF Reference 1.6, chapters 4, 5 and 10: an allowed operator name is
+// insufficient evidence without the corresponding operand types and arity.
+function validContentOperands({ operator, operands }) {
+  const numeric = (value) => value?.kind === "number" && Number.isFinite(value.value);
+  const numbers = (count) => operands.length === count && operands.every(numeric);
+  if (["q", "Q", "h", "n", "f", "f*", "S", "B", "B*", "BT", "ET", "EMC"].includes(operator)) return operands.length === 0;
+  if (["cm", "c", "Tm"].includes(operator)) return numbers(6);
+  if (["m", "l"].includes(operator)) return numbers(2);
+  if (operator === "w") return numbers(1) && operands[0].value >= 0;
+  if (["rg", "RG"].includes(operator)) return numbers(3);
+  if (["g", "G"].includes(operator)) return numbers(1);
+  if (["k", "K"].includes(operator)) return numbers(4);
+  if (["gs", "Do", "BMC"].includes(operator)) return operands.length === 1 && operands[0].kind === "name";
+  if (operator === "Tf") return operands.length === 2 && operands[0].kind === "name" && numeric(operands[1]);
+  if (operator === "Tj") return operands.length === 1 && operands[0].kind === "string";
+  if (operator === "TJ") return operands.length === 1 && operands[0].kind === "array" && operands[0].value.every((item) => item.kind === "string" || numeric(item));
+  if (operator === "BDC") return operands.length === 2 && operands[0].kind === "name" && ["name", "dict"].includes(operands[1].kind);
+  return false;
+}
+
 export function inspectPdfxOutputProfile(input) {
   const bytes = new Uint8Array(input);
   const issues = [];
@@ -199,11 +219,22 @@ function inspectPageColorManagement(page, path, context) {
     } catch { add("DEFAULT_RGB_PROFILE_UNREADABLE", "6.4", `${path}/Resources/ColorSpace/DefaultRGB`); }
   }
   const group = get(page.node, "Group");
-  if (!(group instanceof PDFDict) || name(get(group, "S")) !== "Transparency" || !(iccProfileFromColorSpace(get(group, "CS"), resolve, name) instanceof PDFRawStream)) add("TRANSPARENCY_GROUP_INVALID", "6.20", `${path}/Group`);
+  const groupProfile = iccProfileFromColorSpace(get(group, "CS"), resolve, name);
+  if (!(group instanceof PDFDict) || name(get(group, "S")) !== "Transparency" || !(groupProfile instanceof PDFRawStream)) add("TRANSPARENCY_GROUP_INVALID", "6.20", `${path}/Group`);
+  else {
+    try {
+      const hash = createHash("sha256").update(decodePDFRawStream(groupProfile).decode()).digest("hex");
+      if (hash !== CANVAS_SRGB_SOURCE_PROFILE.profileSha256 || get(groupProfile.dict, "N")?.asNumber?.() !== CANVAS_SRGB_SOURCE_PROFILE.channels) add("TRANSPARENCY_GROUP_PROFILE_UNSUPPORTED", "6.20", `${path}/Group/CS`);
+    } catch { add("TRANSPARENCY_GROUP_PROFILE_UNREADABLE", "6.20", `${path}/Group/CS`); }
+  }
 }
 
 function inspectPageContent(page, path, context) {
   const { resolve, get, name, add } = context;
+  const resources = resolve(page.node.Resources());
+  let graphicsDepth = 0;
+  let markedDepth = 0;
+  let inText = false;
   const contents = get(page.node, "Contents");
   const streams = contents instanceof PDFArray ? contents.asArray().map(resolve) : contents ? [contents] : [];
   for (const [index, stream] of streams.entries()) {
@@ -221,9 +252,37 @@ function inspectPageContent(page, path, context) {
           && operation.operands[0].kind === "number" && Number.isFinite(operation.operands[0].value);
         const nextTextLine = operation.operator === "T*" && operation.operands.length === 0;
         if (!solidDashReset && !textLeading && !nextTextLine && !ALLOWED_CONTENT_OPERATORS.has(operation.operator)) add("CONTENT_OPERATOR_OUTSIDE_SUBSET", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
+        if (ALLOWED_CONTENT_OPERATORS.has(operation.operator) && !validContentOperands(operation)) add("CONTENT_OPERANDS_INVALID", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
+        const location = `${path}/Contents[${index}]/${operation.operator}`;
+        const op = operation.operator;
+        if (op === "q") graphicsDepth += 1;
+        if (op === "Q") {
+          if (graphicsDepth === 0) add("GRAPHICS_STATE_UNDERFLOW", "6.1", location);
+          else graphicsDepth -= 1;
+        }
+        if (op === "BT") {
+          if (inText) add("TEXT_OBJECT_NESTED", "6.1", location);
+          inText = true;
+        }
+        if (op === "ET") {
+          if (!inText) add("TEXT_OBJECT_UNDERFLOW", "6.1", location);
+          inText = false;
+        }
+        if (["Tm", "Tj", "TJ", "T*"].includes(op) && !inText) add("TEXT_OPERATOR_OUTSIDE_TEXT", "6.1", location);
+        if (["BDC", "BMC"].includes(op)) markedDepth += 1;
+        if (op === "EMC") {
+          if (markedDepth === 0) add("MARKED_CONTENT_UNDERFLOW", "6.1", location);
+          else markedDepth -= 1;
+        }
+        const resourceCategory = ({ gs: "ExtGState", Do: "XObject", Tf: "Font" })[op];
+        if (resourceCategory && operation.operands[0]?.kind === "name" && !get(get(resources, resourceCategory), operation.operands[0].value)) add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location);
+        if (op === "BDC" && operation.operands[1]?.kind === "name" && !(get(get(resources, "Properties"), operation.operands[1].value) instanceof PDFDict)) add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location);
       }
     } catch { add("CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED", "6.1", `${path}/Contents[${index}]`); }
   }
+  if (graphicsDepth !== 0) add("GRAPHICS_STATE_UNBALANCED", "6.1", path);
+  if (inText) add("TEXT_OBJECT_UNCLOSED", "6.1", path);
+  if (markedDepth !== 0) add("MARKED_CONTENT_UNCLOSED", "6.1", path);
   const xobjects = get(resolve(page.node.Resources()), "XObject");
   if (!(xobjects instanceof PDFDict)) return;
   for (const [key, value] of xobjects.entries()) {

@@ -84,7 +84,11 @@ test("documents.extract writes roleless PDF at 72 DPI or declared physical trim 
     const page = (await PDFDocument.load(await readFile(physicalPath))).getPages()[0];
     assert.deepEqual(page.getTrimBox(), { x: 9, y: 9, width: 288, height: 216 });
     await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", scale: 2, destination: join(directory, "invalid.pdf") }), { code: "CANVAS_EXTRACT_SCALE_UNSUPPORTED" });
-    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-4", destination: join(directory, "unverified.pdf") }), { code: "CANVAS_PDF_PROFILE_UNVERIFIED" });
+    // No caller-supplied ICC is needed: the bundled default reaches the
+    // conformance gate, which must still prevent publication.
+    const unverifiedPath = join(directory, "unverified.pdf");
+    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-4", destination: unverifiedPath }), { code: "CANVAS_PDF_PROFILE_UNVERIFIED" });
+    await assert.rejects(readFile(unverifiedPath), { code: "ENOENT" });
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 

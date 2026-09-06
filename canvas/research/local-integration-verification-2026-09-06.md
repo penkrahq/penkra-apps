@@ -35,6 +35,18 @@ PDF candidate changes from `1090dfe` are integrated as `dd5bdf9`, retaining a cl
 - Production build remains exit 1 with 39 Swift and 37 Kotlin unverified rows; `/tmp/canvas-pdfx-combined-production-20260906.log`.
 - The unchanged GRACoL2013 CRPC6 asset matches SHA-256 `4ebbfad6bc9cfc033fdafdd8ac5df8159208932cb16d9a6596d349ae7ab50443`. It is a specific printing-condition candidate, not a universally correct printer setting. No PDF/X artifact has been published.
 
+## Default printing-condition decision
+
+On 2026-09-06 the user selected the default/simple path rather than supplying a printer ICC profile. PDF/X-4 extraction therefore uses the already bundled GRACoL2013 CRPC6 condition automatically; no upload or subscription is required. This is a named default for premium coated paper, not a claim that all printers use that condition. The conformance publication gate remains closed independently of this choice. Ordinary PDF extraction continues to use its existing sRGB path.
+
+## Serialized content-check hardening
+
+Known PDF operator names now require their correct operand arity and types, using the graphics, text and marked-content definitions in the [Adobe PDF 1.6 Reference](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/pdfreference1.6.pdf). Negative fixtures cover malformed transforms, paths, colors, text arrays and marked content. Page-level checks retain state across the Contents array and reject graphics/text/marked-content underflow or unclosed blocks and missing named font, image, graphics-state or property resources. These are additional subset checks, not complete PDF/X conformance; the publication gate is unchanged.
+
+The integrated full suite passed **461 tests**, zero failures/cancellations/skips, exit 0, in 128737 ms (`/tmp/canvas-pdf-content-checks-suite-20260906.log`). Actual Swift and Compose compilation gates completed. The default-profile extraction regression also confirms that rejection leaves no destination file.
+
+The development build passed (`/tmp/canvas-pdf-content-checks-dev-build-20260906.log`). A subsequent transparency-group regression closes another partial-check gap: the blending profile must match the pinned sRGB source bytes and three-channel declaration, rather than merely being an ICCBased stream. The resulting focused PDF/extraction suite passed 22 tests, zero failures/cancellations/skips; the 461-test full run predates that additional regression.
+
 ## Mobile alignment candidate
 
 Authored top-level text alignment now reaches SwiftUI multiline alignment plus its authored frame anchor, and Compose TextStyle. SwiftUI justification is explicitly rejected by this candidate rather than silently becoming leading alignment. Per-paragraph overrides and justification through another native text implementation are not established here.

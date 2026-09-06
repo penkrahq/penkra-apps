@@ -29,6 +29,16 @@ test("PDF/X output profile inspection rejects the actual bundled monitor profile
   assert.deepEqual(codes(report), ["ICC_NOT_OUTPUT_DEVICE"]);
 });
 
+test("transparency blending checks embedded profile identity and channel count", async () => {
+  for (const [profileBytes, channels, rejected] of [[srgb, 3, false], [srgb, 4, true], [new Uint8Array(132), 3, true]]) {
+    const bytes = await fixture((pdf, page) => {
+      const profile = pdf.context.register(pdf.context.flateStream(profileBytes, { N: channels }));
+      page.node.set(PDFName.of("Group"), pdf.context.obj({ S: "Transparency", CS: ["ICCBased", profile] }));
+    });
+    assert.equal(codes(await preflightPdfx4(bytes)).includes("TRANSPARENCY_GROUP_PROFILE_UNSUPPORTED"), rejected);
+  }
+});
+
 test("ICC inspection rejects truncated headers, tag ranges and invalid channels", () => {
   assert.deepEqual(codes(inspectPdfxOutputProfile(new Uint8Array(20))), ["ICC_TRUNCATED"]);
   const changed = new Uint8Array(srgb);
@@ -97,12 +107,39 @@ test("emitted text line operators require their exact operand shapes", async () 
   }
 });
 
+test("allowed content operators reject incorrect arity and operand types", async () => {
+  const invalid = ["1 q", "1 Q", "1 0 0 1 cm", "/bad w", "-1 w", "0 m", "0 /bad l", "0 1 c", "1 h", "1 f", "0 0 rg", "[0] G", "0 0 0 K", "(state) gs", "12 Do", "1 BT", "1 ET", "12 /Font Tf", "1 0 0 1 Tm", "12 Tj", "[/bad] TJ", "(tag) BMC", "/tag 12 BDC", "1 EMC"];
+  const valid = ["q Q", "1 0 0 1 0 0 cm", "0 w", "0 0 m 1 1 l 0 0 1 1 2 2 c h f", "0 0 0 rg 0 G 0 0 0 1 K", "/state gs /image Do", "BT /Font 12 Tf 1 0 0 1 0 0 Tm (text) Tj [(a) -20 <62>] TJ ET", "/Artifact BMC EMC /Span << /MCID 0 >> BDC EMC"];
+  for (const [contents, rejected] of [...invalid.map((content) => [content, true]), ...valid.map((content) => [content, false])]) {
+    const bytes = await fixture((pdf, page) => page.node.set(PDFName.of("Contents"), pdf.context.register(pdf.context.flateStream(Buffer.from(contents)))));
+    assert.equal(codes(await preflightPdfx4(bytes)).includes("CONTENT_OPERANDS_INVALID"), rejected, contents);
+  }
+});
+
 test("serialized output intent resolves its compressed ICC bytes, not its label", async () => {
   const bytes = await fixture((pdf) => {
     const profile = pdf.context.register(pdf.context.flateStream(srgb, { N: 3 }));
     pdf.catalog.set(PDFName.of("OutputIntents"), pdf.context.obj([{ S: "GTS_PDFX", OutputConditionIdentifier: PDFString.of("Claimed printer"), DestOutputProfile: profile }]));
   });
   assert.ok(codes(await preflightPdfx4(bytes)).includes("ICC_NOT_OUTPUT_DEVICE"));
+});
+
+test("content state and resource checks span the entire page Contents array", async () => {
+  const cases = [
+    ["Q", "GRAPHICS_STATE_UNDERFLOW"], ["q", "GRAPHICS_STATE_UNBALANCED"],
+    ["BT BT ET", "TEXT_OBJECT_NESTED"], ["ET", "TEXT_OBJECT_UNDERFLOW"],
+    ["BT", "TEXT_OBJECT_UNCLOSED"], ["(a) Tj", "TEXT_OPERATOR_OUTSIDE_TEXT"],
+    ["EMC", "MARKED_CONTENT_UNDERFLOW"], ["/Artifact BMC", "MARKED_CONTENT_UNCLOSED"],
+    ["/missing gs", "CONTENT_RESOURCE_UNRESOLVED"], ["/missing Do", "CONTENT_RESOURCE_UNRESOLVED"],
+    ["BT /missing 12 Tf ET", "CONTENT_RESOURCE_UNRESOLVED"],
+    ["/Span /missing BDC EMC", "CONTENT_RESOURCE_UNRESOLVED"],
+  ];
+  for (const [content, expected] of cases) {
+    const bytes = await fixture((pdf, page) => page.node.set(PDFName.of("Contents"), pdf.context.register(pdf.context.flateStream(Buffer.from(content)))));
+    assert.ok(codes(await preflightPdfx4(bytes)).includes(expected), content);
+  }
+  const split = await fixture((pdf, page) => page.node.set(PDFName.of("Contents"), pdf.context.obj(["q /Artifact BMC BT", "ET EMC Q"].map((content) => pdf.context.register(pdf.context.flateStream(Buffer.from(content)))))));
+  assert.ok(!codes(await preflightPdfx4(split)).some((code) => /UNDERFLOW|UNBALANCED|UNCLOSED|NESTED/u.test(code)));
 });
 
 test("preflight diagnoses actual Canvas exporter output without asserting conformance", async () => {
