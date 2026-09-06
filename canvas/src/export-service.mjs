@@ -121,6 +121,7 @@ function validateExtractionRequest(request) {
 export async function extractDocumentNodes(document, request, options = {}) {
   if (!Array.isArray(request.node) || request.node.length === 0 || request.node.some((id) => typeof id !== "string" || !id)) throw new Error("Extraction needs a non-empty node array.");
   validateExtractionRequest(request);
+  await preflightExportDestinations([request.destination]);
   if (typeof request.destination === "string" && request.destination.endsWith("/")) {
     const names = request.node.map((id) => validateOutputSegment(`${id}.${request.format}`));
     if (new Set(names.map((name) => name.toLowerCase())).size !== names.length) throw new Error("Extraction filename collision.");
@@ -159,6 +160,7 @@ export async function extractDocumentNode(document, request, options = {}) {
   if (typeof request.nodeId !== "string" || !request.nodeId) throw new Error("Extraction needs one nodeId.");
   validateExtractionRequest(request);
   if (typeof request.destination === "string" && request.destination.endsWith("/")) return extractDocumentNodes(document, { ...request, node: [request.nodeId] }, options);
+  await preflightExportDestinations([request.destination]);
   const { bytes, report } = await renderExtractionNode(document, request, options);
   await writeAtomicFile(request.destination, bytes);
   return { artifacts: [request.destination], ...report };

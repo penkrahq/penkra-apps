@@ -39,6 +39,18 @@ test("documents.extract requires one exact node", async () => {
   await assert.rejects(() => extractDocumentNode(document, { format: "png", destination: "/tmp/ambiguous.png" }), /nodeId/u);
 });
 
+test("extraction rejects occupied destinations before resolving or rendering nodes", async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-extract-preflight-"));
+  context.after(() => rm(directory, { recursive: true, force: true }));
+  const destination = join(directory, "existing.svg");
+  await writeFile(destination, "preserved", { flag: "wx" });
+  for (const request of [{ nodeId: "missing", format: "svg", destination }, { nodeId: "missing", format: "png", destination }]) {
+    await assert.rejects(extractDocumentNode(document, request), { code: "CANVAS_EXPORT_EXISTS" });
+  }
+  await assert.rejects(extractDocumentNodes(document, { node: ["missing"], format: "svg", destination: `${directory}/` }), { code: "CANVAS_EXPORT_EXISTS" });
+  assert.equal(await readFile(destination, "utf8"), "preserved");
+});
+
 test("directory extraction names artifacts by node ID and rejects collisions before writing", async () => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-directory-extract-"));
   try {
