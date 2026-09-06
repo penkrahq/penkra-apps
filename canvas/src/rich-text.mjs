@@ -1,3 +1,5 @@
+import { variableReferences } from "./variable-references.mjs";
+
 const MARK_INCLUSIVE = Object.freeze({ link: false, lang: false });
 
 export function isMarkInclusive(type) { return MARK_INCLUSIVE[type] ?? true; }
@@ -132,7 +134,7 @@ export function interpolateRichText(node, values) {
 }
 
 function interpolationTokens(content) {
-  return [...content.matchAll(/\$\{([A-Za-z][\w-]*)\}/gu)].map((match) => ({
+  return variableReferences(content).map((match) => ({
     name: match[1], from: match.index, to: match.index + match[0].length,
   }));
 }

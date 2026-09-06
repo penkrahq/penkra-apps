@@ -1,31 +1,32 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
+import { PDFDocument } from "pdf-lib";
 
-import { exportImage } from "./export-service.mjs";
+import { extractDocumentNode, extractDocumentNodes } from "./export-service.mjs";
 
 const document = {
   version: "2.17",
-  module: "web",
+  module: "generic",
   axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
   children: [{
-    id: "art", type: "frame", role: "route", name: "Artwork", width: 320, height: 180,
+    id: "art", type: "frame", name: "Artwork", width: 320, height: 180,
     fill: "#ffffff", children: [{ id: "box", type: "rectangle", x: 20, y: 20, width: 80, height: 60, fill: "#123456" }],
   }],
 };
 
-test("documents.export-image writes one scaled PNG and one SVG subtree", async () => {
+test("documents.extract writes one scaled PNG and one roleless SVG subtree", async () => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-image-export-"));
   try {
     const pngPath = join(directory, "art.png");
-    const png = await exportImage(document, { frames: ["art"], format: "png", scale: 2, destination: pngPath }, { assets: new Map() });
+    const png = await extractDocumentNode(document, { nodeId: "art", format: "png", scale: 2, destination: pngPath }, { assets: new Map() });
     assert.deepEqual({ width: png.width, height: png.height, format: png.format }, { width: 640, height: 360, format: "png" });
     assert.deepEqual([...await readFile(pngPath)].slice(0, 8), [137, 80, 78, 71, 13, 10, 26, 10]);
 
     const svgPath = join(directory, "art.svg");
-    const svg = await exportImage(document, { frames: ["art"], format: "svg", destination: svgPath }, { assets: new Map() });
+    const svg = await extractDocumentNode(document, { nodeId: "art", format: "svg", destination: svgPath }, { assets: new Map() });
     assert.equal(svg.format, "svg");
     assert.match(await readFile(svgPath, "utf8"), /<svg[\s\S]*<rect id="box"/u);
   } finally {
@@ -33,6 +34,57 @@ test("documents.export-image writes one scaled PNG and one SVG subtree", async (
   }
 });
 
-test("documents.export-image rejects multiple subtrees for one destination", async () => {
-  await assert.rejects(() => exportImage(document, { frames: ["art", "box"], format: "png", destination: "/tmp/ambiguous.png" }), { code: "CANVAS_EXPORT_IMAGE_DESTINATION_AMBIGUOUS" });
+test("documents.extract requires one exact node", async () => {
+  await assert.rejects(() => extractDocumentNode(document, { format: "png", destination: "/tmp/ambiguous.png" }), /nodeId/u);
+});
+
+test("directory extraction names artifacts by node ID and rejects collisions before writing", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-directory-extract-"));
+  try {
+    const destination = `${join(directory, "images")}/`;
+    const result = await extractDocumentNodes(document, { node: ["box", "art"], format: "svg", destination });
+    assert.deepEqual(result.artifacts, [join(destination, "box.svg"), join(destination, "art.svg")]);
+    assert.deepEqual((await readdir(destination)).sort(), ["art.svg", "box.svg"]);
+    assert.match(await readFile(result.artifacts[0], "utf8"), /<svg/u);
+    await assert.rejects(extractDocumentNodes(document, { node: ["art"], format: "svg", destination }), { code: "CANVAS_EXPORT_EXISTS" });
+    for (const node of [["art", "art"], ["art", "ART"], ["art", "../escape"], ["art", "missing"]]) {
+      const invalid = `${join(directory, "invalid")}/`;
+      await assert.rejects(extractDocumentNodes(document, { node, format: "svg", destination: invalid }));
+      await assert.rejects(readdir(invalid), { code: "ENOENT" });
+    }
+    const single = await extractDocumentNode(document, { nodeId: "box", format: "svg", destination: `${join(directory, "single")}/` });
+    assert.deepEqual(single.artifacts, [join(directory, "single", "box.svg")]);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test("documents.extract writes roleless PDF at 72 DPI or declared physical trim size", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-pdf-extract-"));
+  try {
+    const destination = join(directory, "art.pdf");
+    const result = await extractDocumentNode(document, { nodeId: "art", format: "pdf", destination });
+    assert.equal(result.format, "pdf");
+    assert.deepEqual((await PDFDocument.load(await readFile(destination))).getPages()[0].getSize(), { width: 320, height: 180 });
+    const physical = structuredClone(document);
+    Object.assign(physical.children[0], { physical: { w: 4, h: 3, unit: "in" }, bleed: 9 });
+    const physicalPath = join(directory, "physical.pdf");
+    await extractDocumentNode(physical, { nodeId: "art", format: "pdf", destination: physicalPath });
+    const page = (await PDFDocument.load(await readFile(physicalPath))).getPages()[0];
+    assert.deepEqual(page.getTrimBox(), { x: 9, y: 9, width: 288, height: 216 });
+    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", scale: 2, destination: join(directory, "invalid.pdf") }), { code: "CANVAS_EXTRACT_SCALE_UNSUPPORTED" });
+    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-4", destination: join(directory, "unverified.pdf") }), { code: "CANVAS_PDF_PROFILE_UNVERIFIED" });
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test("multi-node extraction makes ordered differently sized PDF units and rejects multi-unit PNG/SVG files", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-multiple-pdf-"));
+  try {
+    const destination = join(directory, "units.pdf");
+    const result = await extractDocumentNodes(document, { node: ["box", "art"], format: "pdf", destination });
+    assert.equal(result.units, 2);
+    const pages = (await PDFDocument.load(await readFile(destination))).getPages();
+    assert.deepEqual(pages.map((page) => page.getSize()), [{ width: 80, height: 60 }, { width: 320, height: 180 }]);
+    for (const format of ["png", "svg"]) await assert.rejects(extractDocumentNodes(document, { node: ["box", "art"], format, destination: join(directory, `invalid.${format}`) }), { code: "CANVAS_EXTRACT_FORMAT_SINGLE_UNIT" });
+    await assert.rejects(extractDocumentNodes(document, { node: ["art", "missing"], format: "pdf", destination: join(directory, "missing.pdf") }));
+    await assert.rejects(readFile(join(directory, "missing.pdf")), { code: "ENOENT" });
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });

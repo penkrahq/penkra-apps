@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200" role="img" lang="en">
+<rect id="root" x="0" y="0" width="300" height="200" fill="#FFFFFF" stroke="none" stroke-width="1" opacity="1"/>
+<rect id="backdrop" x="40" y="30" width="180" height="130" fill="#F4A261" stroke="none" stroke-width="1" opacity="1"/>
+<image id="foreground" x="105" y="45" width="50" height="100" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAABkCAYAAADE6GNbAAAAAXNSR0IArs4c6QAAAARzQklUCAgICHwIZIgAAACRSURBVHic7c8BDYAwAMCwc0v3hA5s4PYmntCQVcF2rft9xg/MrwNOaUTTiKYRTSOaRjSNaBrRNKJpRNOIphFNI5pGNI1oGtE0omlE04imEU0jmkY0jWga0TSiaUTTiKYRTSOaRjSNaBrRNKJpRNOIphFNI5pGNI1oGtE0omlE04imEU0jmkY0jWga0TSiaUSzARquAnqSvmoCAAAAAElFTkSuQmCC" opacity="1"/>
+</svg>

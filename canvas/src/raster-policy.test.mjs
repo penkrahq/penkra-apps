@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { effectOutset, PRINT_BLEED_POINTS, PRINT_RASTER_PPI, rasterPolicyFor, skiaBlurKernelRadius } from "./raster-policy.mjs";
+import { effectOutset, rasterPolicyFor, skiaBlurKernelRadius } from "./raster-policy.mjs";
 
 test("Skia blur outsets use ceil(3 sigma) with Canvas radius mapped to sigma/2", () => {
   assert.equal(skiaBlurKernelRadius(0), 0);
@@ -14,10 +14,8 @@ test("Skia blur outsets use ceil(3 sigma) with Canvas radius mapped to sigma/2",
 });
 
 test("raster role policies expose the published density scales", () => {
-  assert.equal(PRINT_RASTER_PPI, 300);
-  assert.equal(PRINT_BLEED_POINTS, 9);
   assert.deepEqual(rasterPolicyFor("slide"), [{ name: "1x", ppi: 96, scale: 1 }]);
-  assert.deepEqual(rasterPolicyFor("page"), [{ name: "print", ppi: 300, scale: 3.125 }]);
+  assert.throws(() => rasterPolicyFor("page"), { code: "CANVAS_RASTER_POLICY_UNDEFINED" });
   assert.deepEqual(rasterPolicyFor("route").map(({ name, scale }) => ({ name, scale })), [
     { name: "1x", scale: 1 }, { name: "2x", scale: 2 }, { name: "3x", scale: 3 },
   ]);

@@ -1,5 +1,9 @@
 import fontkit from "@pdf-lib/fontkit";
-import { PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, rgb } from "pdf-lib";
+import { createHash } from "node:crypto";
+import { PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rgb, scale, setFillingColor, setFontAndSize, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
+import { scaledVectorCommands } from "../vector-path.mjs";
+import { parseCssColor } from "../canvas-theme.mjs";
+const fontPrograms = new WeakMap();
 
 export async function exportPdf(ir, options = {}) {
   const pdf = await PDFDocument.create();
@@ -8,7 +12,7 @@ export async function exportPdf(ir, options = {}) {
   if (options.profile === "PDF/A-3") addPdfa3Metadata(pdf, options.title ?? "Canvas export");
   if (options.profile === "PDF/UA-1") addPdfuaMetadata(pdf, options.title ?? "Canvas export", ir.lang ?? "en");
   if (options.profile === "PDF/X-4") {
-    const error = new Error(`${options.profile} export is blocked until its emitted structure passes the pinned conformance validator.`);
+    const error = new Error(`${options.profile} export is blocked until the Canvas standards-based preflight covers and verifies its emitted structure.`);
     error.code = "CANVAS_PDF_PROFILE_UNVERIFIED";
     throw error;
   }
@@ -17,30 +21,47 @@ export async function exportPdf(ir, options = {}) {
   const tagging = options.profile === "PDF/UA-1" ? createTagging(pdf) : null;
   for (const output of ir.outputs) {
     const physical = output.physical;
-    if (!physical) throw new Error(`PDF page ${output.id} physical size must be declared in the exporter IR.`);
-    const trimWidth = toPoints(physical.w, physical.unit);
-    const trimHeight = toPoints(physical.h, physical.unit);
+    const trimWidth = physical ? toPoints(physical.w, physical.unit) : output.width;
+    const trimHeight = physical ? toPoints(physical.h, physical.unit) : output.height;
+    if (![trimWidth, trimHeight].every((value) => Number.isFinite(value) && value > 0)) throw profileError(`PDF page ${output.id} must have finite positive dimensions.`);
     const bleed = Number(output.bleed ?? 0);
     if (!Number.isFinite(bleed) || bleed < 0) throw profileError(`PDF page ${output.id} has invalid point bleed.`);
-    if ((output.folds ?? []).length && bleed === 0) throw profileError(`PDF page ${output.id} needs positive bleed before fold marks can be placed outside trim.`);
     const mediaWidth = trimWidth + bleed * 2;
     const mediaHeight = trimHeight + bleed * 2;
     const page = pdf.addPage([mediaWidth, mediaHeight]);
     page.node.set(PDFName.of("CropBox"), pdf.context.obj([0, 0, mediaWidth, mediaHeight]));
     page.node.set(PDFName.of("BleedBox"), pdf.context.obj([0, 0, mediaWidth, mediaHeight]));
     page.node.set(PDFName.of("TrimBox"), pdf.context.obj([bleed, bleed, bleed + trimWidth, bleed + trimHeight]));
-    for (const node of [...output.nodes].sort((a, b) => a.z - b.z)) {
+    if (output.root?.paint && (color(output.root.paint.fill) || output.root.paint.stroke)) {
+      // Page background/outline is paint, not another accessibility element.
+      const background = { ...output.root, semantics: { ...output.root.semantics, decorative: true } };
+      const tag = tagging?.begin(page, background);
+      await drawNode(pdf, page, background, output, fonts, options, { bleed, trimWidth, trimHeight });
+      tagging?.end(page, tag);
+    }
+    for (const node of output.nodes) {
+      if (node.capability.verdict === "ignore") continue;
+      if (node.capability.verdict === "native" && node.type !== "text" && !color(node.paint.fill) && !color(node.paint.stroke?.fill ?? node.paint.stroke?.color) && !imageFill(node.paint.fill)) continue;
       const tag = tagging?.begin(page, node);
       await drawNode(pdf, page, node, output, fonts, options, { bleed, trimWidth, trimHeight });
       tagging?.end(page, tag);
     }
-    for (const fold of output.folds ?? []) {
-      const x = bleed + Number(fold) / output.width * trimWidth;
-      page.drawLine({ start: { x, y: 0 }, end: { x, y: bleed }, thickness: 0.25, opacity: 0.35 });
-      page.drawLine({ start: { x, y: bleed + trimHeight }, end: { x, y: mediaHeight }, thickness: 0.25, opacity: 0.35 });
-    }
   }
   tagging?.finish();
+  await pdf.flush();
+  // Shaping can use ligatures/contextual glyphs that have no direct cmap entry.
+  // Full embedded programs retain their glyph IDs; declare their actual widths.
+  for (const font of fonts.values()) {
+    const program = fontPrograms.get(font);
+    if (!program.used.size) continue;
+    const descendant = pdf.context.lookup(font.ref).lookup(PDFName.of("DescendantFonts")).lookup(0);
+    const widths = descendant.lookup(PDFName.of("W"));
+    for (const id of program.used) {
+      if (program.mapped.has(id)) continue;
+      widths.push(PDFNumber.of(id));
+      widths.push(pdf.context.obj([program.font.getGlyph(id).advanceWidth * 1000 / program.font.unitsPerEm]));
+    }
+  }
   return new Uint8Array(await pdf.save());
 }
 
@@ -59,15 +80,89 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
     page.drawImage(image, { x, y, width, height });
     return;
   }
-  if (node.type === "text") { drawText(page, node, { x, y, width, height }, fonts); return; }
+  if (node.type === "text") {
+    if (node.textLayout) drawShapedText(pdf, page, node, { x, y, width, height, sx, sy }, fonts);
+    else drawText(page, node, { x, y, width, height, textScale: sy }, fonts);
+    return;
+  }
   const fill = color(node.paint.fill);
   const stroke = color(node.paint.stroke?.fill ?? node.paint.stroke?.color);
   const opacity = Number(node.paint.opacity ?? 1);
+  if (!fill && !stroke) return;
+  const fillOpacity = opacity * colorAlpha(fill);
+  const borderOpacity = opacity * colorAlpha(stroke);
   const borderWidth = Number(node.paint.stroke?.width ?? node.paint.stroke?.thickness ?? 1) * sx;
-  const common = { x, y, width, height, opacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) };
-  if (node.type === "ellipse") page.drawEllipse({ x: x + width / 2, y: y + height / 2, xScale: width / 2, yScale: height / 2, opacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) });
-  else if (node.type === "line") page.drawLine({ start: { x, y: y + height }, end: { x: x + width, y }, color: pdfColor(stroke ?? "#000000"), thickness: borderWidth });
+  const common = { x, y, width, height, opacity: fillOpacity, borderOpacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) };
+  if (node.vector) drawVector(pdf, page, node, { x, y, width, height, fill, stroke, borderWidth, fillOpacity, borderOpacity });
+  else if (node.type === "ellipse") page.drawEllipse({ x: x + width / 2, y: y + height / 2, xScale: width / 2, yScale: height / 2, opacity: fillOpacity, borderOpacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) });
+  else if (node.type === "line") { if (stroke) page.drawLine({ start: { x, y: y + height }, end: { x: x + width, y }, color: pdfColor(stroke), opacity: borderOpacity, thickness: borderWidth }); }
   else page.drawRectangle(common);
+}
+
+function drawVector(pdf, page, node, box) {
+  const commands = scaledVectorCommands(node.vector, box.width, box.height);
+  const operators = [pushGraphicsState(), translate(box.x, box.y + box.height), scale(1, -1)];
+  const graphicsState = page.node.newExtGState("GS", pdf.context.obj({ Type: "ExtGState", ca: box.fillOpacity, CA: box.borderOpacity }));
+  operators.push(setGraphicsState(graphicsState));
+  if (box.fill) operators.push(setFillingColor(pdfColor(box.fill)));
+  if (box.stroke) operators.push(setStrokingColor(pdfColor(box.stroke)), setLineWidth(box.borderWidth));
+  for (const command of commands) {
+    if (command.type === "move") operators.push(moveTo(command.x, command.y));
+    else if (command.type === "line") operators.push(lineTo(command.x, command.y));
+    else if (command.type === "cubic") operators.push(appendBezierCurve(command.c1x, command.c1y, command.c2x, command.c2y, command.x, command.y));
+    else operators.push(closePath());
+  }
+  operators.push(PDFOperator.of(box.fill && box.stroke ? (node.vector.fillRule === "evenodd" ? "B*" : "B") : box.fill ? (node.vector.fillRule === "evenodd" ? "f*" : "f") : box.stroke ? "S" : "n"), popGraphicsState());
+  page.pushOperators(...operators);
+}
+
+function drawShapedText(pdf, page, node, box, fonts) {
+  const byteToCharacter = new Map();
+  let byteOffset = 0, characterOffset = 0;
+  for (const character of node.semantics.content) {
+    byteToCharacter.set(byteOffset, characterOffset);
+    byteOffset += new TextEncoder().encode(character).length;
+    characterOffset += character.length;
+  }
+  const operators = [pushGraphicsState(), PDFOperator.of("BDC", [PDFName.of("Span"), pdf.context.obj({ ActualText: PDFHexString.fromText(node.semantics.content) })])];
+  const keys = new Map();
+  const alphaStates = new Map();
+  for (const line of node.textLayout.lines) for (const shaped of line.runs) {
+    if (shaped.fakeBold || shaped.fakeItalic) throw profileError(`PDF text ${node.id} requires a real font face, not synthetic styling.`);
+    for (let index = 0; index < shaped.glyphs.length; index++) {
+      const offset = byteToCharacter.get(shaped.offsets[index]);
+      const run = node.semantics.runs.find((candidate) => offset >= candidate.from && offset < candidate.to);
+      if (!run) throw profileError(`PDF text ${node.id} has an unmapped shaped character.`);
+      const font = fonts.get(`${run.fontFamily ?? "Inter"}:${Number(run.weight ?? run.fontWeight ?? 400)}`);
+      if (!font) throw profileError(`PDF text ${node.id} has no exact embeddable font face.`);
+      const program = fontPrograms.get(font);
+      const weight = Number(run.weight ?? run.fontWeight ?? 400);
+      const style = { 400: "Regular", 500: "Medium", 600: "SemiBold", 700: "Bold", 800: "ExtraBold" }[weight];
+      if (node.textLayout.fontHashes[`${run.fontFamily ?? "Inter"}|${style}`] !== program.hash) {
+        const error = profileError(`PDF text ${node.id} was shaped with different font bytes from its embedded face.`);
+        error.code = "CANVAS_PDF_FONT_MISMATCH";
+        throw error;
+      }
+      const glyph = shaped.glyphs[index];
+      if (!glyph || glyph >= program.font.numGlyphs || !program.font.hasGlyphForCodePoint(node.semantics.content.codePointAt(offset))) {
+        const error = profileError(`PDF text ${node.id} requires a missing or fallback glyph.`);
+        error.code = "CANVAS_PDF_GLYPH_MISSING";
+        throw error;
+      }
+      program.used.add(glyph);
+      if (!keys.has(font)) keys.set(font, page.node.newFontDictionary(font.name, font.ref));
+      const fill = color(run.fill) ?? "#000000";
+      const alpha = Number(node.paint.opacity ?? 1) * colorAlpha(fill);
+      if (!alphaStates.has(alpha)) alphaStates.set(alpha, page.node.newExtGState("GS", pdf.context.obj({ ca: alpha })));
+      const gs = alphaStates.get(alpha);
+      operators.push(setGraphicsState(gs), setFillingColor(pdfColor(fill)), beginText(), setFontAndSize(keys.get(font), shaped.size),
+        setTextMatrix(box.sx, 0, 0, box.sy, box.x + shaped.positions[index * 2] * box.sx,
+          box.y + box.height - (shaped.positions[index * 2 + 1] + node.textLayout.offsetY) * box.sy),
+        showText(PDFHexString.of(glyph.toString(16).padStart(4, "0"))), endText());
+    }
+  }
+  operators.push(PDFOperator.of("EMC"), popGraphicsState());
+  page.pushOperators(...operators);
 }
 
 function drawText(page, node, box, fonts) {
@@ -77,15 +172,22 @@ function drawText(page, node, box, fonts) {
     const text = node.semantics.content.slice(run.from, run.to);
     const font = selectFont(fonts, run);
     if (!font) throw new Error(`No embeddable PDF font is available for ${run.fontFamily ?? "the text run"}.`);
-    const size = Number(run.fontSize ?? 16) * 0.75;
+    const size = Number(run.fontSize ?? 16) * box.textScale;
     const pieces = text.split("\n");
     for (let index = 0; index < pieces.length; index += 1) {
       const piece = pieces[index];
       if (piece) {
-        page.drawText(piece, { x: cursorX, y: baseline - size, size, font, color: pdfColor(color(run.fill) ?? "#000000") });
+        const encoded = font.encodeText(piece).asBytes();
+        for (let index = 0; index < encoded.length; index += 2) if (encoded[index] === 0 && encoded[index + 1] === 0) {
+          const error = profileError(`PDF font has no glyph for part of text node ${node.id}.`);
+          error.code = "CANVAS_PDF_GLYPH_MISSING";
+          throw error;
+        }
+        const fill = color(run.fill) ?? "#000000";
+        page.drawText(piece, { x: cursorX, y: baseline - size, size, font, color: pdfColor(fill), opacity: Number(node.paint.opacity ?? 1) * colorAlpha(fill) });
         cursorX += font.widthOfTextAtSize(piece, size);
       }
-      if (index < pieces.length - 1) { cursorX = box.x; baseline -= Number(run.lineHeight ?? run.fontSize ?? 16) * 0.75; }
+      if (index < pieces.length - 1) { cursorX = box.x; baseline -= Number(run.lineHeight ?? run.fontSize ?? 16) * box.textScale; }
     }
   }
 }
@@ -95,7 +197,12 @@ async function embedFonts(pdf, sources) {
   // pdf-lib/fontkit's subset output preserves extraction but has rendered with
   // missing glyphs in Poppler for the shipped Inter fixtures. A full embed is
   // deterministic across the conformance and raster QA runners.
-  for (const [key, bytes] of Object.entries(sources)) result.set(key, await pdf.embedFont(bytes, { subset: false }));
+  for (const [key, bytes] of Object.entries(sources)) {
+    const embedded = await pdf.embedFont(bytes, { subset: false });
+    const font = fontkit.create(bytes);
+    fontPrograms.set(embedded, { font, hash: createHash("sha256").update(bytes).digest("hex"), used: new Set(), mapped: new Set(font.characterSet.map((point) => font.glyphForCodePoint(point).id)) });
+    result.set(key, embedded);
+  }
   return result;
 }
 function selectFont(fonts, run) {
@@ -105,7 +212,19 @@ function selectFont(fonts, run) {
 }
 function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).some((item) => item?.type === "image" || typeof item?.url === "string"); }
 function color(value) { return typeof value === "string" ? value : value?.color; }
-function pdfColor(value) { const match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/iu.exec(value); return match ? rgb(parseInt(match[1], 16) / 255, parseInt(match[2], 16) / 255, parseInt(match[3], 16) / 255) : rgb(0, 0, 0); }
+function colorChannels(value) {
+  if (value === "transparent") return { r: 0, g: 0, b: 0, a: 0 };
+  const match = /^#([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/iu.exec(value);
+  if (match) {
+    const hex = match[1].length <= 4 ? [...match[1]].map((digit) => digit + digit).join("") : match[1];
+    return { r: parseInt(hex.slice(0, 2), 16) / 255, g: parseInt(hex.slice(2, 4), 16) / 255, b: parseInt(hex.slice(4, 6), 16) / 255, a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1 };
+  }
+  const css = parseCssColor(value);
+  if (css && Object.values(css).every((channel) => channel >= 0 && channel <= 1)) return css;
+  throw profileError("PDF solid colour cannot be resolved without changing its appearance.");
+}
+function pdfColor(value) { const { r, g, b } = colorChannels(value); return rgb(r, g, b); }
+function colorAlpha(value) { return value ? colorChannels(value).a : 1; }
 function toPoints(value, unit) { if (unit === "in") return value * 72; if (unit === "mm") return value / 25.4 * 72; return value * 0.75; }
 
 function addSrgbOutputIntent(pdf, profileBytes, profile) {

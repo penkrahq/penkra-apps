@@ -65,8 +65,8 @@ runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }
   return { documentId, title: document.title, trashed: true };
 });
 
-runtime.operations.handle("documents.create", async ({ title, module }) => {
-  const source = createBlankDocumentSource({ module });
+runtime.operations.handle("documents.create", async ({ title, module, preset }) => {
+  const source = createBlankDocumentSource({ module, preset });
   const starterFrameId = source.children[0].id;
   const model = createDocumentModel(source);
   try {
@@ -283,21 +283,22 @@ runtime.operations.handle("documents.export", async (input) => {
       const bindings = bindingSet ? Object.fromEntries(Object.entries(bindingSet).filter(([key]) => key !== "output")) : {};
       reports.push(await exportDocument(document, { ...input, destination: destinations[index], bindings, imports: imported.imports }, { assets, title: payload.title }));
     }
-    return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), rasterized: reports.flatMap((report) => report.rasterized) };
+    return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), bundledFonts: reports.flatMap((report) => report.bundledFonts ?? []), rasterized: reports.flatMap((report) => report.rasterized) };
   } finally { model.doc.destroy(); }
 });
 
-runtime.operations.handle("documents.export-image", async (input) => {
-  const { exportImage } = await import("./export-service.mjs");
+runtime.operations.handle("documents.extract", async (input) => {
+  const { extractDocumentNodes } = await import("./export-service.mjs");
   const payload = await api.getDocument(input.documentId);
   const model = restoreDocumentModel(payload);
   try {
     const document = materialize(model);
     const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
     const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
-    return await exportImage(document, input, {
+    return await extractDocumentNodes(document, input, {
       assets: new Map([...rootAssets, ...imported.assets]),
       imports: imported.imports,
+      title: payload.title,
     });
   } finally { model.doc.destroy(); }
 });

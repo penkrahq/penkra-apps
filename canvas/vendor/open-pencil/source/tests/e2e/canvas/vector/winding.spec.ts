@@ -1,6 +1,49 @@
+import { createCanvasSceneGraph } from '@open-pencil/pen'
+
 import { expect, test, useEditorSetupWithClear } from '#tests/e2e/fixtures'
 
 const editor = useEditorSetupWithClear('/?test&no-chrome&no-rulers')
+
+test('authored polygon geometry renders as a pentagon', async () => {
+  const graph = createCanvasSceneGraph({
+    version: '2.17',
+    children: [
+      {
+        id: 'pentagon',
+        type: 'polygon',
+        width: 180,
+        height: 150,
+        geometry: 'M50 0 L100 35 L80 100 L20 100 L0 35 Z',
+        viewBox: [0, 0, 100, 100],
+        fillRule: 'evenodd',
+        fill: '#0B4A6F'
+      }
+    ]
+  })
+  const node = [...graph.nodes.values()].find((candidate) => candidate.pencilNodeId === 'pentagon')
+  if (!node) throw new Error('Polygon adapter did not produce a node')
+  await editor.page.evaluate(
+    ({ type, vectorNetwork, fills }) => {
+      const store = window.openPencil?.getStore?.()
+      if (!store) throw new Error('OpenPencil store not initialized')
+      store.graph.createNode(type, store.state.currentPageId, {
+        name: 'Authored pentagon',
+        x: 160,
+        y: 110,
+        width: 180,
+        height: 150,
+        vectorNetwork,
+        fills
+      })
+      store.clearSelection()
+      store.requestRender()
+    },
+    { type: node.type, vectorNetwork: node.vectorNetwork, fills: node.fills }
+  )
+  await editor.canvas.waitForRender()
+  editor.canvas.assertNoErrors()
+  expect(await editor.canvas.canvas.screenshot()).toMatchSnapshot('authored-polygon-geometry.png')
+})
 
 test('even-odd vector geometry preserves holes', async () => {
   await editor.page.evaluate(() => {

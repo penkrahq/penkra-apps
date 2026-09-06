@@ -57,7 +57,7 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
     "documents.create",
       "documents.execute",
       "documents.export",
-      "documents.export-image",
+      "documents.extract",
       "documents.list",
     "documents.open",
     "documents.trash",

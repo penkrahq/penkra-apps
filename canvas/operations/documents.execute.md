@@ -9,6 +9,27 @@ Keep one execution focused on one coherent design intent. A full slide, screen, 
 focused repair can involve many nodes and still be one intent. Separate unrelated changes so each
 result can be reviewed and, while it remains the document head, undone as one unit.
 
+## Start from the document's module
+
+Every Canvas document has a `module`, fixed when the document was created, and it decides what the
+document is for and what it eventually exports to. The rest of this file is the same for all four;
+what differs per module is which frames are export units, what sizing they need, and what structure
+survives the export.
+
+That module-specific part lives in a Skill. Load the one matching the document before doing
+substantial work:
+
+| Module | Skill | Produces |
+| --- | --- | --- |
+| `deck` | `canvas-deck` | A `.pptx` presentation |
+| `print` | `canvas-print` | A PDF |
+| `web` | `canvas-web` | HTML and CSS |
+| `mobile` | `canvas-mobile` | SwiftUI or Jetpack Compose source |
+
+`documents.list` reports the module. Skip the Skill only for a change that is plainly local — fixing
+a colour, correcting a typo — and load it before adding, removing, or restructuring the frames that
+export.
+
 ## A productive design loop
 
 1. Inspect the relevant frame and nearby structure before editing an existing design.
@@ -18,8 +39,7 @@ result can be reviewed and, while it remains the document head, undone as one un
 4. Use `TakeScreenshot` after the change and judge the rendered result, not merely the script result.
 5. Correct the underlying layout, hierarchy, sizing, or style when the review exposes a problem.
 
-Preserve approved content, brand choices, reusable structure, and newer collaborative work. When
-creating multiple directions, make their concepts genuinely distinct rather than changing only
+When creating multiple directions, make their concepts genuinely distinct rather than changing only
 colors or spacing.
 
 ## Document structure
@@ -74,6 +94,23 @@ inventing new ones.
 Use top-level frames for slides, screens, pages, and reusable component definitions. A new document
 already contains the `starterFrameId` returned by `documents.create`; update or replace that frame
 for the first design instead of leaving it underneath another frame.
+
+## Frames that export
+
+Some top-level frames carry a `role`, and that role is what makes a frame an export unit — a slide,
+a page, a route, a screen. `documents.create` stamps the role on the starter frame from the module's
+preset. A frame you add yourself has no role unless you set one, and `documents.export` rejects a
+frame whose role does not match the export it was asked for.
+
+Most frames have no role, and that is correct: components, scratch work, and nested structure are
+not export units. Two rules apply to the ones that do:
+
+- A role-bearing frame is a top-level sibling. It must never contain another role-bearing frame.
+- A reusable component must not live inside a role-bearing frame. Keep components at the document
+  root and place `ref` instances into slides, pages, routes, and screens.
+
+The valid roles, the sizing each one needs, and how to add another are module-specific. They are in
+the module's Skill.
 
 ## Layout and sizing
 
@@ -335,10 +372,16 @@ The selector walker traverses source `children`; it does not expand an instance 
 children. Therefore `Get` cannot select a rendered instance descendant. Update the ref's
 `descendants`, or edit the reusable source when every instance should change.
 
+## What this operation leaves alone
+
 Canvas preserves existing variables, themes, imported resources, advanced content, and unknown
 future fields. This operation does not author document-root variables or themes. Keep existing
 `$variable` references and update the smallest supported node rather than replacing surrounding
 structures.
+
+Preserve approved content, brand decisions, reusable structure, and newer collaborative work.
+Prefer the smallest change that achieves the intent: update a property rather than replacing a node,
+and replace a node rather than rebuilding its parent.
 
 ## Selecting and inspecting
 
@@ -350,8 +393,10 @@ structures.
 - `parent-id/child-id` for an exact source hierarchy path;
 - `*` for every source node.
 
-The default and maximum result limit is 1,000. Narrow the selector or pass `{ limit: number }`.
-Operations that require one target reject zero or multiple matches rather than guessing.
+Selectors are strings. Pass `{ limit: number }` to bound how many matches come back; it defaults to
+1,000. Prefer a selector narrow enough that the limit does not matter — an exact ID or source path
+when you know the node, a type or name when you are surveying. Operations that require one target
+reject zero or multiple matches rather than guessing.
 
 Without a visitor, `Get` returns immutable contexts. Each contains a cloned `node`, cloned `parent`
 or `null`, sibling `index`, slash-separated `path`, resolved `bounds`, and reported `problems`.

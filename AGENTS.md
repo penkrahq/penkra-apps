@@ -5,9 +5,24 @@
 The client-workspace `../AGENTS.md` is the higher-level authority for client scope, consequential
 claims, external effects, and shared-client-instruction changes. This file is authoritative for
 Penkra-authored App implementation, design, validation, and independent App releases in this
-repository. The workspace-root `TODO.md` is authoritative only for shared desktop and public
-platform/SDK contracts; it does not override an App's local design source or version authority. A
-narrower rule here applies unless it conflicts with the higher-level client boundary.
+repository. Each App's ignored root `TODO.md` is its single planning authority; Penkra host and
+public SDK work belongs in the desktop repository's root `TODO.md`. Neither plan overrides an App's
+local design source or version authority. A narrower rule here applies unless it conflicts with the
+higher-level client boundary.
+
+## Planning authority
+
+- Put an App's active and explicitly deferred work in `<app>/TODO.md`. These files are intentionally
+  gitignored working state.
+- Do not create repository-wide or parallel App roadmaps, plan files, phase documents, “next” files,
+  or planning lists in research/status documents. Reconcile the work into the owning App's TODO.
+- Keep settled architecture, compatibility evidence, research, and completed QA in tracked files
+  beside the App. Those documents may explain the system or prove a result, but must point to the
+  App TODO rather than maintain another list of unfinished work.
+- Remove completed TODO items after proportionate verification. Preserve completion through commits
+  and evidence rather than checked-off plan inventories.
+- Cross-App work belongs to the App that owns the user-visible outcome. Move it to Penkra's TODO only
+  when it changes the shared host or public SDK contract.
 
 ## Product boundaries
 
@@ -17,8 +32,8 @@ narrower rule here applies unless it conflicts with the higher-level client boun
   including whether it renders the standard App Bar on any given page.
 - Use the public App Bar specification, semantic tokens, and optional framework
   adapters. Do not depend on the host rendering or configuring an App Bar for an App.
-- `TODO.md` at the client workspace root is authoritative for the active SDK and
-  platform contract. Do not create a second repository-local product plan.
+- The Penkra desktop repository's `TODO.md` is authoritative for the active SDK and platform
+  contract; an App's `TODO.md` is authoritative only for that App.
 
 ## Manifest summaries
 

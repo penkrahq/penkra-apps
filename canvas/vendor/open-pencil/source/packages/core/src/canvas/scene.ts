@@ -3,7 +3,6 @@ import type { Canvas, Path } from 'canvaskit-wasm'
 
 import type { SceneNode, SceneGraph, Fill } from '@open-pencil/scene-graph'
 import {
-  computeDescendantVisualBounds,
   intersectVisualBounds,
   nodeVisualBounds,
   unionVisualBounds,
@@ -45,8 +44,12 @@ function viewportExcludesBounds(
   viewport: { x: number; y: number; w: number; h: number },
   bounds: VisualBounds
 ): boolean {
-  return bounds.minX > viewport.x + viewport.w || bounds.minY > viewport.y + viewport.h ||
-    bounds.maxX < viewport.x || bounds.maxY < viewport.y
+  return (
+    bounds.minX > viewport.x + viewport.w ||
+    bounds.minY > viewport.y + viewport.h ||
+    bounds.maxX < viewport.x ||
+    bounds.maxY < viewport.y
+  )
 }
 
 function collectSubtreeCullBounds(
@@ -57,7 +60,11 @@ function collectSubtreeCullBounds(
 ): VisualBounds | null {
   const node = graph.getNode(nodeId)
   if (!node?.visible || node.internalOnly) return null
-  let bounds = nodeVisualBounds(node, (id) => graph.getAbsolutePosition(id))
+  let bounds = nodeVisualBounds(
+    node,
+    (id) => graph.getAbsolutePosition(id),
+    (id) => graph.getNode(id)
+  )
   let subtreeNodeCount = 1
   const clippable = node.type === 'FRAME' || node.type === 'COMPONENT' || node.type === 'INSTANCE'
   let childClip: VisualBounds | null = null
@@ -81,9 +88,12 @@ export function prepareSubtreeCullBounds(
   graph: SceneGraph,
   sceneVersion: number
 ): void {
-  if (r.subtreeCullBoundsGraph === graph &&
-      r.subtreeCullBoundsSceneVersion === sceneVersion &&
-      r.subtreeCullBoundsPositionPreviewVersion === graph.positionPreviewVersion) return
+  if (
+    r.subtreeCullBoundsGraph === graph &&
+    r.subtreeCullBoundsSceneVersion === sceneVersion &&
+    r.subtreeCullBoundsPositionPreviewVersion === graph.positionPreviewVersion
+  )
+    return
   r.subtreeCullBounds.clear()
   r.subtreeNodeCounts.clear()
   const pageNode = graph.getNode(r.pageId ?? graph.rootId)
@@ -115,8 +125,11 @@ function shouldRenderSubtreeDetail(r: SkiaRenderer, node: SceneNode): boolean {
   if (descendantCount >= 32 && screenArea / descendantCount < 0.75) return false
   const minimumScreenDimension = r.zoom < 0.1 ? 6 : 2
   const minimumScreenArea = r.zoom < 0.1 ? 36 : 8
-  return screenWidth >= minimumScreenDimension && screenHeight >= minimumScreenDimension &&
+  return (
+    screenWidth >= minimumScreenDimension &&
+    screenHeight >= minimumScreenDimension &&
     screenArea >= minimumScreenArea
+  )
 }
 function isCulled(r: SkiaRenderer, node: SceneNode, absX: number, absY: number): boolean {
   if (shouldCullSubpixelDetail(r, node)) return true
@@ -306,22 +319,11 @@ export function renderNode(
 
   const needsNodeLayer = node.opacity < 1 || needsIsolatedBlendLayer(node.blendMode)
   if (needsNodeLayer) {
-    const bounds = computeDescendantVisualBounds(
-      [nodeId],
-      (id) => graph.getNode(id) ?? undefined,
-      (id) => graph.getAbsolutePosition(id)
-    )
-    const layerBounds = bounds
-      ? r.ck.LTRBRect(
-          bounds.minX - absX,
-          bounds.minY - absY,
-          bounds.maxX - absX,
-          bounds.maxY - absY
-        )
-      : r.ck.LTRBRect(0, 0, node.width, node.height)
     r.opacityPaint.setAlphaf(node.opacity)
     setFigmaPaintBlendMode(r, r.opacityPaint, node.blendMode)
-    canvas.saveLayer(r.opacityPaint, layerBounds)
+    // The current canvas already includes ancestor transforms. World-space
+    // bounds cannot be used as local layer bounds; retain its existing clip.
+    canvas.saveLayer(r.opacityPaint)
   }
 
   const layerBlur = node.effects.find(
@@ -552,6 +554,34 @@ function drawVectorPathStrokes(
   miterLimit: number,
   outlineCacheKey?: string
 ): void {
+  if (stroke.align === 'INSIDE' || stroke.align === 'OUTSIDE') {
+    const boundary = new r.ck.Path()
+    for (const path of vectorPaths) boundary.addPath(path)
+    const fillType = vectorPaths[0]?.getFillType()
+    if (fillType !== undefined) boundary.setFillType(fillType)
+    canvas.save()
+    try {
+      canvas.clipPath(
+        boundary,
+        stroke.align === 'INSIDE' ? r.ck.ClipOp.Intersect : r.ck.ClipOp.Difference,
+        true
+      )
+      drawVectorPathStrokes(
+        r,
+        canvas,
+        vectorPaths,
+        { ...stroke, align: 'CENTER', weight: stroke.weight * 2 },
+        sc,
+        strokeCap,
+        strokeJoin,
+        miterLimit
+      )
+    } finally {
+      canvas.restore()
+      boundary.delete()
+    }
+    return
+  }
   const cap = stroke.cap ?? strokeCap ?? 'NONE'
   const join = stroke.join ?? strokeJoin ?? 'MITER'
   const dash = stroke.dashPattern
@@ -590,6 +620,7 @@ function drawVectorPathStrokes(
     if (outlineCacheKey) r.vectorStrokeOutlineCache.set(outlineCacheKey, outlines)
   }
   for (const outline of outlines) canvas.drawPath(outline, r.fillPaint)
+  if (!outlineCacheKey) for (const outline of outlines) outline.delete()
 }
 
 function drawRegularStroke(

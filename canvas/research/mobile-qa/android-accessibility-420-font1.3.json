@@ -1,0 +1,79 @@
+{
+  "sdk": 36,
+  "densityDpi": 420,
+  "fontScale": 1.2999999523162842,
+  "nodes": [
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "Canvas mobile export verification screen",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "Native Canvas",
+      "description": "Native Canvas heading",
+      "heading": true,
+      "visible": true
+    },
+    {
+      "text": "Responsive type and layout",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "",
+      "heading": false,
+      "visible": true
+    },
+    {
+      "text": "",
+      "description": "Orange circle",
+      "heading": false,
+      "visible": true
+    }
+  ]
+}

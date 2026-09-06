@@ -85,12 +85,14 @@ export interface PenNode {
   type: string
   id: string
   name?: string
+  role?: string
   x?: number
   y?: number
   width?: number | string
   height?: number | string
   fill?: PenFill
   opacity?: number
+  blendMode?: string
   enabled?: boolean
   clip?: boolean
   rotation?: number
@@ -333,15 +335,21 @@ export function convertFill(fill: PenFill | undefined, ctx: VarContext, node?: S
       return convertPenGradient(item, ctx, node, index)
     if (item && typeof item === 'object' && item.type === 'shader' && item.__canvasShader) {
       return {
-        type: 'CUSTOM', visible: item.enabled !== false, opacity: Number(item.opacity ?? 1),
-        color: { r: 1, g: 1, b: 1, a: 1 }, blendMode: mapPenBlendMode(item.blendMode),
+        type: 'CUSTOM',
+        visible: item.enabled !== false,
+        opacity: Number(item.opacity ?? 1),
+        color: { r: 1, g: 1, b: 1, a: 1 },
+        blendMode: mapPenBlendMode(item.blendMode),
         pencilShader: item.__canvasShader
       } as Fill
     }
     if (item && typeof item === 'object' && item.type === 'mesh_gradient' && item.__canvasMesh) {
       return {
-        type: 'CUSTOM', visible: item.enabled !== false, opacity: Number(item.opacity ?? 1),
-        color: { r: 1, g: 1, b: 1, a: 1 }, blendMode: mapPenBlendMode(item.blendMode),
+        type: 'CUSTOM',
+        visible: item.enabled !== false,
+        opacity: Number(item.opacity ?? 1),
+        color: { r: 1, g: 1, b: 1, a: 1 },
+        blendMode: mapPenBlendMode(item.blendMode),
         pencilMesh: item.__canvasMesh
       } as Fill
     }
@@ -351,11 +359,13 @@ export function convertFill(fill: PenFill | undefined, ctx: VarContext, node?: S
     const parsedColor = parseFillColor(item, ctx)
     const color = { ...parsedColor, a: 1 }
     const result: Fill = {
-      type: 'SOLID', visible, opacity: parsedColor.a, color,
+      type: 'SOLID',
+      visible,
+      opacity: parsedColor.a * (typeof item === 'string' ? 1 : Number(item.opacity ?? 1)),
+      color,
       blendMode: mapPenBlendMode(typeof item === 'string' ? undefined : item.blendMode)
     }
-    if (node)
-      bindIfVar(node, `fills[${index}]`, typeof item === 'string' ? item : item.color, ctx)
+    if (node) bindIfVar(node, `fills[${index}]`, typeof item === 'string' ? item : item.color, ctx)
     return result
   })
 }
@@ -366,32 +376,36 @@ function convertPenGradient(
   node: SceneNode | undefined,
   index: number
 ): Fill {
-  const type = item.gradientType === 'radial'
-    ? 'GRADIENT_RADIAL'
-    : item.gradientType === 'angular' ? 'GRADIENT_ANGULAR' : 'GRADIENT_LINEAR'
+  const type =
+    item.gradientType === 'radial'
+      ? 'GRADIENT_RADIAL'
+      : item.gradientType === 'angular'
+        ? 'GRADIENT_ANGULAR'
+        : 'GRADIENT_LINEAR'
   const center = item.center ?? { x: 0.5, y: 0.5 }
   const width = Number(item.size?.width ?? 1)
   const height = Number(item.size?.height ?? 1)
-  const rotation = Number(item.rotation ?? 0) * Math.PI / 180
+  const rotation = (Number(item.rotation ?? 0) * Math.PI) / 180
   const cos = Math.cos(rotation)
   const sin = Math.sin(rotation)
-  const gradientTransform = type === 'GRADIENT_LINEAR'
-    ? {
-        m00: sin * height,
-        m01: 0,
-        m02: Number(center.x ?? 0.5) - sin * height / 2,
-        m10: cos * height,
-        m11: 1,
-        m12: Number(center.y ?? 0.5) - cos * height / 2
-      }
-    : {
-        m00: cos * width,
-        m01: -sin * height,
-        m02: Number(center.x ?? 0.5) - 0.5 * (cos * width - sin * height),
-        m10: sin * width,
-        m11: cos * height,
-        m12: Number(center.y ?? 0.5) - 0.5 * (sin * width + cos * height)
-      }
+  const gradientTransform =
+    type === 'GRADIENT_LINEAR'
+      ? {
+          m00: sin * height,
+          m01: 0,
+          m02: Number(center.x ?? 0.5) - (sin * height) / 2,
+          m10: cos * height,
+          m11: 1,
+          m12: Number(center.y ?? 0.5) - (cos * height) / 2
+        }
+      : {
+          m00: cos * width,
+          m01: -sin * height,
+          m02: Number(center.x ?? 0.5) - 0.5 * (cos * width - sin * height),
+          m10: sin * width,
+          m11: cos * height,
+          m12: Number(center.y ?? 0.5) - 0.5 * (sin * width + cos * height)
+        }
   const stops = item.colors ?? []
   const gradientStops = stops.map((stop) => ({
     color: parseFillColor(stop.color, ctx),
@@ -399,16 +413,21 @@ function convertPenGradient(
   }))
   if (node) {
     stops.forEach((stop, stopIndex) =>
-      bindIfVar(node, `fills[${index}].gradientStops[${stopIndex}]`, stop.color, ctx))
+      bindIfVar(node, `fills[${index}].gradientStops[${stopIndex}]`, stop.color, ctx)
+    )
   }
   return {
-    type, visible: item.enabled !== false, opacity: Number(item.opacity ?? 1),
-    color: { r: 1, g: 1, b: 1, a: 1 }, blendMode: mapPenBlendMode(item.blendMode),
-    gradientStops, gradientTransform
+    type,
+    visible: item.enabled !== false,
+    opacity: Number(item.opacity ?? 1),
+    color: { r: 1, g: 1, b: 1, a: 1 },
+    blendMode: mapPenBlendMode(item.blendMode),
+    gradientStops,
+    gradientTransform
   } as Fill
 }
 
-function mapPenBlendMode(value?: string): Fill['blendMode'] {
+export function mapPenBlendMode(value?: string): Fill['blendMode'] {
   if (!value || value === 'normal') return 'NORMAL'
   if (value === 'light') return 'LIGHTEN'
   return value.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase() as Fill['blendMode']
@@ -434,25 +453,37 @@ export function convertStroke(
   const results = fills.flatMap((fill, index): Stroke[] => {
     if (typeof fill !== 'string' && fill.type === 'gradient') {
       const gradient = convertPenGradient(fill, ctx, undefined, index)
-      return [{
-        visible: fill.enabled !== false, color: { r: 1, g: 1, b: 1, a: 1 },
-        opacity: Number(fill.opacity ?? 1), weight: strokeWeight(stroke), align,
-        dashPattern: stroke.dashPattern ?? [], blendMode: gradient.blendMode,
-        gradientStops: gradient.gradientStops, gradientTransform: gradient.gradientTransform,
-        type: gradient.type
-      } as Stroke]
+      return [
+        {
+          visible: fill.enabled !== false,
+          color: { r: 1, g: 1, b: 1, a: 1 },
+          opacity: Number(fill.opacity ?? 1),
+          weight: strokeWeight(stroke),
+          align,
+          dashPattern: stroke.dashPattern ?? [],
+          blendMode: gradient.blendMode,
+          gradientStops: gradient.gradientStops,
+          gradientTransform: gradient.gradientTransform,
+          type: gradient.type
+        } as Stroke
+      ]
     }
     if (typeof fill !== 'string' && !['color', 'solid'].includes(fill.type)) return []
     const rawColor = typeof fill === 'string' ? fill : (fill.color ?? '#00000000')
     const parsedColor = isVarRef(rawColor) ? ctx.resolveColor(rawColor) : parseColor(rawColor)
     const color = { ...parsedColor, a: 1 }
     if (node) bindIfVar(node, `strokes[${index}]`, rawColor, ctx)
-    return [{
-      visible: typeof fill === 'string' || fill.enabled !== false,
-      color, opacity: parsedColor.a, blendMode: mapPenBlendMode(
-        typeof fill === 'string' ? undefined : fill.blendMode
-      ), weight: strokeWeight(stroke), align, dashPattern: stroke.dashPattern ?? []
-    }]
+    return [
+      {
+        visible: typeof fill === 'string' || fill.enabled !== false,
+        color,
+        opacity: parsedColor.a * (typeof fill === 'string' ? 1 : Number(fill.opacity ?? 1)),
+        blendMode: mapPenBlendMode(typeof fill === 'string' ? undefined : fill.blendMode),
+        weight: strokeWeight(stroke),
+        align,
+        dashPattern: stroke.dashPattern ?? []
+      }
+    ]
   })
   if (node) {
     if (typeof stroke.thickness === 'object') {
@@ -486,11 +517,13 @@ export function convertEffects(effect: PenEffect | PenEffect[] | undefined): Eff
   return effects.flatMap((item) => {
     if (item.enabled === false) return []
     if (item.type === 'blur' || item.type === 'background_blur') {
-      return [{
-        type: item.type === 'background_blur' ? 'BACKGROUND_BLUR' : 'LAYER_BLUR',
-        visible: true,
-        radius: Number(item.radius ?? 0)
-      } satisfies Effect]
+      return [
+        {
+          type: item.type === 'background_blur' ? 'BACKGROUND_BLUR' : 'LAYER_BLUR',
+          visible: true,
+          radius: Number(item.radius ?? 0)
+        } satisfies Effect
+      ]
     }
     if (item.type !== 'shadow') return []
     const color = item.color ? parseColor(item.color) : { r: 0, g: 0, b: 0, a: 0.25 }
@@ -532,13 +565,14 @@ export function applyPadding(node: SceneNode, padding: PenNode['padding'], ctx?:
     typeof v === 'string' ? (isVarRef(v) && ctx ? ctx.resolveNumber(v) : Number(v) || 0) : v
   if (Array.isArray(padding)) {
     const values = padding.map((value) => resolve(value ?? 0))
-    const [top, right, bottom, left] = values.length === 1
-      ? [values[0], values[0], values[0], values[0]]
-      : values.length === 2
-        ? [values[0], values[1], values[0], values[1]]
-        : values.length === 3
-          ? [values[0], values[1], values[2], values[1]]
-          : [values[0] ?? 0, values[1] ?? 0, values[2] ?? 0, values[3] ?? 0]
+    const [top, right, bottom, left] =
+      values.length === 1
+        ? [values[0], values[0], values[0], values[0]]
+        : values.length === 2
+          ? [values[0], values[1], values[0], values[1]]
+          : values.length === 3
+            ? [values[0], values[1], values[2], values[1]]
+            : [values[0] ?? 0, values[1] ?? 0, values[2] ?? 0, values[3] ?? 0]
     node.paddingTop = top
     node.paddingRight = right
     node.paddingBottom = bottom
@@ -628,7 +662,7 @@ export function mapNodeType(pen: PenNode): NodeType | null {
   if (pen.type === 'rectangle') return 'RECTANGLE'
   if (pen.type === 'ellipse') return 'ELLIPSE'
   if (pen.type === 'line') return 'LINE'
-  if (pen.type === 'polygon') return 'POLYGON'
+  if (pen.type === 'polygon') return pen.geometry ? 'VECTOR' : 'POLYGON'
   if (pen.type === 'group') return 'GROUP'
   if (pen.type === 'text' || pen.type === 'icon_font') return 'TEXT'
   if (pen.type === 'path') return 'VECTOR'

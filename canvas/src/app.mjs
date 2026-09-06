@@ -1,6 +1,7 @@
 import { createCanvasApi } from "./canvas-api.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
+import { createDocumentModuleLabels } from "./document-module-labels.mjs";
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
@@ -74,6 +75,7 @@ const root = document.querySelector("#app");
 if (!runtime || !root) throw new Error("Canvas requires the Penkra App runtime.");
 
 const api = createCanvasApi(runtime);
+const documentModuleLabels = createDocumentModuleLabels((id) => api.getDocumentState(id));
 const documentCollectionLifecycle = createDocumentCollectionLifecycle({
   subscribe: (listener) => api.subscribeToDocuments(listener),
 });
@@ -216,6 +218,13 @@ async function showLibrary() {
       state.loading = false;
       state.error = null;
       render();
+      void documentModuleLabels.load(documents, (id, module) => {
+        if (state.route !== "library" || state.documents !== documents) return;
+        const document = documents.find((candidate) => candidate.id === id);
+        if (document) { document.module = module; document.moduleLoaded = true; }
+        const label = root.querySelector(`[data-document-module="${CSS.escape(id)}"]`);
+        if (label) label.textContent = module ?? (module === null ? "Unassigned" : "Unavailable");
+      });
     },
     onError: handleDocumentCollectionError,
   });
@@ -474,6 +483,7 @@ async function openDocument(documentId) {
 
 function closeDocument() {
   documentCollectionLifecycle.stop();
+  documentModuleLabels.cancel();
   disposeEngineSurface();
   state.documentUnsubscribe?.();
   state.documentUnsubscribe = null;
@@ -874,7 +884,7 @@ function segment(key, label) {
 
 function documentCard(document) {
   const ownership = document.access === "owner" ? "Your file" : `Shared by ${document.ownerName ?? "another Account"}`;
-  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
+  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span data-document-module="${escapeHtml(document.id)}">${escapeHtml(document.module ?? (document.moduleLoaded ? document.module === null ? "Unassigned" : "Unavailable" : "Loading type…"))}</span><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
 }
 
 function trashCard(document) {

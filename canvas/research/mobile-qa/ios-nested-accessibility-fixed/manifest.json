@@ -1,0 +1,50 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "E2E2D5FF-9A28-4AA5-976D-752F67FE6350.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native fixture appearance_0_E044FF4B-7BA8-4D93-902D-C7A2D7E60AB3.png",
+        "timestamp" : 1788643100.167
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "99A8824E-1A0C-49F5-BF26-93E84A09B3B7.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility tree_0_57615603-1E41-4852-9208-F8D92262EA10.txt",
+        "timestamp" : 1788643100.045
+      }
+    ],
+    "testIdentifier" : "AccessibilityTests/testExportedDescriptionsAndDecorativeText()",
+    "testIdentifierURL" : "test://com.apple.xcode/CanvasSimulatorQA/CanvasAccessibilityTests/AccessibilityTests/testExportedDescriptionsAndDecorativeText"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "06C3F48B-34F5-4221-A3D1-0288C045F705.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Nested accessibility appearance_0_C8E7ADE3-7CB7-4855-B9CC-35A1CF9E86A0.png",
+        "timestamp" : 1788643105.318
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "1B105DAC-0AB6-4E60-B019-9337FD034A59.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Nested accessibility tree_0_DC08B76B-FF13-4093-A1CF-AD71CCAC4245.txt",
+        "timestamp" : 1788643105.188
+      }
+    ],
+    "testIdentifier" : "AccessibilityTests/testNestedDecorationsAndVisibleGroupLabels()",
+    "testIdentifierURL" : "test://com.apple.xcode/CanvasSimulatorQA/CanvasAccessibilityTests/AccessibilityTests/testNestedDecorationsAndVisibleGroupLabels"
+  }
+]

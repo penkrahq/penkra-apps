@@ -6,9 +6,10 @@
 > migrations refusing to run.
 > **Revision 4** incorporates all 60 findings of
 > `research/architecture-review-1.md` (§26) *and* all 60 of the second-pass audit
-> `research/architecture-review-2.md` (§27). Its full scope was authorized for implementation when written. Decisions are
-> settled unless marked OPEN; §19 lists what is deliberately still open, §26 and §27 record what
-> each review round changed.
+> `research/architecture-review-2.md` (§27). Its full scope was authorized for implementation when written.
+> **Decisions are NOT settled unless §0 marks them Agreed or Derived.** §0 is the provenance
+> register and overrides any confidence expressed elsewhere in this document; §19 lists what was
+> already known to be open, §26 and §27 record what each review round changed.
 >
 > **Revision 4's governing instruction was "less is more, consistency."** Where revision 3 answered
 > a gap by inventing a mechanism, revision 4 answers it by deleting the gap. The invented `image`
@@ -24,6 +25,213 @@
 > documents through `documents.execute`. Everything else is design. The two are kept apart on
 > purpose, because the most expensive errors in this discussion came from asserting design as if it
 > were grounded.
+## 0. Provenance
+
+**Why this section exists.** The header above used to say *"Decisions are settled unless marked
+OPEN."* That was false, and it was false in a way that was invisible. Much of this document was
+written by the assistant thread to fill a gap in the argument, in the same voice and with the same
+confidence as the parts the user actually decided. Nothing distinguished the two, so an
+implementing agent had no way to tell a settled decision from an unreviewed invention.
+
+**How this was determined.** Every user message across the three transcripts of this discussion was
+extracted into a single corpus (148 messages, ~139 KB) and probed section by section. A section is
+only marked *Agreed* where a user message decides it. Two failure modes were found and corrected
+for:
+
+1. **Changelog echo.** The assistant would summarise a newly written section back to the user; the
+   user would quote that summary while asking about something else. Searching the corpus finds the
+   section name inside a user message and scores it as agreement. It is not. §10.3 and §9.5 both
+   failed this way — their only corpus hits are the assistant's own changelog quoted back.
+2. **Question mistaken for decision.** *"How do we resolve this?"* and *"Whatever's objectively
+   better"* are the user opening a question, not closing one.
+
+**The verdicts.**
+
+| Verdict | Meaning | What an implementing agent should do |
+| --- | --- | --- |
+| **Agreed** | A user message decides it. | Build it. |
+| **Derived** | Follows necessarily from an Agreed decision, or is read from source/prior art rather than chosen. | Build it. Flag it if the derivation looks wrong. |
+| **Written, not discussed** | The assistant wrote it. No user input exists. | **Do not build. Ask first.** |
+| **Contradicted** | The user argued against it and it is still in the document. | **Do not build.** Slated for deletion. |
+| **Superseded** | Overtaken by a later decision. | **Do not build.** Slated for deletion. |
+
+### 0.1 Section register
+
+| § | Section | Verdict | Note |
+| --- | --- | --- | --- |
+| Invariants | Product invariants | Agreed, except #26 | #26 names `documents.export-image`, which is deleted. |
+| 1 | The problem | Derived | Retrospective on grounded events. |
+| 2 | Principles | Agreed | "LESS IS MORE", WYSIWYG, no false hope, standards over heuristics are all user-stated. |
+| 3 | Strategy | Agreed | Includes 3.1, the engine question. |
+| 4 | Grounded facts | Derived | Read from source and from the user's real documents. Verify by re-reading, not by asking. |
+| 5 | Product decomposition | Derived | |
+| 6 | Document model — root | **Superseded** | Schema versions, write handshake, quiesce, minimum-client gate. Killed by "we DO NOT need to version anything… no legacy, and fine migrating even if lossy." §28 already says this; the section body was never cut. |
+| 7.1 | Vocabulary | Derived | |
+| 7.2 | Text — content plus marks | Agreed | Extensively discussed; offsets, partition rule, sentinel ban. |
+| 7.3 | Axes | **Written, not discussed** | One corpus hit, and it is the assistant's own field list quoted back. Themes/states/variants/breakpoints unified into one mechanism was never put to the user. |
+| 7.4 | Layout | Derived | Grounded in §21.1 — grid is already ours. |
+| 7.5 | Variables and tokens | Agreed in principle, **open in shape** | The DTCG-vs-homegrown question was answered *"Whatever's objectively better"* — a research instruction, not a decision. Shape unsettled until researched. |
+| 7.6 | Components — the `imports` surface | **Written, not discussed** | The single largest unreviewed mechanism in the document. Two corpus hits: one is the assistant's field list quoted back, one is the unrelated Pencil-import decision. Designed for one story (a pinned read-only vendor library) and then left as the general mechanism. See §0.2. |
+| 7.7 | Flows | Derived, scope withdrawn | §23.2 withdrew the scope; 36 flow rows remain unverified. |
+| 8.1 | The four modules | Agreed, with amendments | Four modules agreed. Amended in discussion: add `module: "generic"` for freeform work; module settable later while no role-bearing frames exist; no fifth `asset` module (the user's objection — an asset module guarantees assets can never live beside what uses them — is correct and decisive). Any mention of `documents.export-image` here is deleted. |
+| 8.2 | Roles and sizes | Agreed | Amended: **a page is simply a frame that declares a real-world `physical` size.** That is the whole test. Arbitrary physical sizes already work in code; `physicalFor` no longer exists. |
+| 8.3 | What the type constrains | Derived | |
+| 9 | The capability table | Agreed | |
+| 9.1 | Three verdicts | Agreed | Five collapsed to three under "less is more". |
+| 9.2 | Completeness — must be total | Agreed | 140 unverified rows (36 flow / 103 mobile / 1 PDF/X-4). The user's instruction is that these get *completed*, using whatever tooling exists — not deferred. |
+| 9.3 | `consequences` channel | Derived | |
+| 9.4 | The raster scope rule | Agreed, but **misapplied** | The rule is sound. Its application to `nodes.path`, `nodes.polygon`, `properties.geometry`, `properties.viewBox` and `properties.fillRule` is a defect, not a decision: those rows are `raster` in all six targets *including SVG*, justified as "no measured native emission" — unimplemented, not impossible, and contradicted by our own `research/pptx-capabilities.md`. |
+| 9.5 | `export: "live" \| "image"` | **Written, not discussed** | **Zero corpus hits.** No user message anywhere mentions this field. |
+| 9.6 | Where constraints bind | Derived | |
+| 10.1 | Export shape | Agreed | |
+| 10.2 | The artifact is a bundle | **Written, not discussed** | Only reaches the corpus as changelog echo. |
+| 10.3 | The exporter IR | **Written, not discussed** | Same. The user's only substantive engagement was *"What's IR work?"* — asking what it is. Note also the vocabulary collision the user did flag: `capabilityTableFor(request.capability ?? request.role, …)` conflates role, target and capability. That naming must be settled before this is built. |
+| 10.4 | Templating | **Written, not discussed** | Eleven corpus hits for "template", every one of them from the unrelated school-deck production work. |
+| 10.5 | The export report | Derived | |
+| 10.6 | Presentation is a target, not a mode | Derived | |
+| 10.7 | Import | **Written, not discussed** | Same status as 7.6. |
+| 11 | Agent surface | Derived | |
+| 12.1 | A job surface | Agreed | *"Good point, we'd probably have to include this id…"* |
+| 12.2 | Spills | Agreed | User-originated — the user raised spills, citing the borge repo. Also user-decided: *"Export obviously cannot use the spill mechanism, controllers can write to the filesystem directly."* |
+| 12.3 | Canvas-side performance | Derived | |
+| 12.4 | Penkra host defects observed | Derived | Grounded observations. Add the tab-visibility finding: retained hidden tabs cannot be observed semantically, contradicting `penkra tabs --help`. |
+| 12.5 | Root causes for §12.4 | Derived | |
+| 12.6 | What `parentThreadId` governs | **Contradicted** | The user's words: *"What's parentThreadId used for other than this? I don't think it should matter. All threads are equal."* The section survives in the document anyway. Delete on prune. |
+| 13.1–13.5 | Shapes | Derived | Illustrations of decisions made elsewhere; inherit their sections' verdicts. 13.5 (print page with bleed) is sound. |
+| 14 | User stories | Mixed | Most are Derived illustrations. **US-8 (Exporting one slide) is superseded** — its shape assumes `documents.export-image`. **US-15** ("a component the library does not expose enough of") presumes the unreviewed §7.6 import model and inherits its verdict. |
+| 15 | Defect register | Derived | Grounded. |
+| 16 | Migration | **Superseded** | Migration manifests and the `sourceSequence` pin are deleted. Lossy migration is explicitly acceptable. |
+| 17 | Sequenced build plan | Superseded as a plan | The header already says `TODO.md` is the only authoritative executable plan. Stage prose is rationale, not backlog. |
+| 18 | Decision log | Agreed / Reversed as marked | The most trustworthy section in the document — but it does not cover everything above, which is why this register exists. |
+| 19 | Open questions | Agreed | Incomplete: it does not list the items this register newly marks unreviewed. |
+| 20 | Deferred | Agreed | |
+| 21 | Research findings | Derived | Grounded research. 21.2 in particular *contradicts* §9.4's path rows. |
+| 22 | Q10 — the `descendants` census | Derived | Measured. |
+| 23 | Three questions closed | Agreed | 23.1 platform targets emit source; 23.2 flows scope withdrawn; 23.3 one owned fork. |
+| 24 | The four modules, in full | Derived | The capability tables themselves. Subject to 9.2 and 9.4 above. |
+| 25 | The foundations audit | Derived, one **open** | 25.2 explicitly flags the export-file *permission* as unsettled. 25.4 text direction carries one decision. |
+| 26 | Review disposition — first pass | Derived | Historical record. |
+| 27 | Review disposition — second pass | Derived | Historical record. |
+| 28 | Clean-cut correction | Agreed | Supersedes §6 and §16. |
+| 29 | Pencil file-compatibility deletion | Agreed | User's words: Pencil compatibility is irrelevant to us; breaking `.pen` import is acceptable in favour of a clean overall solution. |
+
+### 0.2 The `imports` surface — what is actually unreviewed
+
+§7.6 and §10.7 were written for a single story: importing a pinned, read-only vendor library such
+as the Apple HIG. Everything that assumes a *living shared library* is either missing or inverted.
+Read from source:
+
+- **The pin is a CRDT sequence number.** `canvas-imports.mjs:39` computes `version` from
+  `snapshot.throughSequence` and update sequences. That number increments on every keystroke, so
+  `pin: "exact"` breaks on the next edit to the source. This is the same error as the deleted
+  migration-manifest `sourceSequence` pin, made twice.
+- **Cross-document refs skip every validation.** In `canvas-schema.mjs`, `validateRefs` and the
+  cycle, containment and missing-target checks are all gated on the ref being *unqualified*
+  (`!node.ref.includes(":")`). A qualified cross-document ref is checked by nothing.
+- **Styling resolves in two directions at once.** `canvas-resolver.mjs` resolves variables from the
+  **source** document (line 105) and paragraph styles from the **consumer** (line 6).
+- **No module check**, no pruning, no deduplication of a diamond import, and no reverse dependency
+  lookup — so nothing can answer "who imports this?" before a delete.
+- **Documents are Account-owned, not Space-scoped.** `canvas documents list` returns
+  `ownerAccountId` and `access`; there is no `spaceId` on a document. A foreign-key-style
+  pre-delete check therefore cannot see importers in another account.
+
+These are recorded for Decks as findings, **not** as work to start.
+
+### 0.3 How to prune this document
+
+Delete, do not rewrite: §6, §16, US-8, §12.6, invariant #26, every mention of
+`documents.export-image`, and svg-as-a-seventh-target. For each **Written, not discussed** section,
+either put the decision to the user or delete the section — do not leave it in place with the mark
+attached, because the mark decays into background noise the moment there is more than a handful.
+
+---
+
+### 0.4 Decisions taken after the provenance pass
+
+These were discussed with the user and are **Agreed**. They supersede the sections they touch.
+
+**DEC1 — `print` is deleted as a module.** Every constraint it carried is per-frame, not
+document-level. `deck` survives because PowerPoint imposes a document-global fact (one slide size
+for the entire file); `print` had no equivalent. What remains:
+
+| Was | Becomes |
+| --- | --- |
+| `module: "print"` | deleted |
+| `role: "page"` | deleted — a page is a frame that declares `physical` |
+| `physical` | frame property, drives real PDF page size |
+| `bleed` | frame property, emits real BleedBox and TrimBox |
+| `folds`, `safeMargin` | advisory authoring guides, any module, emit nothing |
+| PDF/X-4 profile | a flag on extraction, not a module |
+| A4 / Letter presets | blank-document presets, no module needed |
+
+Roles reduce to `slide | route | ios | android`. The `page` capability table and
+`PAGE_PROFILE_DELTAS` dissolve, retiring the 1 unverified PDF/X-4 row; the 36 flow and 103 mobile
+rows are untouched. Affects §8.1, §8.2, §13.5, §24.2, invariants, §9.
+
+The deciding example was the user's: there is no observable difference between a poster in `print`
+and a poster in `generic`. The real distinction is whether the frame declares `physical`.
+
+**DEC2 — Fold marks demote to guidance.** A shop given the finished size and a job ticket knows where
+to fold; fold marks matter only for complex folds, and the thing that actually matters there —
+panel widths, since a roll fold needs its inner panel 2–3mm narrower — is an authoring concern the
+agent handles when placing content. `bleed` does **not** demote: bleed is artwork that must
+physically exist past the trim line, and guillotine tolerance is not advisory.
+
+**DEC3 — PDF is an extraction format, and extraction is multi-unit.** PDF's primitives are
+essentially our node model, so extraction to PDF is vector, with text and embedded fonts, and needs
+no role or capability table. `documents.extract` takes N nodes; the destination decides the artifact
+count. A file destination with several nodes is legal only where the format holds several units,
+which `pdf` does and `png`/`svg` do not. This removes the reason `svg` sat in `CAPABILITY_TABLES` as
+a seventh peer of `slide` and `page` — it was misfiled as a target. Specified in
+`operations/documents.extract.md` and `operations/documents.export.md`.
+
+**DEC4 — Variants are component props, not axes.** §7.3's claim that variants unify into axes is
+withdrawn; the shipped code never implemented it (`canvas-schema.mjs:65-74` carries `properties`,
+`bind`, `varies` and `modes` as two separate systems). The test is one sentence: **can two siblings
+on the same frame differ in it?** Yes, it is a prop. No, it is an axis. A slide with a primary and a
+secondary button is unbuildable if `kind` is a document-root axis. Axes are `appearance`,
+`viewport`, `interaction`; variants and sizes are props. Affects §7.3 prose only.
+
+**DEC5 — Canvas is fixed-layout; flow-layout is a different product.** Word/Pages-class documents —
+where pages are computed from a reflowing content stream, with pagination, widows and orphans,
+keep-with-next, footnotes, running headers and a TOC — are not Canvas and must not be bolted on.
+Canvas print work is poster, flyer, business card, packaging, brochure, signage, book *cover*. The
+flow-layout product is future work, recorded here so nobody grows Canvas toward it.
+
+---
+
+**DEC6 — The `interaction` axis is removed.** It passed the sibling test but four of five modules
+`ignore` it: a deck has no hover, a PDF has no hover, and SwiftUI/Compose have pressed states rather
+than `:hover`. A general mechanism only one module understands is not general. Agents infer
+interaction states when emitting web. Revisit if and when interactive previews are built. **Axes are
+`appearance` and `viewport`.**
+
+**DEC7 — §10.4 templating: purpose agreed, policy unreviewed.** Correcting the §0.1 mark. Batch export
+— N binding sets producing N artifacts with **layout re-run per set** — is US-1, the forty decks,
+the story this whole discussion started from. That is Agreed. What was never discussed is the
+filename policy attached to it: explicit `output` per binding set, path-segment validation, no
+silent sanitising, collisions as a pre-write error, and **existing destination is an error, export
+never overwrites and never versions**. Those defaults stand unless challenged.
+
+**DEC8 — §25.2 is a test, not a decision.** Whether the installed controller may write to an arbitrary
+absolute path is empirical (Q18), and the plan already says so. Two file-access paths the manifest
+does not describe already exist in the app: `image-materialization.mjs:111-139` opens arbitrary
+absolute paths with `node:fs/promises`, and `pen-file-access.mjs:76-99` uses a browser directory
+handle. This is assigned to the implementation thread, not to the user.
+
+---
+
+**DEC9 — the node field is `export: "default" | "image"`.** The value `live` is withdrawn; it
+implied something dynamic, when all it ever meant was *do the normal thing*. The field is a one-way
+author override: `image` forces rasterisation of a node whose construct the target could otherwise
+emit natively, for the case where the author knows the native approximation will look wrong and
+would rather have a predictable picture than a bad translation. There is no override in the other
+direction, because the table's `raster` verdicts are real format limits, not preferences. This makes
+§9.5 **Agreed**, superseding its "written, not discussed" mark.
+
+---
+
 
 ---
 
@@ -600,6 +808,10 @@ exporters, and matches what the node already means when nothing has been typed.
 
 ### 7.3 Axes — one mechanism for themes, states, variants and breakpoints
 
+> **Provenance: written, not discussed — and PARTLY WITHDRAWN by DEC4 (§0.4). Variants are component
+> props, not axes. Axes are `appearance`, `viewport`, `interaction`.** Do not build from this
+> section without asking. See §0.
+
 Themes, component states, component variants and responsive breakpoints are the same structure: a
 named axis with modes, and property values selected by an ordered conditional cascade. This is the
 orthogonal-regions concept from Harel statecharts and W3C SCXML, and §4.4 shows Canvas already
@@ -723,6 +935,8 @@ internal model — it describes design decisions and has no concept for binding 
 mode story is still draft. Speak the standard at the boundary; keep the superset in the core.
 
 ### 7.6 Components
+
+> **Provenance: written, not discussed — see §0.2.** No user decision stands behind this section. Do not build from it without asking. See §0.
 
 **Change 1 — there is no component status.** No `reusable` flag, and equally no "a frame becomes a
 component when something references it."
@@ -1012,6 +1226,8 @@ Day one: stored and validated, rendered only where the target is native.
 
 ### 8.1 The four modules
 
+> **SUPERSEDED IN PART by DEC1 (§0.4) — `print` is deleted as a module; `page` is deleted as a role.**
+
 | Module | Roles | Output per role |
 | --- | --- | --- |
 | `deck` | `slide` | `.pptx` |
@@ -1057,6 +1273,8 @@ depends on it.
 Word / Markdown / rich text are the separate Documents app (§5). TeX is separate again.
 
 ### 8.2 Roles and sizes
+
+> **SUPERSEDED IN PART by DEC1 (§0.4) — a page is a frame that declares `physical`; roles are `slide | route | ios | android`.**
 
 `role` marks **export units only**. A heading frame floating on the canvas has no role and is never
 exported. No heuristics are needed anywhere: export takes the role-bearing frames you name.
@@ -1488,6 +1706,9 @@ sibling, ancestor clip, group opacity, masked sibling, and a ref whose target co
 
 ### 9.5 `export: "live" | "image"` — author intent
 
+> **Provenance: now AGREED via DEC9 (§0.4).** The field is `export: "default" | "image"`, a one-way
+> author override forcing rasterisation. The value `live` is withdrawn.
+
 Rasterization has two entirely different causes and an earlier draft had a name for only one of them.
 
 - **The target cannot express it.** A mesh gradient in a deck. The system decides; the author gets a
@@ -1568,6 +1789,8 @@ advisory — so it is a dimension of the table, not a post-processing step.
 
 ### 10.2 The artifact is a bundle
 
+> **Provenance: written, not discussed.** No user decision stands behind this section. Do not build from it without asking. See §0.
+
 An earlier draft said `route`, `ios` and `android` are "1 frame → 1 file." That is false the moment
 web output includes CSS and assets, or SwiftUI output includes the `FlowLayout` helper (MOB-1).
 
@@ -1599,6 +1822,8 @@ The contract, which every source exporter must satisfy:
   export never leaves half a site.
 
 ### 10.3 The exporter IR
+
+> **Provenance: written, not discussed.** No user decision stands behind this section. Do not build from it without asking. See §0.
 
 **Every exporter reads one intermediate representation. No exporter walks the document.**
 
@@ -1760,6 +1985,8 @@ FOGRA51 needs the colour model in §19, which is a real model change and not a f
 
 ### 10.4 Templating
 
+> **Provenance: written, not discussed.** No user decision stands behind this section. Do not build from it without asking. See §0.
+
 `bindings` is an array. N binding sets produce N artifacts, and **layout re-runs per set** — which is
 the whole point, and the thing the §1.1 pipeline could not do. Long school names reflow instead of
 overflowing.
@@ -1805,6 +2032,8 @@ needs no `sequence` collection at the document root — an earlier design that w
 because it duplicated information the export call already carries and would have gone stale.
 
 ### 10.7 Import
+
+> **Provenance: written, not discussed — see §0.2.** No user decision stands behind this section. Do not build from it without asking. See §0.
 
 **Deprioritised, and explicitly not allowed to shape the model.** §7.6 dropped `descendants` even
 though it helps `.pen` round-tripping. Import is a *translation* into Canvas's model, with a
@@ -2080,6 +2309,8 @@ sidebar row appears without a refresh.** Open item.
 
 ### 12.6 What `parentThreadId` governs, and why it goes away
 
+> **Provenance: CONTRADICTED — the user rejected this; slated for deletion.** No user decision stands behind this section. Do not build from it without asking. See §0.
+
 **H7 — what `parentThreadId` actually governs.**
 
 It is not only a sidebar filter. Six distinct behaviours key on it:
@@ -2288,6 +2519,8 @@ could not be built. It is a small error and it is the exact class of error §9.2
 and §7.2's invariants exist to make impossible.
 
 ### 13.5 A print page with bleed
+
+> **SUPERSEDED IN PART by DEC1/DEC2 (§0.4) — `bleed` stays native, `folds` demotes to guidance, the `page` role is gone.**
 
 ```js
 { id: "page-1", type: "frame", role: "page", name: "Cover",
@@ -3688,6 +3921,8 @@ groups and the whole `a:effectLst` family, none of which it exposes
 (`pptx-capabilities.md:232-255`).
 
 ### 24.2 `print` → `.pdf`
+
+> **SUPERSEDED by DEC1/DEC3 (§0.4) — PDF is an extraction format; the `page` capability table dissolves.**
 
 ```js
 export default {

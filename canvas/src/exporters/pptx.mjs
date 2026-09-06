@@ -1,5 +1,6 @@
 import pptxgen from "pptxgenjs";
 import { embedPresentationFonts, readOoxmlPackage, readXmlPart, writeOoxmlPackage, writeXmlPart } from "../ooxml-package.mjs";
+import { drawingMlCommands, scaledVectorCommands } from "../vector-path.mjs";
 
 export async function exportPptx(ir, options = {}) {
   const first = ir.outputs[0];
@@ -16,14 +17,14 @@ export async function exportPptx(ir, options = {}) {
     const slide = pptx.addSlide();
     const background = solidFill(output.root?.paint?.fill);
     if (background.transparency !== 100) slide.background = { color: background.color };
-    for (const node of output.nodes.sort((a, b) => a.z - b.z)) {
+    for (const node of output.nodes) {
       await addNode(slide, node, output, widthIn, heightIn, options);
     }
     const notes = ir.notes?.filter((note) => note.notesFor === output.id).map((note) => note.content).join("\n");
     if (notes) slide.addNotes(notes);
   }
   const generated = new Uint8Array(await pptx.write({ outputType: "arraybuffer" }));
-  return embedPresentationFonts(injectNativeDrawingMl(generated, ir), options.fonts);
+  return embedPresentationFonts(await injectNativeDrawingMl(generated, ir), options.fonts);
 }
 
 async function addNode(slide, node, output, widthIn, heightIn, options) {
@@ -52,6 +53,10 @@ async function addNode(slide, node, output, widthIn, heightIn, options) {
   }
   const fill = solidFill(node.paint.fill);
   const line = strokeOptions(node.paint.stroke);
+  if (node.vector) {
+    slide.addShape("rect", { ...common, fill, line, transparency: Math.round((1 - node.paint.opacity) * 100) });
+    return;
+  }
   const shape = node.type === "ellipse" ? "ellipse" : node.type === "line" ? "line" : Number(node.paint.cornerRadius ?? 0) > 0 ? "roundRect" : "rect";
   slide.addShape(shape, { ...common, fill, line, transparency: Math.round((1 - node.paint.opacity) * 100) });
 }
@@ -121,9 +126,9 @@ function shadowOptions(effects) {
   return { type: effect.shadowType === "inner" ? "inner" : "outer", color: colorHex(effect.color ?? "#000000"), opacity: alpha, blur: Number(effect.blur ?? 0) * 0.75, angle: (Math.atan2(y, x) * 180 / Math.PI + 360) % 360, offset: Math.hypot(x, y) * 0.75, rotateWithShape: false };
 }
 function colorHex(value) { return typeof value === "string" ? value.replace(/^#/u, "").slice(0, 6).toUpperCase() : undefined; }
-function injectNativeDrawingMl(bytes, ir) {
+async function injectNativeDrawingMl(bytes, ir) {
   const parts = readOoxmlPackage(bytes);
-  ir.outputs.forEach((output, index) => {
+  for (const [index, output] of ir.outputs.entries()) {
     const path = `ppt/slides/slide${index + 1}.xml`;
     let xml = readXmlPart(parts, path);
     for (const node of output.nodes) {
@@ -132,16 +137,33 @@ function injectNativeDrawingMl(bytes, ir) {
         const nonVisual = new RegExp(`(<p:cNvPr\\b(?=[^>]*\\bname="${name}")(?:(?!\\bdescr=)[^>])*)(/?>)`, "u");
         xml = xml.replace(nonVisual, `$1 descr="${xmlAttribute(node.semantics.description)}"$2`);
       }
-      const fill = (Array.isArray(node.paint.fill) ? node.paint.fill : [node.paint.fill]).find((item) => item?.type === "gradient" && ["linear", "radial"].includes(item.gradientType ?? "linear"));
-      if (!fill || node.capability.verdict !== "native") continue;
       const name = regexEscape(node.id);
       const pattern = new RegExp(`(<p:sp>(?:(?!<\\/p:sp>).)*?<p:cNvPr\\b[^>]*name="${name}"[^>]*>(?:(?!<\\/p:sp>).)*?<p:spPr>)([\\s\\S]*?)(<\\/p:spPr>[\\s\\S]*?<\\/p:sp>)`, "u");
-      xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${properties.replace(/<a:(?:solidFill|gradFill)\b[\s\S]*?<\/a:(?:solidFill|gradFill)>|<a:noFill\/>/u, gradientXml(fill))}${after}`);
+      if (node.vector && node.capability.verdict === "native") {
+        const geometry = await customGeometryXml(node.vector);
+        xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${properties.replace(/<a:prstGeom\b[\s\S]*?<\/a:prstGeom>/u, geometry)}${after}`);
+      }
+      const fill = (Array.isArray(node.paint.fill) ? node.paint.fill : [node.paint.fill]).find((item) => item?.type === "gradient" && ["linear", "radial"].includes(item.gradientType ?? "linear"));
+      if (fill && node.capability.verdict === "native") xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${properties.replace(/<a:(?:solidFill|gradFill)\b[\s\S]*?<\/a:(?:solidFill|gradFill)>|<a:noFill\/>/u, gradientXml(fill))}${after}`);
     }
     writeXmlPart(parts, path, xml);
-  });
+  }
   return writeOoxmlPackage(parts);
 }
+async function customGeometryXml(vector) {
+  const encode = (commands) => commands.map((command) => {
+    if (command.type === "move") return `<a:moveTo><a:pt x="${coord(command.x)}" y="${coord(command.y)}"/></a:moveTo>`;
+    if (command.type === "line") return `<a:lnTo><a:pt x="${coord(command.x)}" y="${coord(command.y)}"/></a:lnTo>`;
+    if (command.type === "cubic") return `<a:cubicBezTo><a:pt x="${coord(command.c1x)}" y="${coord(command.c1y)}"/><a:pt x="${coord(command.c2x)}" y="${coord(command.c2y)}"/><a:pt x="${coord(command.x)}" y="${coord(command.y)}"/></a:cubicBezTo>`;
+    return "<a:close/>";
+  }).join("");
+  const body = encode(await drawingMlCommands(vector));
+  // Fill topology may change during either fill-rule lowering; stroke authored
+  // contours separately so intersections and open ends retain their appearance.
+  const paths = `<a:path w="100000" h="100000" stroke="0">${body}</a:path><a:path w="100000" h="100000" fill="none">${encode(scaledVectorCommands(vector, 100000, 100000))}</a:path>`;
+  return `<a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/><a:rect l="l" t="t" r="r" b="b"/><a:pathLst>${paths}</a:pathLst></a:custGeom>`;
+}
+function coord(value) { return Math.round(Math.max(-2147483648, Math.min(2147483647, value))); }
 function gradientXml(fill) {
   const stops = (fill.colors ?? []).map((stop) => `<a:gs pos="${Math.round(Number(stop.position) * 100000)}">${drawingColor(stop.color)}</a:gs>`).join("");
   const geometry = (fill.gradientType ?? "linear") === "radial" ? `<a:path path="circle"><a:fillToRect l="0" t="0" r="0" b="0"/></a:path>` : `<a:lin ang="${Math.round(((Number(fill.rotation ?? 0) % 360 + 360) % 360) * 60000)}" scaled="1"/>`;

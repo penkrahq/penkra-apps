@@ -119,6 +119,7 @@ export function migrateM6UniformText(source) {
 
 export function migrateM7AssignRoles(source, options = {}) {
   const document = structuredClone(source);
+  if (document.module === "generic") return { document, changes: 0, notes: [] };
   const roleById = options.roleById ?? {};
   const defaultRole = { deck: "slide", print: "page", web: "route", mobile: "ios" }[document.module];
   if (!defaultRole) throw migrationError("M7", `Document module ${String(document.module)} cannot supply roles.`);

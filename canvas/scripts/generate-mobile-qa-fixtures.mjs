@@ -1,0 +1,141 @@
+import { mkdir, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { buildCapabilityVerificationIR } from "../src/exporter-ir.mjs";
+import { capabilityPathInventory } from "../src/canvas-schema.mjs";
+import { exportCompose, exportSwiftUI } from "../src/exporters/mobile.mjs";
+import { mobileVectorFixture } from "../compatibility/mobile-vector-fixture.mjs";
+import { mobileSurfaceFixture } from "../compatibility/mobile-surface-fixture.mjs";
+import { mobilePaintFixture } from "../compatibility/mobile-paint-fixture.mjs";
+
+const root = resolve(import.meta.dirname, "..");
+const source = {
+  version: "2.17", module: "mobile", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+  children: [{
+    id: "mobile-fixture", type: "frame", role: "ios", name: "Mobile Fixture", width: 393, height: 852, layout: "vertical", gap: 14, padding: 20, fill: "#F6F2EA", description: "Canvas mobile export verification screen", children: [
+      { id: "logo", type: "path", width: 88, height: 64, geometry: "M0 0 H100 V100 H0 Z M25 25 H75 V75 H25 Z", viewBox: [0, 0, 100, 100], fillRule: "evenodd", fill: "#0B4A6F", decorative: true },
+      { id: "heading", type: "text", width: 340, height: 64, content: "Native Canvas", fontFamily: "Inter", fontSize: 30, fontWeight: 700, letterSpacing: 0.5, fill: "#102A43", headingLevel: 1, paragraphs: [{ from: 0, to: 13, headingLevel: 1 }], marks: [], description: "Native Canvas heading" },
+      { id: "body", type: "text", width: 340, height: 54, content: "Responsive type and layout", fontFamily: "Inter", fontSize: 18, fontStyle: "italic", underline: true, fill: "#334E68", paragraphs: [{ from: 0, to: 26 }], marks: [{ from: 0, to: 10, type: "weight", value: 700 }] },
+      { id: "decoration", type: "text", width: 340, height: 20, content: "Decorative watermark", fontSize: 12, decorative: true, paragraphs: [{ from: 0, to: 20 }], marks: [] },
+      { id: "grid", type: "frame", width: 340, height: 220, layout: "grid", gridTemplateColumns: [160, 160], gap: 12, fill: "#FFFFFF", cornerRadius: 18, children: [
+        { id: "a", type: "rectangle", width: 160, height: 96, fill: "#D9EAF2", cornerRadius: 12 },
+        { id: "b", type: "ellipse", width: 96, height: 96, fill: "#F4A261", description: "Orange circle" },
+        { id: "c", type: "rectangle", width: 160, height: 96, fill: "#2A9D8F", cornerRadius: 12 },
+        { id: "d", type: "rectangle", width: 160, height: 96, fill: "#E9C46A", cornerRadius: 12 },
+      ] },
+      { id: "wrap", type: "frame", width: 340, height: 100, layout: "horizontal", wrap: true, gap: 10, rowGap: 10, children: [
+        { id: "chip1", type: "rectangle", width: 120, height: 40, fill: "#0B4A6F", cornerRadius: 20 },
+        { id: "chip2", type: "rectangle", width: 150, height: 40, fill: "#2A9D8F", cornerRadius: 20 },
+        { id: "chip3", type: "rectangle", width: 110, height: 40, fill: "#F4A261", cornerRadius: 20 },
+      ] },
+    ],
+  }],
+};
+
+const swiftDir = resolve(root, "compatibility/mobile-fixtures/swiftui/Sources/CanvasSwiftUIFixture");
+if (process.argv.includes("--accessibility")) {
+  source.children[0].padding = [80, 20, 20, 20];
+  source.children[0].children = [
+    { id: "heading", type: "text", width: 330, height: 70, textGrowth: "fixed-width", content: "Native Canvas", fontFamily: "Inter", fontSize: 20, fontWeight: 700, paragraphs: [{ from: 0, to: 13, headingLevel: 1 }], description: "Native Canvas heading" },
+    { id: "body", type: "text", width: 330, height: 60, textGrowth: "fixed-width", content: "Responsive type and layout", fontFamily: "Inter", fontSize: 14 },
+    { id: "decoration", type: "text", width: 330, height: 40, content: "Decorative watermark", fontSize: 12, decorative: true, description: "Hidden direct description" },
+    { id: "circle", type: "ellipse", width: 96, height: 60, fill: "#F4A261", description: "Orange circle" },
+    { id: "hidden-group", type: "frame", width: 330, height: 90, layout: "vertical", fill: "#D9EAF2", decorative: true, description: "Hidden group description", children: [
+      { id: "hidden-child", type: "text", width: 300, height: 60, content: "Nested decorative content", fontSize: 12, description: "Hidden nested description" },
+    ] },
+    { id: "visible-group", type: "frame", width: 330, height: 90, layout: "vertical", fill: "#D9EAF2", description: "Visible group description", children: [
+      { id: "visible-child", type: "text", width: 300, height: 60, content: "Visible nested content", fontSize: 12, description: "Visible nested description" },
+    ] },
+  ];
+}
+if (process.argv.includes("--corners")) {
+  source.children[0].padding = [80, 20, 20, 20];
+  source.children[0].children = [20, [0, 20, 40, 60], [80, 120, 160, 200], [40]].flatMap((cornerRadius, index) => ["rectangle", "frame"].map((type) => ({
+    id: `corners-${index}-${type}`, type, width: 300, height: 70, cornerRadius, fill: "#F4A261", ...(type === "frame" ? { layout: "none", children: [] } : {}),
+  })));
+}
+if (process.argv.includes("--gaps")) {
+  source.children[0].padding = [80, 20, 20, 20];
+  const children = (id, count, width, height) => Array.from({ length: count }, (_, index) => ({ id: `${id}-${index}`, type: "rectangle", width, height, fill: "#F4A261" }));
+  source.children[0].children = [
+    { id: "horizontal", type: "frame", width: 300, height: 64, layout: "horizontal", gap: 7, columnGap: 30, rowGap: 40, fill: "#0B4A6F", children: children("horizontal", 3, 50, 40) },
+    { id: "vertical", type: "frame", width: 300, height: 130, layout: "vertical", gap: 7, columnGap: 30, rowGap: 25, fill: "#0B4A6F", children: children("vertical", 2, 50, 40) },
+    { id: "wrap", type: "frame", width: 300, height: 140, layout: "horizontal", wrap: true, gap: 7, columnGap: 30, rowGap: 25, fill: "#0B4A6F", children: children("wrap", 5, 80, 35) },
+    { id: "grid", type: "frame", width: 300, height: 140, layout: "grid", gridTemplateColumns: [135, 135], gap: 7, columnGap: 30, rowGap: 25, fill: "#0B4A6F", children: children("grid", 4, 135, 45) },
+  ];
+}
+if (process.argv.includes("--alignment") || process.argv.includes("--padding")) {
+  source.children[0].padding = 0;
+  source.children[0].children = ["vertical", "horizontal"].flatMap((layout) => ["start", "center", "end"].map((alignItems) => ({
+    id: `${layout}-${alignItems}`, type: "frame", layout, alignItems, width: 300, height: 90, fill: "#0B4A6F",
+    ...(process.argv.includes("--padding") ? { padding: [10, 20, 10, 40] } : {}),
+    children: [{ id: `${layout}-${alignItems}-probe`, type: "rectangle", width: 60, height: 30, fill: "#F4A261" }],
+  })));
+}
+if (process.argv.includes("--growing-text")) {
+  for (const node of source.children[0].children) {
+    if (["heading", "body"].includes(node.id)) node.textGrowth = "fixed-width";
+  }
+}
+if (process.argv.includes("--strokes") || process.argv.includes("--dashes")) {
+  source.children[0].children = ["butt", "round", "square"].map((cap) => ({
+    id: `stroke-${cap}`, type: "path", width: 300, height: 120,
+    geometry: "M20 20 H260 V100", viewBox: [0, 0, 300, 120],
+    stroke: { fill: "#F4A261", width: 8, align: "center", cap, join: "miter", ...(process.argv.includes("--dashes") ? { dash: [12, 12] } : {}) },
+  }));
+}
+if (process.argv.includes("--dash-edge-cases")) {
+  source.children[0].children = [
+    { id: "odd", dash: [12], cap: "butt" },
+    { id: "dots", dash: [0, 12], cap: "round" },
+    { id: "zero-gap", dash: [12, 0], cap: "butt" },
+    { id: "all-zero", dash: [0, 0], cap: "butt" },
+  ].map(({ id, dash, cap }) => ({
+    id, type: "path", width: 300, height: 120, geometry: "M20 20 H260 V100", viewBox: [0, 0, 300, 120],
+    stroke: { fill: "#F4A261", width: 8, align: "center", cap, join: "miter", dash },
+  }));
+}
+if (process.argv.includes("--stroke-alignment")) {
+  source.children[0].children = ["center", "inside", "outside"].map((align) => ({
+    id: `stroke-${align}`, type: "path", width: 300, height: 120,
+    geometry: "M20 20 H260 V100 H20 Z", viewBox: [0, 0, 300, 120], fill: "#0B4A6F",
+    stroke: { fill: "#F4A261", width: 8, align },
+  }));
+}
+if (process.argv.includes("--stroke-compositing")) {
+  source.children[0].children = ["center", "inside", "outside"].map((align) => ({
+    id: `compositing-${align}`, type: "path", width: 300, height: 120,
+    geometry: "M0 20 C0 0 30 0 50 0 H250 C280 0 300 0 300 20 V100 H0 Z M100 30 H200 V70 H100 Z",
+    viewBox: [0, 0, 300, 120], fillRule: "evenodd", fill: "#0B4A6F", opacity: 0.5,
+    stroke: { fill: "#F4A261", width: 8, align, join: "round" },
+  }));
+}
+if (process.argv.includes("--opacity")) {
+  source.children[0].children = [
+    { id: "opaque", type: "rectangle", width: 300, height: 100, fill: "#0B4A6F" },
+    { id: "half-rectangle", type: "rectangle", width: 300, height: 100, fill: "#0B4A6F", opacity: 0.5 },
+    { id: "half-ellipse", type: "ellipse", width: 300, height: 100, fill: "#0B4A6F", opacity: 0.5 },
+    { id: "half-group", type: "frame", layout: "none", width: 300, height: 100, fill: "#0B4A6F", opacity: 0.5, children: [
+      { id: "group-child", type: "rectangle", x: 50, y: 20, width: 200, height: 60, fill: "#F4A261" },
+    ] },
+    ...[1, 0.5].map((opacity, index) => ({
+      id: `text-opacity-${index}`, type: "text", width: 300, height: 100,
+      content: "ABC", fontFamily: "Inter", fontSize: 28, fill: "#0B4A6F", opacity,
+    })),
+  ];
+}
+if (process.argv.includes("--solid-colors")) {
+  source.children[0].children = [
+    "#3698", "#33669988", "rgba(51,102,153,0.5333333333)",
+    { type: "color", color: "#336699", opacity: 8 / 15 },
+    { type: "color", color: "#33669988", opacity: 0.5 },
+    "transparent",
+  ].map((fill, index) => ({ id: `color-${index}`, type: "rectangle", width: 300, height: 90, fill }));
+}
+const composeDir = resolve(root, "compatibility/mobile-fixtures/compose/app/src/main/java/generated/canvas");
+if (process.argv.includes("--vectors")) Object.assign(source, mobileVectorFixture());
+if (process.argv.includes("--surfaces")) Object.assign(source, mobileSurfaceFixture());
+if (process.argv.includes("--paints")) Object.assign(source, mobilePaintFixture());
+await mkdir(swiftDir, { recursive: true }); await mkdir(composeDir, { recursive: true });
+for (const [name, contents] of exportSwiftUI(buildCapabilityVerificationIR(source, { role: "ios", frames: ["mobile-fixture"] }, capabilityPathInventory()))) await writeFile(resolve(swiftDir, name.replace(/^_canvas\//u, "")), contents);
+const android = structuredClone(source); android.children[0].role = "android";
+for (const [name, contents] of exportCompose(buildCapabilityVerificationIR(android, { role: "android", frames: ["mobile-fixture"] }, capabilityPathInventory()))) await writeFile(resolve(composeDir, name.replace(/^_canvas\//u, "")), contents);

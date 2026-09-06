@@ -1,7 +1,9 @@
 import type { CanvasKit, Canvas } from 'canvaskit-wasm'
 
 import type { SceneGraph } from '@open-pencil/scene-graph'
+import { getWorldMatrix } from '@open-pencil/scene-graph/coordinate'
 import { computeDescendantVisualBounds } from '@open-pencil/scene-graph/geometry'
+import Matrix from '@open-pencil/scene-graph/matrix'
 
 import type { SkiaRenderer } from '#core/canvas'
 import type { RenderColorSpace } from '#core/color/management'
@@ -236,10 +238,16 @@ function prepareSelectionRenderGraph(
   for (const nodeId of page.childIds) {
     const node = renderGraph.getNode(nodeId)
     if (!node) continue
-    const position = source.getAbsolutePosition(nodeId)
+    const original = source.getNode(nodeId)
+    if (!original) continue
+    const world = getWorldMatrix(original, source)
+    const center = Matrix.mapPoints(world, [node.width / 2, node.height / 2])
     node.parentId = pageId
-    node.x = position.x
-    node.y = position.y
+    node.x = center[0] - node.width / 2
+    node.y = center[1] - node.height / 2
+    node.rotation = (Math.atan2(world[3], world[0]) * 180) / Math.PI
+    node.flipX = false
+    node.flipY = world[0] * world[4] - world[1] * world[3] < 0
   }
   renderGraph.clearAbsPosCache()
 }

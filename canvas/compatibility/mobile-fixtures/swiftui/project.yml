@@ -1,0 +1,51 @@
+name: CanvasSimulatorQA
+options:
+  bundleIdPrefix: com.penkra.canvas.qa
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  CanvasSimulatorQA:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - Sources/CanvasSwiftUIFixture
+      - SimulatorHost/App.swift
+      - path: ../../../vendor/open-pencil/fonts
+        buildPhase: resources
+    info:
+      path: SimulatorHost/GeneratedInfo.plist
+      properties:
+        UIAppFonts:
+          - Inter-Regular.ttf
+          - Inter-Medium.ttf
+          - Inter-SemiBold.ttf
+          - Inter-Bold.ttf
+          - Inter-ExtraBold.ttf
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.penkra.canvas.qa.simulator
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+  CanvasAccessibilityTests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - UITests
+    dependencies:
+      - target: CanvasSimulatorQA
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  CanvasSimulatorQA:
+    build:
+      targets:
+        CanvasSimulatorQA: all
+    test:
+      targets:
+        - CanvasAccessibilityTests

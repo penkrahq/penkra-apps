@@ -1,0 +1,62 @@
+[
+  {
+    "format": "svg",
+    "scale": 1,
+    "width": 900,
+    "height": 660,
+    "checkedInteriorPixels": 538716,
+    "boundaryTolerancePixels": 2,
+    "channelTolerance": 2,
+    "cases": 20
+  },
+  {
+    "format": "html",
+    "scale": 1,
+    "width": 900,
+    "height": 660,
+    "checkedInteriorPixels": 538716,
+    "boundaryTolerancePixels": 2,
+    "channelTolerance": 2,
+    "cases": 20
+  },
+  {
+    "format": "pdf",
+    "scale": 1,
+    "width": 900,
+    "height": 660,
+    "checkedInteriorPixels": 538716,
+    "boundaryTolerancePixels": 2,
+    "channelTolerance": 2,
+    "cases": 20
+  },
+  {
+    "format": "svg",
+    "scale": 2,
+    "width": 1800,
+    "height": 1320,
+    "checkedInteriorPixels": 2265890,
+    "boundaryTolerancePixels": 2,
+    "channelTolerance": 2,
+    "cases": 20
+  },
+  {
+    "format": "html",
+    "scale": 2,
+    "width": 1800,
+    "height": 1320,
+    "checkedInteriorPixels": 2265890,
+    "boundaryTolerancePixels": 2,
+    "channelTolerance": 2,
+    "cases": 20
+  },
+  {
+    "format": "pdf",
+    "scale": 2,
+    "width": 1800,
+    "height": 1320,
+    "checkedInteriorPixels": 2265890,
+    "boundaryTolerancePixels": 2,
+    "channelTolerance": 2,
+    "cases": 20
+  }
+]

@@ -1,0 +1,164 @@
+{
+  "format": "svg",
+  "renderDocument": {
+    "module": "web",
+    "children": [
+      {
+        "id": "root",
+        "name": "Root",
+        "role": "route",
+        "type": "frame",
+        "layout": "none",
+        "width": 300,
+        "height": 200,
+        "physical": {
+          "w": 3.125,
+          "h": 2.0833333333333335,
+          "unit": "in"
+        },
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "backdrop",
+            "type": "rectangle",
+            "x": 40,
+            "y": 30,
+            "width": 180,
+            "height": 130,
+            "fill": "#F4A261"
+          },
+          {
+            "id": "foreground",
+            "type": "rectangle",
+            "x": 80,
+            "y": 70,
+            "width": 100,
+            "height": 50,
+            "fill": "#336699",
+            "blendMode": "multiply"
+          }
+        ]
+      }
+    ],
+    "paragraphStyles": {},
+    "flows": []
+  },
+  "projection": "resolved",
+  "lang": null,
+  "axes": {},
+  "modes": {},
+  "outputs": [
+    {
+      "kind": "extraction",
+      "index": 0,
+      "id": "root",
+      "name": "Root",
+      "width": 300,
+      "height": 200,
+      "unit": "px",
+      "origin": {
+        "x": 0,
+        "y": 0
+      },
+      "root": {
+        "id": "root",
+        "type": "frame",
+        "semantics": {
+          "description": null,
+          "decorative": false
+        },
+        "capability": {
+          "verdict": "native"
+        }
+      },
+      "nodes": [
+        {
+          "id": "root",
+          "type": "frame",
+          "parent": null,
+          "z": 0,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "localX": 0,
+            "localY": 0,
+            "w": 300,
+            "h": 200,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": null,
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "none",
+            "width": 300,
+            "height": 200
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "raster",
+            "reason": "Raster compositing scope."
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    }
+  ],
+  "notes": [],
+  "flows": [],
+  "rasters": [
+    {
+      "id": "root",
+      "reason": "Raster compositing scope.",
+      "outset": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "w": 300,
+        "h": 200
+      },
+      "colorSpace": "sRGB",
+      "alpha": "unpremultiplied",
+      "ppi": null,
+      "pixelWidth": 300,
+      "pixelHeight": 200,
+      "variants": [
+        {
+          "scale": 1,
+          "density": "1x",
+          "ppi": null,
+          "pixelWidth": 300,
+          "pixelHeight": 200
+        }
+      ]
+    }
+  ],
+  "consequences": [
+    {
+      "node": "foreground",
+      "kind": "raster",
+      "why": "properties.blendMode: The supported SVG writer profile has no measured native emission for this construct."
+    }
+  ],
+  "lowered": [],
+  "colorSpace": "sRGB"
+}

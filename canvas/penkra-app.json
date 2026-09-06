@@ -33,6 +33,7 @@
   "operations": [
     {
       "key": "documents.list",
+      "instructionsPath": "operations/documents.list.md",
       "summary": "Find Account-owned and shared Canvas documents and resolve the exact document ID needed by later operations.",
       "input": {
         "type": "object",
@@ -116,7 +117,7 @@
     {
       "key": "documents.create",
       "summary": "Create a blank Account-owned Canvas document. Use documents.execute to add or inspect design content.",
-      "instructions": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI: one white 720×480 starter frame. The result identifies that frame as `starterFrameId`; replace or update it when building the first composition so it does not remain underneath new content. Creation does not open a tab or add design content. Call documents.execute for content, then documents.open when visible review matters.",
+      "instructionsPath": "operations/documents.create.md",
       "input": {
         "type": "object",
         "properties": {
@@ -126,7 +127,8 @@
             "maxLength": 255,
             "description": "Title shown in Canvas and document lists."
           },
-          "module": { "enum": ["deck", "print", "web", "mobile"], "description": "Canvas module fixed for the lifetime of the document." }
+          "module": { "enum": ["generic", "deck", "web", "mobile"], "description": "Canvas module. A generic document may set a deliverable module later while it has no role-bearing frames." },
+          "preset": { "enum": ["a4", "letter"], "description": "Optional physical-size preset for a generic blank document." }
         },
         "required": ["title", "module"],
         "additionalProperties": false
@@ -351,16 +353,15 @@
     },
     {
       "key": "documents.export",
-      "summary": "Export explicit role-bearing Canvas frames to their native deck, print, web, or mobile artifact.",
+      "summary": "Export explicit role-bearing Canvas frames to their native deck, web, or mobile artifact.",
       "input": {
         "type": "object",
         "properties": {
           "documentId": { "type": "string", "format": "uuid" },
-          "role": { "enum": ["slide", "page", "route", "ios", "android"] },
+          "role": { "enum": ["slide", "route", "ios", "android"] },
           "frames": { "type": "array", "minItems": 1, "maxItems": 1000, "items": { "type": "string", "minLength": 1 } },
-          "destination": { "type": "string", "minLength": 1, "description": "Absolute file path for slide/page or absolute directory path for route/ios/android. Existing destinations are rejected." },
+          "destination": { "type": "string", "minLength": 1, "description": "Absolute file path for slide or absolute directory path for route/ios/android. Existing destinations are rejected." },
           "modes": { "type": "object", "additionalProperties": { "type": "string" } },
-          "profile": { "enum": ["PDF/A-3", "PDF/X-4", "PDF/UA-1", null] },
           "bindings": { "type": "array", "maxItems": 1000, "items": { "type": "object", "required": ["output"], "properties": { "output": { "type": "string", "minLength": 1 } }, "additionalProperties": true } }
         },
         "required": ["documentId", "role", "frames", "destination"],
@@ -392,19 +393,20 @@
       "handler": "documents.export"
     },
     {
-      "key": "documents.export-image",
-      "summary": "Export explicit Canvas subtrees as PNG or SVG.",
+      "key": "documents.extract",
+      "summary": "Extract Canvas nodes as PNG, SVG or a multi-page PDF without requiring an export role.",
       "input": {
         "type": "object",
         "properties": {
           "documentId": { "type": "string", "format": "uuid" },
-          "frames": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Exactly one subtree; destination names one output file." },
-          "format": { "enum": ["png", "svg"] },
+          "node": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Exact nodes in artifact order. Several nodes can share one PDF file." },
+          "format": { "enum": ["png", "svg", "pdf"] },
+          "profile": { "enum": ["PDF/X-4"], "description": "PDF-only standards profile; fails closed until conformance is verified." },
           "scale": { "type": "number", "exclusiveMinimum": 0, "maximum": 8 },
-          "destination": { "type": "string", "minLength": 1 },
+          "destination": { "type": "string", "minLength": 1, "description": "Absolute path. A trailing / creates a new directory containing <nodeId>.<format> per node; otherwise use this exact filename. Existing destinations and filename collisions are errors." },
           "modes": { "type": "object", "additionalProperties": { "type": "string" } }
         },
-        "required": ["documentId", "frames", "format", "destination"],
+        "required": ["documentId", "node", "format", "destination"],
         "additionalProperties": false
       },
       "output": { "type": "object", "additionalProperties": true },
@@ -413,14 +415,14 @@
           "name": "Export one subtree as a two-times PNG",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "frames": ["frame-1"],
+            "node": ["frame-1"],
             "format": "png",
             "scale": 2,
             "destination": "/Users/example/Downloads/frame-1.png"
           }
         }
       ],
-      "handler": "documents.export-image"
+      "handler": "documents.extract"
     },
     {
       "key": "documents.open",
@@ -510,6 +512,7 @@
     },
     {
       "key": "sharing.list",
+      "instructionsPath": "operations/sharing.list.md",
       "summary": "List current editors and pending Account email grants for one owned document before changing access.",
       "input": {
         "type": "object",
@@ -556,6 +559,7 @@
     },
     {
       "key": "sharing.add",
+      "instructionsPath": "operations/sharing.add.md",
       "summary": "Grant editor access on one owned document to an exact Penkra Account email; this changes access but sends no email.",
       "input": {
         "type": "object",
@@ -598,6 +602,7 @@
     },
     {
       "key": "sharing.remove",
+      "instructionsPath": "operations/sharing.remove.md",
       "summary": "Revoke one exact editor or pending email grant from an owned document after resolving its current grant ID.",
       "input": {
         "type": "object",
@@ -635,5 +640,11 @@
       "handler": "sharing.remove"
     }
   ],
-  "contributions": {}
+  "contributions": {
+    "skills": [
+      { "path": "skills/canvas-deck" },
+      { "path": "skills/canvas-web" },
+      { "path": "skills/canvas-mobile" }
+    ]
+  }
 }

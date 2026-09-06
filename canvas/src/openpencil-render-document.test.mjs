@@ -22,6 +22,18 @@ import {
   migrateM18LogicalDirections,
 } from "./migrations.mjs";
 
+test("Canvas stroke width and dash lower into renderer fields without mutating the source", () => {
+  const source = { children: [{ id: "path", type: "path", width: 100, height: 100, geometry: "M0 0 H100", viewBox: [0, 0, 100, 100], stroke: { fill: "#123456", width: 8, dash: [12, 6], cap: "round" } }] };
+  const result = prepareOpenPencilRenderDocument(source);
+  assert.deepEqual(result.issues, []);
+  assert.equal(result.document.children[0].stroke.thickness, 8);
+  assert.deepEqual(result.document.children[0].stroke.dashPattern, [12, 6]);
+  assert.equal(result.document.children[0].stroke.fill, "#123456");
+  assert.equal(result.document.children[0].stroke.cap, "round");
+  assert.equal(source.children[0].stroke.thickness, undefined);
+  assert.equal(source.children[0].stroke.dashPattern, undefined);
+});
+
 test("interpolates multiple delimited variables while leaving currency literal", () => {
   const source = {
     variables: {

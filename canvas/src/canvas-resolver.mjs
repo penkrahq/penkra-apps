@@ -1,4 +1,5 @@
 import { interpolateRichText } from "./rich-text.mjs";
+import { resolveVariableReferences } from "./variable-references.mjs";
 
 export function resolveCanvasDocument(document, options = {}) {
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
@@ -9,7 +10,8 @@ export function resolveCanvasDocument(document, options = {}) {
   const consequences = [];
   const lowered = [];
   const resolving = [];
-  const baseContext = { owner: document, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving };
+  const styleRegistry = { styles: paragraphStyles, nextId: 0 };
+  const baseContext = { owner: document, rootOwner: document, styleRegistry, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving };
   const children = document.children.map((node) => resolveNode(node, baseContext)).filter(Boolean);
   const flows = (document.flows ?? []).map(remapResolvedFlowSource);
   return { document: { ...document, paragraphStyles, children, flows }, modes, consequences, lowered };
@@ -43,9 +45,11 @@ export function resolveCascade(value, context) {
 function resolveNode(source, context) {
   if (source.type === "ref") return resolveRef(source, context);
   if (source.modes) {
-    const modes = selectModes(context.owner.axes ?? {}, { ...context.modes, ...source.modes });
+    const axes = context.owner.axes ?? {};
+    const inherited = Object.fromEntries(Object.entries(context.modes).filter(([name]) => Object.hasOwn(axes, name)));
+    const modes = { ...context.modes, ...selectModes(axes, { ...inherited, ...source.modes }) };
     const bindings = Object.fromEntries(Object.entries(context.variableValues).filter(([name]) => !Object.hasOwn(context.owner.variables ?? {}, name)));
-    context = { ...context, modes, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings) };
+    context = { ...context, modes, scopedModes: true, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings) };
   }
   if (source.properties) {
     context = context.componentRoot
@@ -56,19 +60,36 @@ function resolveNode(source, context) {
   for (const [key, raw] of Object.entries(source)) {
     if (["children", "properties", "bind", "varies"].includes(key)) continue;
     const value = resolveCascade(raw, context);
-    output[key] = resolveValue(value, context.variableValues);
+    output[key] = source.type === "text" && key === "content" ? value : resolveValue(value, context.variableValues);
   }
   for (const [key, binding] of Object.entries(source.bind ?? {}))
     output[key] = resolveValue(resolveBinding(binding, context.props), context.variableValues);
   if (source.visible && typeof source.visible === "object" && source.visible.op)
     output.enabled = evaluateCondition(source.visible, context);
   if (output.type === "text") {
-    const textSource = { ...output, content: output.content ?? "", marks: source.marks ?? [], paragraphs: source.paragraphs ?? [] };
+    const textSource = { ...output, content: String(output.content ?? ""), marks: source.marks ?? [], paragraphs: source.paragraphs ?? [] };
     const resolvedText = interpolateRichText(textSource, context.variableValues);
     output.content = resolvedText.content; output.marks = resolvedText.marks; output.paragraphs = resolvedText.paragraphs;
     if (source.bind?.content && output.content.length > 0) {
       output.marks = [];
       output.paragraphs = [{ from: 0, to: output.content.length, ...(source.style ? { style: source.style } : {}) }];
+    }
+    // A library style keeps its definition identity. Consumer mode selection
+    // still flows into its cascade; an unrelated same-named style cannot replace it.
+    if (context.owner !== context.rootOwner || context.scopedModes) {
+      const names = new Map();
+      const register = (name) => {
+        if (names.has(name)) return names.get(name);
+        if (!Object.hasOwn(context.owner.paragraphStyles ?? {}, name)) throw new Error(`Paragraph style ${name} was not found in its owning document.`);
+        const registry = context.styleRegistry;
+        let key;
+        do { key = `@canvas-resolved-style/${registry.nextId++}`; } while (Object.hasOwn(registry.styles, key));
+        registry.styles[key] = resolveValue(resolveCascade(context.owner.paragraphStyles[name], context), context.variableValues);
+        names.set(name, key);
+        return key;
+      };
+      if (output.style) output.style = register(output.style);
+      output.paragraphs = output.paragraphs.map((paragraph) => paragraph.style ? { ...paragraph, style: register(paragraph.style) } : paragraph);
     }
   }
   if (context.assetPrefix) {
@@ -95,6 +116,7 @@ function namespaceAssetReferences(value, prefix) {
 }
 
 function resolveRef(instance, context) {
+  const instanceContext = context;
   const qualified = instance.ref.split(":");
   let owner = context.owner; let target; let localNodes = context.localNodes; let variableValues = context.variableValues;
   if (qualified.length > 1) {
@@ -103,9 +125,14 @@ function resolveRef(instance, context) {
     owner = imported.document ?? imported;
     localNodes = indexNodes(owner.children);
     target = localNodes.get(qualified.join(":"));
-    variableValues = resolveVariables(owner.variables ?? {}, context.modes, {});
+    const modes = { ...context.modes };
+    for (const [name, axis] of Object.entries(owner.axes ?? {})) {
+      if (!axis.modes.some((mode) => mode.name === modes[name])) modes[name] = axis.modes[0]?.name;
+    }
+    variableValues = resolveVariables(owner.variables ?? {}, modes, {});
     context = {
       ...context,
+      modes,
       imports: imported.imports ?? {},
       assetPrefix: [context.assetPrefix, "imports", alias].filter(Boolean).join("/"),
     };
@@ -116,7 +143,16 @@ function resolveRef(instance, context) {
   const props = resolveProps(target.properties ?? {}, instance.props ?? {});
   const resolved = resolveNode(target, { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] });
   context.lowered.push({ node: instance.id, from: instance.ref, why: "Reference expanded into target-native nodes." });
-  return prefixResolvedNode(resolved, instance.id, target.id, props);
+  const output = prefixResolvedNode(resolved, instance.id, target.id, props);
+  // A component definition's canvas position is not the instance position.
+  // Keep instance geometry/compositing and the author's one-way export override
+  // when replacing the reference with its resolved visual subtree.
+  output.x = resolveValue(resolveCascade(instance.x ?? 0, instanceContext), instanceContext.variableValues);
+  output.y = resolveValue(resolveCascade(instance.y ?? 0, instanceContext), instanceContext.variableValues);
+  for (const key of ["name", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "layoutPosition", "gridColumn", "gridRow"]) {
+    if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues);
+  }
+  return output;
 }
 
 function resolveProps(declarations, supplied) {
@@ -196,7 +232,7 @@ function resolveVariables(variables, modes, bindings) {
     const definition = variables[name];
     if (!definition || typeof definition !== "object" || !Array.isArray(definition.cascade)) throw new Error(`Variable ${name} must declare tokenType and cascade.`);
     const raw = resolveCascade(definition.cascade, { modes, props: {} });
-    const value = typeof raw === "string" ? raw.replace(/\$\{([A-Za-z][\w-]*)\}/gu, (_, dependency) => String(resolve(dependency))) : raw;
+    const value = resolveVariableReferences(raw, resolve);
     visiting.delete(name); output[name] = value; return value;
   };
   for (const name of Object.keys(variables)) resolve(name);
@@ -204,13 +240,10 @@ function resolveVariables(variables, modes, bindings) {
 }
 
 function resolveValue(value, variables) {
-  if (typeof value === "string") return value.replace(/\$\{([A-Za-z][\w-]*)\}/gu, (_, name) => {
+  return resolveVariableReferences(value, (name) => {
     if (!Object.hasOwn(variables, name)) throw new Error(`Variable ${name} was not found.`);
-    return String(variables[name]);
+    return variables[name];
   });
-  if (Array.isArray(value)) return value.map((item) => resolveValue(item, variables));
-  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).map(([key, nested]) => [key, resolveValue(nested, variables)]));
-  return value;
 }
 
 function matchesWhen(when, context) {

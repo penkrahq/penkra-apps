@@ -1,4 +1,10 @@
 export function exportWeb(ir, options = {}) {
+  const filenames = ir.outputs.map((output) => `${safeSlug(output.name)}.html`);
+  if (new Set(filenames).size !== filenames.length) {
+    const error = new Error("Route names collide in the generated HTML bundle.");
+    error.code = "CANVAS_EXPORT_NAME_COLLISION";
+    throw error;
+  }
   const files = new Map();
   files.set("styles.css", baseCss(ir));
   for (const output of ir.outputs) {
@@ -21,6 +27,12 @@ function htmlNode(node, children, parent, options) {
     if (!src) throw new Error(`Web rasterizer is required for ${node.id}.`);
     return `<img id="${escape(node.id)}" class="node raster" src="${escape(src)}" alt="${escape(node.semantics.description ?? "")}" style="${nodeStyle(node, parent)}">`;
   }
+  if (node.vector) {
+    const fill = solid(node.paint.fill) ?? "none";
+    const stroke = solid(node.paint.stroke?.fill ?? node.paint.stroke?.color) ?? "none";
+    const strokeWidth = Number(node.paint.stroke?.width ?? node.paint.stroke?.thickness ?? 1);
+    return `<svg id="${escape(node.id)}" class="node ${node.type}" viewBox="${node.vector.viewBox.join(" ")}" preserveAspectRatio="none" style="${nodeStyle(node, parent)}"${node.semantics.description ? ` aria-label="${escape(node.semantics.description)}" role="img"` : node.semantics.decorative ? ` aria-hidden="true"` : ""}><path d="${escape(node.vector.d)}" fill="${escape(fill)}" fill-rule="${node.vector.fillRule}" stroke="${escape(stroke)}" stroke-width="${strokeWidth}" vector-effect="non-scaling-stroke"/></svg>`;
+  }
   const heading = node.type === "text" && node.semantics.paragraphs.find((p) => p.headingLevel)?.headingLevel;
   const tag = heading ? `h${heading}` : node.type === "text" ? "p" : "div";
   const content = node.type === "text"
@@ -39,7 +51,7 @@ function baseCss(ir) {
       if (mode.selector) return [declarations];
       return [];
     })).join("\n");
-  return `*{box-sizing:border-box}body{margin:0}.canvas-output{position:relative;overflow:hidden}.node{min-width:0;margin:0}.canvas-grid{display:grid}.canvas-flex{display:flex}.node:hover{--canvas-interaction:hover}\n${modeRules}\n`;
+  return `*{box-sizing:border-box}body{margin:0}.canvas-output{position:relative;overflow:hidden}.node{min-width:0;margin:0}.canvas-grid{display:grid}.canvas-flex{display:flex}\n${modeRules}\n`;
 }
 function variantRules(ir, axis, mode, selector = "") {
   return ir.outputs.flatMap((output) => [output.root, ...output.nodes].filter(Boolean).flatMap((node) => Object.entries(node.variants ?? {}).flatMap(([property, cascade]) => {
@@ -55,8 +67,8 @@ function nodeStyle(node, parent) {
   if (!parentFlows) style.push("position:absolute", `left:${node.geometry.localX ?? node.geometry.x}px`, `top:${node.geometry.localY ?? node.geometry.y}px`);
   style.push(`width:${node.geometry.w}px`, `height:${node.geometry.h}px`);
   const fill = solid(node.paint.fill);
-  if (fill) style.push(`background:${fill}`);
-  if (node.paint.stroke) style.push(`border:${Number(node.paint.stroke.width ?? node.paint.stroke.thickness ?? 1)}px solid ${solid(node.paint.stroke.fill ?? node.paint.stroke.color) ?? "#000"}`);
+  if (fill && !node.vector) style.push(`background:${fill}`);
+  if (node.paint.stroke && !node.vector) style.push(`border:${Number(node.paint.stroke.width ?? node.paint.stroke.thickness ?? 1)}px solid ${solid(node.paint.stroke.fill ?? node.paint.stroke.color) ?? "#000"}`);
   if (node.type === "ellipse") style.push("border-radius:50%");
   else if (node.paint.cornerRadius != null) style.push(`border-radius:${Number(node.paint.cornerRadius)}px`);
   if (node.paint.opacity != null) style.push(`opacity:${node.paint.opacity}`);

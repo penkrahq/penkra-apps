@@ -22,6 +22,50 @@ import {
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+
+test("references inherit root paint from ordinary Canvas frames without a legacy reusable flag", () => {
+  const graph = createOpenPencilGraph({ children: [
+    { id: "instance", type: "ref", ref: "source", x: 20, y: 280, opacity: 0.5 },
+    { id: "source", type: "frame", layout: "none", width: 300, height: 70, fill: "#0B4A6F", children: [] },
+  ] });
+  const source = graph.getNode("source");
+  const instance = graph.getNode("instance");
+  assert.equal(source.type, "FRAME");
+  assert.deepEqual(instance.fills, source.fills);
+  assert.notEqual(instance.fills, source.fills);
+  assert.equal(instance.x, 20);
+  assert.equal(instance.y, 280);
+  assert.equal(instance.opacity, 0.5);
+});
+
+test("solid fill and stroke paint opacity multiply color alpha", () => {
+  const paint = { type: "color", color: "#33669980", opacity: 0.5 };
+  const graph = createOpenPencilGraph({ children: [{ id: "paint", type: "rectangle", width: 100, height: 100,
+    fill: paint, stroke: { fill: paint, width: 8 },
+  }] });
+  const node = graph.getNode("paint");
+  assert.equal(node.fills[0].opacity, 128 / 255 * 0.5);
+  assert.equal(node.strokes[0].opacity, 128 / 255 * 0.5);
+  assert.equal(node.fills[0].color.a, 1);
+  assert.equal(node.strokes[0].color.a, 1);
+});
+
+test("Canvas stroke descriptors reach the graph as strokes, not nested fill objects", () => {
+  const graph = createOpenPencilGraph({ children: [{ id: "dash-probe", type: "path", width: 300, height: 120, geometry: "M20 20 H260 V100", viewBox: [0, 0, 300, 120], stroke: { fill: "#F4A261", width: 8, dash: [12, 12], cap: "round", join: "bevel" } }] });
+  const node = graph.getNode("dash-probe");
+  assert.equal(node.strokes.length, 1);
+  assert.equal(node.strokes[0].weight, 8);
+  assert.deepEqual(node.strokes[0].dashPattern, [12, 12]);
+  assert.equal(node.strokeCap, "ROUND");
+  assert.equal(node.strokeJoin, "BEVEL");
+});
+
+test("renderer dash normalization repeats odd lists and removes all-zero effects", () => {
+  for (const [dash, expected] of [[[12], [12, 12]], [[0, 0], []], [[0, 12], [0, 12]]]) {
+    const graph = createOpenPencilGraph({ children: [{ id: "probe", type: "path", width: 100, height: 40, geometry: "M10 20 H90", viewBox: [0, 0, 100, 40], stroke: { fill: "#123456", width: 8, dash } }] });
+    assert.deepEqual(graph.getNode("probe").strokes[0].dashPattern, expected);
+  }
+});
 import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 
 test("binds imported image bytes to their lossless Pencil URL fill", () => {
@@ -135,6 +179,7 @@ test("Pencil Linear Burn and Linear Dodge reach their exact renderer blend modes
       { id: "burn", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearBurn" } },
       { id: "dodge", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearDodge" } },
       { id: "shadow", type: "rectangle", effect: { type: "shadow", blendMode: "linearBurn" } },
+      { id: "node-blend", type: "rectangle", blendMode: "multiply", fill: "#336699" },
     ],
   };
   const graph = createOpenPencilGraph(document);
@@ -143,6 +188,7 @@ test("Pencil Linear Burn and Linear Dodge reach their exact renderer blend modes
   assert.equal(graph.getNode("burn").fills[0].blendMode, "LINEAR_BURN");
   assert.equal(graph.getNode("dodge").fills[0].blendMode, "LINEAR_DODGE");
   assert.equal(graph.getNode("shadow").effects[0].blendMode, "LINEAR_BURN");
+  assert.equal(graph.getNode("node-blend").blendMode, "MULTIPLY");
 });
 
 test("the owned engine computes Skia three-sigma shadow visual bounds", () => {
@@ -159,6 +205,34 @@ test("the owned engine computes Skia three-sigma shadow visual bounds", () => {
     (id) => graph.getAbsolutePosition(id),
   );
   assert.deepEqual(bounds, { minX: -6, minY: 6, maxX: 134, maxY: 106 });
+});
+
+test("visual bounds transform a rotated origin exactly once", () => {
+  for (const rotation of [30, 90]) {
+    const graph = createOpenPencilGraph({ children: [{ id: "shape", type: "rectangle", x: 80, y: 70, width: 100, height: 50, rotation }] });
+    const bounds = computeDescendantVisualBounds(["shape"], id => graph.getNode(id), id => graph.getAbsolutePosition(id));
+    const radians = rotation * Math.PI / 180;
+    const width = 100 * Math.abs(Math.cos(radians)) + 50 * Math.abs(Math.sin(radians));
+    const height = 100 * Math.abs(Math.sin(radians)) + 50 * Math.abs(Math.cos(radians));
+    for (const [key, expected] of Object.entries({ minX: 130 - width / 2, maxX: 130 + width / 2, minY: 95 - height / 2, maxY: 95 + height / 2 })) {
+      assert.ok(Math.abs(bounds[key] - expected) < 1e-8, `${rotation}: ${key} ${bounds[key]} != ${expected}`);
+    }
+  }
+});
+
+test("visual bounds include ancestor rotation and reflection", () => {
+  for (const flipX of [false, true]) {
+    const graph = createOpenPencilGraph({ children: [{ id: "parent", type: "frame", layout: "none", x: 40, y: 30, width: 200, height: 150, rotation: 90, flipX,
+      children: [{ id: "child", type: "rectangle", x: 20, y: 30, width: 100, height: 50, rotation: 30 }],
+    }] });
+    const bounds = computeDescendantVisualBounds(["child"], id => graph.getNode(id), id => graph.getAbsolutePosition(id));
+    const width = 50 + 25 * Math.sqrt(3);
+    const height = 50 * Math.sqrt(3) + 25;
+    const centerY = flipX ? 135 : 75;
+    for (const [key, expected] of Object.entries({ minX: 160 - width / 2, maxX: 160 + width / 2, minY: centerY - height / 2, maxY: centerY + height / 2 })) {
+      assert.ok(Math.abs(bounds[key] - expected) < 1e-8, `${flipX}: ${key} ${bounds[key]} != ${expected}`);
+    }
+  }
 });
 
 test("OpenPencil computes nested auto-layout instead of collapsing children at the origin", () => {

@@ -1,0 +1,13 @@
+{
+  "path": "research/mobile-qa/ipad-vector-matrix-2x.png",
+  "scale": 2,
+  "cases": 20,
+  "checkedInteriorPixels": 908950,
+  "registeredOffset": {
+    "x": 351,
+    "y": 288
+  },
+  "boundaryTolerancePixels": 2,
+  "channelTolerance": 2,
+  "verified": true
+}

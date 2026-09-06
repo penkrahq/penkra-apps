@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "sourceEngineSha256": "3f20c69b625371021cb20e0061c5d613e2455e5bb7b98c45d9695870e6a820ef",
+  "sourceEngineSha256": "0a484a36421cb516466df4b58a42537b580d7053f0ebd994af787e57b0767b5d",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -47,7 +47,8 @@
     "Hide the text-edit input visually with explicit styles so inline editing does not depend on OpenPencil's Tailwind application shell while keeping the focused editor available to accessibility clients.",
     "Expose the upstream default editor-state factory so Canvas can supply Vue-reactive state to the editor integration.",
     "Expose Pencil wrap, min/max constraints, row/column gaps, and grid tracks and placement through the owned Yoga layout graph.",
-    "Render Canvas rich-text underline, strikethrough, word spacing, and combined per-run decoration through CanvasKit paragraph style runs."
+    "Render Canvas rich-text underline, strikethrough, word spacing, and combined per-run decoration through CanvasKit paragraph style runs.",
+    "Expose the owned scene graph's normalized SVG path parser to native artifact writers."
   ],
   "exports": [
     "computeBounds",
@@ -57,6 +58,7 @@
     "createEditor",
     "fontManager",
     "getCanvasKit",
+    "parseSVGPath",
     "createCanvasSceneGraph",
     "provideEditor",
     "SkiaRenderer",

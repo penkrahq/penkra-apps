@@ -56,20 +56,56 @@ export function migrateCanvasDocument(source) {
     notes.push("Dropped the obsolete OpenPencil format marker; Canvas has no Pencil file-compatibility contract.");
   }
   if (!document.axes || typeof document.axes !== "object" || Array.isArray(document.axes)) document.axes = {};
+  if (document.axes.theme && !document.axes.appearance
+    && document.axes.theme.modes?.every((mode) => ["light", "dark"].includes(mode.name))) {
+    document.axes.appearance = document.axes.theme;
+    delete document.axes.theme;
+    renameAppearanceConditions(document);
+    notes.push("Renamed the legacy light/dark theme axis to appearance, including mode selections and cascade conditions.");
+  }
   if (!document.variables || typeof document.variables !== "object" || Array.isArray(document.variables)) document.variables = {};
   if (!document.paragraphStyles || typeof document.paragraphStyles !== "object" || Array.isArray(document.paragraphStyles)) document.paragraphStyles = {};
   if (document.imports === undefined) document.imports = {};
   if (!Array.isArray(document.flows)) document.flows = [];
   if (!Array.isArray(document.children)) document.children = [];
+  let renamedExports = 0;
+  const renameExports = (nodes) => {
+    for (const node of nodes) {
+      if (node.export === "live") { node.export = "default"; renamedExports += 1; }
+      if (Array.isArray(node.children)) renameExports(node.children);
+    }
+  };
+  renameExports(document.children);
+  if (renamedExports) notes.push(`Renamed ${renamedExports} node export override(s) from live to default without changing rendering intent.`);
+  if (document.module === "print") {
+    document.module = "generic";
+    const removePageRoles = (nodes) => {
+      for (const node of nodes) {
+        if (node.role === "page") delete node.role;
+        if (Array.isArray(node.children)) removePageRoles(node.children);
+      }
+    };
+    removePageRoles(document.children);
+    notes.push("Converted the withdrawn print module to generic and removed page roles; physical size, artwork, bleed and advisory guides are preserved.");
+  }
   try {
     validateCanvasDocument(document);
   } catch (error) {
-    const dropped = document.children.length;
-    document = fallbackDocument(document);
-    notes.push(`Dropped ${dropped} top-level subtree(s) after best-effort transforms still failed canonical validation: ${error.message}`);
-    validateCanvasDocument(document);
+    throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${error.message}`);
   }
   return { document, changes, notes };
+}
+
+function renameAppearanceConditions(value) {
+  if (!value || typeof value !== "object") return;
+  for (const key of ["modes", "when"]) {
+    const record = value[key];
+    if (record && !Array.isArray(record) && typeof record === "object" && !record.op && Object.hasOwn(record, "theme")) {
+      record.appearance = record.theme;
+      delete record.theme;
+    }
+  }
+  for (const child of Object.values(value)) renameAppearanceConditions(child);
 }
 
 export async function createCanvasMigrationCopy(api, documentId, payload, { reportDirectory } = {}) {
@@ -106,20 +142,6 @@ export async function createCanvasMigrationCopy(api, documentId, payload, { repo
   } finally {
     model.doc.destroy();
   }
-}
-
-function fallbackDocument(source) {
-  const module = ["deck", "print", "web", "mobile"].includes(source.module) ? source.module : "web";
-  const preset = {
-    deck: { role: "slide", width: 1280, height: 720, physical: { w: 13.333333, h: 7.5, unit: "in" } },
-    print: { role: "page", width: 794, height: 1123, size: "a4", physical: { w: 210, h: 297, unit: "mm" } },
-    web: { role: "route", width: 720, height: 480 },
-    mobile: { role: "ios", width: 393, height: 852, size: "iphone" },
-  }[module];
-  return {
-    module, axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
-    children: [{ id: "migrated-content-unavailable", type: "frame", name: "Migrated content unavailable", ...preset, children: [] }],
-  };
 }
 
 function migrationMarkdown(title, sourceId, copyId, migrated) {

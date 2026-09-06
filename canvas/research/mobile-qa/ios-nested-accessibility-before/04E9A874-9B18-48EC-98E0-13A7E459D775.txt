@@ -1,0 +1,4 @@
+Query chain:
+ →Find: Target Application 'com.penkra.canvas.qa.simulator'
+  ↪︎Find: Descendants matching type StaticText
+    ↪︎Find: Elements matching predicate '"Visible nested description" IN identifiers'

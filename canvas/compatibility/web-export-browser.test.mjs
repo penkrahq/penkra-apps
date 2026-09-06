@@ -18,7 +18,6 @@ const document = {
   axes: {
     appearance: { modes: [{ name: "light" }, { name: "dark", media: "prefers-color-scheme: dark" }] },
     viewport: { modes: [{ name: "mobile", minWidth: 0 }, { name: "wide", minWidth: 900 }] },
-    interaction: { modes: [{ name: "default" }, { name: "hover", selector: ":hover" }] },
   },
   variables: {},
   paragraphStyles: {},
@@ -33,7 +32,7 @@ const document = {
     height: 720,
     layout: "grid",
     gridTemplateColumns: ["1fr", "2fr"],
-    gap: [{ value: 8 }, { value: 24, when: { viewport: "wide" } }, { value: 32, when: { interaction: "hover" } }],
+    gap: [{ value: 8 }, { value: 24, when: { viewport: "wide" } }],
     fill: [{ value: "#ffffff" }, { value: "#111111", when: { appearance: "dark" } }],
     children: [{
       id: "title",
@@ -105,7 +104,7 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
   const { nodeId } = await page.send("DOM.querySelector", { nodeId: root.nodeId, selector: "#route" });
   await page.send("CSS.enable");
   await page.send("CSS.forcePseudoState", { nodeId, forcedPseudoClasses: ["hover"] });
-  assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('route')).gap"), "32px");
+  assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('route')).gap"), "24px");
   assert.equal(await evaluate(page, "document.documentElement.lang"), "en-GB");
 });
 

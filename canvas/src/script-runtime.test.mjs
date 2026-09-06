@@ -3,6 +3,21 @@ import test from "node:test";
 
 import { executeCanvasScript, scriptNeedsInspection } from "./script-runtime.mjs";
 
+test("generic module assignment preserves artwork and is one-way", async () => {
+  const source = { version: "2.17", module: "generic", children: [{ id: "art", type: "rectangle", width: 40, height: 20, fill: "#123456" }] };
+  for (const module of ["deck", "web", "mobile"]) {
+    const result = await executeCanvasScript(source, `return SetModule(${JSON.stringify(module)});`);
+    assert.equal(result.document.module, module);
+    assert.deepEqual(result.document.children, source.children);
+    assert.equal(source.module, "generic");
+    await assert.rejects(() => executeCanvasScript(result.document, 'SetModule("deck");'), /Only a generic/u);
+  }
+  await assert.rejects(() => executeCanvasScript(source, 'SetModule("print");'), /requires deck, web, or mobile/u);
+  await assert.rejects(() => executeCanvasScript(source, 'SetModule("asset");'), /requires deck, web, or mobile/u);
+  const roles = { ...source, children: [{ id: "slide", type: "frame", role: "slide", width: 100, height: 100 }] };
+  await assert.rejects(() => executeCanvasScript(roles, 'SetModule("deck");'), /no role-bearing frames/u);
+});
+
 test("inspection context is requested only when scripts mention inspection fields", () => {
   assert.equal(scriptNeedsInspection("Print(1);"), false);
   assert.equal(scriptNeedsInspection('return Get("#a")[0].bounds;'), true);

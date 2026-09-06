@@ -1,5 +1,11 @@
 import type { Font } from 'canvaskit-wasm'
 
+import type { SceneNode } from '@open-pencil/scene-graph'
+
+export function frameTitleText(node: SceneNode): string {
+  return node.canvasRole ? `${node.canvasRole} · ${node.name}` : node.name
+}
+
 export function measureLabelText(font: Font, text: string): number {
   const glyphIds = font.getGlyphIDs(text)
   const widths = font.getGlyphWidths(glyphIds)

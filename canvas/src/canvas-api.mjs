@@ -16,9 +16,12 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         ? {}
         : { body: encodeJson(options.body), contentType: "application/json" }),
     });
-    const value = response.body.byteLength > 0 ? decodeJson(response.body) : null;
+    let value;
+    try { value = response.body.byteLength > 0 ? decodeJson(response.body) : null; }
+    catch (cause) { throw new Error(`Invalid JSON response for /projects${path} (${response.body.byteLength} bytes): ${cause.message}`, { cause }); }
     if (response.status < 200 || response.status >= 300) {
-      const error = new Error(value?.message ?? `Canvas request failed (${response.status}).`);
+      const message = value?.message ?? "Canvas request failed";
+      const error = new Error(`${message} (${response.status}; ${options.method ?? "GET"} /projects${path}).`);
       error.code = value?.code ?? "CANVAS_REQUEST_FAILED";
       error.status = response.status;
       throw error;
@@ -55,9 +58,19 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       const project = await request(`/${encoded}?chunked=auto`);
       if ((project.updates ?? []).length > 0) return null;
       const source = project.snapshot.chunked
-        ? decodeJson(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "projection"))
+        ? decodeJson(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "projection", project.snapshot.projectionBytes))
         : project.snapshot.projection;
       return { ...project, snapshot: { ...project.snapshot, source } };
+    },
+    getDocumentState: async (id) => {
+      const encoded = encodeURIComponent(id);
+      // Library labels must not use the opening endpoint: that endpoint updates
+      // lastOpenedAt. Do not fall back when an older backend lacks state reads.
+      const project = await request(`/${encoded}/state?chunked=auto`);
+      const state = project.snapshot.chunked
+        ? bytesToBase64(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "state", project.snapshot.stateBytes))
+        : project.snapshot.state;
+      return { snapshot: { state }, updates: project.updates ?? [] };
     },
     listAssets: async (id) => {
       const assets = await request(`/${encodeURIComponent(id)}/blobs`);
@@ -134,9 +147,10 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       let offset = 0;
       while (offset < asset.size) {
         const result = await request(
-          `/${encodeURIComponent(id)}/blobs/${asset.sha256}?offset=${offset}&length=${8 * 1024 * 1024}`,
+          `/${encodeURIComponent(id)}/blobs/${asset.sha256}?offset=${offset}`,
         );
         const bytes = base64ToBytes(result.bytes);
+        if (!bytes.byteLength && !result.complete) throw new Error(`Empty asset range for ${asset.path}.`);
         chunks.push(bytes);
         offset += bytes.byteLength;
         if (result.complete) break;
@@ -166,8 +180,8 @@ function uploadedAsset(blob, path) {
 
 async function readChunkedSnapshot(request, encodedProjectId, snapshot) {
   const [projectionBytes, stateBytes] = await Promise.all([
-    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "projection"),
-    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "state"),
+    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "projection", snapshot.projectionBytes),
+    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "state", snapshot.stateBytes),
   ]);
   const projection = decodeJson(projectionBytes);
   return {
@@ -213,19 +227,47 @@ async function uploadSnapshot(request, projectId, input) {
   }
 }
 
-async function readSnapshotContent(request, encodedProjectId, throughSequence, kind) {
+async function readSnapshotContent(request, encodedProjectId, throughSequence, kind, totalBytes) {
   const chunks = [];
   let offset = 0;
   for (;;) {
     const result = await request(
-      `/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${offset}&length=${8 * 1024 * 1024}`,
+      `/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${offset}`,
     );
+    // The range endpoint serializes PostgreSQL JSONB text, whose whitespace
+    // differs from the compact projection size in document metadata.
+    if (offset === 0 && Number.isSafeInteger(result.totalBytes)) totalBytes = result.totalBytes;
     const bytes = base64ToBytes(result.bytes);
     chunks.push(bytes);
     offset += bytes.byteLength;
     if (result.complete) break;
     if (bytes.byteLength === 0) throw new Error(`Could not finish reading Canvas ${kind}.`);
+    if (Number.isSafeInteger(totalBytes) && totalBytes > offset) {
+      // Learn a valid range size from the server's default response rather than
+      // assuming a deployed maximum. Bound concurrency while reading the exact
+      // immutable snapshot selected above; no snapshot write or compaction occurs.
+      const rangeSize = bytes.byteLength;
+      const remaining = Math.ceil((totalBytes - offset) / rangeSize);
+      const tail = new Array(remaining);
+      let next = 0;
+      await Promise.all(Array.from({ length: Math.min(4, remaining) }, async () => {
+        for (;;) {
+          const index = next++;
+          if (index >= remaining) break;
+          const position = offset + index * rangeSize;
+          const length = Math.min(rangeSize, totalBytes - position);
+          const part = await request(`/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${position}&length=${length}`);
+          const content = base64ToBytes(part.bytes);
+          if (content.byteLength !== length) throw new Error(`Incomplete Canvas ${kind} range at ${position}.`);
+          tail[index] = content;
+        }
+      }));
+      chunks.push(...tail);
+      offset = totalBytes;
+      break;
+    }
   }
+  if (Number.isSafeInteger(totalBytes) && offset !== totalBytes) throw new Error(`Canvas ${kind} length does not match snapshot metadata.`);
   const output = new Uint8Array(offset);
   let cursor = 0;
   for (const chunk of chunks) {

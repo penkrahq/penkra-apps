@@ -1,5 +1,11 @@
 import { mergeVectorNetworks, SceneGraph } from '@open-pencil/scene-graph'
-import type { GeometryPath, LayoutMode, LayoutSizing, SceneNode, VectorNetwork } from '@open-pencil/scene-graph'
+import type {
+  GeometryPath,
+  LayoutMode,
+  LayoutSizing,
+  SceneNode,
+  VectorNetwork
+} from '@open-pencil/scene-graph'
 import { copyEffects, copyFills, copyStrokes } from '@open-pencil/scene-graph/copy'
 import { populateInstanceChildren } from '@open-pencil/scene-graph/instances'
 import { parseSVGPath } from '@open-pencil/scene-graph/parse-path'
@@ -14,6 +20,7 @@ import {
   convertStroke,
   isVarRef,
   mapAlignItems,
+  mapPenBlendMode,
   mapFontWeight,
   mapJustifyContent,
   mapLayoutMode,
@@ -41,9 +48,14 @@ function writePathCommands(network: VectorNetwork, loops: number[][]): Uint8Arra
       const t1 = segment.tangentStart
       const t2 = segment.tangentEnd
       const curved = t1.x !== 0 || t1.y !== 0 || t2.x !== 0 || t2.y !== 0
-      commands.push(curved
-        ? { code: 4, args: [start.x + t1.x, start.y + t1.y, end.x + t2.x, end.y + t2.y, end.x, end.y] }
-        : { code: 2, args: [end.x, end.y] })
+      commands.push(
+        curved
+          ? {
+              code: 4,
+              args: [start.x + t1.x, start.y + t1.y, end.x + t2.x, end.y + t2.y, end.x, end.y]
+            }
+          : { code: 2, args: [end.x, end.y] }
+      )
     }
     commands.push({ code: 0, args: [] })
   }
@@ -61,7 +73,10 @@ function writePathCommands(network: VectorNetwork, loops: number[][]): Uint8Arra
   return bytes
 }
 
-function regenerateIconFillGeometry(network: VectorNetwork, styles: GeometryPath[]): GeometryPath[] {
+function regenerateIconFillGeometry(
+  network: VectorNetwork,
+  styles: GeometryPath[]
+): GeometryPath[] {
   return network.regions.map((region, index) => ({
     ...(styles[index] ?? {}),
     windingRule: region.windingRule,
@@ -130,6 +145,7 @@ function buildBaseOverrides(pen: PenNode): Partial<SceneNode> {
     y: pen.y ?? 0,
     visible: pen.enabled !== false,
     opacity: pen.opacity ?? 1,
+    ...(pen.blendMode ? { blendMode: mapPenBlendMode(pen.blendMode) ?? 'NORMAL' } : {}),
     rotation: pen.rotation ?? 0,
     flipX: pen.flipX ?? false,
     flipY: pen.flipY ?? false,
@@ -175,9 +191,7 @@ function applyTextProps(node: SceneNode, pen: PenNode, ctx: VarContext): void {
     pen.fontWeight ?? (pen.type === 'icon_font' ? pen.weight : undefined)
   )
   node.italic = pen.fontStyle === 'italic' || pen.fontStyle === 'oblique'
-  node.textDecoration = pen.underline
-    ? 'UNDERLINE'
-    : pen.strikethrough ? 'STRIKETHROUGH' : 'NONE'
+  node.textDecoration = pen.underline ? 'UNDERLINE' : pen.strikethrough ? 'STRIKETHROUGH' : 'NONE'
   node.textAlignHorizontal = mapTextAlign(pen.textAlign)
   node.textAlignVertical = mapTextAlignVertical(pen.textAlignVertical)
   if (pen.lineHeight !== undefined) {
@@ -203,8 +217,10 @@ function estimatePenTextWidth(text: string, fontSize: number, letterSpacing = 0)
 }
 
 function resolveSizing(pen: PenNode, ctx: VarContext) {
-  const isTextLike = pen.type === 'text' || pen.type === 'icon_font'
-    || (pen.type === 'icon' && Boolean(pen.__canvasIcon?.fontFamily))
+  const isTextLike =
+    pen.type === 'text' ||
+    pen.type === 'icon_font' ||
+    (pen.type === 'icon' && Boolean(pen.__canvasIcon?.fontFamily))
   const defaultSize = isTextLike ? 20 : 100
   const defaultW = isTextLike && pen.width === undefined ? 10_000 : defaultSize
   const w = parseSize(pen.width, defaultW, ctx)
@@ -323,8 +339,11 @@ function applyCanvasIconDefinition(node: SceneNode, pen: PenNode, ctx: VarContex
       networks[index].regions.map((region) => ({
         windingRule: region.windingRule,
         commandsBlob: new Uint8Array(0),
-        fills: [{ type: 'SOLID' as const, visible: true, opacity: parsedColor.a * layer.opacity, color }]
-      })))
+        fills: [
+          { type: 'SOLID' as const, visible: true, opacity: parsedColor.a * layer.opacity, color }
+        ]
+      }))
+    )
     node.fillGeometry = regenerateIconFillGeometry(vectorNetwork, placeholders)
     node.fills = []
   } else if (definition.geometry) {
@@ -334,15 +353,19 @@ function applyCanvasIconDefinition(node: SceneNode, pen: PenNode, ctx: VarContex
   }
   if (definition.paint === 'stroke') {
     node.fills = []
-    const scale = Math.min(
-      node.width / definition.viewBox[2],
-      node.height / definition.viewBox[3]
-    )
-    node.strokes = [{
-      visible: true, color, opacity: parsedColor.a,
-      weight: (definition.strokeWidth ?? 1) * scale,
-      align: 'CENTER', cap: 'ROUND', join: 'ROUND', dashPattern: []
-    }]
+    const scale = Math.min(node.width / definition.viewBox[2], node.height / definition.viewBox[3])
+    node.strokes = [
+      {
+        visible: true,
+        color,
+        opacity: parsedColor.a,
+        weight: (definition.strokeWidth ?? 1) * scale,
+        align: 'CENTER',
+        cap: 'ROUND',
+        join: 'ROUND',
+        dashPattern: []
+      }
+    ]
     node.strokeJoin = 'ROUND'
     node.strokeCap = 'ROUND'
   } else if (!definition.layers) {
@@ -385,6 +408,7 @@ function createSceneNode(
 
   const node = graph.createNode(sceneType, parentId, overrides)
   node.pencilNodeId = pen.id
+  if (pen.type === 'frame') node.canvasRole = pen.role
   node.pencilAddress = pen.id
   node.pencilWidthOmitted = pen.width === undefined
   node.pencilHeightOmitted = pen.height === undefined
@@ -400,7 +424,12 @@ function createSceneNode(
   if (pen.gridColumn !== undefined || pen.gridRow !== undefined) {
     const column = gridPlacement(pen.gridColumn)
     const row = gridPlacement(pen.gridRow)
-    node.gridPosition = { column: column.start, columnSpan: column.span, row: row.start, rowSpan: row.span }
+    node.gridPosition = {
+      column: column.start,
+      columnSpan: column.span,
+      row: row.start,
+      rowSpan: row.span
+    }
   }
   if (pen.type === 'polygon') node.pointCount = Math.max(3, Math.round(pen.polygonCount ?? 3))
 
@@ -422,7 +451,7 @@ function createSceneNode(
 
   if (pen.type === 'icon' && pen.__canvasIcon) applyCanvasIconDefinition(node, pen, ctx)
 
-  if (pen.type === 'path' && pen.geometry) {
+  if ((pen.type === 'path' || pen.type === 'polygon') && pen.geometry) {
     const vectorNetwork = parseSVGPath(
       pen.geometry,
       pen.fillRule === 'evenodd' ? 'EVENODD' : 'NONZERO'
@@ -443,9 +472,10 @@ function createSceneNode(
     }
   }
 
+  // Canvas references may target any node, not only legacy reusable components.
+  penSources.set(pen.id, pen)
   if (pen.reusable) {
     componentIds.set(pen.id, node.id)
-    penSources.set(pen.id, pen)
   }
 
   if (pen.children) {
@@ -553,9 +583,10 @@ function applyOverrideProps(
     textMetricsChanged = true
   }
   if (overrideData.lineHeight !== undefined) {
-    target.lineHeight = overrideData.lineHeight < 5
-      ? overrideData.lineHeight * target.fontSize
-      : overrideData.lineHeight
+    target.lineHeight =
+      overrideData.lineHeight < 5
+        ? overrideData.lineHeight * target.fontSize
+        : overrideData.lineHeight
     textMetricsChanged = true
   }
   if (overrideData.letterSpacing !== undefined) {
@@ -567,7 +598,8 @@ function applyOverrideProps(
   if (overrideData.textAlignVertical !== undefined)
     target.textAlignVertical = mapTextAlignVertical(overrideData.textAlignVertical)
   if (overrideData.textGrowth !== undefined) {
-    target.textAutoResize = overrideData.textGrowth === 'fixed-width' ? 'HEIGHT' : 'WIDTH_AND_HEIGHT'
+    target.textAutoResize =
+      overrideData.textGrowth === 'fixed-width' ? 'HEIGHT' : 'WIDTH_AND_HEIGHT'
     textMetricsChanged = true
   }
   if (textMetricsChanged) {
@@ -575,7 +607,8 @@ function applyOverrideProps(
     target.figmaDerivedTextGlyphs = null
     if (target.textAutoResize === 'WIDTH_AND_HEIGHT') {
       target.width = estimatePenTextWidth(target.text, target.fontSize, target.letterSpacing)
-      target.height = target.fontSize * (target.lineHeight ? target.lineHeight / target.fontSize : 1.2)
+      target.height =
+        target.fontSize * (target.lineHeight ? target.lineHeight / target.fontSize : 1.2)
     }
   }
   if (overrideData.x !== undefined) target.x = overrideData.x
@@ -588,22 +621,30 @@ function applyOverrideProps(
   if (overrideData.rotation !== undefined) target.rotation = overrideData.rotation
   if (overrideData.name !== undefined) target.name = overrideData.name
   if (overrideData.__canvasIcon) {
-    applyCanvasIconDefinition(target, {
-      ...overrideData,
-      fill: overrideData.__canvasIconFill
-    } as PenNode, ctx)
+    applyCanvasIconDefinition(
+      target,
+      {
+        ...overrideData,
+        fill: overrideData.__canvasIconFill
+      } as PenNode,
+      ctx
+    )
   }
-  const intrinsic = textMetricsChanged
-    && target.type === 'TEXT'
-    && target.textAutoResize === 'WIDTH_AND_HEIGHT'
+  const intrinsic =
+    textMetricsChanged && target.type === 'TEXT' && target.textAutoResize === 'WIDTH_AND_HEIGHT'
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight }
 }
 
 function setInstanceAxisToHug(instance: SceneNode, axis: 'width' | 'height'): void {
   const vertical = instance.layoutMode === 'VERTICAL'
-  const key = axis === 'width'
-    ? vertical ? 'counterAxisSizing' : 'primaryAxisSizing'
-    : vertical ? 'primaryAxisSizing' : 'counterAxisSizing'
+  const key =
+    axis === 'width'
+      ? vertical
+        ? 'counterAxisSizing'
+        : 'primaryAxisSizing'
+      : vertical
+        ? 'primaryAxisSizing'
+        : 'counterAxisSizing'
   instance[key] = 'HUG'
 }
 

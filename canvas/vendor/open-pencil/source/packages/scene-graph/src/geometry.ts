@@ -168,11 +168,13 @@ export function effectOverflow(effects?: Effect[]) {
     // Gaussian kernel reaches ceil(3 * sigma), so use that measured support
     // rather than treating the authored radius itself as the outset.
     const kernel = effect.radius / 2 <= 0.03 ? 0 : Math.ceil((3 * effect.radius) / 2)
-    const blurSpread = kernel + effect.spread
-    left = Math.max(left, blurSpread - effect.offset.x, 0)
-    right = Math.max(right, blurSpread + effect.offset.x, 0)
-    top = Math.max(top, blurSpread - effect.offset.y, 0)
-    bottom = Math.max(bottom, blurSpread + effect.offset.y, 0)
+    const blurSpread = kernel + (effect.type === 'DROP_SHADOW' ? effect.spread : 0)
+    const offsetX = effect.type === 'DROP_SHADOW' ? effect.offset.x : 0
+    const offsetY = effect.type === 'DROP_SHADOW' ? effect.offset.y : 0
+    left = Math.max(left, blurSpread - offsetX, 0)
+    right = Math.max(right, blurSpread + offsetX, 0)
+    top = Math.max(top, blurSpread - offsetY, 0)
+    bottom = Math.max(bottom, blurSpread + offsetY, 0)
   }
 
   return { left, right, top, bottom }
@@ -217,6 +219,7 @@ export function computeVisualBounds(
 
 export interface VisualBoundsNode {
   id: string
+  parentId?: string | null
   width: number
   height: number
   rotation?: number
@@ -319,9 +322,73 @@ function transformedLocalBounds(node: VisualBoundsNode, local: Rect, abs: Vector
 
 export function nodeVisualBounds(
   node: VisualBoundsNode,
-  getAbsolutePosition: (id: string) => Vector
+  getAbsolutePosition: (id: string) => Vector,
+  getNode?: (id: string) => VisualBoundsNode | undefined
 ): VisualBounds {
   const abs = getAbsolutePosition(node.id)
+  if (getNode) {
+    // Absolute position is the transformed local origin, not the unrotated
+    // layout corner. Transform displacement vectors only, then add that origin.
+    const transform = (point: Vector): Vector => {
+      let current: VisualBoundsNode | undefined = node
+      let result = point
+      while (current) {
+        const x = current.flipX ? -result.x : result.x
+        const y = current.flipY ? -result.y : result.y
+        const angle = degToRad(current.rotation ?? 0)
+        result = {
+          x: x * Math.cos(angle) - y * Math.sin(angle),
+          y: x * Math.sin(angle) + y * Math.cos(angle)
+        }
+        current = current.parentId ? getNode(current.parentId) : undefined
+      }
+      return { x: abs.x + result.x, y: abs.y + result.y }
+    }
+    const local = geometryBlobBounds([
+      ...(node.fillGeometry ?? []),
+      ...(node.strokes?.some((stroke) => stroke.visible && stroke.align !== 'INSIDE')
+        ? (node.strokeGeometry ?? [])
+        : [])
+    ])
+    const left = 0
+    const top = 0
+    const right = node.width
+    let bottom = node.height
+    if (node.type === 'TEXT' && node.textDecoration && node.textDecoration !== 'NONE') {
+      const fontSize = node.fontSize ?? 14
+      bottom +=
+        (node.textUnderlineOffset ?? fontSize * 0.18) +
+        (node.textDecorationThickness ?? Math.max(1, fontSize / 16)) +
+        fontSize * 0.35
+    }
+    const points = [
+      { x: left, y: top },
+      { x: right, y: top },
+      { x: right, y: bottom },
+      { x: left, y: bottom }
+    ].map(transform)
+    const stroke = strokeOverflow(node.strokes)
+    const effects = effectOverflow(node.effects)
+    const bounds = {
+      minX: Math.min(...points.map((point) => point.x)) - stroke - effects.left,
+      minY: Math.min(...points.map((point) => point.y)) - stroke - effects.top,
+      maxX: Math.max(...points.map((point) => point.x)) + stroke + effects.right,
+      maxY: Math.max(...points.map((point) => point.y)) + stroke + effects.bottom
+    }
+    if (local) {
+      const geometryPoints = [
+        { x: local.x, y: local.y },
+        { x: local.x + local.width, y: local.y },
+        { x: local.x + local.width, y: local.y + local.height },
+        { x: local.x, y: local.y + local.height }
+      ].map(transform)
+      bounds.minX = Math.min(bounds.minX, ...geometryPoints.map((point) => point.x))
+      bounds.minY = Math.min(bounds.minY, ...geometryPoints.map((point) => point.y))
+      bounds.maxX = Math.max(bounds.maxX, ...geometryPoints.map((point) => point.x))
+      bounds.maxY = Math.max(bounds.maxY, ...geometryPoints.map((point) => point.y))
+    }
+    return bounds
+  }
   const base = computeVisualBounds([node], getAbsolutePosition)
   let bounds: VisualBounds = {
     minX: base.x,
@@ -360,20 +427,18 @@ function collectDescendantVisualBounds(
   const node = getNode(nodeId)
   if (!node?.visible) return null
 
-  const own = nodeVisualBounds(node, getAbsolutePosition)
+  const own = nodeVisualBounds(node, getAbsolutePosition, getNode)
   let bounds = clip ? intersectVisualBounds(own, clip) : own
 
   const isClippableContainer =
     node.type === 'FRAME' || node.type === 'COMPONENT' || node.type === 'INSTANCE'
   let childClip = clip
   if (isClippableContainer && node.clipsContent) {
-    const abs = getAbsolutePosition(node.id)
-    const nodeClip = {
-      minX: abs.x,
-      minY: abs.y,
-      maxX: abs.x + node.width,
-      maxY: abs.y + node.height
-    }
+    const nodeClip = nodeVisualBounds(
+      { ...node, strokes: [], effects: [], fillGeometry: [], strokeGeometry: [] },
+      getAbsolutePosition,
+      getNode
+    )
     childClip = childClip ? intersectVisualBounds(childClip, nodeClip) : nodeClip
     if (!childClip) return bounds
   }

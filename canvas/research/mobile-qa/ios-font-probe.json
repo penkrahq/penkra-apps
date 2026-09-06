@@ -1,0 +1,36 @@
+{
+  "bundledFonts" : [
+
+  ],
+  "contentSizeCategory" : "UICTContentSizeCategoryAccessibilityXXL",
+  "fonts" : [
+    {
+      "available" : false,
+      "requested" : "Inter",
+      "resolved" : ""
+    },
+    {
+      "available" : false,
+      "requested" : "Inter-Regular",
+      "resolved" : ""
+    },
+    {
+      "available" : false,
+      "requested" : "Inter-Bold",
+      "resolved" : ""
+    },
+    {
+      "available" : false,
+      "requested" : "Inter-SemiBold",
+      "resolved" : ""
+    },
+    {
+      "available" : false,
+      "requested" : "Inter-Medium",
+      "resolved" : ""
+    }
+  ],
+  "interFamilyFaces" : [
+
+  ]
+}

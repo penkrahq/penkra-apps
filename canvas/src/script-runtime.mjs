@@ -279,6 +279,16 @@ globalThis.Update = function Update(target, properties) {
   return node;
 };
 
+globalThis.SetModule = function SetModule(module) {
+  const allowed = new Set(["deck", "web", "mobile"]);
+  if (!allowed.has(module)) throw new Error("SetModule requires deck, web, or mobile.");
+  if (__document.module !== "generic") throw new Error("Only a generic Canvas document can set its module later.");
+  if (__walk().some((entry) => entry.node.role !== undefined)) throw new Error("SetModule requires a document with no role-bearing frames.");
+  __document.module = module;
+  __changed = true;
+  return module;
+};
+
 globalThis.Replace = function Replace(target, replacement) {
   const entry = __requireOne(target);
   if (!replacement || typeof replacement !== "object" || Array.isArray(replacement)) throw new TypeError("Replace requires one node object.");

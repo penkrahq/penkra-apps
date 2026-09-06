@@ -25,6 +25,29 @@ test("Canvas API stays inside the generic project namespace", async () => {
   assert.equal(calls[0].method, "GET");
 });
 
+test("module lookup retrieves CRDT state and updates without assets or projection chunks", async () => {
+  const calls = [];
+  const update = { sequence: 2, update: "AQ==" };
+  const api = createCanvasApi({ account: { request: async ({ path }) => {
+    calls.push(path);
+    if (path.endsWith("?chunked=auto")) return response(200, {
+      snapshot: { throughSequence: 1, chunked: true, stateBytes: 1 }, updates: [update],
+    });
+    assert.match(path, /kind=state/u);
+    return response(200, { bytes: "AQ==", complete: true });
+  } } });
+  assert.deepEqual(await api.getDocumentState("a"), { snapshot: { state: "AQ==" }, updates: [update] });
+  assert.equal(calls[0], "/projects/a/state?chunked=auto");
+  assert.equal(calls.length, 2);
+});
+
+test("module lookup never falls back to an opening read when read-only state is unavailable", async () => {
+  const calls = [];
+  const api = createCanvasApi({ account: { request: async ({ path }) => { calls.push(path); return response(404, { message: "Not found" }); } } });
+  await assert.rejects(api.getDocumentState("a"), /404/);
+  assert.deepEqual(calls, ["/projects/a/state?chunked=auto"]);
+});
+
 test("Canvas API exposes recoverable Trash without overloading permanent deletion", async () => {
   const calls = [];
   const api = createCanvasApi({
@@ -166,8 +189,8 @@ test("Canvas API reports bounded backend errors", async () => {
     },
   });
   await assert.rejects(api.listDocuments(), {
-    message: "Canvas is not installed",
     code: "APP_ACCOUNT_DATA_FORBIDDEN",
+    status: 403,
   });
 });
 
@@ -221,11 +244,11 @@ test("Canvas maps project projections and exact asset paths without changing the
       snapshot: { throughSequence: 0, chunked: true },
       updates: [],
     }],
-    ["/projects/project-id/snapshots/0/content?kind=projection&offset=0&length=8388608", {
+    ["/projects/project-id/snapshots/0/content?kind=projection&offset=0", {
       bytes: "eyJjaGlsZHJlbiI6W119",
       complete: true,
     }],
-    ["/projects/project-id/snapshots/0/content?kind=state&offset=0&length=8388608", {
+    ["/projects/project-id/snapshots/0/content?kind=state&offset=0", {
       bytes: "AQ==",
       complete: true,
     }],
@@ -295,6 +318,29 @@ test("Canvas accepts an automatically inlined snapshot without range requests", 
     "/projects/project-id/blobs",
     "/projects/project-id?chunked=auto",
   ]);
+});
+
+test("Canvas reads large projections in bounded parallel server-sized ranges", async () => {
+  const source = { children: [], payload: "x".repeat(100) };
+  const bytes = new TextEncoder().encode(JSON.stringify(source, null, 2));
+  let active = 0, peak = 0;
+  const calls = [];
+  const api = createCanvasApi({ account: { request: async (input) => {
+    const url = new URL(input.path, "https://fixture.invalid");
+    if (!url.pathname.endsWith("/content")) return response(200, { snapshot: { throughSequence: 7, chunked: true, projectionBytes: JSON.stringify(source).length }, updates: [] });
+    const offset = Number(url.searchParams.get("offset"));
+    const length = Number(url.searchParams.get("length") ?? 16);
+    calls.push({ offset, length });
+    active++; peak = Math.max(peak, active);
+    await new Promise((resolve) => setTimeout(resolve, offset % 3));
+    active--;
+    const part = bytes.subarray(offset, offset + length);
+    return response(200, { bytes: Buffer.from(part).toString("base64"), totalBytes: bytes.length, complete: offset + part.length === bytes.length });
+  } } });
+  assert.deepEqual((await api.getDocumentProjection("document")).snapshot.source, source);
+  assert.ok(peak > 1 && peak <= 4);
+  assert.ok(calls.every((call) => call.length <= 16));
+  assert.equal(new Set(calls.map((call) => call.offset)).size, calls.length);
 });
 
 test("opening an unmigrated document returns its projection without side effects", async () => {
