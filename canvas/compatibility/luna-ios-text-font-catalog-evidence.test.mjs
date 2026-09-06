@@ -7,6 +7,7 @@ const evidence = new URL("../research/luna-ios-text-20260906/exact-font-catalog/
 const fixture = JSON.parse(await readFile(new URL("fixture.json", evidence), "utf8"));
 const catalog = JSON.parse(await readFile(new URL("catalog.json", evidence), "utf8"));
 const measurements = JSON.parse(await readFile(new URL("measurements.json", evidence), "utf8"));
+const identityReport = JSON.parse(await readFile(new URL("identity-report.json", evidence), "utf8"));
 
 function evidencePath(path) {
   assert.equal(typeof path, "string");
@@ -60,4 +61,21 @@ test("built exact-catalog app records catalog filename hashes and generated regi
   assert.equal(registration.helper, true);
   assert.ok(registration.cases.every(({ callsRegister }) => callsRegister));
   assert.match(await readFile(new URL("swift/CanvasFonts.swift", evidence), "utf8"), /CanvasFonts/);
+});
+
+test("identity report retains byte and pixel groups for the four style probes", async () => {
+  assert.deepEqual(identityReport.caseIds, ["case-01", "case-05", "case-06", "case-09"]);
+  assert.equal(identityReport.status, "missing-styling-evidence");
+  assert.equal(identityReport.italicStyleVisiblyEstablished, false);
+  assert.equal(identityReport.states.length, 3);
+  for (const state of identityReport.states) {
+    assert.equal(state.capturePaths.length, 4);
+    assert.equal(state.byteSizes.length, 4);
+    assert.equal(state.sha256.length, 4);
+    assert.equal(state.pixelSha256.length, 4);
+    assert.deepEqual(state.byteIdentityGroups, [["case-01", "case-05", "case-09"]]);
+    assert.deepEqual(state.pixelIdentityGroups, [["case-01", "case-05", "case-09"]]);
+    assert.ok(state.capturePaths.every((path) => !path.startsWith("/")));
+    for (const path of state.capturePaths) await access(evidencePath(path));
+  }
 });

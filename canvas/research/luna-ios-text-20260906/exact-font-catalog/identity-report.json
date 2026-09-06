@@ -1,0 +1,56 @@
+{
+  "sourceMeasurementsPath": "../font-registered/measurements.json",
+  "caseIds": ["case-01", "case-05", "case-06", "case-09"],
+  "status": "missing-styling-evidence",
+  "italicStyleVisiblyEstablished": false,
+  "states": [
+    {
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "capturePaths": [
+        "../font-registered/captures/iphone/large/case-01.png",
+        "../font-registered/captures/iphone/large/case-05.png",
+        "../font-registered/captures/iphone/large/case-06.png",
+        "../font-registered/captures/iphone/large/case-09.png"
+      ],
+      "byteSizes": [30472, 30472, 30366, 30472],
+      "sha256": ["9956b8691694d48feb2aa0194a3b889825c8d751f637de055fb2e54b76d5b6cb", "9956b8691694d48feb2aa0194a3b889825c8d751f637de055fb2e54b76d5b6cb", "754224abc10c5911733391d7759d2f139f29fe35b7a1291bb824a52b55b2ab25", "9956b8691694d48feb2aa0194a3b889825c8d751f637de055fb2e54b76d5b6cb"],
+      "pixelSha256": ["c0f72d62bf087729413a8b7c8c34c83dedce3b17e7b1e8fff49cffe449a355ca", "c0f72d62bf087729413a8b7c8c34c83dedce3b17e7b1e8fff49cffe449a355ca", "9cc3d6ea55bddf6205ba1007847854ee020584ea2f43b822ad22c9ed8a69a422", "c0f72d62bf087729413a8b7c8c34c83dedce3b17e7b1e8fff49cffe449a355ca"],
+      "pixelDimensions": {"width": 1020, "height": 540},
+      "byteIdentityGroups": [["case-01", "case-05", "case-09"]],
+      "pixelIdentityGroups": [["case-01", "case-05", "case-09"]]
+    },
+    {
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "capturePaths": [
+        "../font-registered/captures/iphone/accessibility-extra-extra-large/case-01.png",
+        "../font-registered/captures/iphone/accessibility-extra-extra-large/case-05.png",
+        "../font-registered/captures/iphone/accessibility-extra-extra-large/case-06.png",
+        "../font-registered/captures/iphone/accessibility-extra-extra-large/case-09.png"
+      ],
+      "byteSizes": [30946, 30946, 30531, 30946],
+      "sha256": ["a1e0c854303f32cc1b5110f12ea52817cc61363024eee9e5073bf6724b5a902a", "a1e0c854303f32cc1b5110f12ea52817cc61363024eee9e5073bf6724b5a902a", "fbe8fb28f446e80ba33fd24e516637c6c992415d7683b50676d0c8e09e8f0621", "a1e0c854303f32cc1b5110f12ea52817cc61363024eee9e5073bf6724b5a902a"],
+      "pixelSha256": ["58c0e183bfa461ea41f31006a6b8db68a4f809925085f04e750fc2d0d11434e4", "58c0e183bfa461ea41f31006a6b8db68a4f809925085f04e750fc2d0d11434e4", "5dd72231b520885fb5f300b73c7d164c263f2a9bd54b4caf26e29dbd77a3acf9", "58c0e183bfa461ea41f31006a6b8db68a4f809925085f04e750fc2d0d11434e4"],
+      "pixelDimensions": {"width": 1020, "height": 540},
+      "byteIdentityGroups": [["case-01", "case-05", "case-09"]],
+      "pixelIdentityGroups": [["case-01", "case-05", "case-09"]]
+    },
+    {
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "capturePaths": [
+        "../font-registered/captures/ipad/large/case-01.png",
+        "../font-registered/captures/ipad/large/case-05.png",
+        "../font-registered/captures/ipad/large/case-06.png",
+        "../font-registered/captures/ipad/large/case-09.png"
+      ],
+      "byteSizes": [18367, 18367, 17977, 18367],
+      "sha256": ["e398835162a51eb557fe65f6bf2b7162b3b32f25e0b8eca106297e648baed80a", "e398835162a51eb557fe65f6bf2b7162b3b32f25e0b8eca106297e648baed80a", "c67ddb5ea20ec818b5cce4696e188bee58b64ed9160a07366082508018ab4511", "e398835162a51eb557fe65f6bf2b7162b3b32f25e0b8eca106297e648baed80a"],
+      "pixelSha256": ["f1122cc7930f77a527938055fc0fa7cf78e7b0b1fd989b47ee90d7713a6cef15", "f1122cc7930f77a527938055fc0fa7cf78e7b0b1fd989b47ee90d7713a6cef15", "1fb0676cdc998d59639de4106bf5db5e6e8609f6574d6454825b9cbaa992e762", "f1122cc7930f77a527938055fc0fa7cf78e7b0b1fd989b47ee90d7713a6cef15"],
+      "pixelDimensions": {"width": 680, "height": 360},
+      "byteIdentityGroups": [["case-01", "case-05", "case-09"]],
+      "pixelIdentityGroups": [["case-01", "case-05", "case-09"]]
+    }
+  ]
+}
