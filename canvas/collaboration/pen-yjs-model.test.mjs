@@ -33,6 +33,21 @@ const fixture = {
   ],
 };
 
+test("publication surface and accepted release identities survive Yjs snapshots and edits", () => {
+  const source = { ...structuredClone(fixture), library: { public: [{ kind: "component", id: "frame-a" }] }, imports: { ui: { documentId: "library", updatePolicy: "follow", releaseId: "v1", contentHash: "a".repeat(64) } } };
+  const model = createModel(source);
+  const clone = cloneModel(model);
+  try {
+    setNodeProperty(clone, "frame-a", "name", "Edited");
+    syncModels(model, clone);
+    for (const item of [model, clone]) {
+      const result = materializePen(item);
+      assert.deepEqual(result.library, source.library);
+      assert.deepEqual(result.imports, source.imports);
+    }
+  } finally { model.doc.destroy(); clone.doc.destroy(); }
+});
+
 const canvasNativeFixtures = [
   {
     label: "fixed frame",

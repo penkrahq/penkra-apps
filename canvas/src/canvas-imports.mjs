@@ -60,6 +60,8 @@ export function normalizeImportRecord(record) {
   if (record.pin !== undefined || record.version !== undefined) {
     throw importError(`Import ${record.documentId} uses a legacy CRDT-sequence pin; migrate it to a published release identity.`, "CANVAS_IMPORT_LEGACY_PIN");
   }
+  if (Object.keys(record).some((key) => !["documentId", "updatePolicy", "releaseId", "contentHash"].includes(key))) throw importError(`Import ${record.documentId} contains unsupported fields.`);
+  if (record.releaseId !== undefined && (typeof record.releaseId !== "string" || !record.releaseId || /[\u0000-\u001f\u007f]/u.test(record.releaseId))) throw importError(`Import ${record.documentId} has an invalid releaseId.`);
   if (record.updatePolicy === "follow") {
     if (record.releaseId !== undefined || record.contentHash !== undefined) {
       if (typeof record.releaseId !== "string" || !record.releaseId || !/^[a-f0-9]{64}$/u.test(record.contentHash ?? "")) throw importError(`Following import ${record.documentId} needs both accepted releaseId and contentHash.`);

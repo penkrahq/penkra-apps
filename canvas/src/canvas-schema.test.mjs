@@ -4,6 +4,28 @@ import { assertCapabilityTotality, capabilityPathInventory, validateCanvasDocume
 
 function document() { return { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", children: [{ id: "copy", type: "text", content: "Hi", paragraphs: [{ from: 0, to: 2 }], marks: [] }] }] }; }
 
+test("published import identities and explicit public surfaces are structural document data", () => {
+  const source = document();
+  source.library = { public: [{ kind: "component", id: "slide" }] };
+  source.imports = { ui: { documentId: "library", updatePolicy: "follow" } };
+  source.children[0].children[0].paragraphs[0].style = "ui:body";
+  assert.equal(validateCanvasDocument(source).valid, true);
+  source.imports.ui = { documentId: "library", updatePolicy: "pinned", releaseId: "v1", contentHash: "a".repeat(64) };
+  assert.equal(validateCanvasDocument(source).valid, true);
+  assert.ok(!capabilityPathInventory().includes("root.library"));
+  for (const change of [
+    (copy) => { copy.imports.ui.contentHash = "bad"; },
+    (copy) => { delete copy.imports.ui.releaseId; },
+    (copy) => { copy.imports.ui.pin = "live"; },
+    (copy) => { copy.library.public.push({ kind: "component", id: "slide" }); },
+    (copy) => { copy.library.public[0].id = "missing"; },
+    (copy) => { copy.children[0].children[0].paragraphs[0].style = "absent:body"; },
+  ]) {
+    const invalid = structuredClone(source); change(invalid);
+    assert.throws(() => validateCanvasDocument(invalid));
+  }
+});
+
 test("physical sizing, bleed and advisory guides belong to frames in any module", () => {
   for (const module of ["generic", "deck", "web", "mobile"]) {
     const source = document();

@@ -27,6 +27,13 @@ export const CANVAS_SCHEMA = deepFreeze({
     } },
     import: { type: "object", required: ["documentId"], additional: false, fields: {
       documentId: { type: "string" }, pin: { type: "enum", values: ["exact", "live"] }, version: { type: "integer" },
+      updatePolicy: { type: "enum", values: ["follow", "pinned"] }, releaseId: { type: "string" }, contentHash: { type: "string" },
+    } },
+    library: { type: "object", required: ["public"], additional: false, fields: {
+      public: { type: "array", items: { ref: "publicItem" } },
+    } },
+    publicItem: { type: "object", required: ["kind", "id"], additional: false, fields: {
+      kind: { type: "enum", values: ["component", "paragraphStyle", "variable"] }, id: { type: "string" },
     } },
     flow: { type: "object", required: ["id", "from", "to", "trigger"], additional: false, fields: {
       id: { type: "string" }, from: { type: "string" }, to: { type: "string" }, trigger: { type: "object" },
@@ -46,7 +53,7 @@ export const CANVAS_SCHEMA = deepFreeze({
     type: "object",
     required: ["module", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
     fields: fields(
-      ["module", "lang", "axes", "variables", "paragraphStyles", "imports", "flows", "children"],
+      ["module", "lang", "axes", "variables", "paragraphStyles", "imports", "library", "flows", "children"],
       {
         module: { type: "enum", values: CANVAS_MODULES },
         lang: { type: "string" },
@@ -54,6 +61,7 @@ export const CANVAS_SCHEMA = deepFreeze({
         variables: { type: "record", values: { ref: "variable" } },
         paragraphStyles: { type: "record" },
         imports: { type: "record", values: { ref: "import" } },
+        library: { ref: "library", capability: false },
         flows: { type: "array", items: { ref: "flow" } },
         children: { type: "array", items: { ref: "node" } },
       },
@@ -149,6 +157,7 @@ export function validateCanvasDocument(document, options = {}) {
   validateAxes(document.axes ?? {}, errors);
   validateVariables(document.variables ?? {}, errors);
   validateImports(document.imports ?? {}, errors);
+  validateLibrarySurface(document, nodes, errors);
   validateRoleNesting(nodes, parents, errors);
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
@@ -223,8 +232,29 @@ function validateVariables(variables, errors) {
 function validateImports(imports, errors) {
   for (const [alias, record] of Object.entries(imports)) {
     if (!/^[A-Za-z][\w-]*$/u.test(alias)) errors.push(`Import alias ${alias} is invalid.`);
-    if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)))
+    if (plainObject(record) && record.updatePolicy !== undefined) {
+      const identity = typeof record.releaseId === "string" && record.releaseId.length > 0 && !/[\u0000-\u001f\u007f]/u.test(record.releaseId) && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "");
+      if (typeof record.documentId !== "string" || !record.documentId || /[\u0000-\u001f\u007f]/u.test(record.documentId)
+        || !["follow", "pinned"].includes(record.updatePolicy) || record.pin !== undefined || record.version !== undefined
+        || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined) && !identity)) errors.push(`Import ${alias} must select a valid published release identity without legacy pin fields.`);
+    } else if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || record.releaseId !== undefined || record.contentHash !== undefined || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)))
       errors.push(`Import ${alias} must declare documentId and a valid live or exact pin.`);
+  }
+}
+
+function validateLibrarySurface(document, nodes, errors) {
+  const items = document.library?.public;
+  if (!Array.isArray(items)) return; // Generated shape validation reports this.
+  const seen = new Set();
+  for (const item of items) {
+    if (!plainObject(item)) continue;
+    const key = JSON.stringify([item.kind, item.id]);
+    if (seen.has(key)) errors.push(`Duplicate public item ${key}.`);
+    seen.add(key);
+    const exists = item.kind === "component" ? nodes.has(item.id)
+      : item.kind === "paragraphStyle" ? Object.hasOwn(document.paragraphStyles ?? {}, item.id)
+        : item.kind === "variable" && Object.hasOwn(document.variables ?? {}, item.id);
+    if (typeof item.id !== "string" || !item.id || !exists) errors.push(`Public item ${key} does not identify an existing resource.`);
   }
 }
 
@@ -257,7 +287,12 @@ function validateAccessibility(document, nodes, errors) {
     for (const [index, mark] of (node.marks ?? []).entries()) if (mark.type === "lang" && !validLanguage(mark.value)) errors.push(`${node.id}.marks[${index}] lang must be a valid BCP-47 tag.`);
     for (const [index, paragraph] of (node.paragraphs ?? []).entries()) {
       if (paragraph.headingLevel !== undefined && (!Number.isInteger(paragraph.headingLevel) || paragraph.headingLevel < 1 || paragraph.headingLevel > 6)) errors.push(`${node.id}.paragraphs[${index}].headingLevel must be 1–6.`);
-      if (paragraph.style !== undefined && !Object.hasOwn(document.paragraphStyles ?? {}, paragraph.style)) errors.push(`${node.id}.paragraphs[${index}] references missing paragraph style ${paragraph.style}.`);
+      if (paragraph.style !== undefined && !Object.hasOwn(document.paragraphStyles ?? {}, paragraph.style)) {
+        const parts = typeof paragraph.style === "string" ? paragraph.style.split(":") : [];
+        // The asynchronous import loader verifies publication membership and
+        // existence; structural validation can verify the declared namespace.
+        if (parts.length !== 2 || !parts[1] || !Object.hasOwn(document.imports ?? {}, parts[0])) errors.push(`${node.id}.paragraphs[${index}] references missing paragraph style ${paragraph.style}.`);
+      }
     }
     if (node.modes !== undefined) {
       if (!plainObject(node.modes)) errors.push(`${node.id}.modes must be an object.`);

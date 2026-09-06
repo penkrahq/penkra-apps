@@ -16,6 +16,9 @@ test("import aliases and document identities are validated before release reads"
   for (const documentId of [4, {}, [], "", "lib\u0000"]) {
     await assert.rejects(loadCanvasImports(emptyApi, source({ ui: { documentId, updatePolicy: "follow" } }), options), /documentId string/);
   }
+  for (const extra of [{ releaseId: "v1\u0000", contentHash: "a".repeat(64) }, { releaseId: 4, contentHash: "a".repeat(64) }, { unexpected: true }]) {
+    await assert.rejects(loadCanvasImports(emptyApi, source({ ui: { documentId: "library", updatePolicy: "follow", ...extra } }), options), { code: "CANVAS_IMPORT_INVALID" });
+  }
   assert.equal(reads, 0);
 });
 function source(imports = {}, children = [], options = {}) {
