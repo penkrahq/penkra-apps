@@ -29,7 +29,11 @@ export function resolveExportDestinations(pattern, sets, format) {
   if (sets.length === 1 && !sets[0]) return [pattern];
   const seen = new Map();
   return sets.map((set, index) => {
-    if (!set || typeof set.output !== "string") throw new Error(`Binding set ${index} needs an explicit output value.`);
+    if (!set || typeof set.output !== "string") {
+      const error = new Error(`Binding set ${index} needs an explicit output value.`);
+      error.code = "CANVAS_EXPORT_OUTPUT_NAME";
+      throw error;
+    }
     const output = validateBindingSegment(set.output, "output", index);
     let destination = pattern;
     if (pattern.endsWith("/")) {
