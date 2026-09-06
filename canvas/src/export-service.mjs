@@ -2,7 +2,15 @@ import { Buffer } from "node:buffer";
 import { readFile } from "node:fs/promises";
 import { join, normalize } from "node:path";
 import { buildExporterIR, buildExtractionIR } from "./exporter-ir.mjs";
-import { validateOutputSegment, writeExclusiveBundle, writeAtomicFile } from "./export-bundle.mjs";
+import {
+  cleanupPublishedExport,
+  preflightExportDestinations,
+  publishAtomicFile,
+  publishExclusiveBundle,
+  validateOutputSegment,
+  writeExclusiveBundle,
+  writeAtomicFile,
+} from "./export-bundle.mjs";
 import { exportPptx } from "./exporters/pptx.mjs";
 import { exportPdf } from "./exporters/pdf.mjs";
 import { exportWeb } from "./exporters/web.mjs";
@@ -12,6 +20,13 @@ import { measureDocumentText, takeDocumentScreenshots } from "./document-screens
 import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 export async function exportDocument(document, request, options = {}) {
+  await preflightExportDestinations([request.destination]);
+  const prepared = await prepareDocumentExport(document, request, options);
+  await publishPreparedDocumentExport(prepared);
+  return prepared.report;
+}
+
+export async function prepareDocumentExport(document, request, options = {}) {
   const ir = buildExporterIR(document, request);
   const rasterById = new Map(ir.rasters.map((raster) => [raster.id, raster]));
   const screenshot = async (nodeId) => {
@@ -43,11 +58,50 @@ export async function exportDocument(document, request, options = {}) {
     if ([...artifact.keys()].some((path) => path.endsWith(".ttf"))) artifact.set("licenses/Inter-OFL.txt", await readBundledFontResource("Inter-OFL.txt"));
   }
   else throw new Error(`Unsupported role ${request.role}.`);
-  if (artifact instanceof Map) {
-    artifact.set("export-report.json", JSON.stringify(report(ir, request.destination, request.role), null, 2));
-    await writeExclusiveBundle(request.destination, artifact);
-  } else await writeAtomicFile(request.destination, artifact);
-  return report(ir, request.destination, request.role);
+  const artifacts = artifact instanceof Map
+    ? [...artifact.keys(), "export-report.json"].map((name) => join(request.destination, name))
+    : [request.destination];
+  const exportReport = report(ir, artifacts, request.role);
+  if (artifact instanceof Map) artifact.set("export-report.json", JSON.stringify(exportReport, null, 2));
+  return { destination: request.destination, artifact, report: exportReport };
+}
+
+export async function publishPreparedDocumentExport(prepared) {
+  return prepared.artifact instanceof Map
+    ? publishExclusiveBundle(prepared.destination, prepared.artifact)
+    : publishAtomicFile(prepared.destination, prepared.artifact);
+}
+
+export async function exportDocumentBatch(document, requests, options = {}) {
+  if (!Array.isArray(requests) || requests.length === 0) throw new Error("Batch export needs at least one request.");
+  await preflightExportDestinations(requests.map((request) => request.destination));
+  const prepared = [];
+  for (const request of requests) prepared.push(await prepareDocumentExport(document, request, options));
+  return publishPreparedDocumentExports(prepared);
+}
+
+export async function publishPreparedDocumentExports(prepared) {
+  const receipts = [];
+  try {
+    for (const item of prepared) receipts.push(await publishPreparedDocumentExport(item));
+  } catch (error) {
+    if (error.receipt) receipts.push(error.receipt);
+    const cleanupFailures = [];
+    for (const receipt of receipts.reverse()) cleanupFailures.push(...await cleanupPublishedExport(receipt));
+    if (cleanupFailures.length) {
+      error.cleanupFailures = cleanupFailures;
+      error.message = `${error.message} Cleanup left ${cleanupFailures.length} path(s) whose identity changed or which were not empty.`;
+    }
+    throw error;
+  }
+  return {
+    artifacts: prepared.flatMap((item) => item.report.artifacts),
+    consequences: prepared.flatMap((item) => item.report.consequences),
+    lowered: prepared.flatMap((item) => item.report.lowered),
+    embeddedFonts: prepared.flatMap((item) => item.report.embeddedFonts),
+    bundledFonts: prepared.flatMap((item) => item.report.bundledFonts ?? []),
+    rasterized: prepared.flatMap((item) => item.report.rasterized),
+  };
 }
 
 function validateExtractionRequest(request) {
@@ -164,11 +218,11 @@ async function renderPdfExtraction(ir, request, options) {
     },
   });
 }
-function report(ir, path, role) {
+function report(ir, artifacts, role) {
   const nativeRuns = ir.outputs.flatMap((output) => output.nodes.filter((node) => node.type === "text" && node.capability.verdict === "native").flatMap((node) => node.semantics.runs));
   const usesInter = nativeRuns.some((run) => (run.fontFamily ?? "Inter") === "Inter");
   return {
-    artifacts: [path], consequences: ir.consequences, lowered: ir.lowered,
+    artifacts, consequences: ir.consequences, lowered: ir.lowered,
     embeddedFonts: role === "slide" && usesInter ? [{ typeface: "Inter", faces: ["regular", "bold"], source: "bundled-document-font" }] : [],
     bundledFonts: ["ios", "android"].includes(role) && usesInter ? [{ typeface: "Inter", weights: [...new Set(nativeRuns.filter((run) => (run.fontFamily ?? "Inter") === "Inter").map((run) => Number(run.weight ?? run.fontWeight ?? 400)))].sort((a, b) => a - b), source: "bundled-document-font" }] : [],
     rasterized: ir.rasters,

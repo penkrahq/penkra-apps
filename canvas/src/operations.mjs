@@ -14,6 +14,7 @@ import {
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
 import { loadCanvasImports } from "./canvas-imports.mjs";
+import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -267,7 +268,7 @@ runtime.operations.handle("documents.undo", async ({ documentId, operationId }) 
 });
 
 runtime.operations.handle("documents.export", async (input) => {
-  const { exportDocument } = await import("./export-service.mjs");
+  const { exportDocumentBatch } = await import("./export-service.mjs");
   const payload = await api.getDocument(input.documentId);
   const model = restoreDocumentModel(payload);
   try {
@@ -275,15 +276,26 @@ runtime.operations.handle("documents.export", async (input) => {
     const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
     const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
     const assets = new Map([...rootAssets, ...imported.assets]);
-    const sets = input.bindings?.length ? input.bindings : [null];
-    const destinations = resolveExportDestinations(input.destination, sets);
-    const reports = [];
-    for (let index = 0; index < sets.length; index += 1) {
-      const bindingSet = sets[index];
-      const bindings = bindingSet ? Object.fromEntries(Object.entries(bindingSet).filter(([key]) => key !== "output")) : {};
-      reports.push(await exportDocument(document, { ...input, destination: destinations[index], bindings, imports: imported.imports }, { assets, title: payload.title }));
+    const role = exportRoleForFormat(input.format);
+    const frames = input.frames?.length
+      ? input.frames
+      : listExportFrames(document, role);
+    if (frames.length === 0) {
+      const error = new Error(`Canvas document has no ${role} frames for ${input.format} export.`);
+      error.code = "CANVAS_EXPORT_NO_FRAMES";
+      throw error;
     }
-    return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), bundledFonts: reports.flatMap((report) => report.bundledFonts ?? []), rasterized: reports.flatMap((report) => report.rasterized) };
+    const sets = input.bindings?.length ? input.bindings : [null];
+    const destinations = resolveExportDestinations(input.destination, sets, input.format);
+    const requests = sets.map((bindingSet, index) => ({
+      ...input,
+      role,
+      frames,
+      destination: destinations[index],
+      bindings: bindingsForExportSet(bindingSet),
+      imports: imported.imports,
+    }));
+    return await exportDocumentBatch(document, requests, { assets, title: payload.title });
   } finally { model.doc.destroy(); }
 });
 
@@ -340,25 +352,4 @@ function authoritativeSequence(payload) {
     Number(payload.snapshot?.throughSequence ?? 0),
     ...(payload.updates ?? []).map((update) => Number(update.sequence ?? 0)),
   );
-}
-
-function resolveExportDestinations(pattern, sets) {
-  if (sets.length === 1 && !sets[0]) return [pattern];
-  const seen = new Map();
-  return sets.map((set, index) => {
-    if (!set || typeof set.output !== "string") throw new Error(`Binding set ${index} needs an explicit output value.`);
-    const destination = pattern.replace(/\$\{([A-Za-z][\w-]*)\}/gu, (token, name) => {
-      if (!Object.hasOwn(set, name)) throw new Error(`Destination token ${token} has no binding in set ${index}.`);
-      return validateBindingSegment(set[name], name, index);
-    });
-    const key = destination.normalize("NFC").toLowerCase();
-    if (seen.has(key)) throw new Error(`Binding sets ${seen.get(key)} and ${index} collide at ${destination}.`);
-    seen.set(key, index); return destination;
-  });
-}
-
-function validateBindingSegment(value, name, index) {
-  const segment = String(value);
-  if (!segment || segment !== segment.normalize("NFC") || /[\/\\\0-\x1f]/u.test(segment) || segment === "." || segment === ".." || /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu.test(segment) || new TextEncoder().encode(segment).length > 255) throw new Error(`Binding ${name} in set ${index} is not a safe filename segment: ${JSON.stringify(value)}.`);
-  return segment;
 }

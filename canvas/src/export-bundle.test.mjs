@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { validateOutputSegment, writeAtomicFile, writeExclusiveBundle } from "./export-bundle.mjs";
+import { cleanupPublishedExport, preflightExportDestinations, publishAtomicFile, validateOutputSegment, writeAtomicFile, writeExclusiveBundle } from "./export-bundle.mjs";
 import { mkdir, mkdtemp, readFile, readdir, rm, symlink } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -55,4 +55,30 @@ test("output segments reject rather than sanitize unsafe derived names", () => {
   for (const value of ["a/b", "a\\b", "..", "CON", "e\u0301", "x".repeat(256)]) {
     assert.throws(() => validateOutputSegment(value), /Unsafe output segment/);
   }
+});
+
+test("destination preflight resolves symlink aliases and cleanup removes only unchanged owned files", async (context) => {
+  const root = await mkdtemp(join(tmpdir(), "canvas-export-alias-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await mkdir(join(root, "real"));
+  await symlink(join(root, "real"), join(root, "alias"));
+  await assert.rejects(preflightExportDestinations([
+    join(root, "real", "Deck.pptx"), join(root, "alias", "deck.pptx"),
+  ]), { code: "CANVAS_EXPORT_COLLISION" });
+
+  const receipt = await publishAtomicFile(join(root, "owned.txt"), "owned");
+  assert.deepEqual(await cleanupPublishedExport(receipt), []);
+  await assert.rejects(readFile(join(root, "owned.txt")), { code: "ENOENT" });
+});
+
+test("destination preflight rejects ancestor collisions in either order before creating paths", async (context) => {
+  const root = await mkdtemp(join(tmpdir(), "canvas-export-ancestor-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  const parent = join(root, "bundle");
+  const child = join(parent, "nested");
+  for (const paths of [[parent, child], [child, parent]]) {
+    await assert.rejects(preflightExportDestinations(paths), { code: "CANVAS_EXPORT_COLLISION" });
+  }
+  await preflightExportDestinations([parent, join(root, "bundle-other")]);
+  assert.deepEqual(await readdir(root), []);
 });

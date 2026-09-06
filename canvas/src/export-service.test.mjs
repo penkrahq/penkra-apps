@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { PDFDocument } from "pdf-lib";
+import { readOoxmlPackage, readXmlPart } from "./ooxml-package.mjs";
 
-import { extractDocumentNode, extractDocumentNodes } from "./export-service.mjs";
+import { exportDocumentBatch, extractDocumentNode, extractDocumentNodes, publishPreparedDocumentExports } from "./export-service.mjs";
 
 const document = {
   version: "2.17",
@@ -87,4 +88,51 @@ test("multi-node extraction makes ordered differently sized PDF units and reject
     await assert.rejects(extractDocumentNodes(document, { node: ["art", "missing"], format: "pdf", destination: join(directory, "missing.pdf") }));
     await assert.rejects(readFile(join(directory, "missing.pdf")), { code: "ENOENT" });
   } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test("forty binding sets produce distinct editable decks after independent resolution and layout", async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-forty-decks-"));
+  context.after(() => rm(directory, { recursive: true, force: true }));
+  const template = {
+    version: "2.17", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [{
+      id: "slide", type: "frame", role: "slide", width: 800, height: 450,
+      physical: { w: 10, h: 5.625, unit: "in" }, layout: "horizontal", gap: 10,
+      children: [
+        { id: "school", type: "text", width: "${cardWidth}", height: 50, content: "${schoolName}", fontFamily: "Inter", fontSize: 24, paragraphs: [], marks: [] },
+        { id: "marker", type: "rectangle", width: 20, height: 20, fill: "#123456" },
+      ],
+    }],
+  };
+  const requests = Array.from({ length: 40 }, (_, index) => ({
+    role: "slide", frames: ["slide"], destination: join(directory, `school-${index + 1}.pptx`),
+    bindings: { schoolName: `School ${index + 1}`, cardWidth: 100 + index },
+  }));
+  const result = await exportDocumentBatch(template, requests, { assets: new Map(), title: "Forty schools" });
+  assert.equal(result.artifacts.length, 40);
+  const observedPositions = new Set();
+  for (let index = 0; index < result.artifacts.length; index += 1) {
+    const xml = readXmlPart(readOoxmlPackage(await readFile(result.artifacts[index])), "ppt/slides/slide1.xml");
+    assert.match(xml, new RegExp(`<a:t>School ${index + 1}</a:t>`, "u"));
+    assert.doesNotMatch(xml, /<p:pic>/u);
+    const marker = xml.match(/name="marker"[\s\S]*?<a:off x="(\d+)"/u);
+    assert.ok(marker, `marker geometry is present in deck ${index + 1}`);
+    observedPositions.add(marker[1]);
+  }
+  assert.equal(observedPositions.size, 40);
+});
+
+test("batch publication cleans only its completed artifacts after a later destination race", async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-batch-cleanup-"));
+  context.after(() => rm(directory, { recursive: true, force: true }));
+  const first = join(directory, "first.txt");
+  const raced = join(directory, "raced.txt");
+  await writeFile(raced, "other actor", { flag: "wx" });
+  const report = (destination) => ({ artifacts: [destination], consequences: [], lowered: [], embeddedFonts: [], bundledFonts: [], rasterized: [] });
+  await assert.rejects(publishPreparedDocumentExports([
+    { destination: first, artifact: Buffer.from("owned"), report: report(first) },
+    { destination: raced, artifact: Buffer.from("ours"), report: report(raced) },
+  ]), { code: "CANVAS_EXPORT_EXISTS" });
+  await assert.rejects(readFile(first), { code: "ENOENT" });
+  assert.equal(await readFile(raced, "utf8"), "other actor");
 });

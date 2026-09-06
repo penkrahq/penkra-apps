@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { decodeJson, encodeJson } from "./codec.mjs";
 import {
   createDocumentModel,
@@ -133,6 +136,29 @@ test("documents.create identifies the starter frame that later execution should 
   assert.equal(result.title, "New design");
   assert.equal(result.access, "owner");
   assert.match(result.starterFrameId, /^[0-9a-f-]{36}$/u);
+});
+
+test("public documents.export derives role from format, defaults matching frames and delivers binding outputs", async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-operation-export-"));
+  context.after(() => rm(directory, { recursive: true, force: true }));
+  const handlers = new Map();
+  const requests = [];
+  globalThis.penkra = {
+    account: readableDocumentAccount({
+      version: "2.17", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+      children: [{ id: "slide", type: "frame", role: "slide", width: 800, height: 450, physical: { w: 10, h: 5.625, unit: "in" }, children: [
+        { id: "title", type: "text", width: 300, height: 50, content: "${schoolName}", fontFamily: "Inter", fontSize: 24, paragraphs: [], marks: [] },
+      ] }],
+    }, requests),
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?export-test=${Date.now()}`);
+  const result = await handlers.get("documents.export")({
+    documentId: "document-1", format: "pptx", destination: `${directory}/`,
+    bindings: [{ output: "one", schoolName: "One School" }, { output: "two", schoolName: "Two School" }],
+  });
+  assert.deepEqual(result.artifacts, [join(directory, "one.pptx"), join(directory, "two.pptx")]);
+  for (const artifact of result.artifacts) assert.deepEqual([...await readFile(artifact)].slice(0, 2), [80, 75]);
 });
 
 test("documents.trash requires exact current-title confirmation without decoding the document", async () => {
