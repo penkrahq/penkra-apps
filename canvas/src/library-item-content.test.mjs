@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createLibraryRelease, preparePublicLibraryItemContent } from "./library-publication.mjs";
+import { compareLibraryReleases, createLibraryRelease, preparePublicLibraryItemContent } from "./library-publication.mjs";
+import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 function fixture() {
   return createLibraryRelease({
@@ -52,4 +53,23 @@ test("prepared item content is detached from the release and from other callers"
   first.content.assets[0].path = "changed.png";
   assert.deepEqual(release, before);
   assert.equal(preparePublicLibraryItemContent(release, "component", "card").content.resources[0][1].children[0].content, "Retained");
+});
+
+test("public item identity and retained content include owning axis defaults", () => {
+  const base = fixture();
+  const source = base.document;
+  source.axes = { appearance: { modes: [{ name: "light" }, { name: "dark" }] } };
+  source.variables.primitive.cascade.push({ value: "#ffffff", when: { appearance: "dark" } });
+  const first = createLibraryRelease(source, { libraryId: "library", releaseId: "one", assets: base.assets });
+  const before = resolveCanvasDocument(source).document.paragraphStyles.body.fill;
+  source.axes.appearance.modes.reverse();
+  const second = createLibraryRelease(source, { libraryId: "library", releaseId: "two", assets: base.assets });
+  const after = resolveCanvasDocument(source).document.paragraphStyles.body.fill;
+  assert.equal(before, "#123456");
+  assert.equal(after, "#ffffff");
+  assert.deepEqual(compareLibraryReleases(first, second).changed, ["component:card"]);
+  const prepared = preparePublicLibraryItemContent(second, "component", "card");
+  assert.deepEqual(prepared.content.axes, source.axes);
+  prepared.content.axes.appearance.modes.reverse();
+  assert.equal(second.document.axes.appearance.modes[0].name, "dark");
 });

@@ -197,7 +197,10 @@ function publicItemClosure(document, item, dependencies, assets) {
   };
   addReference(item.kind, item.id);
   const sortedValues = (map) => [...map].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([, value]) => value);
-  return { resources: [...resources].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0), dependencies: sortedValues(external), assets: sortedValues(usedAssets) };
+  // Axis definitions supply default mode selection and validate inherited modes.
+  // They are shared resolution context, so an unchanged resource body can still
+  // render differently when its owning document's axis definitions change.
+  return { axes: structuredClone(document.axes ?? {}), resources: [...resources].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0), dependencies: sortedValues(external), assets: sortedValues(usedAssets) };
 }
 
 function normalizeDependencies(dependencies) {
