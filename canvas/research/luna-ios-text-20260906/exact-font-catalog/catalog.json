@@ -1,0 +1,43 @@
+{
+  "full12Case": {
+    "status": "rejected",
+    "code": "CANVAS_MOBILE_FONT_MISSING",
+    "message": "Mobile export needs an embeddable exact font face for Inter:400:italic."
+  },
+  "italicCases": {
+    "case-05": {
+      "status": "rejected",
+      "code": "CANVAS_MOBILE_FONT_MISSING",
+      "message": "Mobile export needs an embeddable exact font face for Inter:400:italic."
+    },
+    "case-09": {
+      "status": "rejected",
+      "code": "CANVAS_MOBILE_FONT_MISSING",
+      "message": "Mobile export needs an embeddable exact font face for Inter:400:italic."
+    }
+  },
+  "mislabeledRegularUnderItalic": {
+    "status": "rejected",
+    "code": "CANVAS_MOBILE_FONT_MISMATCH",
+    "message": "Supplied mobile font bytes do not match the requested face Inter:400:italic."
+  },
+  "correctCatalog": {
+    "status": "accepted",
+    "entries": [
+      {
+        "key": "Inter:400:normal",
+        "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf",
+        "postscriptName": "Inter-Regular",
+        "weight": 400,
+        "italic": false
+      },
+      {
+        "key": "Inter:700:normal",
+        "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf",
+        "postscriptName": "Inter-Bold",
+        "weight": 700,
+        "italic": false
+      }
+    ]
+  }
+}

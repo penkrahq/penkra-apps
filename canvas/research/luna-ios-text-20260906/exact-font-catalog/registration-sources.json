@@ -1,0 +1,55 @@
+{
+  "helper": true,
+  "cases": [
+    {
+      "caseId": "case-01",
+      "source": "LunaIOSUnmarkedRegular",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-02",
+      "source": "LunaIOSFullUnderline",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-03",
+      "source": "LunaIOSFullStrikethrough",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-04",
+      "source": "LunaIOSUnderlineAndStrikethrough",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-06",
+      "source": "LunaIOSFullBold700",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-07",
+      "source": "LunaIOSFirstSixUnderline",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-08",
+      "source": "LunaIOSFirstSixStrikethrough",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-10",
+      "source": "LunaIOSFirstSixOrangeFill",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-11",
+      "source": "LunaIOSFullLetterSpacing",
+      "callsRegister": true
+    },
+    {
+      "caseId": "case-12",
+      "source": "LunaIOSFirstSixLetterSpacing",
+      "callsRegister": true
+    }
+  ]
+}

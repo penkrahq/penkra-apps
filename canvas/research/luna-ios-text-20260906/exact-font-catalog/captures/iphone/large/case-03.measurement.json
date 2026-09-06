@@ -1,0 +1,31 @@
+{
+  "referencePath": "references/iphone-large/case-03.png",
+  "capturePath": "captures/iphone/large/case-03.png",
+  "registration": {
+    "method": "center-cropped-authored-frame",
+    "dx": 0,
+    "dy": 0,
+    "boundaryTolerancePixels": 2
+  },
+  "comparedPixels": 518587,
+  "mismatchedPixels": 2219,
+  "status": "mismatch",
+  "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]}]",
+  "caseId": "case-03",
+  "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+  "contentSize": "large",
+  "scale": 3,
+  "baselineCapturePath": "../font-registered/captures/iphone/large/case-03.png",
+  "baselineComparison": {
+    "byteIdentical": true,
+    "pixelIdentical": true,
+    "sha256": [
+      "a0c7e6e9ea93058f9e3275ac0fdff0729a7fded8ca091a7544e88ed9f940e2c4",
+      "a0c7e6e9ea93058f9e3275ac0fdff0729a7fded8ca091a7544e88ed9f940e2c4"
+    ],
+    "pixelSha256": [
+      "38693b79723e6129d0eec6166039c70aa2f53f13dcb2821a8e45ce7ff17ea72d",
+      "38693b79723e6129d0eec6166039c70aa2f53f13dcb2821a8e45ce7ff17ea72d"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "bundlePath": "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/DerivedData/Build/Products/Debug-iphonesimulator/CanvasExactFontEvidence.app",
+  "bundleFiles": [
+    "CanvasExactFontEvidence",
+    "CanvasExactFontEvidence.debug.dylib",
+    "Info.plist",
+    "PkgInfo",
+    "__preview.dylib",
+    "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf",
+    "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+  ],
+  "uiAppFonts": [],
+  "fontHashes": {
+    "Inter:400:normal": {
+      "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf",
+      "postscriptName": "Inter-Regular",
+      "bundledPath": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf",
+      "catalogSha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+      "bundledSha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+      "matches": true
+    },
+    "Inter:700:normal": {
+      "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf",
+      "postscriptName": "Inter-Bold",
+      "bundledPath": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf",
+      "catalogSha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+      "bundledSha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+      "matches": true
+    }
+  },
+  "missingFiles": [],
+  "hashMismatches": [],
+  "valid": true,
+  "registrationUsesUIAppFonts": false
+}

@@ -1,0 +1,479 @@
+{
+  "version": "2.17",
+  "module": "mobile",
+  "lang": "en",
+  "axes": {},
+  "variables": {},
+  "paragraphStyles": {},
+  "imports": {},
+  "flows": [],
+  "children": [
+    {
+      "id": "case-01",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Unmarked regular",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-01-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-02",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Full underline",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-02-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "underline",
+              "from": 0,
+              "to": 23,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-03",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Full strikethrough",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-03-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "strikethrough",
+              "from": 0,
+              "to": 23,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-04",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Underline and strikethrough",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-04-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "underline",
+              "from": 0,
+              "to": 23,
+              "value": true
+            },
+            {
+              "type": "strikethrough",
+              "from": 0,
+              "to": 23,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-05",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Full italic",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-05-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "italic",
+              "from": 0,
+              "to": 23,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-06",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Full bold 700",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-06-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "weight",
+              "from": 0,
+              "to": 23,
+              "value": 700
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-07",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS First six underline",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-07-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "underline",
+              "from": 0,
+              "to": 6,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-08",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS First six strikethrough",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-08-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "strikethrough",
+              "from": 0,
+              "to": 6,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-09",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS First six italic",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-09-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "italic",
+              "from": 0,
+              "to": 6,
+              "value": true
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-10",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS First six orange fill",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-10-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "fill",
+              "from": 0,
+              "to": 6,
+              "value": "#cc5500"
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-11",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS Full letter spacing",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-11-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "letterSpacing",
+              "from": 0,
+              "to": 23,
+              "value": 1
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "case-12",
+      "type": "frame",
+      "role": "ios",
+      "name": "Luna iOS First six letter spacing",
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "case-12-text",
+          "type": "text",
+          "x": 20,
+          "y": 20,
+          "width": 300,
+          "height": 140,
+          "content": "Canvas text\nSecond line",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fill": "#123456",
+          "marks": [
+            {
+              "type": "letterSpacing",
+              "from": 0,
+              "to": 6,
+              "value": 1
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 23
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "selectedCaseIds": [
+    "case-01",
+    "case-02",
+    "case-03",
+    "case-04",
+    "case-06",
+    "case-07",
+    "case-08",
+    "case-10",
+    "case-11",
+    "case-12"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "referencePath": "references/ipad-large/case-01.png",
+  "capturePath": "captures/ipad/large/case-01.png",
+  "registration": {
+    "method": "center-cropped-authored-frame",
+    "dx": 0,
+    "dy": 0,
+    "boundaryTolerancePixels": 2
+  },
+  "comparedPixels": 227348,
+  "mismatchedPixels": 18,
+  "status": "mismatch",
+  "notes": "Native mismatch retained; first samples: [{\"x\":277,\"y\":71,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]},{\"x\":277,\"y\":72,\"expected\":[18,52,86,255],\"actual\":[10,49,85,255]},{\"x\":81,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[179,190,201,255]}]",
+  "caseId": "case-01",
+  "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+  "contentSize": "large",
+  "scale": 2,
+  "baselineCapturePath": "../font-registered/captures/ipad/large/case-01.png",
+  "baselineComparison": {
+    "byteIdentical": true,
+    "pixelIdentical": true,
+    "sha256": [
+      "e398835162a51eb557fe65f6bf2b7162b3b32f25e0b8eca106297e648baed80a",
+      "e398835162a51eb557fe65f6bf2b7162b3b32f25e0b8eca106297e648baed80a"
+    ],
+    "pixelSha256": [
+      "f1122cc7930f77a527938055fc0fa7cf78e7b0b1fd989b47ee90d7713a6cef15",
+      "f1122cc7930f77a527938055fc0fa7cf78e7b0b1fd989b47ee90d7713a6cef15"
+    ]
+  }
+}

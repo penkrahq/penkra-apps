@@ -1,0 +1,620 @@
+[
+  {
+    "command": "xcodegen generate --spec project.yml",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:28.645Z",
+    "finished": "2026-09-06T08:37:28.691Z"
+  },
+  {
+    "command": "xcodebuild -project CanvasExactFontEvidence.xcodeproj -scheme CanvasExactFontEvidence -sdk iphonesimulator -configuration Debug -derivedDataPath /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/DerivedData CODE_SIGNING_ALLOWED=NO build -jobs 2",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:28.691Z",
+    "finished": "2026-09-06T08:37:44.253Z"
+  },
+  {
+    "command": "xcrun simctl install A3D92728-7F7B-44D1-BE51-155B891905D9 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/DerivedData/Build/Products/Debug-iphonesimulator/CanvasExactFontEvidence.app",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:44.256Z",
+    "finished": "2026-09-06T08:37:45.165Z"
+  },
+  {
+    "command": "xcrun simctl install 8F053C2C-958D-4CC5-AB38-E838CFAC9442 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/DerivedData/Build/Products/Debug-iphonesimulator/CanvasExactFontEvidence.app",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:45.165Z",
+    "finished": "2026-09-06T08:37:46.234Z"
+  },
+  {
+    "command": "plutil -convert xml1 -o - /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/DerivedData/Build/Products/Debug-iphonesimulator/CanvasExactFontEvidence.app/Info.plist",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:46.234Z",
+    "finished": "2026-09-06T08:37:46.273Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:46.278Z",
+    "finished": "2026-09-06T08:37:46.524Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:46.524Z",
+    "finished": "2026-09-06T08:37:46.700Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:47.161Z",
+    "finished": "2026-09-06T08:37:47.340Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-01",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:47.340Z",
+    "finished": "2026-09-06T08:37:47.692Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-01-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:50.194Z",
+    "finished": "2026-09-06T08:37:50.523Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-01-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-01.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:50.523Z",
+    "finished": "2026-09-06T08:37:50.567Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-02",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:50.888Z",
+    "finished": "2026-09-06T08:37:51.406Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-02-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:53.908Z",
+    "finished": "2026-09-06T08:37:54.186Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-02-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-02.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:54.186Z",
+    "finished": "2026-09-06T08:37:54.225Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-03",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:54.524Z",
+    "finished": "2026-09-06T08:37:54.926Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-03-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:57.428Z",
+    "finished": "2026-09-06T08:37:57.703Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-03-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-03.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:57.703Z",
+    "finished": "2026-09-06T08:37:57.737Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-04",
+    "exitCode": 0,
+    "started": "2026-09-06T08:37:58.033Z",
+    "finished": "2026-09-06T08:37:58.457Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-04-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:00.959Z",
+    "finished": "2026-09-06T08:38:01.232Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-04-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-04.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:01.232Z",
+    "finished": "2026-09-06T08:38:01.272Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-06",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:01.556Z",
+    "finished": "2026-09-06T08:38:02.674Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-06-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:05.175Z",
+    "finished": "2026-09-06T08:38:05.447Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-06-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-06.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:05.447Z",
+    "finished": "2026-09-06T08:38:05.494Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-07",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:05.801Z",
+    "finished": "2026-09-06T08:38:06.633Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-07-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:09.134Z",
+    "finished": "2026-09-06T08:38:09.390Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-07-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-07.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:09.390Z",
+    "finished": "2026-09-06T08:38:09.431Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-08",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:09.731Z",
+    "finished": "2026-09-06T08:38:10.192Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-08-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:12.693Z",
+    "finished": "2026-09-06T08:38:13.039Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-08-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-08.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:13.039Z",
+    "finished": "2026-09-06T08:38:13.086Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-10",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:13.376Z",
+    "finished": "2026-09-06T08:38:13.777Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-10-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:16.281Z",
+    "finished": "2026-09-06T08:38:16.578Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-10-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-10.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:16.578Z",
+    "finished": "2026-09-06T08:38:16.617Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-11",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:16.911Z",
+    "finished": "2026-09-06T08:38:17.384Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-11-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:19.886Z",
+    "finished": "2026-09-06T08:38:20.152Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-11-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-11.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:20.152Z",
+    "finished": "2026-09-06T08:38:20.187Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-12",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:20.475Z",
+    "finished": "2026-09-06T08:38:21.321Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-12-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:23.821Z",
+    "finished": "2026-09-06T08:38:24.081Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-large-case-12-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/large/case-12.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:24.081Z",
+    "finished": "2026-09-06T08:38:24.122Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size accessibility-extra-extra-large",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:24.745Z",
+    "finished": "2026-09-06T08:38:24.941Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-01",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:24.941Z",
+    "finished": "2026-09-06T08:38:26.156Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-01-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:28.659Z",
+    "finished": "2026-09-06T08:38:29.236Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-01-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-01.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:29.236Z",
+    "finished": "2026-09-06T08:38:29.275Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-02",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:29.571Z",
+    "finished": "2026-09-06T08:38:30.014Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-02-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:32.516Z",
+    "finished": "2026-09-06T08:38:32.804Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-02-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-02.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:32.804Z",
+    "finished": "2026-09-06T08:38:32.842Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-03",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:33.134Z",
+    "finished": "2026-09-06T08:38:33.568Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-03-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:36.070Z",
+    "finished": "2026-09-06T08:38:36.361Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-03-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-03.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:36.361Z",
+    "finished": "2026-09-06T08:38:36.394Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-04",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:36.687Z",
+    "finished": "2026-09-06T08:38:37.131Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-04-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:39.633Z",
+    "finished": "2026-09-06T08:38:39.916Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-04-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-04.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:39.916Z",
+    "finished": "2026-09-06T08:38:39.958Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-06",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:40.240Z",
+    "finished": "2026-09-06T08:38:40.670Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-06-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:43.172Z",
+    "finished": "2026-09-06T08:38:43.450Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-06-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-06.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:43.450Z",
+    "finished": "2026-09-06T08:38:43.489Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-07",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:43.790Z",
+    "finished": "2026-09-06T08:38:44.217Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-07-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:46.719Z",
+    "finished": "2026-09-06T08:38:47.034Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-07-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-07.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:47.034Z",
+    "finished": "2026-09-06T08:38:47.070Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-08",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:47.362Z",
+    "finished": "2026-09-06T08:38:47.793Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-08-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:50.295Z",
+    "finished": "2026-09-06T08:38:50.597Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-08-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-08.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:50.597Z",
+    "finished": "2026-09-06T08:38:50.639Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-10",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:50.952Z",
+    "finished": "2026-09-06T08:38:51.415Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-10-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:53.917Z",
+    "finished": "2026-09-06T08:38:54.206Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-10-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-10.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:54.206Z",
+    "finished": "2026-09-06T08:38:54.243Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-11",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:54.534Z",
+    "finished": "2026-09-06T08:38:54.929Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-11-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:57.430Z",
+    "finished": "2026-09-06T08:38:57.686Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-11-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-11.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:57.686Z",
+    "finished": "2026-09-06T08:38:57.719Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.exactfont --canvas-case case-12",
+    "exitCode": 0,
+    "started": "2026-09-06T08:38:58.006Z",
+    "finished": "2026-09-06T08:38:58.447Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-12-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:00.949Z",
+    "finished": "2026-09-06T08:39:01.542Z"
+  },
+  {
+    "command": "sips -c 540 1020 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/iphone-accessibility-extra-extra-large-case-12-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/iphone/accessibility-extra-extra-large/case-12.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:01.542Z",
+    "finished": "2026-09-06T08:39:01.586Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size large",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:02.043Z",
+    "finished": "2026-09-06T08:39:02.203Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-01",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:02.203Z",
+    "finished": "2026-09-06T08:39:02.489Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-01-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:04.991Z",
+    "finished": "2026-09-06T08:39:05.300Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-01-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-01.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:05.300Z",
+    "finished": "2026-09-06T08:39:05.332Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-02",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:05.465Z",
+    "finished": "2026-09-06T08:39:05.872Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-02-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:08.373Z",
+    "finished": "2026-09-06T08:39:08.634Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-02-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-02.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:08.634Z",
+    "finished": "2026-09-06T08:39:08.663Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-03",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:08.789Z",
+    "finished": "2026-09-06T08:39:09.464Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-03-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:11.966Z",
+    "finished": "2026-09-06T08:39:12.258Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-03-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-03.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:12.258Z",
+    "finished": "2026-09-06T08:39:12.289Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-04",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:12.422Z",
+    "finished": "2026-09-06T08:39:12.791Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-04-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:15.291Z",
+    "finished": "2026-09-06T08:39:15.559Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-04-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-04.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:15.559Z",
+    "finished": "2026-09-06T08:39:15.594Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-06",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:15.725Z",
+    "finished": "2026-09-06T08:39:16.087Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-06-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:18.589Z",
+    "finished": "2026-09-06T08:39:18.838Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-06-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-06.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:18.838Z",
+    "finished": "2026-09-06T08:39:18.871Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-07",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:19.003Z",
+    "finished": "2026-09-06T08:39:19.339Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-07-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:21.841Z",
+    "finished": "2026-09-06T08:39:22.133Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-07-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-07.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:22.133Z",
+    "finished": "2026-09-06T08:39:22.172Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-08",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:22.308Z",
+    "finished": "2026-09-06T08:39:22.664Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-08-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:25.167Z",
+    "finished": "2026-09-06T08:39:25.415Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-08-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-08.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:25.415Z",
+    "finished": "2026-09-06T08:39:25.442Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-10",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:25.569Z",
+    "finished": "2026-09-06T08:39:25.920Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-10-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:28.422Z",
+    "finished": "2026-09-06T08:39:28.674Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-10-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-10.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:28.674Z",
+    "finished": "2026-09-06T08:39:28.706Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-11",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:28.838Z",
+    "finished": "2026-09-06T08:39:29.181Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-11-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:31.684Z",
+    "finished": "2026-09-06T08:39:31.974Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-11-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-11.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:31.974Z",
+    "finished": "2026-09-06T08:39:32.006Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.exactfont --canvas-case case-12",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:32.157Z",
+    "finished": "2026-09-06T08:39:32.556Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-12-full.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:35.056Z",
+    "finished": "2026-09-06T08:39:35.350Z"
+  },
+  {
+    "command": "sips -c 360 680 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-font-catalog-Z7L74m/ipad-large-case-12-full.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/exact-font-catalog/captures/ipad/large/case-12.png",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:35.350Z",
+    "finished": "2026-09-06T08:39:35.385Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size accessibility-extra-extra-large",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:35.516Z",
+    "finished": "2026-09-06T08:39:35.686Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size large",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:35.686Z",
+    "finished": "2026-09-06T08:39:35.847Z"
+  },
+  {
+    "command": "git rev-parse HEAD",
+    "exitCode": 0,
+    "started": "2026-09-06T08:39:35.848Z",
+    "finished": "2026-09-06T08:39:35.926Z"
+  }
+]

@@ -1,0 +1,1882 @@
+{
+  "format": "swift",
+  "renderDocument": {
+    "version": "2.17",
+    "module": "mobile",
+    "lang": "en",
+    "axes": {},
+    "variables": {},
+    "paragraphStyles": {},
+    "imports": {},
+    "flows": [],
+    "children": [
+      {
+        "id": "case-01",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Unmarked regular",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-01-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-02",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Full underline",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-02-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "underline",
+                "from": 0,
+                "to": 23,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-03",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Full strikethrough",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-03-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "strikethrough",
+                "from": 0,
+                "to": 23,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-04",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Underline and strikethrough",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-04-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "underline",
+                "from": 0,
+                "to": 23,
+                "value": true
+              },
+              {
+                "type": "strikethrough",
+                "from": 0,
+                "to": 23,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-05",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Full italic",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-05-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "italic",
+                "from": 0,
+                "to": 23,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-06",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Full bold 700",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-06-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "weight",
+                "from": 0,
+                "to": 23,
+                "value": 700
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-07",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS First six underline",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-07-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "underline",
+                "from": 0,
+                "to": 6,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-08",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS First six strikethrough",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-08-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "strikethrough",
+                "from": 0,
+                "to": 6,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-09",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS First six italic",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-09-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "italic",
+                "from": 0,
+                "to": 6,
+                "value": true
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-10",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS First six orange fill",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-10-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "fill",
+                "from": 0,
+                "to": 6,
+                "value": "#cc5500"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-11",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS Full letter spacing",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-11-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "letterSpacing",
+                "from": 0,
+                "to": 23,
+                "value": 1
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "case-12",
+        "type": "frame",
+        "role": "ios",
+        "name": "Luna iOS First six letter spacing",
+        "width": 340,
+        "height": 180,
+        "layout": "none",
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "case-12-text",
+            "type": "text",
+            "x": 20,
+            "y": 20,
+            "width": 300,
+            "height": 140,
+            "content": "Canvas text\nSecond line",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "fill": "#123456",
+            "marks": [
+              {
+                "type": "letterSpacing",
+                "from": 0,
+                "to": 6,
+                "value": 1
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "projection": "semantic",
+  "lang": "en",
+  "axes": {},
+  "modes": {},
+  "outputs": [
+    {
+      "kind": "ios",
+      "index": 0,
+      "id": "case-01",
+      "name": "Luna iOS Unmarked regular",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-01",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-01-text",
+          "type": "text",
+          "parent": "case-01",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 1,
+      "id": "case-02",
+      "name": "Luna iOS Full underline",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-02",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-02-text",
+          "type": "text",
+          "parent": "case-02",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "underline": true,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.underline"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 2,
+      "id": "case-03",
+      "name": "Luna iOS Full strikethrough",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-03",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-03-text",
+          "type": "text",
+          "parent": "case-03",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "strikethrough": true,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.strikethrough"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 3,
+      "id": "case-04",
+      "name": "Luna iOS Underline and strikethrough",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-04",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-04-text",
+          "type": "text",
+          "parent": "case-04",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "underline": true,
+                "strikethrough": true,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.underline",
+              "properties.text.run.strikethrough"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 4,
+      "id": "case-06",
+      "name": "Luna iOS Full bold 700",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-06",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-06-text",
+          "type": "text",
+          "parent": "case-06",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "weight": 700,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.weight"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 5,
+      "id": "case-07",
+      "name": "Luna iOS First six underline",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-07",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-07-text",
+          "type": "text",
+          "parent": "case-07",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 6,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "underline": true,
+                "language": "en"
+              },
+              {
+                "from": 6,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.underline"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 6,
+      "id": "case-08",
+      "name": "Luna iOS First six strikethrough",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-08",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-08-text",
+          "type": "text",
+          "parent": "case-08",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 6,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "strikethrough": true,
+                "language": "en"
+              },
+              {
+                "from": 6,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.strikethrough"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 7,
+      "id": "case-10",
+      "name": "Luna iOS First six orange fill",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-10",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-10-text",
+          "type": "text",
+          "parent": "case-10",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 6,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#cc5500",
+                "language": "en"
+              },
+              {
+                "from": 6,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 8,
+      "id": "case-11",
+      "name": "Luna iOS Full letter spacing",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-11",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-11-text",
+          "type": "text",
+          "parent": "case-11",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "letterSpacing": 1,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.letterSpacing"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 9,
+      "id": "case-12",
+      "name": "Luna iOS First six letter spacing",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "case-12",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "case-12-text",
+          "type": "text",
+          "parent": "case-12",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 20,
+            "localX": 20,
+            "localY": 20,
+            "w": 300,
+            "h": 140,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Canvas text\nSecond line",
+            "runs": [
+              {
+                "from": 0,
+                "to": 6,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "letterSpacing": 1,
+                "language": "en"
+              },
+              {
+                "from": 6,
+                "to": 23,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 23
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 140
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.letterSpacing"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    }
+  ],
+  "notes": [],
+  "flows": [],
+  "rasters": [],
+  "consequences": [],
+  "lowered": [],
+  "colorSpace": "sRGB"
+}
