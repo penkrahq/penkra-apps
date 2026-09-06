@@ -67,3 +67,15 @@ test("registry forwards account identity to access control and fails closed", as
   await registry.resolve({ documentId: "ui", updatePolicy: "follow" }, { accountId: "allowed" });
   assert.deepEqual(observed.map((item) => item.accountId), ["denied", "allowed"]);
 });
+
+test("public change detection includes referenced private token values but excludes unrelated private edits", () => {
+  const source = library();
+  source.children[0].width = "${secret}";
+  const first = createLibraryRelease(source, { libraryId: "ui", releaseId: "one" });
+  source.variables.secret.cascade[0].value = 5;
+  const second = createLibraryRelease(source, { libraryId: "ui", releaseId: "two" });
+  assert.deepEqual(compareLibraryReleases(first, second).changed, ["component:card"]);
+  source.children[1].name = "Unrelated private edit";
+  const third = createLibraryRelease(source, { libraryId: "ui", releaseId: "three" });
+  assert.deepEqual(compareLibraryReleases(second, third).changed, []);
+});

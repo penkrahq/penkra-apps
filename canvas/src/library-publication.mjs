@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { variableReferences } from "./variable-references.mjs";
 
 export const LIBRARY_RELEASE_SCHEMA = "com.penkra.canvas.library-release/1";
 export const PUBLIC_ITEM_KINDS = Object.freeze(["component", "paragraphStyle", "variable"]);
@@ -43,7 +44,7 @@ export function createLibraryRelease(document, options) {
     contentHash,
     publicItems: publicItems.map((item) => ({
       ...item,
-      contentHash: sha256(canonicalJson(publicItemValue(document, item))),
+      contentHash: sha256(canonicalJson(publicItemClosure(document, item, dependencies, assets))),
     })),
     dependencies,
     document: content.document,
@@ -145,6 +146,46 @@ function publicItemValue(document, item) {
   return indexNodes(document.children).get(item.id);
 }
 
+function publicItemClosure(document, item, dependencies, assets) {
+  const resources = new Map();
+  const external = new Map();
+  const usedAssets = new Map();
+  const addReference = (kind, id) => {
+    if (typeof id !== "string") return;
+    const separator = id.indexOf(":");
+    if (separator > 0) {
+      const alias = id.slice(0, separator);
+      const dependency = dependencies.find((entry) => entry.alias === alias);
+      if (!dependency) throw libraryError(`Resource ${kind}:${id} has no published dependency identity.`);
+      external.set(alias, dependency);
+      return;
+    }
+    const key = publicItemKey(kind, id);
+    if (resources.has(key)) return;
+    const value = publicItemValue(document, { kind, id });
+    if (value === undefined) throw libraryError(`Resource ${key} does not exist in its published dependency closure.`);
+    resources.set(key, value);
+    inspect(value);
+  };
+  const inspect = (value) => {
+    if (typeof value === "string") {
+      for (const match of variableReferences(value)) addReference("variable", match[1]);
+    } else if (Array.isArray(value)) value.forEach(inspect);
+    else if (plainObject(value)) {
+      if (value.type === "ref") addReference("component", value.ref);
+      if (typeof value.style === "string") addReference("paragraphStyle", value.style);
+      if (value.type === "image" && typeof value.url === "string") {
+        const asset = assets.find((entry) => entry.path === value.url);
+        if (asset) usedAssets.set(asset.path, asset);
+      }
+      Object.values(value).forEach(inspect);
+    }
+  };
+  addReference(item.kind, item.id);
+  const sortedValues = (map) => [...map].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0).map(([, value]) => value);
+  return { resources: [...resources].sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0), dependencies: sortedValues(external), assets: sortedValues(usedAssets) };
+}
+
 function normalizeDependencies(dependencies) {
   if (!Array.isArray(dependencies)) throw libraryError("Library release dependencies must be an array.");
   const seen = new Set();
@@ -156,7 +197,7 @@ function normalizeDependencies(dependencies) {
     if (seen.has(dependency.alias)) throw libraryError(`Library dependency alias ${dependency.alias} is duplicated.`);
     seen.add(dependency.alias);
     return { alias: dependency.alias, libraryId: dependency.libraryId, releaseId: dependency.releaseId, contentHash: dependency.contentHash };
-  }).sort((left, right) => left.alias.localeCompare(right.alias));
+  }).sort((left, right) => compareIdentifiers(left.alias, right.alias));
 }
 
 function normalizeAssets(assets) {
@@ -167,7 +208,7 @@ function normalizeAssets(assets) {
       throw libraryError("Library release asset metadata is invalid.");
     }
     return { path: asset.path, sha256: asset.sha256, size: asset.size, ...(asset.mimeType ? { mimeType: asset.mimeType } : {}) };
-  }).sort((left, right) => left.path.localeCompare(right.path));
+  }).sort((left, right) => compareIdentifiers(left.path, right.path));
 }
 
 function canonicalJson(value) {
@@ -182,7 +223,8 @@ function canonicalJson(value) {
 }
 
 function sha256(value) { return createHash("sha256").update(value).digest("hex"); }
-function comparePublicItems(left, right) { return left.kind.localeCompare(right.kind) || left.id.localeCompare(right.id); }
+function compareIdentifiers(left, right) { return left < right ? -1 : left > right ? 1 : 0; }
+function comparePublicItems(left, right) { return compareIdentifiers(left.kind, right.kind) || compareIdentifiers(left.id, right.id); }
 function releaseIdentifier(value, name) { if (typeof value !== "string" || !value || /[\u0000-\u001f]/u.test(value)) throw libraryError(`${name} must be a non-empty identifier.`); return value; }
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
 function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
