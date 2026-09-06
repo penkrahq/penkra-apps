@@ -9,5 +9,5 @@ test("whole aliases preserve structured values while interpolation remains text"
   const result = resolveVariableReferences({ color: "${color.blue.600}", label: "Count ${count}", count: "${count}" }, resolve);
   assert.deepEqual(result, { color, label: "Count 3", count: 3 });
   assert.notEqual(result.color, color);
-  assert.deepEqual(variableReferences("${blue-600} ${blue.600} ${blue..600} {blue.600}").map((match) => match[1]), ["blue-600", "blue.600"]);
+  assert.deepEqual(variableReferences("${blue-600} ${blue.600} ${ui:blue.600} ${blue..600} {blue.600}").map((match) => match[1]), ["blue-600", "blue.600", "ui:blue.600"]);
 });

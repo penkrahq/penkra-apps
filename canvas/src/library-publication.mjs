@@ -1,0 +1,189 @@
+import { createHash } from "node:crypto";
+
+export const LIBRARY_RELEASE_SCHEMA = "com.penkra.canvas.library-release/1";
+export const PUBLIC_ITEM_KINDS = Object.freeze(["component", "paragraphStyle", "variable"]);
+
+export function validateLibrarySurface(document) {
+  const items = document.library?.public ?? [];
+  if (!Array.isArray(items)) throw libraryError("library.public must be an array.");
+  const nodes = indexNodes(document.children);
+  const seen = new Set();
+  for (const [index, item] of items.entries()) {
+    if (!plainObject(item) || !PUBLIC_ITEM_KINDS.includes(item.kind) || typeof item.id !== "string" || !item.id
+      || Object.keys(item).some((key) => !["kind", "id"].includes(key))) {
+      throw libraryError(`library.public[${index}] must identify one component, paragraphStyle, or variable.`);
+    }
+    const key = publicItemKey(item.kind, item.id);
+    if (seen.has(key)) throw libraryError(`Public item ${key} is duplicated.`);
+    seen.add(key);
+    if (item.kind === "component" && !nodes.has(item.id)) throw libraryError(`Public component ${item.id} does not exist.`);
+    if (item.kind === "paragraphStyle" && !Object.hasOwn(document.paragraphStyles ?? {}, item.id)) throw libraryError(`Public paragraph style ${item.id} does not exist.`);
+    if (item.kind === "variable" && !Object.hasOwn(document.variables ?? {}, item.id)) throw libraryError(`Public variable ${item.id} does not exist.`);
+  }
+  return [...items].sort(comparePublicItems).map((item) => ({ ...item }));
+}
+
+export function createLibraryRelease(document, options) {
+  const libraryId = releaseIdentifier(options?.libraryId, "libraryId");
+  const releaseId = releaseIdentifier(options?.releaseId, "releaseId");
+  const publicItems = validateLibrarySurface(document);
+  const dependencies = normalizeDependencies(options?.dependencies ?? []);
+  const assets = normalizeAssets(options?.assets ?? []);
+  const content = {
+    document: structuredClone(document),
+    assets: structuredClone(assets),
+    dependencies,
+    publicItems,
+  };
+  const contentHash = sha256(canonicalJson(content));
+  return {
+    schema: LIBRARY_RELEASE_SCHEMA,
+    libraryId,
+    releaseId,
+    contentHash,
+    publicItems: publicItems.map((item) => ({
+      ...item,
+      contentHash: sha256(canonicalJson(publicItemValue(document, item))),
+    })),
+    dependencies,
+    document: content.document,
+    assets: content.assets,
+  };
+}
+
+export function validateLibraryRelease(release) {
+  if (!plainObject(release) || release.schema !== LIBRARY_RELEASE_SCHEMA) throw libraryError("Library release has an unsupported schema.");
+  releaseIdentifier(release.libraryId, "libraryId");
+  releaseIdentifier(release.releaseId, "releaseId");
+  if (!/^[a-f0-9]{64}$/u.test(release.contentHash ?? "")) throw libraryError("Library release has an invalid contentHash.");
+  const rebuilt = createLibraryRelease(release.document, {
+    libraryId: release.libraryId,
+    releaseId: release.releaseId,
+    dependencies: release.dependencies,
+    assets: release.assets,
+  });
+  if (rebuilt.contentHash !== release.contentHash) throw libraryError(`Library release ${release.releaseId} content hash does not match its content.`);
+  if (canonicalJson(rebuilt.publicItems) !== canonicalJson(release.publicItems)) throw libraryError(`Library release ${release.releaseId} public manifest does not match its document.`);
+  return true;
+}
+
+export function assertPublicLibraryItem(release, kind, id) {
+  validateLibraryRelease(release);
+  if (!release.publicItems.some((item) => item.kind === kind && item.id === id)) {
+    const error = libraryError(`${kind} ${id} is private or was removed from ${release.libraryId}@${release.releaseId}.`);
+    error.code = "CANVAS_LIBRARY_ITEM_PRIVATE";
+    throw error;
+  }
+  return publicItemValue(release.document, { kind, id });
+}
+
+export function compareLibraryReleases(accepted, available) {
+  validateLibraryRelease(accepted);
+  validateLibraryRelease(available);
+  if (accepted.libraryId !== available.libraryId) throw libraryError("Cannot compare releases from different libraries.");
+  const before = new Map(accepted.publicItems.map((item) => [publicItemKey(item.kind, item.id), item]));
+  const after = new Map(available.publicItems.map((item) => [publicItemKey(item.kind, item.id), item]));
+  return {
+    libraryId: accepted.libraryId,
+    accepted: releaseIdentity(accepted),
+    available: releaseIdentity(available),
+    added: [...after.keys()].filter((key) => !before.has(key)).sort(),
+    removed: [...before.keys()].filter((key) => !after.has(key)).sort(),
+    changed: [...after.keys()].filter((key) => before.has(key) && before.get(key).contentHash !== after.get(key).contentHash).sort(),
+  };
+}
+
+export function createLibraryRegistry(options = {}) {
+  const releases = new Map();
+  const canRead = options.canRead ?? (() => true);
+  return {
+    publish(release) {
+      validateLibraryRelease(release);
+      const list = releases.get(release.libraryId) ?? [];
+      const existing = list.find((item) => item.releaseId === release.releaseId);
+      if (existing && existing.contentHash !== release.contentHash) throw libraryError(`Release ${release.libraryId}@${release.releaseId} already identifies different content.`);
+      if (!existing) list.push(structuredClone(release));
+      releases.set(release.libraryId, list);
+      return releaseIdentity(existing ?? release);
+    },
+    async resolve(record, context = {}) {
+      const libraryId = releaseIdentifier(record?.documentId, "documentId");
+      const list = releases.get(libraryId) ?? [];
+      let release;
+      if (record.updatePolicy === "follow") release = record.releaseId === undefined ? list.at(-1) : list.find((item) => item.releaseId === record.releaseId);
+      else if (record.updatePolicy === "pinned") release = list.find((item) => item.releaseId === record.releaseId);
+      else throw libraryError(`Import ${libraryId} has invalid updatePolicy ${String(record.updatePolicy)}.`);
+      if (!release) {
+        const error = libraryError(`No selected published release exists for ${libraryId}.`);
+        error.code = "CANVAS_LIBRARY_RELEASE_MISSING";
+        throw error;
+      }
+      if (!(await canRead({ libraryId, releaseId: release.releaseId, accountId: context.accountId }))) {
+        const error = libraryError(`Account cannot read library ${libraryId}.`);
+        error.code = "CANVAS_LIBRARY_ACCESS_DENIED";
+        throw error;
+      }
+      if ((record.updatePolicy === "pinned" || record.releaseId !== undefined) && record.contentHash !== release.contentHash) {
+        const error = libraryError(`Pinned release ${libraryId}@${record.releaseId} failed its content identity check.`);
+        error.code = "CANVAS_LIBRARY_INTEGRITY";
+        throw error;
+      }
+      return structuredClone(release);
+    },
+  };
+}
+
+export function releaseIdentity(release) {
+  return { libraryId: release.libraryId, releaseId: release.releaseId, contentHash: release.contentHash };
+}
+
+export function publicItemKey(kind, id) { return `${kind}:${id}`; }
+
+function publicItemValue(document, item) {
+  if (item.kind === "variable") return document.variables[item.id];
+  if (item.kind === "paragraphStyle") return document.paragraphStyles[item.id];
+  return indexNodes(document.children).get(item.id);
+}
+
+function normalizeDependencies(dependencies) {
+  if (!Array.isArray(dependencies)) throw libraryError("Library release dependencies must be an array.");
+  const seen = new Set();
+  return dependencies.map((dependency) => {
+    if (!plainObject(dependency) || typeof dependency.alias !== "string" || !dependency.alias
+      || typeof dependency.libraryId !== "string" || !dependency.libraryId
+      || typeof dependency.releaseId !== "string" || !dependency.releaseId
+      || !/^[a-f0-9]{64}$/u.test(dependency.contentHash ?? "")) throw libraryError("Library release dependency is invalid.");
+    if (seen.has(dependency.alias)) throw libraryError(`Library dependency alias ${dependency.alias} is duplicated.`);
+    seen.add(dependency.alias);
+    return { alias: dependency.alias, libraryId: dependency.libraryId, releaseId: dependency.releaseId, contentHash: dependency.contentHash };
+  }).sort((left, right) => left.alias.localeCompare(right.alias));
+}
+
+function normalizeAssets(assets) {
+  if (!Array.isArray(assets)) throw libraryError("Library release assets must be an array.");
+  return assets.map((asset) => {
+    if (!plainObject(asset) || typeof asset.path !== "string" || !asset.path
+      || !/^[a-f0-9]{64}$/u.test(asset.sha256 ?? "") || !Number.isSafeInteger(asset.size) || asset.size < 0) {
+      throw libraryError("Library release asset metadata is invalid.");
+    }
+    return { path: asset.path, sha256: asset.sha256, size: asset.size, ...(asset.mimeType ? { mimeType: asset.mimeType } : {}) };
+  }).sort((left, right) => left.path.localeCompare(right.path));
+}
+
+function canonicalJson(value) {
+  if (value === null || typeof value === "boolean" || typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) throw libraryError("Library release content contains a non-finite number.");
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (plainObject(value)) return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`;
+  throw libraryError("Library release content is not canonical JSON.");
+}
+
+function sha256(value) { return createHash("sha256").update(value).digest("hex"); }
+function comparePublicItems(left, right) { return left.kind.localeCompare(right.kind) || left.id.localeCompare(right.id); }
+function releaseIdentifier(value, name) { if (typeof value !== "string" || !value || /[\u0000-\u001f]/u.test(value)) throw libraryError(`${name} must be a non-empty identifier.`); return value; }
+function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
+function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
+function libraryError(message) { const error = new Error(message); error.code = "CANVAS_LIBRARY_INVALID"; return error; }

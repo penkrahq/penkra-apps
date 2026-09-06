@@ -1,6 +1,8 @@
 // Canvas interpolation syntax is distinct from DTCG's {path} aliases.
 // Dots separate path segments; hyphens remain valid within a segment.
-const referenceSource = String.raw`\$\{([A-Za-z][\w-]*(?:\.[\w-]+)*)\}`;
+// A colon separates an import alias from its public token path. Dots remain
+// hierarchy delimiters inside the owning document.
+const referenceSource = String.raw`\$\{((?:[A-Za-z][\w-]*:)?[A-Za-z][\w-]*(?:\.[\w-]+)*)\}`;
 
 export function variableReferences(content) {
   return [...content.matchAll(new RegExp(referenceSource, "gu"))];
