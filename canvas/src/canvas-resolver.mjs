@@ -76,15 +76,15 @@ function resolveNode(source, context) {
     }
     // A library style keeps its definition identity. Consumer mode selection
     // still flows into its cascade; an unrelated same-named style cannot replace it.
-    if (context.owner !== context.rootOwner || context.scopedModes) {
+    if (context.owner !== context.rootOwner || context.scopedModes || output.style?.includes(":") || output.paragraphs.some((paragraph) => paragraph.style?.includes(":"))) {
       const names = new Map();
       const register = (name) => {
         if (names.has(name)) return names.get(name);
-        if (!Object.hasOwn(context.owner.paragraphStyles ?? {}, name)) throw new Error(`Paragraph style ${name} was not found in its owning document.`);
+        const style = resolveParagraphStyle(name, context);
         const registry = context.styleRegistry;
         let key;
         do { key = `@canvas-resolved-style/${registry.nextId++}`; } while (Object.hasOwn(registry.styles, key));
-        registry.styles[key] = resolveValue(resolveCascade(context.owner.paragraphStyles[name], context), context.variableValues);
+        registry.styles[key] = style;
         names.set(name, key);
         return key;
       };
@@ -100,6 +100,29 @@ function resolveNode(source, context) {
   output.children = (source.children ?? []).map((child) => resolveNode(child, context)).filter(Boolean);
   if (source.children === undefined) delete output.children;
   return output;
+}
+
+function resolveParagraphStyle(name, context) {
+  let owner = context.owner;
+  let modes = context.modes;
+  let variableValues = context.variableValues;
+  let id = name;
+  if (name.includes(":")) {
+    const separator = name.indexOf(":");
+    const alias = name.slice(0, separator);
+    id = name.slice(separator + 1);
+    const imported = Object.hasOwn(context.imports, alias) ? context.imports[alias] : undefined;
+    if (!imported) throw new Error(`Import ${alias} is missing or unreadable.`);
+    if (imported.release && !imported.release.publicItems.some((item) => item.kind === "paragraphStyle" && item.id === id)) throw new Error(`Paragraph style ${name} is not published.`);
+    owner = imported.document ?? imported;
+    modes = { ...context.modes };
+    for (const [axisName, axis] of Object.entries(owner.axes ?? {})) {
+      if (!axis.modes.some((mode) => mode.name === modes[axisName])) modes[axisName] = axis.modes[0]?.name;
+    }
+    variableValues = resolveVariables(owner.variables ?? {}, modes, {}, imported.imports ?? {});
+  }
+  if (!Object.hasOwn(owner.paragraphStyles ?? {}, id)) throw new Error(`Paragraph style ${name} was not found in its owning document.`);
+  return resolveValue(resolveCascade(owner.paragraphStyles[id], { ...context, modes }), variableValues);
 }
 
 function namespaceAssetReferences(value, prefix) {

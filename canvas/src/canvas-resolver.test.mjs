@@ -1,6 +1,26 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+test("consumer text can use public library paragraph styles with source tokens and consumer modes", () => {
+  const axes = { appearance: { modes: [{ name: "light" }, { name: "dark" }] } };
+  const library = { axes, children: [], variables: { ink: { tokenType: "color", cascade: [{ value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } }] } }, paragraphStyles: { body: { fill: "${ink}", fontSize: 18 }, private: { fontSize: 42 } } };
+  const imports = { ui: { document: library, release: { publicItems: [{ kind: "paragraphStyle", id: "body" }] } } };
+  const source = { axes, variables: {}, paragraphStyles: { body: { fill: "#ff0000", fontSize: 30 } }, children: [
+    { id: "label", type: "text", content: "Text", style: "ui:body", paragraphs: [{ from: 0, to: 4, style: "ui:body" }] },
+    { id: "light", type: "frame", modes: { appearance: "light" }, children: [{ id: "nested", type: "text", content: "Text", style: "ui:body" }] },
+  ] };
+  const result = resolveCanvasDocument(source, { imports, modes: { appearance: "dark" } }).document;
+  assert.deepEqual(result.paragraphStyles[result.children[0].style], { fill: "#eeeeee", fontSize: 18 });
+  assert.equal(result.children[0].paragraphs[0].style, result.children[0].style);
+  assert.deepEqual(result.paragraphStyles[result.children[1].children[0].style], { fill: "#111111", fontSize: 18 });
+  assert.deepEqual(result.paragraphStyles.body, { fill: "#ff0000", fontSize: 30 });
+  assert.equal(source.children[0].style, "ui:body");
+  source.children[0].style = "ui:private";
+  assert.throws(() => resolveCanvasDocument(source, { imports }), /not published/);
+  source.children[0].style = "missing:body";
+  assert.throws(() => resolveCanvasDocument(source, { imports }), /missing or unreadable/);
+});
+
 test("qualified public tokens use source bindings with consumer-selected compatible modes", () => {
   const axes = { appearance: { modes: [{ name: "light" }, { name: "dark" }] } };
   const library = {
