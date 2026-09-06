@@ -1,0 +1,18 @@
+{
+  "caseId": "case-08",
+  "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+  "contentSize": "accessibility-extra-extra-large",
+  "scale": 3,
+  "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/references/iphone-accessibility-extra-extra-large/case-08.png",
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-20260906/captures/iphone/accessibility-extra-extra-large/case-08.png",
+  "registration": {
+    "method": "center-cropped-authored-frame",
+    "dx": 0,
+    "dy": 0,
+    "boundaryTolerancePixels": 2
+  },
+  "comparedPixels": 520731,
+  "mismatchedPixels": 24038,
+  "status": "mismatch",
+  "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+}
