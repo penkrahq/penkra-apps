@@ -51,7 +51,7 @@ function swiftNode(node, children, options, depth, parentLayout) {
     if (!data) throw new Error(`SwiftUI rasterizer is required for ${node.id}.`);
     return `${indent}CanvasRasterImage(base64: ${JSON.stringify(data)})${position}${access}`;
   }
-  if (node.type === "text") return `${indent}(${swiftText(node, options)}).opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
+  if (node.type === "text") return `${indent}(${swiftText(node, options)})${swiftTextAlignment(node)}.opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
   if (node.vector) return `${indent}${swiftVector(node)}${position}${access}`;
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return swiftContainer(node, descendants, children, options, depth, false, parentLayout, access);
@@ -134,7 +134,7 @@ function swiftGeometry(node, parentLayout, afterFrame = "") {
   if (node.type === "text" && ["auto", "fixed-width"].includes(node.layout.textGrowth)) {
     const sizing = node.layout.textGrowth === "auto"
       ? ".fixedSize(horizontal: true, vertical: true)"
-      : `.frame(width: ${n(node.geometry.w)}, alignment: .topLeading).fixedSize(horizontal: false, vertical: true)`;
+      : `.frame(width: ${n(node.geometry.w)}, alignment: ${swiftFrameAlignment(node)}).fixedSize(horizontal: false, vertical: true)`;
     return ["grid", "horizontal", "vertical", "wrap"].includes(parentLayout)
       ? sizing
       : `${sizing}.offset(x: ${n(node.geometry.localX)}, y: ${n(node.geometry.localY)})`;
@@ -142,6 +142,14 @@ function swiftGeometry(node, parentLayout, afterFrame = "") {
   const base = `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)})${afterFrame}`;
   if (["grid", "horizontal", "vertical", "wrap"].includes(parentLayout)) return base;
   return `${base}.position(x: ${n(node.geometry.localX + node.geometry.w / 2)}, y: ${n(node.geometry.localY + node.geometry.h / 2)})`;
+}
+
+function swiftTextAlignment(node) {
+  const alignment = node.semantics.textAlign;
+  if (alignment === undefined) return "";
+  const native = { start: "leading", center: "center", end: "trailing" }[alignment];
+  if (!native) throw new Error(`SwiftUI Text cannot emit ${alignment} alignment for ${node.id}.`);
+  return `.multilineTextAlignment(.${native})`;
 }
 
 function swiftAccessibility(node) {
@@ -167,7 +175,7 @@ function composeNode(node, children, options, depth, parentLayout) {
     const name = `bytes${identifier(node.id)}`;
     return `${indent}run { val ${name} = Base64.decode(${JSON.stringify(data)}, Base64.DEFAULT); Image(BitmapFactory.decodeByteArray(${name}, 0, ${name}.size).asImageBitmap(), null, ${modifier}) }`;
   }
-  if (node.type === "text") return `${indent}Text(${composeText(node, options)}, style = androidx.compose.ui.text.TextStyle(fontSize = ${n(composeBaseFontSize(node.semantics.runs))}.sp, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated), modifier = ${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)}))`;
+  if (node.type === "text") return `${indent}Text(${composeText(node, options)}, style = androidx.compose.ui.text.TextStyle(fontSize = ${n(composeBaseFontSize(node.semantics.runs))}.sp, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated${composeTextAlignment(node)}), modifier = ${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)}))`;
   if (node.vector) return `${indent}${composeVector(node, modifier)}`;
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return composeContainer(node, descendants, children, options, depth, false, modifier);
@@ -231,6 +239,14 @@ function composeBaseFontSize(runs) {
   const first = runs[0]?.fontSize ?? 16;
   // A hidden zero-size first run cannot be the relative-size denominator.
   return first === 0 ? (runs.map(run => run.fontSize ?? 16).find(size => size > 0) ?? first) : first;
+}
+
+function composeTextAlignment(node) {
+  const alignment = node.semantics.textAlign;
+  if (alignment === undefined) return "";
+  const native = { start: "Start", center: "Center", end: "End", justify: "Justify" }[alignment];
+  if (!native) throw new Error(`Compose Text cannot emit ${alignment} alignment for ${node.id}.`);
+  return `, textAlign = androidx.compose.ui.text.style.TextAlign.${native}`;
 }
 
 function composeText(node, options) {
@@ -304,6 +320,16 @@ function swiftWeight(weight) { const value = Number(weight ?? 400); if (value >=
 function swiftAlignment(value) { return value === "end" ? ".bottom" : value === "center" ? ".center" : ".top"; }
 function swiftHorizontalAlignment(value) { return value === "end" ? ".trailing" : value === "center" ? ".center" : ".leading"; }
 function swiftFrameAlignment(node) {
+  if (node.type === "text") {
+    const horizontal = node.semantics.textAlign ?? "start";
+    const vertical = node.semantics.textAlignVertical ?? "top";
+    const rows = {
+      top: { start: ".topLeading", center: ".top", end: ".topTrailing" },
+      center: { start: ".leading", center: ".center", end: ".trailing" },
+      bottom: { start: ".bottomLeading", center: ".bottom", end: ".bottomTrailing" },
+    };
+    return rows[vertical]?.[horizontal] ?? ".topLeading";
+  }
   // A stack aligns its children within its intrinsic extent. Its surrounding
   // authored-size frame must align that extent on the same cross axis too.
   if (!node.layout.wrap && node.layout.layout === "vertical") return node.layout.alignItems === "end" ? ".topTrailing" : node.layout.alignItems === "center" ? ".top" : ".topLeading";

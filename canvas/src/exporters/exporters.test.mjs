@@ -55,6 +55,26 @@ test("mobile layouts use independent row and column gap overrides", () => {
 const document = { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", name: "Title", width: 1280, height: 720, layout: "none", children: [{ id: "title", type: "text", x: 80, y: 60, width: 600, height: 80, content: "Editable title", fontFamily: "Inter", fontSize: 48, paragraphs: [{ from: 0, to: 14, headingLevel: 1 }], marks: [{ type: "weight", from: 0, to: 8, value: 700 }], description: "Deck title" }, { id: "box", type: "rectangle", x: 80, y: 180, width: 300, height: 120, fill: "#123456", effect: { type: "shadow", shadowType: "outer", color: "#00000055", offset: { x: 4, y: 6 }, blur: 12 } }] }] };
 const interRegular = await readFile(new URL("../../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
 const interBold = await readFile(new URL("../../vendor/open-pencil/fonts/Inter-Bold.ttf", import.meta.url));
+
+test("SwiftUI retains authored multiline alignment without treating justify as leading", () => {
+  const document = { version: "2.17", module: "mobile", children: [{ id: "screen", type: "frame", name: "Aligned", role: "ios", width: 300, height: 300, children: [
+    { id: "text", type: "text", width: 200, height: 100, content: "First\nSecond", textAlign: "center" },
+  ] }] };
+  for (const [value, native] of [["start", "leading"], ["center", "center"], ["end", "trailing"]]) {
+    document.children[0].children[0].textAlign = value;
+    const ir = buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, capabilityPathInventory());
+    assert.ok(exportSwiftUI(ir).get("Aligned.swift").includes(`.multilineTextAlignment(.${native})`));
+  }
+  document.children[0].children[0].textAlign = "justify";
+  const ir = buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, capabilityPathInventory());
+  assert.throws(() => exportSwiftUI(ir), /cannot emit justify alignment/);
+  document.children[0].role = "android";
+  for (const [value, native] of [["start", "Start"], ["center", "Center"], ["end", "End"], ["justify", "Justify"]]) {
+    document.children[0].children[0].textAlign = value;
+    const ir = buildCapabilityVerificationIR(document, { role: "android", frames: ["screen"] }, capabilityPathInventory());
+    assert.ok(exportCompose(ir).get("Aligned.kt").includes(`textAlign = androidx.compose.ui.text.style.TextAlign.${native}`));
+  }
+});
 document.children[0].physical = { w: 13.333, h: 7.5, unit: "in" };
 const exportDeck = (ir) => exportPptx(ir, { fonts: [{ typeface: "Inter", faces: { regular: interRegular, bold: interBold } }] });
 

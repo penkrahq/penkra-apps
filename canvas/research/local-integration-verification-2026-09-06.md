@@ -34,3 +34,9 @@ PDF candidate changes from `1090dfe` are integrated as `dd5bdf9`, retaining a cl
 - Public `penkra app test` on the combined `canvas/dist` returned `ok: true`, Canvas version `0.2.40`, all eleven operation-help entries, isolated tab ready in 520 ms, and `profileRemoved: true` at 2026-09-06T02:38:26Z. This is package/runtime validation, not installed Dev1 acceptance, installation, or publication.
 - Production build remains exit 1 with 39 Swift and 37 Kotlin unverified rows; `/tmp/canvas-pdfx-combined-production-20260906.log`.
 - The unchanged GRACoL2013 CRPC6 asset matches SHA-256 `4ebbfad6bc9cfc033fdafdd8ac5df8159208932cb16d9a6596d349ae7ab50443`. It is a specific printing-condition candidate, not a universally correct printer setting. No PDF/X artifact has been published.
+
+## Mobile alignment candidate
+
+Authored top-level text alignment now reaches SwiftUI multiline alignment plus its authored frame anchor, and Compose TextStyle. SwiftUI justification is explicitly rejected by this candidate rather than silently becoming leading alignment. Per-paragraph overrides and justification through another native text implementation are not established here.
+
+Actual Swift simulator build succeeded; Compose assembled in 51 seconds. Logs: `/tmp/canvas-text-alignment-swift-build-20260906.log` and `/tmp/canvas-text-alignment-compose-build-20260906.log`. Retained iPhone Large, iPad Large, and Android 420 dpi captures were visually inspected and pass bounded six-line ink-anchor checks. These do not certify full text fidelity. iPhone accessibility XXL visibly truncates this fixed-height fixture; that capture is retained as failing text-growth evidence, and XXL was restored after the Large capture. No capability row was promoted.

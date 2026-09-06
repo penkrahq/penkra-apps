@@ -32,6 +32,14 @@ const source = {
 };
 
 const swiftDir = resolve(root, "compatibility/mobile-fixtures/swiftui/Sources/CanvasSwiftUIFixture");
+if (process.argv.includes("--text-alignment")) {
+  source.children[0].padding = [80, 20, 20, 20];
+  source.children[0].children = ["start", "center", "end"].map((textAlign) => ({
+    id: `align-${textAlign}`, type: "frame", width: 340, height: 150, layout: "none", fill: "#FFFFFF", children: [
+      { id: `text-${textAlign}`, type: "text", x: 20, y: 20, width: 300, height: 110, content: "Canvas alignment\nShort", fontFamily: "Inter", fontSize: 24, fill: "#123456", textAlign },
+    ],
+  }));
+}
 if (process.argv.includes("--accessibility")) {
   source.children[0].padding = [80, 20, 20, 20];
   source.children[0].children = [
