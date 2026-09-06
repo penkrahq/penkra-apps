@@ -53,9 +53,10 @@ test("one unbound request retains its exact path; bound file and directory cases
     expectCode(() => resolveExportDestinations(item.exact, [
       { output: "École One" }, { output: "Café Deux" }, { output: "学校 Three" },
     ], item.format), "CANVAS_EXPORT_COLLISION");
-    // Missing output is rejected as required; the existing implementation has
-    // no stable code on this branch, so do not create a new production code.
-    assert.throws(() => resolveExportDestinations(item.directory, [{}], item.format));
+    for (const set of [{ output: undefined }, { output: null }, { output: 0 }]) {
+      expectCode(() => resolveExportDestinations(item.directory, [set], item.format), "CANVAS_EXPORT_OUTPUT_NAME");
+      assert.equal(resolveExportDestinations(item.exact, [null], item.format)[0], item.exact);
+    }
   }
 });
 
