@@ -218,7 +218,12 @@ function mobileVectorStroke(node) {
 function composeContainer(node, descendants, children, options, depth, root = false, suppliedModifier = "Modifier") {
   const indent = "  ".repeat(depth);
   const { row, column } = mobileGaps(node);
-  const content = descendants.map((child) => composeNode(child, children, options, depth + 1, node.layout.layout || (node.layout.wrap ? "wrap" : "none"))).filter(Boolean).join("\n");
+  const parentLayout = node.layout.layout || (node.layout.wrap ? "wrap" : "none");
+  const overlays = parentLayout !== "none" ? descendants.filter((child) => child.layout.layoutPosition === "absolute") : [];
+  const flowDescendants = overlays.length ? descendants.filter((child) => child.layout.layoutPosition !== "absolute") : descendants;
+  const content = flowDescendants.map((child) => composeNode(child, children, options, depth + 1, parentLayout)).filter(Boolean).join("\n");
+  const overlayContent = overlays.map((child) => composeNode(child, children, options, depth + 1, "none")).filter(Boolean).join("\n");
+  const withOverlays = (body) => overlays.length ? `${indent}Box(modifier = ${modifier}) {\n${body}\n${overlayContent}\n${indent}}` : body;
   let modifier = root ? composeModifier(node, "vertical") : suppliedModifier;
   if (node.paint.opacity != null) modifier += `.alpha(${kotlinFloat(node.paint.opacity)})`;
   if (solid(node.paint.fill)) modifier += `.background(${composeColor(solid(node.paint.fill))}${node.paint.cornerRadius != null ? `, ${composeRoundedShape(node)}` : ""})`;
@@ -227,11 +232,12 @@ function composeContainer(node, descendants, children, options, depth, root = fa
   if (insets) modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
   if (node.layout.layout === "grid") {
     const columns = Math.max(1, node.layout.gridTemplateColumns?.length ?? 1);
-    return `${indent}LazyVerticalGrid(columns = GridCells.Fixed(${columns}), modifier = ${modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${descendants.map((child) => `${indent}  item {\n${composeNode(child, children, options, depth + 2, "grid")}\n${indent}  }`).join("\n")}\n${indent}}`;
+    const grid = `${indent}LazyVerticalGrid(columns = GridCells.Fixed(${columns}), modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${flowDescendants.map((child) => `${indent}  item {\n${composeNode(child, children, options, depth + 2, "grid")}\n${indent}  }`).join("\n")}\n${indent}}`;
+    return overlays.length ? withOverlays(grid) : grid;
   }
-  if (node.layout.wrap) return `${indent}FlowRow(modifier = ${modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`;
-  if (node.layout.layout === "horizontal") return `${indent}Row(modifier = ${modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`;
-  if (node.layout.layout === "vertical") return `${indent}Column(modifier = ${modifier}, verticalArrangement = Arrangement.spacedBy(${row}.dp), horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`;
+  if (node.layout.wrap) return withOverlays(`${indent}FlowRow(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`);
+  if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
+  if (node.layout.layout === "vertical") return withOverlays(`${indent}Column(modifier = ${overlays.length ? "Modifier" : modifier}, verticalArrangement = Arrangement.spacedBy(${row}.dp), horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`);
   return `${indent}Box(modifier = ${modifier}) {\n${content}\n${indent}}`;
 }
 
