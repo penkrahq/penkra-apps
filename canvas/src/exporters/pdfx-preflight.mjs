@@ -269,31 +269,32 @@ function inspectPageContent(page, path, context) {
           && operation.operands[0].kind === "number" && Number.isFinite(operation.operands[0].value);
         const nextTextLine = operation.operator === "T*" && operation.operands.length === 0;
         if (!solidDashReset && !textLeading && !nextTextLine && !ALLOWED_CONTENT_OPERATORS.has(operation.operator)) add("CONTENT_OPERATOR_OUTSIDE_SUBSET", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
-        if (ALLOWED_CONTENT_OPERATORS.has(operation.operator) && !validContentOperands(operation)) add("CONTENT_OPERANDS_INVALID", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
+        const operandsValid = ALLOWED_CONTENT_OPERATORS.has(operation.operator) && validContentOperands(operation);
+        if (ALLOWED_CONTENT_OPERATORS.has(operation.operator) && !operandsValid) add("CONTENT_OPERANDS_INVALID", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
         const location = `${path}/Contents[${index}]/${operation.operator}`;
         const op = operation.operator;
-        if (op === "q") graphicsDepth += 1;
-        if (op === "Q") {
+        if (op === "q" && operandsValid) graphicsDepth += 1;
+        if (op === "Q" && operandsValid) {
           if (graphicsDepth === 0) add("GRAPHICS_STATE_UNDERFLOW", "6.1", location);
           else graphicsDepth -= 1;
         }
-        if (op === "BT") {
+        if (op === "BT" && operandsValid) {
           if (inText) add("TEXT_OBJECT_NESTED", "6.1", location);
           inText = true;
         }
-        if (op === "ET") {
+        if (op === "ET" && operandsValid) {
           if (!inText) add("TEXT_OBJECT_UNDERFLOW", "6.1", location);
           inText = false;
         }
-        if (["Tm", "Tj", "TJ", "T*"].includes(op) && !inText) add("TEXT_OPERATOR_OUTSIDE_TEXT", "6.1", location);
-        if (["BDC", "BMC"].includes(op)) markedDepth += 1;
-        if (op === "EMC") {
+        if (["Tm", "Tj", "TJ"].includes(op) && operandsValid && !inText) add("TEXT_OPERATOR_OUTSIDE_TEXT", "6.1", location);
+        if (op === "T*" && nextTextLine && !inText) add("TEXT_OPERATOR_OUTSIDE_TEXT", "6.1", location);
+        if (["BDC", "BMC"].includes(op) && operandsValid) markedDepth += 1;
+        if (op === "EMC" && operandsValid) {
           if (markedDepth === 0) add("MARKED_CONTENT_UNDERFLOW", "6.1", location);
           else markedDepth -= 1;
         }
-        const resourceCategory = ({ gs: "ExtGState", Do: "XObject", Tf: "Font" })[op];
-        if (resourceCategory && operation.operands[0]?.kind === "name" && !get(get(resources, resourceCategory), operation.operands[0].value)) add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location);
-        if (op === "BDC" && operation.operands[1]?.kind === "name" && !(get(get(resources, "Properties"), operation.operands[1].value) instanceof PDFDict)) add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location);
+        if (operandsValid && ["gs", "Do", "Tf"].includes(op)) inspectNamedContentResource(op, operation.operands[0].value, resources, location, { resolve, get, name, add });
+        if (op === "BDC" && operandsValid && operation.operands[1]?.kind === "name") inspectNamedContentResource("BDC", operation.operands[1].value, resources, location, { resolve, get, name, add });
       }
     } catch { add("CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED", "6.1", `${path}/Contents[${index}]`); }
   }
@@ -314,6 +315,31 @@ function inspectPageContent(page, path, context) {
     const colorSpace = name(get(object.dict, "ColorSpace"));
     if (colorSpace && !["DeviceRGB", "DeviceGray"].includes(colorSpace)) add("IMAGE_COLOR_SPACE_OUTSIDE_SUBSET", "6.4", `${objectPath}/ColorSpace`);
   }
+}
+
+function inspectNamedContentResource(operator, resourceName, resources, location, context) {
+  const { resolve, get, name, add } = context;
+  const categories = { gs: "ExtGState", Do: "XObject", Tf: "Font", BDC: "Properties" };
+  const category = get(resources, categories[operator]);
+  const raw = category instanceof PDFDict ? category.get(PDFName.of(resourceName)) : undefined;
+  if (raw === undefined) { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
+  const value = resolve(raw);
+  if (operator === "gs") {
+    if (!(value instanceof PDFDict)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    else if (get(value, "Type") !== undefined && name(get(value, "Type")) !== "ExtGState") add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    return;
+  }
+  if (operator === "Do") {
+    if (value instanceof PDFDict && name(get(value, "Subtype")) === "Form") add("FORM_XOBJECT_OUTSIDE_SUBSET", "6.1", location);
+    else if (!(value instanceof PDFRawStream)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    else if (name(get(value.dict, "Subtype")) !== "Image") add("CONTENT_RESOURCE_SUBTYPE_INVALID", "6.1", location);
+    return;
+  }
+  if (operator === "Tf") {
+    if (!(value instanceof PDFDict) || name(get(value, "Type")) !== "Font") add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    return;
+  }
+  if (!(value instanceof PDFDict)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
 }
 
 function iccProfileFromColorSpace(value, resolve, name) {
