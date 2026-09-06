@@ -78,6 +78,19 @@ export function assertPublicLibraryItem(release, kind, id) {
   return publicItemValue(release.document, { kind, id });
 }
 
+// A retention adapter needs the accepted item's dependencies, not every private
+// resource in the source document. This is preparation only: it grants no access
+// and writes no durable state. Callers must authorize acceptance separately.
+export function preparePublicLibraryItemContent(release, kind, id) {
+  assertPublicLibraryItem(release, kind, id);
+  const item = release.publicItems.find((entry) => entry.kind === kind && entry.id === id);
+  return structuredClone({
+    release: releaseIdentity(release),
+    item,
+    content: publicItemClosure(release.document, item, release.dependencies, release.assets),
+  });
+}
+
 export function compareLibraryReleases(accepted, available) {
   validateLibraryRelease(accepted);
   validateLibraryRelease(available);
