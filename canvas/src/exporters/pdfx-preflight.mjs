@@ -217,7 +217,10 @@ function inspectPageContent(page, path, context) {
         const solidDashReset = operation.operator === "d" && operation.operands.length === 2
           && operation.operands[0].kind === "array" && operation.operands[0].value.length === 0
           && operation.operands[1].kind === "number" && operation.operands[1].value === 0;
-        if (!solidDashReset && !ALLOWED_CONTENT_OPERATORS.has(operation.operator)) add("CONTENT_OPERATOR_OUTSIDE_SUBSET", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
+        const textLeading = operation.operator === "TL" && operation.operands.length === 1
+          && operation.operands[0].kind === "number" && Number.isFinite(operation.operands[0].value);
+        const nextTextLine = operation.operator === "T*" && operation.operands.length === 0;
+        if (!solidDashReset && !textLeading && !nextTextLine && !ALLOWED_CONTENT_OPERATORS.has(operation.operator)) add("CONTENT_OPERATOR_OUTSIDE_SUBSET", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
       }
     } catch { add("CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED", "6.1", `${path}/Contents[${index}]`); }
   }

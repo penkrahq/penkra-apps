@@ -71,7 +71,18 @@ test("PDF/UA-1 output passes pinned veraPDF 1.30.2", { timeout: 120_000 }, async
 
 test("unverified PDF/X-4 profile cannot be mislabeled", async () => {
   const ir = buildExtractionIR(fixture(), { format: "pdf", nodeId: "page" });
-  await assert.rejects(exportPdf(ir, { profile: "PDF/X-4" }), { code: "CANVAS_PDF_PROFILE_UNVERIFIED" });
+  const [outputIntent, sourceColorProfile, inter] = await Promise.all([
+    readFile(new URL("../assets/color/GRACoL2013_CRPC6.icc", import.meta.url)),
+    readFile(new URL("../assets/color/sRGB2014.icc", import.meta.url)),
+    readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url)),
+  ]);
+  await assert.rejects(exportPdf(ir, { profile: "PDF/X-4", outputIntent, sourceColorProfile, fonts: { "Inter:400": inter } }), (error) => {
+    assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED", JSON.stringify(error.preflight));
+    assert.equal(error.preflight.conformant, false);
+    assert.equal(error.preflight.canvasWriterSubset.verified, true);
+    return true;
+  });
+  await assert.rejects(exportPdf(ir, { profile: "PDF/X-4" }), { code: "CANVAS_PDF_PROFILE_INVALID" });
 });
 
 function fixture() {

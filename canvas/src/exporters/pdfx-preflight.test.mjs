@@ -88,6 +88,15 @@ test("content subset permits the emitted solid dash reset but rejects other dash
   }
 });
 
+test("emitted text line operators require their exact operand shapes", async () => {
+  for (const [content, accepted] of [["BT 24 TL T* ET", true], ["BT /bad TL ET", false], ["BT 24 30 TL ET", false], ["BT 1 T* ET", false]]) {
+    const bytes = await fixture((pdf, page) => {
+      page.node.set(PDFName.of("Contents"), pdf.context.register(pdf.context.flateStream(Buffer.from(content))));
+    });
+    assert.equal(codes(await preflightPdfx4(bytes)).includes("CONTENT_OPERATOR_OUTSIDE_SUBSET"), !accepted, content);
+  }
+});
+
 test("serialized output intent resolves its compressed ICC bytes, not its label", async () => {
   const bytes = await fixture((pdf) => {
     const profile = pdf.context.register(pdf.context.flateStream(srgb, { N: 3 }));
