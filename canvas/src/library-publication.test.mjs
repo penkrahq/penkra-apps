@@ -10,6 +10,19 @@ import {
 } from "./library-publication.mjs";
 
 const hash = "0".repeat(64);
+
+test("published asset manifests reject ambiguous paths and invalid MIME metadata", () => {
+  const asset = { path: "images/logo.png", sha256: hash, size: 0, mimeType: "image/png" };
+  const publish = (assets) => createLibraryRelease(library(), { libraryId: "ui", releaseId: "one", assets });
+  for (const path of ["/logo.png", "../logo.png", "images/../logo.png", "images/./logo.png", "images//logo.png", "images/", "C:/logo.png", "images\\logo.png", "images/lo\u0000go.png", "images/cafe\u0301.png"]) {
+    assert.throws(() => publish([{ ...asset, path }]), /canonical relative path/);
+  }
+  assert.throws(() => publish([asset, { ...asset }]), /duplicated/);
+  for (const mimeType of [4, {}, "", "image/png\r\nInjected: true"]) {
+    assert.throws(() => publish([{ ...asset, mimeType }]), /MIME type/);
+  }
+  assert.equal(publish([asset]).assets[0].path, asset.path);
+});
 function library(label = "One", publicItems = [
   { kind: "component", id: "card" },
   { kind: "variable", id: "color.brand" },

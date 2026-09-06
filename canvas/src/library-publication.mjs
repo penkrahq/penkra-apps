@@ -202,10 +202,20 @@ function normalizeDependencies(dependencies) {
 
 function normalizeAssets(assets) {
   if (!Array.isArray(assets)) throw libraryError("Library release assets must be an array.");
+  const seen = new Set();
   return assets.map((asset) => {
     if (!plainObject(asset) || typeof asset.path !== "string" || !asset.path
       || !/^[a-f0-9]{64}$/u.test(asset.sha256 ?? "") || !Number.isSafeInteger(asset.size) || asset.size < 0) {
       throw libraryError("Library release asset metadata is invalid.");
+    }
+    if (asset.path !== asset.path.normalize("NFC") || /[\\:\u0000-\u001f\u007f]/u.test(asset.path)
+      || asset.path.split("/").some((segment) => !segment || segment === "." || segment === "..")) {
+      throw libraryError("Library release asset path must be a canonical relative path.");
+    }
+    if (seen.has(asset.path)) throw libraryError(`Library release asset path ${asset.path} is duplicated.`);
+    seen.add(asset.path);
+    if (asset.mimeType !== undefined && (typeof asset.mimeType !== "string" || !/^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/iu.test(asset.mimeType))) {
+      throw libraryError("Library release asset MIME type is invalid.");
     }
     return { path: asset.path, sha256: asset.sha256, size: asset.size, ...(asset.mimeType ? { mimeType: asset.mimeType } : {}) };
   }).sort((left, right) => compareIdentifiers(left.path, right.path));
