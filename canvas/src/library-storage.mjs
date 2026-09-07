@@ -2,7 +2,7 @@ import { createHash } from "node:crypto";
 import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 import { validateLibraryRelease } from "./library-publication.mjs";
 import { prepareLibraryRetention } from "./library-retention-preparation.mjs";
-import { validateRetainedCanvasRetention } from "./library-retained-imports.mjs";
+import { buildRetainedCanvasImports, validateRetainedCanvasRetention } from "./library-retained-imports.mjs";
 
 const PREFIX = "_canvas/library-content/";
 const MIME = "application/vnd.penkra.canvas.library+json";
@@ -76,9 +76,19 @@ export function createLibraryStorage(api) {
     return restored;
   }
 
+  async function storeReleaseRetentions(documentId, entries) {
+    const stored = [];
+    for (const entry of entries) {
+      const assets = await storeAssets(documentId, entry.retention.assets);
+      stored.push({ alias: entry.alias, retention: { ...entry.retention, assets } });
+    }
+    return stored;
+  }
+
   return {
     async writeRelease(documentId, prepared) {
       const release = structuredClone(prepared.release);
+      const retentions = prepared.retentions === undefined ? undefined : snapshotTransport(prepared.retentions);
       validateLibraryRelease(release);
       if (release.libraryId !== documentId || !(prepared.assets instanceof Map)) throw invalid("CANVAS_LIBRARY_INVALID");
       const ownedAssets = release.assets.map((asset) => ({ ...asset, bytes: prepared.assets.get(asset.path) }));
@@ -87,8 +97,10 @@ export function createLibraryStorage(api) {
         if (!(asset.bytes instanceof Uint8Array)) throw invalid("CANVAS_IMPORT_INTEGRITY");
         asset.bytes = new Uint8Array(asset.bytes);
       }
+      if (retentions !== undefined) validateReleaseRetentions(release, retentions);
       const assets = await storeAssets(documentId, ownedAssets);
-      return writeEnvelope(documentId, "release", { release, assets });
+      const storedRetentions = retentions === undefined ? undefined : await storeReleaseRetentions(documentId, retentions);
+      return writeEnvelope(documentId, "release", { release, assets, ...(storedRetentions === undefined ? {} : { retentions: storedRetentions }) });
     },
 
     async readRelease(documentId, descriptor) {
@@ -101,7 +113,12 @@ export function createLibraryStorage(api) {
         const found = assets.filter((asset) => asset.path === expected.path);
         if (found.length !== 1 || found[0].sha256 !== expected.sha256 || found[0].size !== expected.size) throw invalid("CANVAS_IMPORT_INTEGRITY");
       }
-      return { release: content.release, assets: new Map(assets.map((asset) => [asset.path, asset.bytes])) };
+      if (!Object.hasOwn(content, "retentions")) return { release: content.release, assets: new Map(assets.map((asset) => [asset.path, asset.bytes])) };
+      const storedRetentions = validateReleaseRetentions(content.release, content.retentions, { allowStoredAssets: true, checkReferences: false });
+      const retentions = [];
+      for (const entry of storedRetentions) retentions.push({ alias: entry.alias, retention: { ...entry.retention, assets: await restoreAssets(documentId, entry.retention.assets) } });
+      const validatedRetentions = validateReleaseRetentions(content.release, retentions);
+      return { release: structuredClone(content.release), assets: new Map(assets.map((asset) => [asset.path, new Uint8Array(asset.bytes)])), retentions: validatedRetentions };
     },
 
     async retainItems(documentId, release, requestedItems, readers) {
@@ -136,8 +153,49 @@ export function createLibraryStorage(api) {
 export function isLibraryStorageAsset(asset) { return typeof asset?.path === "string" && asset.path.startsWith(PREFIX); }
 export { validateLibraryStorageDescriptor };
 
+function snapshotTransport(value) {
+  try { return structuredClone(value); }
+  catch { throw invalid("CANVAS_IMPORT_INTEGRITY"); }
+}
+
+function validateReleaseRetentions(release, retentions, options = {}) {
+  if (!Array.isArray(retentions)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  const imports = release?.document?.imports;
+  if (!plainObject(imports)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  const aliases = Object.keys(imports);
+  const seen = new Set();
+  const entries = [];
+  for (const entry of retentions) {
+    if (!plainObject(entry) || Object.keys(entry).some((key) => !["alias", "retention"].includes(key)) || typeof entry.alias !== "string" || !entry.alias || seen.has(entry.alias)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+    seen.add(entry.alias);
+    if (!Object.hasOwn(imports, entry.alias)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+    validateRetentionShape(entry.retention, options.allowStoredAssets === true);
+    try { validateRetainedCanvasRetention(entry.retention, { allowStoredAssets: options.allowStoredAssets === true }); }
+    catch { throw invalid("CANVAS_IMPORT_INTEGRITY"); }
+    entries.push({ alias: entry.alias, retention: entry.retention });
+  }
+  if (seen.size !== aliases.length || aliases.some((alias) => !seen.has(alias))) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  if (options.checkReferences !== false) {
+    try { buildRetainedCanvasImports(release.document, new Map(entries.map(({ alias, retention }) => [alias, retention]))); }
+    catch { throw invalid("CANVAS_IMPORT_INTEGRITY"); }
+  }
+  return entries;
+}
+
+function validateRetentionShape(retention, allowStoredAssets) {
+  if (!plainObject(retention) || Object.keys(retention).some((key) => !["root", "requestedItems", "items", "assets"].includes(key))) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  if (!Array.isArray(retention.assets)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  for (const asset of retention.assets) {
+    if (!plainObject(asset)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+    const allowed = allowStoredAssets ? ["release", "path", "sha256", "size", "mimeType", "storage"] : ["release", "path", "sha256", "size", "mimeType", "bytes"];
+    if (Object.keys(asset).some((key) => !allowed.includes(key))) throw invalid("CANVAS_IMPORT_INTEGRITY");
+    if (allowStoredAssets ? !(Object.hasOwn(asset, "storage") && !Object.hasOwn(asset, "bytes")) : !(asset.bytes instanceof Uint8Array && !Object.hasOwn(asset, "storage"))) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  }
+}
+
 function validateDescriptor(value) {
   validateLibraryStorageDescriptor(value);
 }
 function hash(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
 function invalid(code) { return Object.assign(new Error("Canvas library storage failed validation."), { code }); }
+function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
