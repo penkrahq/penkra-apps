@@ -64,3 +64,11 @@ test("aggregate capability gate keeps unmeasured mobile formats closed", () => {
     error.code === "CANVAS_CAPABILITY_INCOMPLETE" && /swift:.*unverified=/u.test(error.message)
   ));
 });
+
+test("mobile shadow spread is an explicit raster limitation", () => {
+  for (const format of ["swift", "kotlin"]) {
+    const entry = capabilityTableFor(format).properties["properties.effect.shadow.spread"];
+    assert.equal(entry.verdict, "raster");
+    assert.match(entry.reason, /no native shadow-spread parameter/u);
+  }
+});
