@@ -67,3 +67,34 @@ operation markdown, manifest, backend, native/device, or live Canvas document
 was changed. This is operation-seam and retained-receipt verification; it does
 not claim public operation rollout or backend persistence beyond the tested
 transport protocol.
+
+## Follow-up: non-string integrity values
+
+Correction commits, separate from the operations commits:
+
+- `9ba6ff0` — `fix(canvas): reject coerced import integrity values`
+- `cd2e383` — `test(canvas): cover non-string integrity values`
+
+The shared descriptor validator now requires `typeof sha256 === "string"`;
+schema identity validation and `normalizeImportRecord` require string
+`contentHash` values before regex checks, and the pinned guard has the same
+explicit type check. Arrays, objects, numbers, and null now fail at the direct
+normalizer or descriptor boundary with the existing `CANVAS_IMPORT_INVALID`
+or `CANVAS_IMPORT_INTEGRITY` codes. Valid string hashes remain accepted.
+
+Focused correction command:
+
+```text
+node --test src/canvas-schema.test.mjs src/canvas-imports.test.mjs src/library-storage.test.mjs src/library-retained-loader.test.mjs src/operations-retained-imports.test.mjs src/operations.test.mjs
+```
+
+Exit `0`; 58 tests passed; 0 failed, cancelled, or skipped.
+
+Full retained operations/import selection rerun:
+
+```text
+node --test src/operations.test.mjs src/operations-retained-imports.test.mjs src/canvas-schema.test.mjs src/canvas-imports.test.mjs src/canvas-resolver.test.mjs src/library-retained-loader.test.mjs src/library-storage.test.mjs src/library-retained-imports.test.mjs
+```
+
+Exit `0`; 84 tests passed; 0 failed, cancelled, or skipped. `git diff --check`
+passed.
