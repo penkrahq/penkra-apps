@@ -200,6 +200,39 @@ test("transfers eight payload assets concurrently with at most four in flight an
   assert.equal(events.filter(([name]) => name === "list").length, 0);
 });
 
+test("serializes different asset paths that share one content hash", async () => {
+  const assets = assetInventory(6).map((asset, index) => ({ ...asset, sha256: index < 3 ? "shared" : `unique-${index}` }));
+  const payload = makePayload(emptySource());
+  payload.assets = assets;
+  let sharedActive = 0;
+  let maximumShared = 0;
+  let totalActive = 0;
+  let maximumTotal = 0;
+  const api = fakeApi({
+    payload,
+    sourceAssets: assets,
+    copiedAssets: assets,
+    readAsset: async () => new Uint8Array([1]),
+    uploadAsset: async (_id, asset) => {
+      totalActive += 1;
+      maximumTotal = Math.max(maximumTotal, totalActive);
+      if (asset.sha256 === "shared") {
+        sharedActive += 1;
+        maximumShared = Math.max(maximumShared, sharedActive);
+      }
+      await pause(10);
+      if (asset.sha256 === "shared") sharedActive -= 1;
+      totalActive -= 1;
+    },
+  });
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-shared-hash-"));
+  const result = await createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory });
+  assert.equal(result.assetCount, 6);
+  assert.equal(maximumShared, 1);
+  assert.ok(maximumTotal > 1);
+  assert.ok(maximumTotal <= 4);
+});
+
 test("asset failure is reported in source order and cleanup waits for every started transfer", async () => {
   const assets = assetInventory(8);
   const payload = makePayload(emptySource());

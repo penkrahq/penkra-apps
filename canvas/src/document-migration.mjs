@@ -551,9 +551,20 @@ function sameAssetInventory(left, right) {
 }
 
 async function transferAssets(api, sourceDocumentId, destinationDocumentId, assets) {
-  // Keep a bounded number of read/upload chains active. Each worker owns an
-  // asset index, and the failure flag prevents any worker from claiming more
-  // work after an error while Promise.all below settles already-started work.
+  // The Account backend deduplicates blobs by content hash. Paths sharing a
+  // hash must therefore upload serially, while different hashes can retain the
+  // bounded parallelism used for large migrations.
+  const groups = [];
+  const byHash = new Map();
+  assets.forEach((asset, index) => {
+    let group = byHash.get(asset.sha256);
+    if (!group) {
+      group = [];
+      byHash.set(asset.sha256, group);
+      groups.push(group);
+    }
+    group.push({ asset, index });
+  });
   const next = { index: 0 };
   let failed = false;
   const failures = [];
@@ -562,19 +573,21 @@ async function transferAssets(api, sourceDocumentId, destinationDocumentId, asse
       if (failed) return;
       const index = next.index;
       next.index += 1;
-      if (index >= assets.length) return;
-      const asset = assets[index];
-      try {
-        const bytes = await api.readAsset(sourceDocumentId, asset);
-        await api.uploadAsset(destinationDocumentId, { ...asset, bytes });
-      } catch (error) {
-        failures.push({ index, error });
-        failed = true;
-        return;
+      if (index >= groups.length) return;
+      for (const entry of groups[index]) {
+        if (failed) return;
+        try {
+          const bytes = await api.readAsset(sourceDocumentId, entry.asset);
+          await api.uploadAsset(destinationDocumentId, { ...entry.asset, bytes });
+        } catch (error) {
+          failures.push({ index: entry.index, error });
+          failed = true;
+          return;
+        }
       }
     }
   };
-  const workerCount = Math.min(4, assets.length);
+  const workerCount = Math.min(4, groups.length);
   await Promise.all(Array.from({ length: workerCount }, () => worker()));
   if (failures.length) {
     failures.sort((left, right) => left.index - right.index);
