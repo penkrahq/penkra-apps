@@ -1,35 +1,62 @@
 import { spawn } from "node:child_process";
 
-export async function openBrowser(directory, signal) {
-  const child = spawn("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=0", `--user-data-dir=${directory}`, "about:blank"], { stdio: ["ignore", "ignore", "pipe"], signal });
+export async function openBrowser(directory, signal, options = {}) {
+  const child = spawn(options.command ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", options.args ?? ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check", "--remote-debugging-port=0", `--user-data-dir=${directory}`, "about:blank"], { stdio: ["ignore", "ignore", "pipe"], signal });
   child.on("error", () => {});
-  const closed = new Promise(resolve => child.once("close", resolve));
+  let didClose = false;
+  const closed = new Promise(resolve => child.once("close", (exitCode, terminationSignal) => {
+    didClose = true;
+    resolve({ pid: child.pid, exitCode, signal: terminationSignal, closed: true });
+  }));
   let browser, page;
+  let cleanup;
+  const lifetime = new AbortController();
+  const stop = () => cleanup ??= (async () => {
+    lifetime.abort();
+    page?.close(); browser?.close();
+    if (!didClose) child.kill("SIGTERM");
+    const escalation = setTimeout(() => { if (!didClose) child.kill("SIGKILL"); }, options.terminateGraceMs ?? 2000);
+    try { return await deadline(closed, options.terminationTimeoutMs ?? 5000, "BROWSER_TERMINATION_UNCONFIRMED"); }
+    finally { clearTimeout(escalation); }
+  })();
   try {
-    const url = await devtoolsUrl(child);
-    browser = connectCdp(url);
-    const { targetId } = await browser.send("Target.createTarget", { url: "about:blank" });
-    const target = await waitForTarget(url, targetId);
-    page = connectCdp(target.webSocketDebuggerUrl);
-    await page.send("Page.enable");
+    await deadline((async () => {
+      const url = await devtoolsUrl(child);
+      if (cleanup) throw new Error("Browser startup was cancelled");
+      browser = connectCdp(url);
+      const { targetId } = await browser.send("Target.createTarget", { url: "about:blank" });
+      const target = await waitForTarget(url, targetId, lifetime.signal);
+      if (cleanup) throw new Error("Browser startup was cancelled");
+      page = connectCdp(target.webSocketDebuggerUrl);
+      await page.send("Page.enable");
+    })(), options.startupTimeoutMs ?? 15_000, "BROWSER_STARTUP_TIMEOUT");
     return {
       async screenshot(url, width, height, scale) {
-        await page.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: scale, mobile: false });
-        const loaded = page.once("Page.loadEventFired");
-        await page.send("Page.navigate", { url });
-        await loaded;
-        await settle(page);
-        const result = await page.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
-        return Buffer.from(result.data, "base64");
+        try {
+          return await deadline((async () => {
+            await page.send("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: scale, mobile: false });
+            const loaded = page.once("Page.loadEventFired");
+            // Navigation failure can close the socket before this event is awaited.
+            loaded.catch(() => {});
+            await page.send("Page.navigate", { url });
+            await loaded;
+            await settle(page);
+            const result = await page.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+            return Buffer.from(result.data, "base64");
+          })(), options.screenshotTimeoutMs ?? 15_000, "BROWSER_SCREENSHOT_TIMEOUT");
+        } catch (error) { error.termination = await stop(); throw error; }
       },
-      async close() {
-        page.close();
-        try { await browser.send("Browser.close"); } finally {
-          browser.close(); child.kill("SIGTERM"); await closed;
-        }
-      },
+      close: stop,
     };
-  } catch (error) { page?.close(); browser?.close(); child.kill("SIGTERM"); await closed; throw error; }
+  } catch (error) { error.termination = await stop(); throw error; }
+}
+
+async function deadline(promise, milliseconds, code) {
+  let timer;
+  try { return await Promise.race([promise, new Promise((_, reject) => {
+    timer = setTimeout(() => reject(Object.assign(new Error(code), { code })), milliseconds);
+  })]); }
+  finally { clearTimeout(timer); }
 }
 
 async function devtoolsUrl(child) {
@@ -43,10 +70,11 @@ async function devtoolsUrl(child) {
   throw new Error(`Chrome exited before exposing DevTools: ${text}`);
 }
 
-async function waitForTarget(browserWs, targetId) {
+async function waitForTarget(browserWs, targetId, signal) {
   const endpoint = new URL(browserWs);
   for (let attempt = 0; attempt < 100; attempt += 1) {
-    const response = await fetch(`http://${endpoint.host}/json/list`).catch(() => null);
+    signal.throwIfAborted();
+    const response = await fetch(`http://${endpoint.host}/json/list`, { signal: AbortSignal.any([signal, AbortSignal.timeout(1000)]) }).catch(() => null);
     if (response?.ok) {
       const target = (await response.json()).find((candidate) => candidate.id === targetId);
       if (target) return target;
@@ -99,7 +127,7 @@ function connectCdp(url) {
         events.set(method, waiters);
       });
     },
-    close() { socket.close(); },
+    close() { try { socket.close(); } catch {} },
   };
 }
 
