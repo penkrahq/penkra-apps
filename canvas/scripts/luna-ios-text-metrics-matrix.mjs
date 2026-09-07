@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { promisify } from "node:util";
@@ -108,14 +108,15 @@ function canvasLineSummary(layout) {
 async function measureCanvasDocument() {
   const document = buildTextDecorationDocument();
   const nodeIds = CASES.map(({ id }) => `${id}-text`);
-  const result = await measureDocumentText(document, nodeIds);
-  const layouts = Object.fromEntries([...result.entries()].map(([id, layout]) => [id, layout]));
+  const { textLayouts } = await measureDocumentText(document, nodeIds);
+  const layouts = Object.fromEntries([...textLayouts.entries()].map(([id, layout]) => [id, layout]));
   await writeFile(join(evidence, "document-text-measurements.json"), `${JSON.stringify({ nodeIds, layouts }, null, 2)}\n`);
-  const first = result.values().next().value;
+  const first = textLayouts.values().next().value;
   return { nodeIds, fontHashes: first?.fontHashes ?? {}, layouts };
 }
 
 const runtimeSwift = `import Foundation
+import SwiftUI
 import UIKit
 import CoreText
 
@@ -235,15 +236,27 @@ async function readRuntimeJson(device, size, appData) {
   const outputPath = join(runtimeEvidence, device.key, `${size}.json`);
   await mkdir(dirname(outputPath), { recursive: true });
   const dataContainer = (await command("xcrun", ["simctl", "get_app_container", device.id, "com.penkra.canvas.qa.textmetrics", "data"])).stdout.trim();
-  await commandAllowFailure("xcrun", ["simctl", "spawn", device.id, "rm", "-f", `${dataContainer}/Documents/runtime-metrics.json`]);
+  const jsonPath = `${dataContainer}/Documents/runtime-metrics.json`;
+  await unlink(jsonPath).catch(() => {});
   const launch = await commandAllowFailure("xcrun", ["simctl", "launch", "--terminate-running-process", device.id, "com.penkra.canvas.qa.textmetrics", "--device-id", device.id, "--content-size", size]);
   if (launch.code !== 0) {
     await writeFile(join(runtimeEvidence, device.key, `${size}.launch-failure.log`), `${launch.stdout}\n${launch.stderr}`);
     return { deviceId: device.id, contentSize: size, status: "unmeasured", launchExitCode: launch.code, launchFailurePath: evidenceRelative(join(runtimeEvidence, device.key, `${size}.launch-failure.log`)) };
   }
-  await new Promise((resolveDelay) => setTimeout(resolveDelay, 1500));
-  const jsonPath = `${dataContainer}/Documents/runtime-metrics.json`;
-  const runtime = JSON.parse((await command("xcrun", ["simctl", "spawn", device.id, "cat", jsonPath])).stdout);
+  let runtime = null;
+  let lastRead = null;
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    try { runtime = JSON.parse(await readFile(jsonPath, "utf8")); break; }
+    catch (error) { lastRead = error; }
+    await new Promise((resolveDelay) => setTimeout(resolveDelay, 250));
+  }
+  if (!runtime) {
+    const failurePath = join(runtimeEvidence, device.key, `${size}.runtime-read-failure.log`);
+    await writeFile(failurePath, String(lastRead));
+    return { deviceId: device.id, contentSize: size, status: "unmeasured", launchExitCode: 0, runtimeReadFailurePath: evidenceRelative(failurePath) };
+  }
+  runtime.deviceId = device.id;
+  runtime.contentSize = size;
   runtime.capturePath = evidenceRelative(outputPath);
   runtime.status = "measured";
   await writeFile(outputPath, `${JSON.stringify(runtime, null, 2)}\n`);
