@@ -104,6 +104,7 @@ test("capture runner uses receipt-driven byte crop and unique run-02 evidence", 
   assert.match(runner, /validateFullFrameHashes\(\{ captured: capturedHashes, beforeCrop: fullBeforeCrop, afterCrop: fullAfterCrop \}\)/u);
   assert.match(runner, /randomUUID/u);
   assert.match(runner, /native-run-02/u);
+  assert.match(runner, /LUNA_GRID_READY.*LUNA_GRID_ROOT/u);
   const { sources } = buildGridSources();
   const host = sources.get("GridFixtureHost.swift");
   assert.match(host, /GeometryReader/u);

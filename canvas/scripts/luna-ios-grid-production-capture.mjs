@@ -88,7 +88,7 @@ async function waitForReceipt(device, caseID, nonce, launchDir) {
   const logPath = join(launchDir, "ready-log.txt");
   let combined = "";
   for (let attempt = 1; attempt <= 20; attempt += 1) {
-    const result = await allowFailure("xcrun", ["simctl", "spawn", device.id, "log", "show", "--style", "compact", "--last", "5s", "--predicate", "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""], { timeout: 10000, killSignal: "SIGTERM" });
+    const result = await allowFailure("xcrun", ["simctl", "spawn", device.id, "log", "show", "--style", "compact", "--last", "5s", "--predicate", "eventMessage CONTAINS[c] \"LUNA_GRID_READY\" OR eventMessage CONTAINS[c] \"LUNA_GRID_ROOT\""], { timeout: 10000, killSignal: "SIGTERM" });
     combined += `${result.stdout ?? ""}\n${result.stderr ?? ""}`;
     await writeEvidence(logPath, combined);
     const rootGeometry = rootGeometryReceipt(caseID, nonce, combined);
