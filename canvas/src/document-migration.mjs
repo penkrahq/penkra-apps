@@ -1,5 +1,5 @@
 import { mkdir, unlink, writeFile } from "node:fs/promises";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, resolve } from "node:path";
 import { validateCanvasDocument } from "./canvas-schema.mjs";
 import { createDocumentModel, encodeState, materialize, restoreDocumentModel } from "./document-model.mjs";
 import {
@@ -108,12 +108,29 @@ function renameAppearanceConditions(value) {
   for (const child of Object.values(value)) renameAppearanceConditions(child);
 }
 
-export async function createCanvasMigrationCopy(api, documentId, payload, { reportDirectory } = {}) {
+export async function createCanvasMigrationCopy(api, documentId, payload, {
+  reportDirectory,
+  sourceAccess = "owner",
+  sourceTitle,
+} = {}) {
   if (payload.id !== undefined && payload.id !== documentId) {
     throw migrationError(`Canvas migration payload ${payload.id} does not match source document ${documentId}.`);
   }
   if (!payload.snapshot?.source || typeof payload.snapshot.source !== "object") throw migrationError("Canvas migration needs a source projection.");
-  if (typeof reportDirectory !== "string" || !reportDirectory) throw migrationError("Canvas migration needs a report directory for its Markdown record.");
+  if (typeof reportDirectory !== "string" || !reportDirectory || !isAbsolute(reportDirectory)) {
+    throw migrationError("Canvas migration needs an absolute report directory for its Markdown record.");
+  }
+  if (sourceAccess !== "owner" && sourceAccess !== "editor") {
+    throw migrationError(`Canvas migration received unsupported source access ${sourceAccess}.`);
+  }
+  const title = String(sourceTitle ?? payload.title ?? "Untitled");
+  const copyTitle = sourceAccess === "editor" ? `${title} — migrated copy` : title;
+  const supersededTitle = `${title} — superseded by 00000000-0000-0000-0000-000000000000`;
+  // Validate the title that is sent to createDocument before any remote write.
+  // The owner superseded title is checked again after the generated copy ID is
+  // known because that ID is part of the final title.
+  assertMigrationTitle(copyTitle);
+  if (sourceAccess === "owner") assertMigrationTitle(supersededTitle);
   const legacyModel = restoreDocumentModel(payload);
   const source = materialize(legacyModel);
   legacyModel.doc.destroy();
@@ -124,8 +141,8 @@ export async function createCanvasMigrationCopy(api, documentId, payload, { repo
   let reportCreated = false;
   try {
     const sourceAssets = validateAssetInventory(await api.listAssets(documentId), documentId);
-    const title = String(payload.title ?? "Untitled");
-    copy = await api.createDocument({ title, source: migrated.document, initialUpdate: encodeState(model) });
+    copy = await api.createDocument({ title: copyTitle, source: migrated.document, initialUpdate: encodeState(model) });
+    if (!copy?.id) throw migrationError("Canvas migration createDocument returned no copy ID.");
     for (const asset of sourceAssets) {
       await api.uploadAsset(copy.id, { ...asset, bytes: await api.readAsset(documentId, asset) });
     }
@@ -139,12 +156,24 @@ export async function createCanvasMigrationCopy(api, documentId, payload, { repo
     }
     reportPath = join(resolve(reportDirectory), `migration-${documentId}-to-${copy.id}.md`);
     await mkdir(resolve(reportDirectory), { recursive: true });
-    await writeFile(reportPath, migrationMarkdown(title, documentId, copy.id, migrated, sourceAssets), { encoding: "utf8", flag: "wx" });
+    await writeFile(reportPath, migrationMarkdown(title, documentId, copy.id, migrated, sourceAssets, sourceAccess), { encoding: "utf8", flag: "wx" });
     reportCreated = true;
-    const supersededTitle = `${title} — superseded by ${copy.id}`;
-    if (new TextEncoder().encode(supersededTitle).length > 255) throw migrationError("The superseded-document title exceeds 255 UTF-8 bytes.");
-    await api.renameDocument(documentId, supersededTitle);
-    return { documentId: copy.id, reportPath, assetCount: sourceAssets.length };
+    let sourceRenamed = false;
+    if (sourceAccess === "owner") {
+      const finalSupersededTitle = `${title} — superseded by ${copy.id}`;
+      assertMigrationTitle(finalSupersededTitle);
+      await api.renameDocument(documentId, finalSupersededTitle);
+      sourceRenamed = true;
+    }
+    return {
+      sourceDocumentId: documentId,
+      documentId: copy.id,
+      title: copyTitle,
+      sourceAccess,
+      sourceRenamed,
+      reportPath,
+      assetCount: sourceAssets.length,
+    };
   } catch (error) {
     if (copy?.id) await api.deleteDocument(copy.id).catch(() => undefined);
     if (reportCreated) await unlink(reportPath).catch(() => undefined);
@@ -154,9 +183,20 @@ export async function createCanvasMigrationCopy(api, documentId, payload, { repo
   }
 }
 
-function migrationMarkdown(title, sourceId, copyId, migrated, assets) {
+function migrationMarkdown(title, sourceId, copyId, migrated, assets, sourceAccess) {
   const notes = migrated.notes.length ? migrated.notes.map((note) => `- ${note}`).join("\n") : "- No content was dropped, approximated or inferred.";
-  return `# Canvas migration: ${title}\n\nSource document: \`${sourceId}\`\n\nMigrated copy: \`${copyId}\`\n\nValidated assets transferred: ${assets.length}\n\nThe source content was left untouched and renamed only after the copy and asset inventory round-tripped successfully.\n\n## Dropped, approximated and inferred\n\n${notes}\n`;
+  const sourceDisposition = sourceAccess === "editor"
+    ? "The source was shared with this caller and was left unchanged; only a new owner copy was created."
+    : "The source content was left untouched and renamed only after the copy and asset inventory round-tripped successfully.";
+  return `# Canvas migration: ${title}\n\nSource document: \`${sourceId}\`\n\nMigrated copy: \`${copyId}\`\n\nValidated assets transferred: ${assets.length}\n\n${sourceDisposition}\n\n## Dropped, approximated and inferred\n\n${notes}\n`;
+}
+
+function assertMigrationTitle(title) {
+  if (new TextEncoder().encode(title).length > 255) {
+    const error = new Error("The Canvas migration title exceeds 255 UTF-8 bytes.");
+    error.code = "CANVAS_MIGRATION_TITLE_INVALID";
+    throw error;
+  }
 }
 
 function validateAssetInventory(value, documentId) {

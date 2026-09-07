@@ -20,6 +20,7 @@ import { readPublishedCanvasLibrary } from "./library-publication-head.mjs";
 import { acceptCanvasLibrary } from "./library-accept-workflow.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 import { assertExportAvailable } from "./export-availability.mjs";
+import { createCanvasMigrationCopy } from "./document-migration.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -81,6 +82,26 @@ runtime.operations.handle("documents.create", async ({ title, module, preset }) 
   } finally {
     model.doc.destroy();
   }
+});
+
+runtime.operations.handle("documents.migrate", async ({ documentId, reportDirectory }) => {
+  const listed = await findDocument(api, documentId);
+  if (!listed) {
+    const error = new Error(`Canvas document ${documentId} was not found.`);
+    error.code = "CANVAS_DOCUMENT_NOT_FOUND";
+    throw error;
+  }
+  if (listed.access !== "owner" && listed.access !== "editor") {
+    const error = new Error(`Canvas document ${documentId} returned unsupported access ${listed.access}.`);
+    error.code = "CANVAS_MIGRATION_ACCESS_INVALID";
+    throw error;
+  }
+  const payload = await api.getDocument(documentId);
+  return createCanvasMigrationCopy(api, documentId, payload, {
+    reportDirectory,
+    sourceAccess: listed.access,
+    sourceTitle: listed.title,
+  });
 });
 
 runtime.operations.handle("documents.open", async ({ documentId }, context) => {
@@ -395,4 +416,15 @@ function authoritativeSequence(payload) {
     Number(payload.snapshot?.throughSequence ?? 0),
     ...(payload.updates ?? []).map((update) => Number(update.sequence ?? 0)),
   );
+}
+
+async function findDocument(api, documentId) {
+  let cursor;
+  do {
+    const page = await api.listDocuments(cursor);
+    const document = page.items?.find((candidate) => candidate.id === documentId);
+    if (document) return document;
+    cursor = page.pageInfo?.nextCursor ?? undefined;
+  } while (cursor);
+  return null;
 }
