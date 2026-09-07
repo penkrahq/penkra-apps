@@ -6,6 +6,7 @@ import { join } from "node:path";
 
 import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
 import { encodeRgbaPng } from "../scripts/luna-ios-grid-capture-utils-20260907.mjs";
+import { createCommandAdapter, runTextReceiptMatrix } from "../scripts/luna-ios-text-receipt-20260907-runner.mjs";
 import {
   TEXT_RECEIPT_CASE_IDS, TEXT_RECEIPT_DEVICES, createExclusiveAttemptDir, evidenceRelative,
   parseTextReadyReceipt, parseTextRootReceipt, prepareTextReceiptEvidence, requireFreshEvidenceRoot,
@@ -44,9 +45,13 @@ test("text receipt matrix is exact ten-case Cartesian plan and preparation retai
     const result = await prepareTextReceiptEvidence(join(root, "source"));
     const matrix = JSON.parse(await readFile(join(result.root, "case-matrix.json"), "utf8"));
     const plan = JSON.parse(await readFile(join(result.root, "capture-plan.json"), "utf8"));
+    const provenance = JSON.parse(await readFile(join(result.root, "source-hashes.json"), "utf8"));
     assert.deepEqual(matrix.caseIds, TEXT_RECEIPT_CASE_IDS);
     assert.equal(matrix.expectedEntries, 30);
     assert.equal(plan.nativeRun, false);
+    assert.ok(provenance.files.some(({ path }) => path === "SimulatorHost/App.swift"));
+    assert.ok(provenance.files.some(({ path }) => path === "project.yml"));
+    assert.equal(provenance.files.filter(({ path }) => path.startsWith("Fonts/")).length, 2);
     assert.match(await readFile(join(result.root, "swift", "SimulatorHost", "App.swift"), "utf8"), /CanvasFonts\.register\(\)/u);
     assert.match(await readFile(join(result.root, "swift", "SimulatorHost", "App.swift"), "utf8"), /LUNA_TEXT_ROOT/u);
   } finally { await rm(root, { recursive: true, force: true }); }
@@ -54,7 +59,7 @@ test("text receipt matrix is exact ten-case Cartesian plan and preparation retai
 
 test("receipt args use fixed epoch window and exact case/nonce parsing", () => {
   const args = textReceiptQueryArgs(device.id, "2026-09-07T10:00:00.250Z", "2026-09-07T10:00:05.001Z");
-  assert.deepEqual(args.slice(0, 11), ["simctl", "spawn", device.id, "log", "show", "--style", "compact", "--start", "@1788775200", "--end", "@1788775206"]);
+  assert.deepEqual(args.slice(0, 10), ["spawn", device.id, "log", "show", "--style", "compact", "--start", "@1788775200", "--end", "@1788775206"]);
   assert.ok(parseTextReadyReceipt("case.+", "nonce[1]", "LUNA_TEXT_READY case=case.+ nonce=nonce[1] regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n"));
   assert.equal(parseTextReadyReceipt("case.+", "wrong", "LUNA_TEXT_READY case=case.+ nonce=nonce[1] regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n"), null);
   assert.ok(parseTextRootReceipt("case-01", "n+1", rootReceipt));
@@ -98,7 +103,7 @@ test("launch timeout, missing/late/wrong receipt and malformed root remain unmea
     const missing = await runTextReceiptCase({ evidenceRoot: join(root, "missing"), device, contentSize: "large", caseId: "case-01", command: wrong, screenshot: wrong.screenshot, sleep: async () => {}, receiptPollAttempts: 2, settleMs: 0 });
     assert.equal(missing.status, "unmeasured"); assert.equal(wrong.counts.launches, 1); assert.equal(wrong.counts.screenshots, 0);
     const late = fakeCommand({ logs: ["", rootReceipt], bytes: await pngBytes() });
-    const acceptedLate = await runTextReceiptCase({ evidenceRoot: join(root, "late"), device: { ...device, scale: 1 }, contentSize: "large", caseId: "case-01", nonce: "n+1", command: late, screenshot: late.screenshot, compare: async () => ({ status: "pass" }), sleep: async () => {}, receiptPollAttempts: 2, pairAttempts: 1, settleMs: 0, now: () => new Date("2026-09-07T10:00:00.250Z") });
+    const acceptedLate = await runTextReceiptCase({ evidenceRoot: join(root, "late"), device: { ...device, scale: 1 }, contentSize: "large", caseId: "case-01", nonce: "n+1", command: late, screenshot: late.screenshot, compare: async () => ({ status: "pass", comparedPixels: 1, mismatchedPixels: 0 }), sleep: async () => {}, receiptPollAttempts: 2, pairAttempts: 1, settleMs: 0, now: () => new Date("2026-09-07T10:00:00.250Z") });
     assert.equal(acceptedLate.status, "pass");
     const malformed = fakeCommand({ logs: [rootReceipt.replace("frame=0,0 340x180", "frame=NaN,0 340x180")], bytes: await pngBytes() });
     const badRoot = await runTextReceiptCase({ evidenceRoot: join(root, "malformed"), device, contentSize: "large", caseId: "case-01", nonce: "n+1", command: malformed, screenshot: malformed.screenshot, sleep: async () => {}, receiptPollAttempts: 1, settleMs: 0 });
@@ -132,4 +137,64 @@ test("restoration records observed setting and shutdown only for runner-booted d
   await restoreTextReceiptDevice({ device, observedContentSize: "accessibility-extra-extra-large", bootedByRunner: true, command });
   await restoreTextReceiptDevice({ device, observedContentSize: "large", bootedByRunner: false, command });
   assert.deepEqual(operations, [["size", "accessibility-extra-extra-large"], ["shutdown"], ["size", "large"]]);
+});
+
+test("command adapter has one simctl boundary and uses non-attached launch", async () => {
+  const calls = [];
+  const execFile = async (file, args, options) => { calls.push({ file, args, options }); return { stdout: "large\n", stderr: "" }; };
+  const command = createCommandAdapter({ execFile });
+  await command.query({ args: ["spawn", device.id, "log", "show"], timeoutMs: 4321 });
+  await command.launch({ device, args: ["--canvas-case", "case-01", "--canvas-nonce", "nonce"], timeoutMs: 9876 });
+  assert.deepEqual(calls[0].args, ["simctl", "spawn", device.id, "log", "show"]);
+  assert.deepEqual(calls[1].args, ["simctl", "launch", "--terminate-running-process", device.id, "com.penkra.canvas.qa.textreceipt", "--canvas-case", "case-01", "--canvas-nonce", "nonce"]);
+  assert.equal(calls[1].args.includes("--console"), false);
+  assert.equal(calls[1].options.timeout, 9876);
+});
+
+test("font receipt mismatch is unmeasured before screenshot", async () => {
+  const root = await tempRoot(); const bytes = await pngBytes();
+  const command = fakeCommand({ bytes, logs: [rootReceipt.replace("Inter-Regular", "Fallback-Regular")] });
+  try {
+    const result = await runTextReceiptCase({ evidenceRoot: root, device: { ...device, scale: 1 }, contentSize: "large", caseId: "case-01", nonce: "n+1", command, screenshot: command.screenshot, compare: async () => ({ status: "pass", comparedPixels: 1, mismatchedPixels: 0 }), sleep: async () => {}, receiptPollAttempts: 1, pairAttempts: 1, settleMs: 0 });
+    assert.equal(result.status, "unmeasured");
+    assert.equal(result.phase, "font-receipt");
+    assert.equal(command.counts.screenshots, 0);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+function matrixFakeCommand(calls) {
+  const sizes = new Map([[TEXT_RECEIPT_DEVICES[0].id, "large"], [TEXT_RECEIPT_DEVICES[1].id, "large"]]);
+  const state = new Map([[TEXT_RECEIPT_DEVICES[0].id, "Shutdown"], [TEXT_RECEIPT_DEVICES[1].id, "Booted"]]);
+  return {
+    async listDevices() { calls.push(["list"]); return { devices: { iOS: TEXT_RECEIPT_DEVICES.map((item) => ({ udid: item.id, state: state.get(item.id) })) } }; },
+    async boot({ device: item }) { calls.push(["boot", item.id]); state.set(item.id, "Booted"); },
+    async bootstatus({ device: item }) { calls.push(["bootstatus", item.id]); },
+    async readContentSize({ device: item }) { calls.push(["read", item.id]); return sizes.get(item.id); },
+    async setContentSize({ device: item, contentSize }) { calls.push(["set", item.id, contentSize]); sizes.set(item.id, contentSize); },
+    async shutdown({ device: item }) { calls.push(["shutdown", item.id]); state.set(item.id, "Shutdown"); },
+  };
+}
+
+test("matrix lifecycle snapshots, sets/read-backs, restores and refuses occupied roots", async () => {
+  const root = await tempRoot(); const occupied = join(root, "occupied"); await (await import("node:fs/promises")).mkdir(occupied); await writeFile(join(occupied, "existing"), "keep");
+  const calls = []; const command = matrixFakeCommand(calls);
+  await assert.rejects(() => runTextReceiptMatrix({ evidenceRoot: occupied, referencesRoot: root, command }), /fresh/u);
+  assert.equal(calls.length, 0);
+  const results = await runTextReceiptMatrix({ evidenceRoot: join(root, "fresh"), referencesRoot: root, command, sleep: async () => {}, runCase: async ({ device: item, contentSize, caseId }) => ({ device: item.key, contentSize, caseId, status: "pass", measurementStatus: "measured", comparison: { status: "pass", comparedPixels: 1 } }) });
+  assert.equal(results.length, 30);
+  assert.ok(calls.some(([name, id]) => name === "boot" && id === TEXT_RECEIPT_DEVICES[0].id));
+  assert.equal(calls.filter(([name, id]) => name === "boot" && id === TEXT_RECEIPT_DEVICES[1].id).length, 0);
+  assert.ok(calls.some(([name, id, size]) => name === "set" && id === TEXT_RECEIPT_DEVICES[0].id && size === "accessibility-extra-extra-large"));
+  assert.equal(calls.filter(([name]) => name === "shutdown").length, 1);
+  assert.deepEqual([...calls].filter(([name]) => name === "set").slice(-2).map(([, , size]) => size), ["large", "large"]);
+  await rm(root, { recursive: true, force: true });
+});
+
+test("matrix finally restores devices when a case runner throws", async () => {
+  const root = await tempRoot(); const calls = []; const command = matrixFakeCommand(calls);
+  try {
+    await assert.rejects(() => runTextReceiptMatrix({ evidenceRoot: join(root, "failure"), referencesRoot: root, command, runCase: async () => { throw new Error("injected case failure"); }, sleep: async () => {} }), /injected case failure/u);
+    assert.equal(calls.filter(([name]) => name === "shutdown").length, 1);
+    assert.deepEqual([...calls].filter(([name]) => name === "set").slice(-2).map(([, , size]) => size), ["large", "large"]);
+  } finally { await rm(root, { recursive: true, force: true }); }
 });

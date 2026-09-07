@@ -22,12 +22,14 @@ export const TEXT_RECEIPT_QUERY_TIMEOUT_MS = 10000;
 export const TEXT_RECEIPT_BUNDLE_ID = "com.penkra.canvas.qa.textreceipt";
 export const TEXT_RECEIPT_ROOT = "luna-ios-text-receipt-20260907";
 export const TEXT_RECEIPT_BUILD_COMMAND = "xcodebuild -project CanvasTextReceiptEvidence.xcodeproj -scheme CanvasTextReceiptEvidence -sdk iphonesimulator -configuration Debug -jobs 2";
+export const TEXT_RECEIPT_RECEIPT_DELAY_MS = 500;
 
 function sha256(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
 function escapeRegex(value) { return String(value).replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"); }
 function iso(value) { return new Date(value).toISOString(); }
 function json(value) { return `${JSON.stringify(value, null, 2)}\n`; }
 function validHash(value) { return typeof value === "string" && /^[0-9a-f]{64}$/u.test(value); }
+export function boundedSleep(milliseconds) { return new Promise((resolveDelay) => setTimeout(resolveDelay, milliseconds)); }
 
 export function evidenceRelative(root, path) { return relative(resolve(root), resolve(path)).replaceAll("\\", "/"); }
 
@@ -60,7 +62,7 @@ export function textReceiptQueryArgs(deviceId, startTimestamp, endTimestamp = ne
   const startMillis = Date.parse(startTimestamp); const endMillis = Date.parse(endTimestamp);
   assert.ok(Number.isFinite(startMillis) && Number.isFinite(endMillis), "receipt timestamps must be ISO timestamps");
   assert.ok(endMillis >= startMillis, "receipt end must not precede start");
-  return ["simctl", "spawn", deviceId, "log", "show", "--style", "compact", "--start", `@${Math.floor(startMillis / 1000)}`, "--end", `@${Math.ceil(endMillis / 1000)}`, "--predicate", "eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_FONT\""];
+  return ["spawn", deviceId, "log", "show", "--style", "compact", "--start", `@${Math.floor(startMillis / 1000)}`, "--end", `@${Math.ceil(endMillis / 1000)}`, "--predicate", "eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_FONT\""];
 }
 
 export function parseTextReadyReceipt(caseId, nonce, text) {
@@ -201,11 +203,17 @@ export async function prepareTextReceiptEvidence(destination) {
   await writeFile(join(root, "swift", "SimulatorHost", "App.swift"), host);
   const fontManifest = [...catalog].map(([key, face]) => ({ key, filename: face.filename, sha256: sha256(face.bytes), bytes: face.bytes.byteLength, sourcePath: `../luna-ios-text-20260906/exact-font-catalog/Fonts/${face.filename}`, retainedBytesInThisTree: false }));
   await writeFile(join(root, "font-sources.json"), json({ fonts: fontManifest, italicCasesExcluded: TEXT_RECEIPT_EXCLUDED_CASE_IDS }));
-  await writeFile(join(root, "project.yml"), buildTextReceiptProjectYaml());
-  await writeFile(join(root, "source-hashes.json"), json(sourceHashReceipt(new Map([...files].filter(([name]) => !name.startsWith("Fonts/"))))));
+  const projectYaml = buildTextReceiptProjectYaml();
+  await writeFile(join(root, "project.yml"), projectYaml);
+  const provenanceSources = new Map([...files].filter(([name]) => !name.startsWith("Fonts/")));
+  provenanceSources.set("SimulatorHost/App.swift", host);
+  provenanceSources.set("project.yml", projectYaml);
+  for (const [, face] of catalog) provenanceSources.set(`Fonts/${face.filename}`, face.bytes);
+  const provenance = sourceHashReceipt(provenanceSources);
+  await writeFile(join(root, "source-hashes.json"), json(provenance));
   await writeFile(join(root, "capture-plan.json"), json({ bundleIdentifier: TEXT_RECEIPT_BUNDLE_ID, cases: TEXT_RECEIPT_CASE_IDS, states: TEXT_RECEIPT_DEVICES.flatMap(({ key, contentSizes }) => contentSizes.map((contentSize) => `${key}-${contentSize}`)), expectedEntries: 30, pairAttempts: TEXT_RECEIPT_ATTEMPTS, launchTimeoutMs: TEXT_RECEIPT_LAUNCH_TIMEOUT_MS, queryTimeoutMs: TEXT_RECEIPT_QUERY_TIMEOUT_MS, buildCommand: TEXT_RECEIPT_BUILD_COMMAND, readiness: "exact case+nonce READY, ROOT geometry, runtime PostScript font identities, two stable screenshot hashes", crop: "receipt-derived byte-preserving CanvasKit crop of a 340x180 authored root", nativeRun: false }));
   await writeFile(join(root, "artifact-estimates.json"), json({ generatedSwiftBytes: [...files.values()].reduce((sum, value) => sum + Buffer.byteLength(value), 0) + Buffer.byteLength(host), exactFontBytes: fontManifest.reduce((sum, font) => sum + font.bytes, 0), fixtureBytes: Buffer.byteLength(JSON.stringify(document)), retainedPngBytesAtPreparation: 0, duplicateOldCorpus: false }));
-  return { root, document, ir, catalog, files, sourceHash: sourceHashReceipt(new Map([...files].filter(([name]) => !name.startsWith("Fonts/")))) };
+  return { root, document, ir, catalog, files, sourceHash: provenance };
 }
 
 async function hashFile(path) { return sha256(await readFile(path)); }
@@ -215,7 +223,7 @@ async function appendJsonLine(path, value) {
   await appendFile(path, `${JSON.stringify(value)}\n`);
 }
 
-export async function waitForTextReceipt({ device, caseId, nonce, launchStartTimestamp, launchDir, command, now = () => new Date(), sleep = async () => {}, attempts = 20, queryTimeoutMs = TEXT_RECEIPT_QUERY_TIMEOUT_MS }) {
+export async function waitForTextReceipt({ device, caseId, nonce, launchStartTimestamp, launchDir, command, now = () => new Date(), sleep = boundedSleep, attempts = 20, queryTimeoutMs = TEXT_RECEIPT_QUERY_TIMEOUT_MS }) {
   const queries = join(launchDir, "receipt-queries.jsonl");
   const readyLog = join(launchDir, "ready-log.txt");
   let last = "";
@@ -233,7 +241,7 @@ export async function waitForTextReceipt({ device, caseId, nonce, launchStartTim
     const ready = parseTextReadyReceipt(caseId, nonce, last);
     const root = parseTextRootReceipt(caseId, nonce, last);
     if (ready && root) return { ready, root, log: last, queryCount: index + 1, launchStartTimestamp, lastQueryEndTimestamp: endTimestamp };
-    await sleep(index);
+    await sleep(TEXT_RECEIPT_RECEIPT_DELAY_MS);
   }
   return { ready: null, root: null, log: last, queryCount: attempts, launchStartTimestamp, lastQueryEndTimestamp: iso(now()) };
 }
@@ -247,7 +255,7 @@ export async function restoreTextReceiptDevice({ device, observedContentSize, bo
 
 export async function runTextReceiptCase({
   evidenceRoot, device, contentSize, caseId, referencePath = null, command, screenshot,
-  compare = null, crop = cropPngBytes, now = () => new Date(), sleep = async () => {},
+  compare = null, crop = cropPngBytes, now = () => new Date(), sleep = boundedSleep,
   pairAttempts = TEXT_RECEIPT_ATTEMPTS, receiptPollAttempts = 20,
   launchTimeoutMs = TEXT_RECEIPT_LAUNCH_TIMEOUT_MS, queryTimeoutMs = TEXT_RECEIPT_QUERY_TIMEOUT_MS,
   nonce = randomUUID(), settleMs = 1000,
@@ -277,6 +285,11 @@ export async function runTextReceiptCase({
     await writeFile(join(launchDir, "receipt-failure.json"), json(failure));
     return { caseId, device: device.key, contentSize, nonce, status: "unmeasured", phase: "receipt", attempts: [], launch: { ...launchRecord, result: launchResult, launched }, receipt, failure };
   }
+  if (receipt.ready.regularPostScript !== "Inter-Regular" || receipt.ready.boldPostScript !== "Inter-Bold") {
+    const failure = { phase: "font-receipt", name: "FontReceiptMismatch", message: "runtime PostScript font identities did not match the exact catalog faces", code: "CANVAS_MOBILE_FONT_MISMATCH", signal: null, killed: false, stack: null, expected: { regularPostScript: "Inter-Regular", boldPostScript: "Inter-Bold" }, actual: receipt.ready };
+    await writeFile(join(launchDir, "font-receipt-failure.json"), json(failure));
+    return { caseId, device: device.key, contentSize, nonce, status: "unmeasured", phase: "font-receipt", attempts: [], launch: { ...launchRecord, result: launchResult, launched }, receipt, failure };
+  }
   const attempts = [];
   for (let index = 0; index < pairAttempts; index += 1) {
     const attemptNonce = `${nonce}-${index + 1}`;
@@ -301,7 +314,9 @@ export async function runTextReceiptCase({
       await writeFile(join(attemptDir, "crop-a.png"), croppedA.bytes); await writeFile(join(attemptDir, "crop-b.png"), croppedB.bytes);
       const after = { a: await hashFile(firstPath), b: await hashFile(secondPath) };
       const hashes = validateFullFrameHashes({ captured: fullBeforeCrop, beforeCrop: fullBeforeCrop, afterCrop: after });
-      const comparison = compare ? await compare({ referencePath, capturePath: join(attemptDir, "crop-b.png"), scale: device.scale, caseId, contentSize }) : { status: "unmeasured", reason: "no comparator supplied" };
+      const comparison = compare ? await compare(referencePath, join(attemptDir, "crop-b.png"), device.scale) : { status: "unmeasured", reason: "no comparator supplied" };
+      if (comparison.status !== "pass" && comparison.status !== "mismatch") throw Object.assign(new Error("comparator did not return a measured status"), { code: "INVALID_COMPARISON" });
+      assert.ok(Number.isFinite(comparison.comparedPixels) && comparison.comparedPixels > 0, "comparator returned no compared pixels");
       const result = { ...record, paths: { fullA: evidenceRelative(evidenceRoot, firstPath), fullB: evidenceRelative(evidenceRoot, secondPath), cropA: evidenceRelative(evidenceRoot, join(attemptDir, "crop-a.png")), cropB: evidenceRelative(evidenceRoot, join(attemptDir, "crop-b.png")) }, fullHashes: hashes, identity, comparison };
       await writeFile(join(attemptDir, "attempt.json"), json(result)); attempts.push(result);
       if (comparison.status !== "unmeasured") return { caseId, device: device.key, contentSize, nonce, status: comparison.status, phase: "measured", attempts, launch: { ...launchRecord, result: launchResult, launched }, receipt };
