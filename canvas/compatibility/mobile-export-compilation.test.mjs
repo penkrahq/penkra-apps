@@ -18,8 +18,8 @@ const document = {
     id: "screen", type: "frame", role: "ios", name: "Generated Screen",
     width: 390, height: 844, children: [
       { id: "title", type: "text", x: 24, y: 40, width: 300, height: 48,
-        content: "Canvas", fontSize: 32, paragraphs: [{ from: 0, to: 6, headingLevel: 1 }],
-        marks: [], description: "Screen title" },
+        content: "Canvas", fontSize: 28.25, paragraphs: [{ from: 0, to: 6, headingLevel: 1 }],
+        marks: [{ type: "fontSize", from: 3, to: 6, value: 18.5 }], description: "Screen title" },
       { id: "card", type: "rectangle", x: 24, y: 112, width: 342, height: 160,
         fill: "#123456", description: "Information card" },
     ],

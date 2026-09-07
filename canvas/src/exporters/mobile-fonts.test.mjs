@@ -32,8 +32,8 @@ test("mobile bundles carry exact font bytes and native loaders, with no silent f
   assert.match(swift.get("FontScreen.swift"), /\.custom\("Inter-Regular"/);
   const compose = exportCompose(ir, { fonts: { "Inter:400": regular } });
   assert.match(compose.get("FontScreen.kt"), /fontFamily = canvasFont0/);
-  assert.match(compose.get("FontScreen.kt"), /style = androidx\.compose\.ui\.text\.TextStyle\(fontSize = 24\.sp, letterSpacing = 0\.sp, textMotion = androidx\.compose\.ui\.text\.style\.TextMotion\.Animated\)/);
-  assert.doesNotMatch(compose.get("FontScreen.kt"), /SpanStyle\([^)]*fontSize/);
+  assert.match(compose.get("FontScreen.kt"), /style = androidx\.compose\.ui\.text\.TextStyle\(fontSize = with\(androidx\.compose\.ui\.platform\.LocalDensity\.current\) \{ 24\.dp\.toSp\(\) \}, letterSpacing = 0\.sp, textMotion = androidx\.compose\.ui\.text\.style\.TextMotion\.Animated\)/);
+  assert.ok(compose.get("FontScreen.kt").includes("SpanStyle(color = Color(0xFF000000), fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 24.dp.toSp() }"));
   assert.match(compose.get("_canvas/CanvasFonts.kt"), /assetManager = assets/);
 });
 

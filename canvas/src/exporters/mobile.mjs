@@ -120,7 +120,9 @@ function swiftText(node, options) {
     const text = node.semantics.content.slice(run.from, run.to);
     let result = `Text(${JSON.stringify(text)})`;
     const face = options.fontCatalog?.get(mobileFontKey(run));
-    result += `.font(.custom(${JSON.stringify(face?.postscriptName ?? run.fontFamily ?? "Inter")}, size: ${n(run.fontSize ?? 16)}, relativeTo: .body)${face ? "" : `.weight(${swiftWeight(run.weight ?? run.fontWeight)})`})`;
+    const size = n(run.fontSize ?? 16);
+    const font = `Font.custom(${JSON.stringify(face?.postscriptName ?? run.fontFamily ?? "Inter")}, fixedSize: ${size})${face ? "" : `.weight(${swiftWeight(run.weight ?? run.fontWeight)})`}`;
+    result += `.font(${font})`;
     result += `.foregroundColor(${swiftColor(run.fill ?? "#000000")})`;
     if (run.letterSpacing != null) result += `.tracking(${n(run.letterSpacing)})`;
     if (!face && (run.italic || run.fontStyle === "italic")) result += ".italic()";
@@ -175,7 +177,7 @@ function composeNode(node, children, options, depth, parentLayout) {
     const name = `bytes${identifier(node.id)}`;
     return `${indent}run { val ${name} = Base64.decode(${JSON.stringify(data)}, Base64.DEFAULT); Image(BitmapFactory.decodeByteArray(${name}, 0, ${name}.size).asImageBitmap(), null, ${modifier}) }`;
   }
-  if (node.type === "text") return `${indent}Text(${composeText(node, options)}, style = androidx.compose.ui.text.TextStyle(fontSize = ${n(composeBaseFontSize(node.semantics.runs))}.sp, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated${composeTextAlignment(node)}), modifier = ${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)}))`;
+  if (node.type === "text") return `${indent}Text(${composeText(node, options)}, style = androidx.compose.ui.text.TextStyle(fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { ${n(composeBaseFontSize(node.semantics.runs))}.dp.toSp() }, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated${composeTextAlignment(node)}), modifier = ${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)}))`;
   if (node.vector) return `${indent}${composeVector(node, modifier)}`;
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return composeContainer(node, descendants, children, options, depth, false, modifier);
@@ -275,19 +277,14 @@ function composeTextAlignment(node) {
 
 function composeText(node, options) {
   const runs = node.semantics.runs.length ? node.semantics.runs : [{ from: 0, to: node.semantics.content.length }];
-  // Absolute-size spans round to whole pixels. Relative spans preserve the
-  // floating-point size; deriving the ratio in pixels also retains Android's
-  // nonlinear font-scale conversion for each authored sp size.
   const baseSize = composeBaseFontSize(runs);
-  const mixedSizes = runs.some(run => (run.fontSize ?? 16) !== baseSize);
   const body = runs.map((run, index) => {
     const decorations = [run.underline ? "TextDecoration.Underline" : null, run.strikethrough ? "TextDecoration.LineThrough" : null].filter(Boolean);
-    const style = [`color = ${composeColor(run.fill ?? "#000000")}`, (run.fontSize ?? 16) !== baseSize ? `fontSize = with(canvasDensity) { (${n(run.fontSize ?? 16)}.sp.toPx() / ${n(baseSize)}.sp.toPx()).em }` : null, `fontWeight = FontWeight(${Number(run.weight ?? run.fontWeight ?? 400)})`, run.letterSpacing != null ? `letterSpacing = ${n(run.letterSpacing)}.sp` : null, (run.italic || run.fontStyle === "italic") ? "fontStyle = FontStyle.Italic" : null, decorations.length ? `textDecoration = ${decorations.length === 1 ? decorations[0] : `TextDecoration.combine(listOf(${decorations.join(", ")}))`}` : null].filter(Boolean).join(", ");
+    const style = [`color = ${composeColor(run.fill ?? "#000000")}`, `fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { ${n(run.fontSize ?? 16)}.dp.toSp() }`, `fontWeight = FontWeight(${Number(run.weight ?? run.fontWeight ?? 400)})`, run.letterSpacing != null ? `letterSpacing = with(androidx.compose.ui.platform.LocalDensity.current) { ${n(run.letterSpacing)}.dp.toSp() }` : null, (run.italic || run.fontStyle === "italic") ? "fontStyle = FontStyle.Italic" : null, decorations.length ? `textDecoration = ${decorations.length === 1 ? decorations[0] : `TextDecoration.combine(listOf(${decorations.join(", ")}))`}` : null].filter(Boolean).join(", ");
     return `withStyle(SpanStyle(${style}${options.fontCatalog?.size ? `, fontFamily = canvasFont${index}` : ""})) { append(${JSON.stringify(node.semantics.content.slice(run.from, run.to))}) }`;
   }).join("; ");
   const expression = `buildAnnotatedString { ${body} }`;
-  const declarations = [mixedSizes ? "val canvasDensity = androidx.compose.ui.platform.LocalDensity.current" : null,
-    ...(options.fontCatalog?.size ? runs.map((run, index) => `val canvasFont${index} = CanvasFonts.family(${JSON.stringify(mobileFontKey(run))})`) : [])].filter(Boolean);
+  const declarations = options.fontCatalog?.size ? runs.map((run, index) => `val canvasFont${index} = CanvasFonts.family(${JSON.stringify(mobileFontKey(run))})`) : [];
   return declarations.length ? `run { ${declarations.join("; ")}; ${expression} }` : expression;
 }
 

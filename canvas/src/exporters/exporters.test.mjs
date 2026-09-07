@@ -332,21 +332,36 @@ test("mobile text opacity applies to the complete rich text expression", () => {
   }
 });
 
-test("Compose mixed-size runs use density-resolved relative spans without integer rounding", () => {
+test("mobile text fixes authored font sizes across accessibility scaling", () => {
+  const mobile = structuredClone(document); mobile.module = "mobile";
+  mobile.children[0].children = [{ id: "text", type: "text", width: 300, height: 100, content: "Canvas", fontSize: 28.25 }];
+  mobile.children[0].role = "ios";
+  const swift = exportSwiftUI(buildCapabilityVerificationIR(mobile, { role: "ios", frames: ["slide"] }, capabilityPathInventory())).get("Title.swift");
+  assert.match(swift, /Font\.custom\("Inter", fixedSize: 28\.25\)/u);
+  assert.doesNotMatch(swift, /relativeTo: \.body|dynamicTypeSize/u);
+
+  mobile.children[0].role = "android";
+  mobile.children[0].children[0].letterSpacing = -0.5;
+  const compose = exportCompose(buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory())).get("Title.kt");
+  assert.match(compose, /TextStyle\(fontSize = with\(androidx\.compose\.ui\.platform\.LocalDensity\.current\) \{ 28\.25\.dp\.toSp\(\) \}/u);
+  assert.match(compose, /letterSpacing = with\(androidx\.compose\.ui\.platform\.LocalDensity\.current\) \{ -0\.5\.dp\.toSp\(\) \}/u);
+  assert.doesNotMatch(compose, /TextStyle\(fontSize = 28\.25\.sp/u);
+});
+
+test("Compose mixed-size runs use density-resolved absolute spans without font-scale enlargement", () => {
   const mobile = structuredClone(document); mobile.module = "mobile";
   mobile.children[0].role = "android";
   mobile.children[0].children = [{ id: "text", type: "text", width: 300, height: 100, content: "AB", fontSize: 24,
     marks: [{ type: "fontSize", from: 1, to: 2, value: 28.25 }] }];
   const ir = buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory());
   const source = exportCompose(ir).get("Title.kt");
-  assert.match(source, /val canvasDensity = androidx\.compose\.ui\.platform\.LocalDensity\.current/u);
-  assert.ok(source.includes("fontSize = with(canvasDensity) { (28.25.sp.toPx() / 24.sp.toPx()).em }"));
-  assert.ok(source.includes("import androidx.compose.ui.unit.em"));
+  assert.ok(source.includes("fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 24.dp.toSp() }"));
+  assert.ok(source.includes("fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 28.25.dp.toSp() }"));
   assert.doesNotMatch(source, /fontSize = 28\.25\.sp[,)]/u);
   mobile.children[0].children[0].fontSize = 0;
   const zeroFirst = exportCompose(buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory())).get("Title.kt");
-  assert.ok(zeroFirst.includes("(0.sp.toPx() / 28.25.sp.toPx()).em"));
-  assert.doesNotMatch(zeroFirst, /\/ 0\.sp\.toPx\(\)/u);
+  assert.ok(zeroFirst.includes("fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 0.dp.toSp() }"));
+  assert.ok(zeroFirst.includes("TextStyle(fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 28.25.dp.toSp() }"));
 });
 
 test("mobile solid paints preserve shorthand alpha and paint opacity", () => {
