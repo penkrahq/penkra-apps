@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNull, PDFNumber, PDFRawStream, PDFRef, PDFString, decodePDFRawStream } from "pdf-lib";
 import { inspectPdfxMetadata } from "./pdfx-metadata.mjs";
 import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
+import { inspectPdfPageTree } from "./pdf-page-tree.mjs";
 import { inspectPageImages } from "./pdfx-images.mjs";
 import { inspectPdfxSubsetPolicy } from "./pdfx-subset-policy.mjs";
 import { PDF_ARCHITECTURAL_LIMITS, inspectContentNumberSpellings, inspectContentValueLimits, inspectIndirectObjectCount, inspectPdfObjectLimits } from "./pdfx-limits.mjs";
@@ -92,6 +93,9 @@ async function inspectPdfx4(bytes, envelope = inspectCanvasPdfEnvelope(bytes)) {
   let pdf;
   try { pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true }); }
   catch { add("PDF_PARSE_FAILED", "6.1", "file"); return result(); }
+  const pageTree = inspectPdfPageTree(pdf);
+  issues.push(...pageTree.issues);
+  if (pageTree.issues.length) return result();
   issues.push(...inspectPdfxSubsetPolicy(pdf).issues);
   const resolve = (value) => value instanceof PDFRef ? pdf.context.lookup(value) : value;
   const get = (dict, key) => dict instanceof PDFDict ? resolve(dict.get(PDFName.of(key))) : undefined;
