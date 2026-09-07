@@ -1122,3 +1122,36 @@ unchanged at `30/30` mismatches.
 
 Final combined HEAD is `5baced319adfd92776a5ecdcbd0a1cc735829262`; `git diff --check` passes and
 only the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/` is untracked.
+
+## iOS text receipt offline diagnostic integration
+
+The approved diagnostic-only iOS batch was cherry-picked in exact order after combined HEAD
+`c3699614dbd69bc127154328ed123bd068585b2f`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `d1a700cd4020ee5bf369e37eb4849a291de60d47` | `389756dba5afcf7e4930ef0442dca12a3685269d` |
+| `df88bf07143d509d00feb738518655d346143bde` | `f6c93b92c3b2be61e6ac297aa3a8a533fb5c5bac` |
+| `f2b5dba54bcb4ed46743c0bd71587aad6ac3cbc4` | `de6ff2baf5441c9c17e96e40897236d27423331e` |
+| `1cedc3bc2105331244039323e0a846f95245775b` | `d4d68b5667d7261819c9799fedfb829bed3cba42` |
+
+Pre-pick full-stat inspection confirmed that d1 added only the new offline diagnostic script and
+compatibility test, df added only the retained offline-diagnostic research tree, f2 narrowed only
+that script/test, and 1ced corrected only that diagnostic evidence. No protected, production,
+emitter, vendor, manifest, capability, or native paths were changed; no patch-equivalent was
+skipped. The unrelated `3967d70` raw rewrite was not picked.
+
+The device-free focused command ran once with default retained paths and no environment overrides:
+
+`node scripts/test.mjs compatibility/luna-ios-text-receipt-offline-diagnostic-20260907.test.mjs src/luna-ios-text-receipt-evidence-independent.test.mjs src/luna-ios-text-receipt-independent.test.mjs compatibility/luna-ios-text-receipt-20260907.test.mjs compatibility/luna-ios-text-receipt-references-20260907.test.mjs`
+
+Log: `/tmp/canvas-ios-text-offline-diagnostic-focused-20260907.log`. Exit `0`; `26` passed,
+`0` failed, `0` cancelled, `0` skipped; Node-reported duration `65,538.651625 ms`. The tests
+recomputed the retained 30-entry diagnostic in a temporary output directory and read the ordinary
+combined-worktree retained run-01/reference paths; no retained artifact was regenerated. The
+retained native corpus remains unchanged at `30/30` mismatches. No native/device process was
+active before or after the run.
+
+Final combined HEAD before evidence recording is
+`d4d68b5667d7261819c9799fedfb829bed3cba42`. `git diff --check` passes; the only untracked path
+remains the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/`.
