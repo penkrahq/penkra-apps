@@ -1,0 +1,9 @@
+# Library retention preparation verification
+
+Commit `b35e9ff` adds a preparation-only adapter for accepted public library items. The owning Canvas TODO remains the planning authority; this record describes verified code, not a separate plan.
+
+`prepareLibraryRetention` snapshots the root release and requested items before awaiting readers. It follows exact published dependency identities, recursively copies only referenced public items and each item's required private local closure, and reads only required assets. Asset bytes are detached and checked against declared SHA-256 and size. Repeated references share one selected dependency and asset read within a call. Qualified components, paragraph styles, and typed variable aliases are included. Returned assets retain their owning release identity, so identical relative paths in separate libraries are not conflated.
+
+Tests establish exclusion of unrelated private nodes/tokens/assets, transitive traversal across three libraries, rejection of denied reads and wrong identities, corrupted-asset rejection, private-root rejection, input snapshot isolation, and detached returned content. The dependency readers are supplied authorization boundaries; the caller must authorize the root acceptance. This helper grants no access and performs no durable write. It is not a deployed storage endpoint or installed import workflow.
+
+On September 7, the focused retention/publication/import/resolver command passed **39 tests**, zero failures/cancellations/skips, exit 0. The broader `node --test src/*.test.mjs src/exporters/*.test.mjs` command in the isolated libraries worktree passed **398 tests**, zero failures/cancellations/skips, exit 0, in 12532 ms. This is the source-test subset, not the native compilation or installed application matrix. Protected `canvas/TODO.md` was not modified; no live document or backend was changed.
