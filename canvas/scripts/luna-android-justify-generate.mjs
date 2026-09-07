@@ -214,6 +214,12 @@ export async function measureJustifyCapture(caseId, density, fontScale, captureP
     expectedBounds, observedBounds, comparedPixels, mismatchedPixels, status: boundMismatches.length || mismatchedPixels ? "fail" : "pass",
     boundaryExclusionPixels: 2, channelTolerance: 2, boundMismatches,
   };
+  return row;
+}
+
+export async function writeJustifyMeasurement(row, evidenceDir = defaultEvidenceDir) {
+  const paths = evidencePaths(row.caseId, row.density, row.fontScale, evidenceDir);
+  await mkdir(paths.caseDir, { recursive: true });
   await writeFile(paths.rowPath, `${JSON.stringify(row, null, 2)}\n`);
   return row;
 }
@@ -268,6 +274,7 @@ async function main() {
   if (args.has("reference")) { console.log(JSON.stringify(await writeJustifyReference(caseId, Number(args.get("density")), evidenceDir), null, 2)); return; }
   if (args.has("measure")) {
     const row = await measureJustifyCapture(caseId, Number(args.get("density")), Number(args.get("font-scale")), String(args.get("capture")), evidenceDir);
+    await writeJustifyMeasurement(row, evidenceDir);
     if (args.has("report")) await appendJustifyMeasurement(row, resolve(String(args.get("report"))));
     console.log(JSON.stringify(row, null, 2)); return;
   }

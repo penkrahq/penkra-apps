@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import { resolve } from "node:path";
 import {
   CASE_IDS, DENSITIES, FONT_SCALES, appendJustifyMeasurement, evidencePaths,
-  measureJustifyCapture, prepareJustifyCase, writeJustifyReference,
+  measureJustifyCapture, prepareJustifyCase, writeJustifyMeasurement, writeJustifyReference,
 } from "./luna-android-justify-generate.mjs";
 
 const exec = promisify(execFile);
@@ -62,6 +62,7 @@ async function main() {
         await writeFile(paths.capturePath, capture);
         await writeJustifyReference(caseId, density, evidenceDir);
         const row = await measureJustifyCapture(caseId, density, fontScale, paths.capturePath, evidenceDir);
+        await writeJustifyMeasurement(row, evidenceDir);
         await appendJustifyMeasurement(row, reportPath);
         console.log(`case ${caseId} density=${density} fontScale=${fontScale}: ${row.status} compared=${row.comparedPixels} mismatched=${row.mismatchedPixels}`);
       }

@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
-import { readFile, stat } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { copyFile, mkdtemp, readFile, rm, rmdir, stat, writeFile } from "node:fs/promises";
+import { execFile as execFileCallback } from "node:child_process";
+import { tmpdir } from "node:os";
 import test from "node:test";
-import { isAbsolute, relative, resolve } from "node:path";
+import { promisify } from "node:util";
+import { isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildCapabilityVerificationIR } from "../src/exporter-ir.mjs";
 import { exportCompose } from "../src/exporters/mobile.mjs";
@@ -10,6 +14,12 @@ import {
 } from "../scripts/luna-android-justify-generate.mjs";
 
 const evidenceDir = fileURLToPath(new URL("../research/luna-android-justify-20260906/", import.meta.url));
+const execFile = promisify(execFileCallback);
+
+async function hashedFile(path) {
+  const bytes = await readFile(path);
+  return { bytes: bytes.length, sha256: createHash("sha256").update(bytes).digest("hex") };
+}
 
 function sourceFor(spec, options = {}) {
   const id = caseIdFor(spec);
@@ -70,8 +80,18 @@ test("non-start/center/end justify values keep the existing no-overload arrangem
 
 test("retained PNG corpus recomputes all structured measurements with portable paths", async () => {
   const report = JSON.parse(await readFile(resolve(evidenceDir, "measurements.json"), "utf8"));
+  const manifest = JSON.parse(await readFile(resolve(evidenceDir, "artifact-manifest.json"), "utf8"));
   const expectedKeys = new Set(CASE_IDS.flatMap((caseId) => DENSITIES.flatMap((density) => FONT_SCALES.map((fontScale) => `${caseId}|${density}|${fontScale}`))));
   assert.equal(report.length, expectedKeys.size);
+  assert.equal(manifest.caseCount, CASE_IDS.length);
+  assert.deepEqual(manifest.caseIds, CASE_IDS);
+  assert.equal(manifest.measurementCount, report.length);
+  assert.equal(manifest.captureCount, report.length);
+  for (const record of manifest.files) {
+    const actual = await hashedFile(resolve(evidenceDir, record.path));
+    assert.equal(actual.bytes, record.bytes);
+    assert.equal(actual.sha256, record.sha256);
+  }
   const seen = new Set();
   for (const row of report) {
     const key = `${row.caseId}|${row.density}|${row.fontScale}`;
@@ -91,7 +111,52 @@ test("retained PNG corpus recomputes all structured measurements with portable p
     assert.deepEqual(recomputed.observedBounds, row.observedBounds);
     assert.equal(recomputed.comparedPixels, row.comparedPixels);
     assert.equal(recomputed.mismatchedPixels, row.mismatchedPixels);
+    assert.ok(row.comparedPixels > 0);
+    assert.ok(row.mismatchedPixels >= 0);
+    assert.equal(row.boundaryExclusionPixels, 2);
+    assert.equal(row.channelTolerance, 2);
+    assert.deepEqual(recomputed.boundMismatches, row.boundMismatches);
     assert.equal(recomputed.status, row.status);
   }
   assert.deepEqual(seen, expectedKeys);
+});
+
+test("displaced group fails absolute bounds while aligned interior sampling remains clean", async () => {
+  const caseId = "horizontal-center-g10-none";
+  const density = 420;
+  const fontScale = 1;
+  const sourcePath = resolve(evidenceDir, caseId, "capture-420-font-1.png");
+  const tempDir = await mkdtemp(join(tmpdir(), "luna-android-justify-negative-"));
+  const displacedPath = resolve(tempDir, "displaced.png");
+  try {
+    await execFile("magick", [sourcePath, "-roll", "+12+0", displacedPath]);
+    const displaced = await measureJustifyCapture(caseId, density, fontScale, displacedPath, evidenceDir);
+    assert.equal(displaced.status, "fail");
+    assert.equal(displaced.mismatchedPixels, 0);
+    assert.ok(displaced.boundMismatches.some((mismatch) => mismatch.coordinate === "x" && Math.abs(mismatch.observed - mismatch.expected) > 2));
+  } finally {
+    await rm(displacedPath, { force: true });
+    await rmdir(tempDir);
+  }
+});
+
+test("tampered retained bytes are rejected by the recorded artifact hash", async () => {
+  const manifest = JSON.parse(await readFile(resolve(evidenceDir, "artifact-manifest.json"), "utf8"));
+  const record = manifest.files.find((entry) => entry.path === "horizontal-center-g10-none/capture-420-font-1.png");
+  assert.ok(record);
+  const sourcePath = resolve(evidenceDir, record.path);
+  const tempDir = await mkdtemp(join(tmpdir(), "luna-android-justify-tamper-"));
+  const tamperedPath = resolve(tempDir, "tampered.png");
+  try {
+    await copyFile(sourcePath, tamperedPath);
+    const bytes = await readFile(tamperedPath);
+    bytes[bytes.length - 1] ^= 1;
+    await writeFile(tamperedPath, bytes);
+    const tampered = await hashedFile(tamperedPath);
+    assert.equal(tampered.bytes, record.bytes);
+    assert.notEqual(tampered.sha256, record.sha256);
+  } finally {
+    await rm(tamperedPath, { force: true });
+    await rmdir(tempDir);
+  }
 });
