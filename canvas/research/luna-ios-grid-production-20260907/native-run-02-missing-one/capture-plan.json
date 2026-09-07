@@ -1,0 +1,16 @@
+{
+  "cases": [
+    "grid-c100-180-r60-100-normal"
+  ],
+  "device": {
+    "key": "iphone",
+    "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "contentSize": "large",
+    "scale": 3
+  },
+  "launchTimeoutMs": 120000,
+  "receiptQueryTimeoutMs": 10000,
+  "fixedReceiptWindow": true,
+  "maxPairAttempts": 3,
+  "install": "not authorized; installed bundle hash is verified only"
+}

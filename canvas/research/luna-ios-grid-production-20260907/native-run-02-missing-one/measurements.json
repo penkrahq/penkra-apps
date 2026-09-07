@@ -1,0 +1,24 @@
+{
+  "package": "luna-ios-grid-production-20260907-missing-one",
+  "expectedIdentities": [
+    "grid-c100-180-r60-100-normal|A3D92728-7F7B-44D1-BE51-155B891905D9|large"
+  ],
+  "entries": [
+    {
+      "caseID": "grid-c100-180-r60-100-normal",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "status": "unmeasured",
+      "reason": "simctl launch failed",
+      "attempts": []
+    }
+  ],
+  "counts": {
+    "entries": 1,
+    "measured": 0,
+    "pass": 0,
+    "fail": 0,
+    "unmeasured": 1
+  }
+}

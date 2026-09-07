@@ -1,0 +1,25 @@
+{
+  "caseID": "grid-c100-180-r60-100-normal",
+  "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+  "contentSize": "large",
+  "status": "unmeasured",
+  "launchCommand": {
+    "exitCode": 0,
+    "started": "2026-09-07T10:59:27.668Z",
+    "finished": "2026-09-07T10:59:28.759Z",
+    "stdout": "com.penkra.canvas.qa.grid: 56491\n",
+    "stderr": "",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": 120000,
+    "launchStartTimestamp": "2026-09-07T10:59:27.668Z"
+  },
+  "receiptQueriesIssued": 0,
+  "screenshotsIssued": 0,
+  "cropIssued": false,
+  "comparatorIssued": false,
+  "failureLogContents": "undefined\n",
+  "classification": "unmeasured: the launch command succeeded, but the runner terminated before issuing a receipt query; no receipt, raw hash pair, crop, or comparator result exists",
+  "measurementReasonAudit": "The generated measurements entry says simctl launch failed, which is contradicted by the retained launch command record above. No launch failure, timeout, signal, or killed state is evidenced."
+}
