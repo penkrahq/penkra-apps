@@ -23,6 +23,7 @@ const TARGET_CODES = new Set([
   "TRANSPARENCY_GROUP_PROFILE_UNREADABLE", "ICC_HEADER_INVALID", "ICC_VERSION_UNSUPPORTED", "ICC_PCS_INVALID",
   "ICC_TAG_TABLE_TRUNCATED",
 ]);
+const RETAINED_ARTIFACT_KEYS = new Set(["valid-candidate-control/classic-xref", "output-profile-unreadable/classic-xref"]);
 const RESULTS = [];
 if (RETAIN_EVIDENCE) await mkdir(EVIDENCE_DIRECTORY, { recursive: true });
 
@@ -264,7 +265,9 @@ async function runCase(definition, serialization) {
     conformant: first.conformant, status: first.status,
   };
   RESULTS.push(record);
-  if (RETAIN_EVIDENCE) await writeFile(new URL(`${definition.name}-${serialization.name}.pdf`, EVIDENCE_DIRECTORY), bytes);
+  if (RETAIN_EVIDENCE && RETAINED_ARTIFACT_KEYS.has(`${definition.name}/${serialization.name}`)) {
+    await writeFile(new URL(`${definition.name}-${serialization.name}.pdf`, EVIDENCE_DIRECTORY), bytes);
+  }
   return record;
 }
 
@@ -277,7 +280,8 @@ test("document-negative matrix executes every named case and serializer", async 
   assert.equal(new Set(RESULTS.map(({ name: caseName, serialization }) => `${caseName}/${serialization}`)).size, RESULTS.length);
   assert.equal(RESULTS.filter(({ name: caseName }) => caseName !== "valid-candidate-control").length, 21 * SERIALIZATIONS.length);
   if (RETAIN_EVIDENCE) {
-    const retained = RESULTS.map(({ name: caseName, serialization, sha256: hash, bytes }) => ({ file: `${caseName}-${serialization}.pdf`, name: caseName, serialization, sha256: hash, bytes }));
+    const retained = RESULTS.filter(({ name: caseName, serialization }) => RETAINED_ARTIFACT_KEYS.has(`${caseName}/${serialization}`))
+      .map(({ name: caseName, serialization, sha256: hash, bytes }) => ({ file: `${caseName}-${serialization}.pdf`, name: caseName, serialization, sha256: hash, bytes }));
     await writeFile(new URL("case-results.json", EVIDENCE_DIRECTORY), `${JSON.stringify({ caseCount: CASES.length, serializationVariantCount: SERIALIZATIONS.length, executedResultCount: RESULTS.length, cases: RESULTS }, null, 2)}\n`);
     await writeFile(new URL("sha256-manifest.json", EVIDENCE_DIRECTORY), `${JSON.stringify({ caseCount: CASES.length, serializationVariantCount: SERIALIZATIONS.length, generatedCaseCount: RESULTS.length, retainedArtifactCount: retained.length, retainedArtifacts: retained }, null, 2)}\n`);
   }
@@ -309,7 +313,13 @@ if (!RETAIN_EVIDENCE) test("document-negative default mode is read-only and veri
   assert.equal(resultManifest.caseCount, CASES.length);
   assert.equal(resultManifest.executedResultCount, CASES.length * SERIALIZATIONS.length);
   assert.equal(hashManifest.generatedCaseCount, CASES.length * SERIALIZATIONS.length);
-  assert.equal(hashManifest.retainedArtifactCount, CASES.length * SERIALIZATIONS.length);
+  assert.equal(hashManifest.retainedArtifactCount, RETAINED_ARTIFACT_KEYS.size);
+  const generated = new Map(RESULTS.map((record) => [`${record.name}/${record.serialization}`, record]));
+  for (const expected of resultManifest.cases) {
+    const actual = generated.get(`${expected.name}/${expected.serialization}`);
+    assert.ok(actual, `${expected.name}/${expected.serialization} was not regenerated`);
+    assert.deepEqual(actual, expected);
+  }
   for (const artifact of hashManifest.retainedArtifacts) {
     const bytes = new Uint8Array(await readFile(new URL(artifact.file, EVIDENCE_DIRECTORY)));
     assert.equal(bytes.length, artifact.bytes, artifact.file);
