@@ -607,3 +607,34 @@ existing closed gate were unchanged:
 
 Log `/tmp/canvas-luna-envelope-two-files-20260907.log`; exit `0`, `21` passed, `0` failed,
 `0` cancelled, `0` skipped; wrapper duration `1 s` (runner-reported duration `196.643375 ms`).
+
+## Retained operations and import-integrity follow-on
+
+The approved follow-on was applied cleanly after the loader/publication base batch, with no
+intermediate tests:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `032233c` | `22d5e2f` |
+| `5f2e429` | `41c2803` |
+| `57748e0` | `151df3b` |
+| `c3f1f4e` | `1187aea` |
+| `85a1f01` | `6b3e6ba` |
+| `9ba6ff0` | `8fe25cc` |
+| `cd2e383` | `b2c30b2` |
+| `5b0b1e0` | `f590873` |
+
+The source changes are limited to rejecting retention on legacy import records, routing registered
+export/extract operations through the consumer-owned retained loader, and requiring string-valued
+content and storage hashes before integrity checks. The added test/evidence files contain no
+operations wiring beyond that approved seam and no live-document, registry, or native changes.
+
+After the complete sequence, the strict retained operations/imports/schema/storage/loader selection
+was run once:
+
+`node scripts/test.mjs src/operations.test.mjs src/operations-retained-imports.test.mjs src/canvas-schema.test.mjs src/canvas-imports.test.mjs src/canvas-resolver.test.mjs src/library-retained-loader.test.mjs src/library-storage.test.mjs src/library-retained-imports.test.mjs`
+
+Log `/tmp/canvas-luna-retained-operations-integrated-20260907.log`; exit `0`, `84` passed,
+`0` failed, `0` cancelled, `0` skipped; wrapper duration `1 s` (runner-reported duration
+`845.608292 ms`). Legacy-retention rejection, consumer-owned retained export/extract, explicit
+string-integrity rejection, loader isolation, storage integrity, and materializer checks passed.
