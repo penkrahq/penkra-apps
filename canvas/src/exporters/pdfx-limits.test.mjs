@@ -34,6 +34,34 @@ async function contentFixture(content, serialization, split = null) {
   }, serialization);
 }
 
+function rawXrefRealFixture() {
+  const header = "%PDF-1.6\n";
+  const objects = [
+    "1 0 obj\n<< /Type /Catalog /Pages 2 0 R /Probe 2147483648.0 >>\nendobj\n",
+    "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n",
+    "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 300] /TrimBox [9 9 182 282] /BleedBox [0 0 200 300] /Resources << >> /Contents 4 0 R >>\nendobj\n",
+    "4 0 obj\n<< /Length 0 >>\nstream\n\nendstream\nendobj\n",
+  ];
+  let body = header;
+  const offsets = [0];
+  for (const object of objects) {
+    offsets.push(Buffer.byteLength(body, "latin1"));
+    body += object;
+  }
+  const xrefOffset = Buffer.byteLength(body, "latin1");
+  const xref = [
+    "xref\n0 5\n",
+    "0000000000 65535 f \n",
+    ...offsets.slice(1).map((offset) => `${String(offset).padStart(10, "0")} 00000 n \n`),
+    "trailer\n<< /Size 5 /Root 1 0 R /ID [<0123456789ABCDEF><0123456789ABCDEF>] >>\n",
+    "startxref\n",
+    `${xrefOffset}\n`,
+    "%%EOF\n",
+  ].join("");
+  const bytes = Buffer.from(body + xref, "latin1");
+  return { bytes, offsets, xrefOffset };
+}
+
 test("Table C.1 pure indirect-object boundary helper is exact without allocating millions", () => {
   const at = [];
   const over = [];
@@ -45,19 +73,34 @@ test("Table C.1 pure indirect-object boundary helper is exact without allocating
   }]);
 });
 
-test("Table C.1 pure integer and real boundaries are exact", () => {
+test("Table C.1 object numbers use conservative real magnitude after parser normalization", () => {
   const cases = [
-    [PDF_ARCHITECTURAL_LIMITS.integerMinimum, false],
-    [PDF_ARCHITECTURAL_LIMITS.integerMaximum, false],
-    [PDF_ARCHITECTURAL_LIMITS.integerMinimum - 1, true],
-    [PDF_ARCHITECTURAL_LIMITS.integerMaximum + 1, true],
+    [PDF_ARCHITECTURAL_LIMITS.realMaximum, false],
+    [PDF_ARCHITECTURAL_LIMITS.realMaximum * 1.001, true],
     [1e-50, false],
+    [2147483648, false],
   ];
   for (const [value, rejected] of cases) {
     const issues = [];
     inspectPdfNumber(PDFNumber.of(value), "test/Number", (...args) => issues.push(args));
     assert.equal(issues.length > 0, rejected, String(value));
+    if (rejected) assert.equal(issues[0][3].detail, "object-real-range");
   }
+});
+
+test("raw-xref catalog real 2147483648.0 is not falsely classified as an integer", async () => {
+  const { bytes, offsets, xrefOffset } = rawXrefRealFixture();
+  const source = Buffer.from(bytes).toString("latin1");
+  assert.equal(source.indexOf("xref\n"), xrefOffset);
+  for (let index = 1; index < offsets.length; index += 1) {
+    assert.equal(Buffer.from(bytes).subarray(offsets[index]).toString("latin1").startsWith(`${index} 0 obj\n`), true);
+  }
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  const probe = pdf.context.lookup(pdf.catalog.get(PDFName.of("Probe")));
+  assert.ok(probe instanceof PDFNumber);
+  const report = await preflightPdfx4(bytes);
+  assert.equal(architecturalIssues(report).some((issue) => issue.detail?.detail === "integer-range"), false);
+  assert.equal(architecturalIssues(report).some((issue) => issue.detail?.detail === "object-real-range"), false);
 });
 
 for (const serialization of SERIALIZATIONS) {
@@ -130,6 +173,18 @@ for (const serialization of SERIALIZATIONS) {
     assert.equal(issueFor(report, "integer-range"), undefined);
   });
 
+  test(`content name operands and dictionary keys/values count decoded bytes ${serialization.name}`, async () => {
+    const exact = `${"A".repeat(125)}#C3#A9`;
+    const over = `${exact}#C3#A9`;
+    const valid = await preflightPdfx4(await contentFixture(`/Artifact << /Key /${exact} /Value /${exact} >> BDC EMC`, serialization));
+    assert.equal(issueFor(valid, "content-name-bytes"), undefined);
+    const invalid = await preflightPdfx4(await contentFixture(`/${over} Do /Artifact << /${over} /${over} >> BDC EMC`, serialization));
+    const issues = architecturalIssues(invalid).filter((issue) => issue.detail?.detail === "content-name-bytes");
+    assert.ok(issues.length >= 3, serialization.name);
+    assert.ok(issues.every((issue) => issue.detail.actual === 129), serialization.name);
+    assert.ok(issues.some((issue) => issue.object.includes("/Do[0]")), serialization.name);
+  });
+
   test(`out-of-range real content token is rejected ${serialization.name}`, async () => {
     const exact = await preflightPdfx4(await contentFixture("340300000000000000000000000000000000000.0 0 0 1 0 0 cm", serialization));
     assert.equal(issueFor(exact, "real-range"), undefined);
@@ -149,19 +204,16 @@ for (const serialization of SERIALIZATIONS) {
     assert.equal(issue.detail.limit, 28);
   });
 
-  test(`PDF integer object exact signed limits and one-over ${serialization.name}`, async () => {
-    const values = [
-      [PDF_ARCHITECTURAL_LIMITS.integerMinimum, false], [PDF_ARCHITECTURAL_LIMITS.integerMaximum, false],
-      [PDF_ARCHITECTURAL_LIMITS.integerMinimum - 1, true], [PDF_ARCHITECTURAL_LIMITS.integerMaximum + 1, true],
-    ];
-    for (const [value, rejected] of values) {
-      const bytes = await fixture((pdf) => {
-        const dictionary = pdf.context.obj({});
-        set(dictionary, "Limit", PDFNumber.of(value));
-        pdf.context.register(dictionary);
-      }, serialization);
-      assert.equal(Boolean(issueFor(await preflightPdfx4(bytes), "integer-range")), rejected, `${serialization.name} ${value}`);
-    }
+  test(`PDF object number integer spelling remains uncovered while real magnitude is checked ${serialization.name}`, async () => {
+    const bytes = await fixture((pdf) => {
+      const dictionary = pdf.context.obj({});
+      set(dictionary, "Limit", PDFNumber.of(2147483648));
+      set(dictionary, "RealLimit", PDFNumber.of(PDF_ARCHITECTURAL_LIMITS.realMaximum * 1.001));
+      pdf.context.register(dictionary);
+    }, serialization);
+    const issues = architecturalIssues(await preflightPdfx4(bytes));
+    assert.equal(issues.some((issue) => issue.detail?.detail === "integer-range"), false);
+    assert.ok(issues.some((issue) => issue.detail?.detail === "object-real-range"), serialization.name);
   });
 
   test(`object graph names include PDFName dictionary keys and values ${serialization.name}`, async () => {
