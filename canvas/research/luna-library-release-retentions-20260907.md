@@ -34,7 +34,23 @@ coverage, duplicate/missing/extra aliases, wrong root identity, item hash and
 asset byte corruption/truncation, missing dependency closure, malformed stored
 retention metadata, zero-byte backend reads, input mutation across the first
 await, detached output bytes, publisher-only reads, unrelated blob retention,
-and asset/envelope write failures with no returned receipt.
+and asset/envelope write failures with no returned receipt. The follow-up
+ordering regression also uses a release with its own asset and records the
+public transport reads: malformed retention shape and wrong accepted root both
+perform the envelope read only, then reject with `CANVAS_IMPORT_INTEGRITY`
+before any own-release or retained-asset read.
+
+Follow-up command:
+
+```text
+node --test canvas/src/canvas-schema.test.mjs canvas/src/canvas-imports.test.mjs canvas/src/library-storage.test.mjs canvas/src/library-release-retentions.test.mjs canvas/src/library-retention-preparation.test.mjs canvas/src/library-retained-imports.test.mjs canvas/src/library-retained-loader.test.mjs
+```
+
+Follow-up result: 72 passed, 0 failed, 0 cancelled, exit 0; `git diff
+--check` exit 0. Stored retention shape/exact alias and normalized accepted
+root identity validation now runs immediately after release envelope and
+release validation, before restoration of either the release's own assets or
+retention assets. Legacy envelopes without `retentions` remain unchanged.
 
 This is protocol-level fake public Account transport evidence. It does not
 claim durable backend persistence, accepted-content-after-revocation policy,
