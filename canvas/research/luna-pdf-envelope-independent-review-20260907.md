@@ -1,12 +1,12 @@
 # Independent PDF envelope review — 2026-09-07
 
-This is an independent review of root candidate `ccd2a060e1f456d0e45fd1e6b381113001868341` on branch `codex/canvas-pdf-envelope-20260907`. The helper is intentionally a strict serializer-subset check: one classic xref section, direct stream lengths, generation-zero live objects, and no repair. It is not a universal PDF grammar/semantic validator, is not wired to preflight, and makes no PDF/X or conformance claim.
+This is an independent review of root candidate `ccd2a060e1f456d0e45fd1e6b381113001868341` and the revised helper at source commit `1284fcc`, with evidence commit `5908887`, on branch `codex/canvas-pdf-envelope-20260907`. The helper is intentionally a strict serializer-subset check: one classic xref section, direct stream lengths, generation-zero live objects, and no repair. It is not a universal PDF grammar/semantic validator, is not wired to preflight, and makes no PDF/X or conformance claim.
 
 ## Isolation and commands
 
 The root worktree was read-only; its pre-existing untracked `canvas/node_modules` was not touched. Exploratory execution used the isolated detached checkout:
 
-`/tmp/pdf-envelope-review-corrected-KlbxPC`
+`/tmp/pdf-envelope-review-rootfix-se5rhC`
 
 Root baseline command:
 
@@ -14,17 +14,17 @@ Root baseline command:
 node --test src/exporters/pdf-serialization-envelope.test.mjs
 ```
 
-Result: **10 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0`.
+Result at the revised root evidence revision: **11 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0`. The additional root regression is the exact `endstream` boundary case; it is not duplicated in the independent test.
 
 Corrected paired-checkout command, using the test's default sibling implementation URL and default relative retained candidate path:
 
 ```text
-cd /tmp/pdf-envelope-review-corrected-KlbxPC/canvas
+cd /tmp/pdf-envelope-review-rootfix-se5rhC/canvas
 node --test src/exporters/pdf-serialization-envelope.test.mjs \
   src/exporters/luna-pdf-envelope-independent.test.mjs
 ```
 
-The checkout used a temporary symlink to the root worktree's already-installed `canvas/node_modules`; no dependency files were copied or modified. The first attempt without dependencies exited `1` before test discovery with `ERR_MODULE_NOT_FOUND: pdf-lib`; the rerun with that symlink completed **20 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0` (10 root tests plus 10 independent tests). `PDF_ENVELOPE_SOURCE` and `PDF_ENVELOPE_CANDIDATE` remain optional overrides for isolated review worktrees; after integration the default command above is self-contained. The retained candidate was loaded and re-saved in memory with `PDFDocument.save({ useObjectStreams: false })`; no PDF or corpus was generated or retained by this review.
+The checkout used a temporary symlink to the root worktree's already-installed `canvas/node_modules`; no dependency files were copied or modified. The first attempt without dependencies exited `1` before test discovery with `ERR_MODULE_NOT_FOUND: pdf-lib`; the rerun with that symlink completed **21 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0` (11 root tests plus 10 independent tests). `PDF_ENVELOPE_SOURCE` and `PDF_ENVELOPE_CANDIDATE` remain optional overrides for isolated review worktrees; after integration the default command above is self-contained. The retained candidate was loaded and re-saved in memory with `PDFDocument.save({ useObjectStreams: false })`; no PDF or corpus was generated or retained by this review.
 
 ## Matrix covered
 
@@ -36,6 +36,8 @@ The checkout used a temporary symlink to the root worktree's already-installed `
 - Decoded name-byte limits, escaped bytes, null names, duplicate decoded dictionary keys, and malformed arrays/dictionaries.
 - Wrong `startxref`, wrong xref offsets, object identity mismatch, free/generation mismatch, missing references, xref size holes, repeated xref sections, trailing bytes, object streams, and incremental-style trailing data.
 - A deterministic 256-input malformed xref mutation loop. All calls returned a boolean result and issue array; all 256 were rejected in under 2 seconds.
+
+The revised root source delta from `ccd2a06` to `1284fcc` is limited to replacing token-style `endstream` consumption with an exact boundary match after at most one optional EOL. Root evidence `5908887` records the pre-fix 10-pass/1-fail and post-fix 11-pass/0-fail result.
 
 ## Stream-length observation — no proven serialization defect
 
