@@ -31,6 +31,47 @@ function assertReceiptInvalid(promise) {
   return assert.rejects(promise, { code: "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID" });
 }
 
+test("invalid upload metadata is rejected before any Account request", async () => {
+  const invalidAssets = [
+    ["array asset", Object.assign([], baseAsset())],
+    ["array path", baseAsset({ path: [] })],
+    ["object path", baseAsset({ path: {} })],
+    ["array hash", baseAsset({ sha256: [] })],
+    ["object hash", baseAsset({ sha256: {} })],
+    ["array MIME", baseAsset({ mimeType: [] })],
+    ["object MIME", baseAsset({ mimeType: {} })],
+    ["null MIME", baseAsset({ mimeType: null })],
+  ];
+  for (const [name, asset] of invalidAssets) {
+    let calls = 0;
+    const api = createCanvasApi({ account: { request: async () => { calls += 1; throw new Error("unexpected Account request"); } } });
+    await assertReceiptInvalid(api.uploadAsset(projectId, asset), name);
+    assert.equal(calls, 0, name);
+  }
+});
+
+test("null and nonobject start receipts fail with the stable receipt code", async () => {
+  for (const start of [null, "invalid", []]) {
+    let calls = 0;
+    const api = createCanvasApi({ account: { request: async () => { calls += 1; return response(200, start); } } });
+    await assertReceiptInvalid(api.uploadAsset(projectId, baseAsset()), `start=${String(start)}`);
+    assert.equal(calls, 1);
+  }
+});
+
+test("null and nonobject completion receipts fail with the stable receipt code", async () => {
+  for (const completion of [null, "invalid", []]) {
+    const { calls, runtime: fakeRuntime } = runtime((input) => {
+      if (input.path.endsWith("/blobs/uploads")) return response(201, { status: "uploading", uploadId: "upload-1", chunkSize: 10 });
+      if (input.path.endsWith("/parts")) return response(201, { received: true });
+      if (input.path.endsWith("/complete")) return response(200, completion);
+      throw new Error(`Unexpected request ${input.path}`);
+    });
+    await assertReceiptInvalid(createCanvasApi(fakeRuntime).uploadAsset(projectId, baseAsset()), `complete=${String(completion)}`);
+    assert.equal(calls.filter((call) => call.path.endsWith("/complete")).length, 1);
+  }
+});
+
 test("upload snapshots metadata, bytes, and caller path before asynchronous requests", async () => {
   let releaseStart;
   let releaseFirstPart;
