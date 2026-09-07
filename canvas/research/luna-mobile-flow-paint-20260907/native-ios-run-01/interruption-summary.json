@@ -1,0 +1,28 @@
+{
+  "platform": "ios",
+  "run": "native-ios-run-01",
+  "captureStatus": "interrupted-on-parent-release-decision",
+  "matrixRequested": {
+    "devices": ["iphone-large", "iphone-accessibility-xxl", "ipad-large"],
+    "appearances": ["light", "dark"],
+    "cases": 11
+  },
+  "receipts": {
+    "readinessLogs": 20,
+    "stableFullFramePairs": 20,
+    "measurementFiles": 2,
+    "cropFiles": 2,
+    "pass": 0,
+    "fail": 2,
+    "unmeasured": 64
+  },
+  "measuredFailures": [
+    "iphone-large/light/wrap-horizontal-start",
+    "iphone-large/light/rounded-scalar-overflow"
+  ],
+  "unmeasuredReason": "The 420-point root is wider than the iPhone logical viewport; remaining capture was stopped before the parent release deadline. The iPad, accessibility, and Android matrices were not run.",
+  "compilerBuilds": {
+    "swift": 1,
+    "compose": 0
+  }
+}

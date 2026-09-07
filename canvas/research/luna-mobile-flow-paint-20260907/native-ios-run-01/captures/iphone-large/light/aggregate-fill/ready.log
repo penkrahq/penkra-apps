@@ -1,0 +1,6 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 14:19:31.223 Df CanvasFlowPaintEvidence[26522:54d01a3] (Foundation) LUNA_FLOW_PAINT_READY case=aggregate-fill nonce=flow-paint-ios-iphone-large-light-aggregate-fill-4973c1e2-c7f1-4958-9de1-675ef4f08ca2
+2026-09-07 14:19:31.223 Df CanvasFlowPaintEvidence[26522:54d01a3] (Foundation) LUNA_FLOW_PAINT_ROOT case=aggregate-fill nonce=flow-paint-ios-iphone-large-light-aggregate-fill-4973c1e2-c7f1-4958-9de1-675ef4f08ca2 frame=-9.000,271.000 420.000x360.000 scale=3.000
+2026-09-07 14:19:31.949 Df log[26533:0] [com.apple.log:] log run noninteractively, parent: 97696 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788812370' '--predicate' 'eventMessage CONTAINS[c] "LUNA_FLOW_PAINT_READY" OR eventMessage CONTAINS[c] "LUNA_FLOW_PAINT_ROOT"'
+
+getpwuid_r did not find a match for uid 501

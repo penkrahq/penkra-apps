@@ -1,0 +1,23 @@
+{
+  "command": {
+    "command": "xcodebuild",
+    "args": [
+      "-project",
+      "CanvasFlowPaintEvidence.xcodeproj",
+      "-scheme",
+      "CanvasFlowPaintEvidence",
+      "-sdk",
+      "iphonesimulator",
+      "-configuration",
+      "Debug",
+      "-derivedDataPath",
+      "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-flow-paint-ios-build-JL8FcQ/DerivedData",
+      "-jobs",
+      "2"
+    ],
+    "started": "2026-09-07T20:04:38.287Z",
+    "finished": "2026-09-07T20:04:55.904Z",
+    "exitCode": 0
+  },
+  "exitCode": 0
+}

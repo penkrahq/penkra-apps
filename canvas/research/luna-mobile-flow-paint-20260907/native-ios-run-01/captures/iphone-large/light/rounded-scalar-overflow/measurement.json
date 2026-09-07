@@ -1,0 +1,40 @@
+{
+  "platform": "ios",
+  "device": "iphone-large",
+  "appearance": "light",
+  "viewport": "phone",
+  "caseId": "rounded-scalar-overflow",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "flow-paint-ios-iphone-large-light-rounded-scalar-overflow-9e1804c4-7f9b-4a43-96a1-072effcdddd3",
+  "readiness": {
+    "root": {
+      "x": -9,
+      "y": 271,
+      "width": 420,
+      "height": 360
+    },
+    "scale": 3
+  },
+  "stability": {
+    "hashes": [
+      "b6eedcf116b769b7421deea826ac811cf50f3a64897428295e7be2c6a698b288",
+      "b6eedcf116b769b7421deea826ac811cf50f3a64897428295e7be2c6a698b288"
+    ],
+    "stable": true
+  },
+  "cropDimensions": {
+    "width": 1206,
+    "height": 2622
+  },
+  "comparison": {
+    "status": "fail",
+    "reason": "crop dimensions differ",
+    "comparedPixels": 0,
+    "mismatchedPixels": 0
+  },
+  "paths": {
+    "crop": "native-ios-run-01/captures/iphone-large/light/rounded-scalar-overflow/crop.png",
+    "reference": "references/ios/iphone-large/light/rounded-scalar-overflow.png"
+  }
+}

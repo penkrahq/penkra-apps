@@ -1,0 +1,398 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05C7FF451EF85C4E34A1134E /* FlowPaintRoundedScalarOverflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C21736427A85EE849F4FED5 /* FlowPaintRoundedScalarOverflow.swift */; };
+		095260BF76BA5F345CC5BC54 /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D6A67DD62D35D09AA1D3B20 /* Inter-Bold.ttf */; };
+		0B2D0C848BA381C82A169A85 /* FlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F588CBABB079FC4A6C632CD /* FlowLayout.swift */; };
+		399C915182C4D54692D5F7C5 /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5E77C275A9C1764BCD7EE750 /* Inter-Medium.ttf */; };
+		3BC1F22BC01098E706BDBFBE /* FlowPaintTransformedRadial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71430BABC3F365DE7C6CB625 /* FlowPaintTransformedRadial.swift */; };
+		49C7F4D69A97E49FCAF7B15C /* FlowPaintAggregateFill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4521D7AD0264921465DBFE9C /* FlowPaintAggregateFill.swift */; };
+		537CB47E4D5061E3809A15C4 /* FlowPaintRuntimeAppearanceViewport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69E8188AC147696D042EC42A /* FlowPaintRuntimeAppearanceViewport.swift */; };
+		5E9945619B4597FBDF0220B1 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AE6845FE63D98F91A9A5D53 /* Inter-SemiBold.ttf */; };
+		5FE26A5AC5737F3AD5AEAFEF /* FlowPaintWrapHorizontalEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93AF915CAB50EDF240C88FF5 /* FlowPaintWrapHorizontalEnd.swift */; };
+		7AEBC99417F35E9D440E15FB /* FlowPaintWrapHorizontalStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CBBC48D4E765EE079BA78E /* FlowPaintWrapHorizontalStart.swift */; };
+		8CC6A961516CA83001EAB369 /* Inter-OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4530DB1CBAD5E531BAF81F19 /* Inter-OFL.txt */; };
+		9466ADDE04706F86CC7E9C3F /* FlowPaintTransformedLinear.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDD894FCF88044561F01323 /* FlowPaintTransformedLinear.swift */; };
+		B511C9FB0BBEA85F3220CFD9 /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1F977598FC4F25C803272A29 /* Inter-Regular.ttf */; };
+		BC362CAB49DDEC670400298A /* FlowPaintAbsoluteOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B7C9D5273A3F5B575FB10C /* FlowPaintAbsoluteOverlay.swift */; };
+		C427B31DFEA8FE8E4D74DA75 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB5FD0EA2B98408903649AF0 /* Inter-ExtraBold.ttf */; };
+		D6DB12836A616BE8B6BB24C3 /* FlowPaintApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80B1504D92AE7A891F464584 /* FlowPaintApp.swift */; };
+		F7D9E6A1841701F10B3BB430 /* FlowPaintRoundedCornersOverflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD097EBE90C8637E7973A9E4 /* FlowPaintRoundedCornersOverflow.swift */; };
+		F940122742FE40040F464F62 /* FlowPaintWrapHorizontalCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CCA3EB5FD74C62C3F45605 /* FlowPaintWrapHorizontalCenter.swift */; };
+		FCE0D2A434AAD66EBE324253 /* FlowPaintWrapVertical.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CB43B72EAD4241A7057272 /* FlowPaintWrapVertical.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0D6A67DD62D35D09AA1D3B20 /* Inter-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Bold.ttf"; sourceTree = "<group>"; };
+		1F977598FC4F25C803272A29 /* Inter-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Regular.ttf"; sourceTree = "<group>"; };
+		4521D7AD0264921465DBFE9C /* FlowPaintAggregateFill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintAggregateFill.swift; sourceTree = "<group>"; };
+		4530DB1CBAD5E531BAF81F19 /* Inter-OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Inter-OFL.txt"; sourceTree = "<group>"; };
+		52D791602585BDDC660A5C2A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5C21736427A85EE849F4FED5 /* FlowPaintRoundedScalarOverflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintRoundedScalarOverflow.swift; sourceTree = "<group>"; };
+		5E77C275A9C1764BCD7EE750 /* Inter-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-Medium.ttf"; sourceTree = "<group>"; };
+		69E8188AC147696D042EC42A /* FlowPaintRuntimeAppearanceViewport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintRuntimeAppearanceViewport.swift; sourceTree = "<group>"; };
+		6F588CBABB079FC4A6C632CD /* FlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowLayout.swift; sourceTree = "<group>"; };
+		71430BABC3F365DE7C6CB625 /* FlowPaintTransformedRadial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintTransformedRadial.swift; sourceTree = "<group>"; };
+		77CB43B72EAD4241A7057272 /* FlowPaintWrapVertical.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintWrapVertical.swift; sourceTree = "<group>"; };
+		80B1504D92AE7A891F464584 /* FlowPaintApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintApp.swift; sourceTree = "<group>"; };
+		8AE6845FE63D98F91A9A5D53 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-SemiBold.ttf"; sourceTree = "<group>"; };
+		93AF915CAB50EDF240C88FF5 /* FlowPaintWrapHorizontalEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintWrapHorizontalEnd.swift; sourceTree = "<group>"; };
+		98B7C9D5273A3F5B575FB10C /* FlowPaintAbsoluteOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintAbsoluteOverlay.swift; sourceTree = "<group>"; };
+		A0F42440A7C9DD5B28E4E715 /* CanvasFlowPaintEvidence.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CanvasFlowPaintEvidence.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB5FD0EA2B98408903649AF0 /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
+		BDDD894FCF88044561F01323 /* FlowPaintTransformedLinear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintTransformedLinear.swift; sourceTree = "<group>"; };
+		C4CCA3EB5FD74C62C3F45605 /* FlowPaintWrapHorizontalCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintWrapHorizontalCenter.swift; sourceTree = "<group>"; };
+		F3CBBC48D4E765EE079BA78E /* FlowPaintWrapHorizontalStart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintWrapHorizontalStart.swift; sourceTree = "<group>"; };
+		FD097EBE90C8637E7973A9E4 /* FlowPaintRoundedCornersOverflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowPaintRoundedCornersOverflow.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		297F0617C6DAF331DDF01B8B /* SimulatorHost */ = {
+			isa = PBXGroup;
+			children = (
+				80B1504D92AE7A891F464584 /* FlowPaintApp.swift */,
+				52D791602585BDDC660A5C2A /* Info.plist */,
+			);
+			name = SimulatorHost;
+			path = swift/SimulatorHost;
+			sourceTree = "<group>";
+		};
+		51FBAF8CE98AF732FF5EA9BA /* CanvasFlowPaint */ = {
+			isa = PBXGroup;
+			children = (
+				98B7C9D5273A3F5B575FB10C /* FlowPaintAbsoluteOverlay.swift */,
+				4521D7AD0264921465DBFE9C /* FlowPaintAggregateFill.swift */,
+				FD097EBE90C8637E7973A9E4 /* FlowPaintRoundedCornersOverflow.swift */,
+				5C21736427A85EE849F4FED5 /* FlowPaintRoundedScalarOverflow.swift */,
+				69E8188AC147696D042EC42A /* FlowPaintRuntimeAppearanceViewport.swift */,
+				BDDD894FCF88044561F01323 /* FlowPaintTransformedLinear.swift */,
+				71430BABC3F365DE7C6CB625 /* FlowPaintTransformedRadial.swift */,
+				C4CCA3EB5FD74C62C3F45605 /* FlowPaintWrapHorizontalCenter.swift */,
+				93AF915CAB50EDF240C88FF5 /* FlowPaintWrapHorizontalEnd.swift */,
+				F3CBBC48D4E765EE079BA78E /* FlowPaintWrapHorizontalStart.swift */,
+				77CB43B72EAD4241A7057272 /* FlowPaintWrapVertical.swift */,
+				F9F746BACF6051EE1D95C5DF /* _canvas */,
+			);
+			name = CanvasFlowPaint;
+			path = swift/Sources/CanvasFlowPaint;
+			sourceTree = "<group>";
+		};
+		ACEA76661ADD9C54B5461200 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0F42440A7C9DD5B28E4E715 /* CanvasFlowPaintEvidence.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF4748E63367425ECFA3EDB0 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				0D6A67DD62D35D09AA1D3B20 /* Inter-Bold.ttf */,
+				BB5FD0EA2B98408903649AF0 /* Inter-ExtraBold.ttf */,
+				5E77C275A9C1764BCD7EE750 /* Inter-Medium.ttf */,
+				4530DB1CBAD5E531BAF81F19 /* Inter-OFL.txt */,
+				1F977598FC4F25C803272A29 /* Inter-Regular.ttf */,
+				8AE6845FE63D98F91A9A5D53 /* Inter-SemiBold.ttf */,
+			);
+			name = fonts;
+			path = "../../vendor/open-pencil/fonts";
+			sourceTree = "<group>";
+		};
+		F9F746BACF6051EE1D95C5DF /* _canvas */ = {
+			isa = PBXGroup;
+			children = (
+				6F588CBABB079FC4A6C632CD /* FlowLayout.swift */,
+			);
+			path = _canvas;
+			sourceTree = "<group>";
+		};
+		FCFA1D987CE09B5E12983D4F = {
+			isa = PBXGroup;
+			children = (
+				51FBAF8CE98AF732FF5EA9BA /* CanvasFlowPaint */,
+				BF4748E63367425ECFA3EDB0 /* fonts */,
+				297F0617C6DAF331DDF01B8B /* SimulatorHost */,
+				ACEA76661ADD9C54B5461200 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ABACED0D6C12E6AB457D18BB /* CanvasFlowPaintEvidence */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 291DF217BB4F5A4D5A158A30 /* Build configuration list for PBXNativeTarget "CanvasFlowPaintEvidence" */;
+			buildPhases = (
+				0D1A2856EA2FE1D798CA378C /* Sources */,
+				E2218FD3915CA2AB3397E9CE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CanvasFlowPaintEvidence;
+			packageProductDependencies = (
+			);
+			productName = CanvasFlowPaintEvidence;
+			productReference = A0F42440A7C9DD5B28E4E715 /* CanvasFlowPaintEvidence.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B03E58749E9B1223DC10960F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 4FB0FEFE949784A3830D03ED /* Build configuration list for PBXProject "CanvasFlowPaintEvidence" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = FCFA1D987CE09B5E12983D4F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = ACEA76661ADD9C54B5461200 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ABACED0D6C12E6AB457D18BB /* CanvasFlowPaintEvidence */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E2218FD3915CA2AB3397E9CE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				095260BF76BA5F345CC5BC54 /* Inter-Bold.ttf in Resources */,
+				C427B31DFEA8FE8E4D74DA75 /* Inter-ExtraBold.ttf in Resources */,
+				399C915182C4D54692D5F7C5 /* Inter-Medium.ttf in Resources */,
+				8CC6A961516CA83001EAB369 /* Inter-OFL.txt in Resources */,
+				B511C9FB0BBEA85F3220CFD9 /* Inter-Regular.ttf in Resources */,
+				5E9945619B4597FBDF0220B1 /* Inter-SemiBold.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0D1A2856EA2FE1D798CA378C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0B2D0C848BA381C82A169A85 /* FlowLayout.swift in Sources */,
+				BC362CAB49DDEC670400298A /* FlowPaintAbsoluteOverlay.swift in Sources */,
+				49C7F4D69A97E49FCAF7B15C /* FlowPaintAggregateFill.swift in Sources */,
+				D6DB12836A616BE8B6BB24C3 /* FlowPaintApp.swift in Sources */,
+				F7D9E6A1841701F10B3BB430 /* FlowPaintRoundedCornersOverflow.swift in Sources */,
+				05C7FF451EF85C4E34A1134E /* FlowPaintRoundedScalarOverflow.swift in Sources */,
+				537CB47E4D5061E3809A15C4 /* FlowPaintRuntimeAppearanceViewport.swift in Sources */,
+				9466ADDE04706F86CC7E9C3F /* FlowPaintTransformedLinear.swift in Sources */,
+				3BC1F22BC01098E706BDBFBE /* FlowPaintTransformedRadial.swift in Sources */,
+				F940122742FE40040F464F62 /* FlowPaintWrapHorizontalCenter.swift in Sources */,
+				5FE26A5AC5737F3AD5AEAFEF /* FlowPaintWrapHorizontalEnd.swift in Sources */,
+				7AEBC99417F35E9D440E15FB /* FlowPaintWrapHorizontalStart.swift in Sources */,
+				FCE0D2A434AAD66EBE324253 /* FlowPaintWrapVertical.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2584121169F94DB19C7148C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = swift/SimulatorHost/Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.penkra.canvas.qa.flowpaint;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5024244EBABE2C9A459EAD41 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		9529BD02107888ABA413C785 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		A3C33437B064BEFC7A4FAD4D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = swift/SimulatorHost/Info.plist;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.penkra.canvas.qa.flowpaint;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		291DF217BB4F5A4D5A158A30 /* Build configuration list for PBXNativeTarget "CanvasFlowPaintEvidence" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2584121169F94DB19C7148C3 /* Debug */,
+				A3C33437B064BEFC7A4FAD4D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4FB0FEFE949784A3830D03ED /* Build configuration list for PBXProject "CanvasFlowPaintEvidence" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5024244EBABE2C9A459EAD41 /* Debug */,
+				9529BD02107888ABA413C785 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B03E58749E9B1223DC10960F /* Project object */;
+}
