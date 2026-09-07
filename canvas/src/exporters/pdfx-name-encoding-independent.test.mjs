@@ -116,20 +116,21 @@ test("binary stream payload shields name-looking bytes from object parsing", () 
   assert.deepEqual(inspectCanvasPdfEnvelope(bytes).issues, []);
 });
 
-test("content-stream resource, tag, and inline-dictionary names bypass object-name UTF-8 validation", async () => {
+test("content-stream names now use the checked-subset UTF-8 validation path", async () => {
   const cases = [
-    ["resource-name", "/#FF Do\n", ["CONTENT_RESOURCE_UNRESOLVED"]],
-    ["tag-name", "/#FF BMC EMC\n", []],
-    ["inline-dictionary-key", "/#FF << /#80 1 >> BDC EMC\n", []],
+    ["resource-name", "/#FF Do\n", ["CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED"]],
+    ["tag-name", "/#FF BMC EMC\n", ["CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED"]],
+    ["inline-dictionary-key", "/#41 << /#80 1 >> BDC EMC\n", ["CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED"]],
   ];
   for (const [label, content, expectedCodes] of cases) {
     const bytes = contentPdf(content);
     assert.deepEqual(inspectCanvasPdfEnvelope(bytes).issues, [], `${label} envelope`);
-    const operations = readPdfContent(latin1(content));
-    assert.ok(operations.length > 0, `${label} tokenizer output`);
+    assert.throws(() => readPdfContent(latin1(content)), /name|UTF-8/u, `${label} tokenizer rejection`);
     const report = await preflightPdfx4(bytes);
     assert.deepEqual(report.issues.filter(({ code }) => code.startsWith("PDF_SERIALIZATION_")), [], `${label} serialization issues`);
-    assert.deepEqual(report.issues.filter(({ code }) => expectedCodes.includes(code)).map(({ code }) => code), expectedCodes, label);
+    const expected = report.issues.filter(({ code }) => expectedCodes.includes(code)).map(({ code }) => code);
+    assert.ok(expected.length > 0, label);
+    assert.ok(expected.every((code) => code === expectedCodes[0]), label);
     assert.equal(report.conformant, false, label);
   }
   await PDFDocument.load(contentPdf("/#FF BMC EMC\n"), { updateMetadata: false, throwOnInvalidObject: true });
