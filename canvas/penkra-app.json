@@ -426,6 +426,114 @@
       "handler": "documents.extract"
     },
     {
+      "key": "libraries.publish",
+      "summary": "Publish the exact current Canvas library public surface with a revision-guarded document head update.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "publicItems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "enum": ["variable", "paragraphStyle", "component"] },
+                "id": { "type": "string", "minLength": 1 }
+              },
+              "required": ["kind", "id"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["documentId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "published": { "const": true },
+          "operationId": { "type": "string", "format": "uuid" },
+          "sequence": { "type": "integer", "minimum": 1 },
+          "publication": {
+            "type": "object",
+            "properties": {
+              "releaseId": { "type": "string", "format": "uuid" },
+              "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "storage": {
+                "type": "object",
+                "properties": {
+                  "path": { "type": "string", "minLength": 1 },
+                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                  "size": { "type": "integer", "minimum": 0 },
+                  "mimeType": { "type": "string" }
+                },
+                "required": ["path", "sha256", "size"],
+                "additionalProperties": false
+              }
+            },
+            "required": ["releaseId", "contentHash", "storage"],
+            "additionalProperties": false
+          },
+          "snapshot": {
+            "type": "object",
+            "properties": {
+              "status": { "enum": ["saved", "deferred"] },
+              "code": { "const": "CANVAS_LIBRARY_SNAPSHOT_DEFERRED" }
+            },
+            "required": ["status"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["documentId", "published", "operationId", "sequence", "publication", "snapshot"],
+        "additionalProperties": false
+      },
+      "handler": "libraries.publish"
+    },
+    {
+      "key": "libraries.inspect",
+      "summary": "Inspect the validated public items and identity of one currently published Canvas library without changing it.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" }
+        },
+        "required": ["documentId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "publication": {
+            "type": "object",
+            "properties": {
+              "releaseId": { "type": "string", "format": "uuid" },
+              "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+            },
+            "required": ["releaseId", "contentHash"],
+            "additionalProperties": false
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": { "enum": ["component", "paragraphStyle", "variable"] },
+                "id": { "type": "string", "minLength": 1 },
+                "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+              },
+              "required": ["kind", "id", "contentHash"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["documentId", "publication", "items"],
+        "additionalProperties": false
+      },
+      "handler": "libraries.inspect"
+    },
+    {
       "key": "documents.open",
       "summary": "Open one exact Canvas document in a new or explicitly targeted tab for the user.",
       "instructions": "Opening changes visible tab state but does not modify document content. Use documents.execute with TakeScreenshot for document visual inspection; open a tab when the user should view or work in the Canvas editor.",

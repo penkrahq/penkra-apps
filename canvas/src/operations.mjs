@@ -14,6 +14,8 @@ import {
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
 import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
+import { publishCanvasLibrary } from "./library-publish-workflow.mjs";
+import { readPublishedCanvasLibrary } from "./library-publication-head.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 
 const runtime = globalThis.penkra;
@@ -318,6 +320,22 @@ runtime.operations.handle("documents.extract", async (input) => {
       title: payload.title,
     });
   } finally { model.doc.destroy(); }
+});
+
+runtime.operations.handle("libraries.publish", async (input) =>
+  publishCanvasLibrary(api, input),
+);
+
+runtime.operations.handle("libraries.inspect", async ({ documentId }) => {
+  const selected = await readPublishedCanvasLibrary(api, documentId);
+  return {
+    documentId,
+    publication: {
+      releaseId: selected.publication.releaseId,
+      contentHash: selected.publication.contentHash,
+    },
+    items: selected.release.publicItems.map((item) => structuredClone(item)),
+  };
 });
 
 function operationResult(structuredContent, screenshots) {
