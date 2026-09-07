@@ -2,7 +2,7 @@
 
 Date: 2026-09-07
 
-This package is observation-only. It does not modify preflight production code, the profile gate, capability tables, or protected files, and it makes no PDF/X certification claim.
+This package records the graphics-state observation history and the narrow omitted-`Type` resource-context correction. It does not modify the profile gate, capability tables, or protected files, and it makes no PDF/X certification claim. The pre-production-fix records are retained separately under `historical-pre-production-fix/`.
 
 ## Matrix and execution
 
@@ -20,9 +20,13 @@ cd /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/can
 LUNA_PDFX_GRAPHICS_STATE_RETAIN_EVIDENCE=1 node --test src/exporters/luna-pdfx-graphics-state-matrix.test.mjs
 ```
 
-Exit 0: 148 passed, 0 failed, 0 cancelled, 0 skipped. The default read-only command passed 149/149 with 0 failures, cancellations, or skips and wrote no files. The retained directory contains 8 PDFs, two current JSON manifests, four Poppler PNG renders, the corrected report, and a `historical-pre-correction/` copy of the prior manifests/report (448 KB total).
+Exit 0: 148 passed, 0 failed, 0 cancelled, 0 skipped. The post-fix default read-only matrix command passed 149/149 with 0 failures, cancellations, or skips and wrote no files. The dedicated serialized resource-context command added 29/29 passing tests. The retained directory contains 8 regenerated post-fix PDFs, two current JSON manifests, four Poppler PNG renders, this report, and historical pre-correction and pre-production-fix manifests/reports (648 KB total including historical records).
 
-The full assigned focused command (the existing 345-test focused set plus this matrix) exited 0 with 494 passed, 0 failed, 0 cancelled, and 0 skipped.
+The full assigned focused command exited 0 with 523 passed, 0 failed, 0 cancelled, and 0 skipped:
+
+```text
+node --test src/exporters/pdfx-images.test.mjs src/exporters/luna-pdfx-image-matrix.test.mjs src/exporters/luna-pdfx-font-matrix.test.mjs src/exporters/pdfx-fonts.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-serialized-corpus.test.mjs src/export-service.test.mjs src/exporters/luna-pdfx-graphics-state-matrix.test.mjs src/exporters/luna-pdfx-extgstate-context.test.mjs
+```
 
 ## Established Type-present observations
 
@@ -41,15 +45,17 @@ For Type `ExtGState`, existing checker codes and paths were asserted. A represen
 
 The minimal PDF baseline's unrelated issues were retained separately in each result, including missing output intent, missing XMP, invalid trailer ID, missing DefaultRGB, and missing transparency group. No global `conformant` or universal pass assertion was made.
 
-## Coordinator-review observations
+## Omitted-Type resource-context correction
 
-15 named fixtures (30 serialized identities) were marked `coordinator-review`: null/array alpha values, name-array blend mode, omitted-Type dictionaries, wrong-Type dictionaries, and the repeated omitted/wrong-Type decisive negatives. Their observed results were recorded without asserting an intended acceptance or rejection. Corrected topology assertions verify the reloaded dictionary itself: omitted cases have no `/Type`, present cases have `/Type /ExtGState`, and wrong cases have exactly `/Type /Font`. Examples:
+The preexisting broad matrix keeps 15 named fixtures (30 serialized identities) marked `coordinator-review` for null/array alpha values, name-array blend mode, omitted-Type dictionaries, wrong-Type dictionaries, and repeated decisive negatives; those observation records remain unchanged in shape. Corrected topology assertions verify the reloaded dictionary itself: omitted cases have no `/Type`, present cases have `/Type /ExtGState`, and wrong cases have exactly `/Type /Font`.
 
-- omitted Type with `ca=-0.1`, `CA=1.1`, `BM=Multiply`, or dictionary `SMask` received no whole-document Type-present field code under current traversal;
-- wrong Type produced the existing `CONTENT_RESOURCE_TYPE_INVALID` at `Page[0]/Contents[0]/gs` and did not receive the Type-present whole-document field check;
+- The new `luna-pdfx-extgstate-context.test.mjs` serialized 14 explicitly named fixtures through both classic-xref and object-stream writers (29 tests including document-isolation). Valid omitted-Type dictionaries remain free of type errors across direct, indirect, inherited, and shared/repeated resource contexts.
+- Omitted-Type `ca=-0.1`, `CA=1.1`, `BM=Multiply`, dictionary `SMask`, and forbidden `TR` now receive the existing field codes at the `gs` location, for example `Page[0]/Contents[0]/gs/ca`, `/CA`, `/BM`, `/SMask`, and `/TR`. Shared pages receive deterministic page-specific paths; repeated `gs` receives one issue per operation.
+- Wrong Type still produces exactly the existing `CONTENT_RESOURCE_TYPE_INVALID` at `Page[0]/Contents[0]/gs`; it does not receive omitted-Type field validation.
+- Type-present invalid `ca` remains one whole-document issue at its existing dictionary path and does not receive a duplicate `gs`-location field issue.
 - null/name-array values were recorded but not assigned a normative verdict.
 
-The prior invalid-fixture results and report are preserved under `historical-pre-correction/`; they document that the earlier `undefined` default parameter accidentally reinstated `/Type /ExtGState`. These are measurements of current checker coverage, not policy decisions.
+The prior invalid-fixture results and report are preserved under `historical-pre-correction/`; the immediately pre-production-fix results are preserved under `historical-pre-production-fix/`. They document that the earlier `undefined` default parameter accidentally reinstated `/Type /ExtGState`, and that the pre-fix resource-context traversal bypassed omitted-Type field checks. These are measurement history, not policy decisions.
 
 ## Ordinary exporter controls and gate
 
@@ -62,4 +68,4 @@ Four actual ordinary `exportPdf` fixtures were serialized and rendered with Popp
 
 The exact emitted state inventory is retained in `case-results.json`: each control emitted `Type=ExtGState`, with `ca` and `CA` respectively `0`, `0.5`, `1`, and `0.5` as applicable. A fully configured PDF/X-4 `exportPdf` attempt remained fail-closed with observed code `CANVAS_PDF_PROFILE_UNVERIFIED`, `conformant:false`, and no bypassed PDF/X bytes.
 
-The PDF-skill artifact marker command was attempted once before authoring but is unavailable in this checkout (`MODULE_NOT_FOUND` for `container_tools/mark_artifact_operation_started.mjs`); this is retained as an execution diagnostic.
+The PDF-skill artifact marker command was attempted once before authoring but is unavailable in this checkout (`MODULE_NOT_FOUND` for `/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/container_tools/mark_artifact_operation_started.mjs`); this is retained as an execution diagnostic.

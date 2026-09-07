@@ -6,7 +6,7 @@
     {
       "name": "ca-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "a66e8ce2281d25fda3f39f203fedbc4f42a25bf50f87b4a64ae0c066288a4c67",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -42,8 +42,8 @@
     {
       "name": "ca-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
-      "bytes": 723,
+      "sha256": "000c9e995263d79389e626ea3138a40a674032693dcbcea1bea3b4fcfb047928",
+      "bytes": 721,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -78,7 +78,7 @@
     {
       "name": "ca-zero",
       "serialization": "classic-xref",
-      "sha256": "88be84e09477cd53b559a686b464f8f327fff8f273f36b21ee9713e2f0a711f2",
+      "sha256": "ad31a96e46ac1044c5036ab766f748f83be7247ae7690184713052e23fdfed76",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -114,7 +114,79 @@
     {
       "name": "ca-zero",
       "serialization": "object-streams",
-      "sha256": "48a360f46d287234521e39fa10c4c062d732da6e7c1a4edfba9f53d98f7faa8f",
+      "sha256": "0e1064af14d6447927800fbbff0173b8ffc96388847b2e5d950c7954478a40da",
+      "bytes": 725,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-half",
+      "serialization": "classic-xref",
+      "sha256": "1e45e818ab8229a94af9df2280c8433e5551c1a097fc46fb8abfe3b97353ad45",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-half",
+      "serialization": "object-streams",
+      "sha256": "12ef922c04bfce5cc5b149bb4955238438a8c6576c5face576c64a4705f2431f",
       "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -148,81 +220,9 @@
       "stateRef": "5 0 R"
     },
     {
-      "name": "ca-half",
-      "serialization": "classic-xref",
-      "sha256": "04714db4bf96cfbc3da487d6f3553765948e4dbca6bf53098e826f366a062d2e",
-      "bytes": 1136,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-half",
-      "serialization": "object-streams",
-      "sha256": "01725bddb18548140c779a02d0700811f5e2545c33d4333d9b136cf7bcb1350f",
-      "bytes": 729,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
       "name": "ca-one",
       "serialization": "classic-xref",
-      "sha256": "3a42da0d42958076f8fe393aed789446b8cd40989b97efa29867ed7887d1b0ce",
+      "sha256": "8150e28f99eb51beecc5ae962a0309e2a4d8b19956d9b293f1dce9c41ee44d6f",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -258,8 +258,8 @@
     {
       "name": "ca-one",
       "serialization": "object-streams",
-      "sha256": "f39292a4ff78cbfe5fc11c9873cac7cec87a852f8bc5e80c16c3a8182cfc8d39",
-      "bytes": 726,
+      "sha256": "4f5091d46350a98a43475f0d3079feb445b3ce1d7a767d74d111642fc57fe915",
+      "bytes": 725,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -294,7 +294,7 @@
     {
       "name": "ca-negative",
       "serialization": "classic-xref",
-      "sha256": "77bf335269d3909ba3030b32b4078f8990e8a746aa1d2ac0295cbd40ea9789e2",
+      "sha256": "9120e193239f5a3a2ad175f8325f7ce24cef65ef12307a0edae0b8ceaee774da",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -335,8 +335,8 @@
     {
       "name": "ca-negative",
       "serialization": "object-streams",
-      "sha256": "d787f4c8dce309c734fc33223c52831de91d3ddf8ddc6a1ead513ee04e98cea8",
-      "bytes": 730,
+      "sha256": "7ed2b9462f4fe38c3efb41b5e2e657159a923ddb24756837b6359e05fc364e1b",
+      "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -376,7 +376,7 @@
     {
       "name": "ca-above-one",
       "serialization": "classic-xref",
-      "sha256": "b1d90957b1f39a54e91119dd3d2104a36bd173685098ddf64c379a7c8f70a3da",
+      "sha256": "d6fbaf55a539dac4de2d1ab54a4750ce0797ccc1579c7b0d1f269a914f0c6e59",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -417,549 +417,549 @@
     {
       "name": "ca-above-one",
       "serialization": "object-streams",
-      "sha256": "bafdfae8ebbf400fc49b7ef0119074eab468a4b3d60d05c13207dd4c8706fb40",
-      "bytes": 729,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-string",
-      "serialization": "classic-xref",
-      "sha256": "173cbb672f2fa2e5c07852b3614576e613eee21bacffb37244a8847a2b3ddbbd",
-      "bytes": 1138,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-string",
-      "serialization": "object-streams",
-      "sha256": "7a86e64c31c9d038c7943a18aede16f0a96fd0318e0384a8ed0659f4405ac5f7",
-      "bytes": 730,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-name",
-      "serialization": "classic-xref",
-      "sha256": "b11f0bf90f9b40332d7e4c31ec6104c80f2a4bc07152e7e539fb820b23b2d7c6",
-      "bytes": 1138,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-name",
-      "serialization": "object-streams",
-      "sha256": "edea6ffa55fe56ac576c330cb4515d3018f49e5929238e33003c73a73523112a",
-      "bytes": 730,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-array-review",
-      "serialization": "classic-xref",
-      "sha256": "86675e6739f3c5742e65526451de015ad93dce572e98b36bbce6e39ab80f8792",
-      "bytes": 1140,
-      "classification": "coordinator-review",
-      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-array-review",
-      "serialization": "object-streams",
-      "sha256": "b40e61610cfe30d02f232386ca9eee86dc9e45157565e99a8339cb51cdbf061c",
-      "bytes": 730,
-      "classification": "coordinator-review",
-      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-null-review",
-      "serialization": "classic-xref",
-      "sha256": "a2387fb6c02f512eed813e43c5196252a68d27aa949f807f26e369ed556b0fd5",
-      "bytes": 1137,
-      "classification": "coordinator-review",
-      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "ca-null-review",
-      "serialization": "object-streams",
-      "sha256": "ce5f6b6f14639d884ae86355d6a872ea04c896b28865d0d28bc5e7aa2207055f",
-      "bytes": 729,
-      "classification": "coordinator-review",
-      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-absent",
-      "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
-      "bytes": 1128,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-absent",
-      "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
-      "bytes": 723,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-zero",
-      "serialization": "classic-xref",
-      "sha256": "c92f393ad63eb229faa86f1c039b75fd7bcba376f24c0453e507950b6e7c107b",
-      "bytes": 1134,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-zero",
-      "serialization": "object-streams",
-      "sha256": "d28d98756098ebaa660996d74450f268b6d5bd5710a3763a908e2c3c42231f4f",
-      "bytes": 726,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-half",
-      "serialization": "classic-xref",
-      "sha256": "758b51f832362c03bd33dda5386e9a0d2c0e4268a0f5888503d79444db8353ca",
-      "bytes": 1136,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-half",
-      "serialization": "object-streams",
-      "sha256": "dcf8a5b6c29328bcd6ab9b54619312e21b457fa8422dce43c3c965de48fcedec",
+      "sha256": "10654691fa6e3d21657422ddf7a915e62b47425b5761850ac15efb6e6b9a2061",
       "bytes": 728,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-string",
+      "serialization": "classic-xref",
+      "sha256": "3370ebd9663c8f0f8af37724c3b2e7687a97ad71fc72b20165fac44e890a7409",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-string",
+      "serialization": "object-streams",
+      "sha256": "524b091fe5fe82403f7b98a3dfbf86b3dbab63d82feffb04a4d88e12be60a649",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-name",
+      "serialization": "classic-xref",
+      "sha256": "2857a96bdf46e3af08ec3c99a31fec9427a34ac300f1b9ef7e6171d356ab03b9",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-name",
+      "serialization": "object-streams",
+      "sha256": "4f2020d4e79df9796fa5346e3c3875574a8f0bc5882fe1eca6b0d50a8e56fbc5",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-array-review",
+      "serialization": "classic-xref",
+      "sha256": "d283b8e6fee835a7461e4225c4cd1393257634d0995265fc92436013936a200b",
+      "bytes": 1140,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-array-review",
+      "serialization": "object-streams",
+      "sha256": "4dcd98ff3f8986c0210295e91c3c7850291db8c8a9a67d1cac98a99e38f312e7",
+      "bytes": 729,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-null-review",
+      "serialization": "classic-xref",
+      "sha256": "49ee08cca159354ebbaf6c537c4366c040a7a5de832d6c35ae5df49edcecad1f",
+      "bytes": 1137,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-null-review",
+      "serialization": "object-streams",
+      "sha256": "ec0a9f2486b5bd4cf7145b773e68a27f5c2434e5daecfb16953919889ff031d7",
+      "bytes": 728,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-absent",
+      "serialization": "classic-xref",
+      "sha256": "a66e8ce2281d25fda3f39f203fedbc4f42a25bf50f87b4a64ae0c066288a4c67",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-absent",
+      "serialization": "object-streams",
+      "sha256": "000c9e995263d79389e626ea3138a40a674032693dcbcea1bea3b4fcfb047928",
+      "bytes": 721,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-zero",
+      "serialization": "classic-xref",
+      "sha256": "075bf09014a2f5d768404ee7c0bf03fdeaf2c75c357304bd6c2ec3be8f8d8028",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-zero",
+      "serialization": "object-streams",
+      "sha256": "187aea50ce6bcf0ae2067eaa3d572785273ff368396d463301d69c030c168889",
+      "bytes": 725,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-half",
+      "serialization": "classic-xref",
+      "sha256": "e8de514b0571cd7bafb74501f48830ddda768370c986f463301cfc7b409b2c80",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-half",
+      "serialization": "object-streams",
+      "sha256": "8b76f4190ce4950a417a61212a1abfa0890c4e0b3a46da2e147d9e4724be7cf4",
+      "bytes": 727,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
       "nonGraphicsIssues": [
         {
@@ -992,7 +992,7 @@
     {
       "name": "CA-one",
       "serialization": "classic-xref",
-      "sha256": "8d0cdb90a573e465f1bc6b89b3901bbff094d97f071645aa4e6e3140ae73363e",
+      "sha256": "49bb8a88f56e9bfce60a4f070269668d0381db57dc0b2c8bf88f1ab78c384ba3",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1028,8 +1028,8 @@
     {
       "name": "CA-one",
       "serialization": "object-streams",
-      "sha256": "d419fc2fb9a99dfb16097aa897f11d7e6c2fcec2c76ab687ce86f19681c3eb71",
-      "bytes": 726,
+      "sha256": "95144b92bce4e731147355460e2cfd16b2f0d1595c143e88febda4d782cce429",
+      "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -1064,7 +1064,7 @@
     {
       "name": "CA-negative",
       "serialization": "classic-xref",
-      "sha256": "531ff09ec8e0def1f496e1ba68eaa02177b86195b31754c15b718cad7b40f72a",
+      "sha256": "11f88c7f8a8f677c2dcec4d9ded658d13e8daa90fe51f35cf8df0d456067bfa5",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1105,8 +1105,8 @@
     {
       "name": "CA-negative",
       "serialization": "object-streams",
-      "sha256": "5a5e7a833f4777d7ed3402a0fb5ab05d9a1a2120467048ba4b45af1ea5e09d0f",
-      "bytes": 730,
+      "sha256": "d70a9eb8cb746962c4535b15f72b737928f59db3b0fc756d41d6d8e11167f24b",
+      "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -1146,7 +1146,7 @@
     {
       "name": "CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "52e74ec9a36d99f948cbab61466d01e8c71b5994c1b5f2c88a77c0704dde99f6",
+      "sha256": "72211d6d1ebaa401e2f119f4eae6808348a11c1776381b85596bac2f7002b551",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1187,7 +1187,89 @@
     {
       "name": "CA-above-one",
       "serialization": "object-streams",
-      "sha256": "a01aad6c1676901e41ad2dc4200f43b66a6b03fb1e999237c6107d8f22497118",
+      "sha256": "cc0f11e4090a34849bba13450c13c1cb8a1c21b26af0ae3f9b57ef4b0886ec10",
+      "bytes": 727,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-string",
+      "serialization": "classic-xref",
+      "sha256": "b65eecef956cbc009746b82085209246a57c96b2edd644b36ee498ae2f3d1629",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-string",
+      "serialization": "object-streams",
+      "sha256": "a18c5832047deb0e6325e11eb4ecfb57b24526bf20536a844ab43f25be076d6c",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1226,91 +1308,9 @@
       "stateRef": "5 0 R"
     },
     {
-      "name": "CA-string",
-      "serialization": "classic-xref",
-      "sha256": "b35af72ad967cb992f17a08a118a80999dd2568a213725091bdb36b8959958da",
-      "bytes": 1138,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
-      "name": "CA-string",
-      "serialization": "object-streams",
-      "sha256": "d73d6517f01b82668a9765e58e3d22790b6df45e2e64a6138111762e65f74401",
-      "bytes": 730,
-      "classification": "observed-fixed",
-      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
-      "graphicsIssues": [
-        {
-          "code": "TRANSPARENCY_ALPHA_INVALID",
-          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
-        }
-      ],
-      "nonGraphicsIssues": [
-        {
-          "code": "PDF_VERSION_UNSUPPORTED",
-          "object": "header"
-        },
-        {
-          "code": "OUTPUT_INTENT_COUNT",
-          "object": "Catalog/OutputIntents"
-        },
-        {
-          "code": "XMP_MISSING",
-          "object": "Catalog/Metadata"
-        },
-        {
-          "code": "TRAILER_ID_INVALID",
-          "object": "trailer/ID"
-        },
-        {
-          "code": "DEFAULT_RGB_MISSING",
-          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
-        },
-        {
-          "code": "TRANSPARENCY_GROUP_INVALID",
-          "object": "Page[0]/Group"
-        }
-      ],
-      "stateRef": "5 0 R"
-    },
-    {
       "name": "CA-name",
       "serialization": "classic-xref",
-      "sha256": "6af55f47548655cb2c4735cc9393cd70718809735aa47f2cb173996b5824f70b",
+      "sha256": "90e5f36517654bb994b42fac381b731bf5f8ce1ba1e089c61bcc0638dbfb4d4e",
       "bytes": 1138,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1351,8 +1351,8 @@
     {
       "name": "CA-name",
       "serialization": "object-streams",
-      "sha256": "46786697ac24177067ae64aa4aac735ce45ecf4cf4358bcd4b58532469b83385",
-      "bytes": 730,
+      "sha256": "270f3d914b2d236788db986e2e6af99ff62f1ab3f135801d5d05f93048932e22",
+      "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -1392,7 +1392,7 @@
     {
       "name": "CA-array-review",
       "serialization": "classic-xref",
-      "sha256": "d79c86778082647c5371fd0d19072a63697466a040106ac3c072e32c8e732631",
+      "sha256": "1e0facba144079f66867f70c4ecb3525a8d12eccb645d8f87995e0253cc83415",
       "bytes": 1140,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -1433,8 +1433,8 @@
     {
       "name": "CA-array-review",
       "serialization": "object-streams",
-      "sha256": "2ebc82251008e1c070f8b5d6c4ef69e3e5dad8a7e87b160fd5702ca38394a154",
-      "bytes": 730,
+      "sha256": "db71d8b833914c3ff95d67052f6ea3244503a027de4cffec6fca8aae20f70126",
+      "bytes": 729,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
       "graphicsIssues": [
@@ -1474,7 +1474,7 @@
     {
       "name": "CA-null-review",
       "serialization": "classic-xref",
-      "sha256": "eb4931c1aeb656590f6aba03d5ed85e62bf56122b876e4060fda97401c04be0e",
+      "sha256": "df0eca1e3431116766758d5f5da186968cc0b69bf45b9bd00b1a65ec76313672",
       "bytes": 1137,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -1510,8 +1510,8 @@
     {
       "name": "CA-null-review",
       "serialization": "object-streams",
-      "sha256": "6560dc6605d7789b7600f5b87d48287ebc4edffdf15bc0f01c0b32c9123813d2",
-      "bytes": 729,
+      "sha256": "8d2b2a97259800d7f9df72061eb83a9d6456fdb6c461510d6cb234544c97b8a5",
+      "bytes": 728,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
       "graphicsIssues": [],
@@ -1546,7 +1546,7 @@
     {
       "name": "BM-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "a66e8ce2281d25fda3f39f203fedbc4f42a25bf50f87b4a64ae0c066288a4c67",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1582,8 +1582,8 @@
     {
       "name": "BM-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
-      "bytes": 723,
+      "sha256": "000c9e995263d79389e626ea3138a40a674032693dcbcea1bea3b4fcfb047928",
+      "bytes": 721,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -1618,7 +1618,7 @@
     {
       "name": "BM-Normal",
       "serialization": "classic-xref",
-      "sha256": "ddd31fc497e588d63b3aac13cc799fbbccaf17e8173fdc123cfa8b3fbb12a296",
+      "sha256": "2b3293eec7cd7ccb7ca6f6a5f6e17565c2ff20e2314e32377983ddc866901d6b",
       "bytes": 1140,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1654,8 +1654,8 @@
     {
       "name": "BM-Normal",
       "serialization": "object-streams",
-      "sha256": "bc482c9870bc9559258fe46665f85a1e0da94b39a2414e7623049817511a953d",
-      "bytes": 731,
+      "sha256": "c25a6351c29f768ebc255026d04061a8d175cd000c98c958340ab53208341e80",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -1690,7 +1690,7 @@
     {
       "name": "BM-Compatible",
       "serialization": "classic-xref",
-      "sha256": "c3e5fd9abcd5912420a3b239b787d042a13af466656d372107f220aff2bb0c8a",
+      "sha256": "693adc9a05240472013c0bc272ffcc18a8bf1f3e879bbb29265cdb701e83bb2c",
       "bytes": 1144,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1726,8 +1726,8 @@
     {
       "name": "BM-Compatible",
       "serialization": "object-streams",
-      "sha256": "ecc9ff86deb90fd3f662558bc7ee439435c7e037ef40a1965b00ad317bfaadae",
-      "bytes": 734,
+      "sha256": "47bdf496901bef9e892b36ce4e2088b6046487b090355cdea24750b5590368cb",
+      "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -1762,7 +1762,7 @@
     {
       "name": "BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "66531996ee783c271c87bb68462643f0f386ccd1bfec481f955f93b982ce72e2",
+      "sha256": "31e5db6632f5ca92d90f2fe8d68b2e4e023279665977a775907741018e241341",
       "bytes": 1142,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1803,8 +1803,8 @@
     {
       "name": "BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "c1c14e612eab2ffa463086c02d54e853b888c9d12d78e358a1c80c187b0367be",
-      "bytes": 732,
+      "sha256": "2c35985c75bd95cfdd744db784d9dc41de1187eaf74a20066dfc195ac5473fe3",
+      "bytes": 731,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -1844,7 +1844,7 @@
     {
       "name": "BM-namearray-review",
       "serialization": "classic-xref",
-      "sha256": "6df7c061b7a5998486bd7a8bb65f915e9fab65e8684cd99d27bccb8f9958e787",
+      "sha256": "2e895af3026034649a49bce12bc8aad7629122aa003b2381985faf84e7742611",
       "bytes": 1146,
       "classification": "coordinator-review",
       "intendedRule": "Name-array blend semantics require coordinator policy; preserve the observed checker result.",
@@ -1885,8 +1885,8 @@
     {
       "name": "BM-namearray-review",
       "serialization": "object-streams",
-      "sha256": "54778a7932831792c4d9be9e532323167a77bcfff723c9465bb46c7fab77436c",
-      "bytes": 736,
+      "sha256": "50a44a2263c99f4eba73acfc56954c3205b24359a7a8420f409e0df3b57acd3c",
+      "bytes": 734,
       "classification": "coordinator-review",
       "intendedRule": "Name-array blend semantics require coordinator policy; preserve the observed checker result.",
       "graphicsIssues": [
@@ -1926,7 +1926,7 @@
     {
       "name": "BM-number",
       "serialization": "classic-xref",
-      "sha256": "b3690078b5e6e31920f3350f0b7952944a2e0b9d86a1e84f01a28fd81168be04",
+      "sha256": "9a30dbc1f59098b83cd911ddda84acc846f1921ae9af177ba8a4e86eea4decb0",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1967,8 +1967,8 @@
     {
       "name": "BM-number",
       "serialization": "object-streams",
-      "sha256": "512b5e1f7e338df76d3e5f86de0c65ef0c2c0bbad9c2b4b39a49f9ca3a6b5bd6",
-      "bytes": 726,
+      "sha256": "703dfccf9104b0d30f7e228a591518eaad4a5fedfd7f3ba925aabccb744e7fa7",
+      "bytes": 725,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -2008,7 +2008,7 @@
     {
       "name": "SMask-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "a66e8ce2281d25fda3f39f203fedbc4f42a25bf50f87b4a64ae0c066288a4c67",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2044,8 +2044,8 @@
     {
       "name": "SMask-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
-      "bytes": 723,
+      "sha256": "000c9e995263d79389e626ea3138a40a674032693dcbcea1bea3b4fcfb047928",
+      "bytes": 721,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2080,7 +2080,7 @@
     {
       "name": "SMask-None",
       "serialization": "classic-xref",
-      "sha256": "eb6315ffa60b2e1043ea0ba2c39a4c9aa629de53f2f8fe38522f38ad303c261e",
+      "sha256": "d1ea0cc1f64dc600762fa408b2cde361b1a09f9e574d590c56617396bb4d5333",
       "bytes": 1141,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2116,8 +2116,8 @@
     {
       "name": "SMask-None",
       "serialization": "object-streams",
-      "sha256": "cfe0f06028980d49059f0acd48524efcaad7d334782383a56017d8e40ed80aba",
-      "bytes": 731,
+      "sha256": "f05f3ba5e9e3d1ec59eb6d28338a1c908daf8e45f18907f6f639816bce24159b",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2152,7 +2152,7 @@
     {
       "name": "SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "24fc3363396d17740a3e151ec333930235d880cef3f1e90eef55be1dfdd7e08e",
+      "sha256": "8ab084212763857ab5eaebd25a3808d9d765e86c3f66188c784090f38cb1f3b4",
       "bytes": 1153,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2193,8 +2193,8 @@
     {
       "name": "SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "3dd00b0bcddf6d310a8519b0f6a640339061fc380bae1f2aea15762b55af36eb",
-      "bytes": 732,
+      "sha256": "702b004de8f86d12eff97c9004fcfff7d00d0c099859fd7b9be6c40495eb2cac",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -2234,7 +2234,7 @@
     {
       "name": "SMask-number",
       "serialization": "classic-xref",
-      "sha256": "8a8a507395e5b86593f29b28e61d8cb22a55db9d1c570f90e37c996954241e0f",
+      "sha256": "0d9e7a7a11d640cd0e70d678b0751918a75b0f369f227fb926a7c01d0b1e8261",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2275,8 +2275,8 @@
     {
       "name": "SMask-number",
       "serialization": "object-streams",
-      "sha256": "2dfa087af89bb214aace9c52c4efb78843ab43a7f4ffddef95908cc694639491",
-      "bytes": 729,
+      "sha256": "dac3bb9be359d8fe7d75dc6ec17143c06465ce05d834ead897fdb38c7d7f0b51",
+      "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -2316,7 +2316,7 @@
     {
       "name": "RI-RelativeColorimetric",
       "serialization": "classic-xref",
-      "sha256": "ade51db7601664e08e4ac4b20453b2d48e67eca5b627feae96eb41e145aa4fe7",
+      "sha256": "ac206e1e361be959947e209f03e8248deb106b76a027f06c7415b116d9528a46",
       "bytes": 1154,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2352,8 +2352,8 @@
     {
       "name": "RI-RelativeColorimetric",
       "serialization": "object-streams",
-      "sha256": "df9d4fc6c1e7a5734ae0e477f79eab46a1e980ac6485be202c3db599c4e98521",
-      "bytes": 740,
+      "sha256": "552235762bf780e878e52302a8d066e18bb29b8434c520ff6ae4016977c20cd1",
+      "bytes": 739,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2388,7 +2388,7 @@
     {
       "name": "RI-AbsoluteColorimetric",
       "serialization": "classic-xref",
-      "sha256": "4d55b089131121a390b19221c9b2ba27bb18274aedcac7fda8ad94e8ea5e24be",
+      "sha256": "3e849a2f2d338b8e2be6bc7ad504bef24f2b96e646eaa32e5d814dca8813a90f",
       "bytes": 1154,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2424,8 +2424,8 @@
     {
       "name": "RI-AbsoluteColorimetric",
       "serialization": "object-streams",
-      "sha256": "0a5970f8a306a085e9d1bab7242aabbe07c9192273f9cfbdbf6eb2e71bfcb9cc",
-      "bytes": 742,
+      "sha256": "286271f7a71ad0ec127108b452d5ec0b83815dea69bc5e4b21403cede7078b8b",
+      "bytes": 740,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2460,7 +2460,7 @@
     {
       "name": "RI-Perceptual",
       "serialization": "classic-xref",
-      "sha256": "0e309828d4ba1fddcec26c0b1f5ae5a7075ab0757b54f6be90f287e69b2694c8",
+      "sha256": "8a3cf4ee22d678c321a87ee858de1a89fcccba6438775644ff77a449c48c957d",
       "bytes": 1144,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2496,8 +2496,8 @@
     {
       "name": "RI-Perceptual",
       "serialization": "object-streams",
-      "sha256": "6ef035c04e09f1bb2fa88bb22c2997f17eef5eaeca69c48f5aae4a8ddd12314c",
-      "bytes": 732,
+      "sha256": "695afd968eb5e5a146ef54165a02b6ec3e108db1147b4020a88a264781e3c98f",
+      "bytes": 731,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2532,7 +2532,7 @@
     {
       "name": "RI-Saturation",
       "serialization": "classic-xref",
-      "sha256": "d6c6c816694d1b2d580dca580ec7475af93097b4271d49a4d0ebccd18d580fcb",
+      "sha256": "d098362bac9267f4e571364955407d57e3d1be455de493177841f4ff64f24411",
       "bytes": 1144,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2568,8 +2568,8 @@
     {
       "name": "RI-Saturation",
       "serialization": "object-streams",
-      "sha256": "c1e86a5cf65f4e0ad25f5b568d3b9353797e807598e4262277f093a36ec851aa",
-      "bytes": 732,
+      "sha256": "986971d3a4513ac96e4f973d72e0f26674f1704dfa85e51c4e6d2e1fb2d9542f",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2604,7 +2604,7 @@
     {
       "name": "RI-badname",
       "serialization": "classic-xref",
-      "sha256": "da008813c7de18372d8a89c5c7d70c2f56bae040c21426f0aa3ffe2e4da19ff8",
+      "sha256": "95f3cadb1ee187b92b8e5100b2821e653b8125f19de98ee945ddb464bf73208f",
       "bytes": 1143,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2645,8 +2645,8 @@
     {
       "name": "RI-badname",
       "serialization": "object-streams",
-      "sha256": "739cab1a6a881c98e6e47da052b5e676a5f4464bdc0c100925819c018bc2272d",
-      "bytes": 731,
+      "sha256": "005bf77be62c34d50e62f7101cc44fd05f2ef589f392c56c35fde425e214b478",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -2686,7 +2686,7 @@
     {
       "name": "RI-string",
       "serialization": "classic-xref",
-      "sha256": "3b1a4fc4bde98f56eceeabc9a6c3e8b314b93a5e3e48b815ce2768acda3791a4",
+      "sha256": "e7d208922705a45ec2e071e6a7ce8b53ce64a03a056215ec9f4c5dd5ca8df68e",
       "bytes": 1155,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2727,8 +2727,8 @@
     {
       "name": "RI-string",
       "serialization": "object-streams",
-      "sha256": "121d99ed1879e2606812fc736a9a91c6bec4762d54832a3af937ed76e6767cfe",
-      "bytes": 742,
+      "sha256": "e6b86c5cad869b73a7a9cbc7f287c261160a4b91d9b09e95189c7106a262d002",
+      "bytes": 740,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -2768,7 +2768,7 @@
     {
       "name": "TR2-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "a66e8ce2281d25fda3f39f203fedbc4f42a25bf50f87b4a64ae0c066288a4c67",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2804,8 +2804,8 @@
     {
       "name": "TR2-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
-      "bytes": 723,
+      "sha256": "000c9e995263d79389e626ea3138a40a674032693dcbcea1bea3b4fcfb047928",
+      "bytes": 721,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2840,7 +2840,7 @@
     {
       "name": "TR2-Default",
       "serialization": "classic-xref",
-      "sha256": "dabee01720e88f1002dfdc4020f9bc891e10950795e0089770743eecfafea601",
+      "sha256": "2043a0f81c807a134d5f1b0d211a2dbfceb5ca95195a5a45d6089487ff0fdda8",
       "bytes": 1142,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2876,8 +2876,8 @@
     {
       "name": "TR2-Default",
       "serialization": "object-streams",
-      "sha256": "2604bb6ed91d5bddc4486fe51d0a278c29054137e96fed79787179d3dbf6ea15",
-      "bytes": 732,
+      "sha256": "bcff816ef4acbf886c9481c1bdf0c9c6b7c595d3a169acce11394993ebad4565",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -2912,7 +2912,7 @@
     {
       "name": "TR2-Identity",
       "serialization": "classic-xref",
-      "sha256": "90a8b408c17a1f114d379d8c7ea343a638cf256965db732a9bde236fde91d11b",
+      "sha256": "d84129a46ba77dc4e6cc065ebb1505e317984b56d41ce98e191309a70cc958a0",
       "bytes": 1143,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2953,8 +2953,8 @@
     {
       "name": "TR2-Identity",
       "serialization": "object-streams",
-      "sha256": "74924c47b8599b895296381ef58e2c99a44a119d2f041429d48d687203b39261",
-      "bytes": 732,
+      "sha256": "bffaf5298351b7af4a1cb031945677c97ef0d25f1775b85ea4f02a65af3a4784",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -2994,7 +2994,7 @@
     {
       "name": "TR2-number",
       "serialization": "classic-xref",
-      "sha256": "abcbf90bf90ec1f9bd4568906ed29630be458f5c037facf356aec514ea98f9e1",
+      "sha256": "51e3ca7c782cf12b7913cbf7c3e2bf864fbe91acf35e165c9f4b1eb3b5e5c927",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3035,8 +3035,8 @@
     {
       "name": "TR2-number",
       "serialization": "object-streams",
-      "sha256": "8ed8cd7f89640aed230cc6491c6866f508d4a895ea6c3e32063c557d1249110d",
-      "bytes": 726,
+      "sha256": "1d4d23baca1c730fed04b6ad7e0ea72540e76277963f36ee1e312d81e4707e00",
+      "bytes": 725,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3076,7 +3076,7 @@
     {
       "name": "TR-present",
       "serialization": "classic-xref",
-      "sha256": "6e82bd9c10b0a7d9cb5ea72648368a64193f133adca6f78fc973cad54f66291f",
+      "sha256": "c1067ddbee65bbcdeb5b63e1fd2c39138571752777e1e5eae7718198082e99d0",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3117,8 +3117,8 @@
     {
       "name": "TR-present",
       "serialization": "object-streams",
-      "sha256": "541707cc3f95924ff2c4ee16364bf1ed0614870c34adeebc1a2e09aa65e5dd79",
-      "bytes": 726,
+      "sha256": "dc15aa6da8acc18de0c5d3890c3d9e118e298cdf6223ce781fede14c460cdec6",
+      "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3158,7 +3158,7 @@
     {
       "name": "HT-present",
       "serialization": "classic-xref",
-      "sha256": "da5e4c41651880f9b17f4fb2477ae9eaaf0b690794e0417849b750227fbf9e82",
+      "sha256": "96da6cb40f01189104954730dc4287865b2e4ad3f48d6a63aa0913907e3b2bc2",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3199,8 +3199,8 @@
     {
       "name": "HT-present",
       "serialization": "object-streams",
-      "sha256": "aae420f98cf0b22bfe9b236d73a47f20b2355586742e0380aea2042208504a62",
-      "bytes": 727,
+      "sha256": "ab0d3809631cec888f4e8d3d5def1791db3a6eeb14ae500bc45350c5f5ae4671",
+      "bytes": 725,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3240,7 +3240,7 @@
     {
       "name": "HTP-present",
       "serialization": "classic-xref",
-      "sha256": "e853342c406ff071309368cfe5e6e429533610ee80b847e4e3be4976616aae24",
+      "sha256": "ef6d6b267c8c79178ab075ef84a083360faecdc020395fb1e88e4f50c6e2d372",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3281,8 +3281,8 @@
     {
       "name": "HTP-present",
       "serialization": "object-streams",
-      "sha256": "6e89a758046807ad45976ebe333cff0c081ff0a2aa385bc54e0b70b64953a7bf",
-      "bytes": 728,
+      "sha256": "5d4225893cabcd67480229759defa023846942bcbca95bf67798cdb4f5e63c87",
+      "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3322,7 +3322,7 @@
     {
       "name": "BG-present",
       "serialization": "classic-xref",
-      "sha256": "2db97931faaa9148d5cb65cb88188638c42c292719c18593fec0786de487b14e",
+      "sha256": "42300a6b34b48897ccdc938576d0853746e3a851f35ffbaf642d14c342b86d11",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3363,8 +3363,8 @@
     {
       "name": "BG-present",
       "serialization": "object-streams",
-      "sha256": "2517831e4049d1ef2893de9e6e635082a52aa76695ed59612adbd1df92521984",
-      "bytes": 726,
+      "sha256": "cc180d9c82284bcde713ccbdae152af77575c742ab58d855efed75d399e37bef",
+      "bytes": 725,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3404,7 +3404,7 @@
     {
       "name": "BG2-present",
       "serialization": "classic-xref",
-      "sha256": "43615ea132cb1e5de48bc505cb3823b18f41a45838a04e91c7024222a05f7e01",
+      "sha256": "e222655087641ce2b8fe9c89a9e810610b41f071c281711e2c111c5700a13870",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3445,8 +3445,8 @@
     {
       "name": "BG2-present",
       "serialization": "object-streams",
-      "sha256": "d02e30b76d1d4da9abd2fb342a9ebb912c10f99a032a6a2e12d9e21dfad7af04",
-      "bytes": 727,
+      "sha256": "0d435aca6e9ec0d2ad18a73de9d76bae2a06c4e03aa0860f2ce1e483dc478eaf",
+      "bytes": 725,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3486,7 +3486,7 @@
     {
       "name": "UCR-present",
       "serialization": "classic-xref",
-      "sha256": "7c842d21258bde549b413a2a414708366eaa539d8e447d1151a937118e9e837d",
+      "sha256": "f1a06ce9875678fb2bbeb4479c2ccd7b5152f07f62ec8a6fd4d759b8e78d37b9",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3527,8 +3527,8 @@
     {
       "name": "UCR-present",
       "serialization": "object-streams",
-      "sha256": "12f7f081509ebe23b87ab627fab8773f0009ca6cc247509721e4281ccf71fdb8",
-      "bytes": 728,
+      "sha256": "f291057cb579bd48d7e93973d021be62a1821377c1c640df3ff44f204a2c99f3",
+      "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3568,7 +3568,7 @@
     {
       "name": "UCR2-present",
       "serialization": "classic-xref",
-      "sha256": "0af28b33a1a3e840cb8f5a06527e80b62e8630ec9717d175f2ee1be79fcd036a",
+      "sha256": "f5d7621c5a5515b4b4c69b36d3be06bc2d981199143463f7272cd0d9e6345c9d",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3609,8 +3609,8 @@
     {
       "name": "UCR2-present",
       "serialization": "object-streams",
-      "sha256": "7c2aa612c065e15f2e4defc5ad1ba088f2802349de7e473a7c2abcdb8d659149",
-      "bytes": 729,
+      "sha256": "826d813e5bb2971340d74dfc13827a51cbd6e2f3467aebc8ad66fce7a68d26af",
+      "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -3650,7 +3650,7 @@
     {
       "name": "valid-type-extgstate",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "a66e8ce2281d25fda3f39f203fedbc4f42a25bf50f87b4a64ae0c066288a4c67",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3686,8 +3686,8 @@
     {
       "name": "valid-type-extgstate",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
-      "bytes": 723,
+      "sha256": "000c9e995263d79389e626ea3138a40a674032693dcbcea1bea3b4fcfb047928",
+      "bytes": 721,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -3722,7 +3722,7 @@
     {
       "name": "omitted-type-extgstate-observation",
       "serialization": "classic-xref",
-      "sha256": "b11ace1f080f0f2b27bf8b1955ad06d81507184a7ac2db121bd52e640932facc",
+      "sha256": "1fc7d3cab225d8a6ff644db682d05cf1ae51a480b17a4d585f90bcca32e59969",
       "bytes": 1111,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary without Type should be measured separately from the existing Type-present whole-document check.",
@@ -3758,7 +3758,7 @@
     {
       "name": "omitted-type-extgstate-observation",
       "serialization": "object-streams",
-      "sha256": "e80300be7fd802ece94ff72bc9c4fb8a1a4534065946c8810102ab834061c3dd",
+      "sha256": "7d677f12b3fdfff50e57288bbec102f6d66c7405712fc384fccc51016239288a",
       "bytes": 718,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary without Type should be measured separately from the existing Type-present whole-document check.",
@@ -3794,7 +3794,7 @@
     {
       "name": "wrong-type-extgstate-observation",
       "serialization": "classic-xref",
-      "sha256": "d2f5f5bd200076ad930e5ee3762ee66d4ba644c18955085d522bc1717162c25b",
+      "sha256": "f82d71eb36de76c75c15f89caf7b1d829dc5221a4949a9e091f5a3c439f95176",
       "bytes": 1123,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary with a non-ExtGState Type is an observed resource-context case; do not infer policy beyond the existing checker result.",
@@ -3839,8 +3839,8 @@
     {
       "name": "wrong-type-extgstate-observation",
       "serialization": "object-streams",
-      "sha256": "f4d75d3582bc2689e72bd67d04c8c17ceded629b0265ff5e40f7f5273888fc27",
-      "bytes": 723,
+      "sha256": "94f73e93858291b0daba129df1f8d8bf978a6eaa50e7e0199d147df2d8de811f",
+      "bytes": 720,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary with a non-ExtGState Type is an observed resource-context case; do not infer policy beyond the existing checker result.",
       "graphicsIssues": [
@@ -3884,7 +3884,7 @@
     {
       "name": "valid-indirect-resource",
       "serialization": "classic-xref",
-      "sha256": "cab705b513c4264b43c159053434120c614da8ab6a7f0f412d703c439f5053cb",
+      "sha256": "ac1d7cbaae706f1f45aa3c4a70f3086a0a175cd0767f6a5b1c8fb23ee124ccf2",
       "bytes": 1170,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3920,8 +3920,8 @@
     {
       "name": "valid-indirect-resource",
       "serialization": "object-streams",
-      "sha256": "b6553e750d41b7ab3abfc7a29a77aba663fff977fa765e157fa843a3cb58f12b",
-      "bytes": 731,
+      "sha256": "5ca6d1feeea85530f5951c7d6ab59a8e95e15de54c5dae1615628ba4a28bdfb8",
+      "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -3956,7 +3956,7 @@
     {
       "name": "valid-inherited-resource",
       "serialization": "classic-xref",
-      "sha256": "2a6b96a4b6fa445f25a2c8e0d71cff5a448731f0f8c4eb4a06082706b0615cb3",
+      "sha256": "229efc46d4fcd85105b5167e22fc2b17b27ec189eaa537004cc83d2437162a5f",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3992,8 +3992,8 @@
     {
       "name": "valid-inherited-resource",
       "serialization": "object-streams",
-      "sha256": "c358d1225c1731df3cf18dcc876c239152521cd74ccb6d846e164887c60b1ef4",
-      "bytes": 723,
+      "sha256": "402f94bbdd2e106a087f81752c08cedaf41aab0109f04eceaa7842b10ede8ce9",
+      "bytes": 721,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -4028,7 +4028,7 @@
     {
       "name": "valid-inherited-indirect-resource",
       "serialization": "classic-xref",
-      "sha256": "5d8f5f2da0dc9f394d234b7996ebe26c2db96d6dfec7c57ff6f8d5627203b94a",
+      "sha256": "535bc964c157ad4638f4870d1aabc060a15ff1f6d15284160c5df5c06084f3fa",
       "bytes": 1170,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4064,8 +4064,8 @@
     {
       "name": "valid-inherited-indirect-resource",
       "serialization": "object-streams",
-      "sha256": "e31768d9de5d36a3fcbf24864ffedb68d5cfad481fadbb06f3db4c5bf83e0c44",
-      "bytes": 729,
+      "sha256": "b5c0f299cde275a8f75b7edd22653bf2210e8e97bdc6c7233680f748e76e9396",
+      "bytes": 728,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -4100,7 +4100,7 @@
     {
       "name": "shared-state-two-pages",
       "serialization": "classic-xref",
-      "sha256": "20ffaf53ab327f30d5ddd1a1168cd9a0e953ab1d31a46f47122baf3c31ade923",
+      "sha256": "d4fe372c2dd1a1ec5741eda1c65ef59eba4e2cac060c86f7887232d099b7e482",
       "bytes": 1466,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4144,8 +4144,8 @@
     {
       "name": "shared-state-two-pages",
       "serialization": "object-streams",
-      "sha256": "9fcb54c3e40bd2a925ec6b6652736874f6e96e77d82ea3f0032bca6b0ca306ac",
-      "bytes": 835,
+      "sha256": "d1d32356dd2b980cd7d1e5edda00a9978f6ba3bb241f1e654b7c76155770d6f8",
+      "bytes": 834,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -4188,7 +4188,7 @@
     {
       "name": "switch-two-states-twice",
       "serialization": "classic-xref",
-      "sha256": "53835c1aa10885d65a6eef0a2b9cd5c883420a51a3cec7dbf96656d69f59be70",
+      "sha256": "e39fc963852ad6647a3ae103b7b4c03d9a9d486c5511a9b410f31f1bc4f1b1c0",
       "bytes": 1252,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4224,8 +4224,8 @@
     {
       "name": "switch-two-states-twice",
       "serialization": "object-streams",
-      "sha256": "18293c1e36fb6347d6a59c600848513c0f0dad458ee298288892602ced64d380",
-      "bytes": 754,
+      "sha256": "c205b63be7013965139d4788bcc728849b2a045c27a44279b1f1fc7dcdc69ac6",
+      "bytes": 753,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -4260,7 +4260,7 @@
     {
       "name": "dangling-state-resource",
       "serialization": "classic-xref",
-      "sha256": "0c617a4fe4effb7fe29a6c7f23c9bf82dece651ebdcf8569543c5ef0e12c93f5",
+      "sha256": "f24234deb35ec68471b9e083b32abfea9870f3f37ab8f7e884191f1768343526",
       "bytes": 1133,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4301,7 +4301,7 @@
     {
       "name": "dangling-state-resource",
       "serialization": "object-streams",
-      "sha256": "acae8dac3df0cc35c3878a01726a4cb82b78ccad01f4997c8c492d5f97216c7a",
+      "sha256": "8088f54c625f3a4a4f311764338888a4e0dae5118fef103da160208501c06454",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4342,7 +4342,7 @@
     {
       "name": "context-type-ca-negative",
       "serialization": "classic-xref",
-      "sha256": "77bf335269d3909ba3030b32b4078f8990e8a746aa1d2ac0295cbd40ea9789e2",
+      "sha256": "9120e193239f5a3a2ad175f8325f7ce24cef65ef12307a0edae0b8ceaee774da",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4383,8 +4383,8 @@
     {
       "name": "context-type-ca-negative",
       "serialization": "object-streams",
-      "sha256": "d787f4c8dce309c734fc33223c52831de91d3ddf8ddc6a1ead513ee04e98cea8",
-      "bytes": 730,
+      "sha256": "7ed2b9462f4fe38c3efb41b5e2e657159a923ddb24756837b6359e05fc364e1b",
+      "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -4424,11 +4424,16 @@
     {
       "name": "context-omitted-ca-negative",
       "serialization": "classic-xref",
-      "sha256": "b9a97b8806038d7aef5650f4221f00faf8f7066f8be061e8f0c08e15edfa51f1",
+      "sha256": "e6ee37c755e5a2db7d4195467280d7d0699dc4c6f35038a38c2991d31798d335",
       "bytes": 1120,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "Page[0]/Contents[0]/gs/ca"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4460,11 +4465,16 @@
     {
       "name": "context-omitted-ca-negative",
       "serialization": "object-streams",
-      "sha256": "6def2e37ebf8816252f55948e236fe1d0ae386d0c7e06fabd8b7bb34e40e13b4",
-      "bytes": 725,
+      "sha256": "6f1affac53d6f5a96eb1e37952d8f320f53816dc87f7393df7d936d9f1dfd1dc",
+      "bytes": 723,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "Page[0]/Contents[0]/gs/ca"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4496,7 +4506,7 @@
     {
       "name": "context-wrong-ca-negative",
       "serialization": "classic-xref",
-      "sha256": "49d6a0fa7d64f2338a830134db1a670661c8da395874087c7cc9d05b497cf6b4",
+      "sha256": "ebad6aec24dd451987bbedc4f57608fbca8f9dd6f81ad1f778a10e9d501cccaf",
       "bytes": 1132,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is wrong; observe without blessing acceptance.",
@@ -4541,8 +4551,8 @@
     {
       "name": "context-wrong-ca-negative",
       "serialization": "object-streams",
-      "sha256": "b00d22ac613b3bedeca98923c785033104250339ad0418dfdc99c45ba200fc21",
-      "bytes": 730,
+      "sha256": "251a0e7160bb519213b0e12f5359e8543631c7be4beb8b581d898ee278790510",
+      "bytes": 729,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is wrong; observe without blessing acceptance.",
       "graphicsIssues": [
@@ -4586,7 +4596,7 @@
     {
       "name": "context-type-CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "52e74ec9a36d99f948cbab61466d01e8c71b5994c1b5f2c88a77c0704dde99f6",
+      "sha256": "91e4e4adba63ae1764c30be8ecae3726f24ecf2525944e706994ce2b08df8aff",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4627,8 +4637,8 @@
     {
       "name": "context-type-CA-above-one",
       "serialization": "object-streams",
-      "sha256": "a01aad6c1676901e41ad2dc4200f43b66a6b03fb1e999237c6107d8f22497118",
-      "bytes": 729,
+      "sha256": "eae24c76e0d6a8073ea766a5623634e371656a260d255da922a0c1097f0560a4",
+      "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -4668,11 +4678,16 @@
     {
       "name": "context-omitted-CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "97edb8760e0655da2ba1290ebbc5ffe5305b847f2cd3c34fc39bb6137429b52c",
+      "sha256": "4018694a583c5e8d0727b82cc328b05e791c81067371b9e927ba3020c4bdae78",
       "bytes": 1119,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "Page[0]/Contents[0]/gs/CA"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4704,11 +4719,16 @@
     {
       "name": "context-omitted-CA-above-one",
       "serialization": "object-streams",
-      "sha256": "344495a2bb22683f5dcad3c913c738405524df00eca496aa26be89e7fff77157",
+      "sha256": "c07b04bae510e68a2fd198ced6e936d4ef23d886dce8cc0eb1e94e4a740c8936",
       "bytes": 723,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "Page[0]/Contents[0]/gs/CA"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4740,7 +4760,7 @@
     {
       "name": "context-wrong-CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "18c587b88d84178fc6b503d58c6cee06ce58912c62a3183c7b26586045518b9f",
+      "sha256": "96b1f50c13fb34b0fb0652a7fc766c02c5797cc5ebfd4756f686f190dae67f22",
       "bytes": 1131,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is wrong; observe without blessing acceptance.",
@@ -4785,8 +4805,8 @@
     {
       "name": "context-wrong-CA-above-one",
       "serialization": "object-streams",
-      "sha256": "03c6d8bb1cd8bdc05cd18eaaf5b9f2076473589473abde56265f10d6f0056aab",
-      "bytes": 729,
+      "sha256": "fbaa8ddd515608ec961d38a94e264bfd9fa74dc11344df7201a774b8dd0e582a",
+      "bytes": 727,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is wrong; observe without blessing acceptance.",
       "graphicsIssues": [
@@ -4830,7 +4850,7 @@
     {
       "name": "context-type-BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "66531996ee783c271c87bb68462643f0f386ccd1bfec481f955f93b982ce72e2",
+      "sha256": "75d1714da3ce53cf1c1eb5cba0354d3b70babfbb32fa4314d534c2a56b02c863",
       "bytes": 1142,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4871,8 +4891,8 @@
     {
       "name": "context-type-BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "c1c14e612eab2ffa463086c02d54e853b888c9d12d78e358a1c80c187b0367be",
-      "bytes": 732,
+      "sha256": "4fa4b2209e91c487acffedd87319dcfd8b4698e935fea3ccec52ce79cf679699",
+      "bytes": 731,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -4912,11 +4932,16 @@
     {
       "name": "context-omitted-BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "47f56a6483f01bb58777017066d3a64e3774261a2865b643b120045c4f534eb9",
+      "sha256": "538098b6a90e2a8997875485fb3f7848abd721f55ff8c42eac945cd3ce897d4c",
       "bytes": 1125,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "Page[0]/Contents[0]/gs/BM"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4948,11 +4973,16 @@
     {
       "name": "context-omitted-BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "4909dcefc8057ba4855e3f2280d59240f986ece74d63278fa9353b563a6c8984",
-      "bytes": 728,
+      "sha256": "cae2781a0682db15a5f1c065a0b8471fa4ade89c119b050dff7c144e707a9777",
+      "bytes": 727,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "Page[0]/Contents[0]/gs/BM"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4984,7 +5014,7 @@
     {
       "name": "context-wrong-BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "6de0f38918d21be8681e7a1c11003499ce44fb2793b321858e5de05a9158d761",
+      "sha256": "83c2cc63c73c4a946f13dd306dc3668221d3dc689cce679794518b60849337c7",
       "bytes": 1137,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is wrong; observe without blessing acceptance.",
@@ -5029,8 +5059,8 @@
     {
       "name": "context-wrong-BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "9bc8d6ebe2777828a042fb8f112c5f9f8fb9328e87e8d070fee9831e4da085a3",
-      "bytes": 732,
+      "sha256": "36cb0f15439b50e35912c700603c16b09e0b878a096bdfdd4dd9e563c6112e90",
+      "bytes": 730,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is wrong; observe without blessing acceptance.",
       "graphicsIssues": [
@@ -5074,7 +5104,7 @@
     {
       "name": "context-type-SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "24fc3363396d17740a3e151ec333930235d880cef3f1e90eef55be1dfdd7e08e",
+      "sha256": "d0ac63d932acdf96e237b5062c81d5cd1ef079ee51691eeb0de6522f0c28ab34",
       "bytes": 1153,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5115,8 +5145,8 @@
     {
       "name": "context-type-SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "3dd00b0bcddf6d310a8519b0f6a640339061fc380bae1f2aea15762b55af36eb",
-      "bytes": 732,
+      "sha256": "701bc55ae84449770c0f217b0252dbe5b852b76084cbe9a43f658f0c0ceb529f",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [
@@ -5156,11 +5186,16 @@
     {
       "name": "context-omitted-SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "eba971ec1350b2a3bac1d5ed02d87cfb1a31acf4d0a768bf5098c250534a5a2c",
+      "sha256": "672d1166f969ebdedf5362d8892ebb8da3620c44966dd00da0f74f912e8d7b68",
       "bytes": 1136,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "Page[0]/Contents[0]/gs/SMask"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -5192,11 +5227,16 @@
     {
       "name": "context-omitted-SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "7cbef515e38773b36a8ac4b09b2a61ecd9c39bb045872ae6b59d3b1860f53377",
-      "bytes": 728,
+      "sha256": "51a58e567965bcc025184e6c9d2f0e6152a28dee9d86c2af43229d9cdf8a247f",
+      "bytes": 726,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "Page[0]/Contents[0]/gs/SMask"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -5228,7 +5268,7 @@
     {
       "name": "context-wrong-SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "79554beb614224b90bb8b7aacc69c323d87488c989086ed41f52948c3a23da34",
+      "sha256": "51ca9dccbcbda2a2b7edd73bdaa32932424de32ee39fdc1040e14be184574370",
       "bytes": 1148,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is wrong; observe without blessing acceptance.",
@@ -5273,8 +5313,8 @@
     {
       "name": "context-wrong-SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "9e701682157b87d53439d5436a013a0c1267a7ea4aa43d1b92ae3797c71c89d2",
-      "bytes": 732,
+      "sha256": "1ddaacde88623e7383f9b3fa9a2992a8540e7a3effc4645fa198121de88ecc04",
+      "bytes": 730,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is wrong; observe without blessing acceptance.",
       "graphicsIssues": [
@@ -5318,7 +5358,7 @@
     {
       "name": "export-transparency-alpha-0",
       "serialization": "classic-xref",
-      "sha256": "319a52d51aae60d053dc3cabc7b101277da87edee4b5a587db06a4bfe2de1a3b",
+      "sha256": "3817175cdb117141b280b4cc4f9dc21f871b41643c0d44da5c2f0fab80b0f68f",
       "bytes": 1341,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5354,8 +5394,8 @@
     {
       "name": "export-transparency-alpha-0",
       "serialization": "object-streams",
-      "sha256": "24f8a0d3bd2843c55a995d728320aef2f784894e96345aacf2d9d5de5967383c",
-      "bytes": 882,
+      "sha256": "00dc3dbcf1431da03a5674f514a8b0099728e9286cb81d1e7696daae930969ae",
+      "bytes": 881,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -5390,7 +5430,7 @@
     {
       "name": "export-transparency-alpha-half",
       "serialization": "classic-xref",
-      "sha256": "947f2ccd93452291cb60b6a4c76138bafb01c3383abca55c628b4b9f06586cca",
+      "sha256": "33702b48462ce04c9b9175f88ab71bd370d406fe695b93c877b41ffeda1e37cc",
       "bytes": 1345,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5426,8 +5466,8 @@
     {
       "name": "export-transparency-alpha-half",
       "serialization": "object-streams",
-      "sha256": "a54962b05c8f8715dc11a8ca2153bded6e6e81b458719d1d5a6fa21de6580413",
-      "bytes": 884,
+      "sha256": "53335d3e2421aa145a0f6d333ac4b5aa9682234324a182a6894301814ada8bcb",
+      "bytes": 883,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -5462,7 +5502,7 @@
     {
       "name": "export-transparency-alpha-one",
       "serialization": "classic-xref",
-      "sha256": "8ae21e2f37741045c6afbdc56faf4c2aaedee989eedadf4b421a4c95abb930eb",
+      "sha256": "acb24673d0601e32bc6909971cfadb227d556277858bf486728ddcf75d5b2705",
       "bytes": 1344,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5498,8 +5538,8 @@
     {
       "name": "export-transparency-alpha-one",
       "serialization": "object-streams",
-      "sha256": "7eebae0f0253de5ba15b789e538c3b175dfdb9980974dcb69b2ac18ab389db94",
-      "bytes": 884,
+      "sha256": "494d94bfbd8685a21157e2cad062fdbfbe60f27c494f834657eb54ac2fdfd62b",
+      "bytes": 883,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -5534,7 +5574,7 @@
     {
       "name": "export-transparency-stroke-half",
       "serialization": "classic-xref",
-      "sha256": "089c4b8016108beccf416ee026478b85cae6fe3caac767d46ffa85b0fe4e8ec7",
+      "sha256": "492cdeecea64e25be2bd0ff0f38b3b4ef38941f1c5e52a7e3b6dd330790de61c",
       "bytes": 1350,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5570,8 +5610,8 @@
     {
       "name": "export-transparency-stroke-half",
       "serialization": "object-streams",
-      "sha256": "6c84954cfa8c1b7ff466b942d6a7a038cc868445ca7d02fb827aafa2ea387bc6",
-      "bytes": 889,
+      "sha256": "80d0263b4e97ea6e13496f1535db3306691c33900c123c286621d80968e8cbb2",
+      "bytes": 888,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
