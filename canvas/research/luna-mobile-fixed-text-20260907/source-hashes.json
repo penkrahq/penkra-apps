@@ -1,5 +1,5 @@
 {
-  "sourceSha256": "c105c063f1e8324cd9403023c111d0036882bd8a8cfc14bf8b285109caebfa55",
+  "sourceSha256": "054bd260fa25451d2ca355983ab6cddd16538633b68cef309ad9d3aa460dc1a4",
   "files": [
     {
       "path": "compose/generated/CanvasFlowLayout.kt",
@@ -8,23 +8,23 @@
     },
     {
       "path": "compose/generated/FixedTextBoundedWrapping.kt",
-      "bytes": 2005,
-      "sha256": "3fbbd436d5e4253ef99e4c9d76eb8a100a84e5f2e936d42e09e54805323471d4"
+      "bytes": 2157,
+      "sha256": "5bb4a1e531628d45d68fec5ac8f5fc155eb1e82d6eb43b0de6b26298daa601e4"
     },
     {
       "path": "compose/generated/FixedTextDecorations.kt",
-      "bytes": 2073,
-      "sha256": "4e7867916fb3b1c00522f71262be510cba7298c55c21e3a32eb88ce6226fb20e"
+      "bytes": 2225,
+      "sha256": "5e247c6ad3960f63d35a149a2fc5ff6daa815ae6ef165c15ac3a1fd602542952"
     },
     {
       "path": "compose/generated/FixedTextMixedSizeRichRuns.kt",
-      "bytes": 2213,
-      "sha256": "82d51af3c31279bc7a0b2221b84397ef50bca25bc595c2970054164ef18e6977"
+      "bytes": 2302,
+      "sha256": "e5c3c2179638bb22e3461e873c3c850aab4039d8cf8a275b6e59ae63d353f580"
     },
     {
       "path": "compose/generated/FixedTextUniformSingleRunText.kt",
-      "bytes": 1982,
-      "sha256": "bad438704ae67350d61d9d54561bea9bf3dbd2c838b336ce855f28a3110cf25c"
+      "bytes": 2134,
+      "sha256": "eabd2cae7cd2e1467d8464d34ed040e4d6fc3babccb0b65f74f57955a2e1538a"
     },
     {
       "path": "compose/generated/MainActivity.kt",
@@ -38,23 +38,23 @@
     },
     {
       "path": "swift/FixedTextBoundedWrapping.swift",
-      "bytes": 666,
-      "sha256": "6e754d0e30119e6f6d6a1ba403386f3563f30b34a18b0918b8835f550c1b654c"
+      "bytes": 656,
+      "sha256": "cf0afc9fb63ff1c6e419ab6068936e98501b4dcbe672472eddd91e2eddd5b14d"
     },
     {
       "path": "swift/FixedTextDecorations.swift",
-      "bytes": 665,
-      "sha256": "fe66fc141286ad55a81f374e0f2938dbf0da783808d4f01a26f4afdc568b03df"
+      "bytes": 655,
+      "sha256": "346091b9124a595cc82e9dc8add24f4b541545f168ef446e88f316f74bbb1de2"
     },
     {
       "path": "swift/FixedTextMixedSizeRichRuns.swift",
-      "bytes": 777,
-      "sha256": "3399b02288dec8922e213147c6fafc2ac0068552cacde5393235d25f1f2c70e9"
+      "bytes": 757,
+      "sha256": "033575b0833c40d5a224cd671576660f84258f5cb11255d28dbd8653fae1bad7"
     },
     {
       "path": "swift/FixedTextUniformSingleRunText.swift",
-      "bytes": 649,
-      "sha256": "164daf93e0a590d4aa9e4b830eb78be04f005835f91fdb0a0dfed89fd35148cb"
+      "bytes": 639,
+      "sha256": "e68543e7372071b704be291ca2473a678e63fc57dceff2fda7c85a499e1de0b8"
     },
     {
       "path": "swift/FlowLayout.swift",

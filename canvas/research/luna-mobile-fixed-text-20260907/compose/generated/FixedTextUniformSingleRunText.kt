@@ -35,6 +35,6 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalLayoutApi::class)
 @Composable fun FixedTextUniformSingleRunText() {
   Box(modifier = Modifier.size(340.dp, 180.dp).alpha(1.0f).background(Color(0xFFFFFFFF))) {
-    Text(buildAnnotatedString { withStyle(SpanStyle(color = Color(0xFF123456), fontWeight = FontWeight(400))) { append("Canvas fixed text") } }, style = androidx.compose.ui.text.TextStyle(fontSize = 24.sp, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated), modifier = Modifier.offset(20.dp, 24.dp).size(300.dp, 64.dp).alpha(1.0f))
+    Text(buildAnnotatedString { withStyle(SpanStyle(color = Color(0xFF123456), fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 24.dp.toSp() }, fontWeight = FontWeight(400))) { append("Canvas fixed text") } }, style = androidx.compose.ui.text.TextStyle(fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { 24.dp.toSp() }, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated), modifier = Modifier.offset(20.dp, 24.dp).size(300.dp, 64.dp).alpha(1.0f))
   }
 }
