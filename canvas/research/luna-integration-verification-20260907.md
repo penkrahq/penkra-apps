@@ -148,3 +148,39 @@ Log: `/tmp/canvas-luna-approved-library-focused-20260907.log`. Exit `0`; `52` pa
 `0` cancelled, `0` skipped; runner duration `7005.352916 ms`; wrapper duration `7 s`.
 This is a later, narrower library/API subset and is distinct from the earlier `1060` strict
 source/exporter/Yjs result and `1200` full-suite result; it does not replace either baseline.
+
+## PDF negative-package integration audit (read-only)
+
+No PDF commit was picked. The audited candidate topology is:
+
+- `2696b42`: adds the root-level `research/luna-pdfx-gate-inventory-20260907.md` inventory;
+- `6a16ed5`: relocates that inventory to `canvas/research`;
+- `349a6c9`: adds the serialized negative matrix test;
+- `edd28fb`: stabilizes its ICC fixtures;
+- `8752b92`: retains representative-only binaries and in-memory regeneration;
+- `2cbe2ed`: adds the final matrix manifests, representative PDFs, and verification report.
+
+The combined worktree has neither inventory path. A read-only `git apply --check` of the relocation
+diff returned `1` because its root source file is absent. Therefore the minimal future sequence for
+the requested negative-package test/evidence is `349a6c9`, `edd28fb`, `8752b92`, `2cbe2ed`, in that
+order. The root-inventory commits `2696b42` and `6a16ed5` are omitted as inappropriate/intermediate
+root research history; retaining that inventory later would require the pair together, not the
+relocation alone.
+
+The candidate JSON was read directly from `2cbe2ed`: `caseCount=22`,
+`serializationVariantCount=2`, `executedResultCount=44`, and `44` unique
+`case|serialization` identities. `sha256-manifest.json` reports
+`retainedArtifactCount=2`, exactly `valid-candidate-control-classic-xref.pdf` and
+`output-profile-unreadable-classic-xref.pdf`. The candidate verification explicitly states that
+the positive control is not asserted conformant and that no PDF/X certification or publication-gate
+claim is made. The six audited commits touch only research evidence and the named matrix test;
+there are no protected files, capability-table/production-gate changes, exporter source changes,
+or PDF/X gate changes.
+
+At the orchestration checkpoint, the known-thread poll covered Android
+`agent-29aae5111e4ecadf2d26b7f87bd3c53a`, iOS `agent-3d52bc7b681407f1426ee32b870ffb40`, delivery
+`agent-eccc4d9408f68469415931f1120a09ca`, and PDF
+`agent-93d30227119bd634b15b45d6b3d21f1f`; the exact returned statuses were respectively
+`interrupted`, `working`, `interrupted`, and `working` (PDF had one queued turn). The local process
+check found no active test or native compiler process. These statuses are telemetry only and do
+not authorize a new build or device action.
