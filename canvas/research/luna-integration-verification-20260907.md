@@ -598,3 +598,12 @@ Log `/tmp/canvas-luna-loader-publication-envelope-20260907.log`; exit `0`, `129`
 `16 s`. The required retained-follow identity, source-fallback prevention, publication retention
 stripping, storage/materializer isolation, and envelope boundary assertions all passed. No native
 lease or Android action was used for this batch.
+
+Per the later helper/evidence approval, the exact two-file envelope receipt was rerun only after
+the complete approved sequence; helper classic-xref/direct-length generation-zero scope and the
+existing closed gate were unchanged:
+
+`node scripts/test.mjs src/exporters/pdf-serialization-envelope.test.mjs src/exporters/luna-pdf-envelope-independent.test.mjs`
+
+Log `/tmp/canvas-luna-envelope-two-files-20260907.log`; exit `0`, `21` passed, `0` failed,
+`0` cancelled, `0` skipped; wrapper duration `1 s` (runner-reported duration `196.643375 ms`).
