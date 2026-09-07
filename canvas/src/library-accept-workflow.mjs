@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { isDeepStrictEqual } from "node:util";
 
 import { validateCanvasDocument } from "./canvas-schema.mjs";
 import { createDocumentOperationUpdates, encodeState, encodeUpdate, LOCAL_ORIGIN, materialize, restoreDocumentModel, Y } from "./document-model.mjs";
@@ -52,6 +53,23 @@ export async function acceptCanvasLibrary(api, input) {
     await loadRetainedCanvasImports(api, proposed, { documentId: request.documentId });
     validateCanvasDocument(proposed);
 
+    const identity = {
+      libraryId: selected.release.libraryId,
+      releaseId: selected.release.releaseId,
+      contentHash: selected.release.contentHash,
+    };
+    if (isDeepStrictEqual(proposed, consumer)) {
+      return {
+        accepted: true,
+        changed: false,
+        documentId: request.documentId,
+        alias: request.alias,
+        identity,
+        retention: structuredClone(retention),
+        sequence: expectedSequence,
+      };
+    }
+
     const operationId = randomUUID();
     const updates = createDocumentOperationUpdates(model, proposed);
     const appended = await api.appendUpdate(request.documentId, {
@@ -70,9 +88,10 @@ export async function acceptCanvasLibrary(api, input) {
     Y.applyUpdate(model.doc, updates.forward, LOCAL_ORIGIN);
     const receipt = {
       accepted: true,
+      changed: true,
       documentId: request.documentId,
       alias: request.alias,
-      identity: { libraryId: selected.release.libraryId, releaseId: selected.release.releaseId, contentHash: selected.release.contentHash },
+      identity,
       retention: structuredClone(retention),
       operationId,
       sequence: appended.sequence,
