@@ -4,9 +4,32 @@
 export function readPdfContent(bytes) {
   if (bytes.length > 16 * 1024 * 1024) throw new Error("Content exceeds checked subset limit");
   let cursor = 0;
+  const utf8 = new TextDecoder("utf-8", { fatal: true });
   const white = (c) => [0, 9, 10, 12, 13, 32].includes(c);
   const delimiter = (c) => white(c) || [40, 41, 60, 62, 91, 93, 123, 125, 47, 37].includes(c);
   const ascii = (start, end) => Array.from(bytes.subarray(start, end), (c) => String.fromCharCode(c)).join("");
+  function nameValue() {
+    const decoded = [];
+    while (cursor < bytes.length && !delimiter(bytes[cursor])) {
+      const byte = bytes[cursor++];
+      if (byte === 35) {
+        if (cursor + 1 >= bytes.length) throw new Error("Malformed PDF name");
+        const high = bytes[cursor++];
+        const low = bytes[cursor++];
+        const highChar = String.fromCharCode(high);
+        const lowChar = String.fromCharCode(low);
+        if (!/[0-9a-fA-F]/u.test(highChar) || !/[0-9a-fA-F]/u.test(lowChar)) throw new Error("Malformed PDF name");
+        decoded.push(parseInt(`${highChar}${lowChar}`, 16));
+      } else {
+        if (byte < 33 || byte > 126) throw new Error("Invalid PDF name encoding");
+        decoded.push(byte);
+      }
+    }
+    if (decoded.includes(0)) throw new Error("Invalid PDF name encoding");
+    try { utf8.decode(Uint8Array.from(decoded)); }
+    catch { throw new Error("Invalid PDF name encoding"); }
+    return Array.from(decoded, (byte) => String.fromCharCode(byte)).join("");
+  }
   function skip() {
     while (cursor < bytes.length) {
       if (white(bytes[cursor])) cursor += 1;
@@ -20,10 +43,7 @@ export function readPdfContent(bytes) {
     const start = cursor;
     const c = bytes[cursor++];
     if (c === 47) {
-      while (cursor < bytes.length && !delimiter(bytes[cursor])) cursor += 1;
-      const encoded = ascii(start + 1, cursor);
-      if (/#(?![0-9a-fA-F]{2})/u.test(encoded)) throw new Error("Malformed PDF name");
-      return { kind: "name", value: encoded.replace(/#([0-9a-fA-F]{2})/gu, (_, hex) => String.fromCharCode(parseInt(hex, 16))) };
+      return { kind: "name", value: nameValue() };
     }
     if (c === 40) {
       const output = [];
@@ -69,7 +89,15 @@ export function readPdfContent(bytes) {
         skip();
         if ((!dict && bytes[cursor] === 93) || (dict && bytes[cursor] === 62 && bytes[cursor + 1] === 62)) {
           cursor += dict ? 2 : 1;
-          if (dict && (output.length % 2 || output.some((item, i) => i % 2 === 0 && item.kind !== "name"))) throw new Error("Malformed dictionary");
+          if (dict) {
+            if (output.length % 2 || output.some((item, i) => i % 2 === 0 && item.kind !== "name")) throw new Error("Malformed dictionary");
+            const keys = new Set();
+            for (let i = 0; i < output.length; i += 2) {
+              const key = output[i].value;
+              if (keys.has(key)) throw new Error("Duplicate PDF dictionary name");
+              keys.add(key);
+            }
+          }
           return { kind: dict ? "dict" : "array", value: output };
         }
         const item = value(depth + 1);
