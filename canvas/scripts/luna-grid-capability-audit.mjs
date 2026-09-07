@@ -4,6 +4,8 @@ import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { validateCanvasDocument } from "../src/canvas-schema.mjs";
+
 const requiredRoots = {
   combinedCanvasRoot: process.env.CANVAS_GRID_COMBINED_CANVAS_ROOT,
   iosEvidenceRoot: process.env.CANVAS_GRID_IOS_EVIDENCE_ROOT,
@@ -36,8 +38,8 @@ async function auditIos() {
   assert.ok(gridNodes.slice(0, 12).every((grid) => grid.children.every((child) => !Object.hasOwn(child, "gridColumnSpan") && !Object.hasOwn(child, "gridRowSpan"))));
 
   const { buildCapabilityVerificationIR } = await importFrom(roots.combinedCanvasRoot, "src/exporter-ir.mjs");
-  const { capabilityPathInventory, validateCanvasDocument } = await importFrom(roots.combinedCanvasRoot, "src/canvas-schema.mjs");
-  for (const tracks of [[100, 180], [180, 100], [0, 240], [-1, 240], [10.5, 20.25], [], [240]]) {
+  const { capabilityPathInventory } = await importFrom(roots.combinedCanvasRoot, "src/canvas-schema.mjs");
+  for (const tracks of [[100, 180], [180, 100], [0, 240], [10.5, 20.25], [], [240], ["auto", "1fr"], ["1fr", "2fr"], [0, "0fr"]]) {
     const numeric = {
       version: "2.17", module: "mobile", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
       children: [{ id: "screen", type: "frame", role: "ios", width: 320, height: 240, layout: "none", children: [{
@@ -59,7 +61,9 @@ async function auditIos() {
   for (const track of ["fill_container", "fit_content"]) {
     const unsupported = structuredClone(document);
     for (const frame of unsupported.children) frame.children[0].gridTemplateColumns = [track, 100];
-    assert.throws(() => buildCapabilityVerificationIR(unsupported, { role: "ios", frames: [unsupported.children[0].id] }, capabilityPathInventory()), new RegExp(`Invalid grid track ${track.replaceAll("_", "\\_")}`));
+    const result = validateCanvasDocument(unsupported, { throw: false });
+    assert.equal(result.valid, false, track);
+    assert.ok(result.errors.some((error) => error.includes("gridTemplateColumns[0]")), track);
   }
 
   const { ir, sources } = buildGridSources();

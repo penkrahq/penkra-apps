@@ -22,13 +22,15 @@ function baseDocument(gridTemplateColumns, role = "ios") {
 }
 
 test("schema-valid gridTemplateColumns are explicitly separated from unresolved track keywords", () => {
-  for (const tracks of [[100, 180], [180, 100], [0, 240], [320]]) {
+  for (const tracks of [[100, 180], [180, 100], [0, 240], [320], ["auto", "1fr"], ["1fr", "2fr"], [0, "0fr"]]) {
     assert.equal(validateCanvasDocument(baseDocument(tracks), { throw: false }).valid, true, JSON.stringify(tracks));
   }
   for (const track of ["fill_container", "fit_content"]) {
-    assert.equal(validateCanvasDocument(baseDocument([track, 100]), { throw: false }).valid, true, track);
+    const result = validateCanvasDocument(baseDocument([track, 100]), { throw: false });
+    assert.equal(result.valid, false, track);
+    assert.ok(result.errors.some((error) => error.includes("gridTemplateColumns[0]")), track);
   }
-  for (const tracks of [["1fr", "2fr"], ["auto", 100], ["minmax(10, 1fr)", 100]]) {
+  for (const tracks of [[-1, 100], [NaN, 100], [Infinity, 100], [{ value: 100 }, 100], ["-1fr", 100], ["1.5", 100], [" 1fr", 100], ["minmax(10, 1fr)", 100], ["repeat(2, 1fr)", 100]]) {
     const result = validateCanvasDocument(baseDocument(tracks), { throw: false });
     assert.equal(result.valid, false, JSON.stringify(tracks));
     assert.ok(result.errors.some((error) => error.includes("gridTemplateColumns")));
