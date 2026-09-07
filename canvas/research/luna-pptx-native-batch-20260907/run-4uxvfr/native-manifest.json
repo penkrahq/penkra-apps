@@ -1,0 +1,1057 @@
+{
+  "schema": "luna-pptx-native-batch-20260907",
+  "generator": {
+    "run": "run-4uxvfr",
+    "format": "pptx",
+    "artifactCount": 40,
+    "sourceHashes": "source-hashes.json",
+    "semanticXml": "semantic.xml.json"
+  },
+  "ids": [
+    "School 1",
+    "School 2",
+    "School 3",
+    "School 4",
+    "School 5",
+    "School 6",
+    "School 7",
+    "School 8",
+    "School 9",
+    "School 10",
+    "School 11",
+    "School 12",
+    "School 13",
+    "School 14",
+    "School 15",
+    "School 16",
+    "School 17",
+    "School 18",
+    "School 19",
+    "School 20",
+    "School 21",
+    "School 22",
+    "School 23",
+    "School 24",
+    "School 25",
+    "School 26",
+    "School 27",
+    "School 28",
+    "School 29",
+    "School 30",
+    "School 31",
+    "School 32",
+    "School 33",
+    "School 34",
+    "School 35",
+    "School 36",
+    "School 37",
+    "School 38",
+    "School 39",
+    "School 40"
+  ],
+  "sourcePptx": [
+    {
+      "index": 0,
+      "school": "School 1",
+      "path": "pptx/School 1.pptx",
+      "sha256": "9e5d4cfb48fcf9abcec8d5851a8fbd1115c91f7f4c46505979bdbd90c7d22e57"
+    },
+    {
+      "index": 1,
+      "school": "School 2",
+      "path": "pptx/School 2.pptx",
+      "sha256": "ff4582d8a31c2afb7d1cb43e6b75f0acaea2c36843059c8f291996d5bacbbd58"
+    },
+    {
+      "index": 2,
+      "school": "School 3",
+      "path": "pptx/School 3.pptx",
+      "sha256": "84acecf1c33e7e0c12299b537015bbded5f0fe851b2a9e4a2ab0d5bc7f43341d"
+    },
+    {
+      "index": 3,
+      "school": "School 4",
+      "path": "pptx/School 4.pptx",
+      "sha256": "f7aa94f2bd4699e22aa66d97a6c80431fd4d4311785a0f6d6b7ffb25c64b55f7"
+    },
+    {
+      "index": 4,
+      "school": "School 5",
+      "path": "pptx/School 5.pptx",
+      "sha256": "e8ce702163a4fd0feeeb9f15678d68e7ab7b3df9119d9b4145e92dc552683d33"
+    },
+    {
+      "index": 5,
+      "school": "School 6",
+      "path": "pptx/School 6.pptx",
+      "sha256": "abd198bb7b23bca20dd7cf23a01ad86fe17b417bbb70a9ec6853c6952f0d599b"
+    },
+    {
+      "index": 6,
+      "school": "School 7",
+      "path": "pptx/School 7.pptx",
+      "sha256": "5632456d50c8b96571e0736b3f00e1b7443dc5575075cb8c4cd473634ea32791"
+    },
+    {
+      "index": 7,
+      "school": "School 8",
+      "path": "pptx/School 8.pptx",
+      "sha256": "d51d903e2f78bb8c14c278b47d57d094df2132005c6f82b223c386a87dc25342"
+    },
+    {
+      "index": 8,
+      "school": "School 9",
+      "path": "pptx/School 9.pptx",
+      "sha256": "c471e732d06bda201a8406b0eafb7f5e7cb660b0a9a15ddfc28feba5a78613e1"
+    },
+    {
+      "index": 9,
+      "school": "School 10",
+      "path": "pptx/School 10.pptx",
+      "sha256": "1c10520f458e39184c108c283299efc64e03238ac50d0bb739337877adbea834"
+    },
+    {
+      "index": 10,
+      "school": "School 11",
+      "path": "pptx/School 11.pptx",
+      "sha256": "f0438251efbc1d2346ebc3a332da56dcb8f392ae46774f5dd487d44bc54a5e27"
+    },
+    {
+      "index": 11,
+      "school": "School 12",
+      "path": "pptx/School 12.pptx",
+      "sha256": "3de9185cf7275508e62abae1845e4758a67795b1a055aead124afc9fcae5b869"
+    },
+    {
+      "index": 12,
+      "school": "School 13",
+      "path": "pptx/School 13.pptx",
+      "sha256": "e6a397f186595624251267c32bef9a2820d8a5dbaf6586dae8cb2ef254e625c8"
+    },
+    {
+      "index": 13,
+      "school": "School 14",
+      "path": "pptx/School 14.pptx",
+      "sha256": "70ca3e2ddc4cec06ca39e9f303617f2150284f65f8116955099ba82ccfb1c089"
+    },
+    {
+      "index": 14,
+      "school": "School 15",
+      "path": "pptx/School 15.pptx",
+      "sha256": "b52fadda68538c8c3e53ce2a4e11d9c9bbb88fbabf4a7787438ba900bc324dd9"
+    },
+    {
+      "index": 15,
+      "school": "School 16",
+      "path": "pptx/School 16.pptx",
+      "sha256": "a433d935a68f9af3a19f82f384c9b7e9c0b9cda4ffac79f5be8ad5fa02b27f6d"
+    },
+    {
+      "index": 16,
+      "school": "School 17",
+      "path": "pptx/School 17.pptx",
+      "sha256": "887da196c194218f82f2e43c4ed7f485ef05a031fa5dbe96210aaf33cb3197b0"
+    },
+    {
+      "index": 17,
+      "school": "School 18",
+      "path": "pptx/School 18.pptx",
+      "sha256": "35859402671b6a83561784bbb57c5e2319b8d4700027bf0925a1007d33467da5"
+    },
+    {
+      "index": 18,
+      "school": "School 19",
+      "path": "pptx/School 19.pptx",
+      "sha256": "86836a283c996550f4575ab5b0174bccf1587600aee609cca997ba5a69f1b7a6"
+    },
+    {
+      "index": 19,
+      "school": "School 20",
+      "path": "pptx/School 20.pptx",
+      "sha256": "b7226d069acb04492c7e33358bcbe9c60796a31802cafce1858f5b9114f4a7f0"
+    },
+    {
+      "index": 20,
+      "school": "School 21",
+      "path": "pptx/School 21.pptx",
+      "sha256": "b42dd148f0ae297ab5c6b652b89757b309e1c3039af02c00a09a9caebd55f30c"
+    },
+    {
+      "index": 21,
+      "school": "School 22",
+      "path": "pptx/School 22.pptx",
+      "sha256": "a566695b690d579ef1a5bc5ac0377b97fee3c626102ad8272ef89b64d074330d"
+    },
+    {
+      "index": 22,
+      "school": "School 23",
+      "path": "pptx/School 23.pptx",
+      "sha256": "9746eed2434258376e224658581d8df05339e5f075ff4c408492d7f088211395"
+    },
+    {
+      "index": 23,
+      "school": "School 24",
+      "path": "pptx/School 24.pptx",
+      "sha256": "1992718fc3e184e133398036dddffa81299b4e2b73299b389401ad1a912333da"
+    },
+    {
+      "index": 24,
+      "school": "School 25",
+      "path": "pptx/School 25.pptx",
+      "sha256": "bcdbb05b475f0733ed0c184ade2081a66df51d5e3c82f7dfd5bf2f9b1a8ab0cd"
+    },
+    {
+      "index": 25,
+      "school": "School 26",
+      "path": "pptx/School 26.pptx",
+      "sha256": "f470e0f1699a52ce517b2206adf8f6b85b479f270b48c9e7ff23af3431611f66"
+    },
+    {
+      "index": 26,
+      "school": "School 27",
+      "path": "pptx/School 27.pptx",
+      "sha256": "0d2084d53d6334c31ffd01df96a365ee4a216cdd48f0cd291a70b9642db99bdc"
+    },
+    {
+      "index": 27,
+      "school": "School 28",
+      "path": "pptx/School 28.pptx",
+      "sha256": "ed4d53313314ec3e4ff0261bb2b84e0511ba89b3d20da414be2367ec1c1c5796"
+    },
+    {
+      "index": 28,
+      "school": "School 29",
+      "path": "pptx/School 29.pptx",
+      "sha256": "78419cc8853a80a01da2112b6fa3e0fb26296fa5b946751b24aef56c98fc068d"
+    },
+    {
+      "index": 29,
+      "school": "School 30",
+      "path": "pptx/School 30.pptx",
+      "sha256": "77fab198fdf2c1baa5bf81ee015abc66d672c74fca63e087bbd80f16f64dfa3e"
+    },
+    {
+      "index": 30,
+      "school": "School 31",
+      "path": "pptx/School 31.pptx",
+      "sha256": "b36f4fb83c8775678fbc8f5e5a68551d7d929ea916a23ab8deef1bd438f4f753"
+    },
+    {
+      "index": 31,
+      "school": "School 32",
+      "path": "pptx/School 32.pptx",
+      "sha256": "eadc8f14ef44448c785783a05e801f1d502958eceae0640451c040fb053f9fb4"
+    },
+    {
+      "index": 32,
+      "school": "School 33",
+      "path": "pptx/School 33.pptx",
+      "sha256": "780961c7bf143e4df9ea8d379bb11b2bd6c775afab87109c95f24872aa26e2e6"
+    },
+    {
+      "index": 33,
+      "school": "School 34",
+      "path": "pptx/School 34.pptx",
+      "sha256": "7f840e9e25a42528bb548da98ba2e2f8de80935a54e0394999089812fd038901"
+    },
+    {
+      "index": 34,
+      "school": "School 35",
+      "path": "pptx/School 35.pptx",
+      "sha256": "80652478c09e609bca0ff470de4fc78d6a03236cb3e1608093ece9dc27abc421"
+    },
+    {
+      "index": 35,
+      "school": "School 36",
+      "path": "pptx/School 36.pptx",
+      "sha256": "080d05cff5486717766dfece05328e895538c6c54528610581b4368ceb6409ef"
+    },
+    {
+      "index": 36,
+      "school": "School 37",
+      "path": "pptx/School 37.pptx",
+      "sha256": "75fca77e95fca997c641a2d7d2b7ddc81ed99ba804daca1cde82bf4a88d6ae9e"
+    },
+    {
+      "index": 37,
+      "school": "School 38",
+      "path": "pptx/School 38.pptx",
+      "sha256": "2fc1ba9599719afb011972886b9c71e69a76bef03ed7976ccaad6efeae30f8bd"
+    },
+    {
+      "index": 38,
+      "school": "School 39",
+      "path": "pptx/School 39.pptx",
+      "sha256": "51948c1ae7abfeb50a4f6f6a6e792ef4d31f537f092530554fa44beb9ea5ec66"
+    },
+    {
+      "index": 39,
+      "school": "School 40",
+      "path": "pptx/School 40.pptx",
+      "sha256": "160eca14781b89c131991572458d969f147e1a9aca7a89131c68a60498a7dcaa"
+    }
+  ],
+  "ui": {
+    "captureCount": 40,
+    "visualInspectedCount": 40,
+    "retainedStateReceiptCount": 5,
+    "bulkStateObservedCount": 40,
+    "entries": [
+      {
+        "index": 1,
+        "expectedSchool": "School 1",
+        "screenshot": "ui-final/school-01.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "ce0a662d846a4140bdef684e8c180a48a152945b67a253d620ca90d1cbe50c13",
+        "visualInspected": true,
+        "stateReceiptRetained": true,
+        "bulkStateObserved": true,
+        "windowTitle": "School 1",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 2,
+        "expectedSchool": "School 2",
+        "screenshot": "ui-final/school-02.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "e27b460bc04de605c8d6d2b758f95228fe35b4a6397a69e4a8a99f379b485cb6",
+        "visualInspected": true,
+        "stateReceiptRetained": true,
+        "bulkStateObserved": true,
+        "windowTitle": "School 2",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 3,
+        "expectedSchool": "School 3",
+        "screenshot": "ui-final/school-03.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "a99581a83757e2967b262c2d853203e1da6bc499d922a64e0abcda12ec301733",
+        "visualInspected": true,
+        "stateReceiptRetained": true,
+        "bulkStateObserved": true,
+        "windowTitle": "School 3",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 4,
+        "expectedSchool": "School 4",
+        "screenshot": "ui-final/school-04.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "2094295a4477605e76b55d740da4d8f624174bccf76f2952b2221deb76d49582",
+        "visualInspected": true,
+        "stateReceiptRetained": true,
+        "bulkStateObserved": true,
+        "windowTitle": "School 4",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 5,
+        "expectedSchool": "School 5",
+        "screenshot": "ui-final/school-05.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "402c36e1c69c3955231cca90c814fbb891301e60755aaf6ed22368427f90ac07",
+        "visualInspected": true,
+        "stateReceiptRetained": true,
+        "bulkStateObserved": true,
+        "windowTitle": "School 5",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 6,
+        "expectedSchool": "School 6",
+        "screenshot": "ui/school-06.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "0f78a03a60787e181df7ef36a0b9740c57bb9521fdd73ada250f935809f30b44",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 6",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 7,
+        "expectedSchool": "School 7",
+        "screenshot": "ui/school-07.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "b4caeb2752407d8676ec6641c98b9569e032fcd7d25df244c91965ab8a5a673c",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 7",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 8,
+        "expectedSchool": "School 8",
+        "screenshot": "ui/school-08.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "65cbcab66eab8043abb4649d3aaa903fa5296e65b3d4735e47bc9eb491fb1f7b",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 8",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 9,
+        "expectedSchool": "School 9",
+        "screenshot": "ui/school-09.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "b782aaaead1662b5b2733dec1acee40299a69478bb1a660186e305d00ed3d975",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 9",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 10,
+        "expectedSchool": "School 10",
+        "screenshot": "ui/school-10.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "3828199dca5ad239e35daf8e6ccef6af24f1ba5034cff68d21fd26bf4d91fee6",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 10",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 11,
+        "expectedSchool": "School 11",
+        "screenshot": "ui/school-11.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "63ad3afc448cdfc7d3af487bfcc72eebc122dece77916de9b4cc2a06947f51c5",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 11",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 12,
+        "expectedSchool": "School 12",
+        "screenshot": "ui/school-12.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "df535913bac6cac91661d352d6036db3c0b68a8a0bdb787a08a35507f5ec0a6e",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 12",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 13,
+        "expectedSchool": "School 13",
+        "screenshot": "ui/school-13.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "4698fd377f2226fd17947fac403c2a2011499c52f505c1b697029f07d85142f5",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 13",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 14,
+        "expectedSchool": "School 14",
+        "screenshot": "ui/school-14.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "078e06ffc9fd62cdbdbe947e809d3948aa8ab1eda980b61209a75c226bb600b8",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 14",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 15,
+        "expectedSchool": "School 15",
+        "screenshot": "ui/school-15.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "5543d38e362bc913db45d86abb43e7392728fe9916a270d8491434a0b0e38fcd",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 15",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 16,
+        "expectedSchool": "School 16",
+        "screenshot": "ui/school-16.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "42279486c5d68e6898bbc1ba271c60b98c750790f5fee54f263291cd8388ca52",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 16",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 17,
+        "expectedSchool": "School 17",
+        "screenshot": "ui/school-17.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "fe96023dcf113272269b6887e6675ef4addeeb5c273c7f473a2c2d6744aa5078",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 17",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 18,
+        "expectedSchool": "School 18",
+        "screenshot": "ui/school-18.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "fb3df776e87c60d60decffac50ea10ed22bea1adc441d7d6b90bfdcfdda51282",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 18",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 19,
+        "expectedSchool": "School 19",
+        "screenshot": "ui/school-19.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "4014d48c0c461a9afa24c46c54740e2cf0bfbe91f2dabf14cdcb21e2955325ac",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 19",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 20,
+        "expectedSchool": "School 20",
+        "screenshot": "ui/school-20.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "5e8d2041ea579de59766f89318368e23e2258f9adeb68c4d5eb930674fff7674",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 20",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 21,
+        "expectedSchool": "School 21",
+        "screenshot": "ui/school-21.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "05fca555477391184dcebc694615f43255283012fa6ab12f7435bf3a17f95089",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 21",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 22,
+        "expectedSchool": "School 22",
+        "screenshot": "ui/school-22.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "d337656126bffccabbc5883705cbd1f413f5c62595f51cbd6e01a5fcd0af4b86",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 22",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 23,
+        "expectedSchool": "School 23",
+        "screenshot": "ui/school-23.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "e7bbf05af8d407598c1805df6b23dc6089ae602786229b75e39292a3ac65c01f",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 23",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 24,
+        "expectedSchool": "School 24",
+        "screenshot": "ui/school-24.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "b1d4d4ce4aeaa3969e3b1117801af0568a41868d24d4d28fd044b5d2882b8b26",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 24",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 25,
+        "expectedSchool": "School 25",
+        "screenshot": "ui/school-25.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "cb05ac05b17e7e07107a787152e317c8737f35737ade47f4b746b4eb37cbeda1",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 25",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 26,
+        "expectedSchool": "School 26",
+        "screenshot": "ui/school-26.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "d7e7d16b7aa890952fa191424b882e3df1de6b012170d56134ea73eef1e78f87",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 26",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 27,
+        "expectedSchool": "School 27",
+        "screenshot": "ui/school-27.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "1560d3e8d57044d1f7867c135654c88e89425bd4de5ad110626c2da36ab726e1",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 27",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 28,
+        "expectedSchool": "School 28",
+        "screenshot": "ui/school-28.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "9578db734617eecb9ad2afca99b247d23c04eae9a03b7c0c6ad2562710357a90",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 28",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 29,
+        "expectedSchool": "School 29",
+        "screenshot": "ui/school-29.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "ea25bd3a3d82499edeec6351858cf7663e483523d2be996dfe2add19f39a6226",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 29",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 30,
+        "expectedSchool": "School 30",
+        "screenshot": "ui/school-30.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "f85f221098b99adbedcbff3726d9b8a6fe058c481ccffd8700d5e6ee1a440b52",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 30",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 31,
+        "expectedSchool": "School 31",
+        "screenshot": "ui/school-31.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "33dc25d6ed0673e431a090f5038262c3a87700ee88e824431cd74d630dcdbb78",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 31",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 32,
+        "expectedSchool": "School 32",
+        "screenshot": "ui/school-32.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "c725ddf644c7bdf24e762d03b76917789085599e6ce803d4afe8c0f16ab9d3c7",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 32",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 33,
+        "expectedSchool": "School 33",
+        "screenshot": "ui/school-33.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "cfe036cee184a1ad28982e886633e77a5beda517b49e75b9f3edbd3fbce2cdae",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 33",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 34,
+        "expectedSchool": "School 34",
+        "screenshot": "ui/school-34.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "4dc98cdf68533668996399a0c146dc1d4a4e737cfe23bfb70ec618c5626f523e",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 34",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 35,
+        "expectedSchool": "School 35",
+        "screenshot": "ui/school-35.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "858e152083a76f540b14a35d0bd0695acde31f1f02c9657e3c43d412306ee49e",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 35",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 36,
+        "expectedSchool": "School 36",
+        "screenshot": "ui/school-36.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "848f969aa899bc0ba9bc297c4407c79bf1e47c167d662009983fc059bd3b7da4",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 36",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 37,
+        "expectedSchool": "School 37",
+        "screenshot": "ui/school-37.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "c4fd4cdcc7a5f2b6c0329885bb8178ec201a30313d61e21872192411a8b654c5",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 37",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 38,
+        "expectedSchool": "School 38",
+        "screenshot": "ui/school-38.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "56d6720c351c1ade12184ddabbc49ba4a55ba6f2597b51b2d88a0999584b566f",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 38",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 39,
+        "expectedSchool": "School 39",
+        "screenshot": "ui/school-39.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "94492fe302612927bfc9bbe09317264955e3fa2832a60b2038a12c0b8328d0b2",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 39",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      },
+      {
+        "index": 40,
+        "expectedSchool": "School 40",
+        "screenshot": "ui/school-40.jpg",
+        "screenshotExists": true,
+        "screenshotSha256": "a2d8da728d49a1846d01adbc5ea8751c408e11b82ad85fca690d79c56be99d6d",
+        "visualInspected": true,
+        "stateReceiptRetained": false,
+        "bulkStateObserved": true,
+        "windowTitle": "School 40",
+        "slideCount": true,
+        "schoolTitle": true,
+        "repairOrFontWarning": false,
+        "urlMatches": true
+      }
+    ]
+  },
+  "pdf": [
+    {
+      "index": 1,
+      "expectedSchool": "School 1",
+      "pdf": "native-pdf/School 1.pdf",
+      "pdfSha256": "ae5c3057f76597dc2869fe5fe64cab4b057db909bb4ef18bbb56d8108e241f3d",
+      "rendered": "rendered/school-01.png",
+      "renderedSha256": "f0ddfcd253587b3d43f8a90258790e48c6287d9aa56301c25e9474e2573a9542",
+      "expected": {
+        "pageSizePt": {
+          "width": 720,
+          "height": 405
+        },
+        "renderSize": {
+          "width": 800,
+          "height": 450
+        },
+        "marker": {
+          "x": 110,
+          "y": 0,
+          "width": 20,
+          "height": 20
+        }
+      },
+      "observed": {
+        "pageSizePt": {
+          "width": 792,
+          "height": 612
+        },
+        "pages": 1,
+        "text": "School 1",
+        "embeddedInter": true,
+        "renderSize": {
+          "width": 880,
+          "height": 680
+        },
+        "marker": {
+          "x": 153,
+          "y": 117,
+          "width": 20,
+          "height": 19
+        }
+      },
+      "status": "mismatch"
+    },
+    {
+      "index": 20,
+      "expectedSchool": "School 20",
+      "pdf": "native-pdf/School 20.pdf",
+      "pdfSha256": "3e546d16e097c0dc5ad91d0590192b8cb9b425182cc1674e835b2b30a816642c",
+      "rendered": "rendered/school-20.png",
+      "renderedSha256": "d8fb56d139c6323e7fbb05cf903d634e737e6ff2b135c9216399a50336cf2cf0",
+      "expected": {
+        "pageSizePt": {
+          "width": 720,
+          "height": 405
+        },
+        "renderSize": {
+          "width": 800,
+          "height": 450
+        },
+        "marker": {
+          "x": 129,
+          "y": 0,
+          "width": 20,
+          "height": 20
+        }
+      },
+      "observed": {
+        "pageSizePt": {
+          "width": 792,
+          "height": 612
+        },
+        "pages": 1,
+        "text": "School 20",
+        "embeddedInter": true,
+        "renderSize": {
+          "width": 880,
+          "height": 680
+        },
+        "marker": {
+          "x": 172,
+          "y": 117,
+          "width": 20,
+          "height": 19
+        }
+      },
+      "status": "mismatch"
+    },
+    {
+      "index": 40,
+      "expectedSchool": "School 40",
+      "pdf": "native-pdf/School 40.pdf",
+      "pdfSha256": "42032d6b512d03ef384d0b260a76f47c012594566c8cf22901f2365a52d8a11f",
+      "rendered": "rendered/school-40.png",
+      "renderedSha256": "9452348f3bcc27da88acc8dc549e7761842294aa06eaa833bf7310938e83878f",
+      "expected": {
+        "pageSizePt": {
+          "width": 720,
+          "height": 405
+        },
+        "renderSize": {
+          "width": 800,
+          "height": 450
+        },
+        "marker": {
+          "x": 149,
+          "y": 0,
+          "width": 20,
+          "height": 20
+        }
+      },
+      "observed": {
+        "pageSizePt": {
+          "width": 792,
+          "height": 612
+        },
+        "pages": 1,
+        "text": "School 40",
+        "embeddedInter": true,
+        "renderSize": {
+          "width": 880,
+          "height": 680
+        },
+        "marker": {
+          "x": 192,
+          "y": 117,
+          "width": 20,
+          "height": 19
+        }
+      },
+      "status": "mismatch"
+    }
+  ],
+  "retainedFailedAttempts": [
+    "run-vka1fp/generation-failure.json",
+    "native-pdf/School 1.pdf (Letter)",
+    "native-pdf/School 20.pdf (Letter)",
+    "native-pdf/School 40.pdf (Letter)",
+    "native-pdf/School 1-slide-size.pdf (portrait)",
+    "native-pdf/School 1-native.pdf (Letter)",
+    "ui/contact-sheet.jpg (early School 4/5 sequencing)"
+  ],
+  "nativePdfConclusion": "PowerPoint Export is disabled by the activation banner; Print PDF remained 792 x 612 pt Letter after custom 10 x 5.625 in paper and landscape selection. Required 720 x 405 pt export is blocked without activation or an unrequested bypass.",
+  "cleanup": {
+    "status": "partial-or-unverified",
+    "events": [
+      {
+        "event": "closed",
+        "title": "School 1"
+      }
+    ],
+    "exactTaskOwnedOnly": true,
+    "unrelatedAppsClosed": false
+  }
+}

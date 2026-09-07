@@ -1,0 +1,251 @@
+{
+  "document": {
+    "version": "2.17",
+    "module": "deck",
+    "axes": {},
+    "variables": {},
+    "paragraphStyles": {},
+    "imports": {},
+    "flows": [],
+    "children": [
+      {
+        "id": "slide",
+        "type": "frame",
+        "role": "slide",
+        "width": 800,
+        "height": 450,
+        "physical": {
+          "w": 10,
+          "h": 5.625,
+          "unit": "in"
+        },
+        "layout": "horizontal",
+        "gap": 10,
+        "children": [
+          {
+            "id": "school",
+            "type": "text",
+            "width": "${cardWidth}",
+            "height": 50,
+            "content": "${schoolName}",
+            "fontFamily": "Inter",
+            "fontSize": 24,
+            "paragraphs": [],
+            "marks": []
+          },
+          {
+            "id": "marker",
+            "type": "rectangle",
+            "width": 20,
+            "height": 20,
+            "fill": "#123456"
+          }
+        ]
+      }
+    ]
+  },
+  "sets": [
+    {
+      "output": "School 1",
+      "schoolName": "School 1",
+      "cardWidth": 100
+    },
+    {
+      "output": "School 2",
+      "schoolName": "School 2",
+      "cardWidth": 101
+    },
+    {
+      "output": "School 3",
+      "schoolName": "School 3",
+      "cardWidth": 102
+    },
+    {
+      "output": "School 4",
+      "schoolName": "School 4",
+      "cardWidth": 103
+    },
+    {
+      "output": "School 5",
+      "schoolName": "School 5",
+      "cardWidth": 104
+    },
+    {
+      "output": "School 6",
+      "schoolName": "School 6",
+      "cardWidth": 105
+    },
+    {
+      "output": "School 7",
+      "schoolName": "School 7",
+      "cardWidth": 106
+    },
+    {
+      "output": "School 8",
+      "schoolName": "School 8",
+      "cardWidth": 107
+    },
+    {
+      "output": "School 9",
+      "schoolName": "School 9",
+      "cardWidth": 108
+    },
+    {
+      "output": "School 10",
+      "schoolName": "School 10",
+      "cardWidth": 109
+    },
+    {
+      "output": "School 11",
+      "schoolName": "School 11",
+      "cardWidth": 110
+    },
+    {
+      "output": "School 12",
+      "schoolName": "School 12",
+      "cardWidth": 111
+    },
+    {
+      "output": "School 13",
+      "schoolName": "School 13",
+      "cardWidth": 112
+    },
+    {
+      "output": "School 14",
+      "schoolName": "School 14",
+      "cardWidth": 113
+    },
+    {
+      "output": "School 15",
+      "schoolName": "School 15",
+      "cardWidth": 114
+    },
+    {
+      "output": "School 16",
+      "schoolName": "School 16",
+      "cardWidth": 115
+    },
+    {
+      "output": "School 17",
+      "schoolName": "School 17",
+      "cardWidth": 116
+    },
+    {
+      "output": "School 18",
+      "schoolName": "School 18",
+      "cardWidth": 117
+    },
+    {
+      "output": "School 19",
+      "schoolName": "School 19",
+      "cardWidth": 118
+    },
+    {
+      "output": "School 20",
+      "schoolName": "School 20",
+      "cardWidth": 119
+    },
+    {
+      "output": "School 21",
+      "schoolName": "School 21",
+      "cardWidth": 120
+    },
+    {
+      "output": "School 22",
+      "schoolName": "School 22",
+      "cardWidth": 121
+    },
+    {
+      "output": "School 23",
+      "schoolName": "School 23",
+      "cardWidth": 122
+    },
+    {
+      "output": "School 24",
+      "schoolName": "School 24",
+      "cardWidth": 123
+    },
+    {
+      "output": "School 25",
+      "schoolName": "School 25",
+      "cardWidth": 124
+    },
+    {
+      "output": "School 26",
+      "schoolName": "School 26",
+      "cardWidth": 125
+    },
+    {
+      "output": "School 27",
+      "schoolName": "School 27",
+      "cardWidth": 126
+    },
+    {
+      "output": "School 28",
+      "schoolName": "School 28",
+      "cardWidth": 127
+    },
+    {
+      "output": "School 29",
+      "schoolName": "School 29",
+      "cardWidth": 128
+    },
+    {
+      "output": "School 30",
+      "schoolName": "School 30",
+      "cardWidth": 129
+    },
+    {
+      "output": "School 31",
+      "schoolName": "School 31",
+      "cardWidth": 130
+    },
+    {
+      "output": "School 32",
+      "schoolName": "School 32",
+      "cardWidth": 131
+    },
+    {
+      "output": "School 33",
+      "schoolName": "School 33",
+      "cardWidth": 132
+    },
+    {
+      "output": "School 34",
+      "schoolName": "School 34",
+      "cardWidth": 133
+    },
+    {
+      "output": "School 35",
+      "schoolName": "School 35",
+      "cardWidth": 134
+    },
+    {
+      "output": "School 36",
+      "schoolName": "School 36",
+      "cardWidth": 135
+    },
+    {
+      "output": "School 37",
+      "schoolName": "School 37",
+      "cardWidth": 136
+    },
+    {
+      "output": "School 38",
+      "schoolName": "School 38",
+      "cardWidth": 137
+    },
+    {
+      "output": "School 39",
+      "schoolName": "School 39",
+      "cardWidth": 138
+    },
+    {
+      "output": "School 40",
+      "schoolName": "School 40",
+      "cardWidth": 139
+    }
+  ],
+  "format": "pptx",
+  "role": "slide"
+}

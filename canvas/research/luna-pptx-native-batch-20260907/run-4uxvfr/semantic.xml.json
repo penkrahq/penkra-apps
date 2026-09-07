@@ -1,0 +1,482 @@
+[
+  {
+    "index": 0,
+    "school": "School 1",
+    "markerPosition": {
+      "x": 99,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 1,
+    "school": "School 2",
+    "markerPosition": {
+      "x": 99.9,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 2,
+    "school": "School 3",
+    "markerPosition": {
+      "x": 100.8,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 3,
+    "school": "School 4",
+    "markerPosition": {
+      "x": 101.7,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 4,
+    "school": "School 5",
+    "markerPosition": {
+      "x": 102.6,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 5,
+    "school": "School 6",
+    "markerPosition": {
+      "x": 103.5,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 6,
+    "school": "School 7",
+    "markerPosition": {
+      "x": 104.4,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 7,
+    "school": "School 8",
+    "markerPosition": {
+      "x": 105.3,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 8,
+    "school": "School 9",
+    "markerPosition": {
+      "x": 106.2,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 9,
+    "school": "School 10",
+    "markerPosition": {
+      "x": 107.1,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 10,
+    "school": "School 11",
+    "markerPosition": {
+      "x": 108,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 11,
+    "school": "School 12",
+    "markerPosition": {
+      "x": 108.9,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 12,
+    "school": "School 13",
+    "markerPosition": {
+      "x": 109.8,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 13,
+    "school": "School 14",
+    "markerPosition": {
+      "x": 110.7,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 14,
+    "school": "School 15",
+    "markerPosition": {
+      "x": 111.6,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 15,
+    "school": "School 16",
+    "markerPosition": {
+      "x": 112.5,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 16,
+    "school": "School 17",
+    "markerPosition": {
+      "x": 113.4,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 17,
+    "school": "School 18",
+    "markerPosition": {
+      "x": 114.3,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 18,
+    "school": "School 19",
+    "markerPosition": {
+      "x": 115.2,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 19,
+    "school": "School 20",
+    "markerPosition": {
+      "x": 116.1,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 20,
+    "school": "School 21",
+    "markerPosition": {
+      "x": 117,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 21,
+    "school": "School 22",
+    "markerPosition": {
+      "x": 117.9,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 22,
+    "school": "School 23",
+    "markerPosition": {
+      "x": 118.8,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 23,
+    "school": "School 24",
+    "markerPosition": {
+      "x": 119.7,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 24,
+    "school": "School 25",
+    "markerPosition": {
+      "x": 120.6,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 25,
+    "school": "School 26",
+    "markerPosition": {
+      "x": 121.5,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 26,
+    "school": "School 27",
+    "markerPosition": {
+      "x": 122.4,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 27,
+    "school": "School 28",
+    "markerPosition": {
+      "x": 123.3,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 28,
+    "school": "School 29",
+    "markerPosition": {
+      "x": 124.2,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 29,
+    "school": "School 30",
+    "markerPosition": {
+      "x": 125.1,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 30,
+    "school": "School 31",
+    "markerPosition": {
+      "x": 126,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 31,
+    "school": "School 32",
+    "markerPosition": {
+      "x": 126.9,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 32,
+    "school": "School 33",
+    "markerPosition": {
+      "x": 127.8,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 33,
+    "school": "School 34",
+    "markerPosition": {
+      "x": 128.7,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 34,
+    "school": "School 35",
+    "markerPosition": {
+      "x": 129.6,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 35,
+    "school": "School 36",
+    "markerPosition": {
+      "x": 130.5,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 36,
+    "school": "School 37",
+    "markerPosition": {
+      "x": 131.4,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 37,
+    "school": "School 38",
+    "markerPosition": {
+      "x": 132.3,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 38,
+    "school": "School 39",
+    "markerPosition": {
+      "x": 133.2,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  },
+  {
+    "index": 39,
+    "school": "School 40",
+    "markerPosition": {
+      "x": 134.1,
+      "y": 0,
+      "width": 18,
+      "height": 18
+    },
+    "editableText": true,
+    "pictureFallback": false
+  }
+]
