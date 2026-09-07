@@ -211,9 +211,11 @@ for (const serialization of SERIALIZATIONS) {
       set(dictionary, "RealLimit", PDFNumber.of(PDF_ARCHITECTURAL_LIMITS.realMaximum * 1.001));
       pdf.context.register(dictionary);
     }, serialization);
-    const issues = architecturalIssues(await preflightPdfx4(bytes));
+    const report = await preflightPdfx4(bytes);
+    const issues = architecturalIssues(report);
     assert.equal(issues.some((issue) => issue.detail?.detail === "integer-range"), false);
     assert.ok(issues.some((issue) => issue.detail?.detail === "object-real-range"), serialization.name);
+    assert.ok(report.uncovered.some((entry) => entry.includes("original integer/real spelling of serialized object numbers")), serialization.name);
   });
 
   test(`object graph names include PDFName dictionary keys and values ${serialization.name}`, async () => {

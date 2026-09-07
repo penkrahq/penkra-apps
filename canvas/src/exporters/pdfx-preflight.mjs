@@ -17,6 +17,7 @@ export const PDFX_UNCOVERED = Object.freeze([
   "Colour spaces other than Canvas DefaultRGB/sRGB2014, DeviceGray and the CMYK output intent",
   "Non-Identity-H/TrueType fonts and text or graphics in Form XObjects",
   "6.6: original-byte escaping of font and separation names before parser normalization",
+  "Table C.1: original integer/real spelling of serialized object numbers before parser normalization",
   "Non-document XMP packets and provenance across incremental updates",
   "Optional content, annotations, forms, embedded files, halftones, transfer functions, PostScript and external streams",
 ]);
