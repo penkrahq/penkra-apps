@@ -62,6 +62,7 @@ export function inspectCanvasPdfEnvelope(input) {
           if (value === 35) {
             const hex = text.slice(position, position + 2);
             if (!/^[a-fA-F0-9]{2}$/u.test(hex)) fail("name-escape-invalid", position - 1);
+            if (/[a-f]/u.test(hex)) fail("name-lowercase-escape-parser-boundary", position - 1, true);
             bytes.push(parseInt(hex, 16)); position += 2;
           } else {
             if (value < 33 || value > 126) fail("unescaped-name-outside-writer-subset", position - 1, true);
