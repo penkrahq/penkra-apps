@@ -383,6 +383,7 @@ function rasterScopes(nodes, request, graph, outputs) {
     return {
       id,
       reason: scope.capability.reason ?? "Raster compositing scope.",
+      renderBounds: { minX: visual.minX, minY: visual.minY, maxX: visual.maxX, maxY: visual.maxY },
       outset,
       bounds: { x: visualLeft, y: visualTop, w: logicalWidth, h: logicalHeight },
       colorSpace: "sRGB",
@@ -450,7 +451,9 @@ function capabilityPaths(node, projection) {
   if (node.landmark !== undefined) paths.add("properties.accessibility.landmark");
   if (node.linkName !== undefined) paths.add("properties.accessibility.linkName");
   const fills = Array.isArray(node.fill) ? node.fill : [node.fill];
-  if (node.fill !== undefined) paths.add("properties.fill");
+  // The aggregate row represents layered/multi-paint composition. A singular
+  // paint is governed by its concrete subtype row below.
+  if (Array.isArray(node.fill)) paths.add("properties.fill");
   for (const fill of fills.filter(Boolean)) {
     if (fill.enabled !== false && ![undefined, "normal", "pass_through"].includes(fill.blendMode)) paths.add("properties.blendMode");
     if (typeof fill === "string" || fill.type === "color" || fill.type === "solid") paths.add("properties.fill.solid");
@@ -521,8 +524,9 @@ function evaluateCapabilities(paths, table, verification = null) {
 }
 function documentCapabilityPaths(document, role) {
   const paths = new Set([`roles.${role}`]);
-  for (const key of ["module", "lang", "axes", "variables", "paragraphStyles", "imports", "children"])
+  for (const key of ["module", "lang", "variables", "paragraphStyles", "imports", "children"])
     if (document[key] !== undefined) paths.add(`root.${key}`);
+  if (document.axes && Object.keys(document.axes).length > 0) paths.add("root.axes");
   if ((document.flows ?? []).length) paths.add("root.flows");
   if (Object.keys(document.imports ?? {}).length) paths.add("relationships.import");
   if ((document.flows ?? []).length) paths.add("relationships.flow");

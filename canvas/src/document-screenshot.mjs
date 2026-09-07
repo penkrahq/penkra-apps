@@ -41,7 +41,7 @@ export async function takeDocumentScreenshots(document, requests, assets = new M
   if (!page) throw screenshotError("CANVAS_SCREENSHOT_EMPTY", "The Canvas document has no page.");
   const screenshots = [];
   for (const request of requests) {
-    screenshots.push(await renderScreenshot(graph, page.id, request.nodeIds, options));
+    screenshots.push(await renderScreenshot(graph, page.id, request.nodeIds, options, request.bounds));
   }
   return screenshots;
 }
@@ -139,9 +139,9 @@ export async function measureDocumentText(document, nodeIds, assets = new Map())
   });
 }
 
-async function renderScreenshot(graph, pageId, nodeIds, options = {}) {
+async function renderScreenshot(graph, pageId, nodeIds, options = {}, requestedBounds = null) {
   return withPreparedRenderer(graph, pageId, nodeIds, async (renderer, ck) => {
-    const bounds = computeDescendantVisualBounds(
+    const bounds = requestedBounds ?? computeDescendantVisualBounds(
       nodeIds,
       (id) => graph.getNode(id) ?? undefined,
       (id) => graph.getAbsolutePosition(id),

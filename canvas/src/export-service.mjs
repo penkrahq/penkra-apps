@@ -33,7 +33,7 @@ export async function prepareDocumentExport(document, request, options = {}) {
     const raster = rasterById.get(nodeId);
     const variant = raster?.variants?.at(-1);
     if (!variant) throw new Error(`Raster policy is missing for ${nodeId}.`);
-    const image = (await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [nodeId] }], options.assets, { scale: variant.scale, maxDimension: 8192, failOnDownscale: true }))[0];
+    const image = (await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [nodeId], bounds: raster.renderBounds }], options.assets, { scale: variant.scale, maxDimension: 8192, failOnDownscale: true }))[0];
     if (image.width !== variant.pixelWidth || image.height !== variant.pixelHeight) {
       const error = new Error(`Raster ${nodeId} rendered ${image.width}×${image.height}, expected ${variant.pixelWidth}×${variant.pixelHeight}.`);
       error.code = "CANVAS_RASTER_DIMENSION_MISMATCH";

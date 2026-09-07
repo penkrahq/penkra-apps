@@ -64,6 +64,28 @@ test("mobile shadow spread rasterizes instead of blocking on an unverified neste
   }
 });
 
+test("mobile capability detection keeps empty axes and singular paint out of aggregate fallbacks", () => {
+  for (const role of ["ios", "android"]) {
+    const source = { module: "mobile", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, children: [
+      { id: "screen", type: "frame", role, width: 320, height: 180, layout: "none", fill: "#ffffff", children: [
+        { id: "label", type: "text", x: 10, y: 10, width: 200, height: 40, content: "Raster text", fontSize: 24, paragraphs: [], marks: [] },
+      ] },
+    ] };
+    let ir = buildExporterIR(source, { role, frames: ["screen"] });
+    assert.deepEqual(ir.rasters.map(({ id }) => id), ["label"]);
+    assert.equal(ir.outputs[0].root.capability.verdict, "native");
+
+    source.children[0].fill = ["#ffffff", "#00000080"];
+    ir = buildExporterIR(source, { role, frames: ["screen"] });
+    assert.deepEqual(ir.rasters.map(({ id }) => id), ["screen"]);
+
+    source.children[0].fill = "#ffffff";
+    source.axes = { appearance: { modes: [{ name: "light" }, { name: "dark", media: "prefers-color-scheme: dark" }] } };
+    ir = buildExporterIR(source, { role, frames: ["screen"] });
+    assert.deepEqual(ir.rasters.map(({ id }) => id), ["screen"]);
+  }
+});
+
 test("native candidate verification does not bypass production raster verdicts", () => {
   const source = { module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "slide", type: "frame", role: "slide", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, effect: { type: "blur", radius: 8 }, children: [] },
