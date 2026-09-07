@@ -189,17 +189,17 @@ test("mobile grid candidate emits source for device verification", () => {
   assert.match(iosFiles.get("Title.swift"), /LazyVGrid/u);
   const android = structuredClone(route); android.children[0].role = "android";
   const androidFiles = exportCompose(buildCapabilityVerificationIR(android, { role: "android", frames: ["slide"] }, capabilityPathInventory()));
-  assert.match(androidFiles.get("Title.kt"), /LazyVerticalGrid/u);
+  assert.doesNotMatch(androidFiles.get("Title.kt"), /LazyVerticalGrid\(/u);
 });
 
-test("Compose fixed-size grid children release the cell minimum before sizing", () => {
+test("Compose fixed-size grid children retain their resolved position and size", () => {
   const mobile = structuredClone(document); mobile.module = "mobile"; mobile.children[0].role = "android";
   mobile.children[0].children = [{ id: "grid", type: "frame", width: 340, height: 220, layout: "grid", gridTemplateColumns: [160, 160], children: [
     { id: "circle", type: "ellipse", width: 96, height: 96, fill: "#F4A261" },
   ] }];
   const ir = buildCapabilityVerificationIR(mobile, { role: "android", frames: ["slide"] }, capabilityPathInventory());
   const source = exportCompose(ir).get("Title.kt");
-  assert.match(source, /wrapContentSize\(androidx\.compose\.ui\.Alignment\.TopStart\)\.size\(96\.dp, 96\.dp\)/u);
+  assert.match(source, /offset\(0\.dp, 0\.dp\)\.size\(96\.dp, 96\.dp\)/u);
 });
 
 test("Compose root descriptions and decorative text retain distinct accessibility behavior", () => {
