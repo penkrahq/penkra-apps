@@ -16,7 +16,7 @@ import {
   stableScreenshotHashes,
 } from "./luna-ios-grid-production.mjs";
 import { cropPngBytes, cropRectFromRootReceipt, validateFullFrameHashes } from "./luna-ios-grid-capture-utils-20260907.mjs";
-import { exactReceiptInWindow, receiptQueryArgs } from "./luna-ios-grid-receipt-window.mjs";
+import { receiptQueryArgs } from "./luna-ios-grid-receipt-window.mjs";
 
 export const SINGLE_CASE_ID = "grid-c100-180-r60-100-normal";
 export const SINGLE_DEVICE = Object.freeze({ key: "iphone", id: "A3D92728-7F7B-44D1-BE51-155B891905D9", contentSize: "large", scale: 3 });
@@ -196,7 +196,6 @@ async function main() {
     if (bootstatus && setup.observedContentSize && setup.installedBundle.matches) {
       setup.installed = true;
       const stateSet = await command("xcrun", ["simctl", "ui", SINGLE_DEVICE.id, "content_size", "large"]);
-      assert.equal(stateSet, stateSet);
       const nonce = `grid-run-02-missing-one-${SINGLE_CASE_ID}-${randomUUID()}`;
       const stateDir = join(evidence, "captures", "iphone", "large");
       const referencePath = join(sourceEvidence, "references", "iphone-large", `${SINGLE_CASE_ID}.png`);

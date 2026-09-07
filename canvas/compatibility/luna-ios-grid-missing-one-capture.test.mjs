@@ -2,28 +2,33 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { exactReceiptInWindow, receiptQueryArgs } from "../scripts/luna-ios-grid-receipt-window.mjs";
+import { receiptQueryArgs } from "../scripts/luna-ios-grid-receipt-window.mjs";
 import { SINGLE_CASE_ID, SINGLE_DEVICE, SINGLE_LAUNCH_TIMEOUT_MS, SINGLE_MAX_PAIR_ATTEMPTS, selectSingleCapturePlan } from "../scripts/luna-ios-grid-missing-one-capture.mjs";
-import { GRID_CASE_IDS } from "../scripts/luna-ios-grid-production.mjs";
+import { GRID_CASE_IDS, readyReceipt, rootGeometryReceipt } from "../scripts/luna-ios-grid-production.mjs";
 
 const start = "2026-09-07T12:00:00.000Z";
 const end = "2026-09-07T12:00:20.000Z";
 const nonce = "nonce-[normal].$";
-const ready = `2026-09-07T12:00:06.000Z LUNA_GRID_READY case=${SINGLE_CASE_ID} nonce=${nonce}\nLUNA_GRID_ROOT case=${SINGLE_CASE_ID} nonce=${nonce} frame=21.000,42.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n`;
+const ready = `LUNA_GRID_READY case=${SINGLE_CASE_ID} nonce=${nonce}\nLUNA_GRID_ROOT case=${SINGLE_CASE_ID} nonce=${nonce} frame=21.000,42.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n`;
 
-test("fixed receipt query keeps a valid event older than five seconds eligible", () => {
+test("fixed receipt query uses documented epoch arguments and retains the fixed ISO bounds as caller metadata", () => {
   const args = receiptQueryArgs(SINGLE_DEVICE.id, start, end);
   assert.equal(args.includes("--last"), false);
-  assert.equal(args[args.indexOf("--start") + 1], start);
-  assert.equal(args[args.indexOf("--end") + 1], end);
-  assert.equal(exactReceiptInWindow({ logText: ready, caseID: SINGLE_CASE_ID, nonce, eventTimestamp: "2026-09-07T12:00:06.000Z", startTimestamp: start, endTimestamp: end }).caseID, SINGLE_CASE_ID);
+  assert.deepEqual(args, ["simctl", "spawn", SINGLE_DEVICE.id, "log", "show", "--style", "compact", "--start", "@1788782400", "--end", "@1788782420", "--predicate", "eventMessage CONTAINS[c] \"LUNA_GRID_READY\" OR eventMessage CONTAINS[c] \"LUNA_GRID_ROOT\""]);
 });
 
-test("fixed receipt window excludes wrong case, wrong nonce, and events outside the window", () => {
-  assert.equal(exactReceiptInWindow({ logText: ready, caseID: "grid-c100-180-r60-100-reversed", nonce, eventTimestamp: "2026-09-07T12:00:06.000Z", startTimestamp: start, endTimestamp: end }), null);
-  assert.equal(exactReceiptInWindow({ logText: ready, caseID: SINGLE_CASE_ID, nonce: "wrong", eventTimestamp: "2026-09-07T12:00:06.000Z", startTimestamp: start, endTimestamp: end }), null);
-  assert.throws(() => exactReceiptInWindow({ logText: ready, caseID: SINGLE_CASE_ID, nonce, eventTimestamp: "2026-09-07T11:59:59.999Z", startTimestamp: start, endTimestamp: end }), /outside/u);
-  assert.throws(() => exactReceiptInWindow({ logText: ready, caseID: SINGLE_CASE_ID, nonce, eventTimestamp: "2026-09-07T12:00:20.001Z", startTimestamp: start, endTimestamp: end }), /outside/u);
+test("epoch bounds floor start and ceil end so subsecond receipt boundaries remain eligible", () => {
+  const args = receiptQueryArgs(SINGLE_DEVICE.id, "2026-09-07T12:00:00.999Z", "2026-09-07T12:00:20.001Z");
+  assert.equal(args[args.indexOf("--start") + 1], "@1788782400");
+  assert.equal(args[args.indexOf("--end") + 1], "@1788782421");
+});
+
+test("shared production receipt parsers keep exact case and nonce filtering", () => {
+  assert.equal(readyReceipt(SINGLE_CASE_ID, nonce, ready), true);
+  assert.ok(rootGeometryReceipt(SINGLE_CASE_ID, nonce, ready));
+  assert.equal(readyReceipt("grid-c100-180-r60-100-reversed", nonce, ready), false);
+  assert.equal(readyReceipt(SINGLE_CASE_ID, "wrong", ready), false);
+  assert.equal(rootGeometryReceipt(SINGLE_CASE_ID, "wrong", ready), null);
 });
 
 test("single-case filter is exactly the still-unmeasured iPhone Large identity", () => {
