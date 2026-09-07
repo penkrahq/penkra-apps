@@ -53,6 +53,17 @@ test("root image override rasterizes the complete frame and default never forces
   assert.deepEqual(ir.rasters.map((raster) => raster.id), ["slide"]);
 });
 
+test("mobile shadow spread rasterizes instead of blocking on an unverified nested row", () => {
+  for (const role of ["ios", "android"]) {
+    const source = { module: "mobile", children: [
+      { id: "screen", type: "frame", role, width: 320, height: 180, layout: "none", effect: { type: "shadow", shadowType: "outer", color: "#00000080", offset: { x: 2, y: 3 }, blur: 8, spread: 4 }, children: [] },
+    ] };
+    const ir = buildExporterIR(source, { role, frames: ["screen"] });
+    assert.deepEqual(ir.rasters.map(({ id }) => id), ["screen"]);
+    assert.match(ir.consequences.find(({ node, kind }) => node === "screen" && kind === "raster").why, /shadow\.spread/u);
+  }
+});
+
 test("native candidate verification does not bypass production raster verdicts", () => {
   const source = { module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "slide", type: "frame", role: "slide", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, effect: { type: "blur", radius: 8 }, children: [] },
