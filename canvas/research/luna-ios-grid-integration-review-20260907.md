@@ -169,3 +169,50 @@ No device-free worker tests were rerun in this review because the worker
 worktree contains uncommitted missing-one changes; the previously retained
 focused worker receipt is 46/46 pass for the corrected run02 harness. No native
 lease was requested or used.
+
+## Approved-batch applicability attempt
+
+The newly approved mechanical batch was inspected in order without changing
+the combined tree. A no-write patch check for the first commit was:
+
+```text
+git show --format= --binary 95d8dc8 | git apply --check --verbose -
+```
+
+It stopped with:
+
+```text
+Checking patch canvas/compatibility/luna-ios-grid-production.test.mjs...
+error: canvas/compatibility/luna-ios-grid-production.test.mjs: No such file or directory
+Checking patch canvas/scripts/luna-ios-grid-production.mjs...
+error: canvas/scripts/luna-ios-grid-production.mjs: No such file or directory
+```
+
+No approved iOS commit was picked and no test was run at a partially applied
+revision. The per-commit scope inspection found:
+
+| approved commit | file-level result in combined |
+| --- | --- |
+| `95d8dc8` | modifies the two absent production harness files above |
+| `998313d` | adds the capture runner, which imports the absent production harness |
+| `04216b2` | adds capture test/utilities but modifies absent production harness, `GridFixtureHost.swift`, and `source-hashes.json` |
+| `7132c43` | modifies capture test/utilities and runner absent because `04216b2` cannot apply |
+| `0f6a71c` | modifies the same absent capture test/runner |
+| `14a8ef3` | adds run02 artifacts, but was not partially picked after the source stop |
+| `6acfe9c` | adds missing-five test/runner, which depends on the absent capture harness |
+| `9200e7e` | adds missing-five artifacts, but was not partially picked after the source stop |
+
+The concrete unapproved base needed before `95d8dc8` is the worker harness
+lineage that creates its modified files: `70af354` creates both files and
+`91c8e33` is the immediate pre-`95d8dc8` content. `04216b2` additionally
+modifies source/artifact files created by `6ef72af` and is based through the
+worker’s later diagnostic ancestry. These are not silently imported: the
+approved set is therefore blocked pending an explicit minimal-base decision
+and separate patch-context review. `39bdc42` and the offline diagnostic
+commits were not picked. The unapproved missing-one commits `c1ee119`,
+`a3a9b53`, and `db558ab`, plus the worker’s current dirty files, remain
+excluded.
+
+Combined remains at `2ca6cd9b108eb849c1e799135c9567d9e88be3bd` with only the
+pre-existing untracked Swift `.build/` directory. No source, native, device,
+capability, or historical-capture mutation occurred in this attempt.
