@@ -201,3 +201,29 @@ test("native run records observed device settings and exact restoration operatio
     assert.equal(snapshot.bootedByRunner, false);
   }
 });
+
+test("outer build/install lifecycle reconciles with inner matrix state and retained cleanup", async () => {
+  const buildRoot = join(evidenceRoot, "native-run-01", "build");
+  const before = await json(join(buildRoot, "devices-before-install.json"));
+  const after = await json(join(buildRoot, "devices-after-restore.json"));
+  const setupLog = await readFile(join(buildRoot, "device-setup.log"), "utf8");
+  const cleanupLog = await readFile(join(evidenceRoot, "native-run-01", "device-restoration.log"), "utf8");
+  const facts = await json(join(buildRoot, "build-facts.json"));
+  const targets = Object.entries(EXPECTED_DEVICES).map(([key, device]) => ({ key, ...device }));
+  const allDevices = (snapshot) => Object.values(snapshot.devices ?? {}).flat();
+  for (const target of targets) {
+    const beforeDevice = allDevices(before).find(({ udid }) => udid === target.id);
+    const afterDevice = allDevices(after).find(({ udid }) => udid === target.id);
+    assert.ok(beforeDevice, `${target.key} missing from pre-install device snapshot`);
+    assert.ok(afterDevice, `${target.key} missing from post-restore device snapshot`);
+    assert.equal(beforeDevice.state, "Shutdown", `${target.key} outer pre-install state`);
+    assert.equal(afterDevice.state, "Shutdown", `${target.key} outer post-restore state`);
+    assert.ok(Number.isFinite(Date.parse(afterDevice.lastBootedAt)), `${target.key} post-restore boot provenance`);
+    assert.match(setupLog, new RegExp(`Monitoring boot status for .*\\(${target.id}\\)`, "u"));
+    assert.match(setupLog, new RegExp(`observed_content_size device=${target.id} value=large`, "u"));
+    assert.match(setupLog, new RegExp(`installed device=${target.id}.*executableSha256=${facts.executableSha256} executableBytes=${facts.executableBytes}`, "u"));
+    assert.match(cleanupLog, new RegExp(`before_shutdown device=${target.id}[\\s\\S]*xcrun simctl shutdown ${target.id}[\\s\\S]*exit=0`, "u"));
+  }
+  assert.match(setupLog, /exit=0/u);
+  assert.match(cleanupLog, /exit=0/u);
+});
