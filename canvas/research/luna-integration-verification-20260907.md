@@ -479,3 +479,40 @@ At the latest active-lane poll: Android `agent-29aae5111e4ecadf2d26b7f87bd3c53a`
 with no queued turn; delivery `agent-eccc4d9408f68469415931f1120a09ca` was `working` with no
 queued turn; PDF `agent-93d30227119bd634b15b45d6b3d21f1f` was `working` with `2` queued turns.
 No Android native task was resumed. No Gradle, xcodebuild, or swiftc lease is held by this lane.
+
+## Retained-library approved integration
+
+The coordinator re-approved the retained-library sequence and independent evidence commit. The
+worker-to-combined provenance is:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `770520e` | `8d9e556` |
+| `24b92a8` | `87e8c7c` |
+| `76ec00e` | `2d83a5c` |
+| `d80ec1c` | `dda7b87` |
+| `501d085` | `f2da477` |
+| `7070484` | `a9d428b` |
+| `aa50e34` | `c5f49cd` |
+| `3623dd3` | `6154216` |
+| `ee803d2` | `56146cb` |
+| `15497b2` | `9351789` |
+| `51ce2a8` | `548a029` |
+| `19b9309` | `c33f493` |
+
+All twelve picks were clean and none was an ancestor or patch-equivalent at the time of
+integration. Scope remained within the approved retained-library source, tests, and research
+records; no protected file, capability, conformance, or native artifact changed. The prior
+combined API fixes and the preserved untracked Swift `.build/` tree remain present. The temporary
+PDF architectural-limit pick was aborted after its import-only conflict and did not alter this
+integrated revision.
+
+The strict integrated selection was run once from `canvas`:
+
+`node scripts/test.mjs src/canvas-imports.test.mjs src/canvas-resolver.test.mjs src/library-publication.test.mjs src/library-publication-service.test.mjs src/library-retention-preparation.test.mjs src/library-storage.test.mjs src/library-retained-imports.test.mjs src/luna-asset-empty-read.test.mjs src/luna-library-storage-protocol.test.mjs src/luna-library-artifact-integration.test.mjs`
+
+Log `/tmp/canvas-luna-library-integrated-20260907.log`; exit `0`, `87` pass, `0` fail,
+`0` cancelled, `0` skipped; runner duration `6861.039541 ms`, wrapper duration `7 s`. This
+selection includes the malformed LS-002 retention-envelope rejection, authenticated LS-001
+unpersisted zero-byte read rejection, same-release alias isolation, nested dependency isolation,
+storage validation, materializer, protocol, and artifact assertions.
