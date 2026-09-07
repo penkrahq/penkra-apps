@@ -17,7 +17,7 @@ export function exportCompose(ir, options = {}) {
   assertScreenNames(ir.outputs);
   if (options.fonts) options = { ...options, fontCatalog: mobileFontCatalog(ir, options.fonts) };
   const files = new Map([["_canvas/CanvasFlowLayout.kt", composeFlowHelper]]);
-  for (const output of ir.outputs) files.set(`${sourceName(output.name)}.kt`, composeScreen(output, options));
+  for (const output of ir.outputs) files.set(`${sourceName(output.name)}.kt`, ensureComposeImports(composeScreen(output, options)));
   if (options.fontCatalog) addMobileFontFiles(files, options.fontCatalog, "android");
   return files;
 }
@@ -33,6 +33,12 @@ function assertScreenNames(outputs) {
     }
     names.add(name);
   }
+}
+
+function ensureComposeImports(source) {
+  return source
+    .replace("import androidx.compose.ui.draw.alpha\n", "import androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.draw.drawWithCache\n")
+    .replace("import androidx.compose.ui.graphics.Color\n", "import androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.drawscope.rotate\nimport androidx.compose.ui.graphics.drawscope.scale\nimport androidx.compose.ui.graphics.drawscope.withTransform\n");
 }
 
 function swiftScreen(output, options) {
@@ -57,6 +63,7 @@ function swiftNode(node, children, options, depth, parentLayout) {
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return swiftContainer(node, descendants, children, options, depth, false, parentLayout, access);
   if (node.type !== "ellipse" && node.paint.cornerRadius != null && !isGradientFill(node.paint.fill)) return `${indent}${swiftVector({ ...node, vector: roundedRectangleVector(node) })}${position}${access}`;
+  if (isGradientFill(node.paint.fill) && node.type !== "ellipse" && node.paint.cornerRadius != null && !isTransformedRadial(node.paint.fill)) return `${indent}${swiftVector({ ...node, vector: roundedRectangleVector(node) })}${position}${access}`;
   if (isTransformedRadial(node.paint.fill)) return `${indent}${swiftGradientCanvas(node)}${position}${access}`;
   const shape = node.type === "ellipse" ? "Ellipse()" : "Rectangle()";
   return `${indent}${shape}.fill(${swiftPaint(node.paint.fill, node)}).opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
@@ -108,6 +115,8 @@ function swiftContainer(node, descendants, children, options, depth, root = fals
   else open = "ZStack(alignment: .topLeading)";
   const background = !hasPaint(node.paint.fill) ? "" : isTransformedRadial(node.paint.fill)
     ? `.background(alignment: .topLeading) { ${swiftGradientCanvas(node)} }`
+    : isGradientFill(node.paint.fill) && node.paint.cornerRadius != null
+      ? `.background(alignment: .topLeading) { ${swiftVector({ ...node, vector: roundedRectangleVector(node) })} }`
     : node.paint.cornerRadius != null && !isGradientFill(node.paint.fill)
     ? `.background(alignment: .topLeading) { ${swiftVector({ ...node, vector: roundedRectangleVector(node), paint: { fill: node.paint.fill, opacity: 1 } })} }`
     : `.background(${swiftPaint(node.paint.fill, node)}, ignoresSafeAreaEdges: [])`;
@@ -490,7 +499,7 @@ function swiftPaint(fill, node) {
 function swiftGradientCanvas(node) {
   const fill = node.paint.fill;
   const geometry = gradientGeometry(fill, node);
-  const path = node.type === "ellipse" ? "Path(ellipseIn: CGRect(origin: .zero, size: size))" : "Path(CGRect(origin: .zero, size: size))";
+  const path = node.type === "ellipse" ? "Path(ellipseIn: CGRect(origin: .zero, size: size))" : node.paint.cornerRadius != null ? swiftPath({ ...node, vector: roundedRectangleVector(node) }) : "Path(CGRect(origin: .zero, size: size))";
   const inverseTransform = `CGAffineTransform(translationX: center.x, y: center.y).rotated(by: -${n(geometry.rotation * Math.PI / 180)}).scaledBy(x: ${n(1 / geometry.size.width)}, y: ${n(1 / geometry.size.height)}).translatedBy(x: -center.x, y: -center.y)`;
   return `Canvas { context, size in let center = CGPoint(x: ${n(geometry.center.x)} * size.width, y: ${n(geometry.center.y)} * size.height); let path = ${path}.applying(${inverseTransform}); context.translateBy(x: center.x, y: center.y); context.rotate(by: .degrees(${n(geometry.rotation)})); context.scaleBy(x: ${n(geometry.size.width)}, y: ${n(geometry.size.height)}); context.translateBy(x: -center.x, y: -center.y); context.fill(path, with: .radialGradient(Gradient(stops: [${swiftStops(fill)}]), center: center, startRadius: 0, endRadius: ${n(geometry.radius)})) }.opacity(${n(node.paint.opacity ?? 1)})`;
 }
@@ -504,7 +513,7 @@ function composeGradientCanvas(node, modifier) {
   const brush = kind === "linear"
     ? `androidx.compose.ui.graphics.Brush.linearGradient(colorStops = arrayOf(${composeStops(fill)}), start = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.start.x)} * size.width, ${kotlinFloat(geometry.start.y)} * size.height), end = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.end.x)} * size.width, ${kotlinFloat(geometry.end.y)} * size.height))`
     : `androidx.compose.ui.graphics.Brush.radialGradient(colorStops = arrayOf(${composeStops(fill)}), center = center, radius = ${kotlinFloat(Math.max(Number(node.geometry.w), Number(node.geometry.h)) / 2)})`;
-  const draw = node.type === "ellipse" ? `drawOval(brush = brush)` : `drawRect(brush = brush)`;
+  const draw = composeGradientDraw(node);
   const transform = kind === "radial" && isTransformedRadial(fill)
     ? `withTransform({ rotate(${kotlinFloat(geometry.rotation)}, center); scale(${kotlinFloat(geometry.size.width)}, ${kotlinFloat(geometry.size.height)}, center) }) { ${draw} }`
     : draw;
@@ -517,11 +526,24 @@ function composeGradientModifier(node, baseModifier) {
   const brush = kind === "linear"
     ? `androidx.compose.ui.graphics.Brush.linearGradient(colorStops = arrayOf(${composeStops(fill)}), start = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.start.x)} * size.width, ${kotlinFloat(geometry.start.y)} * size.height), end = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.end.x)} * size.width, ${kotlinFloat(geometry.end.y)} * size.height))`
     : `androidx.compose.ui.graphics.Brush.radialGradient(colorStops = arrayOf(${composeStops(fill)}), center = center, radius = ${kotlinFloat(geometry.radius)})`;
-  const draw = "drawRect(brush = brush)";
+  const draw = composeGradientDraw(node);
   const transformed = kind === "radial" && isTransformedRadial(fill)
     ? `withTransform({ rotate(${kotlinFloat(geometry.rotation)}, center); scale(${kotlinFloat(geometry.size.width)}, ${kotlinFloat(geometry.size.height)}, center) }) { ${draw} }`
     : draw;
-  return `androidx.compose.ui.draw.drawWithCache(${baseModifier}) { val center = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.center.x)} * size.width, ${kotlinFloat(geometry.center.y)} * size.height); val brush = ${brush}; onDrawBehind { ${transformed} } }`;
+  return `${baseModifier}.drawWithCache { val center = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.center.x)} * size.width, ${kotlinFloat(geometry.center.y)} * size.height); val brush = ${brush}; onDrawBehind { ${transformed} } }`;
+}
+function composeGradientDraw(node) {
+  if (node.type === "ellipse") return "drawOval(brush = brush)";
+  if (node.paint.cornerRadius == null) return "drawRect(brush = brush)";
+  const statements = scaledVectorCommands(roundedRectangleVector(node), 1, 1).map((command) => {
+    const x = (value) => `${Number(value).toFixed(9)}f * size.width`;
+    const y = (value) => `${Number(value).toFixed(9)}f * size.height`;
+    if (command.type === "move") return `moveTo(${x(command.x)}, ${y(command.y)})`;
+    if (command.type === "line") return `lineTo(${x(command.x)}, ${y(command.y)})`;
+    if (command.type === "cubic") return `cubicTo(${x(command.c1x)}, ${y(command.c1y)}, ${x(command.c2x)}, ${y(command.c2y)}, ${x(command.x)}, ${y(command.y)})`;
+    return "close()";
+  }).join("; ");
+  return `drawPath(Path().apply { ${statements} }, brush = brush)`;
 }
 function solid(fill) {
   const value = selectedPaint(fill);
