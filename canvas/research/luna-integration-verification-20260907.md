@@ -918,6 +918,25 @@ An initial shell scalar-argument attempt is retained separately at
 loading tests with `CANVAS_TEST_FILE_INVALID`/`ENAMETOOLONG`. It was a command-construction
 failure, not a test result; the corrected array invocation above is the compatibility result.
 
+## Full npm test baseline
+
+The single full-suite run was started at combined HEAD
+`7571764f6b75c5eff95d0cff6cf1498578cee897` after verifying that the only untracked path was the
+preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/` directory:
+
+`npm test`
+
+Log: `/tmp/canvas-full-npm-test-20260907.log`. Exit `0`; `1,899` passed, `0` failed,
+`0` cancelled, `0` skipped; wrapper duration `144,994 ms` (Node-reported test duration
+`144,694.528583 ms`). The package's strict runner selected source, exporter, all compatibility,
+and Yjs test files, including the normal mobile compile gates. Swift test exited `0` in
+`23,869 ms`, Swift build exited `0` in `1,294 ms`, and the bounded Android command
+`./gradlew --no-daemon --max-workers 2 :app:assembleDebug` exited `0` in `79,138 ms`.
+
+The post-run process check found no `xcodebuild`, `swiftc`, Gradle, `npm test`, or test-runner
+process. No source failure, capability edit, Dev install, live document mutation, or separate
+build/install/capture was performed.
+
 ## Retained-publication and published-retention preparation
 
 After the approved storage-transport batch, the exact preparation sequence was integrated in
