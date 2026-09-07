@@ -179,6 +179,7 @@ test("real publish then accept retains nested assets after publisher and upstrea
   const state = await fixture();
   const published = await publish(state);
   const accepted = await accept(state);
+  assert.equal(accepted.changed, true);
   assert.equal(published.published, true);
   assert.equal(accepted.accepted, true);
   assert.equal(state.appendBodies.length, 2);
@@ -206,6 +207,30 @@ test("real publish then accept retains nested assets after publisher and upstrea
   assert.equal(state.calls.slice(beforeDeletionCalls).every(({ documentId }) => documentId === "consumer"), true);
   assert.equal(state.calls.some(({ documentId }) => documentId === "ui" || documentId === "theme"), false);
   assert.equal(accepted.identity.contentHash, published.publication.contentHash);
+});
+
+test("same release, same items, and same policy return a detached no-op receipt without append or snapshot", async () => {
+  const state = await fixture();
+  const published = await publish(state);
+  const first = await accept(state);
+  assert.equal(first.changed, true);
+  const persistedBefore = await freshConsumer(state);
+  const appendCount = state.calls.filter(({ op, documentId }) => op === "appendUpdate" && documentId === "consumer").length;
+  const snapshotCount = state.calls.filter(({ op, documentId }) => op === "createSnapshot" && documentId === "consumer").length;
+  const repeated = await accept(state);
+  assert.deepEqual(repeated.identity, {
+    libraryId: "publisher", releaseId: published.publication.releaseId, contentHash: published.publication.contentHash,
+  });
+  assert.equal(repeated.accepted, true);
+  assert.equal(repeated.changed, false);
+  assert.equal(repeated.sequence, sequence(state.documents.get("consumer")));
+  assert.equal(Object.hasOwn(repeated, "operationId"), false);
+  assert.equal(state.calls.filter(({ op, documentId }) => op === "appendUpdate" && documentId === "consumer").length, appendCount);
+  assert.equal(state.calls.filter(({ op, documentId }) => op === "createSnapshot" && documentId === "consumer").length, snapshotCount);
+  repeated.retention.path = "mutated-local-receipt";
+  assert.equal((await freshConsumer(state)).document.imports.school.retention.path, persistedBefore.document.imports.school.retention.path);
+  state.controls.denyPublisher = true;
+  await assert.rejects(accept(state), { code: "ACCESS_DENIED" });
 });
 
 test("publisher denial is enforced even for asset-free publications, before consumer upload", async () => {
@@ -295,6 +320,8 @@ test("same-source alias updates preserve policy, other source conflicts, and lat
   const second = await publish(state);
   const same = await accept(state);
   assert.equal(same.accepted, true);
+  assert.equal(same.changed, true);
+  assert.ok(same.operationId);
   assert.equal(same.identity.contentHash, second.publication.contentHash);
   assert.equal((await freshConsumer(state)).document.imports.school.updatePolicy, "follow");
   await assert.rejects(accept(state, { libraryId: "other" }), { code: "CANVAS_IMPORT_ALIAS_CONFLICT" });
@@ -308,6 +335,8 @@ test("same-source alias updates preserve policy, other source conflicts, and lat
   const latest = await readPublishedCanvasLibrary(state.api, "publisher");
   assert.equal(latest.publication.contentHash, third.publication.contentHash);
   const updated = await accept(state, { updatePolicy: "pinned" });
+  assert.equal(updated.changed, true);
+  assert.ok(updated.operationId);
   assert.equal(updated.identity.contentHash, third.publication.contentHash);
   assert.equal((await freshConsumer(state)).document.imports.school.updatePolicy, "pinned");
   assert.equal(accepted.identity.contentHash, first.publication.contentHash);
