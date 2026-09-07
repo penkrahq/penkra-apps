@@ -90,11 +90,11 @@ function swiftVector(node) {
 
 function swiftContainer(node, descendants, children, options, depth, root = false, parentLayout = "none", access = "") {
   const indent = "  ".repeat(depth);
-  const inner = descendants.map((child) => swiftNode(child, children, options, depth + 1, node.layout.layout || (node.layout.wrap ? "wrap" : "none"))).filter(Boolean).join("\n");
+  const childLayout = node.layout.layout === "grid" ? "none" : node.layout.layout || (node.layout.wrap ? "wrap" : "none");
+  const inner = descendants.map((child) => swiftNode(child, children, options, depth + 1, childLayout)).filter(Boolean).join("\n");
   const { row, column } = mobileGaps(node);
-  const columns = Math.max(1, node.layout.gridTemplateColumns?.length ?? 1);
   let open;
-  if (node.layout.layout === "grid") open = `LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: ${column}), count: ${columns}), spacing: ${row})`;
+  if (node.layout.layout === "grid") open = "ZStack(alignment: .topLeading)";
   else if (node.layout.wrap) open = `FlowLayout(spacing: ${column}, rowSpacing: ${row})`;
   else if (node.layout.layout === "horizontal") open = `HStack(alignment: ${swiftAlignment(node.layout.alignItems)}, spacing: ${column})`;
   else if (node.layout.layout === "vertical") open = `VStack(alignment: ${swiftHorizontalAlignment(node.layout.alignItems)}, spacing: ${row})`;
@@ -103,7 +103,7 @@ function swiftContainer(node, descendants, children, options, depth, root = fals
     ? `.background(alignment: .topLeading) { ${swiftVector({ ...node, vector: roundedRectangleVector(node), paint: { fill: node.paint.fill, opacity: 1 } })} }`
     : `.background(${swiftColor(solid(node.paint.fill))}, ignoresSafeAreaEdges: [])`;
   const insets = mobilePadding(node);
-  const padding = insets ? `.padding(EdgeInsets(top: ${n(insets[0])}, leading: ${n(insets[3])}, bottom: ${n(insets[2])}, trailing: ${n(insets[1])}))` : "";
+  const padding = insets && node.layout.layout !== "grid" ? `.padding(EdgeInsets(top: ${n(insets[0])}, leading: ${n(insets[3])}, bottom: ${n(insets[2])}, trailing: ${n(insets[1])}))` : "";
   const rootFrame = root ? `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)})` : "";
   const clip = !node.clip ? "" : node.paint.cornerRadius != null
     ? `.clipShape(${swiftPath({ ...node, vector: roundedRectangleVector(node) })})`

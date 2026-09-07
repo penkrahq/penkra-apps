@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { buildCapabilityVerificationIR } from "../exporter-ir.mjs";
 import { capabilityPathInventory } from "../canvas-schema.mjs";
-import { exportCompose } from "./mobile.mjs";
+import { exportCompose, exportSwiftUI } from "./mobile.mjs";
 
 test("Compose grids preserve unequal tracks, explicit cells, padding and paint order", () => {
   for (const columns of [[100, 180], [180, 100]]) {
@@ -32,5 +32,13 @@ test("Compose grids preserve unequal tracks, explicit cells, padding and paint o
     assert.ok(source.indexOf("0xFF123456") < source.indexOf("0xFF654321"));
     assert.ok(source.indexOf("0xFF654321") < source.indexOf("0xFFABCDEF"));
     assert.match(source, /canvasClipToBounds\(\)/u);
+    document.children[0].role = "ios";
+    const swiftIr = buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, capabilityPathInventory());
+    const swift = exportSwiftUI(swiftIr).get("GridGeometry.swift");
+    for (const geometry of positions) {
+      assert.ok(swift.includes(`.position(x: ${geometry.localX + geometry.w / 2}, y: ${geometry.localY + geometry.h / 2})`));
+    }
+    assert.doesNotMatch(swift, /LazyVGrid\(|\.padding\(/u);
+    assert.match(swift, /\.clipped\(\)/u);
   }
 });

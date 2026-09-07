@@ -46,7 +46,7 @@ test("mobile layouts use independent row and column gap overrides", () => {
   assert.match(swift, /HStack\(alignment: \.top, spacing: 30\)/u);
   assert.match(swift, /VStack\(alignment: \.leading, spacing: 25\)/u);
   assert.match(swift, /FlowLayout\(spacing: 30, rowSpacing: 25\)/u);
-  assert.match(swift, /GridItem\(\.flexible\(\), spacing: 30\), count: 2\), spacing: 25/u);
+  assert.doesNotMatch(swift, /LazyVGrid\(/u);
   const kotlin = [...exportCompose(make("android")).values()].join("\n");
   assert.match(kotlin, /horizontalArrangement = Arrangement\.spacedBy\(30\.dp\)/u);
   assert.match(kotlin, /verticalArrangement = Arrangement\.spacedBy\(25\.dp\)/u);
@@ -186,7 +186,7 @@ test("mobile grid candidate emits source for device verification", () => {
   const route = structuredClone(document); route.module = "mobile"; route.children[0].role = "ios";
   route.children[0].children[1] = { ...route.children[0].children[1], type: "frame", effect: undefined, layout: "grid", gridTemplateColumns: ["1fr", "2fr"], children: [] };
   const iosFiles = exportSwiftUI(buildCapabilityVerificationIR(route, { role: "ios", frames: ["slide"] }, capabilityPathInventory()));
-  assert.match(iosFiles.get("Title.swift"), /LazyVGrid/u);
+  assert.doesNotMatch(iosFiles.get("Title.swift"), /LazyVGrid\(/u);
   const android = structuredClone(route); android.children[0].role = "android";
   const androidFiles = exportCompose(buildCapabilityVerificationIR(android, { role: "android", frames: ["slide"] }, capabilityPathInventory()));
   assert.doesNotMatch(androidFiles.get("Title.kt"), /LazyVerticalGrid\(/u);
