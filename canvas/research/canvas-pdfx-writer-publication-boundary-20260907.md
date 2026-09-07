@@ -49,3 +49,12 @@ A separate in-memory physical-size control produced the expected 200 by 100 mm
 trim, with a 3-point bleed, zero issues, and positive subset verification.
 Its zero-width negative control rejected with `CANVAS_PDF_PROFILE_INVALID`.
 Neither probe replaces the broader returned-artifact and publication tests.
+
+Independent caller/publication review is recorded in combined commit
+`149885f`. Its manifest wording finding is addressed by describing the
+bundled-output-condition and serialized-writer-preflight boundary directly.
+The public profile enum and request shape are unchanged. Protected operation
+documents and architecture prose remain untouched.
+
+Poppler 26.08.0 extracted `Canvas PDF/X-4` from the probe. `pdffonts` reported
+Inter-Regular as embedded CID TrueType, Identity-H, with Unicode mapping.
