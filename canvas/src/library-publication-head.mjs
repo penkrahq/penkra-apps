@@ -25,7 +25,9 @@ export async function readPublishedCanvasLibrary(api, libraryId) {
       || stored.release.contentHash !== publication.contentHash) {
       throw integrity("Canvas library publication head does not match its stored release.");
     }
-    return { release: stored.release, assets: stored.assets, publication: structuredClone(publication) };
+    const result = { release: stored.release, assets: stored.assets, publication: structuredClone(publication) };
+    if (Object.hasOwn(stored, "retentions")) result.retentions = structuredClone(stored.retentions);
+    return result;
   } finally {
     model.doc.destroy();
   }
