@@ -638,3 +638,35 @@ Log `/tmp/canvas-luna-retained-operations-integrated-20260907.log`; exit `0`, `8
 `0` failed, `0` cancelled, `0` skipped; wrapper duration `1 s` (runner-reported duration
 `845.608292 ms`). Legacy-retention rejection, consumer-owned retained export/extract, explicit
 string-integrity rejection, loader isolation, storage integrity, and materializer checks passed.
+
+## Asset upload integrity follow-on
+
+The approved asset API sequence applied cleanly after the retained-operations batch, in exact
+order and without intermediate tests:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `abee97a` | `f8f5efd` |
+| `1ab9ecc` | `ab39d67` |
+| `280eafc` | `1f40590` |
+| `c5460be` | `d2db238` |
+| `02d059d` | `0988032` |
+| `88aea72` | `8840678` |
+| `5284a47` | `49ae866` |
+| `97d7a5f` | `4bd20de` |
+| `e8c1a4f` | `6733970` |
+
+The integrated source snapshots upload bytes and metadata before the first await, validates exact
+hash/size and receipt object shape, rejects malformed metadata and invalid chunk sizes with
+`CANVAS_ASSET_UPLOAD_RECEIPT_INVALID`, and preserves the caller path. The approved MIME correction
+is retained: a deduplicated backend MIME may differ while requested MIME is still sent at upload
+start. No readAsset, storage, backend, schema, capability, or native changes were introduced.
+
+After the complete sequence, the strict six-file selection was run once:
+
+`node scripts/test.mjs src/canvas-api.test.mjs src/luna-asset-upload-integrity.test.mjs src/luna-asset-empty-read.test.mjs src/library-storage.test.mjs src/luna-library-storage-protocol.test.mjs src/operations-retained-imports.test.mjs`
+
+Log `/tmp/canvas-luna-asset-upload-integrated-20260907.log`; exit `0`, `61` passed, `0` failed,
+`0` cancelled, `0` skipped; wrapper duration `<1 s` (runner-reported duration `822.123416 ms`).
+Upload snapshot/receipt, zero-byte read, storage/protocol, and retained-operation assertions all
+passed.
