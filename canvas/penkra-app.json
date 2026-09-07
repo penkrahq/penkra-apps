@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.61",
+  "version": "0.2.63",
   "compatibility": {
     "penkra": ">=0.11.15"
   },
@@ -164,52 +164,6 @@
         }
       ],
       "handler": "documents.create"
-    },
-    {
-      "key": "documents.migrate",
-      "summary": "Safely migrate one exact legacy Canvas document into a verified owner copy and write its deterministic Markdown report.",
-      "instructions": "Pass the exact UUID from documents.list and an absolute reportDirectory selected by the caller. This operation reads the complete document, including its snapshot and updates, and verifies the migrated projection and every asset before recording the report. An owned source is renamed only after all verification and report writing succeeds; a shared editor source is never changed and the new copy is titled with the migrated-copy suffix. On failure, only the newly created copy and newly created report are cleaned up.",
-      "input": {
-        "type": "object",
-        "properties": {
-          "documentId": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Exact source document returned by documents.list."
-          },
-          "reportDirectory": {
-            "type": "string",
-            "minLength": 1,
-            "description": "Absolute directory selected by the caller for the deterministic migration report."
-          }
-        },
-        "required": ["documentId", "reportDirectory"],
-        "additionalProperties": false
-      },
-      "output": {
-        "type": "object",
-        "properties": {
-          "sourceDocumentId": { "type": "string", "format": "uuid" },
-          "documentId": { "type": "string", "format": "uuid" },
-          "title": { "type": "string", "minLength": 1, "maxLength": 255 },
-          "sourceAccess": { "enum": ["owner", "editor"] },
-          "sourceRenamed": { "type": "boolean" },
-          "reportPath": { "type": "string", "minLength": 1 },
-          "assetCount": { "type": "integer", "minimum": 0 }
-        },
-        "required": ["sourceDocumentId", "documentId", "title", "sourceAccess", "sourceRenamed", "reportPath", "assetCount"],
-        "additionalProperties": false
-      },
-      "examples": [
-        {
-          "name": "Migrate an exact legacy Canvas document",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "reportDirectory": "/tmp/canvas-migration-reports"
-          }
-        }
-      ],
-      "handler": "documents.migrate"
     },
     {
       "key": "documents.execute",
