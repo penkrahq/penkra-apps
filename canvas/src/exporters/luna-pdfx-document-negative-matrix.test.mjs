@@ -50,9 +50,9 @@ function registeredStream(pdf, bytes, dictionary = {}) {
   return pdf.context.register(pdf.context.stream(bytes, dictionary));
 }
 
-function iccColorSpace(pdf, bytes, channels, filter = false) {
+function iccColorSpace(pdf, bytes, channels, filter = true) {
   const profile = filter
-    ? pdf.context.register(pdf.context.stream(bytes, { Filter: name("FlateDecode"), N: number(channels) }))
+    ? pdf.context.register(pdf.context.flateStream(bytes, { N: number(channels) }))
     : pdf.context.register(pdf.context.stream(bytes, { N: number(channels) }));
   return { profile, colorSpace: pdf.context.obj([name("ICCBased"), profile]) };
 }
@@ -80,7 +80,7 @@ async function candidate() {
   page.setBleedBox(0, 0, 200, 300);
   page.setTrimBox(9, 9, 191, 291);
 
-  const printer = registeredStream(pdf, PRINTER_BYTES, { N: number(4), Alternate: name("DeviceCMYK") });
+  const printer = pdf.context.register(pdf.context.flateStream(PRINTER_BYTES, { N: number(4), Alternate: name("DeviceCMYK") }));
   set(pdf.catalog, "OutputIntents", pdf.context.obj([outputIntent(pdf, printer)]));
   const source = iccColorSpace(pdf, SRGB_BYTES, 3);
   set(page.node.Resources(), "ColorSpace", pdf.context.obj({ DefaultRGB: source.colorSpace }));
@@ -111,7 +111,8 @@ function metadataStream(pdf) {
 }
 
 function badProfile(pdf, channels = 3) {
-  return iccColorSpace(pdf, Uint8Array.of(0, 1, 2), channels, true);
+  const profile = pdf.context.register(pdf.context.stream(Uint8Array.of(0, 1, 2), { Filter: name("FlateDecode"), N: number(channels) }));
+  return { profile, colorSpace: pdf.context.obj([name("ICCBased"), profile]) };
 }
 
 function topology(nameValue, pdf) {
@@ -132,11 +133,15 @@ function topology(nameValue, pdf) {
       assert.equal(outputProfile(pdf).dict.get(name("N")).asNumber(), 3);
       break;
     case "output-profile-unreadable":
+      assert.ok(outputProfile(pdf) instanceof PDFRawStream);
+      assert.equal(outputProfile(pdf).dict.get(name("Filter")).decodeText(), "FlateDecode");
+      break;
     case "icc-header-invalid":
     case "icc-version-unsupported":
     case "icc-pcs-invalid":
     case "icc-tag-table-truncated":
       assert.ok(outputProfile(pdf) instanceof PDFRawStream);
+      assert.equal(outputProfile(pdf).dict.get(name("Filter")), undefined);
       break;
     case "xmp-filter-forbidden":
       assert.equal(metadataStream(pdf).dict.get(name("Filter")).decodeText(), "FlateDecode");
@@ -215,10 +220,10 @@ const CASES = [
   { name: "default-rgb-profile-unreadable", expected: ["DEFAULT_RGB_PROFILE_UNREADABLE"], mutate: ({ pdf }) => { const { resources } = pageParts(pdf); const colors = resolve(pdf, resources.get(name("ColorSpace"))); const bad = badProfile(pdf); set(colors, "DefaultRGB", bad.colorSpace); } },
   { name: "transparency-group-invalid", expected: ["TRANSPARENCY_GROUP_INVALID"], mutate: ({ pdf }) => del(pdf.getPages()[0].node, "Group") },
   { name: "transparency-group-profile-unreadable", expected: ["TRANSPARENCY_GROUP_PROFILE_UNREADABLE"], mutate: ({ pdf }) => { const { page } = pageParts(pdf); const bad = badProfile(pdf); set(resolve(pdf, page.node.get(name("Group"))), "CS", bad.colorSpace); } },
-  { name: "icc-header-invalid", expected: ["ICC_HEADER_INVALID"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "header"); } },
-  { name: "icc-version-unsupported", expected: ["ICC_VERSION_UNSUPPORTED"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "version"); } },
-  { name: "icc-pcs-invalid", expected: ["ICC_PCS_INVALID"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "pcs"); } },
-  { name: "icc-tag-table-truncated", expected: ["ICC_TAG_TABLE_TRUNCATED"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "tag-table"); } },
+  { name: "icc-header-invalid", expected: ["ICC_HEADER_INVALID"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "header"); del(profile.dict, "Filter"); } },
+  { name: "icc-version-unsupported", expected: ["ICC_VERSION_UNSUPPORTED"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "version"); del(profile.dict, "Filter"); } },
+  { name: "icc-pcs-invalid", expected: ["ICC_PCS_INVALID"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "pcs"); del(profile.dict, "Filter"); } },
+  { name: "icc-tag-table-truncated", expected: ["ICC_TAG_TABLE_TRUNCATED"], mutate: ({ pdf }) => { const profile = outputProfile(pdf); profile.contents = mutateIcc(PRINTER_BYTES, "tag-table"); del(profile.dict, "Filter"); } },
 ];
 
 assert.deepEqual(CASES.map(({ name: caseName }) => caseName), [
