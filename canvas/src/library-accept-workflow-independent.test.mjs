@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
 
-import { applyRemoteUpdate, createDocumentModel, encodeState, materialize, restoreDocumentModel } from "./document-model.mjs";
+import { applyRemoteUpdate, createDocumentModel, encodeState, materialize, mutate, restoreDocumentModel } from "./document-model.mjs";
 import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
 import { createLibraryPublicationHead, readPublishedCanvasLibrary } from "./library-publication-head.mjs";
 import { createLibraryRelease, releaseIdentity } from "./library-publication.mjs";
@@ -233,12 +233,14 @@ test("removed public items, unaccepted private items, and source/asset failures 
 
   const upload = await fixture();
   await publish(upload);
+  upload.calls.length = 0;
   upload.controls.uploadFailure = (documentId) => documentId === "consumer";
   await assert.rejects(accept(upload), { code: "UPLOAD_FAILED" });
   assert.equal(upload.calls.some(({ op }) => op === "appendUpdate"), false);
 
   const readback = await fixture();
   await publish(readback);
+  readback.calls.length = 0;
   readback.controls.badRead = (documentId) => documentId === "consumer";
   await assert.rejects(accept(readback), { code: "CANVAS_IMPORT_INTEGRITY" });
   assert.equal(readback.calls.some(({ op }) => op === "appendUpdate"), false);
@@ -249,7 +251,11 @@ test("CAS conflict, malformed durable receipt, deferred snapshot, and exact undo
   await publish(conflict);
   conflict.controls.beforeAppend = async (documentId, body) => {
     const payload = conflict.documents.get(documentId);
-    payload.updates.push({ sequence: 1, update: body.update });
+    const model = restoreDocumentModel(payload);
+    try {
+      mutate(model, { kind: "set-property", nodeId: "screen", property: "name", value: "concurrent-edit" });
+      payload.updates.push({ sequence: 1, update: encodeState(model) });
+    } finally { model.doc.destroy(); }
   };
   await assert.rejects(accept(conflict), { code: "CANVAS_DOCUMENT_CONFLICT" });
   assert.equal(conflict.calls.some(({ op }) => op === "createSnapshot"), true); // publisher snapshot only
@@ -284,20 +290,25 @@ test("same-source alias updates preserve policy, other source conflicts, and lat
   const first = await publish(state);
   const accepted = await accept(state);
   assert.equal((await freshConsumer(state)).document.imports.school.updatePolicy, "follow");
-  const same = await accept(state);
-  assert.equal(same.accepted, true);
-  assert.equal((await freshConsumer(state)).document.imports.school.updatePolicy, "follow");
-  await assert.rejects(accept(state, { libraryId: "other" }), { code: "CANVAS_IMPORT_ALIAS_CONFLICT" });
-
   const oldStorage = structuredClone(first.publication.storage);
   const oldBytes = new Uint8Array(state.projects.get("publisher").get(oldStorage.sha256));
   const second = await publish(state);
-  assert.notEqual(second.publication.contentHash, first.publication.contentHash);
+  const same = await accept(state);
+  assert.equal(same.accepted, true);
+  assert.equal(same.identity.contentHash, second.publication.contentHash);
+  assert.equal((await freshConsumer(state)).document.imports.school.updatePolicy, "follow");
+  await assert.rejects(accept(state, { libraryId: "other" }), { code: "CANVAS_IMPORT_ALIAS_CONFLICT" });
+
+  const third = await publish(state);
+  assert.notEqual(second.publication.releaseId, first.publication.releaseId);
+  assert.notEqual(third.publication.releaseId, second.publication.releaseId);
+  assert.equal(second.publication.contentHash, first.publication.contentHash);
+  assert.equal(third.publication.contentHash, second.publication.contentHash);
   assert.deepEqual(state.projects.get("publisher").get(oldStorage.sha256), oldBytes);
   const latest = await readPublishedCanvasLibrary(state.api, "publisher");
-  assert.equal(latest.publication.contentHash, second.publication.contentHash);
+  assert.equal(latest.publication.contentHash, third.publication.contentHash);
   const updated = await accept(state, { updatePolicy: "pinned" });
-  assert.equal(updated.identity.contentHash, second.publication.contentHash);
+  assert.equal(updated.identity.contentHash, third.publication.contentHash);
   assert.equal((await freshConsumer(state)).document.imports.school.updatePolicy, "pinned");
   assert.equal(accepted.identity.contentHash, first.publication.contentHash);
 });
