@@ -68,12 +68,21 @@ export function normalizeImportRecord(record) {
     catch (cause) { throw importError(`Import ${record.documentId} has an invalid retention descriptor.`, cause.code); }
   }
   if (record.releaseId !== undefined && (typeof record.releaseId !== "string" || !record.releaseId || /[\u0000-\u001f\u007f]/u.test(record.releaseId))) throw importError(`Import ${record.documentId} has an invalid releaseId.`);
+  const acceptedIdentity = typeof record.releaseId === "string" && record.releaseId.length > 0
+    && !/[\u0000-\u001f\u007f]/u.test(record.releaseId)
+    && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "");
   if (record.updatePolicy === "follow") {
+    if (record.retention !== undefined && !acceptedIdentity) {
+      throw importError(`Following import ${record.documentId} with retention needs both accepted releaseId and contentHash.`, "CANVAS_IMPORT_INTEGRITY");
+    }
     if (record.releaseId !== undefined || record.contentHash !== undefined) {
-      if (typeof record.releaseId !== "string" || !record.releaseId || !/^[a-f0-9]{64}$/u.test(record.contentHash ?? "")) throw importError(`Following import ${record.documentId} needs both accepted releaseId and contentHash.`);
+      if (!acceptedIdentity) throw importError(`Following import ${record.documentId} needs both accepted releaseId and contentHash.`);
       return { documentId: record.documentId, updatePolicy: "follow", releaseId: record.releaseId, contentHash: record.contentHash, ...(retention ? { retention } : {}) };
     }
-    return { documentId: record.documentId, updatePolicy: "follow", ...(retention ? { retention } : {}) };
+    return { documentId: record.documentId, updatePolicy: "follow" };
+  }
+  if (record.retention !== undefined && !acceptedIdentity) {
+    throw importError(`Import ${record.documentId} with retention needs both accepted releaseId and contentHash.`, "CANVAS_IMPORT_INTEGRITY");
   }
   if (record.updatePolicy === "pinned" && typeof record.releaseId === "string" && record.releaseId
     && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "")) {

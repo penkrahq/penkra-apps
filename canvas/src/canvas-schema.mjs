@@ -239,7 +239,7 @@ function validateImports(imports, errors) {
       const identity = typeof record.releaseId === "string" && record.releaseId.length > 0 && !/[\u0000-\u001f\u007f]/u.test(record.releaseId) && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "");
       if (typeof record.documentId !== "string" || !record.documentId || /[\u0000-\u001f\u007f]/u.test(record.documentId)
         || !["follow", "pinned"].includes(record.updatePolicy) || record.pin !== undefined || record.version !== undefined
-        || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined) && !identity)
+        || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined || record.retention !== undefined) && !identity)
         || (record.retention !== undefined && !validStorageDescriptor(record.retention))) errors.push(`Import ${alias} must select a valid published release identity without legacy pin fields.`);
     } else if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || record.releaseId !== undefined || record.contentHash !== undefined || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)) || (record.retention !== undefined && !validStorageDescriptor(record.retention)))
       errors.push(`Import ${alias} must declare documentId and a valid live or exact pin.`);
