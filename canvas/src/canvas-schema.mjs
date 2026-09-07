@@ -33,7 +33,10 @@ export const CANVAS_SCHEMA = deepFreeze({
       path: { type: "string" }, sha256: { type: "string" }, size: { type: "number" }, mimeType: { type: "string" },
     } },
     library: { type: "object", required: ["public"], additional: false, fields: {
-      public: { type: "array", items: { ref: "publicItem" } },
+      public: { type: "array", items: { ref: "publicItem" } }, publication: { ref: "libraryPublication" },
+    } },
+    libraryPublication: { type: "object", required: ["releaseId", "contentHash", "storage"], additional: false, fields: {
+      releaseId: { type: "string" }, contentHash: { type: "string" }, storage: { ref: "storageDescriptor" },
     } },
     publicItem: { type: "object", required: ["kind", "id"], additional: false, fields: {
       kind: { type: "enum", values: ["component", "paragraphStyle", "variable"] }, id: { type: "string" },
@@ -265,7 +268,8 @@ function validStorageDescriptor(value) {
 }
 
 function validateLibrarySurface(document, nodes, errors) {
-  const items = document.library?.public;
+  const library = document.library;
+  const items = library?.public;
   if (!Array.isArray(items)) return; // Generated shape validation reports this.
   const seen = new Set();
   for (const item of items) {
@@ -277,6 +281,16 @@ function validateLibrarySurface(document, nodes, errors) {
       : item.kind === "paragraphStyle" ? Object.hasOwn(document.paragraphStyles ?? {}, item.id)
         : item.kind === "variable" && Object.hasOwn(document.variables ?? {}, item.id);
     if (typeof item.id !== "string" || !item.id || !exists) errors.push(`Public item ${key} does not identify an existing resource.`);
+  }
+  const publication = library?.publication;
+  if (publication === undefined || !plainObject(publication)) return; // Generated shape validation reports this.
+  if (typeof publication.releaseId !== "string" || !publication.releaseId || /[\u0000-\u001f\u007f]/u.test(publication.releaseId)
+    || typeof publication.contentHash !== "string" || !/^[a-f0-9]{64}$/u.test(publication.contentHash)) {
+    errors.push("library.publication must identify one published release.");
+  }
+  if (publication.storage !== undefined) {
+    try { validateLibraryStorageDescriptor(publication.storage); }
+    catch { errors.push("library.publication.storage must be a valid storage descriptor."); }
   }
 }
 

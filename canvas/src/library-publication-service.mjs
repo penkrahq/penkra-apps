@@ -7,6 +7,7 @@ import { createLibraryRelease } from "./library-publication.mjs";
 // atomically; selected dependencies are content identities, never live heads.
 export async function prepareLibraryRelease(api, document, options) {
   const snapshot = structuredClone(document);
+  if (snapshot.library?.publication !== undefined) delete snapshot.library.publication;
   const { libraryId, releaseId, accountId, resolveRelease, readReleaseAsset } = options;
   const ownedAssets = new Map();
   const assets = (options.assets ?? []).map((asset) => {
