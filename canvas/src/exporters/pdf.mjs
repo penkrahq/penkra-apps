@@ -2,6 +2,7 @@ import fontkit from "@pdf-lib/fontkit";
 import { createHash, randomUUID } from "node:crypto";
 import { PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rgb, scale, setFillingColor, setFontAndSize, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
 import { scaledVectorCommands } from "../vector-path.mjs";
+import { roundedRectangleVector } from "../rounded-rectangle.mjs";
 import { parseCssColor } from "../canvas-theme.mjs";
 import { preflightPdfx4 } from "./pdfx-preflight.mjs";
 import { PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
@@ -111,6 +112,7 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   const borderWidth = Number(node.paint.stroke?.width ?? node.paint.stroke?.thickness ?? 1) * sx;
   const common = { x, y, width, height, opacity: fillOpacity, borderOpacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) };
   if (node.vector) drawVector(pdf, page, node, { x, y, width, height, fill, stroke, borderWidth, fillOpacity, borderOpacity });
+  else if (node.paint.cornerRadius != null) drawVector(pdf, page, { ...node, vector: roundedRectangleVector(node) }, { x, y, width, height, fill, stroke, borderWidth, fillOpacity, borderOpacity });
   else if (node.type === "ellipse") page.drawEllipse({ x: x + width / 2, y: y + height / 2, xScale: width / 2, yScale: height / 2, opacity: fillOpacity, borderOpacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) });
   else if (node.type === "line") { if (stroke) page.drawLine({ start: { x, y: y + height }, end: { x: x + width, y }, color: pdfColor(stroke), opacity: borderOpacity, thickness: borderWidth }); }
   else page.drawRectangle(common);
