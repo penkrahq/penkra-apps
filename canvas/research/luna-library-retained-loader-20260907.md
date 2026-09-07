@@ -58,3 +58,45 @@ the test commit.
 The accepted storage descriptor and retained item self-hashes anchor the
 authenticated bundle boundary, but they are not a cryptographic inclusion
 proof for omitted content. No Merkle/signature system was added.
+
+## Follow-up: retained follow identity boundary
+
+Date: 2026-09-07
+Starting verified commit: `df4d05c`
+
+Implementation and regression commits:
+
+- `9855b2b` — `fix(canvas): require identity for retained imports`
+- `4f31e0f` — `test(canvas): cover retained follow identity boundaries`
+
+The schema and normalizer now require a complete nonempty accepted
+`releaseId` plus 64-hex `contentHash` whenever `retention` is supplied,
+including `updatePolicy: "follow"`. Missing both IDs, only `releaseId`, or
+only `contentHash` returns `CANVAS_IMPORT_INTEGRITY` at normalization; schema
+validation rejects the same records. A valid retained follow record remains
+accepted. A follow record without retention and without IDs remains a valid
+discovery input at the normalizer/schema boundary; the retained-only loader
+then returns its existing `CANVAS_IMPORT_RETENTION_REQUIRED` error without a
+source fallback or source read. Pinned retained records use the same identity
+requirement.
+
+Targeted boundary command:
+
+```text
+node --test src/canvas-schema.test.mjs src/canvas-imports.test.mjs src/library-retained-loader.test.mjs
+```
+
+Exit code: `0`; tests `33`; passed `33`; failed `0`; cancelled `0`; skipped `0`.
+
+Prior focused selection rerun:
+
+```text
+node --test src/canvas-schema.test.mjs src/canvas-imports.test.mjs src/canvas-resolver.test.mjs src/library-item-content.test.mjs src/library-publication-service.test.mjs src/library-publication.test.mjs src/library-retained-imports.test.mjs src/library-retained-loader.test.mjs src/library-retention-preparation.test.mjs src/library-storage.test.mjs
+```
+
+Exit code: `0`; tests `91`; passed `91`; failed `0`; cancelled `0`; skipped `0`.
+`git diff --check` passed. No native/device/browser work, operations wiring,
+backend calls, or source document mutation were performed. This evidence is
+boundary verification only and does not claim durable backend persistence or
+accepted-content-after-revocation implementation beyond the existing loader
+contract.
