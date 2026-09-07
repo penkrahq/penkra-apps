@@ -122,3 +122,29 @@ At evidence-recording time the combined branch still had only the preserved untr
 `.build/` tree plus this new markdown file. No TODO, AGENTS, architecture, operations, source,
 manifest, version, device, production, or publication state was changed. The final commit contains
 only this evidence report.
+
+## Approved library protocol integration
+
+After the initial verification and evidence commit, the coordinator approved exactly this batch from
+`codex/canvas-luna-delivery-20260906`, in order: `0efd381`, `4acbcad`, `9cfc915`, `f0c0172`.
+Each scope was inspected before picking; no protected file or out-of-scope change was present, and
+there were no conflicts. Combined provenance is:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `0efd381` | `7c57360` |
+| `4acbcad` | `0ed0edc` |
+| `9cfc915` | `cd21328` |
+| `f0c0172` | `4c28c13` |
+
+`73716f6` was verified as already ancestral and was not picked; duplicate worker commit `3a34182`
+was not picked. The newly assigned retained adapter package remains unapproved and was not integrated.
+
+The exact post-pick focused selection was:
+
+`node scripts/test.mjs src/canvas-api.test.mjs src/library-storage.test.mjs src/library-retention-preparation.test.mjs src/luna-library-storage-protocol.test.mjs src/luna-library-artifact-integration.test.mjs`
+
+Log: `/tmp/canvas-luna-approved-library-focused-20260907.log`. Exit `0`; `52` passed, `0` failed,
+`0` cancelled, `0` skipped; runner duration `7005.352916 ms`; wrapper duration `7 s`.
+This is a later, narrower library/API subset and is distinct from the earlier `1060` strict
+source/exporter/Yjs result and `1200` full-suite result; it does not replace either baseline.
