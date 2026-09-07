@@ -432,6 +432,31 @@ test("Canvas restores the requested asset path when an upload is already ready",
   });
 });
 
+test("Canvas rejects a malformed multipart completion receipt with a stable code", async () => {
+  const calls = [];
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input);
+        if (input.path.endsWith("/blobs/uploads")) return response(201, { status: "uploading", uploadId: "upload-id", chunkSize: 2 });
+        if (input.path.endsWith("/parts")) return response(201, { received: true });
+        if (input.path.endsWith("/complete")) return response(200, {});
+        throw new Error(`Unexpected request ${input.path}`);
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  await assert.rejects(api.uploadAsset("project-id", {
+    path: "images/hero.png",
+    sha256: "hash",
+    mimeType: "image/png",
+    bytes: Uint8Array.of(1, 2, 3),
+  }), { code: "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID" });
+  assert.equal(calls.filter((call) => call.path.endsWith("/parts")).length, 2);
+  assert.equal(calls.at(-1).path, "/projects/project-id/blobs/uploads/upload-id/complete");
+});
+
 test("Canvas aborts an unfinished snapshot upload after a failed part", async () => {
   const calls = [];
   const api = createCanvasApi({
