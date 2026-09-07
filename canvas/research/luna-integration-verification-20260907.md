@@ -890,6 +890,39 @@ capture failure.
 
 No native/device action, rebuild, capability promotion, or historical evidence rewrite occurred.
 
+## iOS text receipt harness integration
+
+The approved ten-commit receipt sequence was cherry-picked after the prior baseline at
+`347aeda24e8227339adef84271028a59efe04049`, with no conflicts, skips, or additional font/grid
+commits. Worker-to-combined mappings are:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `4286e9524402464b8db91d06061ad97f459b8837` | `6bd2bb84d581d8884e54a412b707584f9147741d` |
+| `c1cc8b19fe9539dfad8f7b64f6cf34d69a62c864` | `08501b1caa50bfd7ddad094867619648ce783025` |
+| `08bef3e3f83785f374d29bec490e6b7b34072c1e` | `a87627abb1fa0b8e1de7f15b48bf4207697a3d85` |
+| `3f747709d7ee2a3c817fe341b70e95ef44c4af07` | `4f252f46795d27692342d31f902b6a6c3420e6bc` |
+| `060e676782830c99a5f751f82834e1a3a6a41822` | `ba95031d3e41729424ccf587954b695008468eba` |
+| `ba9c89df6109a4f78a1f86e2ebefd6404e1f89bb` | `63ff095d53779fda4dcf8bf5d8888a706fd5a312` |
+| `f65a89c43d853c76651790834a6aa2d27ba0a61f` | `36996a40c3e06dd0fcf9d9d6e5001f4210fec851` |
+| `61c990f6937a4317975cc2d79d854cce681fc320` | `c88484dcca601cfed66c235251e44746ed00b242` |
+| `1ce9d0434c3ac935bd55ede1605b54328b47231d` | `06ff203b873ce2f8fe51df06df14efe4ae6bb0ab` |
+| `3967d70c7a92b72be5b807a874dae63c620184b3` | `f8c2ac97d97a3c496ec4da8f14b8815802b8ad82` |
+
+The integrated selection was run once, entirely device-free, without reference regeneration:
+
+`node scripts/test.mjs compatibility/luna-ios-text-receipt-20260907.test.mjs compatibility/luna-ios-text-receipt-references-20260907.test.mjs src/luna-ios-text-receipt-independent.test.mjs src/exporters/*.test.mjs`
+
+Log: `/tmp/canvas-ios-text-receipt-focused-20260907.log`. Exit `0`; `1,168` passed, `0`
+failed, `0` cancelled, `0` skipped; wrapper duration `28,192 ms` (Node-reported duration
+`28,132.853916 ms`). The selected receipt tests use injected command adapters only; no `xcrun`,
+`simctl`, build, install, capture, or reference-generation process was invoked. The retained
+run-01 evidence remains historical at `30/30` mismatches.
+
+Final combined HEAD is `f8c2ac97d97a3c496ec4da8f14b8815802b8ad82`; `git diff --check` passes and
+the only untracked path is the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/`.
+No capability or gate change occurred.
+
 ## Broad non-native regression baseline
 
 At combined HEAD `35175c7813530635b703564287f0211ca5657706`, the requested source/exporter/Yjs
