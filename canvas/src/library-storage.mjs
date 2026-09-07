@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
+import { normalizeImportRecord } from "./canvas-imports.mjs";
 import { validateLibraryRelease } from "./library-publication.mjs";
 import { prepareLibraryRetention } from "./library-retention-preparation.mjs";
 import { buildRetainedCanvasImports, validateRetainedCanvasRetention } from "./library-retained-imports.mjs";
@@ -107,14 +108,17 @@ export function createLibraryStorage(api) {
       const content = await readEnvelope(documentId, descriptor, "release");
       validateLibraryRelease(content.release);
       if (content.release.libraryId !== documentId) throw invalid("CANVAS_IMPORT_INTEGRITY");
+      const storedRetentions = Object.hasOwn(content, "retentions")
+        ? validateReleaseRetentions(content.release, content.retentions, { allowStoredAssets: true, checkReferences: false })
+        : undefined;
+      if (storedRetentions !== undefined) validateRetentionImportIdentities(content.release, storedRetentions);
       const assets = await restoreAssets(documentId, content.assets);
       if (assets.length !== content.release.assets.length) throw invalid("CANVAS_IMPORT_INTEGRITY");
       for (const expected of content.release.assets) {
         const found = assets.filter((asset) => asset.path === expected.path);
         if (found.length !== 1 || found[0].sha256 !== expected.sha256 || found[0].size !== expected.size) throw invalid("CANVAS_IMPORT_INTEGRITY");
       }
-      if (!Object.hasOwn(content, "retentions")) return { release: content.release, assets: new Map(assets.map((asset) => [asset.path, asset.bytes])) };
-      const storedRetentions = validateReleaseRetentions(content.release, content.retentions, { allowStoredAssets: true, checkReferences: false });
+      if (storedRetentions === undefined) return { release: content.release, assets: new Map(assets.map((asset) => [asset.path, asset.bytes])) };
       const retentions = [];
       for (const entry of storedRetentions) retentions.push({ alias: entry.alias, retention: { ...entry.retention, assets: await restoreAssets(documentId, entry.retention.assets) } });
       const validatedRetentions = validateReleaseRetentions(content.release, retentions);
@@ -148,6 +152,20 @@ export function createLibraryStorage(api) {
       return restored;
     },
   };
+}
+
+function validateRetentionImportIdentities(release, entries) {
+  for (const entry of entries) {
+    let normalized;
+    try { normalized = normalizeImportRecord(release.document.imports[entry.alias]); }
+    catch { throw invalid("CANVAS_IMPORT_INTEGRITY"); }
+    const root = entry.retention.root;
+    if (root.libraryId !== normalized.documentId
+      || root.releaseId !== normalized.releaseId
+      || root.contentHash !== normalized.contentHash) {
+      throw invalid("CANVAS_IMPORT_INTEGRITY");
+    }
+  }
 }
 
 export function isLibraryStorageAsset(asset) { return typeof asset?.path === "string" && asset.path.startsWith(PREFIX); }
