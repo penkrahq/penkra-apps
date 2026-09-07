@@ -57,8 +57,26 @@ test("Compose container gradients derive coordinates from runtime draw size", ()
   const document = source(fill, "frame", { children: [{ id: "child", type: "rectangle", width: 20, height: 20, fill: "#ffffff" }] });
   document.children[0].role = "android";
   const kotlin = exportCompose(buildCapabilityVerificationIR(document, { role: "android", frames: ["screen"] }, ["nodes.frame", "nodes.rectangle", "properties.fill", "properties.fill.gradient.linear"])).get("Paint.kt");
-  assert.match(kotlin, /drawWithCache\(Modifier\.offset\(0\.dp, 0\.dp\)\.size\(160\.dp, 80\.dp\).*size\.width.*size\.height/su);
+  assert.match(kotlin, /Modifier\.offset\(0\.dp, 0\.dp\)\.size\(160\.dp, 80\.dp\).*\.drawWithCache \{.*size\.width.*size\.height/su);
   assert.doesNotMatch(kotlin, /Offset\([^)]*200\.0f|Offset\([^)]*120\.0f/u);
+});
+
+test("gradient backgrounds preserve scalar and independent rounded corners without clipping children", () => {
+  for (const cornerRadius of [12, [1, 2, 3, 4]]) {
+    const fill = { type: "gradient", gradientType: "linear", colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }] };
+    const document = source(fill, "frame", { cornerRadius, children: [{ id: "overflow", type: "rectangle", x: 140, y: 0, width: 40, height: 20, fill: "#ffffff" }] });
+    const paths = ["nodes.frame", "nodes.rectangle", "properties.fill", "properties.fill.gradient.linear", "properties.cornerRadius"];
+    document.children[0].role = "ios";
+    const swift = exportSwiftUI(buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, paths)).get("Paint.swift");
+    assert.match(swift, /background\(alignment: \.topLeading\) \{ Path[\s\S]*path\.addCurve\(/u);
+    assert.match(swift, /Rectangle\(\)\.fill\(Color[\s\S]*position\(x: 20, y: 10\)/u);
+    assert.doesNotMatch(swift, /clipShape/u);
+    document.children[0].role = "android";
+    const kotlin = exportCompose(buildCapabilityVerificationIR(document, { role: "android", frames: ["screen"] }, paths)).get("Paint.kt");
+    assert.match(kotlin, /\.drawWithCache \{[\s\S]*drawPath\(Path\(\)\.apply[\s\S]*cubicTo\(/u);
+    assert.match(kotlin, /Spacer\(Modifier[\s\S]*size\(40\.dp, 20\.dp\)/u);
+    assert.doesNotMatch(kotlin, /canvasClipShape/u);
+  }
 });
 
 test("mobile icon properties remain one explicit raster scope with native image wrappers and accessibility", () => {
