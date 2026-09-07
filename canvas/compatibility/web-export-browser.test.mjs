@@ -64,9 +64,18 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     `--user-data-dir=${profile}`,
     "about:blank",
   ], { stdio: ["ignore", "ignore", "pipe"] });
+  let didClose = false;
+  const closed = new Promise((resolve) => chrome.once("close", () => { didClose = true; resolve(); }));
   t.after(async () => {
-    chrome.kill("SIGTERM");
-    await rm(directory, { recursive: true, force: true });
+    if (!didClose) chrome.kill("SIGTERM");
+    const escalation = setTimeout(() => { if (!didClose) chrome.kill("SIGKILL"); }, 2000);
+    let timeout;
+    try {
+      await Promise.race([closed, new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(Object.assign(new Error("Chrome termination was not confirmed"), { code: "BROWSER_TERMINATION_UNCONFIRMED" })), 5000);
+      })]);
+    } finally { clearTimeout(escalation); clearTimeout(timeout); }
+    await rm(directory, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
   });
 
   const browserWs = await devtoolsUrl(chrome);
