@@ -95,6 +95,7 @@ const state = {
   assets: new Map(),
   imports: Object.create(null),
   importSignature: null,
+  importRefreshPromise: null,
   model: null,
   selectedId: null,
   expandedLayerIds: new Set(),
@@ -436,11 +437,7 @@ async function openDocument(documentId) {
           state.engineDocumentDirty = true;
           state.engineDocumentDirtyReason = "realtime-remote-update";
           if (JSON.stringify(currentMaterializedDocument().imports ?? {}) !== state.importSignature) {
-            void refreshRetainedImports(documentId)
-              .catch((error) => console.warn("Canvas could not refresh retained imports.", error))
-              .finally(() => {
-                if (state.document?.id === documentId) render();
-              });
+            void scheduleRetainedImportRefresh(documentId);
           } else if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
             void refreshDocumentAssets(documentId)
               .catch((error) => console.warn("Canvas could not refresh document assets.", error))
@@ -478,6 +475,7 @@ async function openDocument(documentId) {
     );
     await reconcileFromServer(documentId);
     await refreshRetainedImports(documentId);
+    if (state.importRefreshPromise) await state.importRefreshPromise;
     collapseEditorPanels();
     state.loading = false;
     setSync("saved", "Saved");
@@ -517,6 +515,7 @@ function closeDocument() {
   state.assets = new Map();
   state.imports = Object.create(null);
   state.importSignature = null;
+  state.importRefreshPromise = null;
   state.persistence?.destroy();
   state.undo?.destroy();
   state.model?.doc.destroy();
@@ -585,6 +584,18 @@ async function refreshRetainedImports(documentId) {
   state.assets = new Map([...state.assets, ...retained.assets]);
   invalidateDocumentProjection();
   return true;
+}
+
+function scheduleRetainedImportRefresh(documentId) {
+  if (state.importRefreshPromise) return state.importRefreshPromise;
+  const pending = refreshRetainedImports(documentId)
+    .catch((error) => console.warn("Canvas could not refresh retained imports.", error))
+    .finally(() => {
+      if (state.importRefreshPromise === pending) state.importRefreshPromise = null;
+      if (state.document?.id === documentId) render();
+    });
+  state.importRefreshPromise = pending;
+  return pending;
 }
 
 function collapseEditorPanels() {
