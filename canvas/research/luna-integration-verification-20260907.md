@@ -1243,3 +1243,37 @@ action or artifact regeneration ran.
 
 Final combined source/test/evidence integration HEAD is
 `1237100857a4612aad04dafd525769f6b00421fe`; a separate evidence-only commit follows.
+
+## iOS/Android grid capability audit integration
+
+The approved grid-audit batch was cherry-picked in exact order after combined HEAD
+`149885f15d171586d264f41e41733f2ff86a88cb`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `f0419afe201689aba2e19a42adeaeee7912696a4` | `d836b2fdd90a07f8c9b49b639b014aecf416f689` |
+| `f29cba78ac5c0883314d7d6c54922b8eccb70c41` | `00371e1ddc36d3ef94eea17887f91e1dd8531f01` |
+| `ebd5074ba2833bf1bd06bc3877832349c0329369` | `f85bff717ee4692129b0a4f63dbf648d9a8e0528` |
+| `056139d19b0268ee4dfb0e9c0e4b2e8081d79c3c` | `efeec3766ac2436263bd5d33640641396fc26249` |
+| `fc7178361fac5b35168c9e290fc2dcdd092ea7b5` | `ab776b52d97d9073b574b0ecd5798844103ee869` |
+
+Full-stat and diff inspection confirmed only the portable audit script, audit test, and grid
+research evidence. The source changes are limited to resolved-IR/mobile-emitter assertions,
+numeric-track validation, and evidence corrections. No protected, production, capability-table,
+native, device, manifest, or artifact-regeneration changes were included; no patch-equivalent was
+skipped. The separately reviewed public PDF wording commit
+`5b4d6ae492b25a7f702dbf7b749a44bc39d2af9d` was inspected but not integrated.
+
+The strict device-free selection ran once with default paths and no environment overrides:
+
+`node scripts/test.mjs src/luna-grid-capability-audit.test.mjs src/exporter-ir.test.mjs compatibility/luna-android-layout-matrix.test.mjs`
+
+Log: `/tmp/canvas-grid-capability-audit-focused-20260907.log`. Exit `0`; `17` passed,
+`0` failed, `0` cancelled, `0` skipped; Node-reported duration `445.616583 ms`
+(`/usr/bin/time` real `0.49 s`). The integrated checks cover schema-valid versus unresolved grid
+track values, resolved numeric geometry and source order in Swift/Compose, twelve Android layout
+cases, and the retained structured 48-capture measurement assertions. No external corpus was
+regenerated or re-audited, and no native/device action ran.
+
+Final combined source/test integration HEAD is
+`ab776b52d97d9073b574b0ecd5798844103ee869`; a separate evidence-only commit follows.
