@@ -161,9 +161,13 @@ test("missing, mismatched, malformed, conflicting, cyclic, and changed retained 
     ["missing accepted item", new Map([["ui", mutateRetention(retention, (copy) => { copy.items = copy.items.filter(({ item }) => item.id !== "card"); })]]), "CANVAS_IMPORT_INTEGRITY"],
   ];
   for (const [name, bundles, code] of cases) assert.throws(() => buildRetainedCanvasImports(consumer, bundles), { code }, name);
-  const changed = structuredClone(retention);
-  changed.assets = [{ ...changed.assets[0], bytes: Uint8Array.of(0, 0, 0) }];
-  assert.throws(() => buildRetainedCanvasImports(consumer, new Map([["ui", changed]])), { code: "CANVAS_IMPORT_INTEGRITY" });
+  const assetBytes = Uint8Array.of(7, 7, 7);
+  const assetRelease = createLibraryRelease({ ...source({}, [{ id: "assetCard", type: "frame", fill: { type: "image", url: "asset.png" } }]), library: { public: [{ kind: "component", id: "assetCard" }] } }, { libraryId: "asset", releaseId: "r1", assets: [{ path: "asset.png", size: 3, sha256: sha(assetBytes) }] });
+  const assetRetention = await retain(assetRelease, [{ kind: "component", id: "assetCard" }], new Map([[assetRelease.libraryId, assetRelease]]), new Map([["asset:asset.png", assetBytes]]));
+  const assetConsumer = source({ ui: importRecord(assetRelease) });
+  const changed = structuredClone(assetRetention);
+  changed.assets[0].bytes = Uint8Array.of(0, 0, 0);
+  assert.throws(() => buildRetainedCanvasImports(assetConsumer, new Map([["ui", changed]])), { code: "CANVAS_IMPORT_INTEGRITY" });
   const conflictingResource = mutateRetention(retention, (copy) => {
     const item = structuredClone(copy.items.find(({ item: retainedItem }) => retainedItem.kind === "component" && retainedItem.id === "card"));
     const resource = item.content.resources.find(([key]) => key === "component:card");
