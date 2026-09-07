@@ -26,6 +26,16 @@ function rejects(bytes, detail) {
   return result;
 }
 
+test("stream extent permits at most one extra EOL, never arbitrary skipped bytes", () => {
+  const stream = (separator, length = 3) => fixture(["<< /Type /Catalog /Probe 2 0 R >>", `<< /Length ${length} >>\nstream\nabc${separator}endstream`]);
+  for (const separator of ["", "\n", "\r", "\r\n"]) assert.equal(inspectCanvasPdfEnvelope(stream(separator)).verified, true);
+  // The final LF may instead belong to the declared unfiltered payload.
+  assert.equal(inspectCanvasPdfEnvelope(stream("\n", 4)).verified, true);
+  for (const separator of [" ", "\t", "\n\n", "\r\n\r\n", "\n% hidden\n", "\n \n"]) {
+    rejects(stream(separator), "expected-endstream");
+  }
+});
+
 test("valid classic fixture, immutable input, repeatable results", () => {
   const bytes = fixture();
   const before = Buffer.from(bytes);

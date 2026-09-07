@@ -200,7 +200,10 @@ export function inspectCanvasPdfEnvelope(input) {
         if (position > xrefOffset) fail("stream-length-invalid");
         if (text[position] === "\r") { position += 1; if (text[position] === "\n") position += 1; }
         else if (text[position] === "\n") position += 1;
-        word("endstream");
+        // Unlike ordinary object tokens, this boundary is defined by Length.
+        // Only the single optional EOL above may sit outside the payload.
+        if (!text.startsWith("endstream", position) || !delimiter(text[position + 9])) fail("expected-endstream");
+        position += 9;
       }
       word("endobj");
       previousEnd = position;
