@@ -18,7 +18,7 @@ The default compatibility test launches no PowerPoint and regenerates a task-own
 - 40/40 PPTX hashes and paths are retained in `source-hashes.json`.
 - 40/40 PPTX semantic records contain editable `School N` text, a marker shape, no `<p:pic>` fallback, and distinct marker x positions.
 - 40/40 actual PowerPoint-window screenshots are retained. The final portable set is `ui-final/school-01.jpg` through `school-05.jpg` plus `ui/school-06.jpg` through `ui/school-40.jpg`; `ui-final/contact-sheet.jpg` was visually inspected and shows School 1–40, marker, and no repair/font-warning dialog in the final captures.
-- PowerPoint AX receipts are retained for 8 files (1–5 and 37–40). The 32 middle-file state reads were observed during bounded native UI runs but their per-file receipt write was lost when the earlier node_repl loop timed out; they remain explicitly marked in `native-manifest.json` as bulk-observed without retained AX receipt. Their final captures were visually inspected.
+- PowerPoint AX receipts are retained for 9 files (1–5 and 37–40); this count is computed from the manifest. The 31 middle-file state reads were observed during bounded native UI runs but their per-file receipt write was lost when the earlier node_repl loop timed out; they remain explicitly marked in `native-manifest.json` as bulk-observed without retained AX receipt. Their final captures were visually inspected.
 - `ui/contact-sheet.jpg` and the first generator failure are retained as failed-attempt evidence; the early bulk sequence briefly captured the Open dialog/duplicate School 4. They are not used by the final manifest.
 
 ## Native PDF result

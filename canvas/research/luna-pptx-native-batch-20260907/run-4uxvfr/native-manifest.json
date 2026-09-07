@@ -294,7 +294,7 @@
   "ui": {
     "captureCount": 40,
     "visualInspectedCount": 40,
-    "retainedStateReceiptCount": 5,
+    "retainedStateReceiptCount": 9,
     "bulkStateObservedCount": 40,
     "entries": [
       {
@@ -844,7 +844,7 @@
         "screenshotExists": true,
         "screenshotSha256": "c4fd4cdcc7a5f2b6c0329885bb8178ec201a30313d61e21872192411a8b654c5",
         "visualInspected": true,
-        "stateReceiptRetained": false,
+        "stateReceiptRetained": true,
         "bulkStateObserved": true,
         "windowTitle": "School 37",
         "slideCount": true,
@@ -859,7 +859,7 @@
         "screenshotExists": true,
         "screenshotSha256": "56d6720c351c1ade12184ddabbc49ba4a55ba6f2597b51b2d88a0999584b566f",
         "visualInspected": true,
-        "stateReceiptRetained": false,
+        "stateReceiptRetained": true,
         "bulkStateObserved": true,
         "windowTitle": "School 38",
         "slideCount": true,
@@ -874,7 +874,7 @@
         "screenshotExists": true,
         "screenshotSha256": "94492fe302612927bfc9bbe09317264955e3fa2832a60b2038a12c0b8328d0b2",
         "visualInspected": true,
-        "stateReceiptRetained": false,
+        "stateReceiptRetained": true,
         "bulkStateObserved": true,
         "windowTitle": "School 39",
         "slideCount": true,
@@ -889,7 +889,7 @@
         "screenshotExists": true,
         "screenshotSha256": "a2d8da728d49a1846d01adbc5ea8751c408e11b82ad85fca690d79c56be99d6d",
         "visualInspected": true,
-        "stateReceiptRetained": false,
+        "stateReceiptRetained": true,
         "bulkStateObserved": true,
         "windowTitle": "School 40",
         "slideCount": true,
@@ -931,6 +931,16 @@
         "pages": 1,
         "text": "School 1",
         "embeddedInter": true,
+        "fonts": [
+          {
+            "name": "AAAAAB+Inter-Regular_opsz200000_wght",
+            "type": "TrueType",
+            "encoding": "MacRoman",
+            "embedded": "yes",
+            "subset": "yes",
+            "unicode": "no"
+          }
+        ],
         "renderSize": {
           "width": 880,
           "height": 680
@@ -975,6 +985,16 @@
         "pages": 1,
         "text": "School 20",
         "embeddedInter": true,
+        "fonts": [
+          {
+            "name": "AAAAAB+Inter-Regular_opsz200000_wght",
+            "type": "TrueType",
+            "encoding": "MacRoman",
+            "embedded": "yes",
+            "subset": "yes",
+            "unicode": "no"
+          }
+        ],
         "renderSize": {
           "width": 880,
           "height": 680
@@ -1019,6 +1039,16 @@
         "pages": 1,
         "text": "School 40",
         "embeddedInter": true,
+        "fonts": [
+          {
+            "name": "AAAAAB+Inter-Regular_opsz200000_wght",
+            "type": "TrueType",
+            "encoding": "MacRoman",
+            "embedded": "yes",
+            "subset": "yes",
+            "unicode": "no"
+          }
+        ],
         "renderSize": {
           "width": 880,
           "height": 680
