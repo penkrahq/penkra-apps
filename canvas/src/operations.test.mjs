@@ -65,6 +65,7 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
     "documents.open",
     "documents.trash",
     "documents.undo",
+    "libraries.accept",
     "libraries.inspect",
     "libraries.publish",
     "sharing.add",

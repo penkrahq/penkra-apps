@@ -128,8 +128,8 @@ function assertNoTransportObjects(value) {
 test("manifest declares exact publish and inspect schemas and registered handlers cover both", async () => {
   const manifest = JSON.parse(await readFile(new URL("../penkra-app.json", import.meta.url), "utf8"));
   const entries = manifest.operations.filter(({ key }) => key.startsWith("libraries."));
-  assert.deepEqual(entries.map(({ key }) => key), ["libraries.publish", "libraries.inspect"]);
-  const publish = entries[0];
+  assert.deepEqual(entries.map(({ key }) => key).sort(), ["libraries.accept", "libraries.inspect", "libraries.publish"]);
+  const publish = entries.find(({ key }) => key === "libraries.publish");
   assert.deepEqual(Object.keys(publish.input.properties).sort(), ["documentId", "publicItems"]);
   assert.deepEqual(publish.input.required, ["documentId"]);
   assert.equal(publish.input.additionalProperties, false);
@@ -146,7 +146,7 @@ test("manifest declares exact publish and inspect schemas and registered handler
   assert.equal(publish.output.properties.snapshot.properties.code.const, "CANVAS_LIBRARY_SNAPSHOT_DEFERRED");
   assert.equal(publish.output.properties.snapshot.additionalProperties, false);
 
-  const inspect = entries[1];
+  const inspect = entries.find(({ key }) => key === "libraries.inspect");
   assert.deepEqual(Object.keys(inspect.input.properties), ["documentId"]);
   assert.deepEqual(inspect.input.required, ["documentId"]);
   assert.equal(inspect.output.additionalProperties, false);
