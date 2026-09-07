@@ -247,6 +247,40 @@ the final local process check has no Gradle, xcodebuild, swiftc, or test process
 showed Android working with no queued turn, iOS working with no queued turn, delivery idle, and
 PDF working with two queued turns; Android native work was not resumed by this lane.
 
+## Independent retained-materializer review (read-only)
+
+The library-runtime review was verified at captured HEAD `501d085ae6cc81b3f75f82a75867565e3eafb65f`
+in `/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf`, report
+`canvas/research/luna-retained-imports-independent-review-20260907.md`. Its exact focused
+command was:
+
+`node --test src/library-retained-imports.test.mjs src/library-retention-preparation.test.mjs`
+
+Result: `17` pass, `0` fail, `0` cancelled, `0` skipped. The report is protocol/materializer
+evidence only; it makes no live-persistence claim. No combined source, storage, backend, native,
+device, or capability change was made.
+
+The report reproduces four blocking materializer findings:
+
+- **RI-001:** same-release aliases are grouped by release identity, so each alias receives the
+  other alias's retained public resources; a `card`-only alias exposed the other alias's `secret`
+  variable in its document surface.
+- **RI-002:** shared dependency identity groups merge nested accepted items across root aliases; an
+  alias retaining only `dep:x` exposed `dep:y` as well.
+- **RI-003:** a forged retained item closure with a recomputed self-consistent item hash is
+  accepted under an unchanged valid root identity, proving item self-hash is not publication
+  binding.
+- **RI-004:** merged asset groups are prefixed safely but over-copy other alias assets into each
+  alias namespace.
+
+RI-001, RI-002, and RI-004 share global release-identity aggregation; RI-003 is the separate
+publication-binding/authentication boundary. The report confirms existing protections for
+cross-release hash conflicts, dependency conflicts/cycles, alias validation, and byte mutation
+isolation. LS-002 remains the upstream `readRetention` malformed-envelope issue; later per-item
+materializer validation does not excuse accepting `root:{}`, `items:[{}]`, and
+`requestedItems:[{}]`. LS-001 remains assigned to the zero-byte API/storage path and was not
+duplicated. No source fix or unapproved runtime commit was integrated.
+
 ## Independent delivery review blockers
 
 The independent review report was read-only verified from delivery HEAD
