@@ -416,7 +416,15 @@ function documentCapabilityPaths(document, role) {
 }
 export function richTextRuns(node, paragraphStyles, documentLanguage = null) {
   const content = node.content ?? "";
-  const paragraphs = node.paragraphs?.length ? node.paragraphs : content ? [{ from: 0, to: content.length }] : [];
+  const declaredParagraphs = node.paragraphs?.length ? node.paragraphs : content ? [{ from: 0, to: content.length }] : [];
+  let cursor = 0;
+  const paragraphs = [];
+  for (const paragraph of declaredParagraphs) {
+    if (paragraph.from > cursor) paragraphs.push({ from: cursor, to: paragraph.from });
+    paragraphs.push(paragraph);
+    cursor = Math.max(cursor, paragraph.to);
+  }
+  if (cursor < content.length) paragraphs.push({ from: cursor, to: content.length });
   return paragraphs.flatMap((paragraph) => {
     const paragraphContent = content.slice(paragraph.from, paragraph.to);
     const marks = (node.marks ?? []).flatMap((mark) => {
