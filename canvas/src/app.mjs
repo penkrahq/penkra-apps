@@ -324,7 +324,7 @@ async function openDocument(documentId) {
     const [payload] = await Promise.all([
       performanceMonitor.measureAsync(
         "document.fetch",
-        () => api.getDocument(documentId),
+        async () => await api.getDocumentProjection(documentId) ?? api.getDocument(documentId),
         { documentId },
       ),
       performanceMonitor.measureAsync(
@@ -333,7 +333,7 @@ async function openDocument(documentId) {
         { documentId },
       ),
     ]);
-    const assetDescriptors = payload.assets ?? [];
+    const assetDescriptors = payload.assets ?? await api.listAssets(documentId);
     const { assets } = await performanceMonitor.measureAsync(
       "document.assets",
       () => hydrateDocumentAssets(api, documentId, assetDescriptors),
