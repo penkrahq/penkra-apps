@@ -2201,13 +2201,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -2264,7 +2263,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -2317,7 +2315,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2364,7 +2361,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2411,7 +2407,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2458,7 +2453,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2517,13 +2511,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -2580,7 +2573,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -2633,7 +2625,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2680,7 +2671,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2727,7 +2717,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2774,7 +2763,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2833,13 +2821,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -2896,7 +2883,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -2949,7 +2935,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -2996,7 +2981,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3043,7 +3027,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3090,7 +3073,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3149,13 +3131,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -3212,7 +3193,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -3265,7 +3245,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3312,7 +3291,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3359,7 +3337,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3406,7 +3383,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3465,13 +3441,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -3519,7 +3494,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.columnGap"
@@ -3568,7 +3542,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3615,7 +3588,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -3663,7 +3635,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layoutPosition"
                 ],
@@ -3723,13 +3694,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -3846,13 +3816,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -3924,7 +3893,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.gradient.linear",
                   "properties.fill.gradient.linear.transformed"
                 ],
@@ -3984,13 +3952,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -4062,7 +4029,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.gradient.radial",
                   "properties.fill.gradient.radial.transformed"
                 ],
@@ -4122,13 +4088,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -4207,7 +4172,6 @@
                 "paths": [
                   "nodes.frame",
                   "properties.cornerRadius",
-                  "properties.fill",
                   "properties.fill.gradient.radial",
                   "properties.fill.gradient.radial.transformed",
                   "properties.layout"
@@ -4256,7 +4220,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -4315,13 +4278,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -4400,7 +4362,6 @@
                 "paths": [
                   "nodes.frame",
                   "properties.cornerRadius",
-                  "properties.fill",
                   "properties.fill.gradient.radial",
                   "properties.fill.gradient.radial.transformed",
                   "properties.layout"
@@ -4449,7 +4410,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -4520,13 +4480,12 @@
                 "roles.ios",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -4634,7 +4593,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.padding"
@@ -4683,7 +4641,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -4756,13 +4713,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -4819,7 +4775,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -4872,7 +4827,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -4919,7 +4873,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -4966,7 +4919,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5013,7 +4965,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5072,13 +5023,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -5135,7 +5085,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -5188,7 +5137,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5235,7 +5183,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5282,7 +5229,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5329,7 +5275,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5388,13 +5333,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -5451,7 +5395,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -5504,7 +5447,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5551,7 +5493,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5598,7 +5539,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5645,7 +5585,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5704,13 +5643,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -5767,7 +5705,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -5820,7 +5757,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5867,7 +5803,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5914,7 +5849,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -5961,7 +5895,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -6020,13 +5953,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -6074,7 +6006,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -6123,7 +6054,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -6170,7 +6100,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -6218,7 +6147,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -6278,13 +6206,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -6401,13 +6328,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -6479,7 +6405,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -6539,13 +6464,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -6617,7 +6541,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -6677,13 +6600,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -6762,7 +6684,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -6811,7 +6732,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -6870,13 +6790,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -6955,7 +6874,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -7004,7 +6922,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -7075,13 +6992,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -7189,7 +7105,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -7238,7 +7153,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -7954,13 +7868,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -8017,7 +7930,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -8070,7 +7982,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8117,7 +8028,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8164,7 +8074,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8211,7 +8120,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8270,13 +8178,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -8333,7 +8240,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -8386,7 +8292,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8433,7 +8338,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8480,7 +8384,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8527,7 +8430,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8586,13 +8488,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -8649,7 +8550,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -8702,7 +8602,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8749,7 +8648,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8796,7 +8694,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8843,7 +8740,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -8902,13 +8798,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -8965,7 +8860,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -9018,7 +8912,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -9065,7 +8958,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -9112,7 +9004,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -9159,7 +9050,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -9218,13 +9108,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -9272,7 +9161,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -9321,7 +9209,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -9368,7 +9255,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -9416,7 +9302,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -9476,13 +9361,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -9599,13 +9483,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -9677,7 +9560,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -9737,13 +9619,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -9815,7 +9696,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -9875,13 +9755,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -9960,7 +9839,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -10009,7 +9887,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -10068,13 +9945,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -10153,7 +10029,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -10202,7 +10077,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -10273,13 +10147,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -10387,7 +10260,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -10436,7 +10308,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11152,13 +11023,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -11215,7 +11085,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -11268,7 +11137,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11315,7 +11183,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11362,7 +11229,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11409,7 +11275,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11468,13 +11333,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -11531,7 +11395,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -11584,7 +11447,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11631,7 +11493,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11678,7 +11539,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11725,7 +11585,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11784,13 +11643,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -11847,7 +11705,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -11900,7 +11757,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11947,7 +11803,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -11994,7 +11849,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12041,7 +11895,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12100,13 +11953,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -12163,7 +12015,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -12216,7 +12067,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12263,7 +12113,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12310,7 +12159,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12357,7 +12205,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12416,13 +12263,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -12470,7 +12316,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -12519,7 +12364,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12566,7 +12410,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -12614,7 +12457,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -12674,13 +12516,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -12797,13 +12638,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -12875,7 +12715,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -12935,13 +12774,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -13013,7 +12851,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -13073,13 +12910,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -13158,7 +12994,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -13207,7 +13042,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -13266,13 +13100,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -13351,7 +13184,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -13400,7 +13232,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -13471,13 +13302,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -13585,7 +13415,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -13634,7 +13463,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14350,13 +14178,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -14413,7 +14240,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -14466,7 +14292,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14513,7 +14338,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14560,7 +14384,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14607,7 +14430,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14666,13 +14488,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -14729,7 +14550,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -14782,7 +14602,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14829,7 +14648,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14876,7 +14694,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14923,7 +14740,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -14982,13 +14798,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -15045,7 +14860,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -15098,7 +14912,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15145,7 +14958,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15192,7 +15004,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15239,7 +15050,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15298,13 +15108,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -15361,7 +15170,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -15414,7 +15222,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15461,7 +15268,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15508,7 +15314,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15555,7 +15360,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15614,13 +15418,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -15668,7 +15471,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -15717,7 +15519,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15764,7 +15565,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -15812,7 +15612,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -15872,13 +15671,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -15995,13 +15793,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -16073,7 +15870,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -16133,13 +15929,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -16211,7 +16006,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -16271,13 +16065,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -16356,7 +16149,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -16405,7 +16197,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -16464,13 +16255,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -16549,7 +16339,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -16598,7 +16387,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -16669,13 +16457,12 @@
                     "roles.ios",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -16783,7 +16570,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -16832,7 +16618,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -18226,13 +18011,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -18289,7 +18073,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -18342,7 +18125,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18389,7 +18171,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18436,7 +18217,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18483,7 +18263,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18542,13 +18321,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -18605,7 +18383,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -18658,7 +18435,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18705,7 +18481,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18752,7 +18527,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18799,7 +18573,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -18858,13 +18631,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -18921,7 +18693,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -18974,7 +18745,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19021,7 +18791,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19068,7 +18837,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19115,7 +18883,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19174,13 +18941,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -19237,7 +19003,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.rowGap",
@@ -19290,7 +19055,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19337,7 +19101,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19384,7 +19147,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19431,7 +19193,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19490,13 +19251,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -19544,7 +19304,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.columnGap"
@@ -19593,7 +19352,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19640,7 +19398,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -19688,7 +19445,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layoutPosition"
                 ],
@@ -19748,13 +19504,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -19871,13 +19626,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -19949,7 +19703,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.gradient.linear",
                   "properties.fill.gradient.linear.transformed"
                 ],
@@ -20009,13 +19762,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -20087,7 +19839,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.gradient.radial",
                   "properties.fill.gradient.radial.transformed"
                 ],
@@ -20147,13 +19898,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -20232,7 +19982,6 @@
                 "paths": [
                   "nodes.frame",
                   "properties.cornerRadius",
-                  "properties.fill",
                   "properties.fill.gradient.radial",
                   "properties.fill.gradient.radial.transformed",
                   "properties.layout"
@@ -20281,7 +20030,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -20340,13 +20088,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -20425,7 +20172,6 @@
                 "paths": [
                   "nodes.frame",
                   "properties.cornerRadius",
-                  "properties.fill",
                   "properties.fill.gradient.radial",
                   "properties.fill.gradient.radial.transformed",
                   "properties.layout"
@@ -20474,7 +20220,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -20545,13 +20290,12 @@
                 "roles.android",
                 "root.module",
                 "root.lang",
-                "root.axes",
                 "root.variables",
                 "root.paragraphStyles",
                 "root.imports",
                 "root.children",
+                "root.axes",
                 "nodes.frame",
-                "properties.fill",
                 "properties.fill.solid",
                 "properties.layout"
               ],
@@ -20659,7 +20403,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.frame",
-                  "properties.fill",
                   "properties.fill.solid",
                   "properties.layout",
                   "properties.padding"
@@ -20708,7 +20451,6 @@
                 "verdict": "native",
                 "paths": [
                   "nodes.rectangle",
-                  "properties.fill",
                   "properties.fill.solid"
                 ],
                 "ignored": []
@@ -20781,13 +20523,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -20844,7 +20585,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -20897,7 +20637,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -20944,7 +20683,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -20991,7 +20729,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21038,7 +20775,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21097,13 +20833,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -21160,7 +20895,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -21213,7 +20947,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21260,7 +20993,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21307,7 +21039,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21354,7 +21085,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21413,13 +21143,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -21476,7 +21205,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -21529,7 +21257,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21576,7 +21303,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21623,7 +21349,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21670,7 +21395,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21729,13 +21453,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -21792,7 +21515,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -21845,7 +21567,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21892,7 +21613,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21939,7 +21659,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -21986,7 +21705,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -22045,13 +21763,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -22099,7 +21816,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -22148,7 +21864,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -22195,7 +21910,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -22243,7 +21957,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -22303,13 +22016,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -22426,13 +22138,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -22504,7 +22215,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -22564,13 +22274,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -22642,7 +22351,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -22702,13 +22410,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -22787,7 +22494,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -22836,7 +22542,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -22895,13 +22600,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -22980,7 +22684,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -23029,7 +22732,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -23100,13 +22802,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -23214,7 +22915,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -23263,7 +22963,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -23979,13 +23678,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -24042,7 +23740,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -24095,7 +23792,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24142,7 +23838,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24189,7 +23884,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24236,7 +23930,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24295,13 +23988,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -24358,7 +24050,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -24411,7 +24102,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24458,7 +24148,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24505,7 +24194,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24552,7 +24240,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24611,13 +24298,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -24674,7 +24360,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -24727,7 +24412,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24774,7 +24458,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24821,7 +24504,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24868,7 +24550,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -24927,13 +24608,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -24990,7 +24670,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -25043,7 +24722,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -25090,7 +24768,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -25137,7 +24814,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -25184,7 +24860,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -25243,13 +24918,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -25297,7 +24971,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -25346,7 +25019,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -25393,7 +25065,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -25441,7 +25112,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -25501,13 +25171,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -25624,13 +25293,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -25702,7 +25370,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -25762,13 +25429,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -25840,7 +25506,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -25900,13 +25565,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -25985,7 +25649,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -26034,7 +25697,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -26093,13 +25755,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -26178,7 +25839,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -26227,7 +25887,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -26298,13 +25957,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -26412,7 +26070,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -26461,7 +26118,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27177,13 +26833,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -27240,7 +26895,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -27293,7 +26947,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27340,7 +26993,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27387,7 +27039,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27434,7 +27085,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27493,13 +27143,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -27556,7 +27205,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -27609,7 +27257,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27656,7 +27303,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27703,7 +27349,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27750,7 +27395,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27809,13 +27453,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -27872,7 +27515,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -27925,7 +27567,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -27972,7 +27613,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28019,7 +27659,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28066,7 +27705,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28125,13 +27763,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -28188,7 +27825,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -28241,7 +27877,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28288,7 +27923,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28335,7 +27969,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28382,7 +28015,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28441,13 +28073,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -28495,7 +28126,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -28544,7 +28174,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28591,7 +28220,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -28639,7 +28267,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -28699,13 +28326,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -28822,13 +28448,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -28900,7 +28525,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -28960,13 +28584,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -29038,7 +28661,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -29098,13 +28720,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -29183,7 +28804,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -29232,7 +28852,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -29291,13 +28910,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -29376,7 +28994,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -29425,7 +29042,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -29496,13 +29112,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -29610,7 +29225,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -29659,7 +29273,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30375,13 +29988,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -30438,7 +30050,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -30491,7 +30102,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30538,7 +30148,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30585,7 +30194,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30632,7 +30240,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30691,13 +30298,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -30754,7 +30360,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -30807,7 +30412,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30854,7 +30458,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30901,7 +30504,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -30948,7 +30550,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31007,13 +30608,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -31070,7 +30670,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -31123,7 +30722,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31170,7 +30768,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31217,7 +30814,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31264,7 +30860,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31323,13 +30918,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -31386,7 +30980,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.rowGap",
@@ -31439,7 +31032,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31486,7 +31078,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31533,7 +31124,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31580,7 +31170,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31639,13 +31228,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -31693,7 +31281,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.columnGap"
@@ -31742,7 +31329,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31789,7 +31375,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -31837,7 +31422,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layoutPosition"
                     ],
@@ -31897,13 +31481,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -32020,13 +31603,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -32098,7 +31680,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.linear",
                       "properties.fill.gradient.linear.transformed"
                     ],
@@ -32158,13 +31739,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -32236,7 +31816,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed"
                     ],
@@ -32296,13 +31875,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -32381,7 +31959,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -32430,7 +32007,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -32489,13 +32065,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -32574,7 +32149,6 @@
                     "paths": [
                       "nodes.frame",
                       "properties.cornerRadius",
-                      "properties.fill",
                       "properties.fill.gradient.radial",
                       "properties.fill.gradient.radial.transformed",
                       "properties.layout"
@@ -32623,7 +32197,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
@@ -32694,13 +32267,12 @@
                     "roles.android",
                     "root.module",
                     "root.lang",
-                    "root.axes",
                     "root.variables",
                     "root.paragraphStyles",
                     "root.imports",
                     "root.children",
+                    "root.axes",
                     "nodes.frame",
-                    "properties.fill",
                     "properties.fill.solid",
                     "properties.layout"
                   ],
@@ -32808,7 +32380,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.frame",
-                      "properties.fill",
                       "properties.fill.solid",
                       "properties.layout",
                       "properties.padding"
@@ -32857,7 +32428,6 @@
                     "verdict": "native",
                     "paths": [
                       "nodes.rectangle",
-                      "properties.fill",
                       "properties.fill.solid"
                     ],
                     "ignored": []
