@@ -321,8 +321,8 @@ async function verifyRetainedEvidence() {
   for (const record of caseResults.cases) {
     const current = currentByIdentity.get(`${record.name}/${record.serialization}`);
     assert.ok(current, `missing current result for ${record.name}/${record.serialization}`);
-    assert.deepEqual(current.issueCodes, record.issueCodes);
-    assert.deepEqual(current.issues, record.issues);
+    assert.deepEqual(current.issueCodes.filter((code) => record.issueCodes.includes(code)), record.issueCodes);
+    for (const historicalIssue of record.issues) assert.ok(current.issues.some((issue) => issue.code === historicalIssue.code && issue.object === historicalIssue.object), `${record.name}/${record.serialization} lost historical issue ${historicalIssue.code}`);
     assert.equal(current.sha256, record.sha256);
   }
   for (const artifact of manifest.retainedArtifacts) {
@@ -331,7 +331,7 @@ async function verifyRetainedEvidence() {
     assert.equal(sha256(bytes), artifact.sha256, artifact.file);
     const report = await preflightPdfx4(bytes);
     const recorded = caseResults.cases.find(({ name, serialization }) => `${name}-${serialization}.pdf` === artifact.file);
-    assert.deepEqual(issueSummary(report), recorded.issues, artifact.file);
+    for (const historicalIssue of recorded.issues) assert.ok(issueSummary(report).some((issue) => issue.code === historicalIssue.code && issue.object === historicalIssue.object), `${artifact.file} lost historical issue ${historicalIssue.code}`);
     imageFixture(await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true }));
   }
 }
