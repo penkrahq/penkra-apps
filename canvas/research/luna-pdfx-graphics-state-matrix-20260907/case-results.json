@@ -1,0 +1,5698 @@
+{
+  "caseCount": 72,
+  "serializationVariantCount": 2,
+  "executedResultCount": 144,
+  "cases": [
+    {
+      "name": "ca-absent",
+      "serialization": "classic-xref",
+      "sha256": "f1e6e1d88e3d7e62461d1ad2d007562f9a80278342f3879c5c527e207f5a8aa2",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-absent",
+      "serialization": "object-streams",
+      "sha256": "23eb7bfdebf8de30fb3f6d4881af62b5eb59acec20903ebd11494d3bbda533e0",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-zero",
+      "serialization": "classic-xref",
+      "sha256": "4b97b4e302eeed6844fae1eff3878ef1497f91da73cfcd42cb5fea9f40aa0335",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-zero",
+      "serialization": "object-streams",
+      "sha256": "97dc7e91c6500dde925ebfff9d6942cf76206b6ca098c9fd4e2a495f5916cb14",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-half",
+      "serialization": "classic-xref",
+      "sha256": "f1cf8a9059fe880195211969e291266badbbf938ce65c3395a1801d57566e295",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-half",
+      "serialization": "object-streams",
+      "sha256": "39b3b63bb38d7a3dfaffd559f332c6e642d1beb1d52408222189e84fdbf21118",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-one",
+      "serialization": "classic-xref",
+      "sha256": "3fb3a691fa54410e4c5095f86e8186bc7bd62340a1a5907c974946844e7fccad",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-one",
+      "serialization": "object-streams",
+      "sha256": "942b679e400b1fca5064265442a4a19376abf2b40a43cacbb614434c9ccd3cdc",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-negative",
+      "serialization": "classic-xref",
+      "sha256": "ea97a7b0e4be20b8e936f5da3c770ca1a0b0c110ecb0e5308f492d70bd73e105",
+      "bytes": 1137,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-negative",
+      "serialization": "object-streams",
+      "sha256": "5f627ea29030696d197b2ce5192594857cf3877c3699e8b3324e159cd30a610c",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-above-one",
+      "serialization": "classic-xref",
+      "sha256": "658bd15e3c195243efd271e66ed207baf7b48d324100fb2b1fa393b37e26d1d4",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-above-one",
+      "serialization": "object-streams",
+      "sha256": "fb4af03d536e3e6923ae0d075e91ee01ed584b27ab95f6fb5303bbe826b94656",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-string",
+      "serialization": "classic-xref",
+      "sha256": "d145527384885d2f91b630eb9b90b5d7d9ce8c3349d712190b6a2981f7a640a0",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-string",
+      "serialization": "object-streams",
+      "sha256": "25a5cdedd2fc88674e48bd897a4daeae9ba9b69ae5004e673f2584e69c9a4af7",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-name",
+      "serialization": "classic-xref",
+      "sha256": "ce089c0e3ec6b50b325f528edfbdc78bacdf667d12addc066b67a032269a4478",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-name",
+      "serialization": "object-streams",
+      "sha256": "4153c0ad0a6a2d96324f0238a50b5bd9bc84e8ce39ddf26c370a3284eecaf399",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-array-review",
+      "serialization": "classic-xref",
+      "sha256": "327d03dbca6323e83d5c2740d12ef7c86c1b4519d790fe49668901bda9c01626",
+      "bytes": 1140,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-array-review",
+      "serialization": "object-streams",
+      "sha256": "43637f3f4d732444ae0473791d9d67b86c9fcdf6e9d8abceff514b5ef305a9dd",
+      "bytes": 730,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-null-review",
+      "serialization": "classic-xref",
+      "sha256": "36280bd63262a3b64c47fcbd2d7c2b71d08e11ad492f7f5d28113de1e52adc31",
+      "bytes": 1137,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "ca-null-review",
+      "serialization": "object-streams",
+      "sha256": "a52454135b7ca4da65a30618d1fd5a5e6891cab008ee50af37d4ed6c976721e8",
+      "bytes": 729,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-absent",
+      "serialization": "classic-xref",
+      "sha256": "f1e6e1d88e3d7e62461d1ad2d007562f9a80278342f3879c5c527e207f5a8aa2",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-absent",
+      "serialization": "object-streams",
+      "sha256": "23eb7bfdebf8de30fb3f6d4881af62b5eb59acec20903ebd11494d3bbda533e0",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-zero",
+      "serialization": "classic-xref",
+      "sha256": "9bf3a876ba9743f5cb2e495c9d152723a0be8decb32cad892abefbaee3ce6438",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-zero",
+      "serialization": "object-streams",
+      "sha256": "776e1e3b5169bdb5da154730a78d8f38bac1c96b8f0da4727123142b9f355481",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-half",
+      "serialization": "classic-xref",
+      "sha256": "b35667311e1b12e94ee51a126a1b4cc1de59b5e849b9af08d38433a047d205ac",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-half",
+      "serialization": "object-streams",
+      "sha256": "c107a8eab9d1de6615637ba1743a8400ed9e30f84f4d29aeb0921f871db4c26b",
+      "bytes": 728,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-one",
+      "serialization": "classic-xref",
+      "sha256": "43c54e2ebb751df5db44ad76cf1f0107f769fd4d0775e4dbbaadf2306224ef0e",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-one",
+      "serialization": "object-streams",
+      "sha256": "3f5c6511d567c79b6ef61bf3cce80bc050f44cf5f7f48691297283816a5acbc8",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-negative",
+      "serialization": "classic-xref",
+      "sha256": "8b4b0b8b9e63ac38bf9f6d97a9dc282f91e0f9a0f00afc34e80a686bb385d1e5",
+      "bytes": 1137,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-negative",
+      "serialization": "object-streams",
+      "sha256": "4cfe6d59b277602ff21b805bdd0066987a4047017768917d631817ae4788121f",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-above-one",
+      "serialization": "classic-xref",
+      "sha256": "795e9da3c4a74a406bacebd9c25215b1a202a7643285e218043ec2d41334683e",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-above-one",
+      "serialization": "object-streams",
+      "sha256": "b4636184d724673b6f9b18a3b34632f170ece17a1ebd13d01a751cbea07a226d",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-string",
+      "serialization": "classic-xref",
+      "sha256": "b80adb45cf81b7c18956f9c0dbef8acb86bbf2c01fbdf1002164640cfe36a9e7",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-string",
+      "serialization": "object-streams",
+      "sha256": "766a7112913a6aaa5c96d38a3c2e3ffdc60b3d0f1db2b33b2506a166379dbe77",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-name",
+      "serialization": "classic-xref",
+      "sha256": "23a307ac06774385e36d8ce8398f418d70ebe814b8c07c240892c38ed1a941e5",
+      "bytes": 1138,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-name",
+      "serialization": "object-streams",
+      "sha256": "462663e37b0a0368e0665b779c1a970c68d5ea376bd950ad63d10b4f9d9a05f4",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-array-review",
+      "serialization": "classic-xref",
+      "sha256": "76d3d3fad2380d4fd54e55ef6f232efd887e73a6b7b2c08b77159519f7031b52",
+      "bytes": 1140,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-array-review",
+      "serialization": "object-streams",
+      "sha256": "6f76ba2cd702ac53fa6e34cf35fd75bfd5d2ad4a9414dea4777a1656ea755323",
+      "bytes": 730,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-null-review",
+      "serialization": "classic-xref",
+      "sha256": "652753f9d80c337248716b80fd1b153ff23d80b0beb29317fe02c9c116261155",
+      "bytes": 1137,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "CA-null-review",
+      "serialization": "object-streams",
+      "sha256": "f310e7ba88fbf8796a03b010ce71e1c89e9f0170a9a078cff076a46b77ed4497",
+      "bytes": 729,
+      "classification": "coordinator-review",
+      "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-absent",
+      "serialization": "classic-xref",
+      "sha256": "f1e6e1d88e3d7e62461d1ad2d007562f9a80278342f3879c5c527e207f5a8aa2",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-absent",
+      "serialization": "object-streams",
+      "sha256": "23eb7bfdebf8de30fb3f6d4881af62b5eb59acec20903ebd11494d3bbda533e0",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-Normal",
+      "serialization": "classic-xref",
+      "sha256": "cee1e40c0b658a3e25d28ae1e590b8ee39f6850104306e950bfd828cdc3ad24d",
+      "bytes": 1140,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-Normal",
+      "serialization": "object-streams",
+      "sha256": "6144386d458f95798bcc750e3bf4ca65cba7d6e696e588caf6eccbec4f163461",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-Compatible",
+      "serialization": "classic-xref",
+      "sha256": "91a0ea2b63f0c59a6107fb907fd06d10a4b8c861ed145ec1168e77832e935b9e",
+      "bytes": 1144,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-Compatible",
+      "serialization": "object-streams",
+      "sha256": "0fd9bc8967529843c4694e24e9b8f0cb6c1e3978a8f64c53f5720a396c735ca6",
+      "bytes": 734,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-Multiply",
+      "serialization": "classic-xref",
+      "sha256": "802f45eabce4f699e926b5443a827ca7ee0c37c1230e09e0784652a8771990fb",
+      "bytes": 1142,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-Multiply",
+      "serialization": "object-streams",
+      "sha256": "d75327fb4b87e891e6dd50721bf6bee4d29e98601b37b96ff14d612e1afa9bcb",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-namearray-review",
+      "serialization": "classic-xref",
+      "sha256": "969335334cd2a45f68184e6576ff4783aeb3b020ec563c4ba18e85fe85b6348f",
+      "bytes": 1146,
+      "classification": "coordinator-review",
+      "intendedRule": "Name-array blend semantics require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-namearray-review",
+      "serialization": "object-streams",
+      "sha256": "43d63ec9fa4740d274dd804906b2447b2c46e02efdd0d98be56f12cbeee07dda",
+      "bytes": 736,
+      "classification": "coordinator-review",
+      "intendedRule": "Name-array blend semantics require coordinator policy; preserve the observed checker result.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-number",
+      "serialization": "classic-xref",
+      "sha256": "dd9220340f2bcbb21c253179dd30d2ee5c9f459ad828ec29719b1d34ba60efa6",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BM-number",
+      "serialization": "object-streams",
+      "sha256": "deb40b76498967bfe9e6d1a40548fc7c39282794cc9788b2aec2919b9d940a47",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-absent",
+      "serialization": "classic-xref",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-absent",
+      "serialization": "object-streams",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-None",
+      "serialization": "classic-xref",
+      "sha256": "2cd67a1215b61950091186d4b3571afb8316dd0a752050ef58bc277f640d027c",
+      "bytes": 1141,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-None",
+      "serialization": "object-streams",
+      "sha256": "951b03aa0ab0b69e1ecfcb83ae5d3be349f89a5ada9dcd0128d1b2b98e22c356",
+      "bytes": 731,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-dictionary",
+      "serialization": "classic-xref",
+      "sha256": "eb0987d1405b4f0b30d20bc2ff015a5cc9a17dd4ed8b773fee6a45c3f55c8e27",
+      "bytes": 1153,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-dictionary",
+      "serialization": "object-streams",
+      "sha256": "9b260266ebcf14062c294701e03a2bfbcb05efa44d99e17be40db0be90b6fc23",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-number",
+      "serialization": "classic-xref",
+      "sha256": "44ed48c0bacbb383f6a97a0164ff51444099cd7355bb6ee30c3b4403ce4f7bcf",
+      "bytes": 1137,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "SMask-number",
+      "serialization": "object-streams",
+      "sha256": "1eb2e8eebbea58f74bd498e766a483e5b5f1bedf46bf49a79c9e1b002cb865fe",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-RelativeColorimetric",
+      "serialization": "classic-xref",
+      "sha256": "1f7aaa7d356728829324fe0c3731e2053e1a82299741566080fb72fffcc2ac62",
+      "bytes": 1154,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-RelativeColorimetric",
+      "serialization": "object-streams",
+      "sha256": "eaa1adc24d3e133d3545817af9b9b719de4684e9eae9d5143388125c64408a79",
+      "bytes": 740,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-AbsoluteColorimetric",
+      "serialization": "classic-xref",
+      "sha256": "1eb02dee117fcd89573e60fb681b52ac07931e69f61ed2460e0b124289fdcc0b",
+      "bytes": 1154,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-AbsoluteColorimetric",
+      "serialization": "object-streams",
+      "sha256": "d27fdd6cbae53dbdbb20b91127720207aa86128342b9b7c9d766b3810ba16466",
+      "bytes": 742,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-Perceptual",
+      "serialization": "classic-xref",
+      "sha256": "fec45844544b8b5d32c6259f89797ad34969f8785081201f02e1a833ef651d1f",
+      "bytes": 1144,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-Perceptual",
+      "serialization": "object-streams",
+      "sha256": "dd9590f48609dfb97ea33af2e9b517283fe2200e378b8258bf6dd01e29a3cfdd",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-Saturation",
+      "serialization": "classic-xref",
+      "sha256": "82002b55f665bed74360abb3ad574b71459c58702137fa60a352931c21b39844",
+      "bytes": 1144,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-Saturation",
+      "serialization": "object-streams",
+      "sha256": "5aa463bf72d5139dac49b0168942634b6b571c4def7948914b1bd1e7b173295c",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-badname",
+      "serialization": "classic-xref",
+      "sha256": "0cad9314ab11a4002b64006487ac1db0ca8e439027175337ac121dbfd194782f",
+      "bytes": 1143,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "RENDERING_INTENT_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-badname",
+      "serialization": "object-streams",
+      "sha256": "233fbf4270e74e15e082b7cfe386968b8e881c471235c73e88421b19ecff1ddf",
+      "bytes": 731,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "RENDERING_INTENT_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-string",
+      "serialization": "classic-xref",
+      "sha256": "b6597a0a52e8fe2712dcefec47b8f59d2d6b75f7f1234826ab8d2f575fbaa0f5",
+      "bytes": 1155,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "RENDERING_INTENT_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "RI-string",
+      "serialization": "object-streams",
+      "sha256": "3d355730e70134de130308c2825a4cc4db03870a10cd1b630fc4ed0562971efe",
+      "bytes": 742,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "RENDERING_INTENT_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-absent",
+      "serialization": "classic-xref",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-absent",
+      "serialization": "object-streams",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-Default",
+      "serialization": "classic-xref",
+      "sha256": "c346154722ff93d4db70fc8c2df3d91227ca1e22cade4e8ed220f08d9f1e9597",
+      "bytes": 1142,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-Default",
+      "serialization": "object-streams",
+      "sha256": "7473f63638eac1d35e7807a74c6ed1e6448a9f16b9d9f05f5782bd66e014673d",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-Identity",
+      "serialization": "classic-xref",
+      "sha256": "c3a0a28c4057b74f3ac607f051180993f386ff18cb37300838f8fde6f9daf5c3",
+      "bytes": 1143,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSFER_FUNCTION_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-Identity",
+      "serialization": "object-streams",
+      "sha256": "d86e9d9cbceec7793889d910c4bf556bf95236ba1b0406867467340573c3a3d8",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSFER_FUNCTION_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-number",
+      "serialization": "classic-xref",
+      "sha256": "6cf58320bdc542bb206d86f81c96b540971e5a4bead2c3548af21b50c6f77b0a",
+      "bytes": 1135,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSFER_FUNCTION_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR2-number",
+      "serialization": "object-streams",
+      "sha256": "185a6bd7dd913b2f9da1f59b34a5e56a0e76a6e47a36ea735ad4a72302dd90d4",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSFER_FUNCTION_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR-present",
+      "serialization": "classic-xref",
+      "sha256": "173954d0f3bc9a1d8734e801bb97b8288337fdd02dc666daa8d9c0834560a8df",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/TR"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "TR-present",
+      "serialization": "object-streams",
+      "sha256": "62cd24b8c5392c098fe3893398b3b72dc0a728dbc48c6c5bb5d7f62be540cf7e",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/TR"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "HT-present",
+      "serialization": "classic-xref",
+      "sha256": "9d2d30144eadd65788ee0cac4fcde2035ce45abfce1b93820c6f2a6f9eca0875",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/HT"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "HT-present",
+      "serialization": "object-streams",
+      "sha256": "5cce8c28f36efc0050cd09fd78b9a9fca2d96cb683a22f68f26fdc1c2d59fa7f",
+      "bytes": 727,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/HT"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "HTP-present",
+      "serialization": "classic-xref",
+      "sha256": "bcfb3b062798bb2dc5b6006906cd5ce71a8c2de690e8d01e253117685b1f36bf",
+      "bytes": 1135,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/HTP"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "HTP-present",
+      "serialization": "object-streams",
+      "sha256": "45dfac96741bdce7cfb1a318738f8473bfc1a58e696dbe0f1c4d3bf58dfd4ec9",
+      "bytes": 728,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/HTP"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BG-present",
+      "serialization": "classic-xref",
+      "sha256": "3adac84a0c53aa3de850fef4f069820fa6896a2283ae65105b63e121af960311",
+      "bytes": 1134,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BG"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BG-present",
+      "serialization": "object-streams",
+      "sha256": "9efcd6989c6ed7b1b5f73e7ab5bda9e22529c93bd2f668fb8cf71e0d5be2dc06",
+      "bytes": 726,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BG"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BG2-present",
+      "serialization": "classic-xref",
+      "sha256": "9f1789626985041ad9780fa228e8de68faf431fedb297d029a0f7b9ad0ff0399",
+      "bytes": 1135,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BG2"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "BG2-present",
+      "serialization": "object-streams",
+      "sha256": "4bd94b744a556eeddde936cc82316bd4f11d9ad6d1f6f8bbd9516c30a4389136",
+      "bytes": 727,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BG2"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "UCR-present",
+      "serialization": "classic-xref",
+      "sha256": "a4bf71e29a2f7bce1def4357c916e07797104a5f02e2afb1f1687fc39c671263",
+      "bytes": 1135,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/UCR"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "UCR-present",
+      "serialization": "object-streams",
+      "sha256": "f57c9294958c716f5587529cacfcd5c6672645b3fe6fc707572d2fc9e740e293",
+      "bytes": 728,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/UCR"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "UCR2-present",
+      "serialization": "classic-xref",
+      "sha256": "35380a9cb7f25d6bad1afdac4d95b2821a3d3a5873f4977330251530e8af3336",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/UCR2"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "UCR2-present",
+      "serialization": "object-streams",
+      "sha256": "d31cf159d9b90dc45c7ca74691be01b03ea63a1318bee0f868bf15a50edce5cb",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "GRAPHICS_STATE_KEY_FORBIDDEN",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/UCR2"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-type-extgstate",
+      "serialization": "classic-xref",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-type-extgstate",
+      "serialization": "object-streams",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "omitted-type-extgstate-observation",
+      "serialization": "classic-xref",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
+      "bytes": 1128,
+      "classification": "coordinator-review",
+      "intendedRule": "A gs-used dictionary without Type should be measured separately from the existing Type-present whole-document check.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "omitted-type-extgstate-observation",
+      "serialization": "object-streams",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
+      "bytes": 723,
+      "classification": "coordinator-review",
+      "intendedRule": "A gs-used dictionary without Type should be measured separately from the existing Type-present whole-document check.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "wrong-type-extgstate-observation",
+      "serialization": "classic-xref",
+      "sha256": "6afaa18040fd01933c34837ea1d1ea7a727f82a10ba16f55c6ab98c5eafbb04e",
+      "bytes": 1123,
+      "classification": "coordinator-review",
+      "intendedRule": "A gs-used dictionary with a non-ExtGState Type is an observed resource-context case; do not infer policy beyond the existing checker result.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "wrong-type-extgstate-observation",
+      "serialization": "object-streams",
+      "sha256": "1299c0aed9ed00e6d865068f16d61d1a6c5c567a4e22a69d038d80b2d4a1f043",
+      "bytes": 723,
+      "classification": "coordinator-review",
+      "intendedRule": "A gs-used dictionary with a non-ExtGState Type is an observed resource-context case; do not infer policy beyond the existing checker result.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-indirect-resource",
+      "serialization": "classic-xref",
+      "sha256": "86d1e47982fc53f30d07a917d8595a2a343918b3b0844d1612c6c921b936a968",
+      "bytes": 1170,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-indirect-resource",
+      "serialization": "object-streams",
+      "sha256": "10b168018700cc363668c81d0c00090e3b97f7d1aa3d93055f9dce7ec9e98a50",
+      "bytes": 731,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-inherited-resource",
+      "serialization": "classic-xref",
+      "sha256": "f3e3b82ed755437f57d76d480f8bd0bcc857d866f11c6938b75774cd8f8b9184",
+      "bytes": 1128,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-inherited-resource",
+      "serialization": "object-streams",
+      "sha256": "955be11f8ea1968236093dbcf34979a8ca070b022ff74cb05d1f318318384d7a",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-inherited-indirect-resource",
+      "serialization": "classic-xref",
+      "sha256": "3670afc277a37aabdb08374911045fec65414dd86ff6bb13637eb66787b68f4d",
+      "bytes": 1170,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "valid-inherited-indirect-resource",
+      "serialization": "object-streams",
+      "sha256": "7f7097702ca57999d642b4082379a50fc955ab5e296b1510b4cc0522af29c649",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "shared-state-two-pages",
+      "serialization": "classic-xref",
+      "sha256": "976445ebf89e36ccc3cad1c69cb923238aa9190459dbf36b29c2c79dcbbb8fb5",
+      "bytes": 1466,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[1]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[1]/Group"
+        }
+      ],
+      "stateRef": "6 0 R"
+    },
+    {
+      "name": "shared-state-two-pages",
+      "serialization": "object-streams",
+      "sha256": "f17353ca11ced99a27992e1544fa36a206841329baa7942abcd21922e342dc71",
+      "bytes": 835,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[1]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[1]/Group"
+        }
+      ],
+      "stateRef": "6 0 R"
+    },
+    {
+      "name": "switch-two-states-twice",
+      "serialization": "classic-xref",
+      "sha256": "0d277084bf2cd9ca73b7e46cea004e6cf23e68cccc9aab82ceca0818ad788215",
+      "bytes": 1252,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "switch-two-states-twice",
+      "serialization": "object-streams",
+      "sha256": "bdea384f042accc0d5a1330eda16810efd6c45aa7302f74e4daa51563a35490f",
+      "bytes": 754,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "dangling-state-resource",
+      "serialization": "classic-xref",
+      "sha256": "53d7d486b8cd17a110fb8b4cbb1c4738fbb9a3d1ad4f1a624af88c3b397963ed",
+      "bytes": 1133,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_UNRESOLVED",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "dangling-state-resource",
+      "serialization": "object-streams",
+      "sha256": "d8693de556d847e27e82e9530ee74837e799edd6fdffbc50d0904fcee839106a",
+      "bytes": 723,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_UNRESOLVED",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-ca-negative",
+      "serialization": "classic-xref",
+      "sha256": "a1430df9851ce6ac5a99fcab5550571d30ff217c463f30dfc41de04319eb9c16",
+      "bytes": 1137,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-ca-negative",
+      "serialization": "object-streams",
+      "sha256": "d651e530d122ff7455337d2514b89ed44922b4d5f21e4f72e968a726386e1468",
+      "bytes": 730,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-ca-negative",
+      "serialization": "classic-xref",
+      "sha256": "a1430df9851ce6ac5a99fcab5550571d30ff217c463f30dfc41de04319eb9c16",
+      "bytes": 1137,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative ca field is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-ca-negative",
+      "serialization": "object-streams",
+      "sha256": "d651e530d122ff7455337d2514b89ed44922b4d5f21e4f72e968a726386e1468",
+      "bytes": 730,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative ca field is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-ca-negative",
+      "serialization": "classic-xref",
+      "sha256": "bba42b8e40990b5ec1249cf68a5c5eff12ea5eddbf7cee390f2ce6b9e930f5b9",
+      "bytes": 1132,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative ca field is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-ca-negative",
+      "serialization": "object-streams",
+      "sha256": "4e7d7321470bafdaf5f4764854edefd519a4ad35314e30955a39aa3843f4d0fd",
+      "bytes": 730,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative ca field is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-CA-above-one",
+      "serialization": "classic-xref",
+      "sha256": "0d71ab43bb99839f2822451734b823d62eaa09d8fe77bc54e7bd3071e041075b",
+      "bytes": 1136,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-CA-above-one",
+      "serialization": "object-streams",
+      "sha256": "9a4d2c2da879f3d982b3709c8c52c221401a1d1831062ed449257069613dd2d6",
+      "bytes": 729,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-CA-above-one",
+      "serialization": "classic-xref",
+      "sha256": "0d71ab43bb99839f2822451734b823d62eaa09d8fe77bc54e7bd3071e041075b",
+      "bytes": 1136,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative CA field is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-CA-above-one",
+      "serialization": "object-streams",
+      "sha256": "9a4d2c2da879f3d982b3709c8c52c221401a1d1831062ed449257069613dd2d6",
+      "bytes": 729,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative CA field is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-CA-above-one",
+      "serialization": "classic-xref",
+      "sha256": "d2ffec69c30e95608198d36f168a104e2cefa3024baa325a2ed94e2f84201bca",
+      "bytes": 1131,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative CA field is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-CA-above-one",
+      "serialization": "object-streams",
+      "sha256": "dcd49cb407608b34b11557d114895fea009ccc11ff79b6069047a954c1d8f422",
+      "bytes": 729,
+      "classification": "coordinator-review",
+      "intendedRule": "The same negative CA field is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-BM-Multiply",
+      "serialization": "classic-xref",
+      "sha256": "013e323c400092bd9d7317b91b2c77f43bfe17ca13cad5bc8e9b48c145082519",
+      "bytes": 1142,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-BM-Multiply",
+      "serialization": "object-streams",
+      "sha256": "d75327fb4b87e891e6dd50721bf6bee4d29e98601b37b96ff14d612e1afa9bcb",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-BM-Multiply",
+      "serialization": "classic-xref",
+      "sha256": "013e323c400092bd9d7317b91b2c77f43bfe17ca13cad5bc8e9b48c145082519",
+      "bytes": 1142,
+      "classification": "coordinator-review",
+      "intendedRule": "The same Multiply blend is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-BM-Multiply",
+      "serialization": "object-streams",
+      "sha256": "d75327fb4b87e891e6dd50721bf6bee4d29e98601b37b96ff14d612e1afa9bcb",
+      "bytes": 732,
+      "classification": "coordinator-review",
+      "intendedRule": "The same Multiply blend is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-BM-Multiply",
+      "serialization": "classic-xref",
+      "sha256": "0b9fc23a3f8fd6ed70493d27f751e0223bb038d971f6629aa6a0ee4caba4e0f6",
+      "bytes": 1137,
+      "classification": "coordinator-review",
+      "intendedRule": "The same Multiply blend is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-BM-Multiply",
+      "serialization": "object-streams",
+      "sha256": "d21983a90e1514ef270433dc9cdacc5bc8456deaaeff6f890078133ed44c892f",
+      "bytes": 732,
+      "classification": "coordinator-review",
+      "intendedRule": "The same Multiply blend is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-SMask-dictionary",
+      "serialization": "classic-xref",
+      "sha256": "eb0987d1405b4f0b30d20bc2ff015a5cc9a17dd4ed8b773fee6a45c3f55c8e27",
+      "bytes": 1153,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-type-SMask-dictionary",
+      "serialization": "object-streams",
+      "sha256": "9b260266ebcf14062c294701e03a2bfbcb05efa44d99e17be40db0be90b6fc23",
+      "bytes": 732,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-SMask-dictionary",
+      "serialization": "classic-xref",
+      "sha256": "eb0987d1405b4f0b30d20bc2ff015a5cc9a17dd4ed8b773fee6a45c3f55c8e27",
+      "bytes": 1153,
+      "classification": "coordinator-review",
+      "intendedRule": "The same dictionary SMask is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-omitted-SMask-dictionary",
+      "serialization": "object-streams",
+      "sha256": "9b260266ebcf14062c294701e03a2bfbcb05efa44d99e17be40db0be90b6fc23",
+      "bytes": 732,
+      "classification": "coordinator-review",
+      "intendedRule": "The same dictionary SMask is measured when Type is omitted; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-SMask-dictionary",
+      "serialization": "classic-xref",
+      "sha256": "3b388779c7ad876a288abc038190c003d1d309fea4d3336b92362cb08375a769",
+      "bytes": 1148,
+      "classification": "coordinator-review",
+      "intendedRule": "The same dictionary SMask is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "context-wrong-SMask-dictionary",
+      "serialization": "object-streams",
+      "sha256": "7bbcee337812876daebd7478dbd6ea76ae16668f4bc2e53148a999d25376b78e",
+      "bytes": 732,
+      "classification": "coordinator-review",
+      "intendedRule": "The same dictionary SMask is measured when Type is wrong; observe without blessing acceptance.",
+      "graphicsIssues": [
+        {
+          "code": "CONTENT_RESOURCE_TYPE_INVALID",
+          "object": "Page[0]/Contents[0]/gs"
+        }
+      ],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        },
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State"
+        }
+      ],
+      "stateRef": "5 0 R"
+    },
+    {
+      "name": "export-transparency-alpha-0",
+      "serialization": "classic-xref",
+      "sha256": "fbbc498615e661b7703d086c4c2273b26297bae5ca1f1131a132a8563c816f93",
+      "bytes": 1341,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-alpha-0",
+      "serialization": "object-streams",
+      "sha256": "efab7609ca3ade2fcfb112892b1f744254562e3df877e8da95a4dbfd4a05c1ad",
+      "bytes": 882,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-alpha-half",
+      "serialization": "classic-xref",
+      "sha256": "6e43dec20ca0b73f10457fcf130255517a9a573cdc47fb067a81dfd6b1ee3392",
+      "bytes": 1345,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-alpha-half",
+      "serialization": "object-streams",
+      "sha256": "fb4046b53c2d7b4fb54aa573cf1fb6e3f3d31930bd824ab3c8c6cf68f845aad5",
+      "bytes": 884,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-alpha-one",
+      "serialization": "classic-xref",
+      "sha256": "a0caf54ab1d5a70530031fda8c48728614a6ce3d687a724014752c0058a95416",
+      "bytes": 1344,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-alpha-one",
+      "serialization": "object-streams",
+      "sha256": "500fd72e45466007679ffefd3d71e4ab6edfda17e383e00a81cfcda3d10aa201",
+      "bytes": 884,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-stroke-half",
+      "serialization": "classic-xref",
+      "sha256": "6dc4c10a87881bc3317fc5576c8a3c4313b952fc1a49045efb1ebb97d502e002",
+      "bytes": 1350,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    },
+    {
+      "name": "export-transparency-stroke-half",
+      "serialization": "object-streams",
+      "sha256": "2b1836a5b02094eef262537f361080457358249119d829d78afd72619c90ff16",
+      "bytes": 889,
+      "classification": "observed-fixed",
+      "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
+      "graphicsIssues": [],
+      "nonGraphicsIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_INTENT_COUNT",
+          "object": "Catalog/OutputIntents"
+        },
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "stateRef": null
+    }
+  ],
+  "exportShapes": {
+    "export-transparency-alpha-0": [
+      {
+        "page": 0,
+        "name": "GS-7098480789",
+        "fields": {
+          "Type": "ExtGState",
+          "ca": 0,
+          "CA": 0
+        }
+      }
+    ],
+    "export-transparency-alpha-half": [
+      {
+        "page": 0,
+        "name": "GS-7098480789",
+        "fields": {
+          "Type": "ExtGState",
+          "ca": 0.5,
+          "CA": 0.5
+        }
+      }
+    ],
+    "export-transparency-alpha-one": [
+      {
+        "page": 0,
+        "name": "GS-7098480789",
+        "fields": {
+          "Type": "ExtGState",
+          "ca": 1,
+          "CA": 1
+        }
+      }
+    ],
+    "export-transparency-stroke-half": [
+      {
+        "page": 0,
+        "name": "GS-7098480789",
+        "fields": {
+          "Type": "ExtGState",
+          "ca": 0.5,
+          "CA": 0.5
+        }
+      }
+    ]
+  },
+  "profileGate": {
+    "code": "CANVAS_PDF_PROFILE_UNVERIFIED",
+    "conformant": false,
+    "issues": []
+  }
+}
