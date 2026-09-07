@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 import { normalizeImportRecord } from "./canvas-imports.mjs";
 import { validateLibraryRelease } from "./library-publication.mjs";
+import { preparePublishedLibraryRetention } from "./library-published-retention.mjs";
 import { prepareLibraryRetention } from "./library-retention-preparation.mjs";
 import { buildRetainedCanvasImports, validateRetainedCanvasRetention } from "./library-retained-imports.mjs";
 
@@ -138,6 +139,29 @@ export function createLibraryStorage(api) {
       validateLibraryRelease(selected);
       if (selected.libraryId !== root.libraryId || selected.releaseId !== root.releaseId || selected.contentHash !== root.contentHash) throw invalid("CANVAS_IMPORT_INTEGRITY");
       const prepared = await prepareLibraryRetention(selected, requests, readers);
+      const assets = await storeAssets(documentId, prepared.assets);
+      return writeEnvelope(documentId, "retention", { ...prepared, assets });
+    },
+
+    async retainPublishedItems(documentId, release, requestedItems, options = {}) {
+      const root = structuredClone(release);
+      const requests = structuredClone(requestedItems);
+      validateLibraryRelease(root);
+      if (typeof options.readPublication !== "function") throw invalid("CANVAS_LIBRARY_PUBLICATION_READER_REQUIRED");
+      const selected = await options.readPublication({
+        documentId: root.libraryId,
+        releaseId: root.releaseId,
+        contentHash: root.contentHash,
+      });
+      if (!selected || typeof selected !== "object" || Array.isArray(selected)) throw invalid("CANVAS_IMPORT_INTEGRITY");
+      try { validateLibraryRelease(selected.release); }
+      catch { throw invalid("CANVAS_IMPORT_INTEGRITY"); }
+      if (selected.release.libraryId !== root.libraryId
+        || selected.release.releaseId !== root.releaseId
+        || selected.release.contentHash !== root.contentHash) {
+        throw invalid("CANVAS_IMPORT_INTEGRITY");
+      }
+      const prepared = await preparePublishedLibraryRetention(selected, requests);
       const assets = await storeAssets(documentId, prepared.assets);
       return writeEnvelope(documentId, "retention", { ...prepared, assets });
     },
