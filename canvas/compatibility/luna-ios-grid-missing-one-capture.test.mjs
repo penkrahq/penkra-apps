@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import test from "node:test";
 
 import { receiptQueryArgs } from "../scripts/luna-ios-grid-receipt-window.mjs";
-import { SINGLE_CASE_ID, SINGLE_DEVICE, SINGLE_LAUNCH_TIMEOUT_MS, SINGLE_MAX_PAIR_ATTEMPTS, selectSingleCapturePlan } from "../scripts/luna-ios-grid-missing-one-capture.mjs";
+import { createExclusiveAttemptDir, runPostlaunchAttempt, serializeCaptureError, SINGLE_CASE_ID, SINGLE_DEVICE, SINGLE_LAUNCH_TIMEOUT_MS, SINGLE_MAX_PAIR_ATTEMPTS, selectSingleCapturePlan } from "../scripts/luna-ios-grid-missing-one-capture.mjs";
 import { GRID_CASE_IDS, readyReceipt, rootGeometryReceipt } from "../scripts/luna-ios-grid-production.mjs";
 
 const start = "2026-09-07T12:00:00.000Z";
@@ -29,6 +31,46 @@ test("shared production receipt parsers keep exact case and nonce filtering", ()
   assert.equal(readyReceipt("grid-c100-180-r60-100-reversed", nonce, ready), false);
   assert.equal(readyReceipt(SINGLE_CASE_ID, "wrong", ready), false);
   assert.equal(rootGeometryReceipt(SINGLE_CASE_ID, "wrong", ready), null);
+});
+
+test("attempt pipeline creates missing parents and keeps the leaf exclusive", async () => {
+  const temp = await mkdtemp(join(tmpdir(), "luna-grid-attempt-"));
+  try {
+    const stateDir = join(temp, "captures", "iphone", "large");
+    const attemptDir = await createExclusiveAttemptDir(stateDir, SINGLE_CASE_ID, "1-filesystem");
+    assert.deepEqual((await stat(attemptDir)).isDirectory(), true);
+    await assert.rejects(() => createExclusiveAttemptDir(stateDir, SINGLE_CASE_ID, "1-filesystem"), { code: "EEXIST" });
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test("injected postlaunch failure retains phase, error fields, receipt, and temp attempt", async () => {
+  const temp = await mkdtemp(join(tmpdir(), "luna-grid-postlaunch-"));
+  const readiness = { status: "ready", rootGeometry: { root: { x: 1, y: 2, width: 340, height: 400 } } };
+  try {
+    const result = await runPostlaunchAttempt({
+      stateDir: join(temp, "captures"), caseID: SINGLE_CASE_ID, attemptId: "1-injected", readiness,
+      postlaunch: async () => { const error = new Error("injected screenshot write failure"); error.code = "EINJECTED"; throw error; },
+    });
+    assert.equal(result.status, "unmeasured");
+    assert.deepEqual(result.readiness, readiness);
+    assert.equal(result.postlaunchFailure.phase, "postlaunch");
+    assert.equal(result.postlaunchFailure.name, "Error");
+    assert.equal(result.postlaunchFailure.message, "injected screenshot write failure");
+    assert.equal(result.postlaunchFailure.code, "EINJECTED");
+    assert.match(result.postlaunchFailure.stack, /injected screenshot write failure/u);
+    assert.equal((await stat(result.attemptDir)).isDirectory(), true);
+  } finally {
+    await rm(temp, { recursive: true, force: true });
+  }
+});
+
+test("capture error serializer retains structured fields and phase", () => {
+  const error = Object.assign(new TypeError("bad capture"), { code: "E_CAPTURE", signal: "SIGTERM", killed: true });
+  assert.deepEqual(serializeCaptureError(error, "postlaunch"), {
+    phase: "postlaunch", name: "TypeError", message: "bad capture", code: "E_CAPTURE", stack: error.stack, signal: "SIGTERM", killed: true,
+  });
 });
 
 test("single-case filter is exactly the still-unmeasured iPhone Large identity", () => {

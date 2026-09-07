@@ -28,6 +28,34 @@ export function selectSingleCapturePlan() {
   return [{ caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: SINGLE_DEVICE.contentSize, scale: SINGLE_DEVICE.scale }];
 }
 
+export function serializeCaptureError(error, phase) {
+  return {
+    phase,
+    name: error?.name ?? "Error",
+    message: error?.message ?? String(error),
+    code: error?.code ?? null,
+    stack: error?.stack ?? String(error),
+    signal: error?.signal ?? null,
+    killed: error?.killed ?? false,
+  };
+}
+
+export async function createExclusiveAttemptDir(stateDir, caseID, attemptId, makeDir = mkdir) {
+  const attemptDir = join(stateDir, "attempts", caseID, attemptId);
+  await makeDir(dirname(attemptDir), { recursive: true });
+  await makeDir(attemptDir, { recursive: false });
+  return attemptDir;
+}
+
+export async function runPostlaunchAttempt({ stateDir, caseID, attemptId, readiness = null, postlaunch }) {
+  const attemptDir = await createExclusiveAttemptDir(stateDir, caseID, attemptId);
+  try {
+    return { attemptDir, ...(await postlaunch({ attemptDir })) };
+  } catch (error) {
+    return { attemptDir, status: "unmeasured", reason: "postlaunch capture failed", readiness, postlaunchFailure: serializeCaptureError(error, "postlaunch") };
+  }
+}
+
 const runFile = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
 const sourceEvidence = resolve(root, "research/luna-ios-grid-production-20260907");
@@ -122,34 +150,45 @@ async function waitForReceipt(caseID, nonce, launchStartTimestamp, launchDir) {
 
 async function capturePair(expected, referencePath, stateDir, nonce, launchStartTimestamp, attemptNumber) {
   const attemptId = randomUUID();
-  const attemptDir = join(stateDir, "attempts", SINGLE_CASE_ID, `${attemptNumber}-${attemptId}`);
-  await mkdir(attemptDir, { recursive: false });
+  let attemptDir;
+  try {
+    attemptDir = await createExclusiveAttemptDir(stateDir, SINGLE_CASE_ID, `${attemptNumber}-${attemptId}`);
+  } catch (error) {
+    return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: "postlaunch attempt directory creation failed", postlaunchFailure: serializeCaptureError(error, "postlaunch"), referencePath: relativeEvidence(referencePath) };
+  }
   const launchDir = join(attemptDir, "launch");
-  const readiness = await waitForReceipt(SINGLE_CASE_ID, nonce, launchStartTimestamp, launchDir);
-  if (readiness.status !== "ready") return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: readiness.reason, readiness, referencePath: relativeEvidence(referencePath) };
-  await sleep(2500);
-  const fullA = join(attemptDir, "full", `${SINGLE_CASE_ID}-a.png`);
-  const fullB = join(attemptDir, "full", `${SINGLE_CASE_ID}-b.png`);
-  const first = await screenshot(fullA);
-  await sleep(500);
-  const second = await screenshot(fullB);
-  const stability = { hashes: [first.sha256, second.sha256], stable: stableScreenshotHashes([first.sha256, second.sha256]), delayMs: 500, paths: [relativeEvidence(fullA), relativeEvidence(fullB)] };
-  await writeEvidence(join(launchDir, "stability.json"), stability);
-  if (!stability.stable) return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: "consecutive screenshot SHA-256 hashes were not identical valid hashes", readiness, stability, referencePath: relativeEvidence(referencePath) };
-  const captured = { a: first.sha256, b: second.sha256 };
-  const beforeCrop = { a: sha256(await readFile(fullA)), b: sha256(await readFile(fullB)) };
-  const crop = cropRectFromRootReceipt(readiness.rootGeometry, second.image, { width: 340, height: 400 });
-  const cropBytes = await cropPngBytes(await readFile(fullB), crop);
-  const capturePath = join(attemptDir, "crop.png");
-  await writeFile(capturePath, cropBytes.bytes, { flag: "wx" });
-  const afterCrop = { a: sha256(await readFile(fullA)), b: sha256(await readFile(fullB)) };
-  let fullFrameHashStability;
-  try { fullFrameHashStability = validateFullFrameHashes({ captured, beforeCrop, afterCrop }); }
-  catch (error) { fullFrameHashStability = { captured, beforeCrop, afterCrop, stable: false, reason: error.message }; }
-  await writeEvidence(join(launchDir, "full-frame-hash-stability.json"), fullFrameHashStability);
-  if (!fullFrameHashStability.stable) return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: "full screenshot bytes changed between pre-crop and post-crop rehash", readiness, stability, fullFrameHashStability, capturePath: relativeEvidence(capturePath), referencePath: relativeEvidence(referencePath) };
-  const comparison = compareGridPixels(expected, await decodePng(capturePath), 3);
-  return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: comparison.status === "pass" ? "pass" : "fail", measurementStatus: "measured", readiness, stability, fullFrameHashStability, capturePath: relativeEvidence(capturePath), referencePath: relativeEvidence(referencePath), crop, comparison };
+  let readiness = null;
+  try {
+    readiness = await waitForReceipt(SINGLE_CASE_ID, nonce, launchStartTimestamp, launchDir);
+    if (readiness.status !== "ready") return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: readiness.reason, readiness, referencePath: relativeEvidence(referencePath) };
+    await sleep(2500);
+    const fullA = join(attemptDir, "full", `${SINGLE_CASE_ID}-a.png`);
+    const fullB = join(attemptDir, "full", `${SINGLE_CASE_ID}-b.png`);
+    const first = await screenshot(fullA);
+    await sleep(500);
+    const second = await screenshot(fullB);
+    const stability = { hashes: [first.sha256, second.sha256], stable: stableScreenshotHashes([first.sha256, second.sha256]), delayMs: 500, paths: [relativeEvidence(fullA), relativeEvidence(fullB)] };
+    await writeEvidence(join(launchDir, "stability.json"), stability);
+    if (!stability.stable) return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: "consecutive screenshot SHA-256 hashes were not identical valid hashes", readiness, stability, referencePath: relativeEvidence(referencePath) };
+    const captured = { a: first.sha256, b: second.sha256 };
+    const beforeCrop = { a: sha256(await readFile(fullA)), b: sha256(await readFile(fullB)) };
+    const crop = cropRectFromRootReceipt(readiness.rootGeometry, second.image, { width: 340, height: 400 });
+    const cropBytes = await cropPngBytes(await readFile(fullB), crop);
+    const capturePath = join(attemptDir, "crop.png");
+    await writeFile(capturePath, cropBytes.bytes, { flag: "wx" });
+    const afterCrop = { a: sha256(await readFile(fullA)), b: sha256(await readFile(fullB)) };
+    let fullFrameHashStability;
+    try { fullFrameHashStability = validateFullFrameHashes({ captured, beforeCrop, afterCrop }); }
+    catch (error) { fullFrameHashStability = { captured, beforeCrop, afterCrop, stable: false, reason: error.message }; }
+    await writeEvidence(join(launchDir, "full-frame-hash-stability.json"), fullFrameHashStability);
+    if (!fullFrameHashStability.stable) return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: "full screenshot bytes changed between pre-crop and post-crop rehash", readiness, stability, fullFrameHashStability, capturePath: relativeEvidence(capturePath), referencePath: relativeEvidence(referencePath) };
+    const comparison = compareGridPixels(expected, await decodePng(capturePath), 3);
+    return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: comparison.status === "pass" ? "pass" : "fail", measurementStatus: "measured", readiness, stability, fullFrameHashStability, capturePath: relativeEvidence(capturePath), referencePath: relativeEvidence(referencePath), crop, comparison };
+  } catch (error) {
+    const postlaunchFailure = serializeCaptureError(error, "postlaunch");
+    await writeEvidence(join(launchDir, "postlaunch-failure.json"), postlaunchFailure);
+    return { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, nonce, attemptId, attemptNumber, status: "unmeasured", reason: "postlaunch capture failed", readiness, postlaunchFailure, referencePath: relativeEvidence(referencePath) };
+  }
 }
 
 async function verifyInstalledBundle() {
@@ -206,30 +245,46 @@ async function main() {
       try {
         launch = await command("xcrun", launchArgs, { timeout: SINGLE_LAUNCH_TIMEOUT_MS, killSignal: "SIGTERM" });
         await writeEvidence(join(launchDir, "launch.json"), { ...launch.record, launchStartTimestamp, args: launchArgs });
-        const pid = launch.stdout.match(/(\d+)\s*$/mu)?.[1] ?? null;
-        if (!pid) entry = { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, status: "unmeasured", reason: "simctl launch returned no PID", launch: launch.record, attempts: [] };
-        else {
-          const attempts = [];
-          for (let attemptNumber = 1; attemptNumber <= SINGLE_MAX_PAIR_ATTEMPTS; attemptNumber += 1) {
-            const result = await capturePair(expected[SINGLE_CASE_ID], referencePath, stateDir, nonce, launchStartTimestamp, attemptNumber);
-            attempts.push(result);
-            if (result.measurementStatus === "measured") break;
-          }
-          entry = { ...attempts.at(-1), launch: launch.record, launchStartTimestamp, attempts };
-        }
       } catch (error) {
-        await writeEvidence(join(launchDir, "launch-failure.log"), JSON.stringify(error.record, null, 2) + "\n");
-        entry = { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, status: "unmeasured", reason: "simctl launch failed", launch: error.record, attempts: [] };
+        const launchFailure = serializeCaptureError(error, "launch");
+        await writeEvidence(join(launchDir, "launch-failure.json"), { ...launchFailure, command: error.record ?? null });
+        entry = { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, status: "unmeasured", reason: "simctl launch failed", launchFailure, launch: error.record ?? null, launchStartTimestamp, attempts: [] };
+      }
+      if (!entry) {
+        try {
+          const pid = launch.stdout.match(/(\d+)\s*$/mu)?.[1] ?? null;
+          if (!pid) entry = { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, status: "unmeasured", reason: "simctl launch returned no PID", launch: launch.record, launchStartTimestamp, attempts: [] };
+          else {
+            const attempts = [];
+            for (let attemptNumber = 1; attemptNumber <= SINGLE_MAX_PAIR_ATTEMPTS; attemptNumber += 1) {
+              const result = await capturePair(expected[SINGLE_CASE_ID], referencePath, stateDir, nonce, launchStartTimestamp, attemptNumber);
+              attempts.push(result);
+              if (result.measurementStatus === "measured") break;
+            }
+            entry = { ...attempts.at(-1), launch: launch.record, launchStartTimestamp, attempts };
+          }
+        } catch (error) {
+          const postlaunchFailure = serializeCaptureError(error, "postlaunch");
+          await writeEvidence(join(launchDir, "postlaunch-failure.json"), postlaunchFailure);
+          entry = { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, status: "unmeasured", reason: "postlaunch capture failed", launch: launch.record, launchStartTimestamp, postlaunchFailure, attempts: [] };
+        }
       }
     } else entry = { caseID: SINGLE_CASE_ID, deviceId: SINGLE_DEVICE.id, contentSize: "large", scale: 3, status: "unmeasured", reason: "device setup or installed bundle verification failed", setup, attempts: [] };
   } finally {
-    const restoration = await restoreDevice(setup);
+    let restoration;
+    try { restoration = await restoreDevice(setup); }
+    catch (error) { restoration = { failure: serializeCaptureError(error, "restoration") }; }
     await writeEvidence(join(evidence, "restoration.json"), { initialStates: { iphone: initial }, setup, restoration });
   }
-  const finalState = await queryDevice();
-  await writeEvidence(join(evidence, "device-state.json"), { initialStates: { iphone: initial }, finalStates: { iphone: finalState }, setup });
-  await writeEvidence(join(evidence, "measurements.json"), { package: "luna-ios-grid-production-20260907-missing-one", expectedIdentities: [`${SINGLE_CASE_ID}|${SINGLE_DEVICE.id}|large`], entries: [entry], counts: { entries: 1, measured: entry.measurementStatus === "measured" ? 1 : 0, pass: entry.status === "pass" ? 1 : 0, fail: entry.status === "fail" ? 1 : 0, unmeasured: entry.status === "unmeasured" ? 1 : 0 } });
-  await writeEvidence(join(evidence, "commands.json"), commandLog);
+  let finalState;
+  try { finalState = await queryDevice(); }
+  catch (error) { finalState = { failure: serializeCaptureError(error, "final-state") }; }
+  try {
+    await writeEvidence(join(evidence, "device-state.json"), { initialStates: { iphone: initial }, finalStates: { iphone: finalState }, setup });
+    await writeEvidence(join(evidence, "measurements.json"), { package: "luna-ios-grid-production-20260907-missing-one", expectedIdentities: [`${SINGLE_CASE_ID}|${SINGLE_DEVICE.id}|large`], entries: [entry], counts: { entries: 1, measured: entry.measurementStatus === "measured" ? 1 : 0, pass: entry.status === "pass" ? 1 : 0, fail: entry.status === "fail" ? 1 : 0, unmeasured: entry.status === "unmeasured" ? 1 : 0 } });
+  } finally {
+    await writeEvidence(join(evidence, "commands.json"), commandLog);
+  }
   console.log(JSON.stringify({ evidence, entry, finalState }, null, 2));
 }
 
