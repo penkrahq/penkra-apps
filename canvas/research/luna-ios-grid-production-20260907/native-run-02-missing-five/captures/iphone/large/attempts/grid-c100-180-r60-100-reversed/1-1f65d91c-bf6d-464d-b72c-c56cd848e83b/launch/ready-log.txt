@@ -1,0 +1,8 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 04:45:18.080 Df log[23720:0] [com.apple.log:] log run noninteractively, parent: 20426 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--last' '5s' '--predicate' 'eventMessage CONTAINS[c] "LUNA_GRID_READY" OR eventMessage CONTAINS[c] "LUNA_GRID_ROOT"'
+2026-09-07 04:45:19.487 Df log[23831:0] [com.apple.log:] log run noninteractively, parent: 20426 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--last' '5s' '--predicate' 'eventMessage CONTAINS[c] "LUNA_GRID_READY" OR eventMessage CONTAINS[c] "LUNA_GRID_ROOT"'
+2026-09-07 04:45:21.209 Df CanvasGridEvidence[23853:52dc7a6] (Foundation) LUNA_GRID_READY case=grid-c100-180-r60-100-reversed nonce=grid-run-02-missing-five-grid-c100-180-r60-100-reversed-2-6c66f4fe-c90b-4c57-b4c6-483741c8a585
+2026-09-07 04:45:21.210 Df CanvasGridEvidence[23853:52dc7a6] (Foundation) LUNA_GRID_ROOT case=grid-c100-180-r60-100-reversed nonce=grid-run-02-missing-five-grid-c100-180-r60-100-reversed-2-6c66f4fe-c90b-4c57-b4c6-483741c8a585 frame=31.000,251.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000
+2026-09-07 04:45:21.527 Df log[23865:0] [com.apple.log:] log run noninteractively, parent: 20426 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--last' '5s' '--predicate' 'eventMessage CONTAINS[c] "LUNA_GRID_READY" OR eventMessage CONTAINS[c] "LUNA_GRID_ROOT"'
+
+getpwuid_r did not find a match for uid 501

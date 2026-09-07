@@ -1,0 +1,25 @@
+{
+  "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-normal --grid-nonce grid-run-02-missing-five-grid-c100-180-r100-60-normal-4-cc3aec1d-001c-497f-976f-97a6a97be0e7",
+  "args": [
+    "simctl",
+    "launch",
+    "--terminate-running-process",
+    "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "com.penkra.canvas.qa.grid",
+    "--grid-case",
+    "grid-c100-180-r100-60-normal",
+    "--grid-nonce",
+    "grid-run-02-missing-five-grid-c100-180-r100-60-normal-4-cc3aec1d-001c-497f-976f-97a6a97be0e7"
+  ],
+  "exitCode": 0,
+  "started": "2026-09-07T10:45:32.006Z",
+  "finished": "2026-09-07T10:45:32.422Z",
+  "signal": null,
+  "killed": false,
+  "timedOut": false,
+  "timeoutMs": 120000,
+  "stdout": "com.penkra.canvas.qa.grid: 24030\n",
+  "stderr": "",
+  "error": null,
+  "pid": "24030"
+}

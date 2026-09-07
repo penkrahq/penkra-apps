@@ -1,0 +1,10 @@
+{
+  "appPath": "/Users/emmanuelgyekyeatta-penkra/Library/Developer/Xcode/DerivedData/CanvasGridEvidence-fibhjknagkzlabelfffiprqsiedk/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app",
+  "hostExecutablePath": "/Users/emmanuelgyekyeatta-penkra/Library/Developer/Xcode/DerivedData/CanvasGridEvidence-fibhjknagkzlabelfffiprqsiedk/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence",
+  "hostSha256": "56a7893fdc96d9b7b69fa1f37c8fedacbe2477bac479b5ad6eba11a9fcc14065",
+  "expectedSha256": "56a7893fdc96d9b7b69fa1f37c8fedacbe2477bac479b5ad6eba11a9fcc14065",
+  "sourceSha256": "cd9f240225dde9741775febc2cd3d8f4796be683baa895619b4f385580c43b11",
+  "expectedSourceSha256": "cd9f240225dde9741775febc2cd3d8f4796be683baa895619b4f385580c43b11",
+  "hostMatches": true,
+  "sourceMatches": true
+}

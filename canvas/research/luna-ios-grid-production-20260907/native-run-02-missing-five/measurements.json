@@ -1,0 +1,910 @@
+{
+  "package": "luna-ios-grid-production-20260907-missing-five",
+  "sourceSha256": "cd9f240225dde9741775febc2cd3d8f4796be683baa895619b4f385580c43b11",
+  "expectedIdentities": [
+    "grid-c100-180-r60-100-normal|A3D92728-7F7B-44D1-BE51-155B891905D9|large",
+    "grid-c100-180-r60-100-reversed|A3D92728-7F7B-44D1-BE51-155B891905D9|large",
+    "grid-c100-180-r60-100-only-2-2|A3D92728-7F7B-44D1-BE51-155B891905D9|large",
+    "grid-c100-180-r100-60-normal|A3D92728-7F7B-44D1-BE51-155B891905D9|large",
+    "grid-c100-180-r100-60-reversed|A3D92728-7F7B-44D1-BE51-155B891905D9|large"
+  ],
+  "entries": [
+    {
+      "caseID": "grid-c100-180-r60-100-normal",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782",
+      "attemptId": "f6a51add-134c-4224-a572-38657b86c98e",
+      "attemptNumber": 3,
+      "status": "unmeasured",
+      "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+      "readiness": {
+        "status": "unmeasured",
+        "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+        "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/3-f6a51add-134c-4224-a572-38657b86c98e/launch/ready-log.txt",
+        "pattern": "LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782"
+      },
+      "referencePath": "../references/iphone-large/grid-c100-180-r60-100-normal.png",
+      "attempts": [
+        {
+          "caseID": "grid-c100-180-r60-100-normal",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782",
+          "attemptId": "724d561a-5de5-4918-bf66-da6726ee749c",
+          "attemptNumber": 1,
+          "status": "unmeasured",
+          "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+          "readiness": {
+            "status": "unmeasured",
+            "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-724d561a-5de5-4918-bf66-da6726ee749c/launch/ready-log.txt",
+            "pattern": "LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782"
+          },
+          "referencePath": "../references/iphone-large/grid-c100-180-r60-100-normal.png"
+        },
+        {
+          "caseID": "grid-c100-180-r60-100-normal",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782",
+          "attemptId": "d6b09ed4-50cd-4588-b5ab-cc2f4f4784be",
+          "attemptNumber": 2,
+          "status": "unmeasured",
+          "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+          "readiness": {
+            "status": "unmeasured",
+            "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/2-d6b09ed4-50cd-4588-b5ab-cc2f4f4784be/launch/ready-log.txt",
+            "pattern": "LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782"
+          },
+          "referencePath": "../references/iphone-large/grid-c100-180-r60-100-normal.png"
+        },
+        {
+          "caseID": "grid-c100-180-r60-100-normal",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782",
+          "attemptId": "f6a51add-134c-4224-a572-38657b86c98e",
+          "attemptNumber": 3,
+          "status": "unmeasured",
+          "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+          "readiness": {
+            "status": "unmeasured",
+            "reason": "exact case/nonce readiness receipt was not observed within bounded wait",
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/3-f6a51add-134c-4224-a572-38657b86c98e/launch/ready-log.txt",
+            "pattern": "LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-five-grid-c100-180-r60-100-normal-1-2677878e-4047-4de8-be9a-ef8652ef9782"
+          },
+          "referencePath": "../references/iphone-large/grid-c100-180-r60-100-normal.png"
+        }
+      ]
+    },
+    {
+      "caseID": "grid-c100-180-r60-100-reversed",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-reversed-2-6c66f4fe-c90b-4c57-b4c6-483741c8a585",
+      "attemptId": "1f65d91c-bf6d-464d-b72c-c56cd848e83b",
+      "attemptNumber": 1,
+      "status": "pass",
+      "measurementStatus": "measured",
+      "readiness": {
+        "status": "ready",
+        "attempt": 1,
+        "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/launch/ready-log.txt",
+        "rootGeometry": {
+          "caseID": "grid-c100-180-r60-100-reversed",
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-reversed-2-6c66f4fe-c90b-4c57-b4c6-483741c8a585",
+          "root": {
+            "x": 31,
+            "y": 251,
+            "width": 340,
+            "height": 400
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        }
+      },
+      "stability": {
+        "hashes": [
+          "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        ],
+        "stable": true,
+        "delayMs": 500,
+        "paths": [
+          "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-a.png",
+          "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-b.png"
+        ]
+      },
+      "fullFrameHashStability": {
+        "stable": true,
+        "captured": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        },
+        "beforeCrop": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        },
+        "afterCrop": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        }
+      },
+      "fullCapturePaths": [
+        "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-a.png",
+        "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-b.png"
+      ],
+      "capturePath": "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/crop.png",
+      "referencePath": "../references/iphone-large/grid-c100-180-r60-100-reversed.png",
+      "crop": {
+        "x": 93,
+        "y": 753,
+        "width": 1020,
+        "height": 1200
+      },
+      "comparison": {
+        "status": "pass",
+        "comparedChildren": 4,
+        "sampleCounts": [
+          {
+            "id": "cell-d",
+            "samples": 9976
+          },
+          {
+            "id": "cell-c",
+            "samples": 9976
+          },
+          {
+            "id": "cell-b",
+            "samples": 9976
+          },
+          {
+            "id": "cell-a",
+            "samples": 9976
+          }
+        ],
+        "edgeTolerancePhysicalPixels": 2,
+        "registration": "none",
+        "clipping": "not-applied",
+        "failures": []
+      },
+      "attempts": [
+        {
+          "caseID": "grid-c100-180-r60-100-reversed",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-reversed-2-6c66f4fe-c90b-4c57-b4c6-483741c8a585",
+          "attemptId": "1f65d91c-bf6d-464d-b72c-c56cd848e83b",
+          "attemptNumber": 1,
+          "status": "pass",
+          "measurementStatus": "measured",
+          "readiness": {
+            "status": "ready",
+            "attempt": 1,
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/launch/ready-log.txt",
+            "rootGeometry": {
+              "caseID": "grid-c100-180-r60-100-reversed",
+              "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-reversed-2-6c66f4fe-c90b-4c57-b4c6-483741c8a585",
+              "root": {
+                "x": 31,
+                "y": 251,
+                "width": 340,
+                "height": 400
+              },
+              "window": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "screen": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "scale": 3
+            }
+          },
+          "stability": {
+            "hashes": [
+              "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            ],
+            "stable": true,
+            "delayMs": 500,
+            "paths": [
+              "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-a.png",
+              "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-b.png"
+            ]
+          },
+          "fullFrameHashStability": {
+            "stable": true,
+            "captured": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            },
+            "beforeCrop": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            },
+            "afterCrop": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            }
+          },
+          "fullCapturePaths": [
+            "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-a.png",
+            "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/full/grid-c100-180-r60-100-reversed-b.png"
+          ],
+          "capturePath": "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/crop.png",
+          "referencePath": "../references/iphone-large/grid-c100-180-r60-100-reversed.png",
+          "crop": {
+            "x": 93,
+            "y": 753,
+            "width": 1020,
+            "height": 1200
+          },
+          "comparison": {
+            "status": "pass",
+            "comparedChildren": 4,
+            "sampleCounts": [
+              {
+                "id": "cell-d",
+                "samples": 9976
+              },
+              {
+                "id": "cell-c",
+                "samples": 9976
+              },
+              {
+                "id": "cell-b",
+                "samples": 9976
+              },
+              {
+                "id": "cell-a",
+                "samples": 9976
+              }
+            ],
+            "edgeTolerancePhysicalPixels": 2,
+            "registration": "none",
+            "clipping": "not-applied",
+            "failures": []
+          }
+        }
+      ]
+    },
+    {
+      "caseID": "grid-c100-180-r60-100-only-2-2",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-only-2-2-3-3e67e6da-b3e1-4ebc-aefd-16d1aa1f9810",
+      "attemptId": "0622467d-2b5a-433c-9fbd-5d133dbc3969",
+      "attemptNumber": 1,
+      "status": "pass",
+      "measurementStatus": "measured",
+      "readiness": {
+        "status": "ready",
+        "attempt": 1,
+        "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/launch/ready-log.txt",
+        "rootGeometry": {
+          "caseID": "grid-c100-180-r60-100-only-2-2",
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-only-2-2-3-3e67e6da-b3e1-4ebc-aefd-16d1aa1f9810",
+          "root": {
+            "x": 31,
+            "y": 251,
+            "width": 340,
+            "height": 400
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        }
+      },
+      "stability": {
+        "hashes": [
+          "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+          "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+        ],
+        "stable": true,
+        "delayMs": 500,
+        "paths": [
+          "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-a.png",
+          "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-b.png"
+        ]
+      },
+      "fullFrameHashStability": {
+        "stable": true,
+        "captured": {
+          "a": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+          "b": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+        },
+        "beforeCrop": {
+          "a": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+          "b": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+        },
+        "afterCrop": {
+          "a": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+          "b": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+        }
+      },
+      "fullCapturePaths": [
+        "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-a.png",
+        "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-b.png"
+      ],
+      "capturePath": "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/crop.png",
+      "referencePath": "../references/iphone-large/grid-c100-180-r60-100-only-2-2.png",
+      "crop": {
+        "x": 93,
+        "y": 753,
+        "width": 1020,
+        "height": 1200
+      },
+      "comparison": {
+        "status": "pass",
+        "comparedChildren": 1,
+        "sampleCounts": [
+          {
+            "id": "cell-d",
+            "samples": 9976
+          }
+        ],
+        "edgeTolerancePhysicalPixels": 2,
+        "registration": "none",
+        "clipping": "not-applied",
+        "failures": []
+      },
+      "attempts": [
+        {
+          "caseID": "grid-c100-180-r60-100-only-2-2",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-only-2-2-3-3e67e6da-b3e1-4ebc-aefd-16d1aa1f9810",
+          "attemptId": "0622467d-2b5a-433c-9fbd-5d133dbc3969",
+          "attemptNumber": 1,
+          "status": "pass",
+          "measurementStatus": "measured",
+          "readiness": {
+            "status": "ready",
+            "attempt": 1,
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/launch/ready-log.txt",
+            "rootGeometry": {
+              "caseID": "grid-c100-180-r60-100-only-2-2",
+              "nonce": "grid-run-02-missing-five-grid-c100-180-r60-100-only-2-2-3-3e67e6da-b3e1-4ebc-aefd-16d1aa1f9810",
+              "root": {
+                "x": 31,
+                "y": 251,
+                "width": 340,
+                "height": 400
+              },
+              "window": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "screen": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "scale": 3
+            }
+          },
+          "stability": {
+            "hashes": [
+              "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+              "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+            ],
+            "stable": true,
+            "delayMs": 500,
+            "paths": [
+              "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-a.png",
+              "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-b.png"
+            ]
+          },
+          "fullFrameHashStability": {
+            "stable": true,
+            "captured": {
+              "a": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+              "b": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+            },
+            "beforeCrop": {
+              "a": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+              "b": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+            },
+            "afterCrop": {
+              "a": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704",
+              "b": "4a732bfa0b02e9ed90c8e962801c5c58276b54c4b7ca48a0cfe85e5b54995704"
+            }
+          },
+          "fullCapturePaths": [
+            "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-a.png",
+            "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/full/grid-c100-180-r60-100-only-2-2-b.png"
+          ],
+          "capturePath": "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/crop.png",
+          "referencePath": "../references/iphone-large/grid-c100-180-r60-100-only-2-2.png",
+          "crop": {
+            "x": 93,
+            "y": 753,
+            "width": 1020,
+            "height": 1200
+          },
+          "comparison": {
+            "status": "pass",
+            "comparedChildren": 1,
+            "sampleCounts": [
+              {
+                "id": "cell-d",
+                "samples": 9976
+              }
+            ],
+            "edgeTolerancePhysicalPixels": 2,
+            "registration": "none",
+            "clipping": "not-applied",
+            "failures": []
+          }
+        }
+      ]
+    },
+    {
+      "caseID": "grid-c100-180-r100-60-normal",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-normal-4-cc3aec1d-001c-497f-976f-97a6a97be0e7",
+      "attemptId": "b40c74f6-c68e-4d6a-a76f-457abd0806cb",
+      "attemptNumber": 1,
+      "status": "pass",
+      "measurementStatus": "measured",
+      "readiness": {
+        "status": "ready",
+        "attempt": 1,
+        "logPath": "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/launch/ready-log.txt",
+        "rootGeometry": {
+          "caseID": "grid-c100-180-r100-60-normal",
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-normal-4-cc3aec1d-001c-497f-976f-97a6a97be0e7",
+          "root": {
+            "x": 31,
+            "y": 251,
+            "width": 340,
+            "height": 400
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        }
+      },
+      "stability": {
+        "hashes": [
+          "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        ],
+        "stable": true,
+        "delayMs": 500,
+        "paths": [
+          "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-a.png",
+          "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-b.png"
+        ]
+      },
+      "fullFrameHashStability": {
+        "stable": true,
+        "captured": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        },
+        "beforeCrop": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        },
+        "afterCrop": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        }
+      },
+      "fullCapturePaths": [
+        "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-a.png",
+        "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-b.png"
+      ],
+      "capturePath": "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/crop.png",
+      "referencePath": "../references/iphone-large/grid-c100-180-r100-60-normal.png",
+      "crop": {
+        "x": 93,
+        "y": 753,
+        "width": 1020,
+        "height": 1200
+      },
+      "comparison": {
+        "status": "pass",
+        "comparedChildren": 4,
+        "sampleCounts": [
+          {
+            "id": "cell-a",
+            "samples": 9976
+          },
+          {
+            "id": "cell-b",
+            "samples": 9976
+          },
+          {
+            "id": "cell-c",
+            "samples": 9976
+          },
+          {
+            "id": "cell-d",
+            "samples": 9976
+          }
+        ],
+        "edgeTolerancePhysicalPixels": 2,
+        "registration": "none",
+        "clipping": "not-applied",
+        "failures": []
+      },
+      "attempts": [
+        {
+          "caseID": "grid-c100-180-r100-60-normal",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-normal-4-cc3aec1d-001c-497f-976f-97a6a97be0e7",
+          "attemptId": "b40c74f6-c68e-4d6a-a76f-457abd0806cb",
+          "attemptNumber": 1,
+          "status": "pass",
+          "measurementStatus": "measured",
+          "readiness": {
+            "status": "ready",
+            "attempt": 1,
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/launch/ready-log.txt",
+            "rootGeometry": {
+              "caseID": "grid-c100-180-r100-60-normal",
+              "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-normal-4-cc3aec1d-001c-497f-976f-97a6a97be0e7",
+              "root": {
+                "x": 31,
+                "y": 251,
+                "width": 340,
+                "height": 400
+              },
+              "window": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "screen": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "scale": 3
+            }
+          },
+          "stability": {
+            "hashes": [
+              "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            ],
+            "stable": true,
+            "delayMs": 500,
+            "paths": [
+              "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-a.png",
+              "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-b.png"
+            ]
+          },
+          "fullFrameHashStability": {
+            "stable": true,
+            "captured": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            },
+            "beforeCrop": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            },
+            "afterCrop": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            }
+          },
+          "fullCapturePaths": [
+            "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-a.png",
+            "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/full/grid-c100-180-r100-60-normal-b.png"
+          ],
+          "capturePath": "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/crop.png",
+          "referencePath": "../references/iphone-large/grid-c100-180-r100-60-normal.png",
+          "crop": {
+            "x": 93,
+            "y": 753,
+            "width": 1020,
+            "height": 1200
+          },
+          "comparison": {
+            "status": "pass",
+            "comparedChildren": 4,
+            "sampleCounts": [
+              {
+                "id": "cell-a",
+                "samples": 9976
+              },
+              {
+                "id": "cell-b",
+                "samples": 9976
+              },
+              {
+                "id": "cell-c",
+                "samples": 9976
+              },
+              {
+                "id": "cell-d",
+                "samples": 9976
+              }
+            ],
+            "edgeTolerancePhysicalPixels": 2,
+            "registration": "none",
+            "clipping": "not-applied",
+            "failures": []
+          }
+        }
+      ]
+    },
+    {
+      "caseID": "grid-c100-180-r100-60-reversed",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-reversed-5-3c0e6dfc-c76f-489d-a31a-d08c1c82ac4f",
+      "attemptId": "cdcc644a-423f-4493-8cfc-ed9ce70f238a",
+      "attemptNumber": 1,
+      "status": "pass",
+      "measurementStatus": "measured",
+      "readiness": {
+        "status": "ready",
+        "attempt": 1,
+        "logPath": "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/launch/ready-log.txt",
+        "rootGeometry": {
+          "caseID": "grid-c100-180-r100-60-reversed",
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-reversed-5-3c0e6dfc-c76f-489d-a31a-d08c1c82ac4f",
+          "root": {
+            "x": 31,
+            "y": 251,
+            "width": 340,
+            "height": 400
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        }
+      },
+      "stability": {
+        "hashes": [
+          "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        ],
+        "stable": true,
+        "delayMs": 500,
+        "paths": [
+          "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-a.png",
+          "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-b.png"
+        ]
+      },
+      "fullFrameHashStability": {
+        "stable": true,
+        "captured": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        },
+        "beforeCrop": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        },
+        "afterCrop": {
+          "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+          "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+        }
+      },
+      "fullCapturePaths": [
+        "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-a.png",
+        "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-b.png"
+      ],
+      "capturePath": "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/crop.png",
+      "referencePath": "../references/iphone-large/grid-c100-180-r100-60-reversed.png",
+      "crop": {
+        "x": 93,
+        "y": 753,
+        "width": 1020,
+        "height": 1200
+      },
+      "comparison": {
+        "status": "pass",
+        "comparedChildren": 4,
+        "sampleCounts": [
+          {
+            "id": "cell-d",
+            "samples": 9976
+          },
+          {
+            "id": "cell-c",
+            "samples": 9976
+          },
+          {
+            "id": "cell-b",
+            "samples": 9976
+          },
+          {
+            "id": "cell-a",
+            "samples": 9976
+          }
+        ],
+        "edgeTolerancePhysicalPixels": 2,
+        "registration": "none",
+        "clipping": "not-applied",
+        "failures": []
+      },
+      "attempts": [
+        {
+          "caseID": "grid-c100-180-r100-60-reversed",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-reversed-5-3c0e6dfc-c76f-489d-a31a-d08c1c82ac4f",
+          "attemptId": "cdcc644a-423f-4493-8cfc-ed9ce70f238a",
+          "attemptNumber": 1,
+          "status": "pass",
+          "measurementStatus": "measured",
+          "readiness": {
+            "status": "ready",
+            "attempt": 1,
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/launch/ready-log.txt",
+            "rootGeometry": {
+              "caseID": "grid-c100-180-r100-60-reversed",
+              "nonce": "grid-run-02-missing-five-grid-c100-180-r100-60-reversed-5-3c0e6dfc-c76f-489d-a31a-d08c1c82ac4f",
+              "root": {
+                "x": 31,
+                "y": 251,
+                "width": 340,
+                "height": 400
+              },
+              "window": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "screen": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "scale": 3
+            }
+          },
+          "stability": {
+            "hashes": [
+              "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            ],
+            "stable": true,
+            "delayMs": 500,
+            "paths": [
+              "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-a.png",
+              "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-b.png"
+            ]
+          },
+          "fullFrameHashStability": {
+            "stable": true,
+            "captured": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            },
+            "beforeCrop": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            },
+            "afterCrop": {
+              "a": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36",
+              "b": "270bca9ba071bd2ddc1aed8656b40393c032334cb807f05cc0cf854c6f86ea36"
+            }
+          },
+          "fullCapturePaths": [
+            "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-a.png",
+            "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/full/grid-c100-180-r100-60-reversed-b.png"
+          ],
+          "capturePath": "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/crop.png",
+          "referencePath": "../references/iphone-large/grid-c100-180-r100-60-reversed.png",
+          "crop": {
+            "x": 93,
+            "y": 753,
+            "width": 1020,
+            "height": 1200
+          },
+          "comparison": {
+            "status": "pass",
+            "comparedChildren": 4,
+            "sampleCounts": [
+              {
+                "id": "cell-d",
+                "samples": 9976
+              },
+              {
+                "id": "cell-c",
+                "samples": 9976
+              },
+              {
+                "id": "cell-b",
+                "samples": 9976
+              },
+              {
+                "id": "cell-a",
+                "samples": 9976
+              }
+            ],
+            "edgeTolerancePhysicalPixels": 2,
+            "registration": "none",
+            "clipping": "not-applied",
+            "failures": []
+          }
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "entries": 5,
+    "measured": 4,
+    "pass": 4,
+    "fail": 0,
+    "unmeasured": 1
+  }
+}

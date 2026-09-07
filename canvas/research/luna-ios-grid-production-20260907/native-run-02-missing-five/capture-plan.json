@@ -1,0 +1,19 @@
+{
+  "cases": [
+    "grid-c100-180-r60-100-normal",
+    "grid-c100-180-r60-100-reversed",
+    "grid-c100-180-r60-100-only-2-2",
+    "grid-c100-180-r100-60-normal",
+    "grid-c100-180-r100-60-reversed"
+  ],
+  "device": {
+    "key": "iphone",
+    "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "contentSize": "large",
+    "scale": 3
+  },
+  "launchTimeoutMs": 120000,
+  "maxPairAttempts": 3,
+  "oneLaunchPerCase": true,
+  "install": "not authorized; installed bundle hash is verified only"
+}

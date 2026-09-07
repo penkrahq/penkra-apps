@@ -1,0 +1,11 @@
+{
+  "method": "individual view_image inspection",
+  "inspected": [
+    "captures/iphone/large/attempts/grid-c100-180-r60-100-reversed/1-1f65d91c-bf6d-464d-b72c-c56cd848e83b/crop.png",
+    "captures/iphone/large/attempts/grid-c100-180-r60-100-only-2-2/1-0622467d-2b5a-433c-9fbd-5d133dbc3969/crop.png",
+    "captures/iphone/large/attempts/grid-c100-180-r100-60-normal/1-b40c74f6-c68e-4d6a-a76f-457abd0806cb/crop.png",
+    "captures/iphone/large/attempts/grid-c100-180-r100-60-reversed/1-cdcc644a-423f-4493-8cfc-ed9ce70f238a/crop.png"
+  ],
+  "unmeasuredWithoutCrop": "grid-c100-180-r60-100-normal",
+  "observation": "All four retained crops visibly contain the expected white root and colored children; no visual rejection was added beyond the structured comparator."
+}
