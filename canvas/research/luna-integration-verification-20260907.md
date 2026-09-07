@@ -1214,3 +1214,32 @@ and non-name bytes. No native/device action or artifact regeneration ran.
 
 Final combined source/test/evidence integration HEAD is
 `981e958b1aeab3234592b40333b380aeefef525f`; a separate evidence-only commit follows.
+
+## PDF/X export-path matrix integration
+
+The approved PDF envelope-wiring batch was cherry-picked in exact order after combined HEAD
+`bcaaa99d57636e6cb0bcf261fe2cf6ab8e1e1139`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `2f0de9c419f4560de872e49335d3b77db791ea95` | `386719c69105548fd0a808783930f4b430812ee2` |
+| `93fbf83c348f3f697b5d072559fc1e41d4641a9e` | `1237100857a4612aad04dafd525769f6b00421fe` |
+
+Full-stat and diff inspection confirmed only the 208-line actual `exportPdf` matrix test and its
+research evidence. It covers 12 candidate paths and three negative controls, while preserving the
+existing closed conformance gate. No production source, native, device, capability, protected, or
+gate files changed; no patch-equivalent was skipped.
+
+The strict focused selection ran after both commits:
+
+`node scripts/test.mjs src/exporters/luna-pdfx-export-path-matrix.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-fonts.test.mjs src/export-service.test.mjs`
+
+Log: `/tmp/canvas-pdfx-export-path-matrix-focused-20260907.log`. Exit `0`; `45` passed,
+`0` failed, `0` cancelled, `0` skipped; Node-reported duration `5,793.981625 ms`
+(`/usr/bin/time` real `5.84 s`). The 12 candidate paths continued to produce the existing
+`CANVAS_PDF_PROFILE_UNVERIFIED` closed-gate result with `conformant:false`; three negative
+controls remained rejected at their input-validation boundaries. No native/build/device/Dev
+action or artifact regeneration ran.
+
+Final combined source/test/evidence integration HEAD is
+`1237100857a4612aad04dafd525769f6b00421fe`; a separate evidence-only commit follows.
