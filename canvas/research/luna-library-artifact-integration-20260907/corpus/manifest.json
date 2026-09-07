@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-09-07T08:40:56.283Z",
+  "release": {
+    "libraryId": "theme-library",
+    "releaseId": "v1",
+    "contentHash": "1daa60b85478dd6922e8b8ab4322069e22f509c266cb2a70976da7f0997deaed"
+  },
+  "seam": {
+    "exportDocument": "original consumer + request.imports",
+    "extraction": "original consumer + options.imports"
+  },
+  "artifactCount": 8,
+  "artifacts": [
+    {
+      "path": "library.pptx",
+      "bytes": 354265,
+      "sha256": "d4f12c9c9d9de59b9fde56e1bdb7c3f69a796f2be996a23d6af94335b3def375"
+    },
+    {
+      "path": "library.html",
+      "bytes": 1864,
+      "sha256": "44b006f2490af30c6c247ee304ef09d2512e09c85981768ef427481eb552afa2"
+    },
+    {
+      "path": "styles.css",
+      "bytes": 168,
+      "sha256": "a06e2e75e90a13fae548a280fbc9f860baead5d0b32b8d4280b9989c1e0a9fdb"
+    },
+    {
+      "path": "assets/raster-1.png",
+      "bytes": 6253,
+      "sha256": "f13b45b201a4b6e4e6025ac26e51d27a618218661b52a8c49bfa8e94db4db30c"
+    },
+    {
+      "path": "assets/raster-2.png",
+      "bytes": 4823,
+      "sha256": "23c4f8898f9fd9734e5c42f5bed40b40c1f0a45e9daec1a11c31c88aa3dfe684"
+    },
+    {
+      "path": "assets/raster-3.png",
+      "bytes": 4863,
+      "sha256": "a9e4b9e746d3e1cef3d11c1650bbcc60aea6129fc88d5fb45ee0d9811882db8f"
+    },
+    {
+      "path": "library.svg",
+      "bytes": 8914,
+      "sha256": "7678b321fc26ba50b2140886eca00dd1779ae525d107a220d2fa5a3482b4c782"
+    },
+    {
+      "path": "library.pdf",
+      "bytes": 897357,
+      "sha256": "9e8c2a2cea8f4b6e6b4a1952d58dec6fd6cb13a3903a44e7fe02339caac88e52"
+    }
+  ]
+}
