@@ -125,6 +125,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
           mimeType: snapshot.mimeType,
         },
       });
+      if (!isReceiptObject(started)) throw uploadReceiptInvalid("Canvas asset upload returned an invalid start receipt.");
       if (started.status === "ready") return uploadedAsset(started.blob, snapshot);
       const chunkSize = started.chunkSize;
       if (!Number.isSafeInteger(chunkSize) || chunkSize <= 0) throw uploadReceiptInvalid("Canvas asset upload returned an invalid chunk size.");
@@ -137,6 +138,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       const completed = await request(`${root}/${encodeURIComponent(started.uploadId)}/complete`, {
         method: "POST",
       });
+      if (!isReceiptObject(completed)) throw uploadReceiptInvalid("Canvas asset upload returned an invalid completion receipt.");
       return uploadedAsset(completed.blob, snapshot);
     },
     generateImage: (id, input) =>
@@ -170,12 +172,16 @@ export function createCanvasApi(runtime = globalThis.penkra) {
 }
 
 function snapshotUploadAsset(asset) {
-  if (!asset || typeof asset !== "object" || !(asset.bytes instanceof Uint8Array)) throw uploadReceiptInvalid("Canvas asset upload requires Uint8Array bytes.");
+  if (!asset || typeof asset !== "object" || Array.isArray(asset)
+    || typeof asset.path !== "string" || !asset.path
+    || typeof asset.sha256 !== "string" || !asset.sha256
+    || (asset.mimeType !== undefined && typeof asset.mimeType !== "string")
+    || !(asset.bytes instanceof Uint8Array)) throw uploadReceiptInvalid("Canvas asset upload metadata is invalid.");
   return { path: asset.path, sha256: asset.sha256, mimeType: asset.mimeType, bytes: new Uint8Array(asset.bytes) };
 }
 
 function uploadedAsset(blob, snapshot) {
-  if (!blob || typeof blob !== "object" || Array.isArray(blob)
+  if (!isReceiptObject(blob)
     || blob.sha256 !== snapshot.sha256 || blob.size !== snapshot.bytes.byteLength) {
     throw uploadReceiptInvalid("Canvas asset upload returned invalid blob metadata.");
   }
@@ -186,6 +192,7 @@ function uploadedAsset(blob, snapshot) {
   return { ...blob, path: snapshot.path };
 }
 
+function isReceiptObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function uploadReceiptInvalid(message) { const error = new Error(message); error.code = "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"; throw error; }
 
 async function readChunkedSnapshot(request, encodedProjectId, snapshot) {
