@@ -353,6 +353,11 @@ function inspectNamedContentResource(operator, resourceName, resources, location
 }
 
 function inspectExtGStateFields(dict, path, { get, name, add }) {
+  const allowedKeys = new Set(["Type", "ca", "CA", "BM", "SMask", "RI", "TR2", "TR", "HT", "HTP", "BG", "BG2", "UCR", "UCR2"]);
+  for (const [key] of dict.entries()) {
+    const field = key.decodeText();
+    if (!allowedKeys.has(field)) add("GRAPHICS_STATE_KEY_OUTSIDE_SUBSET", "6.1", `${path}/${field}`);
+  }
   for (const key of ["TR", "HT", "HTP", "BG", "BG2", "UCR", "UCR2"]) if (get(dict, key)) add("GRAPHICS_STATE_KEY_FORBIDDEN", "6.13", `${path}/${key}`);
   if (get(dict, "TR2") && name(get(dict, "TR2")) !== "Default") add("TRANSFER_FUNCTION_FORBIDDEN", "6.13", path);
   if (get(dict, "RI") && !["RelativeColorimetric", "AbsoluteColorimetric", "Perceptual", "Saturation"].includes(name(get(dict, "RI")))) add("RENDERING_INTENT_INVALID", "6.23", path);
