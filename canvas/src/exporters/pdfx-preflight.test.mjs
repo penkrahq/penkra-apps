@@ -23,18 +23,24 @@ test("a clean generated-subset report cannot publish PDF/X while conformance cov
 });
 
 test("preflight invokes the subset policy after parsing and preserves the closed baseline", async () => {
-  const bytes = new Uint8Array(await readFile(new URL("../../research/luna-pdfx-document-negative-matrix-20260907/valid-candidate-control-classic-xref.pdf", import.meta.url)));
+  const bytes = pdf16(await readFile(new URL("../../research/luna-pdfx-document-negative-matrix-20260907/valid-candidate-control-classic-xref.pdf", import.meta.url)));
   const baseline = await preflightPdfx4(bytes);
   assert.equal(baseline.status, "verified-canvas-writer-subset");
   assert.equal(baseline.conformant, false);
   const parsed = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
   parsed.catalog.set(PDFName.of("Perms"), parsed.context.obj({}));
-  const report = await preflightPdfx4(await parsed.save());
+  const report = await preflightPdfx4(pdf16(await parsed.save()));
   assert.ok(report.issues.some(({ code, clause, object }) => code === "CANVAS_SUBSET_UNSUPPORTED" && clause === "6.15" && object === "Catalog/Perms"));
   assert.equal(report.status, "invalid");
   assert.equal(report.conformant, false);
   assert.deepEqual(report.uncovered, baseline.uncovered);
 });
+
+function pdf16(input) {
+  const bytes = new Uint8Array(input);
+  bytes.set(new TextEncoder().encode("%PDF-1.6"), 0);
+  return bytes;
+}
 
 test("PDF/X output profile inspection rejects the actual bundled monitor profile", () => {
   const report = inspectPdfxOutputProfile(srgb);

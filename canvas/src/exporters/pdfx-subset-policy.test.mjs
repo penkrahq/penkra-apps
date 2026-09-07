@@ -19,7 +19,7 @@ test("Canvas subset exclusions identify catalog permissions while absent and emp
   const emptyOther = await fixture((pdf) => pdf.catalog.set(PDFName.of("Other"), pdf.context.obj({})));
   assert.deepEqual(inspectPdfxSubsetPolicy(emptyOther).issues, []);
   const emptyPerms = await fixture((pdf) => pdf.catalog.set(PDFName.of("Perms"), pdf.context.obj({})));
-  assert.deepEqual(inspectPdfxSubsetPolicy(emptyPerms).issues, [issue("CANVAS_SUBSET_UNSUPPORTED", "6.24", "Catalog/Perms")]);
+  assert.deepEqual(inspectPdfxSubsetPolicy(emptyPerms).issues, [issue("CANVAS_SUBSET_UNSUPPORTED", "6.15", "Catalog/Perms")]);
 });
 
 test("catalog Metadata is the only exact metadata stream permitted, including shared references", async () => {
