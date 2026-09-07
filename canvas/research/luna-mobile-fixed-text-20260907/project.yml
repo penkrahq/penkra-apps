@@ -1,0 +1,37 @@
+name: CanvasFixedTextEvidence
+options:
+  bundleIdPrefix: com.penkra.canvas.qa
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  CanvasFixedTextEvidence:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - swift/Sources/CanvasFixedText
+      - swift/SimulatorHost
+      - path: ../../vendor/open-pencil/fonts
+        buildPhase: resources
+    info:
+      path: swift/SimulatorHost/Info.plist
+      properties:
+        UIAppFonts:
+          - Inter-Regular.ttf
+          - Inter-Medium.ttf
+          - Inter-SemiBold.ttf
+          - Inter-Bold.ttf
+          - Inter-ExtraBold.ttf
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.penkra.canvas.qa.fixedtext
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+schemes:
+  CanvasFixedTextEvidence:
+    build:
+      targets:
+        CanvasFixedTextEvidence: all

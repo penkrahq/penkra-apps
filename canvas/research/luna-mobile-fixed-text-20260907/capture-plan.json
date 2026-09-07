@@ -1,0 +1,70 @@
+{
+  "sourceOnly": true,
+  "nativeRun": false,
+  "caseIds": [
+    "uniform-single-run",
+    "mixed-size-rich-runs",
+    "decorations",
+    "wrapping"
+  ],
+  "classifications": {
+    "uniform-single-run": "typography",
+    "mixed-size-rich-runs": "typography",
+    "decorations": "decorations",
+    "wrapping": "line-wrapping"
+  },
+  "ios": {
+    "bundleId": "com.penkra.canvas.qa.fixedtext",
+    "devices": [
+      {
+        "key": "iphone-large",
+        "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "scale": 3,
+        "contentSizes": [
+          "large",
+          "accessibility-extra-extra-large"
+        ]
+      },
+      {
+        "key": "ipad-large",
+        "id": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "scale": 2,
+        "contentSizes": [
+          "large"
+        ]
+      }
+    ],
+    "entries": 12,
+    "build": "xcodegen generate --spec project.yml && xcodebuild -project CanvasFixedTextEvidence.xcodeproj -scheme CanvasFixedTextEvidence -sdk iphonesimulator -configuration Debug -jobs 2",
+    "launch": "xcrun simctl launch --terminate-running-process <UDID> com.penkra.canvas.qa.fixedtext --canvas-case <CASE_ID> --canvas-nonce <NONCE>",
+    "readiness": "exact LUNA_FIXED_TEXT_READY and LUNA_FIXED_TEXT_ROOT case+nonce receipts",
+    "stability": "two consecutive screenshots with equal lowercase SHA-256 plus rehash after crop",
+    "states": [
+      "iphone-large-large",
+      "iphone-large-accessibility-extra-extra-large",
+      "ipad-large-large"
+    ]
+  },
+  "android": {
+    "applicationId": "com.penkra.canvas.fixture",
+    "states": [
+      "density-420-font-1",
+      "density-420-font-2",
+      "density-320-font-1",
+      "density-320-font-2"
+    ],
+    "entries": 16,
+    "build": "./gradlew --no-daemon --max-workers 2 :app:assembleDebug",
+    "launch": "adb -s emulator-5554 shell am start -n com.penkra.canvas.fixture/.MainActivity --es canvasCase <CASE_ID> --es canvasNonce <NONCE>",
+    "settings": "adb -s emulator-5554 shell wm density <320|420>; adb -s emulator-5554 shell settings put system font_scale <1|2>",
+    "readiness": "exact LUNA_FIXED_TEXT_READY case+nonce logcat receipt",
+    "stability": "two consecutive screenshots with equal lowercase SHA-256"
+  },
+  "comparator": {
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2,
+    "registrations": "none; root receipt only",
+    "classifications": "typography, decorations, and line-wrapping are reported separately",
+    "verdict": "unmeasured until native receipt, stable frames, and comparison exist"
+  }
+}

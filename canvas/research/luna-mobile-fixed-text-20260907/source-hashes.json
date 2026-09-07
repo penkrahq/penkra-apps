@@ -1,0 +1,70 @@
+{
+  "sourceSha256": "c105c063f1e8324cd9403023c111d0036882bd8a8cfc14bf8b285109caebfa55",
+  "files": [
+    {
+      "path": "compose/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "compose/generated/FixedTextBoundedWrapping.kt",
+      "bytes": 2005,
+      "sha256": "3fbbd436d5e4253ef99e4c9d76eb8a100a84e5f2e936d42e09e54805323471d4"
+    },
+    {
+      "path": "compose/generated/FixedTextDecorations.kt",
+      "bytes": 2073,
+      "sha256": "4e7867916fb3b1c00522f71262be510cba7298c55c21e3a32eb88ce6226fb20e"
+    },
+    {
+      "path": "compose/generated/FixedTextMixedSizeRichRuns.kt",
+      "bytes": 2213,
+      "sha256": "82d51af3c31279bc7a0b2221b84397ef50bca25bc595c2970054164ef18e6977"
+    },
+    {
+      "path": "compose/generated/FixedTextUniformSingleRunText.kt",
+      "bytes": 1982,
+      "sha256": "bad438704ae67350d61d9d54561bea9bf3dbd2c838b336ce855f28a3110cf25c"
+    },
+    {
+      "path": "compose/generated/MainActivity.kt",
+      "bytes": 1313,
+      "sha256": "50340aa1224134845dd07fea6b0183c6bda13157c5857e29335590695eb5bbd0"
+    },
+    {
+      "path": "project.yml",
+      "bytes": 968,
+      "sha256": "795541ee863e15c048cfdfff01309508f1651018358692cfd9ddcd869199c501"
+    },
+    {
+      "path": "swift/FixedTextBoundedWrapping.swift",
+      "bytes": 666,
+      "sha256": "6e754d0e30119e6f6d6a1ba403386f3563f30b34a18b0918b8835f550c1b654c"
+    },
+    {
+      "path": "swift/FixedTextDecorations.swift",
+      "bytes": 665,
+      "sha256": "fe66fc141286ad55a81f374e0f2938dbf0da783808d4f01a26f4afdc568b03df"
+    },
+    {
+      "path": "swift/FixedTextMixedSizeRichRuns.swift",
+      "bytes": 777,
+      "sha256": "3399b02288dec8922e213147c6fafc2ac0068552cacde5393235d25f1f2c70e9"
+    },
+    {
+      "path": "swift/FixedTextUniformSingleRunText.swift",
+      "bytes": 649,
+      "sha256": "164daf93e0a590d4aa9e4b830eb78be04f005835f91fdb0a0dfed89fd35148cb"
+    },
+    {
+      "path": "swift/FlowLayout.swift",
+      "bytes": 2057,
+      "sha256": "8f24648f683d118e9524c689c754447a2a35fae7f1c74ee29970351682841728"
+    },
+    {
+      "path": "swift/SimulatorHost/FixedTextApp.swift",
+      "bytes": 2141,
+      "sha256": "7ac48ed78497d5dceccd4ec22e1077c80fb4341c41bcbd6414da0f9389dc6974"
+    }
+  ]
+}
