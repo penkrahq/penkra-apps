@@ -64,7 +64,7 @@ test("box dimensions retain fill/fit semantics and existing variable cascades re
   const grid = screen.children[0];
   grid.children[0].width = "fill_container";
   grid.children[0].height = "fit_content";
-  document.axes = { appearance: { modes: [{ name: "light" }, { name: "dark" }] } };
+  document.axes = { appearance: { modes: [{ name: "light" }, { name: "dark", media: "(prefers-color-scheme: dark)" }] } };
   document.variables = { accent: { tokenType: "color", cascade: [{ value: "#123456" }, { value: "#abcdef", when: { appearance: "dark" } }] } };
   grid.children[0].fill = "${accent}";
   grid.columnGap = [{ value: 10 }, { value: 20, when: { appearance: "dark" } }];

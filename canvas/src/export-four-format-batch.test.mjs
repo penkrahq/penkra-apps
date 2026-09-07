@@ -137,7 +137,7 @@ async function assertMobileCapabilityGate(format, module, role, context) {
   assert.ok(error, `${format} unexpectedly generated artifacts`);
   assert.equal(error.code, "CANVAS_CAPABILITY_UNVERIFIED");
   assert.match(error.message, /root\.axes/u);
-  assert.match(error.message, /properties\.layout/u);
+  assert.doesNotMatch(error.message, /properties\.layout/u);
   await assertMissing(parent);
 }
 
