@@ -72,3 +72,13 @@ test("mobile shadow spread is an explicit raster limitation", () => {
     assert.match(entry.reason, /no native shadow-spread parameter/u);
   }
 });
+
+test("mobile icon vocabulary uses the deterministic raster fallback", () => {
+  for (const format of ["swift", "kotlin"]) {
+    const table = capabilityTableFor(format).properties;
+    for (const path of ["nodes.icon", "properties.icon", "properties.library", "properties.weight"]) {
+      assert.equal(table[path].verdict, "raster", `${format}:${path}`);
+      assert.equal(table[path].status, undefined, `${format}:${path}`);
+    }
+  }
+});
