@@ -23,10 +23,7 @@ test("a clean generated-subset report cannot publish PDF/X while conformance cov
 });
 
 test("preflight invokes the subset policy after parsing and preserves the closed baseline", async () => {
-  const printer = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
-  const bytes = await exportPdf({ outputs: [{ id: "frame", width: 200, height: 300, nodes: [] }] }, {
-    profile: "PDF/X-4", outputIntent: printer, sourceColorProfile: srgb,
-  });
+  const bytes = new Uint8Array(await readFile(new URL("../../research/luna-pdfx-document-negative-matrix-20260907/valid-candidate-control-classic-xref.pdf", import.meta.url)));
   const baseline = await preflightPdfx4(bytes);
   assert.equal(baseline.status, "verified-canvas-writer-subset");
   assert.equal(baseline.conformant, false);

@@ -57,7 +57,8 @@ test("optional-content types, OC keys, and HalftoneType keys are rejected in rea
   });
   const report = inspectPdfxSubsetPolicy(pdf);
   assert.equal(report.issues.filter((entry) => entry.code === "CANVAS_SUBSET_UNSUPPORTED").length, 5);
-  assert.ok(report.issues.every((entry) => entry.clause === "6.24"));
+  assert.equal(report.issues.filter((entry) => entry.clause === "6.24").length, 4);
+  assert.equal(report.issues.filter((entry) => entry.clause === "6.13").length, 1);
 });
 
 test("a shared optional-content dictionary is deduplicated and cycles are safe", async () => {
