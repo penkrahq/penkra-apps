@@ -23,3 +23,17 @@ Result: exit 0; 10 passed; zero failed, cancelled, or skipped. The tests include
 pdf-lib classic serialization with a compressed content stream and malformed byte fixtures.
 Input bytes remain unchanged. No artifact files, native builds, capabilities, or publication
 gates were changed.
+# Stream-extent follow-up
+
+Independent review observed acceptance when a declared unfiltered payload includes
+the final LF. That alone is not malformed: PDF 1.6 section 3.2.7/Table 3.4 permits
+an optional additional EOL outside the stream data. The stream's declared length
+can instead include that LF as data; semantic consumers are checked separately.
+Source: [Adobe PDF 1.6 reference](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/pdfreference1.6.pdf).
+
+Root inspection found a different concrete defect: the ordinary token reader
+skipped arbitrary whitespace/comments after the declared extent. A new regression
+failed before the fix (10 pass, 1 fail), then passed after replacing that boundary
+with an exact `endstream` match after at most one optional EOL (11 pass, 0 fail,
+0 cancelled, 0 skipped). Fixtures reject extra spaces, tabs, multiple EOLs and
+comments while retaining no-EOL, LF, CR, CRLF and declared-final-LF cases.
