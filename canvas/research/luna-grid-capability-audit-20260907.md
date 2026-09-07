@@ -75,3 +75,13 @@ node canvas/scripts/luna-grid-capability-audit.mjs
 Result: iOS 15 source files, 36 primary entries, six correction entries, 39 unique union entries, 39 final passes; Android 286 manifest files, 48 measurements, 12 generated cases, original control `fail/131`, translated control `pass/0`.
 
 The retained evidence roots are unchanged. No build, device, capture, regeneration, source, capability-table, or native action was performed for this audit.
+
+## Post-fix schema alignment — 2026-09-07
+
+The historical measurements and prior audit conclusions above are preserved. This postfix records the approved schema-only correction; it does not rewrite or regenerate any retained native evidence.
+
+Production commit `24ae387` adds a distinct `grid-track` schema type for `gridTemplateColumns` and `gridTemplateRows`. It accepts the existing renderer domain: non-negative finite numbers, literal `auto`, and non-negative finite `fr` strings matching `^(\d+(?:\.\d+)?)fr$` (including `0fr`). It rejects negative/non-finite numbers, `fill_container`, `fit_content`, raw objects, percentages, whitespace variants, signs, exponents, `minmax`, and `repeat`. The ordinary `dimension` rule for width/height remains unchanged.
+
+The new matrix verifies both axes, empty/single/mixed tracks, finite IR geometry for `auto`/`fr`, exact column/row error paths, box-size keyword compatibility, and existing variable/cascade behavior. The corrected explicit retained audit still reports iOS 39/39 union passes and Android 48/48 production passes, with the original Android control failure at 131 mismatches preserved.
+
+This is a bounded subset of CSS Grid track sizing, not full CSS Grid conformance; the reference is the [W3C CSS Grid track-sizing specification](https://www.w3.org/TR/css-grid-2/#track-sizing).
