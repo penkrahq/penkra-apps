@@ -38,6 +38,25 @@ test("publication preparation locks follow dependencies without mutating the aut
   assert.equal(loaded.imports.ui.imports.base.document.children[0].width, 100);
 });
 
+test("publication preparation excludes the current publication head from release identity", async () => {
+  const source = document([{ id: "wrapper", type: "frame" }]);
+  const contentHash = "a".repeat(64);
+  source.library.publication = {
+    releaseId: "prior",
+    contentHash,
+    storage: { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 0 },
+  };
+  const before = structuredClone(source);
+  const withHead = await prepareLibraryRelease({}, source, { libraryId: "wrapper", releaseId: "one" });
+  const withoutHead = structuredClone(before);
+  delete withoutHead.library.publication;
+  const without = await prepareLibraryRelease({}, withoutHead, { libraryId: "wrapper", releaseId: "one" });
+  assert.equal(withHead.release.contentHash, without.release.contentHash);
+  assert.equal(Object.hasOwn(withHead.release.document.library, "publication"), false);
+  assert.deepEqual(source, before);
+  assert.deepEqual(withHead.release.document.library.public, before.library.public);
+});
+
 test("publication identity excludes consumer-local retention while preserving the selected dependency", async () => {
   const dependency = createLibraryRelease(document([{ id: "card", type: "frame" }]), { libraryId: "base", releaseId: "one" });
   const accepted = { documentId: "base", updatePolicy: "follow", releaseId: "one", contentHash: dependency.contentHash };

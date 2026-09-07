@@ -61,6 +61,39 @@ test("accepted retention descriptors are strict storage-owned import data", () =
   assert.deepEqual(validateLibraryStorageDescriptor(source.imports.ui.retention), source.imports.ui.retention);
 });
 
+test("library publication heads are optional strict transport metadata", () => {
+  const source = document();
+  const contentHash = "a".repeat(64);
+  source.library = {
+    public: [{ kind: "component", id: "slide" }],
+    publication: {
+      releaseId: "r1",
+      contentHash,
+      storage: { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 12, mimeType: "application/json" },
+    },
+  };
+  assert.equal(validateCanvasDocument(source).valid, true);
+  for (const mutate of [
+    value => { value.extra = true; },
+    value => { value.releaseId = []; },
+    value => { value.releaseId = {}; },
+    value => { value.releaseId = ""; },
+    value => { value.contentHash = {}; },
+    value => { value.contentHash = "A".repeat(64); },
+    value => { value.contentHash = "bad"; },
+    value => { value.storage.extra = true; },
+    value => { value.storage.sha256 = 7; },
+    value => { value.storage.path = "other"; },
+  ]) {
+    const invalid = structuredClone(source);
+    mutate(invalid.library.publication);
+    assert.throws(() => validateCanvasDocument(invalid));
+  }
+  const withoutPublication = structuredClone(source);
+  delete withoutPublication.library.publication;
+  assert.equal(validateCanvasDocument(withoutPublication).valid, true);
+});
+
 test("retention requires an accepted identity while discovery follow may omit it", () => {
   const source = document();
   const contentHash = "a".repeat(64);
