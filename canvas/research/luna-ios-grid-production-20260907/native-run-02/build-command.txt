@@ -1,0 +1,6 @@
+xcodebuild -project CanvasGridEvidence.xcodeproj -scheme CanvasGridEvidence -sdk iphonesimulator -configuration Debug -jobs 2
+
+Project preparation directory: /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-run02-build.StxBT9SAM8
+Build log: xcodebuild.log
+Exit code: 0
+Source SHA-256: cd9f240225dde9741775febc2cd3d8f4796be683baa895619b4f385580c43b11

@@ -1,0 +1,18 @@
+{
+  "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-reversed --grid-nonce grid-run-02-ipad-large-grid-c100-180-r60-100-reversed-28-1-7ed3cd9c-54e3-416b-856e-f950f3e56638",
+  "args": [
+    "simctl",
+    "launch",
+    "--terminate-running-process",
+    "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+    "com.penkra.canvas.qa.grid",
+    "--grid-case",
+    "grid-c100-180-r60-100-reversed",
+    "--grid-nonce",
+    "grid-run-02-ipad-large-grid-c100-180-r60-100-reversed-28-1-7ed3cd9c-54e3-416b-856e-f950f3e56638"
+  ],
+  "exitCode": 0,
+  "stdout": "com.penkra.canvas.qa.grid: 90363\n",
+  "stderr": "",
+  "pid": "90363"
+}

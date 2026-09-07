@@ -1,0 +1,9 @@
+CANVAS_GRID_NATIVE_EVIDENCE_ROOT=/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02 CANVAS_GRID_APP_PATH=/Users/emmanuelgyekyeatta-penkra/Library/Developer/Xcode/DerivedData/CanvasGridEvidence-fibhjknagkzlabelfffiprqsiedk/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app node scripts/luna-ios-grid-production-capture.mjs
+
+Working directory: /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas
+Exit code: 0
+Entries: 39
+Measured: 34
+Pass: 34
+Measured mismatches: 0
+Unmeasured: 5

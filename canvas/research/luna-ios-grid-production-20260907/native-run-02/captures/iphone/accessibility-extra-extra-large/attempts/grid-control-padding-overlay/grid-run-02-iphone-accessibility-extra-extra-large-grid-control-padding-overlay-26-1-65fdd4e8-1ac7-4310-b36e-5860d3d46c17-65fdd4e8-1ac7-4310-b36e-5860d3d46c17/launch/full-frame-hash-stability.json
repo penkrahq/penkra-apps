@@ -1,0 +1,15 @@
+{
+  "stable": true,
+  "captured": {
+    "a": "654171ca2cb467445f458f70733a3e80f44a9705d41a0c2efab1eeea7a7496c4",
+    "b": "654171ca2cb467445f458f70733a3e80f44a9705d41a0c2efab1eeea7a7496c4"
+  },
+  "beforeCrop": {
+    "a": "654171ca2cb467445f458f70733a3e80f44a9705d41a0c2efab1eeea7a7496c4",
+    "b": "654171ca2cb467445f458f70733a3e80f44a9705d41a0c2efab1eeea7a7496c4"
+  },
+  "afterCrop": {
+    "a": "654171ca2cb467445f458f70733a3e80f44a9705d41a0c2efab1eeea7a7496c4",
+    "b": "654171ca2cb467445f458f70733a3e80f44a9705d41a0c2efab1eeea7a7496c4"
+  }
+}

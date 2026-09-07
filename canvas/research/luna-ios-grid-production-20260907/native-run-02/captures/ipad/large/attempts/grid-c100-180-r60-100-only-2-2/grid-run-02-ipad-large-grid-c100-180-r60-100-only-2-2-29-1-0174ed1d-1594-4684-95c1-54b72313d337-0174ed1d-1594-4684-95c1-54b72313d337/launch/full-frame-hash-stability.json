@@ -1,0 +1,15 @@
+{
+  "stable": true,
+  "captured": {
+    "a": "ed15c817962967dafeade3d8bd2b8b2004e81cef7aa253aea5cacdf73e708d82",
+    "b": "ed15c817962967dafeade3d8bd2b8b2004e81cef7aa253aea5cacdf73e708d82"
+  },
+  "beforeCrop": {
+    "a": "ed15c817962967dafeade3d8bd2b8b2004e81cef7aa253aea5cacdf73e708d82",
+    "b": "ed15c817962967dafeade3d8bd2b8b2004e81cef7aa253aea5cacdf73e708d82"
+  },
+  "afterCrop": {
+    "a": "ed15c817962967dafeade3d8bd2b8b2004e81cef7aa253aea5cacdf73e708d82",
+    "b": "ed15c817962967dafeade3d8bd2b8b2004e81cef7aa253aea5cacdf73e708d82"
+  }
+}

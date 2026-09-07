@@ -1,0 +1,126 @@
+{
+  "initialStates": {
+    "iphone": {
+      "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "key": "iphone",
+      "state": "Shutdown",
+      "contentSize": "unknown",
+      "contentSizeQuery": {
+        "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+        "args": [
+          "simctl",
+          "ui",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "content_size"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T10:17:54.785Z",
+        "finished": "2026-09-07T10:17:54.992Z",
+        "stdout": "unknown\n",
+        "stderr": ""
+      }
+    },
+    "ipad": {
+      "id": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "key": "ipad",
+      "state": "Shutdown",
+      "contentSize": "unknown",
+      "contentSizeQuery": {
+        "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+        "args": [
+          "simctl",
+          "ui",
+          "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+          "content_size"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T10:17:55.416Z",
+        "finished": "2026-09-07T10:17:55.708Z",
+        "stdout": "unknown\n",
+        "stderr": ""
+      }
+    }
+  },
+  "setups": {
+    "iphone": {
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "deviceKey": "iphone",
+      "initialState": {
+        "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "key": "iphone",
+        "state": "Shutdown",
+        "contentSize": "unknown",
+        "contentSizeQuery": {
+          "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+          "args": [
+            "simctl",
+            "ui",
+            "A3D92728-7F7B-44D1-BE51-155B891905D9",
+            "content_size"
+          ],
+          "exitCode": 0,
+          "started": "2026-09-07T10:17:54.785Z",
+          "finished": "2026-09-07T10:17:54.992Z",
+          "stdout": "unknown\n",
+          "stderr": ""
+        }
+      },
+      "bootedByRunner": true,
+      "installed": true,
+      "observedContentSize": "large"
+    },
+    "ipad": {
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "deviceKey": "ipad",
+      "initialState": {
+        "id": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "key": "ipad",
+        "state": "Shutdown",
+        "contentSize": "unknown",
+        "contentSizeQuery": {
+          "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+          "args": [
+            "simctl",
+            "ui",
+            "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+            "content_size"
+          ],
+          "exitCode": 0,
+          "started": "2026-09-07T10:17:55.416Z",
+          "finished": "2026-09-07T10:17:55.708Z",
+          "stdout": "unknown\n",
+          "stderr": ""
+        }
+      },
+      "bootedByRunner": true,
+      "installed": true,
+      "observedContentSize": "large"
+    }
+  },
+  "restoration": {
+    "iphone": [
+      {
+        "code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "ipad": [
+      {
+        "code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "code": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    ]
+  }
+}

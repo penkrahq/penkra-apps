@@ -1,0 +1,12 @@
+{
+  "hashes": [
+    "fed005cd0bf3503d82ac739bf4f0f32f6c962c7e05f9f64bb9216bb2d0703819",
+    "fed005cd0bf3503d82ac739bf4f0f32f6c962c7e05f9f64bb9216bb2d0703819"
+  ],
+  "stable": true,
+  "delayMs": 500,
+  "paths": [
+    "captures/iphone/large/attempts/grid-c180-100-r100-60-reversed/grid-run-02-iphone-large-grid-c180-100-r100-60-reversed-11-1-dec1da97-a018-4e45-9718-a1122d6a94b9-dec1da97-a018-4e45-9718-a1122d6a94b9/full/grid-c180-100-r100-60-reversed-a.png",
+    "captures/iphone/large/attempts/grid-c180-100-r100-60-reversed/grid-run-02-iphone-large-grid-c180-100-r100-60-reversed-11-1-dec1da97-a018-4e45-9718-a1122d6a94b9-dec1da97-a018-4e45-9718-a1122d6a94b9/full/grid-c180-100-r100-60-reversed-b.png"
+  ]
+}

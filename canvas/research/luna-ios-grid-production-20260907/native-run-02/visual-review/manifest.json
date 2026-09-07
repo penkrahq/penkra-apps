@@ -1,0 +1,224 @@
+{
+  "generatedFrom": "native-run-02/measurements.json",
+  "sheets": {
+    "iphone-large": {
+      "output": "visual-review/iphone-large.png",
+      "entries": [
+        {
+          "index": 1,
+          "caseID": "grid-c100-180-r100-60-only-2-2",
+          "path": "captures/iphone/large/attempts/grid-c100-180-r100-60-only-2-2/grid-run-02-iphone-large-grid-c100-180-r100-60-only-2-2-6-2-703c894c-ce93-4a47-9472-f59d8273ad3b-703c894c-ce93-4a47-9472-f59d8273ad3b/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 2,
+          "caseID": "grid-c180-100-r60-100-normal",
+          "path": "captures/iphone/large/attempts/grid-c180-100-r60-100-normal/grid-run-02-iphone-large-grid-c180-100-r60-100-normal-7-1-b5d1ee57-45f5-4576-ab49-43155ecd04f3-b5d1ee57-45f5-4576-ab49-43155ecd04f3/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 3,
+          "caseID": "grid-c180-100-r60-100-reversed",
+          "path": "captures/iphone/large/attempts/grid-c180-100-r60-100-reversed/grid-run-02-iphone-large-grid-c180-100-r60-100-reversed-8-1-d9529bc1-4ec6-4ec0-b072-354251921cbb-d9529bc1-4ec6-4ec0-b072-354251921cbb/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 4,
+          "caseID": "grid-c180-100-r60-100-only-2-2",
+          "path": "captures/iphone/large/attempts/grid-c180-100-r60-100-only-2-2/grid-run-02-iphone-large-grid-c180-100-r60-100-only-2-2-9-1-47bd61e4-af54-489d-9c5a-744b6532d575-47bd61e4-af54-489d-9c5a-744b6532d575/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 5,
+          "caseID": "grid-c180-100-r100-60-normal",
+          "path": "captures/iphone/large/attempts/grid-c180-100-r100-60-normal/grid-run-02-iphone-large-grid-c180-100-r100-60-normal-10-1-280d4293-c90a-4a9f-82cb-fa2d13c70cba-280d4293-c90a-4a9f-82cb-fa2d13c70cba/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 6,
+          "caseID": "grid-c180-100-r100-60-reversed",
+          "path": "captures/iphone/large/attempts/grid-c180-100-r100-60-reversed/grid-run-02-iphone-large-grid-c180-100-r100-60-reversed-11-1-dec1da97-a018-4e45-9718-a1122d6a94b9-dec1da97-a018-4e45-9718-a1122d6a94b9/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 7,
+          "caseID": "grid-c180-100-r100-60-only-2-2",
+          "path": "captures/iphone/large/attempts/grid-c180-100-r100-60-only-2-2/grid-run-02-iphone-large-grid-c180-100-r100-60-only-2-2-12-1-cfdcfbd0-ffdf-47c0-a1f0-cba2417c2708-cfdcfbd0-ffdf-47c0-a1f0-cba2417c2708/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 8,
+          "caseID": "grid-control-padding-overlay",
+          "path": "captures/iphone/large/attempts/grid-control-padding-overlay/grid-run-02-iphone-large-grid-control-padding-overlay-13-1-5ecb5ada-78f7-4ef8-9180-3a1b18eb6663-5ecb5ada-78f7-4ef8-9180-3a1b18eb6663/crop.png",
+          "status": "pass"
+        }
+      ]
+    },
+    "iphone-xxl": {
+      "output": "visual-review/iphone-xxl.png",
+      "entries": [
+        {
+          "index": 1,
+          "caseID": "grid-c100-180-r60-100-normal",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c100-180-r60-100-normal/grid-run-02-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-normal-14-1-1ab93c68-f5ef-4658-a0eb-a3aaf0a52fe0-1ab93c68-f5ef-4658-a0eb-a3aaf0a52fe0/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 2,
+          "caseID": "grid-c100-180-r60-100-reversed",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c100-180-r60-100-reversed/grid-run-02-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-reversed-15-1-034fb5f1-ec81-47b9-ac7f-792fb2cada0c-034fb5f1-ec81-47b9-ac7f-792fb2cada0c/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 3,
+          "caseID": "grid-c100-180-r60-100-only-2-2",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c100-180-r60-100-only-2-2/grid-run-02-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-only-2-2-16-1-ecd99929-ce09-4b6c-b48c-fa9da32ebc17-ecd99929-ce09-4b6c-b48c-fa9da32ebc17/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 4,
+          "caseID": "grid-c100-180-r100-60-normal",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c100-180-r100-60-normal/grid-run-02-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-normal-17-1-5e35e646-64d8-4587-8347-787cb6c88dae-5e35e646-64d8-4587-8347-787cb6c88dae/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 5,
+          "caseID": "grid-c100-180-r100-60-reversed",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c100-180-r100-60-reversed/grid-run-02-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-reversed-18-1-a0c06118-37ff-4f90-ba88-703f8a415429-a0c06118-37ff-4f90-ba88-703f8a415429/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 6,
+          "caseID": "grid-c100-180-r100-60-only-2-2",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c100-180-r100-60-only-2-2/grid-run-02-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-only-2-2-19-1-6e797d5a-c02d-4151-90f3-aef0e7cd1649-6e797d5a-c02d-4151-90f3-aef0e7cd1649/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 7,
+          "caseID": "grid-c180-100-r60-100-normal",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c180-100-r60-100-normal/grid-run-02-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-normal-20-1-3553838c-c83d-444b-a833-f81f02f13555-3553838c-c83d-444b-a833-f81f02f13555/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 8,
+          "caseID": "grid-c180-100-r60-100-reversed",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c180-100-r60-100-reversed/grid-run-02-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-reversed-21-1-5a9ac2c7-bbc7-4640-957b-4d4858f14d4b-5a9ac2c7-bbc7-4640-957b-4d4858f14d4b/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 9,
+          "caseID": "grid-c180-100-r60-100-only-2-2",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c180-100-r60-100-only-2-2/grid-run-02-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-only-2-2-22-1-bdeaa812-77e1-4ece-bbc5-7ef5808fcc69-bdeaa812-77e1-4ece-bbc5-7ef5808fcc69/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 10,
+          "caseID": "grid-c180-100-r100-60-normal",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c180-100-r100-60-normal/grid-run-02-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-normal-23-1-1d07486f-1547-4350-9c30-363d53098548-1d07486f-1547-4350-9c30-363d53098548/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 11,
+          "caseID": "grid-c180-100-r100-60-reversed",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c180-100-r100-60-reversed/grid-run-02-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-reversed-24-1-61919e3a-c9c6-4ca8-8c8e-ab55d62612cd-61919e3a-c9c6-4ca8-8c8e-ab55d62612cd/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 12,
+          "caseID": "grid-c180-100-r100-60-only-2-2",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-c180-100-r100-60-only-2-2/grid-run-02-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-only-2-2-25-1-86f555cc-630e-4d82-8f08-0e2b3a32c7a6-86f555cc-630e-4d82-8f08-0e2b3a32c7a6/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 13,
+          "caseID": "grid-control-padding-overlay",
+          "path": "captures/iphone/accessibility-extra-extra-large/attempts/grid-control-padding-overlay/grid-run-02-iphone-accessibility-extra-extra-large-grid-control-padding-overlay-26-1-65fdd4e8-1ac7-4310-b36e-5860d3d46c17-65fdd4e8-1ac7-4310-b36e-5860d3d46c17/crop.png",
+          "status": "pass"
+        }
+      ]
+    },
+    "ipad-large": {
+      "output": "visual-review/ipad-large.png",
+      "entries": [
+        {
+          "index": 1,
+          "caseID": "grid-c100-180-r60-100-normal",
+          "path": "captures/ipad/large/attempts/grid-c100-180-r60-100-normal/grid-run-02-ipad-large-grid-c100-180-r60-100-normal-27-1-0db5129b-1926-4cca-b3e5-95243003f23d-0db5129b-1926-4cca-b3e5-95243003f23d/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 2,
+          "caseID": "grid-c100-180-r60-100-reversed",
+          "path": "captures/ipad/large/attempts/grid-c100-180-r60-100-reversed/grid-run-02-ipad-large-grid-c100-180-r60-100-reversed-28-1-7ed3cd9c-54e3-416b-856e-f950f3e56638-7ed3cd9c-54e3-416b-856e-f950f3e56638/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 3,
+          "caseID": "grid-c100-180-r60-100-only-2-2",
+          "path": "captures/ipad/large/attempts/grid-c100-180-r60-100-only-2-2/grid-run-02-ipad-large-grid-c100-180-r60-100-only-2-2-29-1-0174ed1d-1594-4684-95c1-54b72313d337-0174ed1d-1594-4684-95c1-54b72313d337/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 4,
+          "caseID": "grid-c100-180-r100-60-normal",
+          "path": "captures/ipad/large/attempts/grid-c100-180-r100-60-normal/grid-run-02-ipad-large-grid-c100-180-r100-60-normal-30-1-0ab94481-ec36-40f4-95a2-e9fe33effa19-0ab94481-ec36-40f4-95a2-e9fe33effa19/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 5,
+          "caseID": "grid-c100-180-r100-60-reversed",
+          "path": "captures/ipad/large/attempts/grid-c100-180-r100-60-reversed/grid-run-02-ipad-large-grid-c100-180-r100-60-reversed-31-2-3504a2c7-d57c-4f35-b6c8-c2c4c243c8af-3504a2c7-d57c-4f35-b6c8-c2c4c243c8af/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 6,
+          "caseID": "grid-c100-180-r100-60-only-2-2",
+          "path": "captures/ipad/large/attempts/grid-c100-180-r100-60-only-2-2/grid-run-02-ipad-large-grid-c100-180-r100-60-only-2-2-32-1-df3b3e97-cf7f-451d-b5b2-7da9ee0ef7fc-df3b3e97-cf7f-451d-b5b2-7da9ee0ef7fc/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 7,
+          "caseID": "grid-c180-100-r60-100-normal",
+          "path": "captures/ipad/large/attempts/grid-c180-100-r60-100-normal/grid-run-02-ipad-large-grid-c180-100-r60-100-normal-33-1-c84431f1-59e3-47be-b1ac-2499925f1ad5-c84431f1-59e3-47be-b1ac-2499925f1ad5/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 8,
+          "caseID": "grid-c180-100-r60-100-reversed",
+          "path": "captures/ipad/large/attempts/grid-c180-100-r60-100-reversed/grid-run-02-ipad-large-grid-c180-100-r60-100-reversed-34-1-e68095cc-d913-4a55-aabb-8a016f1c72bf-e68095cc-d913-4a55-aabb-8a016f1c72bf/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 9,
+          "caseID": "grid-c180-100-r60-100-only-2-2",
+          "path": "captures/ipad/large/attempts/grid-c180-100-r60-100-only-2-2/grid-run-02-ipad-large-grid-c180-100-r60-100-only-2-2-35-1-61708f28-4745-453b-9a8a-1b38adb69022-61708f28-4745-453b-9a8a-1b38adb69022/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 10,
+          "caseID": "grid-c180-100-r100-60-normal",
+          "path": "captures/ipad/large/attempts/grid-c180-100-r100-60-normal/grid-run-02-ipad-large-grid-c180-100-r100-60-normal-36-1-b28b6c39-b476-45e2-8c4c-31558a13b0ce-b28b6c39-b476-45e2-8c4c-31558a13b0ce/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 11,
+          "caseID": "grid-c180-100-r100-60-reversed",
+          "path": "captures/ipad/large/attempts/grid-c180-100-r100-60-reversed/grid-run-02-ipad-large-grid-c180-100-r100-60-reversed-37-1-0cb91036-9160-40a8-b581-cde704c55d5a-0cb91036-9160-40a8-b581-cde704c55d5a/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 12,
+          "caseID": "grid-c180-100-r100-60-only-2-2",
+          "path": "captures/ipad/large/attempts/grid-c180-100-r100-60-only-2-2/grid-run-02-ipad-large-grid-c180-100-r100-60-only-2-2-38-1-4b2999d7-e7d2-4c45-804a-232d6f717712-4b2999d7-e7d2-4c45-804a-232d6f717712/crop.png",
+          "status": "pass"
+        },
+        {
+          "index": 13,
+          "caseID": "grid-control-padding-overlay",
+          "path": "captures/ipad/large/attempts/grid-control-padding-overlay/grid-run-02-ipad-large-grid-control-padding-overlay-39-1-73318c99-b096-4c5f-ad28-dff043c7de23-73318c99-b096-4c5f-ad28-dff043c7de23/crop.png",
+          "status": "pass"
+        }
+      ]
+    }
+  }
+}

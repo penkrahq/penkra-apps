@@ -1,0 +1,12 @@
+{
+  "hashes": [
+    "21bce02316e7f09c5d72d78b908d0d723bc713bed3ee1e0462c351ac9589e5bf",
+    "f7e3f0f355dfb8252baa1b58d091247d9f584f2a47e5e8a05a26b26ab3cda82c"
+  ],
+  "stable": false,
+  "delayMs": 500,
+  "paths": [
+    "captures/ipad/large/attempts/grid-c100-180-r100-60-reversed/grid-run-02-ipad-large-grid-c100-180-r100-60-reversed-31-1-bd72e9c0-73ee-4972-9666-b5a696a640db-bd72e9c0-73ee-4972-9666-b5a696a640db/full/grid-c100-180-r100-60-reversed-a.png",
+    "captures/ipad/large/attempts/grid-c100-180-r100-60-reversed/grid-run-02-ipad-large-grid-c100-180-r100-60-reversed-31-1-bd72e9c0-73ee-4972-9666-b5a696a640db-bd72e9c0-73ee-4972-9666-b5a696a640db/full/grid-c100-180-r100-60-reversed-b.png"
+  ]
+}

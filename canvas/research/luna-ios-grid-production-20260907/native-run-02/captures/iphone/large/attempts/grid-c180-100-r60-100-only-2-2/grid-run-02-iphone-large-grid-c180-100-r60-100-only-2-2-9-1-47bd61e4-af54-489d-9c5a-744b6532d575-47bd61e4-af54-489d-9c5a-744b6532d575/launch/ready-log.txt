@@ -1,0 +1,6 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 04:27:18.143 Df CanvasGridEvidence[85558:52c39db] (Foundation) LUNA_GRID_READY case=grid-c180-100-r60-100-only-2-2 nonce=grid-run-02-iphone-large-grid-c180-100-r60-100-only-2-2-9-1-47bd61e4-af54-489d-9c5a-744b6532d575
+2026-09-07 04:27:18.144 Df CanvasGridEvidence[85558:52c39db] (Foundation) LUNA_GRID_ROOT case=grid-c180-100-r60-100-only-2-2 nonce=grid-run-02-iphone-large-grid-c180-100-r60-100-only-2-2-9-1-47bd61e4-af54-489d-9c5a-744b6532d575 frame=31.000,251.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000
+2026-09-07 04:27:18.985 Df log[85570:0] [com.apple.log:] log run noninteractively, parent: 65951 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--last' '5s' '--predicate' 'eventMessage CONTAINS[c] "LUNA_GRID_READY" OR eventMessage CONTAINS[c] "LUNA_GRID_ROOT"'
+
+getpwuid_r did not find a match for uid 501
