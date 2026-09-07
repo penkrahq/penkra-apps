@@ -4,6 +4,12 @@ Evidence only; the owning Canvas TODO remains the planning authority and was not
 
 ## 2026-09-07 08:09 UTC source verification
 
+Subsequent integration of the omitted-Type ExtGState correction passed `node scripts/test.mjs src/exporters/*pdfx*.test.mjs src/export-service.test.mjs compatibility/test-runner.test.mjs`: 536 tests, zero failures/cancellations/skips, exit 0, 6464 ms. Source commit `55bcfea` preserves existing Type-present diagnostics and also validates fields of omitted-Type dictionaries reached through `gs`; the PDF/X publication gate is unchanged.
+
+Compose grid correction `d84f0b9` uses resolved child positions instead of equal native grid cells and avoids applying already-resolved grid padding twice. Tests in `e04a555` cover unequal tracks, explicit cells, padding, absolute overlays and paint order. The focused exporter/grid run passed 29 tests with zero failures/cancellations/skips. This is source verification; the subsequent production-path device matrix is not claimed here.
+
+At `e04a555`, development build exited 0. Public `penkra app test` returned `ok:true`, Canvas 0.2.40, eleven operation-help entries, tab ready in 476 ms at 2026-09-07T08:19:57Z, and `profileRemoved:true`. No sideload, publication, or document migration occurred in that isolated test.
+
 At combined source HEAD `4b1329d`, `npm run build:dev` exited 0. The strict command `node scripts/test.mjs src/*.test.mjs src/exporters/*.test.mjs collaboration/pen-yjs-model.test.mjs` passed 747 tests, zero failures/cancellations/skips, exit 0, in 10412 ms. This explicitly excludes `compatibility/*.test.mjs` and does not supersede the earlier full-suite Compose cancellation. Native compilation was not started alongside the iOS worker's compiler lease.
 
 Fresh Computer Use in the original numbered Dev1 restored Canvas's document list. Read-only installation metadata identifies Canvas 0.2.40, sideload package digest `03c351437d853567cfccfaec1afcef35ee82819e674719857a4944d49592265e`, installed September 5. That is an older package, not installed acceptance of the newly built combined source. No installation metadata or live documents were changed by this check.
