@@ -118,3 +118,25 @@ A direct consumer reference to `${ui:privateInk}` rejected with
 `CANVAS_LIBRARY_ITEM_PRIVATE`. Two aliases selecting different accepted items
 also retained separate manifests. This is an inspection result, not a broader
 persistence or backend acceptance claim.
+
+## Alias-local materialization follow-up
+
+Source commit: `ee803d2` (`fix(canvas): isolate retained imports by alias`)
+Test commit: `15497b2` (`test(canvas): cover alias-local retained closures`)
+
+The focused command was rerun after these commits with exit code `0`: `65`
+tests passed, `0` failed, `0` cancelled, and `0` skipped. `git diff --check`
+passed.
+
+Each retention now owns its groups and asset records during validation and
+materialization. The only cross-retention state is the consistency map that
+rejects a conflicting content hash for the same `(libraryId, releaseId)`;
+resources, assets, and nested public manifests never come from another root's
+retention. New cases covered same-release aliases with distinct accepted items
+and assets, shared dependencies with distinct nested accepted items, and
+missing root items/assets that another alias happened to contain.
+
+The accepted storage descriptor and retained item self-hashes authenticate the
+bundle boundary used here, but are not a cryptographic inclusion proof for
+arbitrary omitted content. No Merkle tree, signature system, or other new
+proof scheme was added.
