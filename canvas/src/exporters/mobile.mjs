@@ -8,7 +8,7 @@ export function exportSwiftUI(ir, options = {}) {
   assertScreenNames(ir.outputs);
   if (options.fonts) options = { ...options, fontCatalog: mobileFontCatalog(ir, options.fonts) };
   const files = new Map([["_canvas/FlowLayout.swift", swiftFlowHelper]]);
-  for (const output of ir.outputs) files.set(`${sourceName(output.name)}.swift`, swiftScreen(output, options));
+  for (const output of ir.outputs) files.set(`${sourceName(output.name)}.swift`, swiftScreen(output, options, ir));
   if (options.fontCatalog) addMobileFontFiles(files, options.fontCatalog, "ios");
   return files;
 }
@@ -17,7 +17,7 @@ export function exportCompose(ir, options = {}) {
   assertScreenNames(ir.outputs);
   if (options.fonts) options = { ...options, fontCatalog: mobileFontCatalog(ir, options.fonts) };
   const files = new Map([["_canvas/CanvasFlowLayout.kt", composeFlowHelper]]);
-  for (const output of ir.outputs) files.set(`${sourceName(output.name)}.kt`, ensureComposeImports(composeScreen(output, options)));
+  for (const output of ir.outputs) files.set(`${sourceName(output.name)}.kt`, ensureComposeImports(composeScreen(output, options, ir)));
   if (options.fontCatalog) addMobileFontFiles(files, options.fontCatalog, "android");
   return files;
 }
@@ -41,11 +41,68 @@ function ensureComposeImports(source) {
     .replace("import androidx.compose.ui.graphics.Color\n", "import androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.drawscope.rotate\nimport androidx.compose.ui.graphics.drawscope.scale\nimport androidx.compose.ui.graphics.drawscope.withTransform\n");
 }
 
-function swiftScreen(output, options) {
-  const children = groupChildren(output.nodes);
-  const root = output.root ?? rootNode(output);
-  const language = output.lang ? swiftLanguageModifier(output.lang) : "";
-  return `import Foundation\nimport SwiftUI\n\npublic struct ${sourceName(output.name)}: View {\n  public init() {${options.fontCatalog?.size ? " CanvasFonts.register() " : ""}}\n  public var body: some View {\n${swiftContainer(root, orderedChildren(root, children), children, options, 2, true)}\n      .accessibilityElement(children: .contain)${swiftAccessibility(root)}${language}\n  }\n}\n`;
+function swiftScreen(output, options, ir) {
+  const runtime = swiftRuntimeBody(output, options, ir);
+  const environment = runtime.appearance ? "  @Environment(\\.colorScheme) private var colorScheme\n" : "";
+  return `import Foundation\nimport SwiftUI\n\npublic struct ${sourceName(output.name)}: View {\n${environment}  public init() {${options.fontCatalog?.size ? " CanvasFonts.register() " : ""}}\n  public var body: some View {\n${runtime.body}\n  }\n}\n`;
+}
+
+function swiftRuntimeBody(output, options, ir) {
+  const runtime = mobileRuntimeForOutput(ir, output);
+  const render = (candidate, depth) => {
+    const children = groupChildren(candidate.nodes);
+    const root = candidate.root ?? rootNode(candidate);
+    const language = candidate.lang ? swiftLanguageModifier(candidate.lang) : "";
+    return `${swiftContainer(root, orderedChildren(root, children), children, options, depth, true)}\n${"  ".repeat(depth)}.accessibilityElement(children: .contain)${swiftAccessibility(root)}${language}`;
+  };
+  if (!runtime) return { body: render(output, 2), appearance: false };
+  const branches = runtime.variants.map((variant) => variant.output);
+  const expressions = branches.map((candidate, index) => ({
+    candidate,
+    condition: swiftRuntimeCondition(runtime, runtime.combinations[index].modes),
+  }));
+  const chain = expressions.map((entry, index) => {
+    const prefix = index === 0 ? "if" : index === expressions.length - 1 && !entry.condition ? "else" : "else if";
+    const condition = entry.condition;
+    return `${"  ".repeat(3)}${prefix}${prefix === "else" ? "" : condition ? ` ${condition}` : " true"} {\n${render(entry.candidate, 4)}\n${"  ".repeat(3)}}`;
+  }).join("\n");
+  const body = runtime.viewport
+    ? `    GeometryReader { proxy in\n${chain}\n    }`
+    : `    ${chain.trimStart()}`;
+  return { body, appearance: runtime.appearance };
+}
+
+function mobileRuntimeForOutput(ir, output) {
+  const axes = ["appearance", "viewport"].filter((name) => ir.axes?.[name]);
+  if (!axes.length || !Array.isArray(ir.mobileVariants) || !ir.mobileVariants.length) return null;
+  const combinations = ir.mobileVariants.map((variant) => ({
+    modes: variant.modes,
+    output: variant.outputs.find((candidate) => candidate.id === output.id) ?? variant.outputs[output.index],
+  }));
+  const modeFor = (axis, name) => (ir.axes[axis]?.modes ?? []).find((mode) => mode.name === name) ?? {};
+  combinations.sort((a, b) => {
+    const viewportDelta = Number(modeFor("viewport", b.modes.viewport).minWidth ?? 0) - Number(modeFor("viewport", a.modes.viewport).minWidth ?? 0);
+    if (viewportDelta) return viewportDelta;
+    return Number(Boolean(modeFor("appearance", b.modes.appearance).media)) - Number(Boolean(modeFor("appearance", a.modes.appearance).media));
+  });
+  const appearance = axes.includes("appearance") && (ir.axes.appearance.modes ?? []).some((mode) => mode.media);
+  const viewport = axes.includes("viewport") && (ir.axes.viewport.modes ?? []).some((mode) => Number(mode.minWidth) > 0);
+  if (!appearance && !viewport) return null;
+  return { axes, combinations, variants: combinations, appearance, viewport, modeFor };
+}
+
+function swiftRuntimeCondition(runtime, modes) {
+  const conditions = [];
+  if (runtime.appearance) {
+    const mode = runtime.modeFor("appearance", modes.appearance);
+    const media = String(mode.media ?? "").match(/prefers-color-scheme\s*:\s*(dark|light)/u);
+    if (media) conditions.push(`colorScheme == .${media[1]}`);
+  }
+  if (runtime.viewport) {
+    const mode = runtime.modeFor("viewport", modes.viewport);
+    if (Number(mode.minWidth) > 0) conditions.push(`proxy.size.width >= ${n(mode.minWidth)}`);
+  }
+  return conditions.join(" && ");
 }
 
 function swiftNode(node, children, options, depth, parentLayout) {
@@ -206,10 +263,43 @@ function swiftLanguageModifier(language) {
   return `.environment(\\.locale, Locale(identifier: ${JSON.stringify(language)}))`;
 }
 
-function composeScreen(output, options) {
+function composeScreen(output, options, ir) {
   const children = groupChildren(output.nodes);
   const root = output.root ?? rootNode(output);
-  return `package generated.canvas\n\nimport android.graphics.BitmapFactory\nimport android.util.Base64\nimport androidx.compose.foundation.Image\nimport androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background\nimport androidx.compose.foundation.layout.*\nimport androidx.compose.foundation.lazy.grid.GridCells\nimport androidx.compose.foundation.lazy.grid.LazyVerticalGrid\nimport androidx.compose.foundation.shape.CircleShape\nimport androidx.compose.foundation.shape.RoundedCornerShape\nimport androidx.compose.material3.Text\nimport androidx.compose.runtime.Composable\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.Path\nimport androidx.compose.ui.graphics.PathFillType\nimport androidx.compose.ui.graphics.asImageBitmap\nimport androidx.compose.ui.semantics.clearAndSetSemantics\nimport androidx.compose.ui.semantics.contentDescription\nimport androidx.compose.ui.semantics.heading\nimport androidx.compose.ui.semantics.semantics\nimport androidx.compose.ui.text.SpanStyle\nimport androidx.compose.ui.text.buildAnnotatedString\nimport androidx.compose.ui.text.withStyle\nimport androidx.compose.ui.text.font.FontStyle\nimport androidx.compose.ui.text.font.FontWeight\nimport androidx.compose.ui.text.style.TextDecoration\nimport androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.em\nimport androidx.compose.ui.unit.sp\n\n@OptIn(ExperimentalLayoutApi::class)\n@Composable fun ${sourceName(output.name)}() {\n${composeContainer(root, orderedChildren(root, children), children, options, 1, true)}\n}\n`;
+  const runtime = composeRuntimeBody(output, options, ir);
+  return `package generated.canvas\n\nimport android.graphics.BitmapFactory\nimport android.util.Base64\nimport androidx.compose.foundation.Image\nimport androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background\nimport androidx.compose.foundation.layout.*\nimport androidx.compose.foundation.lazy.grid.GridCells\nimport androidx.compose.foundation.lazy.grid.LazyVerticalGrid\nimport androidx.compose.foundation.shape.CircleShape\nimport androidx.compose.foundation.shape.RoundedCornerShape\nimport androidx.compose.material3.Text\nimport androidx.compose.runtime.Composable\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.Path\nimport androidx.compose.ui.graphics.PathFillType\nimport androidx.compose.ui.graphics.asImageBitmap\nimport androidx.compose.ui.semantics.clearAndSetSemantics\nimport androidx.compose.ui.semantics.contentDescription\nimport androidx.compose.ui.semantics.heading\nimport androidx.compose.ui.semantics.semantics\nimport androidx.compose.ui.text.SpanStyle\nimport androidx.compose.ui.text.buildAnnotatedString\nimport androidx.compose.ui.text.withStyle\nimport androidx.compose.ui.text.font.FontStyle\nimport androidx.compose.ui.text.font.FontWeight\nimport androidx.compose.ui.text.style.TextDecoration\nimport androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.em\nimport androidx.compose.ui.unit.sp\n\n@OptIn(ExperimentalLayoutApi::class)\n@Composable fun ${sourceName(output.name)}() {\n${runtime}\n}\n`;
+}
+
+function composeRuntimeBody(output, options, ir) {
+  const runtime = mobileRuntimeForOutput(ir, output);
+  const render = (candidate, depth) => {
+    const children = groupChildren(candidate.nodes);
+    const root = candidate.root ?? rootNode(candidate);
+    return composeContainer(root, orderedChildren(root, children), children, options, depth, true);
+  };
+  if (!runtime) return render(output, 1);
+  const branches = runtime.variants.map((variant, index) => {
+    const condition = composeRuntimeCondition(runtime, runtime.combinations[index].modes);
+    const prefix = index === 0 ? "if" : index === runtime.variants.length - 1 && !condition ? "else" : "else if";
+    return `${"  ".repeat(2)}${prefix}${prefix === "else" ? "" : condition ? ` (${condition})` : " (true)"} {\n${render(variant.output, 3)}\n${"  ".repeat(2)}}`;
+  }).join("\n");
+  const dark = runtime.appearance ? "  val canvasDark = androidx.compose.foundation.isSystemInDarkTheme()\n" : "";
+  if (!runtime.viewport) return `${dark}${branches.trimStart()}`;
+  return `${dark}  BoxWithConstraints {\n${branches}\n  }`;
+}
+
+function composeRuntimeCondition(runtime, modes) {
+  const conditions = [];
+  if (runtime.appearance) {
+    const mode = runtime.modeFor("appearance", modes.appearance);
+    const media = String(mode.media ?? "").match(/prefers-color-scheme\s*:\s*(dark|light)/u);
+    if (media) conditions.push(`canvasDark == ${media[1] === "dark"}`);
+  }
+  if (runtime.viewport) {
+    const mode = runtime.modeFor("viewport", modes.viewport);
+    if (Number(mode.minWidth) > 0) conditions.push(`maxWidth >= ${kotlinFloat(mode.minWidth)}.dp`);
+  }
+  return conditions.join(" && ");
 }
 
 function composeNode(node, children, options, depth, parentLayout) {

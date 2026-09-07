@@ -7,6 +7,8 @@ import { rasterPolicyFor } from "./raster-policy.mjs";
 import { vectorForNode } from "./vector-path.mjs";
 
 const CAPABILITY_VERIFICATION = Symbol("canvas-capability-verification");
+const MOBILE_VARIANT_BUILD = Symbol("canvas-mobile-variant-build");
+const MOBILE_RASTER_SIGNATURES = Symbol("canvas-mobile-raster-signatures");
 const MEASURED_PDF_TEXT_PATHS = new Set(["properties.textAlign", "properties.textAlignVertical", "properties.textGrowth", "properties.lineHeight", "properties.letterSpacing", "properties.text.run.letterSpacing", "properties.text.paragraph.align"]);
 
 export function buildCapabilityVerificationIR(document, request, assumedNativePaths) {
@@ -18,6 +20,25 @@ export function buildCapabilityVerificationIR(document, request, assumedNativePa
 }
 
 export function buildExporterIR(document, request) {
+  const runtime = ["ios", "android"].includes(request.role) ? mobileRuntimeAxes(document.axes ?? {}) : null;
+  const base = buildExporterIRBase(document, request);
+  if (!["ios", "android"].includes(request.role) || request[MOBILE_VARIANT_BUILD]) return base;
+  if (!runtime.axes.length) return { ...base, mobileVariants: [] };
+  const combinations = mobileModeCombinations(runtime);
+  if (combinations.length > 64) throw exportError("CANVAS_MOBILE_AXIS_COMBINATIONS", "Mobile appearance and viewport axes exceed the 64-mode combination limit.");
+  const mobileVariants = combinations.map((modes) => {
+    const variant = buildExporterIRBase(document, {
+      ...request,
+      modes: { ...modes },
+      [MOBILE_VARIANT_BUILD]: true,
+    });
+    return { modes: variant.modes, outputs: variant.outputs, renderDocument: variant.renderDocument, rasters: variant.rasters, [MOBILE_RASTER_SIGNATURES]: variant[MOBILE_RASTER_SIGNATURES] };
+  });
+  assertMobileRasterSafety(base, mobileVariants);
+  return { ...base, mobileVariants: mobileVariants.map(({ [MOBILE_RASTER_SIGNATURES]: _signatures, ...variant }) => variant) };
+}
+
+function buildExporterIRBase(document, request) {
   if (!["slide", "route", "ios", "android"].includes(request.role)) throw exportError("CANVAS_EXPORT_ROLE", `No deliverable exporter exists for role ${request.role}; PDF uses extraction.`);
   const format = { slide: "pptx", route: "html", ios: "swift", android: "kotlin" }[request.role];
   const capability = capabilityTableFor(format);
@@ -70,6 +91,7 @@ export function buildExporterIR(document, request) {
       nodes: rootCapability.verdict === "raster" ? [] : collectOutputNodes(graph, sourceById, authoredById, { ...graphNode, ...graph.getAbsolutePosition(frameId) }, capability, frameId, projection, resolved.document.paragraphStyles ?? {}, resolved.document.lang ?? null, verification),
     };
   });
+  const initialRoots = outputs.map((output) => ({ ...output.root }));
   for (const output of outputs) {
     if (output.root.capability.verdict !== "raster") continue;
     output.nodes.unshift({ ...output.root, parent: null, z: 0, isolation: output.id, clip: null });
@@ -104,7 +126,7 @@ export function buildExporterIR(document, request) {
     }))),
   ];
   const notes = [...sourceById.values()].filter((node) => node.type === "text" && typeof node.notesFor === "string");
-  return {
+  const result = {
     format,
     renderDocument: resolved.document,
     projection,
@@ -122,6 +144,101 @@ export function buildExporterIR(document, request) {
     lowered: resolved.lowered,
     colorSpace: "sRGB",
   };
+  Object.defineProperty(result, MOBILE_RASTER_SIGNATURES, { value: rasterSignatures(rasters, evaluatedNodes, initialRoots) });
+  return result;
+}
+
+function mobileRuntimeAxes(axes) {
+  const names = ["appearance", "viewport"].filter((name) => Object.hasOwn(axes, name));
+  return {
+    axes: names.map((name) => {
+      const definition = axes[name];
+      if (!definition || !Array.isArray(definition.modes) || definition.modes.length === 0) throw mobileAxisMetadataError(`${name} must declare a non-empty modes array.`);
+      const seen = new Set();
+      const modes = definition.modes.map((mode, index) => {
+        if (!mode || typeof mode !== "object" || typeof mode.name !== "string" || !mode.name) throw mobileAxisMetadataError(`${name} mode ${index} must have a non-empty name.`);
+        if (seen.has(mode.name)) throw mobileAxisMetadataError(`${name} mode ${mode.name} is ambiguous.`);
+        seen.add(mode.name);
+        if (name === "appearance") {
+          const media = mode.media;
+          if (media === undefined && index !== 0) throw mobileAxisMetadataError(`Appearance mode ${mode.name} must map to prefers-color-scheme dark or light.`);
+          let scheme = null;
+          if (media !== undefined) {
+            if (typeof media !== "string") throw mobileAxisMetadataError(`Appearance mode ${mode.name} has invalid media metadata.`);
+            const normalizedMedia = media.trim().replace(/^\(/u, "").replace(/\)$/u, "");
+            const match = /^prefers-color-scheme\s*:\s*(dark|light)$/u.exec(normalizedMedia);
+            if (!match) throw mobileAxisMetadataError(`Appearance mode ${mode.name} must map to prefers-color-scheme dark or light.`);
+            scheme = match[1];
+          }
+          return { name: mode.name, scheme, media: media === undefined ? null : media };
+        }
+        if (!Object.hasOwn(mode, "minWidth") || typeof mode.minWidth !== "number" || !Number.isFinite(mode.minWidth) || mode.minWidth < 0) throw mobileAxisMetadataError(`Viewport mode ${mode.name} requires a finite non-negative minWidth.`);
+        return { name: mode.name, minWidth: mode.minWidth };
+      });
+      if (name === "appearance") {
+        const schemes = new Set();
+        for (const mode of modes) if (mode.scheme) {
+          if (schemes.has(mode.scheme)) throw mobileAxisMetadataError(`Appearance media mapping for ${mode.scheme} is ambiguous.`);
+          schemes.add(mode.scheme);
+        }
+      } else {
+        for (let index = 1; index < modes.length; index++) if (modes[index].minWidth <= modes[index - 1].minWidth) throw mobileAxisMetadataError("Viewport mode minWidth thresholds must be strictly ascending.");
+      }
+      return { name, modes };
+    }),
+  };
+}
+
+function mobileModeCombinations(runtime) {
+  const combinations = [];
+  const visit = (index, modes) => {
+    if (index === runtime.axes.length) {
+      combinations.push({ ...modes });
+      return;
+    }
+    const axis = runtime.axes[index];
+    for (const mode of axis.modes) visit(index + 1, { ...modes, [axis.name]: mode.name });
+  };
+  visit(0, {});
+  return combinations;
+}
+
+function mobileAxisMetadataError(message) { return exportError("CANVAS_MOBILE_AXIS_METADATA", message); }
+
+function rasterSignatures(rasters, evaluatedNodes, initialRoots) {
+  const all = new Map([...initialRoots, ...evaluatedNodes].map((node) => [node.id, node]));
+  const under = (node, scopeId) => {
+    if (node.id === scopeId) return true;
+    let parent = node.parent;
+    while (parent) {
+      if (parent === scopeId) return true;
+      parent = all.get(parent)?.parent;
+    }
+    return false;
+  };
+  return rasters.map((raster) => canonicalJson({
+    raster,
+    sources: [...all.values()].filter((node) => under(node, raster.id)).map((node) => node),
+  }));
+}
+
+function canonicalJson(value) {
+  const normalize = (item) => {
+    if (Array.isArray(item)) return item.map(normalize);
+    if (!item || typeof item !== "object") return item;
+    return Object.fromEntries(Object.keys(item).sort().map((key) => [key, normalize(item[key])]));
+  };
+  return JSON.stringify(normalize(value));
+}
+
+function assertMobileRasterSafety(base, variants) {
+  const expected = base[MOBILE_RASTER_SIGNATURES] ?? [];
+  for (const variant of variants) {
+    const actual = variant[MOBILE_RASTER_SIGNATURES] ?? [];
+    if (actual.length !== expected.length || actual.some((signature, index) => signature !== expected[index])) {
+      throw exportError("CANVAS_MOBILE_RASTER_VARIANT_UNSAFE", "A runtime mobile variant changes raster content, scope, or bounds; rasterData(id) cannot distinguish the mode-specific image.");
+    }
+  }
 }
 
 export function buildExtractionIR(document, request) {
