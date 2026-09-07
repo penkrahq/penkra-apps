@@ -94,6 +94,25 @@ test("mobile icon properties remain one explicit raster scope with native image 
   }
 });
 
+test("forced-raster mobile text retains its spoken content", () => {
+  for (const role of ["ios", "android"]) {
+    const document = {
+      version: "2.17", module: "mobile", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+      children: [{
+        id: "screen", name: "Raster Text", type: "frame", role, width: 200, height: 100,
+        children: [{ id: "copy", type: "text", width: 160, height: 40, content: "Spoken copy", export: "image", marks: [], paragraphs: [{ from: 0, to: 11 }] }],
+      }],
+    };
+    const value = buildCapabilityVerificationIR(document, { role, frames: ["screen"] }, [
+      "root.axes", "nodes.frame", "nodes.text", "properties.content", "properties.marks", "properties.paragraphs",
+    ]);
+    const sourceText = role === "ios"
+      ? exportSwiftUI(value, { rasterData: () => "AAAA" }).get("RasterText.swift")
+      : exportCompose(value, { rasterData: () => "AAAA" }).get("RasterText.kt");
+    assert.match(sourceText, role === "ios" ? /accessibilityLabel\("Spoken copy"\)/u : /contentDescription = "Spoken copy"/u);
+  }
+});
+
 test("mobile gradient inputs fail closed with stable errors", () => {
   const invalid = [
     [{ type: "gradient", gradientType: "conic", colors: [{ color: "#fff", position: 0 }, { color: "#000", position: 1 }] }, "CANVAS_MOBILE_GRADIENT_UNSUPPORTED", ["properties.fill.gradient.conic"]],

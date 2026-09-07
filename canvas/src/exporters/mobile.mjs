@@ -113,7 +113,10 @@ function swiftNode(node, children, options, depth, parentLayout) {
   if (node.capability.verdict === "raster") {
     const data = options.rasterData?.(node.id);
     if (!data) throw new Error(`SwiftUI rasterizer is required for ${node.id}.`);
-    return `${indent}CanvasRasterImage(base64: ${JSON.stringify(data)})${position}${access}`;
+    const rasterAccess = node.type === "text" && !node.semantics.decorative && !node.semantics.description
+      ? `${access}.accessibilityLabel(${JSON.stringify(node.semantics.content)})`
+      : access;
+    return `${indent}CanvasRasterImage(base64: ${JSON.stringify(data)})${position}${rasterAccess}`;
   }
   if (node.type === "text") return `${indent}(${swiftText(node, options)})${swiftTextAlignment(node)}.opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
   if (node.vector) return `${indent}${swiftVector(node)}${position}${access}`;
@@ -308,7 +311,10 @@ function composeNode(node, children, options, depth, parentLayout) {
     const data = options.rasterData?.(node.id);
     if (!data) throw new Error(`Compose rasterizer is required for ${node.id}.`);
     const name = `bytes${identifier(node.id)}`;
-    return `${indent}run { val ${name} = Base64.decode(${JSON.stringify(data)}, Base64.DEFAULT); Image(BitmapFactory.decodeByteArray(${name}, 0, ${name}.size).asImageBitmap(), null, ${modifier}) }`;
+    const rasterModifier = node.type === "text" && !node.semantics.decorative && !node.semantics.description
+      ? `${modifier}.semantics { contentDescription = ${JSON.stringify(node.semantics.content)} }`
+      : modifier;
+    return `${indent}run { val ${name} = Base64.decode(${JSON.stringify(data)}, Base64.DEFAULT); Image(BitmapFactory.decodeByteArray(${name}, 0, ${name}.size).asImageBitmap(), null, ${rasterModifier}) }`;
   }
   if (node.type === "text") return `${indent}Text(${composeText(node, options)}, style = androidx.compose.ui.text.TextStyle(fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { ${n(composeBaseFontSize(node.semantics.runs))}.dp.toSp() }, letterSpacing = 0.sp, textMotion = androidx.compose.ui.text.style.TextMotion.Animated${composeTextAlignment(node)}), modifier = ${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)}))`;
   if (node.vector) return `${indent}${composeVector(node, modifier)}`;
