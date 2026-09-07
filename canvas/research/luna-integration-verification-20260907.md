@@ -950,3 +950,35 @@ Strict integrated command (log: `/tmp/luna-library-seam-20260907.log`):
 Exit `0`; `169` passed, `0` failed, `0` cancelled, `0` skipped; duration `517.640958 ms`.
 This covered library/head/storage/retention/materializer/loader, import/resolver/schema/API,
 published-retention composition, and the real storage protocol tests. No native action ran.
+
+## PDF ExtGState key-boundary and clause-index integration
+
+After the accepted public-operation work, the approved PDF sequence was integrated in exact
+order. Worker-to-combined mappings are:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `b45bb2c50643532eb9b6e2f9876aaf34a3c2ff28` | `b703d2a` |
+| `7abd9a6235e74825fd9a1561b01e3147a963ae42` | `a67514b` |
+| `9617fe5fd15a874e7fb95544736b3cbb1bbd323b` | `f3c2f6b` |
+| `744d1b32fefd8723b81f7a31e23cdbb02bd46df6` | `eeac29f` |
+| `9ecacbdc02287d6b396871b31265fad70d9f597a` | `4e7a6ea` |
+| `6fa323a78a10a833df269ea8ad20cc84ef44201b` | `807cd32` |
+| `f46d57dfba64360adf6ffb83390cedbdfeb7977b` | `8746dde` |
+| `163f95be50f7bc7ad32ea16aed0364af435df41a` | `43bd5a3` |
+
+Scope inspection found only the reviewed excluded-feature boundary test/evidence, the narrow
+`pdfx-preflight.mjs` ExtGState key allowlist, its focused boundary test/evidence, and the
+clause-index evidence correction. No protected files, manifests, native sources, exporters
+other than the preflight seam, or capability/gate wiring changed.
+
+Strict PDF source/service command (log: `/tmp/luna-pdf-extgstate-integrated-20260907.log`):
+
+`node --test canvas/src/exporters/*.test.mjs canvas/src/export-service.test.mjs`
+
+The command completed with `1,158` tests passed, `0` failed, `0` cancelled, and `0` skipped;
+logged duration was `31,682.213292 ms`. The integrated log explicitly records that ordinary
+writer alpha remains valid under the new allowlist, and that the existing baseline gate remains
+asserted. The conformance result remains `false` with the pre-existing uncovered/gate behavior;
+this batch does not promote capability or alter the gate. No full `npm test`, native build,
+device action, or capture ran.
