@@ -1093,3 +1093,32 @@ The retained raw run-01 corpus remains unchanged at `30/30` mismatches.
 
 Final combined HEAD is `c180d90eb961a104b0e271ce6bbdc951ff047fff`; `git diff --check` passes and
 the only untracked path remains the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/`.
+
+## PDF decoded content-resource name integration
+
+The approved narrow PDF batch was cherry-picked in exact order after combined HEAD
+`86a351f1d5cd648801c522a1ea922cdfb0f715df`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `4ec701907308774af543122370d0b2499b3bfe7d` | `51d52f12076fdf43936aae0bd3ba0f6f38d77018` |
+| `0ca09dcbe5c871055097dcb674f7bd07578c7759` | `2b3e3fb8edfdb91d4bb30f18eec99a99df6d1aa1` |
+| `57c11908704f8215079bc48bcc05c953ddb1d08b` | `5baced319adfd92776a5ecdcbd0a1cc735829262` |
+
+Scope was limited to the decoded content-resource-name helper, its focused test, and research
+evidence, with the narrow `pdfx-fonts.mjs`/`pdfx-preflight.mjs` integration. No independent bug
+reproduction commits, native/build, capability, profile-gate, or protected-file changes were
+included. The lowercase pdf-lib object-escape parser limitation remains separate and was not
+changed.
+
+Strict focused command (log: `/tmp/canvas-pdf-resource-name-focused-20260907.log`):
+
+`node scripts/test.mjs src/exporters/pdf-resource-name.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-fonts.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/exporters/pdf-serialization-envelope.test.mjs src/exporters/luna-pdf-envelope-independent.test.mjs src/export-service.test.mjs`
+
+Exit `0`; `107` passed, `0` failed, `0` cancelled, `0` skipped; wrapper duration `4,829 ms`
+(Node-reported duration `4,779.633041 ms`). Clean writer/profile behavior remains covered by
+the selected tests; no native process was active. Historical iOS text evidence remains
+unchanged at `30/30` mismatches.
+
+Final combined HEAD is `5baced319adfd92776a5ecdcbd0a1cc735829262`; `git diff --check` passes and
+only the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/` is untracked.
