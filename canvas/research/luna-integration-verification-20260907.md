@@ -1329,3 +1329,47 @@ release, live-document action, native compile, device action, or capability chan
 The public manifest wording now comes from the separately integrated `5b4d6ae` commit and the
 profile enum/request shape is unchanged. Final combined HEAD is
 `1ea374004477462b2e4660f838ddda49f27accbd`; a separate evidence-only commit follows.
+
+## PDF/X writer follow-up compatibility verification
+
+The approved follow-up was cherry-picked in exact order after combined HEAD
+`45683db011efbae9215289d5b5c47c7c031e301a`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `d909a7dd928ab8868c4fd5518e8a84702d8c08c0` | `9bf9c83eea72b331ac4750f70f0b8fd17cb34e75` |
+| `dab96be518d8c9f4902292783bd4b2e87f60ccd1` | `5831af74110b7a12458a9e034e55e4764648a4c1` |
+| `6eab7ded5506f5b79d67df7321106911816f7cc4` | `11e7e2dd392197abcd8ef756ab68361108ce72ca` |
+
+Diff/stat inspection confirmed that `d909a7d` updates only the PDF/X export-path matrix test,
+`dab96be` adds only its follow-up research evidence, and `6eab7de` adds only
+`canvas/research/atferd-installed-readonly-transport-20260907.md`. No protected, production,
+native, device, capability, or gate changes were included; no patch-equivalent was skipped.
+
+The corrected compatibility-only selection discovered 37 test files with `rg --files`, excluding
+only `compatibility/mobile-export-compilation.test.mjs`, and ran with the strict file-list runner
+and no native compilation:
+
+```zsh
+compatibilityFiles=("${(@f)$(rg --files --glob '*.test.mjs' compatibility | sort | rg -v '^compatibility/mobile-export-compilation\.test\.mjs$')}")
+/usr/bin/time -p node scripts/test.mjs "${compatibilityFiles[@]}" > /tmp/canvas-pdfx-writer-followup-compatibility-no-mobile-20260907.log 2>&1
+```
+
+The exact expanded list is retained at
+`/tmp/canvas-pdfx-writer-followup-compatibility-no-mobile-20260907.files`; log:
+`/tmp/canvas-pdfx-writer-followup-compatibility-no-mobile-20260907.log`. Exit `1`; `179` passed,
+`1` failed, `0` cancelled, `0` skipped; Node-reported duration `68,932.979917 ms`
+(`/usr/bin/time` real `68.97 s`). The sole failure is the known stale expectation at
+`compatibility/pdf-profile-conformance.test.mjs:72`, `unverified PDF/X-4 profile cannot be
+mislabeled`, which still expects the pre-writer rejection. The approved writer behavior now
+returns the validated writer-subset artifact, so that destination exists.
+
+The first compatibility invocation was rejected by the runner's file preflight because its final
+file argument contained a shell newline; it loaded no tests and is not included in the counts
+above. The corrected invocation is the recorded result. The complete source/exporter/Yjs suite was
+not rerun, and `npm run build:dev`, isolated public `penkra app test`, and production
+`npm run build` remain held pending the stale extraction-matrix assertion correction. No native,
+device, live-document, Dev1, or capability action occurred.
+
+Final combined source/test/evidence HEAD is
+`11e7e2dd392197abcd8ef756ab68361108ce72ca`; a separate evidence-only commit follows.
