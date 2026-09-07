@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import test from "node:test";
 
 import { createCanvasApi } from "./canvas-api.mjs";
@@ -80,14 +81,27 @@ test("ready receipts accept omitted MIME and preserve the requested path over ba
   assert.deepEqual(result, { path: requested.path, sha256: requested.sha256, size: requested.bytes.byteLength });
 });
 
-test("ready receipts reject missing or mismatched identity, arrays, and requested MIME", async () => {
+test("deduplicated ready receipts may return prior MIME without changing byte identity", async () => {
+  const bytes = Uint8Array.of(7, 8, 9);
+  const sha256 = createHash("sha256").update(bytes).digest("hex");
+  const asset = { path: "images/deduplicated.png", sha256, mimeType: "image/png", bytes };
+  const { calls, runtime: fakeRuntime } = runtime((input) => {
+    assert.equal(input.path, `/projects/${encodeURIComponent(projectId)}/blobs/uploads`);
+    return response(200, { status: "ready", blob: { path: "backend/prior.jpg", sha256, size: bytes.byteLength, mimeType: "image/jpeg" } });
+  });
+  const result = await createCanvasApi(fakeRuntime).uploadAsset(projectId, asset);
+  assert.deepEqual(calls[0].body, { path: asset.path, sha256, size: bytes.byteLength, mimeType: asset.mimeType });
+  assert.deepEqual(result, { path: asset.path, sha256, size: bytes.byteLength, mimeType: "image/jpeg" });
+  assert.deepEqual(asset.bytes, bytes);
+});
+
+test("ready receipts reject missing or mismatched identity and arrays", async () => {
   const receipts = [
     ["missing hash", { size: 5 }],
     ["wrong hash", { sha256: "wrong", size: 5 }],
     ["missing size", { sha256: requested.sha256 }],
     ["wrong size", { sha256: requested.sha256, size: 4 }],
     ["array", []],
-    ["wrong MIME", { sha256: requested.sha256, size: 5, mimeType: "image/jpeg" }],
   ];
   for (const [name, blob] of receipts) {
     const { runtime: fakeRuntime } = runtime(() => response(200, { status: "ready", blob }));
@@ -95,14 +109,13 @@ test("ready receipts reject missing or mismatched identity, arrays, and requeste
   }
 });
 
-test("multipart completion receipts enforce identity and requested MIME", async () => {
+test("multipart completion receipts enforce identity", async () => {
   const receipts = [
     ["missing hash", { size: 5 }],
     ["wrong hash", { sha256: "wrong", size: 5 }],
     ["missing size", { sha256: requested.sha256 }],
     ["wrong size", { sha256: requested.sha256, size: 4 }],
     ["array", []],
-    ["wrong MIME", { sha256: requested.sha256, size: 5, mimeType: "image/jpeg" }],
   ];
   for (const [name, blob] of receipts) {
     const { runtime: fakeRuntime } = runtime((input) => {
