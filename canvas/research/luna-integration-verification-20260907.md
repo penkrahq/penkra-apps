@@ -332,6 +332,33 @@ BleedBox preferences; inherited/page-tree behavior is not covered. The helper re
 review-only diagnostic and the PDF/X publication gate remains closed. No source fix, wiring, or
 native action was taken.
 
+## PDF/X subset-policy integration
+
+The coordinator subsequently approved `85f0ea8`, `a471df7`, `ec3f2d8` in that order. Combined
+provenance is `ea4f227`, `916a62d`, `6991cec`, with no conflicts. The authorized narrow source
+integration is `e2f0c46`: `pdfx-preflight.mjs` imports and calls `inspectPdfxSubsetPolicy(pdf)`
+only after successful `PDFDocument.load`, appending its issues; it leaves `conformant:false`,
+`uncovered`, and the closed publication gate unchanged. Clause corrections are in the helper:
+Catalog/Perms `6.15`, HalftoneType `6.13`, OCG/OCMD/OC `6.24`, and metadata `6.10.6`.
+
+The separate test work is `b02dc40` plus fixture/expectation correction `b22b07c`. The final strict
+selection was:
+
+`node scripts/test.mjs src/exporters/pdfx-subset-policy.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/exporters/pdfx-metadata.test.mjs src/exporters/luna-pdfx-metadata-serialized.test.mjs src/exporters/pdfx-fonts.test.mjs src/exporters/luna-pdfx-font-matrix.test.mjs src/export-service.test.mjs`
+
+Log `/tmp/canvas-luna-pdf-subset-final-focused-20260907.log`; exit `0`, `210` pass, `0` fail,
+`0` cancelled, `0` skipped; runner duration `24737.520375 ms`, wrapper duration `25 s`.
+The added preflight-level regression uses the retained generated valid candidate: the baseline
+remains `verified-canvas-writer-subset` with `conformant:false`; after adding `Catalog/Perms {}`
+the helper issue appears as `CANVAS_SUBSET_UNSUPPORTED`, clause `6.15`, object
+`Catalog/Perms`, while `conformant:false` and the exact `uncovered` list remain unchanged.
+
+An earlier post-integration run was not accepted as final: `208` pass, `2` fail, `0` cancelled,
+`0` skipped, exit `1`, because the existing helper test still expected the old clause `6.24` and
+the regression incorrectly called gated `exportPdf` as though it returned PDF/X bytes. Those
+test-only assumptions were corrected; the identical final selection above then passed. No broad
+source change or native action occurred.
+
 ## Independent delivery review blockers
 
 The independent review report was read-only verified from delivery HEAD
