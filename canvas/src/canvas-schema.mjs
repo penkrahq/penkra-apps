@@ -27,7 +27,10 @@ export const CANVAS_SCHEMA = deepFreeze({
     } },
     import: { type: "object", required: ["documentId"], additional: false, fields: {
       documentId: { type: "string" }, pin: { type: "enum", values: ["exact", "live"] }, version: { type: "integer" },
-      updatePolicy: { type: "enum", values: ["follow", "pinned"] }, releaseId: { type: "string" }, contentHash: { type: "string" },
+      updatePolicy: { type: "enum", values: ["follow", "pinned"] }, releaseId: { type: "string" }, contentHash: { type: "string" }, retention: { ref: "storageDescriptor" },
+    } },
+    storageDescriptor: { type: "object", required: ["path", "sha256", "size"], additional: false, fields: {
+      path: { type: "string" }, sha256: { type: "string" }, size: { type: "number" }, mimeType: { type: "string" },
     } },
     library: { type: "object", required: ["public"], additional: false, fields: {
       public: { type: "array", items: { ref: "publicItem" } },
@@ -236,10 +239,28 @@ function validateImports(imports, errors) {
       const identity = typeof record.releaseId === "string" && record.releaseId.length > 0 && !/[\u0000-\u001f\u007f]/u.test(record.releaseId) && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "");
       if (typeof record.documentId !== "string" || !record.documentId || /[\u0000-\u001f\u007f]/u.test(record.documentId)
         || !["follow", "pinned"].includes(record.updatePolicy) || record.pin !== undefined || record.version !== undefined
-        || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined) && !identity)) errors.push(`Import ${alias} must select a valid published release identity without legacy pin fields.`);
-    } else if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || record.releaseId !== undefined || record.contentHash !== undefined || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)))
+        || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined) && !identity)
+        || (record.retention !== undefined && !validStorageDescriptor(record.retention))) errors.push(`Import ${alias} must select a valid published release identity without legacy pin fields.`);
+    } else if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || record.releaseId !== undefined || record.contentHash !== undefined || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)) || (record.retention !== undefined && !validStorageDescriptor(record.retention)))
       errors.push(`Import ${alias} must declare documentId and a valid live or exact pin.`);
   }
+}
+
+export function validateLibraryStorageDescriptor(value) {
+  if (!plainObject(value) || Object.keys(value).some((key) => !["path", "sha256", "size", "mimeType"].includes(key))
+    || typeof value.path !== "string" || !/^_canvas\/library-content\/[a-f0-9]{64}$/u.test(value.path)
+    || !/^[a-f0-9]{64}$/u.test(value.sha256 ?? "") || value.path !== `_canvas/library-content/${value.sha256}`
+    || !Number.isSafeInteger(value.size) || value.size < 0
+    || (value.mimeType !== undefined && typeof value.mimeType !== "string")) {
+    const error = new Error("Canvas library storage descriptor is invalid.");
+    error.code = "CANVAS_IMPORT_INTEGRITY";
+    throw error;
+  }
+  return structuredClone({ path: value.path, sha256: value.sha256, size: value.size, ...(value.mimeType !== undefined ? { mimeType: value.mimeType } : {}) });
+}
+
+function validStorageDescriptor(value) {
+  try { validateLibraryStorageDescriptor(value); return true; } catch { return false; }
 }
 
 function validateLibrarySurface(document, nodes, errors) {

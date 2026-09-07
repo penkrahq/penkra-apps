@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 import { validateLibraryRelease } from "./library-publication.mjs";
 import { prepareLibraryRetention } from "./library-retention-preparation.mjs";
 import { validateRetainedCanvasRetention } from "./library-retained-imports.mjs";
@@ -133,10 +134,10 @@ export function createLibraryStorage(api) {
 }
 
 export function isLibraryStorageAsset(asset) { return typeof asset?.path === "string" && asset.path.startsWith(PREFIX); }
+export { validateLibraryStorageDescriptor };
 
 function validateDescriptor(value) {
-  if (!value || !/^[a-f0-9]{64}$/u.test(value.sha256 ?? "") || value.path !== `${PREFIX}${value.sha256}`
-    || !Number.isSafeInteger(value.size) || value.size < 0) throw invalid("CANVAS_IMPORT_INTEGRITY");
+  validateLibraryStorageDescriptor(value);
 }
 function hash(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
 function invalid(code) { return Object.assign(new Error("Canvas library storage failed validation."), { code }); }

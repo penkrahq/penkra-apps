@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 import { assertPublicLibraryItem, PUBLIC_ITEM_KINDS, releaseIdentity, validateLibraryRelease } from "./library-publication.mjs";
 import { variableReferences } from "./variable-references.mjs";
 
@@ -60,18 +61,23 @@ export function normalizeImportRecord(record) {
   if (record.pin !== undefined || record.version !== undefined) {
     throw importError(`Import ${record.documentId} uses a legacy CRDT-sequence pin; migrate it to a published release identity.`, "CANVAS_IMPORT_LEGACY_PIN");
   }
-  if (Object.keys(record).some((key) => !["documentId", "updatePolicy", "releaseId", "contentHash"].includes(key))) throw importError(`Import ${record.documentId} contains unsupported fields.`);
+  if (Object.keys(record).some((key) => !["documentId", "updatePolicy", "releaseId", "contentHash", "retention"].includes(key))) throw importError(`Import ${record.documentId} contains unsupported fields.`);
+  let retention;
+  if (record.retention !== undefined) {
+    try { retention = validateLibraryStorageDescriptor(record.retention); }
+    catch (cause) { throw importError(`Import ${record.documentId} has an invalid retention descriptor.`, cause.code); }
+  }
   if (record.releaseId !== undefined && (typeof record.releaseId !== "string" || !record.releaseId || /[\u0000-\u001f\u007f]/u.test(record.releaseId))) throw importError(`Import ${record.documentId} has an invalid releaseId.`);
   if (record.updatePolicy === "follow") {
     if (record.releaseId !== undefined || record.contentHash !== undefined) {
       if (typeof record.releaseId !== "string" || !record.releaseId || !/^[a-f0-9]{64}$/u.test(record.contentHash ?? "")) throw importError(`Following import ${record.documentId} needs both accepted releaseId and contentHash.`);
-      return { documentId: record.documentId, updatePolicy: "follow", releaseId: record.releaseId, contentHash: record.contentHash };
+      return { documentId: record.documentId, updatePolicy: "follow", releaseId: record.releaseId, contentHash: record.contentHash, ...(retention ? { retention } : {}) };
     }
-    return { documentId: record.documentId, updatePolicy: "follow" };
+    return { documentId: record.documentId, updatePolicy: "follow", ...(retention ? { retention } : {}) };
   }
   if (record.updatePolicy === "pinned" && typeof record.releaseId === "string" && record.releaseId
     && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "")) {
-    return { documentId: record.documentId, updatePolicy: "pinned", releaseId: record.releaseId, contentHash: record.contentHash };
+    return { documentId: record.documentId, updatePolicy: "pinned", releaseId: record.releaseId, contentHash: record.contentHash, ...(retention ? { retention } : {}) };
   }
   throw importError(`Import ${record.documentId} must follow publications or pin an exact releaseId and contentHash.`);
 }
