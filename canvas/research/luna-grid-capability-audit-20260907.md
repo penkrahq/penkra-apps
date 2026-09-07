@@ -18,6 +18,17 @@ The public Canvas schema defines a dimension as a finite number, `fill_container
 
 Therefore the missing schema-valid shapes for the bounded row are the two keyword forms `fill_container` and `fit_content`; they need a separately judged resolver/emission seam. CSS-like FR/AUTO/minmax forms are schema-invalid rather than untested valid shapes.
 
+### Exact keyword rejection path
+
+The current path is:
+
+1. `validateCanvasDocument` applies the shared `dimension` rule. It accepts finite numbers, `fill_container`, and `fit_content`; this validation performs no track conversion.
+2. `buildCapabilityVerificationIR` calls `resolveCanvasDocument`. `resolveNode` applies cascade and variable resolution, but `resolveValue` leaves these literal track strings unchanged.
+3. `createOpenPencilGraph` calls `prepareOpenPencilRenderDocument`. Its `createSceneNode` maps every `gridTemplateColumns` entry through `toGridTrack`.
+4. `toGridTrack` converts numbers to `FIXED`, `auto` to `AUTO`, and positive numeric `fr` strings to `FR`; every other string throws `Invalid grid track <value>`. Thus `fill_container` and `fit_content` fail before graph layout/Yoga conversion. Numeric tracks continue through `mapGridTrack` as Yoga point tracks.
+
+The existing public dimension semantics explain the mismatch: `fill_container` and `fit_content` are sizing keywords for node width/height (`FILL`/`HUG` in the renderer preparation path), not grid-track sizing values. There is no existing grid-track `FILL` or `HUG` representation. Mapping `fill_container` to `FR`, or `fit_content` to `AUTO`, would silently invent semantics and is not recommended. The smallest consistent future decision is either to narrow the grid-track schema to the graph-supported track domain or to add an explicit, separately specified track mapping; neither is implemented in this audit.
+
 ## Retained native coverage
 
 The explicit runner verified the following retained material:
@@ -42,6 +53,14 @@ node --test canvas/src/luna-grid-capability-audit.test.mjs
 ```
 
 Result: 2 tests, 2 passed, 0 failed, 0 skipped, 0 cancelled.
+
+Focused IR/mobile exporter check:
+
+```text
+node --test canvas/src/exporter-ir.test.mjs canvas/compatibility/luna-android-layout-matrix.test.mjs
+```
+
+Result: 15 tests, 15 passed, 0 failed, 0 skipped, 0 cancelled.
 
 The retained corpus is intentionally outside autodiscovered tests. The explicit runner requires all four roots and was run as:
 
