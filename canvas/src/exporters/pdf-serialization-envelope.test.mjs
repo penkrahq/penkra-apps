@@ -108,7 +108,7 @@ test("escaped names reject invalid UTF-8 without rewriting decoded identity", ()
   for (const value of ["/ASCII", "/#C3#A9", "/#F0#9F#98#80", "/#F4#8F#BF#BF", "/#23#20"]) {
     assert.equal(report(value).verified, true, value);
   }
-  assert.equal(report("<< /#C3#A9 1 /#c3#a9 2 >>").issues[0].detail, "dictionary-key-invalid-or-duplicate");
+  assert.equal(report("<< /#C3#A9 1 /#c3#a9 2 >>").issues[0].detail, "name-lowercase-escape-parser-boundary");
 });
 
 test("stream payload is skipped by exact direct length, not searched for keywords", () => {
