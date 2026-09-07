@@ -624,7 +624,9 @@ async function reconcileFromServer(documentId) {
       if (state.lastSequence > previousSequence) {
         state.engineDocumentDirty = true;
         state.engineDocumentDirtyReason = "server-reconcile";
-        render();
+        // During initial open, retained imports must be refreshed from the
+        // reconciled document before the editor attempts to resolve refs.
+        if (!state.loading) render();
       }
       return true;
     } catch (error) {
