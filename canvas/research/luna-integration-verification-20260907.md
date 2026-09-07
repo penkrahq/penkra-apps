@@ -796,3 +796,46 @@ Log `/tmp/canvas-luna-pdf-full-exporter-service-be26e5e-20260907.log`; exit `0`,
 `0` failed, `0` cancelled, `0` skipped; runner duration `26177.901333 ms`, wrapper duration
 `26 s`. Envelope, historical preflight, page-tree, name-subset, limits, content, metadata, font,
 image, matrix, and service assertions all passed. No native action occurred.
+
+## PDF content-name and library-retention follow-on
+
+After the iOS dependency closure, the approved PDF sequence was integrated before testing:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `dfb85c8` | `d99d737` |
+| `5cbd413` | `3b2f35f` |
+| `7f2456f` | `1319768` |
+| `6b7a468` | `d8c24f3` |
+| `f6bf1e7` | `1053e89` |
+
+The sequence consists of the independent pre-fix name-boundary probe/evidence, checked content
+name validation, its regression coverage, and final evidence. The full strict selection was:
+
+`node --test canvas/src/exporters/*.test.mjs canvas/src/export-service.test.mjs`
+
+Exit `0`; `775` passed, `0` failed, `0` cancelled, `0` skipped; duration
+`26725.362625 ms`. This included the new content-name tests and retained all historical PDF/X
+envelope, limits, page-tree, content, metadata, font, image, matrix, and service checks. No gate
+or conformance promotion occurred.
+
+The approved library sequence was also integrated before testing:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `97206b6` | `81aa870` |
+| `e6d1798` | `2c153a4` |
+| `9f67b70` | `a030582` |
+| `a9b6a43` | `3fc9db3` |
+| `0f056ce` | `f248ea7` |
+| `3aea0dd` | `35bdb62` |
+
+The strict storage/retention/materializer/loader/protocol selection was:
+
+`node --test canvas/src/library-storage.test.mjs canvas/src/luna-library-storage-protocol.test.mjs canvas/src/library-release-retentions.test.mjs canvas/src/library-retained-imports.test.mjs canvas/src/library-retention-preparation.test.mjs canvas/src/library-retained-loader.test.mjs`
+
+Exit `0`; `56` passed, `0` failed, `0` cancelled, `0` skipped; duration `344.724459 ms`.
+This covers optional retention transport, snapshotting, malformed transport rejection, early
+stored-root validation before asset reads, retained materializer isolation/closure, loader
+identity and source-fallback behavior, and the real asset protocol. The separately unapproved
+`5ec6b01` acceptance remains out of combined.
