@@ -889,3 +889,36 @@ postlaunch failure branch; this remains a bounded test-coverage limitation, not 
 capture failure.
 
 No native/device action, rebuild, capability promotion, or historical evidence rewrite occurred.
+
+## Retained-publication and published-retention preparation
+
+After the approved storage-transport batch, the exact preparation sequence was integrated in
+the requested order. Worker-to-combined mappings are:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `12f8afb8fcb047774685966e785a1e3421c8dd79` | `b2b64a9` |
+| `646d27ed8cfdbdf0fe86e49a90bb37b25c26d449` | `1f7f7fd` |
+| `658954521de1713277e1be315ada8ff83a3983d0` | `bdbb353` |
+| `4f62344a73a7c28a9f062997be0d3130a3033b37` | `ccc8b78` |
+| `3ca73cc0a24cdeaa8329851b98826ffa435f9dc0` | `c537dc0` |
+| `5ec6b012a1eb9688eec32141aca57d089027929f` | `7a2b368` |
+| `79ff5898f49634c29336e0fc45a0a052bd5b20c2` | `fdc68b1` |
+| `2837796718e4a8b952163898b7c8f9a06197841b` | `24be01d` |
+| `11b685450a0b9ba4ef290f4c20e6c01c72d9026d` | `8283f1a` |
+| `5df7bcc07c40222f61ce63e7ff6170798ac4617c` | `898dd27` |
+
+The changes are limited to retained-publication and published-retention pure helpers, tests,
+research evidence, and the narrow optional retained-item reader. No public operations/writes,
+native, schema, backend, or capability changes were introduced. Alias sorting and canonical
+no-import semantic `imports: {}` corrections were integrated before the published-retention
+composition commits.
+
+Strict combined command:
+
+`node --test $(rg --files canvas/src -g 'library-*.test.mjs' | sort) canvas/src/canvas-imports.test.mjs canvas/src/canvas-resolver.test.mjs canvas/src/canvas-schema.test.mjs canvas/src/canvas-api.test.mjs canvas/src/luna-library-storage-protocol.test.mjs`
+
+Exit `0`; `161` passed, `0` failed, `0` cancelled, `0` skipped; duration `459.504042 ms`.
+This covered library imports, resolver/schema/API, publication head/service, retained-publication
+and published-retention composition, storage/retention/materializer/loader, and the real storage
+protocol. No native test or build ran.
