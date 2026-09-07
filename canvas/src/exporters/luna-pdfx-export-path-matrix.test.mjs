@@ -1,15 +1,19 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { deflateSync } from "node:zlib";
 import test from "node:test";
 import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRawStream, PDFRef, decodePDFRawStream } from "pdf-lib";
 import { vectorForNode } from "../vector-path.mjs";
 import { exportPdf } from "./pdf.mjs";
+import { readPdfContent } from "./pdf-content.mjs";
+import { lookupPdfResourceName } from "./pdf-resource-name.mjs";
 import { preflightPdfx4 } from "./pdfx-preflight.mjs";
 
 const PRINTER_BYTES = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
 const SRGB_BYTES = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
 const INTER_BYTES = await readFile(new URL("../../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
+const INTER_SHA256 = createHash("sha256").update(INTER_BYTES).digest("hex");
 
 const PDFX_OPTIONS = Object.freeze({
   profile: "PDF/X-4",
@@ -160,7 +164,7 @@ async function assertPdfxCandidate(caseDefinition) {
   assert.deepEqual(report.issues, [], caseDefinition.name);
   assert.equal(report.canvasWriterSubset?.verified, true, caseDefinition.name);
   assert.equal(report.conformant, false, caseDefinition.name);
-  assert.ok(report.uncovered.length > 0, `${caseDefinition.name}: gate coverage must remain incomplete`);
+  assert.ok(report.uncovered.length > 0, `${caseDefinition.name}: standalone checker limitations remain recorded`);
   assertOutputShape(caseDefinition, pdf, bytes);
   return { name: caseDefinition.name, bytes: bytes.length, pages: pdf.getPages().length, issues: report.issues, conformant: report.conformant };
 }
@@ -175,6 +179,26 @@ function contentText(pdf, page) {
     .join("\n");
 }
 
+function contentOperations(pdf, page) {
+  const contents = resolve(pdf, page.node.get(PDFName.of("Contents")));
+  const streams = contents instanceof PDFArray ? contents.asArray().map((value) => resolve(pdf, value)) : [contents];
+  return streams.filter((stream) => stream instanceof PDFRawStream)
+    .flatMap((stream) => readPdfContent(decodePDFRawStream(stream).decode()));
+}
+
+function usedGraphicsStates(pdf, page, operations) {
+  const resources = resolve(pdf, page.node.Resources());
+  const extGState = resources instanceof PDFDict ? resolve(pdf, resources.get(PDFName.of("ExtGState"))) : undefined;
+  return operations.filter(({ operator }) => operator === "gs").map((operation) => {
+    assert.equal(operation.operands[0]?.kind, "name");
+    const raw = lookupPdfResourceName(extGState, operation.operands[0].value);
+    assert.ok(raw !== undefined, `missing serialized ExtGState ${operation.operands[0].value}`);
+    const state = resolve(pdf, raw);
+    assert.ok(state instanceof PDFDict, "used ExtGState resolves to a dictionary");
+    return state;
+  });
+}
+
 function embeddedImages(pdf) {
   return pdf.context.enumerateIndirectObjects().map(([, object]) => object)
     .filter((object) => object instanceof PDFRawStream && object.dict.get(PDFName.of("Subtype"))?.decodeText?.() === "Image");
@@ -183,6 +207,14 @@ function embeddedImages(pdf) {
 function embeddedFontDescriptors(pdf) {
   return pdf.context.enumerateIndirectObjects().map(([, object]) => object)
     .filter((object) => object instanceof PDFDict && object.has(PDFName.of("FontFile2")));
+}
+
+function embeddedFontProgramHashes(pdf) {
+  return embeddedFontDescriptors(pdf).map((descriptor) => {
+    const program = resolve(pdf, descriptor.get(PDFName.of("FontFile2")));
+    assert.ok(program instanceof PDFRawStream, "FontFile2 resolves to a stream");
+    return createHash("sha256").update(decodePDFRawStream(program).decode()).digest("hex");
+  });
 }
 
 function assertPageBox(page, output) {
@@ -209,10 +241,12 @@ function assertOutputShape(caseDefinition, pdf, bytes) {
   assert.equal(pdf.getPages().length, outputs.length, `${caseDefinition.name}: page count`);
   outputs.forEach((outputDefinition, index) => assertPageBox(pdf.getPages()[index], outputDefinition));
   const pagesText = pdf.getPages().map((page) => contentText(pdf, page)).join("\n");
+  const operations = pdf.getPages().flatMap((page) => contentOperations(pdf, page));
   const images = embeddedImages(pdf);
   const fonts = embeddedFontDescriptors(pdf);
   if (caseDefinition.name === "exact-embedded-inter-text") {
     assert.ok(fonts.length > 0, "text case has an embedded FontFile2 descriptor");
+    assert.ok(embeddedFontProgramHashes(pdf).includes(INTER_SHA256), "text case embeds the exact Inter Regular program");
     assert.match(pagesText, /BT/u, "text case has text operators");
     assert.match(pagesText, /Tj/u, "text case has show-text operators");
   } else {
@@ -228,8 +262,19 @@ function assertOutputShape(caseDefinition, pdf, bytes) {
   } else {
     assert.equal(images.length, 0, `${caseDefinition.name}: unexpected image XObject`);
   }
-  if (["path-nonzero", "polygon"].includes(caseDefinition.name)) assert.match(pagesText, /\sf\b/u, `${caseDefinition.name}: native fill path`);
-  if (caseDefinition.name === "path-evenodd-hole") assert.match(pagesText, /f\*/u, "evenodd path operator");
+  if (["path-nonzero", "polygon"].includes(caseDefinition.name)) assert.ok(operations.some(({ operator }) => operator === "f"), `${caseDefinition.name}: native fill path`);
+  if (caseDefinition.name === "path-evenodd-hole") assert.ok(operations.some(({ operator }) => operator === "f*"), "evenodd path operator");
+  if (caseDefinition.name === "ellipse") assert.ok(operations.some(({ operator }) => operator === "c"), "ellipse uses cubic path geometry");
+  if (caseDefinition.name === "translucent-fill") {
+    const states = usedGraphicsStates(pdf, pdf.getPages()[0], contentOperations(pdf, pdf.getPages()[0]));
+    assert.ok(states.some((state) => state.get(PDFName.of("ca"))?.asNumber?.() === 0.5), "fill ExtGState has ca=0.5");
+  }
+  if (caseDefinition.name === "translucent-stroke") {
+    const pageOperations = contentOperations(pdf, pdf.getPages()[0]);
+    assert.ok(pageOperations.some(({ operator }) => operator === "S"), "stroke operator is present");
+    const states = usedGraphicsStates(pdf, pdf.getPages()[0], pageOperations);
+    assert.ok(states.some((state) => state.get(PDFName.of("CA"))?.asNumber?.() === 0.5), "stroke ExtGState has CA=0.5");
+  }
   if (["solid-rgb-rectangle", "gray-black-rectangles", "translucent-fill", "ellipse", "multipage-differing-physical-size-and-bleed"].includes(caseDefinition.name)) {
     assert.doesNotMatch(pagesText, /\/Subtype\s*\/Image/u, `${caseDefinition.name}: native geometry must not rasterize`);
   }
