@@ -1,0 +1,10 @@
+{
+  "caseId": "case-04",
+  "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+  "deviceKey": "ipad",
+  "contentSize": "large",
+  "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+  "launchStartTimestamp": "2026-09-07T16:06:12.327Z",
+  "launchTimeoutMs": 120000,
+  "phase": "launch"
+}

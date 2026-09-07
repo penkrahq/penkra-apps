@@ -1,0 +1,6 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 10:04:42.508 Df CanvasTextReceiptEvidence[23122:53a5dd0] (Foundation) LUNA_TEXT_FONT case=case-02 nonce=c36b5390-2ff2-4174-8535-993c19505e68 regularPostScript=Inter-Regular boldPostScript=Inter-Bold
+2026-09-07 10:04:42.508 Df CanvasTextReceiptEvidence[23122:53a5dd0] (Foundation) LUNA_TEXT_READY case=case-02 nonce=c36b5390-2ff2-4174-8535-993c19505e68 regularPostScript=Inter-Regular boldPostScript=Inter-Bold
+2026-09-07 10:04:42.508 Df CanvasTextReceiptEvidence[23122:53a5dd0] (Foundation) LUNA_TEXT_ROOT case=case-02 nonce=c36b5390-2ff2-4174-8535-993c19505e68 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000
+2026-09-07 10:04:42.970 Df log[23134:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797081' '--end' '@1788797083' '--predicate' 'eventMessage CONTAINS[c] "LUNA_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_TEXT_ROOT" OR eventMess
+getpwuid_r did not find a match for uid 501

@@ -1,0 +1,15 @@
+{
+  "stdout": "com.penkra.canvas.qa.textreceipt: 23122\n",
+  "stderr": "",
+  "launchRecord": {
+    "caseId": "case-02",
+    "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "deviceKey": "iphone",
+    "contentSize": "large",
+    "nonce": "c36b5390-2ff2-4174-8535-993c19505e68",
+    "launchStartTimestamp": "2026-09-07T16:04:41.674Z",
+    "launchTimeoutMs": 120000,
+    "phase": "launch"
+  },
+  "launched": true
+}

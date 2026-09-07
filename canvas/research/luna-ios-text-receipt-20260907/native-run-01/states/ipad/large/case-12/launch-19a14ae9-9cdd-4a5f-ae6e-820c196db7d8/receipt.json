@@ -1,0 +1,35 @@
+{
+  "ready": {
+    "caseId": "case-12",
+    "nonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8",
+    "regularPostScript": "Inter-Regular",
+    "boldPostScript": "Inter-Bold"
+  },
+  "root": {
+    "caseId": "case-12",
+    "nonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8",
+    "root": {
+      "x": 202,
+      "y": 480,
+      "width": 340,
+      "height": 180
+    },
+    "window": {
+      "x": 0,
+      "y": 0,
+      "width": 744,
+      "height": 1133
+    },
+    "screen": {
+      "x": 0,
+      "y": 0,
+      "width": 744,
+      "height": 1133
+    },
+    "scale": 2
+  },
+  "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:37.358 Df CanvasTextReceiptEvidence[28168:53a95d3] (Foundation) LUNA_TEXT_FONT case=case-12 nonce=19a14ae9-9cdd-4a5f-ae6e-820c196db7d8 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:37.358 Df CanvasTextReceiptEvidence[28168:53a95d3] (Foundation) LUNA_TEXT_READY case=case-12 nonce=19a14ae9-9cdd-4a5f-ae6e-820c196db7d8 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:37.358 Df CanvasTextReceiptEvidence[28168:53a95d3] (Foundation) LUNA_TEXT_ROOT case=case-12 nonce=19a14ae9-9cdd-4a5f-ae6e-820c196db7d8 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:37.506 Df log[28178:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797196' '--end' '@1788797198' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+  "queryCount": 1,
+  "launchStartTimestamp": "2026-09-07T16:06:36.758Z",
+  "lastQueryEndTimestamp": "2026-09-07T16:06:37.128Z"
+}

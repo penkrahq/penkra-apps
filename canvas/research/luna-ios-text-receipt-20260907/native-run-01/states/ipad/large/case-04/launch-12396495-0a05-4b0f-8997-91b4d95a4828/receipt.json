@@ -1,0 +1,35 @@
+{
+  "ready": {
+    "caseId": "case-04",
+    "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+    "regularPostScript": "Inter-Regular",
+    "boldPostScript": "Inter-Bold"
+  },
+  "root": {
+    "caseId": "case-04",
+    "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+    "root": {
+      "x": 202,
+      "y": 480,
+      "width": 340,
+      "height": 180
+    },
+    "window": {
+      "x": 0,
+      "y": 0,
+      "width": 744,
+      "height": 1133
+    },
+    "screen": {
+      "x": 0,
+      "y": 0,
+      "width": 744,
+      "height": 1133
+    },
+    "scale": 2
+  },
+  "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:12.932 Df CanvasTextReceiptEvidence[27723:53a8f23] (Foundation) LUNA_TEXT_FONT case=case-04 nonce=12396495-0a05-4b0f-8997-91b4d95a4828 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:12.932 Df CanvasTextReceiptEvidence[27723:53a8f23] (Foundation) LUNA_TEXT_READY case=case-04 nonce=12396495-0a05-4b0f-8997-91b4d95a4828 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:12.932 Df CanvasTextReceiptEvidence[27723:53a8f23] (Foundation) LUNA_TEXT_ROOT case=case-04 nonce=12396495-0a05-4b0f-8997-91b4d95a4828 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\ngetpwuid_r did not find a match for uid 501\n",
+  "queryCount": 1,
+  "launchStartTimestamp": "2026-09-07T16:06:12.327Z",
+  "lastQueryEndTimestamp": "2026-09-07T16:06:12.683Z"
+}

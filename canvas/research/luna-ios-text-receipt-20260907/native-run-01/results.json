@@ -1,0 +1,3635 @@
+{
+  "expectedEntries": 30,
+  "results": [
+    {
+      "caseId": "case-01",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "5affbf18-5fe1-4b3c-8251-39d96d220fcd",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "5affbf18-5fe1-4b3c-8251-39d96d220fcd-1",
+          "launchStartTimestamp": "2026-09-07T16:03:32.209Z",
+          "receiptQueryStart": "2026-09-07T16:03:32.209Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-01/attempts/case-01/5affbf18-5fe1-4b3c-8251-39d96d220fcd-1/full-a.png",
+            "fullB": "states/iphone/large/case-01/attempts/case-01/5affbf18-5fe1-4b3c-8251-39d96d220fcd-1/full-b.png",
+            "cropA": "states/iphone/large/case-01/attempts/case-01/5affbf18-5fe1-4b3c-8251-39d96d220fcd-1/crop-a.png",
+            "cropB": "states/iphone/large/case-01/attempts/case-01/5affbf18-5fe1-4b3c-8251-39d96d220fcd-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788",
+              "b": "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788"
+            },
+            "beforeCrop": {
+              "a": "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788",
+              "b": "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788"
+            },
+            "afterCrop": {
+              "a": "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788",
+              "b": "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93581,
+              93581
+            ],
+            "sha256": [
+              "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788",
+              "b6d9a9942944d69f62ce6665e7eb5f5992c8733ec8753531a6a9b6c6f0a72788"
+            ],
+            "pixelSha256": [
+              "98d358fd397b670be87caf5787f65c78fa6f4e364eb45acb68b90972092fb18e",
+              "98d358fd397b670be87caf5787f65c78fa6f4e364eb45acb68b90972092fb18e"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-01.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-01/attempts/case-01/5affbf18-5fe1-4b3c-8251-39d96d220fcd-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521734,
+            "mismatchedPixels": 162,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[44,74,104,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[23,56,89,255]},{\"x\":84,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[21,54,88,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-01",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "5affbf18-5fe1-4b3c-8251-39d96d220fcd",
+        "launchStartTimestamp": "2026-09-07T16:03:32.209Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 22968\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-01",
+          "nonce": "5affbf18-5fe1-4b3c-8251-39d96d220fcd",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-01",
+          "nonce": "5affbf18-5fe1-4b3c-8251-39d96d220fcd",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:04:36.962 Df CanvasTextReceiptEvidence[22968:53a5b4c] (Foundation) LUNA_TEXT_FONT case=case-01 nonce=5affbf18-5fe1-4b3c-8251-39d96d220fcd regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:36.962 Df CanvasTextReceiptEvidence[22968:53a5b4c] (Foundation) LUNA_TEXT_READY case=case-01 nonce=5affbf18-5fe1-4b3c-8251-39d96d220fcd regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:36.962 Df CanvasTextReceiptEvidence[22968:53a5b4c] (Foundation) LUNA_TEXT_ROOT case=case-01 nonce=5affbf18-5fe1-4b3c-8251-39d96d220fcd frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:03:32.209Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:04:36.887Z"
+      }
+    },
+    {
+      "caseId": "case-02",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "c36b5390-2ff2-4174-8535-993c19505e68",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "c36b5390-2ff2-4174-8535-993c19505e68-1",
+          "launchStartTimestamp": "2026-09-07T16:04:41.674Z",
+          "receiptQueryStart": "2026-09-07T16:04:41.674Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-02/attempts/case-02/c36b5390-2ff2-4174-8535-993c19505e68-1/full-a.png",
+            "fullB": "states/iphone/large/case-02/attempts/case-02/c36b5390-2ff2-4174-8535-993c19505e68-1/full-b.png",
+            "cropA": "states/iphone/large/case-02/attempts/case-02/c36b5390-2ff2-4174-8535-993c19505e68-1/crop-a.png",
+            "cropB": "states/iphone/large/case-02/attempts/case-02/c36b5390-2ff2-4174-8535-993c19505e68-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d",
+              "b": "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d"
+            },
+            "beforeCrop": {
+              "a": "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d",
+              "b": "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d"
+            },
+            "afterCrop": {
+              "a": "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d",
+              "b": "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94117,
+              94117
+            ],
+            "sha256": [
+              "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d",
+              "6018a7f7e085dceb99ff0d72b795c65c5e62a9db9e662d259c06e883c06e4d9d"
+            ],
+            "pixelSha256": [
+              "f92ea3972b62582d8a6af18fd3f5d102104c2ec2f71b2d701e9b35a5610f36a6",
+              "f92ea3972b62582d8a6af18fd3f5d102104c2ec2f71b2d701e9b35a5610f36a6"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-02.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-02/attempts/case-02/c36b5390-2ff2-4174-8535-993c19505e68-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 513654,
+            "mismatchedPixels": 162,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[44,74,104,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[23,56,89,255]},{\"x\":84,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[21,54,88,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-02",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "c36b5390-2ff2-4174-8535-993c19505e68",
+        "launchStartTimestamp": "2026-09-07T16:04:41.674Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23122\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-02",
+          "nonce": "c36b5390-2ff2-4174-8535-993c19505e68",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-02",
+          "nonce": "c36b5390-2ff2-4174-8535-993c19505e68",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:04:42.508 Df CanvasTextReceiptEvidence[23122:53a5dd0] (Foundation) LUNA_TEXT_FONT case=case-02 nonce=c36b5390-2ff2-4174-8535-993c19505e68 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:42.508 Df CanvasTextReceiptEvidence[23122:53a5dd0] (Foundation) LUNA_TEXT_READY case=case-02 nonce=c36b5390-2ff2-4174-8535-993c19505e68 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:42.508 Df CanvasTextReceiptEvidence[23122:53a5dd0] (Foundation) LUNA_TEXT_ROOT case=case-02 nonce=c36b5390-2ff2-4174-8535-993c19505e68 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:04:42.970 Df log[23134:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797081' '--end' '@1788797083' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:04:41.674Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:04:42.263Z"
+      }
+    },
+    {
+      "caseId": "case-03",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "d72c4d32-20de-4864-a23c-90ee8866624c",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "d72c4d32-20de-4864-a23c-90ee8866624c-1",
+          "launchStartTimestamp": "2026-09-07T16:04:45.795Z",
+          "receiptQueryStart": "2026-09-07T16:04:45.795Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-03/attempts/case-03/d72c4d32-20de-4864-a23c-90ee8866624c-1/full-a.png",
+            "fullB": "states/iphone/large/case-03/attempts/case-03/d72c4d32-20de-4864-a23c-90ee8866624c-1/full-b.png",
+            "cropA": "states/iphone/large/case-03/attempts/case-03/d72c4d32-20de-4864-a23c-90ee8866624c-1/crop-a.png",
+            "cropB": "states/iphone/large/case-03/attempts/case-03/d72c4d32-20de-4864-a23c-90ee8866624c-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7",
+              "b": "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7"
+            },
+            "beforeCrop": {
+              "a": "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7",
+              "b": "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7"
+            },
+            "afterCrop": {
+              "a": "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7",
+              "b": "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              92777,
+              92777
+            ],
+            "sha256": [
+              "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7",
+              "0ad0a93ea5ac8cd5ff5ea52275ef8807cbc0c936450ccd8c36beef45dab311b7"
+            ],
+            "pixelSha256": [
+              "501c0020421a782f46f000f4f8fac3ce1c3007f162ce14b55382d3d66f1e9819",
+              "501c0020421a782f46f000f4f8fac3ce1c3007f162ce14b55382d3d66f1e9819"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-03.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-03/attempts/case-03/d72c4d32-20de-4864-a23c-90ee8866624c-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 518587,
+            "mismatchedPixels": 1153,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":124,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":125,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":126,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-03",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "d72c4d32-20de-4864-a23c-90ee8866624c",
+        "launchStartTimestamp": "2026-09-07T16:04:45.795Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23168\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-03",
+          "nonce": "d72c4d32-20de-4864-a23c-90ee8866624c",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-03",
+          "nonce": "d72c4d32-20de-4864-a23c-90ee8866624c",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:04:46.430 Df CanvasTextReceiptEvidence[23168:53a5ff5] (Foundation) LUNA_TEXT_FONT case=case-03 nonce=d72c4d32-20de-4864-a23c-90ee8866624c regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:46.431 Df CanvasTextReceiptEvidence[23168:53a5ff5] (Foundation) LUNA_TEXT_READY case=case-03 nonce=d72c4d32-20de-4864-a23c-90ee8866624c regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:46.431 Df CanvasTextReceiptEvidence[23168:53a5ff5] (Foundation) LUNA_TEXT_ROOT case=case-03 nonce=d72c4d32-20de-4864-a23c-90ee8866624c frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:04:46.590 Df log[23178:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797085' '--end' '@1788797087' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:04:45.795Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:04:46.199Z"
+      }
+    },
+    {
+      "caseId": "case-04",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "3c08e27a-166b-41d9-93e5-cff25af4c0b0",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "3c08e27a-166b-41d9-93e5-cff25af4c0b0-1",
+          "launchStartTimestamp": "2026-09-07T16:04:49.717Z",
+          "receiptQueryStart": "2026-09-07T16:04:49.717Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-04/attempts/case-04/3c08e27a-166b-41d9-93e5-cff25af4c0b0-1/full-a.png",
+            "fullB": "states/iphone/large/case-04/attempts/case-04/3c08e27a-166b-41d9-93e5-cff25af4c0b0-1/full-b.png",
+            "cropA": "states/iphone/large/case-04/attempts/case-04/3c08e27a-166b-41d9-93e5-cff25af4c0b0-1/crop-a.png",
+            "cropB": "states/iphone/large/case-04/attempts/case-04/3c08e27a-166b-41d9-93e5-cff25af4c0b0-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3",
+              "b": "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3"
+            },
+            "beforeCrop": {
+              "a": "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3",
+              "b": "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3"
+            },
+            "afterCrop": {
+              "a": "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3",
+              "b": "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93319,
+              93319
+            ],
+            "sha256": [
+              "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3",
+              "534273d7360e5adb0986f7f995fcee492c5abddba2d33866337011ce238796d3"
+            ],
+            "pixelSha256": [
+              "6383155fe864c0425f3f7282317473bd044bf937b530f2a6457e0f7d92d9eb89",
+              "6383155fe864c0425f3f7282317473bd044bf937b530f2a6457e0f7d92d9eb89"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-04.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-04/attempts/case-04/3c08e27a-166b-41d9-93e5-cff25af4c0b0-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 510507,
+            "mismatchedPixels": 1153,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":124,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":125,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":126,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-04",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "3c08e27a-166b-41d9-93e5-cff25af4c0b0",
+        "launchStartTimestamp": "2026-09-07T16:04:49.717Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23233\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-04",
+          "nonce": "3c08e27a-166b-41d9-93e5-cff25af4c0b0",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-04",
+          "nonce": "3c08e27a-166b-41d9-93e5-cff25af4c0b0",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:04:50.490 Df CanvasTextReceiptEvidence[23233:53a620f] (Foundation) LUNA_TEXT_FONT case=case-04 nonce=3c08e27a-166b-41d9-93e5-cff25af4c0b0 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:50.491 Df CanvasTextReceiptEvidence[23233:53a620f] (Foundation) LUNA_TEXT_READY case=case-04 nonce=3c08e27a-166b-41d9-93e5-cff25af4c0b0 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:50.491 Df CanvasTextReceiptEvidence[23233:53a620f] (Foundation) LUNA_TEXT_ROOT case=case-04 nonce=3c08e27a-166b-41d9-93e5-cff25af4c0b0 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:04:49.717Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:04:50.253Z"
+      }
+    },
+    {
+      "caseId": "case-06",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "a8e2eb42-2603-473d-9fd4-8f8bbf34333a",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1",
+          "launchStartTimestamp": "2026-09-07T16:04:54.176Z",
+          "receiptQueryStart": "2026-09-07T16:04:54.176Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/full-a.png",
+            "fullB": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/full-b.png",
+            "cropA": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/crop-a.png",
+            "cropB": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+              "b": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+            },
+            "beforeCrop": {
+              "a": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+              "b": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+            },
+            "afterCrop": {
+              "a": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+              "b": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94101,
+              94101
+            ],
+            "sha256": [
+              "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+              "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+            ],
+            "pixelSha256": [
+              "45d4434d8ce970f1a5354c708537075cdbb357d09dd7c494f3a537bdbbd79bf8",
+              "45d4434d8ce970f1a5354c708537075cdbb357d09dd7c494f3a537bdbbd79bf8"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-06.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521606,
+            "mismatchedPixels": 149,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[53,82,111,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[32,64,96,255]},{\"x\":85,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[28,61,93,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-06",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "a8e2eb42-2603-473d-9fd4-8f8bbf34333a",
+        "launchStartTimestamp": "2026-09-07T16:04:54.176Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23458\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-06",
+          "nonce": "a8e2eb42-2603-473d-9fd4-8f8bbf34333a",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-06",
+          "nonce": "a8e2eb42-2603-473d-9fd4-8f8bbf34333a",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:04:54.903 Df CanvasTextReceiptEvidence[23458:53a6516] (Foundation) LUNA_TEXT_FONT case=case-06 nonce=a8e2eb42-2603-473d-9fd4-8f8bbf34333a regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:54.903 Df CanvasTextReceiptEvidence[23458:53a6516] (Foundation) LUNA_TEXT_READY case=case-06 nonce=a8e2eb42-2603-473d-9fd4-8f8bbf34333a regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:54.903 Df CanvasTextReceiptEvidence[23458:53a6516] (Foundation) LUNA_TEXT_ROOT case=case-06 nonce=a8e2eb42-2603-473d-9fd4-8f8bbf34333a frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:04:54.176Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:04:54.669Z"
+      }
+    },
+    {
+      "caseId": "case-07",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "db9f0aaf-708f-4595-be96-7c4979c44013",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "db9f0aaf-708f-4595-be96-7c4979c44013-1",
+          "launchStartTimestamp": "2026-09-07T16:04:57.923Z",
+          "receiptQueryStart": "2026-09-07T16:04:57.923Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-07/attempts/case-07/db9f0aaf-708f-4595-be96-7c4979c44013-1/full-a.png",
+            "fullB": "states/iphone/large/case-07/attempts/case-07/db9f0aaf-708f-4595-be96-7c4979c44013-1/full-b.png",
+            "cropA": "states/iphone/large/case-07/attempts/case-07/db9f0aaf-708f-4595-be96-7c4979c44013-1/crop-a.png",
+            "cropB": "states/iphone/large/case-07/attempts/case-07/db9f0aaf-708f-4595-be96-7c4979c44013-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2",
+              "b": "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2"
+            },
+            "beforeCrop": {
+              "a": "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2",
+              "b": "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2"
+            },
+            "afterCrop": {
+              "a": "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2",
+              "b": "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93588,
+              93588
+            ],
+            "sha256": [
+              "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2",
+              "49c2ce125a3459ec507368b168b56c29417a2724854db7c849c9230850c6eac2"
+            ],
+            "pixelSha256": [
+              "6e3e1a283435cdea2c19045d2dda114604467381cf3e4f52e20723d7124d5ede",
+              "6e3e1a283435cdea2c19045d2dda114604467381cf3e4f52e20723d7124d5ede"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-07.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-07/attempts/case-07/db9f0aaf-708f-4595-be96-7c4979c44013-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 519154,
+            "mismatchedPixels": 162,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[44,74,104,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[23,56,89,255]},{\"x\":84,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[21,54,88,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-07",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "db9f0aaf-708f-4595-be96-7c4979c44013",
+        "launchStartTimestamp": "2026-09-07T16:04:57.923Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23585\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-07",
+          "nonce": "db9f0aaf-708f-4595-be96-7c4979c44013",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-07",
+          "nonce": "db9f0aaf-708f-4595-be96-7c4979c44013",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:04:58.561 Df CanvasTextReceiptEvidence[23585:53a666b] (Foundation) LUNA_TEXT_FONT case=case-07 nonce=db9f0aaf-708f-4595-be96-7c4979c44013 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:58.561 Df CanvasTextReceiptEvidence[23585:53a666b] (Foundation) LUNA_TEXT_READY case=case-07 nonce=db9f0aaf-708f-4595-be96-7c4979c44013 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:04:58.561 Df CanvasTextReceiptEvidence[23585:53a666b] (Foundation) LUNA_TEXT_ROOT case=case-07 nonce=db9f0aaf-708f-4595-be96-7c4979c44013 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:04:58.747 Df log[23597:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797097' '--end' '@1788797099' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:04:57.923Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:04:58.334Z"
+      }
+    },
+    {
+      "caseId": "case-08",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "19df4531-d8b4-44a2-ba65-608c2fc7efdf",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "19df4531-d8b4-44a2-ba65-608c2fc7efdf-1",
+          "launchStartTimestamp": "2026-09-07T16:05:01.582Z",
+          "receiptQueryStart": "2026-09-07T16:05:01.582Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-08/attempts/case-08/19df4531-d8b4-44a2-ba65-608c2fc7efdf-1/full-a.png",
+            "fullB": "states/iphone/large/case-08/attempts/case-08/19df4531-d8b4-44a2-ba65-608c2fc7efdf-1/full-b.png",
+            "cropA": "states/iphone/large/case-08/attempts/case-08/19df4531-d8b4-44a2-ba65-608c2fc7efdf-1/crop-a.png",
+            "cropB": "states/iphone/large/case-08/attempts/case-08/19df4531-d8b4-44a2-ba65-608c2fc7efdf-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5",
+              "b": "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5"
+            },
+            "beforeCrop": {
+              "a": "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5",
+              "b": "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5"
+            },
+            "afterCrop": {
+              "a": "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5",
+              "b": "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93480,
+              93480
+            ],
+            "sha256": [
+              "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5",
+              "07a9dd5895eff66925d4fec94a84acbde23f6e851188cafb4e200d6ceaa33be5"
+            ],
+            "pixelSha256": [
+              "dbd42339e6c92d550de1fde220fd0ad9f018ebe21bf74eaf5853676a6813d508",
+              "dbd42339e6c92d550de1fde220fd0ad9f018ebe21bf74eaf5853676a6813d508"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-08.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-08/attempts/case-08/19df4531-d8b4-44a2-ba65-608c2fc7efdf-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 520731,
+            "mismatchedPixels": 386,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":124,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":125,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":126,\"y\":106,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-08",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "19df4531-d8b4-44a2-ba65-608c2fc7efdf",
+        "launchStartTimestamp": "2026-09-07T16:05:01.582Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23709\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-08",
+          "nonce": "19df4531-d8b4-44a2-ba65-608c2fc7efdf",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-08",
+          "nonce": "19df4531-d8b4-44a2-ba65-608c2fc7efdf",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:02.246 Df CanvasTextReceiptEvidence[23709:53a67ee] (Foundation) LUNA_TEXT_FONT case=case-08 nonce=19df4531-d8b4-44a2-ba65-608c2fc7efdf regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:02.246 Df CanvasTextReceiptEvidence[23709:53a67ee] (Foundation) LUNA_TEXT_READY case=case-08 nonce=19df4531-d8b4-44a2-ba65-608c2fc7efdf regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:02.247 Df CanvasTextReceiptEvidence[23709:53a67ee] (Foundation) LUNA_TEXT_ROOT case=case-08 nonce=19df4531-d8b4-44a2-ba65-608c2fc7efdf frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:02.431 Df log[23722:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797101' '--end' '@1788797103' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:01.582Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:02.008Z"
+      }
+    },
+    {
+      "caseId": "case-10",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "2546ddd1-73f7-4d2d-83af-8cd22c077a43",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "2546ddd1-73f7-4d2d-83af-8cd22c077a43-1",
+          "launchStartTimestamp": "2026-09-07T16:05:05.271Z",
+          "receiptQueryStart": "2026-09-07T16:05:05.271Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-10/attempts/case-10/2546ddd1-73f7-4d2d-83af-8cd22c077a43-1/full-a.png",
+            "fullB": "states/iphone/large/case-10/attempts/case-10/2546ddd1-73f7-4d2d-83af-8cd22c077a43-1/full-b.png",
+            "cropA": "states/iphone/large/case-10/attempts/case-10/2546ddd1-73f7-4d2d-83af-8cd22c077a43-1/crop-a.png",
+            "cropB": "states/iphone/large/case-10/attempts/case-10/2546ddd1-73f7-4d2d-83af-8cd22c077a43-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258",
+              "b": "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258"
+            },
+            "beforeCrop": {
+              "a": "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258",
+              "b": "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258"
+            },
+            "afterCrop": {
+              "a": "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258",
+              "b": "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94583,
+              94583
+            ],
+            "sha256": [
+              "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258",
+              "338b21eecc6936f42f58c9950b1bca75fb613ec0c29c022216f2b8e5579e2258"
+            ],
+            "pixelSha256": [
+              "447eba59ac355fdc8c4fa3614876e7252c1c5d717425cae35b885991fea5bab6",
+              "447eba59ac355fdc8c4fa3614876e7252c1c5d717425cae35b885991fea5bab6"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-10.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-10/attempts/case-10/2546ddd1-73f7-4d2d-83af-8cd22c077a43-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521734,
+            "mismatchedPixels": 161,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[44,74,104,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[22,55,89,255]},{\"x\":85,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[40,71,101,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-10",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "2546ddd1-73f7-4d2d-83af-8cd22c077a43",
+        "launchStartTimestamp": "2026-09-07T16:05:05.271Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23753\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-10",
+          "nonce": "2546ddd1-73f7-4d2d-83af-8cd22c077a43",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-10",
+          "nonce": "2546ddd1-73f7-4d2d-83af-8cd22c077a43",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:05.931 Df CanvasTextReceiptEvidence[23753:53a68c0] (Foundation) LUNA_TEXT_FONT case=case-10 nonce=2546ddd1-73f7-4d2d-83af-8cd22c077a43 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:05.931 Df CanvasTextReceiptEvidence[23753:53a68c0] (Foundation) LUNA_TEXT_READY case=case-10 nonce=2546ddd1-73f7-4d2d-83af-8cd22c077a43 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:05.931 Df CanvasTextReceiptEvidence[23753:53a68c0] (Foundation) LUNA_TEXT_ROOT case=case-10 nonce=2546ddd1-73f7-4d2d-83af-8cd22c077a43 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:05.271Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:05.698Z"
+      }
+    },
+    {
+      "caseId": "case-11",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "87c87795-d5b1-4793-a21e-a2f73bba00aa",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "87c87795-d5b1-4793-a21e-a2f73bba00aa-1",
+          "launchStartTimestamp": "2026-09-07T16:05:08.930Z",
+          "receiptQueryStart": "2026-09-07T16:05:08.930Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-11/attempts/case-11/87c87795-d5b1-4793-a21e-a2f73bba00aa-1/full-a.png",
+            "fullB": "states/iphone/large/case-11/attempts/case-11/87c87795-d5b1-4793-a21e-a2f73bba00aa-1/full-b.png",
+            "cropA": "states/iphone/large/case-11/attempts/case-11/87c87795-d5b1-4793-a21e-a2f73bba00aa-1/crop-a.png",
+            "cropB": "states/iphone/large/case-11/attempts/case-11/87c87795-d5b1-4793-a21e-a2f73bba00aa-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1",
+              "b": "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1"
+            },
+            "beforeCrop": {
+              "a": "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1",
+              "b": "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1"
+            },
+            "afterCrop": {
+              "a": "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1",
+              "b": "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94860,
+              94860
+            ],
+            "sha256": [
+              "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1",
+              "668c214b3ea269e16bba100015b186c708d38f3f50e00a3daa9abb28368892e1"
+            ],
+            "pixelSha256": [
+              "0eb714de4fe01187518a334a405c8bb87f4dbf1584b29ca07eb1172ec81dbb31",
+              "0eb714de4fe01187518a334a405c8bb87f4dbf1584b29ca07eb1172ec81dbb31"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-11.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-11/attempts/case-11/87c87795-d5b1-4793-a21e-a2f73bba00aa-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521752,
+            "mismatchedPixels": 243,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[23,56,89,255]},{\"x\":84,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[21,54,88,255]},{\"x\":85,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[40,71,102,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-11",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "87c87795-d5b1-4793-a21e-a2f73bba00aa",
+        "launchStartTimestamp": "2026-09-07T16:05:08.930Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23797\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-11",
+          "nonce": "87c87795-d5b1-4793-a21e-a2f73bba00aa",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-11",
+          "nonce": "87c87795-d5b1-4793-a21e-a2f73bba00aa",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:09.558 Df CanvasTextReceiptEvidence[23797:53a69bd] (Foundation) LUNA_TEXT_FONT case=case-11 nonce=87c87795-d5b1-4793-a21e-a2f73bba00aa regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:09.558 Df CanvasTextReceiptEvidence[23797:53a69bd] (Foundation) LUNA_TEXT_READY case=case-11 nonce=87c87795-d5b1-4793-a21e-a2f73bba00aa regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:09.558 Df CanvasTextReceiptEvidence[23797:53a69bd] (Foundation) LUNA_TEXT_ROOT case=case-11 nonce=87c87795-d5b1-4793-a21e-a2f73bba00aa frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:09.719 Df log[23882:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797108' '--end' '@1788797110' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:08.930Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:09.322Z"
+      }
+    },
+    {
+      "caseId": "case-12",
+      "device": "iphone",
+      "contentSize": "large",
+      "nonce": "8f9bce61-bf86-4d58-927c-8583855a1bfd",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "8f9bce61-bf86-4d58-927c-8583855a1bfd-1",
+          "launchStartTimestamp": "2026-09-07T16:05:12.546Z",
+          "receiptQueryStart": "2026-09-07T16:05:12.546Z",
+          "paths": {
+            "fullA": "states/iphone/large/case-12/attempts/case-12/8f9bce61-bf86-4d58-927c-8583855a1bfd-1/full-a.png",
+            "fullB": "states/iphone/large/case-12/attempts/case-12/8f9bce61-bf86-4d58-927c-8583855a1bfd-1/full-b.png",
+            "cropA": "states/iphone/large/case-12/attempts/case-12/8f9bce61-bf86-4d58-927c-8583855a1bfd-1/crop-a.png",
+            "cropB": "states/iphone/large/case-12/attempts/case-12/8f9bce61-bf86-4d58-927c-8583855a1bfd-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4",
+              "b": "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4"
+            },
+            "beforeCrop": {
+              "a": "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4",
+              "b": "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4"
+            },
+            "afterCrop": {
+              "a": "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4",
+              "b": "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93936,
+              93936
+            ],
+            "sha256": [
+              "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4",
+              "66bc211567cc796b9f034ba197770b625f4484054c44b4752a0a6a16009643d4"
+            ],
+            "pixelSha256": [
+              "97853164923c9132bc12252c9edc2a90860f40490c1eb7a55f601e41ded78510",
+              "97853164923c9132bc12252c9edc2a90860f40490c1eb7a55f601e41ded78510"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-12.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-12/attempts/case-12/8f9bce61-bf86-4d58-927c-8583855a1bfd-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521753,
+            "mismatchedPixels": 162,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[44,74,104,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[23,56,89,255]},{\"x\":84,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[21,54,88,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-12",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "large",
+        "nonce": "8f9bce61-bf86-4d58-927c-8583855a1bfd",
+        "launchStartTimestamp": "2026-09-07T16:05:12.546Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 23914\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-12",
+          "nonce": "8f9bce61-bf86-4d58-927c-8583855a1bfd",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-12",
+          "nonce": "8f9bce61-bf86-4d58-927c-8583855a1bfd",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:13.223 Df CanvasTextReceiptEvidence[23914:53a6ad3] (Foundation) LUNA_TEXT_FONT case=case-12 nonce=8f9bce61-bf86-4d58-927c-8583855a1bfd regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:13.224 Df CanvasTextReceiptEvidence[23914:53a6ad3] (Foundation) LUNA_TEXT_READY case=case-12 nonce=8f9bce61-bf86-4d58-927c-8583855a1bfd regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:13.224 Df CanvasTextReceiptEvidence[23914:53a6ad3] (Foundation) LUNA_TEXT_ROOT case=case-12 nonce=8f9bce61-bf86-4d58-927c-8583855a1bfd frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:13.385 Df log[23924:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797112' '--end' '@1788797114' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:12.546Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:13.002Z"
+      }
+    },
+    {
+      "caseId": "case-01",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "7c0a7e13-af02-468c-8f6b-9581f1496f1c",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "7c0a7e13-af02-468c-8f6b-9581f1496f1c-1",
+          "launchStartTimestamp": "2026-09-07T16:05:16.882Z",
+          "receiptQueryStart": "2026-09-07T16:05:16.882Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-01/attempts/case-01/7c0a7e13-af02-468c-8f6b-9581f1496f1c-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-01/attempts/case-01/7c0a7e13-af02-468c-8f6b-9581f1496f1c-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-01/attempts/case-01/7c0a7e13-af02-468c-8f6b-9581f1496f1c-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-01/attempts/case-01/7c0a7e13-af02-468c-8f6b-9581f1496f1c-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c",
+              "b": "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c"
+            },
+            "beforeCrop": {
+              "a": "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c",
+              "b": "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c"
+            },
+            "afterCrop": {
+              "a": "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c",
+              "b": "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94752,
+              94752
+            ],
+            "sha256": [
+              "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c",
+              "51da0c6556c614527dc142179b58cbfbe95ab5dffda47886e2f82286b563a80c"
+            ],
+            "pixelSha256": [
+              "dc66075a204a945d7d9d9f0a7a69cd76f56de2ff8ff61e62d9745b6a0c16d4a9",
+              "dc66075a204a945d7d9d9f0a7a69cd76f56de2ff8ff61e62d9745b6a0c16d4a9"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-01.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-01/attempts/case-01/7c0a7e13-af02-468c-8f6b-9581f1496f1c-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521734,
+            "mismatchedPixels": 23361,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-01",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "7c0a7e13-af02-468c-8f6b-9581f1496f1c",
+        "launchStartTimestamp": "2026-09-07T16:05:16.882Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 24185\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-01",
+          "nonce": "7c0a7e13-af02-468c-8f6b-9581f1496f1c",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-01",
+          "nonce": "7c0a7e13-af02-468c-8f6b-9581f1496f1c",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:17.578 Df CanvasTextReceiptEvidence[24185:53a6e86] (Foundation) LUNA_TEXT_FONT case=case-01 nonce=7c0a7e13-af02-468c-8f6b-9581f1496f1c regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:17.578 Df CanvasTextReceiptEvidence[24185:53a6e86] (Foundation) LUNA_TEXT_READY case=case-01 nonce=7c0a7e13-af02-468c-8f6b-9581f1496f1c regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:17.578 Df CanvasTextReceiptEvidence[24185:53a6e86] (Foundation) LUNA_TEXT_ROOT case=case-01 nonce=7c0a7e13-af02-468c-8f6b-9581f1496f1c frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:16.882Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:17.388Z"
+      }
+    },
+    {
+      "caseId": "case-02",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "af3dfb14-5bbe-46ca-9586-032d529298d3",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "af3dfb14-5bbe-46ca-9586-032d529298d3-1",
+          "launchStartTimestamp": "2026-09-07T16:05:21.430Z",
+          "receiptQueryStart": "2026-09-07T16:05:21.430Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-02/attempts/case-02/af3dfb14-5bbe-46ca-9586-032d529298d3-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-02/attempts/case-02/af3dfb14-5bbe-46ca-9586-032d529298d3-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-02/attempts/case-02/af3dfb14-5bbe-46ca-9586-032d529298d3-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-02/attempts/case-02/af3dfb14-5bbe-46ca-9586-032d529298d3-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7",
+              "b": "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7"
+            },
+            "beforeCrop": {
+              "a": "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7",
+              "b": "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7"
+            },
+            "afterCrop": {
+              "a": "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7",
+              "b": "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94375,
+              94375
+            ],
+            "sha256": [
+              "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7",
+              "d4af14d9d477527edd9254b5bcfa5f8f37fa81669ec0deb09e06a64cc06e3de7"
+            ],
+            "pixelSha256": [
+              "3728a36b2f4b0d803480daebf3f0f13fe5c113d405b135dff7f1645b848caac9",
+              "3728a36b2f4b0d803480daebf3f0f13fe5c113d405b135dff7f1645b848caac9"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-02.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-02/attempts/case-02/af3dfb14-5bbe-46ca-9586-032d529298d3-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 513654,
+            "mismatchedPixels": 30273,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-02",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "af3dfb14-5bbe-46ca-9586-032d529298d3",
+        "launchStartTimestamp": "2026-09-07T16:05:21.430Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 24806\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-02",
+          "nonce": "af3dfb14-5bbe-46ca-9586-032d529298d3",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-02",
+          "nonce": "af3dfb14-5bbe-46ca-9586-032d529298d3",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:22.226 Df CanvasTextReceiptEvidence[24806:53a73be] (Foundation) LUNA_TEXT_FONT case=case-02 nonce=af3dfb14-5bbe-46ca-9586-032d529298d3 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:22.226 Df CanvasTextReceiptEvidence[24806:53a73be] (Foundation) LUNA_TEXT_READY case=case-02 nonce=af3dfb14-5bbe-46ca-9586-032d529298d3 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:22.226 Df CanvasTextReceiptEvidence[24806:53a73be] (Foundation) LUNA_TEXT_ROOT case=case-02 nonce=af3dfb14-5bbe-46ca-9586-032d529298d3 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:22.690 Df log[24952:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797121' '--end' '@1788797123' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:21.430Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:22.006Z"
+      }
+    },
+    {
+      "caseId": "case-03",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "7559fd6a-0c9f-46bd-936e-b40b4969f687",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "7559fd6a-0c9f-46bd-936e-b40b4969f687-1",
+          "launchStartTimestamp": "2026-09-07T16:05:25.780Z",
+          "receiptQueryStart": "2026-09-07T16:05:25.780Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-03/attempts/case-03/7559fd6a-0c9f-46bd-936e-b40b4969f687-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-03/attempts/case-03/7559fd6a-0c9f-46bd-936e-b40b4969f687-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-03/attempts/case-03/7559fd6a-0c9f-46bd-936e-b40b4969f687-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-03/attempts/case-03/7559fd6a-0c9f-46bd-936e-b40b4969f687-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736",
+              "b": "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736"
+            },
+            "beforeCrop": {
+              "a": "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736",
+              "b": "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736"
+            },
+            "afterCrop": {
+              "a": "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736",
+              "b": "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93149,
+              93149
+            ],
+            "sha256": [
+              "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736",
+              "901272aa808f3b149019df9bf24b0f4ba2f3f7ac71746f5b06ac30bd682bd736"
+            ],
+            "pixelSha256": [
+              "9039b549a71cda677fb9d3f5cd84a63727d14ed62ed0c69c0c687c81de256e11",
+              "9039b549a71cda677fb9d3f5cd84a63727d14ed62ed0c69c0c687c81de256e11"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-03.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-03/attempts/case-03/7559fd6a-0c9f-46bd-936e-b40b4969f687-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 518587,
+            "mismatchedPixels": 26906,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-03",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "7559fd6a-0c9f-46bd-936e-b40b4969f687",
+        "launchStartTimestamp": "2026-09-07T16:05:25.780Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 25770\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-03",
+          "nonce": "7559fd6a-0c9f-46bd-936e-b40b4969f687",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-03",
+          "nonce": "7559fd6a-0c9f-46bd-936e-b40b4969f687",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:26.461 Df CanvasTextReceiptEvidence[25770:53a79cc] (Foundation) LUNA_TEXT_FONT case=case-03 nonce=7559fd6a-0c9f-46bd-936e-b40b4969f687 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:26.461 Df CanvasTextReceiptEvidence[25770:53a79cc] (Foundation) LUNA_TEXT_READY case=case-03 nonce=7559fd6a-0c9f-46bd-936e-b40b4969f687 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:26.461 Df CanvasTextReceiptEvidence[25770:53a79cc] (Foundation) LUNA_TEXT_ROOT case=case-03 nonce=7559fd6a-0c9f-46bd-936e-b40b4969f687 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:26.729 Df log[25943:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797125' '--end' '@1788797127' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:25.780Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:26.245Z"
+      }
+    },
+    {
+      "caseId": "case-04",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "61189d1f-7865-4d45-b2d4-f62f075afacd",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "61189d1f-7865-4d45-b2d4-f62f075afacd-1",
+          "launchStartTimestamp": "2026-09-07T16:05:29.985Z",
+          "receiptQueryStart": "2026-09-07T16:05:29.985Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-04/attempts/case-04/61189d1f-7865-4d45-b2d4-f62f075afacd-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-04/attempts/case-04/61189d1f-7865-4d45-b2d4-f62f075afacd-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-04/attempts/case-04/61189d1f-7865-4d45-b2d4-f62f075afacd-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-04/attempts/case-04/61189d1f-7865-4d45-b2d4-f62f075afacd-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5",
+              "b": "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5"
+            },
+            "beforeCrop": {
+              "a": "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5",
+              "b": "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5"
+            },
+            "afterCrop": {
+              "a": "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5",
+              "b": "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              92774,
+              92774
+            ],
+            "sha256": [
+              "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5",
+              "0ee21feb07116d163941235358992d8edafe98bf363bd1633fea18bd3396a7f5"
+            ],
+            "pixelSha256": [
+              "12e8f296407a4fda40725c91602595c408699b8a92379553386d2dfd7a53b0aa",
+              "12e8f296407a4fda40725c91602595c408699b8a92379553386d2dfd7a53b0aa"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-04.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-04/attempts/case-04/61189d1f-7865-4d45-b2d4-f62f075afacd-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 510507,
+            "mismatchedPixels": 33818,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-04",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "61189d1f-7865-4d45-b2d4-f62f075afacd",
+        "launchStartTimestamp": "2026-09-07T16:05:29.985Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 26229\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-04",
+          "nonce": "61189d1f-7865-4d45-b2d4-f62f075afacd",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-04",
+          "nonce": "61189d1f-7865-4d45-b2d4-f62f075afacd",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:30.680 Df CanvasTextReceiptEvidence[26229:53a7d82] (Foundation) LUNA_TEXT_FONT case=case-04 nonce=61189d1f-7865-4d45-b2d4-f62f075afacd regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:30.680 Df CanvasTextReceiptEvidence[26229:53a7d82] (Foundation) LUNA_TEXT_READY case=case-04 nonce=61189d1f-7865-4d45-b2d4-f62f075afacd regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:30.680 Df CanvasTextReceiptEvidence[26229:53a7d82] (Foundation) LUNA_TEXT_ROOT case=case-04 nonce=61189d1f-7865-4d45-b2d4-f62f075afacd frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:30.985 Df log[26240:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797129' '--end' '@1788797131' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:29.985Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:30.425Z"
+      }
+    },
+    {
+      "caseId": "case-06",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "acd89b8c-45da-4931-9eca-2fbf56028622",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "acd89b8c-45da-4931-9eca-2fbf56028622-1",
+          "launchStartTimestamp": "2026-09-07T16:05:34.065Z",
+          "receiptQueryStart": "2026-09-07T16:05:34.065Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-06/attempts/case-06/acd89b8c-45da-4931-9eca-2fbf56028622-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-06/attempts/case-06/acd89b8c-45da-4931-9eca-2fbf56028622-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-06/attempts/case-06/acd89b8c-45da-4931-9eca-2fbf56028622-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-06/attempts/case-06/acd89b8c-45da-4931-9eca-2fbf56028622-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935",
+              "b": "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935"
+            },
+            "beforeCrop": {
+              "a": "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935",
+              "b": "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935"
+            },
+            "afterCrop": {
+              "a": "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935",
+              "b": "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94388,
+              94388
+            ],
+            "sha256": [
+              "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935",
+              "aa0fe7ce2c1e2ecfb6a64f598dcfbee99635137d5b11bdf9cbe6ac34df438935"
+            ],
+            "pixelSha256": [
+              "84b270ba0dda7a61da8247c0bc1c6f3de78980040c72100ebaa107704fe18801",
+              "84b270ba0dda7a61da8247c0bc1c6f3de78980040c72100ebaa107704fe18801"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-06.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-06/attempts/case-06/acd89b8c-45da-4931-9eca-2fbf56028622-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521606,
+            "mismatchedPixels": 35614,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-06",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "acd89b8c-45da-4931-9eca-2fbf56028622",
+        "launchStartTimestamp": "2026-09-07T16:05:34.065Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 26692\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-06",
+          "nonce": "acd89b8c-45da-4931-9eca-2fbf56028622",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-06",
+          "nonce": "acd89b8c-45da-4931-9eca-2fbf56028622",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:34.760 Df CanvasTextReceiptEvidence[26692:53a808f] (Foundation) LUNA_TEXT_FONT case=case-06 nonce=acd89b8c-45da-4931-9eca-2fbf56028622 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:34.760 Df CanvasTextReceiptEvidence[26692:53a808f] (Foundation) LUNA_TEXT_READY case=case-06 nonce=acd89b8c-45da-4931-9eca-2fbf56028622 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:34.760 Df CanvasTextReceiptEvidence[26692:53a808f] (Foundation) LUNA_TEXT_ROOT case=case-06 nonce=acd89b8c-45da-4931-9eca-2fbf56028622 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:34.065Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:34.555Z"
+      }
+    },
+    {
+      "caseId": "case-07",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "02fd3d8f-8363-4a34-85e1-bf94debdd502",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "02fd3d8f-8363-4a34-85e1-bf94debdd502-1",
+          "launchStartTimestamp": "2026-09-07T16:05:38.144Z",
+          "receiptQueryStart": "2026-09-07T16:05:38.144Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-07/attempts/case-07/02fd3d8f-8363-4a34-85e1-bf94debdd502-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-07/attempts/case-07/02fd3d8f-8363-4a34-85e1-bf94debdd502-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-07/attempts/case-07/02fd3d8f-8363-4a34-85e1-bf94debdd502-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-07/attempts/case-07/02fd3d8f-8363-4a34-85e1-bf94debdd502-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d",
+              "b": "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d"
+            },
+            "beforeCrop": {
+              "a": "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d",
+              "b": "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d"
+            },
+            "afterCrop": {
+              "a": "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d",
+              "b": "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94634,
+              94634
+            ],
+            "sha256": [
+              "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d",
+              "fd6a1563ab15a11a821ef302bd15c684f8adbb34c2dd01afb52f8c23595be55d"
+            ],
+            "pixelSha256": [
+              "3bed331d9dd1b9abdabf468e48caccfda0b74cf74774756a03ed520fdb2a8375",
+              "3bed331d9dd1b9abdabf468e48caccfda0b74cf74774756a03ed520fdb2a8375"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-07.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-07/attempts/case-07/02fd3d8f-8363-4a34-85e1-bf94debdd502-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 519154,
+            "mismatchedPixels": 30841,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-07",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "02fd3d8f-8363-4a34-85e1-bf94debdd502",
+        "launchStartTimestamp": "2026-09-07T16:05:38.144Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 26994\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-07",
+          "nonce": "02fd3d8f-8363-4a34-85e1-bf94debdd502",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-07",
+          "nonce": "02fd3d8f-8363-4a34-85e1-bf94debdd502",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:38.842 Df CanvasTextReceiptEvidence[26994:53a831b] (Foundation) LUNA_TEXT_FONT case=case-07 nonce=02fd3d8f-8363-4a34-85e1-bf94debdd502 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:38.842 Df CanvasTextReceiptEvidence[26994:53a831b] (Foundation) LUNA_TEXT_READY case=case-07 nonce=02fd3d8f-8363-4a34-85e1-bf94debdd502 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:38.842 Df CanvasTextReceiptEvidence[26994:53a831b] (Foundation) LUNA_TEXT_ROOT case=case-07 nonce=02fd3d8f-8363-4a34-85e1-bf94debdd502 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:38.144Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:38.625Z"
+      }
+    },
+    {
+      "caseId": "case-08",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "bac065ed-7407-4f1e-830b-33295a068fbf",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "bac065ed-7407-4f1e-830b-33295a068fbf-1",
+          "launchStartTimestamp": "2026-09-07T16:05:42.052Z",
+          "receiptQueryStart": "2026-09-07T16:05:42.052Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-08/attempts/case-08/bac065ed-7407-4f1e-830b-33295a068fbf-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-08/attempts/case-08/bac065ed-7407-4f1e-830b-33295a068fbf-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-08/attempts/case-08/bac065ed-7407-4f1e-830b-33295a068fbf-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-08/attempts/case-08/bac065ed-7407-4f1e-830b-33295a068fbf-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78",
+              "b": "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78"
+            },
+            "beforeCrop": {
+              "a": "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78",
+              "b": "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78"
+            },
+            "afterCrop": {
+              "a": "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78",
+              "b": "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              93178,
+              93178
+            ],
+            "sha256": [
+              "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78",
+              "9958eee7526a90b27f6e57195b1560f7993d59689d3e46173c45054a80af2a78"
+            ],
+            "pixelSha256": [
+              "1ab6001ff372926a6541d782c005da768ce3227a0df7c9d218a8daca37e9d2e7",
+              "1ab6001ff372926a6541d782c005da768ce3227a0df7c9d218a8daca37e9d2e7"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-08.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-08/attempts/case-08/bac065ed-7407-4f1e-830b-33295a068fbf-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 520731,
+            "mismatchedPixels": 25996,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-08",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "bac065ed-7407-4f1e-830b-33295a068fbf",
+        "launchStartTimestamp": "2026-09-07T16:05:42.052Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27037\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-08",
+          "nonce": "bac065ed-7407-4f1e-830b-33295a068fbf",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-08",
+          "nonce": "bac065ed-7407-4f1e-830b-33295a068fbf",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:42.745 Df CanvasTextReceiptEvidence[27037:53a84ac] (Foundation) LUNA_TEXT_FONT case=case-08 nonce=bac065ed-7407-4f1e-830b-33295a068fbf regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:42.745 Df CanvasTextReceiptEvidence[27037:53a84ac] (Foundation) LUNA_TEXT_READY case=case-08 nonce=bac065ed-7407-4f1e-830b-33295a068fbf regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:42.745 Df CanvasTextReceiptEvidence[27037:53a84ac] (Foundation) LUNA_TEXT_ROOT case=case-08 nonce=bac065ed-7407-4f1e-830b-33295a068fbf frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:42.924 Df log[27048:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797142' '--end' '@1788797143' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:42.052Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:42.513Z"
+      }
+    },
+    {
+      "caseId": "case-10",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f-1",
+          "launchStartTimestamp": "2026-09-07T16:05:45.848Z",
+          "receiptQueryStart": "2026-09-07T16:05:45.848Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-10/attempts/case-10/3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-10/attempts/case-10/3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-10/attempts/case-10/3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-10/attempts/case-10/3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b",
+              "b": "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b"
+            },
+            "beforeCrop": {
+              "a": "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b",
+              "b": "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b"
+            },
+            "afterCrop": {
+              "a": "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b",
+              "b": "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              95226,
+              95226
+            ],
+            "sha256": [
+              "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b",
+              "6a94d6d0bee2a2223612b0ff5145b716ec7ca5bbf6ded9d9c5915096197b0e7b"
+            ],
+            "pixelSha256": [
+              "106986a8f15c10552fd3b6955fa1ef0472c1453d4451d47412f7b579af701283",
+              "106986a8f15c10552fd3b6955fa1ef0472c1453d4451d47412f7b579af701283"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-10.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-10/attempts/case-10/3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521734,
+            "mismatchedPixels": 23512,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":85,\"y\":78,\"expected\":[204,85,0,255],\"actual\":[255,255,255,255]},{\"x\":86,\"y\":78,\"expected\":[204,85,0,255],\"actual\":[255,255,255,255]},{\"x\":87,\"y\":78,\"expected\":[204,85,0,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-10",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f",
+        "launchStartTimestamp": "2026-09-07T16:05:45.848Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27080\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-10",
+          "nonce": "3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-10",
+          "nonce": "3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:46.523 Df CanvasTextReceiptEvidence[27080:53a8607] (Foundation) LUNA_TEXT_FONT case=case-10 nonce=3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:46.523 Df CanvasTextReceiptEvidence[27080:53a8607] (Foundation) LUNA_TEXT_READY case=case-10 nonce=3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:46.524 Df CanvasTextReceiptEvidence[27080:53a8607] (Foundation) LUNA_TEXT_ROOT case=case-10 nonce=3764f6b7-b4e7-4d88-a4c9-5d6c67d8c88f frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:46.799 Df log[27091:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797145' '--end' '@1788797147' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:45.848Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:46.285Z"
+      }
+    },
+    {
+      "caseId": "case-11",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "88812f97-9c2f-4731-a5da-3360eaf5f9b3",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "88812f97-9c2f-4731-a5da-3360eaf5f9b3-1",
+          "launchStartTimestamp": "2026-09-07T16:05:49.641Z",
+          "receiptQueryStart": "2026-09-07T16:05:49.641Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-11/attempts/case-11/88812f97-9c2f-4731-a5da-3360eaf5f9b3-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-11/attempts/case-11/88812f97-9c2f-4731-a5da-3360eaf5f9b3-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-11/attempts/case-11/88812f97-9c2f-4731-a5da-3360eaf5f9b3-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-11/attempts/case-11/88812f97-9c2f-4731-a5da-3360eaf5f9b3-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "b": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            },
+            "beforeCrop": {
+              "a": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "b": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            },
+            "afterCrop": {
+              "a": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "b": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94305,
+              94305
+            ],
+            "sha256": [
+              "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            ],
+            "pixelSha256": [
+              "62ab39d9aa168ba6cd5a9aa98b42d34e2ab8e4568339eb4658e31c8d9dede90a",
+              "62ab39d9aa168ba6cd5a9aa98b42d34e2ab8e4568339eb4658e31c8d9dede90a"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-11.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-11/attempts/case-11/88812f97-9c2f-4731-a5da-3360eaf5f9b3-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521752,
+            "mismatchedPixels": 22256,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":88,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":89,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-11",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "88812f97-9c2f-4731-a5da-3360eaf5f9b3",
+        "launchStartTimestamp": "2026-09-07T16:05:49.641Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27298\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-11",
+          "nonce": "88812f97-9c2f-4731-a5da-3360eaf5f9b3",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-11",
+          "nonce": "88812f97-9c2f-4731-a5da-3360eaf5f9b3",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:50.296 Df CanvasTextReceiptEvidence[27298:53a883c] (Foundation) LUNA_TEXT_FONT case=case-11 nonce=88812f97-9c2f-4731-a5da-3360eaf5f9b3 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:50.296 Df CanvasTextReceiptEvidence[27298:53a883c] (Foundation) LUNA_TEXT_READY case=case-11 nonce=88812f97-9c2f-4731-a5da-3360eaf5f9b3 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:50.296 Df CanvasTextReceiptEvidence[27298:53a883c] (Foundation) LUNA_TEXT_ROOT case=case-11 nonce=88812f97-9c2f-4731-a5da-3360eaf5f9b3 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n2026-09-07 10:05:50.464 Df log[27308:0] [com.apple.log:] log run noninteractively, parent: 19945 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797149' '--end' '@1788797151' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:49.641Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:50.069Z"
+      }
+    },
+    {
+      "caseId": "case-12",
+      "device": "iphone",
+      "contentSize": "accessibility-extra-extra-large",
+      "nonce": "65cb3913-5203-4b4c-bdb4-070af4c815e7",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "65cb3913-5203-4b4c-bdb4-070af4c815e7-1",
+          "launchStartTimestamp": "2026-09-07T16:05:53.268Z",
+          "receiptQueryStart": "2026-09-07T16:05:53.268Z",
+          "paths": {
+            "fullA": "states/iphone/accessibility-extra-extra-large/case-12/attempts/case-12/65cb3913-5203-4b4c-bdb4-070af4c815e7-1/full-a.png",
+            "fullB": "states/iphone/accessibility-extra-extra-large/case-12/attempts/case-12/65cb3913-5203-4b4c-bdb4-070af4c815e7-1/full-b.png",
+            "cropA": "states/iphone/accessibility-extra-extra-large/case-12/attempts/case-12/65cb3913-5203-4b4c-bdb4-070af4c815e7-1/crop-a.png",
+            "cropB": "states/iphone/accessibility-extra-extra-large/case-12/attempts/case-12/65cb3913-5203-4b4c-bdb4-070af4c815e7-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "b": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            },
+            "beforeCrop": {
+              "a": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "b": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            },
+            "afterCrop": {
+              "a": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "b": "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              94305,
+              94305
+            ],
+            "sha256": [
+              "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a",
+              "f504260d211b1fa17fae085360f06edfb2e488c87ba372a4fe29fb420f70ee3a"
+            ],
+            "pixelSha256": [
+              "62ab39d9aa168ba6cd5a9aa98b42d34e2ab8e4568339eb4658e31c8d9dede90a",
+              "62ab39d9aa168ba6cd5a9aa98b42d34e2ab8e4568339eb4658e31c8d9dede90a"
+            ],
+            "pixelDimensions": {
+              "width": 1206,
+              "height": 2622
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-accessibility-extra-extra-large/case-12.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/accessibility-extra-extra-large/case-12/attempts/case-12/65cb3913-5203-4b4c-bdb4-070af4c815e7-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 521753,
+            "mismatchedPixels": 23689,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":87,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":88,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":89,\"y\":78,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-12",
+        "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceKey": "iphone",
+        "contentSize": "accessibility-extra-extra-large",
+        "nonce": "65cb3913-5203-4b4c-bdb4-070af4c815e7",
+        "launchStartTimestamp": "2026-09-07T16:05:53.268Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27340\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-12",
+          "nonce": "65cb3913-5203-4b4c-bdb4-070af4c815e7",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-12",
+          "nonce": "65cb3913-5203-4b4c-bdb4-070af4c815e7",
+          "root": {
+            "x": 31,
+            "y": 361,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:05:53.952 Df CanvasTextReceiptEvidence[27340:53a88f6] (Foundation) LUNA_TEXT_FONT case=case-12 nonce=65cb3913-5203-4b4c-bdb4-070af4c815e7 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:53.953 Df CanvasTextReceiptEvidence[27340:53a88f6] (Foundation) LUNA_TEXT_READY case=case-12 nonce=65cb3913-5203-4b4c-bdb4-070af4c815e7 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:53.953 Df CanvasTextReceiptEvidence[27340:53a88f6] (Foundation) LUNA_TEXT_ROOT case=case-12 nonce=65cb3913-5203-4b4c-bdb4-070af4c815e7 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:05:53.268Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:53.721Z"
+      }
+    },
+    {
+      "caseId": "case-01",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "9e18b1a5-be26-4d4b-96fe-49fbc7930362",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "9e18b1a5-be26-4d4b-96fe-49fbc7930362-1",
+          "launchStartTimestamp": "2026-09-07T16:05:57.418Z",
+          "receiptQueryStart": "2026-09-07T16:05:57.418Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-01/attempts/case-01/9e18b1a5-be26-4d4b-96fe-49fbc7930362-1/full-a.png",
+            "fullB": "states/ipad/large/case-01/attempts/case-01/9e18b1a5-be26-4d4b-96fe-49fbc7930362-1/full-b.png",
+            "cropA": "states/ipad/large/case-01/attempts/case-01/9e18b1a5-be26-4d4b-96fe-49fbc7930362-1/crop-a.png",
+            "cropB": "states/ipad/large/case-01/attempts/case-01/9e18b1a5-be26-4d4b-96fe-49fbc7930362-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37",
+              "b": "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37"
+            },
+            "beforeCrop": {
+              "a": "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37",
+              "b": "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37"
+            },
+            "afterCrop": {
+              "a": "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37",
+              "b": "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              88976,
+              88976
+            ],
+            "sha256": [
+              "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37",
+              "f5607beccb3962f9c8f613f58d48a4d61a99865e8f47b4ab65b1b9729eb62f37"
+            ],
+            "pixelSha256": [
+              "d7e8c71a1aad3b164ed4d62ec001536e2f9ef71fb7ab26ef83fa09a92332d596",
+              "d7e8c71a1aad3b164ed4d62ec001536e2f9ef71fb7ab26ef83fa09a92332d596"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-01.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-01/attempts/case-01/9e18b1a5-be26-4d4b-96fe-49fbc7930362-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 227348,
+            "mismatchedPixels": 16,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":82,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":83,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-01",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "9e18b1a5-be26-4d4b-96fe-49fbc7930362",
+        "launchStartTimestamp": "2026-09-07T16:05:57.418Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27403\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-01",
+          "nonce": "9e18b1a5-be26-4d4b-96fe-49fbc7930362",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-01",
+          "nonce": "9e18b1a5-be26-4d4b-96fe-49fbc7930362",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\ngetpwuid_r did not find a match for uid 501\nTimestamp               Ty Process[PID:TID]\n2026-09-07 10:05:58.007 Df CanvasTextReceiptEvidence[27403:53a8a4f] (Foundation) LUNA_TEXT_FONT case=case-01 nonce=9e18b1a5-be26-4d4b-96fe-49fbc7930362 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:58.007 Df CanvasTextReceiptEvidence[27403:53a8a4f] (Foundation) LUNA_TEXT_READY case=case-01 nonce=9e18b1a5-be26-4d4b-96fe-49fbc7930362 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:05:58.007 Df CanvasTextReceiptEvidence[27403:53a8a4f] (Foundation) LUNA_TEXT_ROOT case=case-01 nonce=9e18b1a5-be26-4d4b-96fe-49fbc7930362 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:05:58.345 Df log[27415:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797157' '--end' '@1788797158' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\n2026-09-07 10:05:59.899 Df log[27584:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797157' '--end' '@1788797160' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 2,
+        "launchStartTimestamp": "2026-09-07T16:05:57.418Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:05:59.485Z"
+      }
+    },
+    {
+      "caseId": "case-02",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "19db0d33-6167-4670-83f1-3e24cb259a7f",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "19db0d33-6167-4670-83f1-3e24cb259a7f-1",
+          "launchStartTimestamp": "2026-09-07T16:06:02.522Z",
+          "receiptQueryStart": "2026-09-07T16:06:02.522Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-02/attempts/case-02/19db0d33-6167-4670-83f1-3e24cb259a7f-1/full-a.png",
+            "fullB": "states/ipad/large/case-02/attempts/case-02/19db0d33-6167-4670-83f1-3e24cb259a7f-1/full-b.png",
+            "cropA": "states/ipad/large/case-02/attempts/case-02/19db0d33-6167-4670-83f1-3e24cb259a7f-1/crop-a.png",
+            "cropB": "states/ipad/large/case-02/attempts/case-02/19db0d33-6167-4670-83f1-3e24cb259a7f-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1",
+              "b": "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1"
+            },
+            "beforeCrop": {
+              "a": "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1",
+              "b": "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1"
+            },
+            "afterCrop": {
+              "a": "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1",
+              "b": "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              89029,
+              89029
+            ],
+            "sha256": [
+              "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1",
+              "96b91ba4d0f637d315c7e477b08277213df962aae007e717b34fd22e213988d1"
+            ],
+            "pixelSha256": [
+              "4ffd978a994f069c05334113fecd722ba34ca238c6a1e6d9ecefcbdb097b945d",
+              "4ffd978a994f069c05334113fecd722ba34ca238c6a1e6d9ecefcbdb097b945d"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-02.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-02/attempts/case-02/19db0d33-6167-4670-83f1-3e24cb259a7f-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 222470,
+            "mismatchedPixels": 16,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":82,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":83,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-02",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "19db0d33-6167-4670-83f1-3e24cb259a7f",
+        "launchStartTimestamp": "2026-09-07T16:06:02.522Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27617\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-02",
+          "nonce": "19db0d33-6167-4670-83f1-3e24cb259a7f",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-02",
+          "nonce": "19db0d33-6167-4670-83f1-3e24cb259a7f",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\ngetpwuid_r did not find a match for uid 501\nTimestamp               Ty Process[PID:TID]\n2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_FONT case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_READY case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_ROOT case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:03.348 Df log[27627:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797162' '--end' '@1788797163' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\n2026-09-07 10:06:04.822 Df log[27639:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797162' '--end' '@1788797165' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 2,
+        "launchStartTimestamp": "2026-09-07T16:06:02.522Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:04.422Z"
+      }
+    },
+    {
+      "caseId": "case-03",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "785e2cf8-32ca-46cc-ae1f-07ab6ff4a357",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "785e2cf8-32ca-46cc-ae1f-07ab6ff4a357-1",
+          "launchStartTimestamp": "2026-09-07T16:06:07.422Z",
+          "receiptQueryStart": "2026-09-07T16:06:07.422Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-03/attempts/case-03/785e2cf8-32ca-46cc-ae1f-07ab6ff4a357-1/full-a.png",
+            "fullB": "states/ipad/large/case-03/attempts/case-03/785e2cf8-32ca-46cc-ae1f-07ab6ff4a357-1/full-b.png",
+            "cropA": "states/ipad/large/case-03/attempts/case-03/785e2cf8-32ca-46cc-ae1f-07ab6ff4a357-1/crop-a.png",
+            "cropB": "states/ipad/large/case-03/attempts/case-03/785e2cf8-32ca-46cc-ae1f-07ab6ff4a357-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50",
+              "b": "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50"
+            },
+            "beforeCrop": {
+              "a": "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50",
+              "b": "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50"
+            },
+            "afterCrop": {
+              "a": "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50",
+              "b": "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              88290,
+              88290
+            ],
+            "sha256": [
+              "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50",
+              "69b95b81b6872d148093e63fa1deb3337621886e77ab6e2892c9b17435ebdb50"
+            ],
+            "pixelSha256": [
+              "14fef438c177219fe0fc8c78763aec2d7d2cea7df3abdcb27c6ee335cef8e870",
+              "14fef438c177219fe0fc8c78763aec2d7d2cea7df3abdcb27c6ee335cef8e870"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-03.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-03/attempts/case-03/785e2cf8-32ca-46cc-ae1f-07ab6ff4a357-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 226005,
+            "mismatchedPixels": 239,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":40,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]},{\"x\":53,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]},{\"x\":54,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-03",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "785e2cf8-32ca-46cc-ae1f-07ab6ff4a357",
+        "launchStartTimestamp": "2026-09-07T16:06:07.422Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27669\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-03",
+          "nonce": "785e2cf8-32ca-46cc-ae1f-07ab6ff4a357",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-03",
+          "nonce": "785e2cf8-32ca-46cc-ae1f-07ab6ff4a357",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\ngetpwuid_r did not find a match for uid 501\nTimestamp               Ty Process[PID:TID]\n2026-09-07 10:06:08.044 Df CanvasTextReceiptEvidence[27669:53a8da6] (Foundation) LUNA_TEXT_FONT case=case-03 nonce=785e2cf8-32ca-46cc-ae1f-07ab6ff4a357 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:08.044 Df CanvasTextReceiptEvidence[27669:53a8da6] (Foundation) LUNA_TEXT_READY case=case-03 nonce=785e2cf8-32ca-46cc-ae1f-07ab6ff4a357 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:08.044 Df CanvasTextReceiptEvidence[27669:53a8da6] (Foundation) LUNA_TEXT_ROOT case=case-03 nonce=785e2cf8-32ca-46cc-ae1f-07ab6ff4a357 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:08.233 Df log[27680:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797167' '--end' '@1788797168' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\n2026-09-07 10:06:09.726 Df log[27691:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797167' '--end' '@1788797170' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 2,
+        "launchStartTimestamp": "2026-09-07T16:06:07.422Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:09.310Z"
+      }
+    },
+    {
+      "caseId": "case-04",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "12396495-0a05-4b0f-8997-91b4d95a4828-1",
+          "launchStartTimestamp": "2026-09-07T16:06:12.327Z",
+          "receiptQueryStart": "2026-09-07T16:06:12.327Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-04/attempts/case-04/12396495-0a05-4b0f-8997-91b4d95a4828-1/full-a.png",
+            "fullB": "states/ipad/large/case-04/attempts/case-04/12396495-0a05-4b0f-8997-91b4d95a4828-1/full-b.png",
+            "cropA": "states/ipad/large/case-04/attempts/case-04/12396495-0a05-4b0f-8997-91b4d95a4828-1/crop-a.png",
+            "cropB": "states/ipad/large/case-04/attempts/case-04/12396495-0a05-4b0f-8997-91b4d95a4828-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f",
+              "b": "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f"
+            },
+            "beforeCrop": {
+              "a": "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f",
+              "b": "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f"
+            },
+            "afterCrop": {
+              "a": "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f",
+              "b": "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              88340,
+              88340
+            ],
+            "sha256": [
+              "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f",
+              "fe293bb3fd6c2376ac728dfcd83318bb50c5043a0e0922b8f67ee9a4abcbaf5f"
+            ],
+            "pixelSha256": [
+              "fd279307caa02f1abf8a87e38528e40396e85c2c44c6272a91ca820910b9505f",
+              "fd279307caa02f1abf8a87e38528e40396e85c2c44c6272a91ca820910b9505f"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-04.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-04/attempts/case-04/12396495-0a05-4b0f-8997-91b4d95a4828-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 221127,
+            "mismatchedPixels": 239,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":40,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]},{\"x\":53,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]},{\"x\":54,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-04",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+        "launchStartTimestamp": "2026-09-07T16:06:12.327Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27723\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-04",
+          "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-04",
+          "nonce": "12396495-0a05-4b0f-8997-91b4d95a4828",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:12.932 Df CanvasTextReceiptEvidence[27723:53a8f23] (Foundation) LUNA_TEXT_FONT case=case-04 nonce=12396495-0a05-4b0f-8997-91b4d95a4828 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:12.932 Df CanvasTextReceiptEvidence[27723:53a8f23] (Foundation) LUNA_TEXT_READY case=case-04 nonce=12396495-0a05-4b0f-8997-91b4d95a4828 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:12.932 Df CanvasTextReceiptEvidence[27723:53a8f23] (Foundation) LUNA_TEXT_ROOT case=case-04 nonce=12396495-0a05-4b0f-8997-91b4d95a4828 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:06:12.327Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:12.683Z"
+      }
+    },
+    {
+      "caseId": "case-06",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "80b94292-79a9-45a3-8dd1-814f97573b60",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "80b94292-79a9-45a3-8dd1-814f97573b60-1",
+          "launchStartTimestamp": "2026-09-07T16:06:15.772Z",
+          "receiptQueryStart": "2026-09-07T16:06:15.772Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-06/attempts/case-06/80b94292-79a9-45a3-8dd1-814f97573b60-1/full-a.png",
+            "fullB": "states/ipad/large/case-06/attempts/case-06/80b94292-79a9-45a3-8dd1-814f97573b60-1/full-b.png",
+            "cropA": "states/ipad/large/case-06/attempts/case-06/80b94292-79a9-45a3-8dd1-814f97573b60-1/crop-a.png",
+            "cropB": "states/ipad/large/case-06/attempts/case-06/80b94292-79a9-45a3-8dd1-814f97573b60-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9",
+              "b": "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9"
+            },
+            "beforeCrop": {
+              "a": "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9",
+              "b": "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9"
+            },
+            "afterCrop": {
+              "a": "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9",
+              "b": "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              89150,
+              89150
+            ],
+            "sha256": [
+              "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9",
+              "dc016e75cfeda077523edb19f9cd549b21df3f1f57815d6febb3a92589e196b9"
+            ],
+            "pixelSha256": [
+              "71d42d577c1f758b7fbc1c5d0957fcf3a5e6b7137d2c8e23eee3232c1b26bfb9",
+              "71d42d577c1f758b7fbc1c5d0957fcf3a5e6b7137d2c8e23eee3232c1b26bfb9"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-06.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-06/attempts/case-06/80b94292-79a9-45a3-8dd1-814f97573b60-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 225984,
+            "mismatchedPixels": 25,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":210,\"y\":110,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":211,\"y\":110,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]},{\"x\":235,\"y\":110,\"expected\":[18,52,86,255],\"actual\":[255,255,255,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-06",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "80b94292-79a9-45a3-8dd1-814f97573b60",
+        "launchStartTimestamp": "2026-09-07T16:06:15.772Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27767\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-06",
+          "nonce": "80b94292-79a9-45a3-8dd1-814f97573b60",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-06",
+          "nonce": "80b94292-79a9-45a3-8dd1-814f97573b60",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:16.396 Df CanvasTextReceiptEvidence[27767:53a8ffa] (Foundation) LUNA_TEXT_FONT case=case-06 nonce=80b94292-79a9-45a3-8dd1-814f97573b60 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:16.396 Df CanvasTextReceiptEvidence[27767:53a8ffa] (Foundation) LUNA_TEXT_READY case=case-06 nonce=80b94292-79a9-45a3-8dd1-814f97573b60 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:16.396 Df CanvasTextReceiptEvidence[27767:53a8ffa] (Foundation) LUNA_TEXT_ROOT case=case-06 nonce=80b94292-79a9-45a3-8dd1-814f97573b60 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:16.555 Df log[27777:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797175' '--end' '@1788797177' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:06:15.772Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:16.156Z"
+      }
+    },
+    {
+      "caseId": "case-07",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "6d8b1ad0-bce1-4869-9f38-54cde0aa0356",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "6d8b1ad0-bce1-4869-9f38-54cde0aa0356-1",
+          "launchStartTimestamp": "2026-09-07T16:06:19.147Z",
+          "receiptQueryStart": "2026-09-07T16:06:19.147Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-07/attempts/case-07/6d8b1ad0-bce1-4869-9f38-54cde0aa0356-1/full-a.png",
+            "fullB": "states/ipad/large/case-07/attempts/case-07/6d8b1ad0-bce1-4869-9f38-54cde0aa0356-1/full-b.png",
+            "cropA": "states/ipad/large/case-07/attempts/case-07/6d8b1ad0-bce1-4869-9f38-54cde0aa0356-1/crop-a.png",
+            "cropB": "states/ipad/large/case-07/attempts/case-07/6d8b1ad0-bce1-4869-9f38-54cde0aa0356-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932",
+              "b": "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932"
+            },
+            "beforeCrop": {
+              "a": "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932",
+              "b": "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932"
+            },
+            "afterCrop": {
+              "a": "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932",
+              "b": "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              88998,
+              88998
+            ],
+            "sha256": [
+              "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932",
+              "5ff1ad4a1efd714016a17054ae942eb10616ca37bc84155ed0737b84631d3932"
+            ],
+            "pixelSha256": [
+              "4873c2d7f3978d795a610477ae48d1ca8dbaa6d8f3dceb9c3d4c119a22fdbef4",
+              "4873c2d7f3978d795a610477ae48d1ca8dbaa6d8f3dceb9c3d4c119a22fdbef4"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-07.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-07/attempts/case-07/6d8b1ad0-bce1-4869-9f38-54cde0aa0356-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 225791,
+            "mismatchedPixels": 16,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":82,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":83,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-07",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "6d8b1ad0-bce1-4869-9f38-54cde0aa0356",
+        "launchStartTimestamp": "2026-09-07T16:06:19.147Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27893\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-07",
+          "nonce": "6d8b1ad0-bce1-4869-9f38-54cde0aa0356",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-07",
+          "nonce": "6d8b1ad0-bce1-4869-9f38-54cde0aa0356",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\ngetpwuid_r did not find a match for uid 501\nTimestamp               Ty Process[PID:TID]\n2026-09-07 10:06:21.041 Df CanvasTextReceiptEvidence[27893:53a9158] (Foundation) LUNA_TEXT_FONT case=case-07 nonce=6d8b1ad0-bce1-4869-9f38-54cde0aa0356 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:21.041 Df CanvasTextReceiptEvidence[27893:53a9158] (Foundation) LUNA_TEXT_READY case=case-07 nonce=6d8b1ad0-bce1-4869-9f38-54cde0aa0356 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:21.042 Df CanvasTextReceiptEvidence[27893:53a9158] (Foundation) LUNA_TEXT_ROOT case=case-07 nonce=6d8b1ad0-bce1-4869-9f38-54cde0aa0356 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:21.219 Df log[27905:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797179' '--end' '@1788797181' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\n2026-09-07 10:06:22.754 Df log[27917:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797179' '--end' '@1788797183' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 2,
+        "launchStartTimestamp": "2026-09-07T16:06:19.147Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:22.318Z"
+      }
+    },
+    {
+      "caseId": "case-08",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "d334c613-e395-470a-b075-42ff86601e31",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "d334c613-e395-470a-b075-42ff86601e31-1",
+          "launchStartTimestamp": "2026-09-07T16:06:25.329Z",
+          "receiptQueryStart": "2026-09-07T16:06:25.329Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-08/attempts/case-08/d334c613-e395-470a-b075-42ff86601e31-1/full-a.png",
+            "fullB": "states/ipad/large/case-08/attempts/case-08/d334c613-e395-470a-b075-42ff86601e31-1/full-b.png",
+            "cropA": "states/ipad/large/case-08/attempts/case-08/d334c613-e395-470a-b075-42ff86601e31-1/crop-a.png",
+            "cropB": "states/ipad/large/case-08/attempts/case-08/d334c613-e395-470a-b075-42ff86601e31-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7",
+              "b": "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7"
+            },
+            "beforeCrop": {
+              "a": "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7",
+              "b": "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7"
+            },
+            "afterCrop": {
+              "a": "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7",
+              "b": "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              88563,
+              88563
+            ],
+            "sha256": [
+              "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7",
+              "973734de1931ef8777ed53c9228b1b33844df25856d32aa8bf00a1c6145e36d7"
+            ],
+            "pixelSha256": [
+              "4cae8099b651441c6ff5736712274bc126375dfad520b407cb63f28f7629935d",
+              "4cae8099b651441c6ff5736712274bc126375dfad520b407cb63f28f7629935d"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-08.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-08/attempts/case-08/d334c613-e395-470a-b075-42ff86601e31-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 226957,
+            "mismatchedPixels": 53,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":40,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]},{\"x\":53,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]},{\"x\":54,\"y\":75,\"expected\":[255,255,255,255],\"actual\":[18,52,86,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-08",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "d334c613-e395-470a-b075-42ff86601e31",
+        "launchStartTimestamp": "2026-09-07T16:06:25.329Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 27948\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-08",
+          "nonce": "d334c613-e395-470a-b075-42ff86601e31",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-08",
+          "nonce": "d334c613-e395-470a-b075-42ff86601e31",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:25.915 Df CanvasTextReceiptEvidence[27948:53a9266] (Foundation) LUNA_TEXT_FONT case=case-08 nonce=d334c613-e395-470a-b075-42ff86601e31 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:25.915 Df CanvasTextReceiptEvidence[27948:53a9266] (Foundation) LUNA_TEXT_READY case=case-08 nonce=d334c613-e395-470a-b075-42ff86601e31 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:25.915 Df CanvasTextReceiptEvidence[27948:53a9266] (Foundation) LUNA_TEXT_ROOT case=case-08 nonce=d334c613-e395-470a-b075-42ff86601e31 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:06:25.329Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:25.678Z"
+      }
+    },
+    {
+      "caseId": "case-10",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "7765715c-9b2d-482e-b640-d8604c8ce991",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "7765715c-9b2d-482e-b640-d8604c8ce991-1",
+          "launchStartTimestamp": "2026-09-07T16:06:28.643Z",
+          "receiptQueryStart": "2026-09-07T16:06:28.643Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-10/attempts/case-10/7765715c-9b2d-482e-b640-d8604c8ce991-1/full-a.png",
+            "fullB": "states/ipad/large/case-10/attempts/case-10/7765715c-9b2d-482e-b640-d8604c8ce991-1/full-b.png",
+            "cropA": "states/ipad/large/case-10/attempts/case-10/7765715c-9b2d-482e-b640-d8604c8ce991-1/crop-a.png",
+            "cropB": "states/ipad/large/case-10/attempts/case-10/7765715c-9b2d-482e-b640-d8604c8ce991-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a",
+              "b": "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a"
+            },
+            "beforeCrop": {
+              "a": "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a",
+              "b": "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a"
+            },
+            "afterCrop": {
+              "a": "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a",
+              "b": "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              89481,
+              89481
+            ],
+            "sha256": [
+              "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a",
+              "4e9dccd616b988cbbccc20128b67dcc2418527b60ba1e06476b81221ac64094a"
+            ],
+            "pixelSha256": [
+              "a967837865d0cec6e0fc48e7fff1bcfaafcf551cfba0c6a1106f96db04dac67b",
+              "a967837865d0cec6e0fc48e7fff1bcfaafcf551cfba0c6a1106f96db04dac67b"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-10.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-10/attempts/case-10/7765715c-9b2d-482e-b640-d8604c8ce991-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 227348,
+            "mismatchedPixels": 16,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[177,188,199,255]},{\"x\":82,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[177,188,199,255]},{\"x\":83,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[177,188,199,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-10",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "7765715c-9b2d-482e-b640-d8604c8ce991",
+        "launchStartTimestamp": "2026-09-07T16:06:28.643Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 28067\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-10",
+          "nonce": "7765715c-9b2d-482e-b640-d8604c8ce991",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-10",
+          "nonce": "7765715c-9b2d-482e-b640-d8604c8ce991",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\ngetpwuid_r did not find a match for uid 501\nTimestamp               Ty Process[PID:TID]\n2026-09-07 10:06:29.230 Df CanvasTextReceiptEvidence[28067:53a93aa] (Foundation) LUNA_TEXT_FONT case=case-10 nonce=7765715c-9b2d-482e-b640-d8604c8ce991 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:29.231 Df CanvasTextReceiptEvidence[28067:53a93aa] (Foundation) LUNA_TEXT_READY case=case-10 nonce=7765715c-9b2d-482e-b640-d8604c8ce991 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:29.231 Df CanvasTextReceiptEvidence[28067:53a93aa] (Foundation) LUNA_TEXT_ROOT case=case-10 nonce=7765715c-9b2d-482e-b640-d8604c8ce991 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:29.372 Df log[28077:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797188' '--end' '@1788797189' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\n2026-09-07 10:06:30.817 Df log[28088:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797188' '--end' '@1788797191' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 2,
+        "launchStartTimestamp": "2026-09-07T16:06:28.643Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:30.441Z"
+      }
+    },
+    {
+      "caseId": "case-11",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "918a40d8-8681-4dfa-bf06-685deccdba3d",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "918a40d8-8681-4dfa-bf06-685deccdba3d-1",
+          "launchStartTimestamp": "2026-09-07T16:06:33.381Z",
+          "receiptQueryStart": "2026-09-07T16:06:33.381Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-11/attempts/case-11/918a40d8-8681-4dfa-bf06-685deccdba3d-1/full-a.png",
+            "fullB": "states/ipad/large/case-11/attempts/case-11/918a40d8-8681-4dfa-bf06-685deccdba3d-1/full-b.png",
+            "cropA": "states/ipad/large/case-11/attempts/case-11/918a40d8-8681-4dfa-bf06-685deccdba3d-1/crop-a.png",
+            "cropB": "states/ipad/large/case-11/attempts/case-11/918a40d8-8681-4dfa-bf06-685deccdba3d-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930",
+              "b": "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930"
+            },
+            "beforeCrop": {
+              "a": "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930",
+              "b": "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930"
+            },
+            "afterCrop": {
+              "a": "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930",
+              "b": "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              89086,
+              89086
+            ],
+            "sha256": [
+              "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930",
+              "0e28de8576c23d4d8fe031c37335154e2a8b3f5a1cd22cb8a1909a764a443930"
+            ],
+            "pixelSha256": [
+              "b8bd28c3ae6fce674712eafe72079824b35df04b5991dac4e34c7a3d037f6edf",
+              "b8bd28c3ae6fce674712eafe72079824b35df04b5991dac4e34c7a3d037f6edf"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-11.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-11/attempts/case-11/918a40d8-8681-4dfa-bf06-685deccdba3d-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 227328,
+            "mismatchedPixels": 22,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":58,\"y\":115,\"expected\":[255,255,255,255],\"actual\":[249,250,251,255]},{\"x\":89,\"y\":124,\"expected\":[255,255,255,255],\"actual\":[238,241,243,255]},{\"x\":119,\"y\":124,\"expected\":[255,255,255,255],\"actual\":[244,245,247,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-11",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "918a40d8-8681-4dfa-bf06-685deccdba3d",
+        "launchStartTimestamp": "2026-09-07T16:06:33.381Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 28121\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-11",
+          "nonce": "918a40d8-8681-4dfa-bf06-685deccdba3d",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-11",
+          "nonce": "918a40d8-8681-4dfa-bf06-685deccdba3d",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:33.996 Df CanvasTextReceiptEvidence[28121:53a949a] (Foundation) LUNA_TEXT_FONT case=case-11 nonce=918a40d8-8681-4dfa-bf06-685deccdba3d regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:33.996 Df CanvasTextReceiptEvidence[28121:53a949a] (Foundation) LUNA_TEXT_READY case=case-11 nonce=918a40d8-8681-4dfa-bf06-685deccdba3d regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:33.996 Df CanvasTextReceiptEvidence[28121:53a949a] (Foundation) LUNA_TEXT_ROOT case=case-11 nonce=918a40d8-8681-4dfa-bf06-685deccdba3d frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:06:33.381Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:33.763Z"
+      }
+    },
+    {
+      "caseId": "case-12",
+      "device": "ipad",
+      "contentSize": "large",
+      "nonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8",
+      "status": "mismatch",
+      "phase": "measured",
+      "attempts": [
+        {
+          "index": 1,
+          "attemptNonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8-1",
+          "launchStartTimestamp": "2026-09-07T16:06:36.758Z",
+          "receiptQueryStart": "2026-09-07T16:06:36.758Z",
+          "paths": {
+            "fullA": "states/ipad/large/case-12/attempts/case-12/19a14ae9-9cdd-4a5f-ae6e-820c196db7d8-1/full-a.png",
+            "fullB": "states/ipad/large/case-12/attempts/case-12/19a14ae9-9cdd-4a5f-ae6e-820c196db7d8-1/full-b.png",
+            "cropA": "states/ipad/large/case-12/attempts/case-12/19a14ae9-9cdd-4a5f-ae6e-820c196db7d8-1/crop-a.png",
+            "cropB": "states/ipad/large/case-12/attempts/case-12/19a14ae9-9cdd-4a5f-ae6e-820c196db7d8-1/crop-b.png"
+          },
+          "fullHashes": {
+            "stable": true,
+            "captured": {
+              "a": "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6",
+              "b": "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6"
+            },
+            "beforeCrop": {
+              "a": "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6",
+              "b": "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6"
+            },
+            "afterCrop": {
+              "a": "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6",
+              "b": "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6"
+            }
+          },
+          "identity": {
+            "byteSizes": [
+              88957,
+              88957
+            ],
+            "sha256": [
+              "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6",
+              "ad072dd19f6be731c45b95b324482a429af7141b24efe7aa9973c73841860ec6"
+            ],
+            "pixelSha256": [
+              "5a15d53180e78fac238dfb259fb84cec1d20a282a22c0784ff1e22d3e1b22547",
+              "5a15d53180e78fac238dfb259fb84cec1d20a282a22c0784ff1e22d3e1b22547"
+            ],
+            "pixelDimensions": {
+              "width": 1488,
+              "height": 2266
+            },
+            "byteIdentical": true,
+            "pixelIdentical": true
+          },
+          "comparison": {
+            "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/ipad-large/case-12.png",
+            "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/ipad/large/case-12/attempts/case-12/19a14ae9-9cdd-4a5f-ae6e-820c196db7d8-1/crop-b.png",
+            "registration": {
+              "method": "center-cropped-authored-frame",
+              "dx": 0,
+              "dy": 0,
+              "boundaryTolerancePixels": 2
+            },
+            "comparedPixels": 227347,
+            "mismatchedPixels": 16,
+            "status": "mismatch",
+            "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":82,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]},{\"x\":83,\"y\":134,\"expected\":[255,255,255,255],\"actual\":[178,189,200,255]}]"
+          }
+        }
+      ],
+      "launch": {
+        "caseId": "case-12",
+        "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceKey": "ipad",
+        "contentSize": "large",
+        "nonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8",
+        "launchStartTimestamp": "2026-09-07T16:06:36.758Z",
+        "launchTimeoutMs": 120000,
+        "phase": "launch",
+        "result": {
+          "stdout": "com.penkra.canvas.qa.textreceipt: 28168\n",
+          "stderr": ""
+        },
+        "launched": true
+      },
+      "receipt": {
+        "ready": {
+          "caseId": "case-12",
+          "nonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8",
+          "regularPostScript": "Inter-Regular",
+          "boldPostScript": "Inter-Bold"
+        },
+        "root": {
+          "caseId": "case-12",
+          "nonce": "19a14ae9-9cdd-4a5f-ae6e-820c196db7d8",
+          "root": {
+            "x": 202,
+            "y": 480,
+            "width": 340,
+            "height": 180
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 744,
+            "height": 1133
+          },
+          "scale": 2
+        },
+        "log": "Timestamp               Ty Process[PID:TID]\n2026-09-07 10:06:37.358 Df CanvasTextReceiptEvidence[28168:53a95d3] (Foundation) LUNA_TEXT_FONT case=case-12 nonce=19a14ae9-9cdd-4a5f-ae6e-820c196db7d8 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:37.358 Df CanvasTextReceiptEvidence[28168:53a95d3] (Foundation) LUNA_TEXT_READY case=case-12 nonce=19a14ae9-9cdd-4a5f-ae6e-820c196db7d8 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:37.358 Df CanvasTextReceiptEvidence[28168:53a95d3] (Foundation) LUNA_TEXT_ROOT case=case-12 nonce=19a14ae9-9cdd-4a5f-ae6e-820c196db7d8 frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:37.506 Df log[28178:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797196' '--end' '@1788797198' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+        "queryCount": 1,
+        "launchStartTimestamp": "2026-09-07T16:06:36.758Z",
+        "lastQueryEndTimestamp": "2026-09-07T16:06:37.128Z"
+      }
+    }
+  ]
+}

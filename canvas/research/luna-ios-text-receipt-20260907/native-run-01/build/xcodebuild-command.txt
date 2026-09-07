@@ -1,0 +1,1 @@
+xcodebuild -project CanvasTextReceiptEvidence.xcodeproj -scheme CanvasTextReceiptEvidence -sdk iphonesimulator -configuration Debug -jobs 2 -derivedDataPath /tmp/luna-ios-text-receipt-build-ZsbJQ5/derived-data

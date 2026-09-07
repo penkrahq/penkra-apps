@@ -1,0 +1,35 @@
+{
+  "ready": {
+    "caseId": "case-02",
+    "nonce": "19db0d33-6167-4670-83f1-3e24cb259a7f",
+    "regularPostScript": "Inter-Regular",
+    "boldPostScript": "Inter-Bold"
+  },
+  "root": {
+    "caseId": "case-02",
+    "nonce": "19db0d33-6167-4670-83f1-3e24cb259a7f",
+    "root": {
+      "x": 202,
+      "y": 480,
+      "width": 340,
+      "height": 180
+    },
+    "window": {
+      "x": 0,
+      "y": 0,
+      "width": 744,
+      "height": 1133
+    },
+    "screen": {
+      "x": 0,
+      "y": 0,
+      "width": 744,
+      "height": 1133
+    },
+    "scale": 2
+  },
+  "log": "Timestamp               Ty Process[PID:TID]\ngetpwuid_r did not find a match for uid 501\nTimestamp               Ty Process[PID:TID]\n2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_FONT case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_READY case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_ROOT case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000\n2026-09-07 10:06:03.348 Df log[27627:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797162' '--end' '@1788797163' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\n2026-09-07 10:06:04.822 Df log[27639:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797162' '--end' '@1788797165' '--predicate' 'eventMessage CONTAINS[c] \"LUNA_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_TEXT_ROOT\" OR eventMess\ngetpwuid_r did not find a match for uid 501\n",
+  "queryCount": 2,
+  "launchStartTimestamp": "2026-09-07T16:06:02.522Z",
+  "lastQueryEndTimestamp": "2026-09-07T16:06:04.422Z"
+}

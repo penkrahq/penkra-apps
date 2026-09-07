@@ -1,0 +1,9 @@
+Timestamp               Ty Process[PID:TID]
+getpwuid_r did not find a match for uid 501
+Timestamp               Ty Process[PID:TID]
+2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_FONT case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f regularPostScript=Inter-Regular boldPostScript=Inter-Bold
+2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_READY case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f regularPostScript=Inter-Regular boldPostScript=Inter-Bold
+2026-09-07 10:06:03.161 Df CanvasTextReceiptEvidence[27617:53a8c81] (Foundation) LUNA_TEXT_ROOT case=case-02 nonce=19db0d33-6167-4670-83f1-3e24cb259a7f frame=202.000,480.000 340.000x180.000 window=0.000,0.000 744.000x1133.000 screen=0.000,0.000 744.000x1133.000 scale=2.000
+2026-09-07 10:06:03.348 Df log[27627:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797162' '--end' '@1788797163' '--predicate' 'eventMessage CONTAINS[c] "LUNA_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_TEXT_ROOT" OR eventMess
+2026-09-07 10:06:04.822 Df log[27639:0] [com.apple.log:] log run noninteractively, parent: 20328 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788797162' '--end' '@1788797165' '--predicate' 'eventMessage CONTAINS[c] "LUNA_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_TEXT_ROOT" OR eventMess
+getpwuid_r did not find a match for uid 501

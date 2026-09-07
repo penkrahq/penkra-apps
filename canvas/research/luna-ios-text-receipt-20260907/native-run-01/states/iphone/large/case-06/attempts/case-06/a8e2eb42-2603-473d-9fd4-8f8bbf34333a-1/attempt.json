@@ -1,0 +1,61 @@
+{
+  "index": 1,
+  "attemptNonce": "a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1",
+  "launchStartTimestamp": "2026-09-07T16:04:54.176Z",
+  "receiptQueryStart": "2026-09-07T16:04:54.176Z",
+  "paths": {
+    "fullA": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/full-a.png",
+    "fullB": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/full-b.png",
+    "cropA": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/crop-a.png",
+    "cropB": "states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/crop-b.png"
+  },
+  "fullHashes": {
+    "stable": true,
+    "captured": {
+      "a": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+      "b": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+    },
+    "beforeCrop": {
+      "a": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+      "b": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+    },
+    "afterCrop": {
+      "a": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+      "b": "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+    }
+  },
+  "identity": {
+    "byteSizes": [
+      94101,
+      94101
+    ],
+    "sha256": [
+      "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734",
+      "995f79570a99d80c3f3468617e755155c59ec2b413f8643255e83592ec33b734"
+    ],
+    "pixelSha256": [
+      "45d4434d8ce970f1a5354c708537075cdbb357d09dd7c494f3a537bdbbd79bf8",
+      "45d4434d8ce970f1a5354c708537075cdbb357d09dd7c494f3a537bdbbd79bf8"
+    ],
+    "pixelDimensions": {
+      "width": 1206,
+      "height": 2622
+    },
+    "byteIdentical": true,
+    "pixelIdentical": true
+  },
+  "comparison": {
+    "referencePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/references/iphone-large/case-06.png",
+    "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-text-receipt-20260907/native-run-01/states/iphone/large/case-06/attempts/case-06/a8e2eb42-2603-473d-9fd4-8f8bbf34333a-1/crop-b.png",
+    "registration": {
+      "method": "center-cropped-authored-frame",
+      "dx": 0,
+      "dy": 0,
+      "boundaryTolerancePixels": 2
+    },
+    "comparedPixels": 521606,
+    "mismatchedPixels": 149,
+    "status": "mismatch",
+    "notes": "Native mismatch retained; first samples: [{\"x\":81,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[53,82,111,255]},{\"x\":82,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[32,64,96,255]},{\"x\":85,\"y\":165,\"expected\":[18,52,86,255],\"actual\":[28,61,93,255]}]"
+  }
+}

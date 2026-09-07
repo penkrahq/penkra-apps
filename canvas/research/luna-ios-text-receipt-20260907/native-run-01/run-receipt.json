@@ -1,0 +1,98 @@
+{
+  "package": "luna-ios-text-receipt-20260907-native-run-01",
+  "runEnvironment": {
+    "CANVAS_TEXT_RECEIPT_ALLOW_NATIVE": "1",
+    "referencesRoot": "../references",
+    "runner": "scripts/luna-ios-text-receipt-20260907-runner.mjs --run",
+    "launchesPerCase": 1,
+    "pairAttemptsConfigured": 3
+  },
+  "build": {
+    "xcodegen": "xcodegen generate --spec project.yml",
+    "xcodebuild": "xcodebuild -project CanvasTextReceiptEvidence.xcodeproj -scheme CanvasTextReceiptEvidence -sdk iphonesimulator -configuration Debug -jobs 2 -derivedDataPath /tmp/luna-ios-text-receipt-build-ZsbJQ5/derived-data",
+    "facts": {
+      "git": "1ce9d0434c3ac935bd55ede1605b54328b47231d",
+      "sourceSha256": "8414b755ebc486a55afd09ff11800ec54861b101c9a36e2d0c69ee240f7a3d9d",
+      "builtApp": "/tmp/luna-ios-text-receipt-build-ZsbJQ5/derived-data/Build/Products/Debug-iphonesimulator/CanvasTextReceiptEvidence.app",
+      "executableSha256": "f165066876c517db81291155d42ca9a776578fa1434beb825241f8a19cd12c44",
+      "executableBytes": 72424,
+      "bundleIdentifier": "com.penkra.canvas.qa.textreceipt",
+      "buildTiming": "build-start=2026-09-07T16:00:36Z\nbuild-end=2026-09-07T16:00:53Z\nexit=0\n",
+      "provenanceWrapperDiagnostic": "initial isolated-temp git rev-parse failed because temp project is outside repository; corrected receipt recorded here after build"
+    }
+  },
+  "matrix": {
+    "expected": 30,
+    "actual": 30,
+    "statuses": {
+      "mismatch": 30
+    },
+    "states": [
+      "iphone-large",
+      "iphone-accessibility-extra-extra-large",
+      "ipad-large"
+    ],
+    "cases": 10
+  },
+  "evidence": {
+    "rawFullAndCrops": true,
+    "visualInspectionCount": 30,
+    "referenceManifest": "../references/manifest.json",
+    "oldEvidencePreserved": true
+  },
+  "restoration": {
+    "snapshots": [
+      {
+        "device": {
+          "key": "iphone",
+          "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSizes": [
+            "large",
+            "accessibility-extra-extra-large"
+          ],
+          "scale": 3,
+          "state": "Booted"
+        },
+        "observedContentSize": "large",
+        "bootedByRunner": false
+      },
+      {
+        "device": {
+          "key": "ipad",
+          "id": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+          "contentSizes": [
+            "large"
+          ],
+          "scale": 2,
+          "state": "Booted"
+        },
+        "observedContentSize": "large",
+        "bootedByRunner": false
+      }
+    ],
+    "restoration": {
+      "iphone": {
+        "observedContentSize": "large",
+        "bootedByRunner": false,
+        "operations": [
+          {
+            "operation": "content_size",
+            "status": "restored",
+            "contentSize": "large"
+          }
+        ]
+      },
+      "ipad": {
+        "observedContentSize": "large",
+        "bootedByRunner": false,
+        "operations": [
+          {
+            "operation": "content_size",
+            "status": "restored",
+            "contentSize": "large"
+          }
+        ]
+      }
+    }
+  }
+}

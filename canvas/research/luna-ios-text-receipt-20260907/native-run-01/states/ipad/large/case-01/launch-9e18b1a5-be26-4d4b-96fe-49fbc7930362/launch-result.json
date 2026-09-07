@@ -1,0 +1,15 @@
+{
+  "stdout": "com.penkra.canvas.qa.textreceipt: 27403\n",
+  "stderr": "",
+  "launchRecord": {
+    "caseId": "case-01",
+    "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+    "deviceKey": "ipad",
+    "contentSize": "large",
+    "nonce": "9e18b1a5-be26-4d4b-96fe-49fbc7930362",
+    "launchStartTimestamp": "2026-09-07T16:05:57.418Z",
+    "launchTimeoutMs": 120000,
+    "phase": "launch"
+  },
+  "launched": true
+}

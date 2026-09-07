@@ -1,0 +1,6 @@
+before_shutdown device=A3D92728-7F7B-44D1-BE51-155B891905D9 content_size=large
+$ xcrun simctl shutdown A3D92728-7F7B-44D1-BE51-155B891905D9
+exit=0
+before_shutdown device=8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size=large
+$ xcrun simctl shutdown 8F053C2C-958D-4CC5-AB38-E838CFAC9442
+exit=0

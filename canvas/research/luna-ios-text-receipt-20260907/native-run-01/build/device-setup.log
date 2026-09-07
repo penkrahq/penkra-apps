@@ -1,0 +1,68 @@
+
+exit=0
+
+Monitoring boot status for iPhone 17 Pro (A3D92728-7F7B-44D1-BE51-155B891905D9).
+[2026-09-07 16:02:23 +0000] Status=1, isTerminal=NO, Elapsed=00:03.
+	Waiting on BackBoard
+
+[2026-09-07 16:02:24 +0000] Status=4, isTerminal=NO, Elapsed=00:05.
+	Waiting on System App
+
+[2026-09-07 16:02:26 +0000] Status=4, isTerminal=NO, Elapsed=00:07.
+	Waiting on System App
+
+[2026-09-07 16:02:28 +0000] Status=4, isTerminal=NO, Elapsed=00:09.
+	Waiting on System App
+
+[2026-09-07 16:02:29 +0000] Status=4, isTerminal=NO, Elapsed=00:10.
+	Waiting on System App
+
+[2026-09-07 16:02:31 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:12.
+	Finished
+
+exit=0
+observed_content_size device=A3D92728-7F7B-44D1-BE51-155B891905D9 value=large
+
+exit=0
+installed device=A3D92728-7F7B-44D1-BE51-155B891905D9 container=/Users/emmanuelgyekyeatta-penkra/Library/Developer/CoreSimulator/Devices/A3D92728-7F7B-44D1-BE51-155B891905D9/data/Containers/Bundle/Application/17987877-F5C4-430C-B20B-B358F7BE83A0/CanvasTextReceiptEvidence.app executableSha256=f165066876c517db81291155d42ca9a776578fa1434beb825241f8a19cd12c44 executableBytes=72424
+
+exit=0
+
+Monitoring boot status for iPad mini (A17 Pro) (8F053C2C-958D-4CC5-AB38-E838CFAC9442).
+[2026-09-07 16:02:48 +0000] Status=1, isTerminal=NO, Elapsed=00:02.
+	Waiting on BackBoard
+
+[2026-09-07 16:02:48 +0000] Status=2, isTerminal=NO, Elapsed=00:02.
+	Waiting on Data Migration
+		Reason:(null)
+		Migration Elapsed:00:00 seconds
+
+[2026-09-07 16:02:49 +0000] Status=4, isTerminal=NO, Elapsed=00:03.
+	Waiting on System App
+
+[2026-09-07 16:02:50 +0000] Status=4, isTerminal=NO, Elapsed=00:04.
+	Waiting on System App
+
+[2026-09-07 16:02:51 +0000] Status=4, isTerminal=NO, Elapsed=00:05.
+	Waiting on System App
+
+[2026-09-07 16:02:52 +0000] Status=4, isTerminal=NO, Elapsed=00:06.
+	Waiting on System App
+
+[2026-09-07 16:02:53 +0000] Status=4, isTerminal=NO, Elapsed=00:07.
+	Waiting on System App
+
+[2026-09-07 16:02:54 +0000] Status=4, isTerminal=NO, Elapsed=00:08.
+	Waiting on System App
+
+[2026-09-07 16:02:55 +0000] Status=4, isTerminal=NO, Elapsed=00:10.
+	Waiting on System App
+
+[2026-09-07 16:02:57 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:12.
+	Finished
+
+exit=0
+observed_content_size device=8F053C2C-958D-4CC5-AB38-E838CFAC9442 value=large
+
+exit=0
+installed device=8F053C2C-958D-4CC5-AB38-E838CFAC9442 container=/Users/emmanuelgyekyeatta-penkra/Library/Developer/CoreSimulator/Devices/8F053C2C-958D-4CC5-AB38-E838CFAC9442/data/Containers/Bundle/Application/3F6EE535-0249-41E1-B548-E77CB0E20C24/CanvasTextReceiptEvidence.app executableSha256=f165066876c517db81291155d42ca9a776578fa1434beb825241f8a19cd12c44 executableBytes=72424

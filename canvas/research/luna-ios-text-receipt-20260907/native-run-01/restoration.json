@@ -1,0 +1,55 @@
+{
+  "snapshots": [
+    {
+      "device": {
+        "key": "iphone",
+        "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "contentSizes": [
+          "large",
+          "accessibility-extra-extra-large"
+        ],
+        "scale": 3,
+        "state": "Booted"
+      },
+      "observedContentSize": "large",
+      "bootedByRunner": false
+    },
+    {
+      "device": {
+        "key": "ipad",
+        "id": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "contentSizes": [
+          "large"
+        ],
+        "scale": 2,
+        "state": "Booted"
+      },
+      "observedContentSize": "large",
+      "bootedByRunner": false
+    }
+  ],
+  "restoration": {
+    "iphone": {
+      "observedContentSize": "large",
+      "bootedByRunner": false,
+      "operations": [
+        {
+          "operation": "content_size",
+          "status": "restored",
+          "contentSize": "large"
+        }
+      ]
+    },
+    "ipad": {
+      "observedContentSize": "large",
+      "bootedByRunner": false,
+      "operations": [
+        {
+          "operation": "content_size",
+          "status": "restored",
+          "contentSize": "large"
+        }
+      ]
+    }
+  }
+}

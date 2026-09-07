@@ -1,0 +1,5 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 10:05:38.842 Df CanvasTextReceiptEvidence[26994:53a831b] (Foundation) LUNA_TEXT_FONT case=case-07 nonce=02fd3d8f-8363-4a34-85e1-bf94debdd502 regularPostScript=Inter-Regular boldPostScript=Inter-Bold
+2026-09-07 10:05:38.842 Df CanvasTextReceiptEvidence[26994:53a831b] (Foundation) LUNA_TEXT_READY case=case-07 nonce=02fd3d8f-8363-4a34-85e1-bf94debdd502 regularPostScript=Inter-Regular boldPostScript=Inter-Bold
+2026-09-07 10:05:38.842 Df CanvasTextReceiptEvidence[26994:53a831b] (Foundation) LUNA_TEXT_ROOT case=case-07 nonce=02fd3d8f-8363-4a34-85e1-bf94debdd502 frame=31.000,361.000 340.000x180.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000
+getpwuid_r did not find a match for uid 501

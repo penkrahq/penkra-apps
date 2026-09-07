@@ -1,0 +1,10 @@
+{
+  "caseId": "case-10",
+  "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+  "deviceKey": "iphone",
+  "contentSize": "large",
+  "nonce": "2546ddd1-73f7-4d2d-83af-8cd22c077a43",
+  "launchStartTimestamp": "2026-09-07T16:05:05.271Z",
+  "launchTimeoutMs": 120000,
+  "phase": "launch"
+}
