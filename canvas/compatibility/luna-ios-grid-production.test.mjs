@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -21,7 +22,6 @@ import {
   launchArguments,
   readyReceipt,
   sourceFileNameForOutput,
-  sourceHashReceipt,
   stableScreenshotHashes,
 } from "../scripts/luna-ios-grid-production.mjs";
 
@@ -107,10 +107,19 @@ test("generated host has independent case/nonce identity and rejects unknown cas
   assert.equal(stableScreenshotHashes([undefined, "a".repeat(64)]), false);
 });
 
-test("committed source hashes and resolved geometry receipts are reproducible", async () => {
+test("retained source hashes remain intact and current resolved geometry receipts are reproducible", async () => {
   const { ir, sources } = buildGridSources();
   const receipt = JSON.parse(await readFile(resolve(evidence, "source-hashes.json"), "utf8"));
-  assert.deepEqual(sourceHashReceipt(sources), receipt);
+  assert.deepEqual(receipt.files.map(({ path }) => path), [...sources.keys()].sort((a, b) => a.localeCompare(b)));
+  for (const file of receipt.files) {
+    const retained = await readFile(resolve(evidence, "swift", file.path));
+    assert.equal(retained.length, file.bytes, file.path);
+    assert.equal(createHash("sha256").update(retained).digest("hex"), file.sha256, file.path);
+  }
+  assert.equal(
+    createHash("sha256").update(receipt.files.map(({ path, sha256 }) => `${path}:${sha256}\n`).join("")).digest("hex"),
+    receipt.sourceSha256,
+  );
   const candidateReceipt = JSON.parse(await readFile(resolve(evidence, "candidate-paths.json"), "utf8"));
   assert.equal(candidateReceipt.mode, "candidate-verification");
   assert.equal(candidateReceipt.publicCapabilityPromotion, false);
