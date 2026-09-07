@@ -3,12 +3,11 @@ import { createHash } from "node:crypto";
 import { readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import test from "node:test";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-const evidenceRoot = resolve(process.env.CANVAS_IOS_TEXT_RECEIPT_EVIDENCE_ROOT ?? "");
-assert.ok(process.env.CANVAS_IOS_TEXT_RECEIPT_EVIDENCE_ROOT, "CANVAS_IOS_TEXT_RECEIPT_EVIDENCE_ROOT is required; pass the retained corpus explicitly");
-const harnessScriptsRoot = resolve(process.env.CANVAS_IOS_TEXT_RECEIPT_HARNESS_ROOT ?? "");
-assert.ok(process.env.CANVAS_IOS_TEXT_RECEIPT_HARNESS_ROOT, "CANVAS_IOS_TEXT_RECEIPT_HARNESS_ROOT is required; pass the exact source-root scripts explicitly");
+const localCanvasRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
+const evidenceRoot = resolve(process.env.CANVAS_IOS_TEXT_RECEIPT_EVIDENCE_ROOT ?? join(localCanvasRoot, "research/luna-ios-text-receipt-20260907"));
+const harnessScriptsRoot = resolve(process.env.CANVAS_IOS_TEXT_RECEIPT_HARNESS_ROOT ?? join(localCanvasRoot, "scripts"));
 const harnessCanvasRoot = resolve(harnessScriptsRoot, "..");
 const harness = (name) => pathToFileURL(join(harnessScriptsRoot, name)).href;
 const canvasHarness = (name) => pathToFileURL(join(harnessCanvasRoot, name)).href;
