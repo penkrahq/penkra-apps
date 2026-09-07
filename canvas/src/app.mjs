@@ -476,6 +476,7 @@ async function openDocument(documentId) {
       ),
       { documentId },
     );
+    await reconcileFromServer(documentId);
     await refreshRetainedImports(documentId);
     collapseEditorPanels();
     state.loading = false;
