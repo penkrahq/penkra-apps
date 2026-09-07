@@ -36,7 +36,7 @@ async function auditIos() {
   assert.ok(gridNodes.slice(0, 12).every((grid) => grid.children.every((child) => !Object.hasOwn(child, "gridColumnSpan") && !Object.hasOwn(child, "gridRowSpan"))));
 
   const { buildCapabilityVerificationIR } = await importFrom(roots.combinedCanvasRoot, "src/exporter-ir.mjs");
-  const { capabilityPathInventory } = await importFrom(roots.combinedCanvasRoot, "src/canvas-schema.mjs");
+  const { capabilityPathInventory, validateCanvasDocument } = await importFrom(roots.combinedCanvasRoot, "src/canvas-schema.mjs");
   for (const tracks of [[100, 180], [180, 100], [0, 240], [-1, 240], [10.5, 20.25], [], [240]]) {
     const numeric = {
       version: "2.17", module: "mobile", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
@@ -48,6 +48,7 @@ async function auditIos() {
         ],
       }] }],
     };
+    assert.equal(validateCanvasDocument(numeric, { throw: false }).valid, true, JSON.stringify(tracks));
     const ir = buildCapabilityVerificationIR(numeric, { role: "ios", frames: ["screen"] }, capabilityPathInventory());
     for (const id of ["first", "second"]) {
       const node = ir.outputs[0].nodes.find((candidate) => candidate.id === id);
