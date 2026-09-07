@@ -1,4 +1,5 @@
-import { PDFArray, PDFBool, PDFDict, PDFName, PDFNull, PDFNumber, PDFRawStream, decodePDFRawStream } from "pdf-lib";
+import { inflateSync } from "node:zlib";
+import { PDFArray, PDFBool, PDFDict, PDFName, PDFNull, PDFNumber, PDFRawStream } from "pdf-lib";
 
 const IMAGE_FILTERS = new Set(["FlateDecode", "DCTDecode"]);
 const SAMPLE_DEPTHS = new Set([1, 2, 4, 8, 16]);
@@ -106,11 +107,11 @@ function filterKind(dict, path, resolve, add) {
 }
 
 function validateData(object, path, dict, dimensionsValue, channels, bits, filter, resolve, add, softMask) {
-  if (!dimensionsValue || !channels || !bits || filter === "unsupported" || filter === "dct") return;
   if (present(dict, "DecodeParms")) {
     add("IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET", "6.8", `${path}/DecodeParms`);
     return;
   }
+  if (!dimensionsValue || !channels || !bits || filter === "unsupported" || filter === "dct") return;
   const rowBits = dimensionsValue.width * channels * bits;
   const rowBytes = Math.ceil(rowBits / 8);
   const expected = rowBytes * dimensionsValue.height;
@@ -120,7 +121,7 @@ function validateData(object, path, dict, dimensionsValue, channels, bits, filte
   }
   let decoded;
   try {
-    decoded = filter === "raw" ? object.contents : decodePDFRawStream(object).decode();
+    decoded = filter === "raw" ? object.contents : inflateSync(object.contents, { maxOutputLength: MAX_DECODED_IMAGE_BYTES });
   } catch {
     add("IMAGE_DATA_INVALID", "6.16", path);
     if (softMask) addSoftMaskIssue(add, path);
@@ -139,8 +140,9 @@ function validateImage(object, path, context, state, options = {}) {
     addSoftMaskIssue(add, path);
     return;
   }
-  if (state.visited.has(object)) return;
-  state.visited.add(object);
+  const visited = softMask ? state.visitedSoftMask : state.visitedOrdinary;
+  if (visited.has(object)) return;
+  visited.add(object);
   state.active.add(object);
   try {
     const dict = object.dict;
@@ -148,8 +150,13 @@ function validateImage(object, path, context, state, options = {}) {
     if (softMask && !dimensionsValue) addSoftMaskIssue(add, path);
     const imageMaskRaw = raw(dict, "ImageMask");
     const imageMask = imageMaskRaw === undefined ? false : imageMaskRaw instanceof PDFBool ? imageMaskRaw.value : null;
-    if (imageMask === null) add("IMAGE_MASK_INVALID", "6.16", `${path}/ImageMask`);
-    else if (imageMask) add("IMAGE_MASK_OUTSIDE_SUBSET", "6.16", `${path}/ImageMask`);
+    if (imageMask === null) {
+      add("IMAGE_MASK_INVALID", "6.16", `${path}/ImageMask`);
+      if (softMask) addSoftMaskIssue(add, `${path}/ImageMask`);
+    } else if (imageMask) {
+      add("IMAGE_MASK_OUTSIDE_SUBSET", "6.16", `${path}/ImageMask`);
+      if (softMask) addSoftMaskIssue(add, `${path}/ImageMask`);
+    }
 
     let channels = null;
     let bits = null;
@@ -187,7 +194,7 @@ export function inspectPageImages(page, path, context) {
   let xObjects;
   try { xObjects = get(resources, "XObject"); } catch { return; }
   if (!(xObjects instanceof PDFDict)) return;
-  const state = { visited: new WeakSet(), active: new WeakSet() };
+  const state = { visitedOrdinary: new WeakSet(), visitedSoftMask: new WeakSet(), active: new WeakSet() };
   for (const [key, value] of xObjects.entries()) {
     const objectPath = `${path}/Resources/XObject/${key.decodeText()}`;
     let object;
