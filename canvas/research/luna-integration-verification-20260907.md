@@ -554,3 +554,47 @@ list does not contain it. This is retained-evidence/spec drift at the exact dang
 path; no speculative checker or evidence fix was made. The full run did execute the new raw
 integer/real spelling, content-limit, object-limit, and subset-policy checks before this one
 assertion failed.
+
+## Loader, publication, and envelope integration
+
+The approved loader/publication batch was applied after the existing PDF/library work at
+`e8a2962`, with no equivalent skips and no intermediate tests:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `9c26d31` | `08a38f3` |
+| `012f0b7` | `fd7e455` |
+| `df4d05c` | `3947ba3` |
+| `9855b2b` | `624162b` |
+| `4f31e0f` | `4af4799` |
+| `4831ab3` | `cba51e5` |
+| `e7bae5c` | `2e992e5` |
+| `bc3b7b3` | `f278550` |
+| `2117fdc` | `fc4696f` |
+| `4704a8f` | `b1812bc` |
+| `768bc6b` | `9228639` |
+
+The approved envelope sequence then applied cleanly, also without intermediate tests:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `ccd2a06` | `0bb2a54` |
+| `b201169` | `7471e3b` |
+| `1284fcc` | `9cf43c4` |
+| `5908887` | `0fce58e` |
+| `51258ff` | `e2637b1` |
+| `f6a1d40` | `faf8cfb` |
+| `175f513` | `2f00f5a` |
+| `de4569c` | `3d30d85` |
+| `9c501cb` | `52e2258` |
+
+The one post-batch strict command covered schema/import/resolver/publication, retention/storage,
+materializer, loader, protocol/artifact, and both envelope test files:
+
+`node scripts/test.mjs src/canvas-schema.test.mjs src/canvas-imports.test.mjs src/canvas-resolver.test.mjs src/library-publication.test.mjs src/library-publication-service.test.mjs src/library-retention-preparation.test.mjs src/library-storage.test.mjs src/library-retained-imports.test.mjs src/library-retained-loader.test.mjs src/luna-library-storage-protocol.test.mjs src/luna-library-artifact-integration.test.mjs src/exporters/pdf-serialization-envelope.test.mjs src/exporters/luna-pdf-envelope-independent.test.mjs`
+
+Log `/tmp/canvas-luna-loader-publication-envelope-20260907.log`; exit `0`, `129` pass,
+`0` fail, `0` cancelled, `0` skipped; runner duration `16195.991084 ms`, wrapper duration
+`16 s`. The required retained-follow identity, source-fallback prevention, publication retention
+stripping, storage/materializer isolation, and envelope boundary assertions all passed. No native
+lease or Android action was used for this batch.
