@@ -1,7 +1,7 @@
 {
-  "caseCount": 32,
+  "caseCount": 38,
   "serializationVariantCount": 2,
-  "generatedCaseCount": 64,
+  "generatedCaseCount": 76,
   "generatedCases": [
     {
       "name": "valid-writer-baseline",
@@ -30,14 +30,14 @@
     {
       "name": "valid-jpeg-image",
       "serialization": "classic-xref",
-      "sha256": "f6e258adf2f40307cdd09b8777b7f4c9cc00ca7d5ee1f4c9174f5747753634ea",
-      "bytes": 1804
+      "sha256": "f87dfc0031fce30daa38f71d56d8f4cce2816c95be593ed24a54243c43edfd5c",
+      "bytes": 1712
     },
     {
       "name": "valid-jpeg-image",
       "serialization": "object-streams",
-      "sha256": "9e2c7f40203b58eb9beed21f06bd4b7cf13b8979f7edf3a0e22605ae7c76958d",
-      "bytes": 1442
+      "sha256": "d5c1b69aa1903b3ade04a0fd305d34bfc0b4cac40d8e32152d3495ebc01ab425",
+      "bytes": 1347
     },
     {
       "name": "raw-valid-image",
@@ -146,6 +146,54 @@
       "serialization": "object-streams",
       "sha256": "bf4e464614a98e1e33a901c5babc3939af371880cc909c343c07050ff3b61702",
       "bytes": 4270
+    },
+    {
+      "name": "softmask-context-image-first",
+      "serialization": "classic-xref",
+      "sha256": "7477b39b50ce3df7620511825b6d96c56e542ed08daa71254f801cd2cf28b3bb",
+      "bytes": 4892
+    },
+    {
+      "name": "softmask-context-image-first",
+      "serialization": "object-streams",
+      "sha256": "c1dcba66d35f80ec860a8b6cd1aeb95db15b15729b3acdc426c8aee99f08e2bf",
+      "bytes": 4253
+    },
+    {
+      "name": "softmask-context-softmask-first",
+      "serialization": "classic-xref",
+      "sha256": "183603ba5b1b4f855efb4fdf29938adeec773a224612b06acd261a624cebf1bd",
+      "bytes": 4892
+    },
+    {
+      "name": "softmask-context-softmask-first",
+      "serialization": "object-streams",
+      "sha256": "ea2a74fbdc4f5c172372966121e9a7f147f42e5905d70f23ae03fb409f8de60f",
+      "bytes": 4253
+    },
+    {
+      "name": "softmask-imagemask-true-invalid",
+      "serialization": "classic-xref",
+      "sha256": "6aa307d52445280ce57c9b7e79085890fe05cb0081ddaa8727b4730cf248b4a6",
+      "bytes": 5117
+    },
+    {
+      "name": "softmask-imagemask-true-invalid",
+      "serialization": "object-streams",
+      "sha256": "97eace8c1d266f8a5b9e1ba75e453960593e1ffd22a7f8e4db061141cc39e7b0",
+      "bytes": 4461
+    },
+    {
+      "name": "softmask-imagemask-nonboolean-invalid",
+      "serialization": "classic-xref",
+      "sha256": "cf79eafa318a2e8b5188f87a3e8e5a360e0594bf9e91997d56fb163ea1b59356",
+      "bytes": 5118
+    },
+    {
+      "name": "softmask-imagemask-nonboolean-invalid",
+      "serialization": "object-streams",
+      "sha256": "1ef781fba5a6d364d85308c3419cf9646a619671f26061505c15b0c8796b9e8f",
+      "bytes": 4462
     },
     {
       "name": "missing-softmask-invalid",
@@ -340,6 +388,18 @@
       "bytes": 4285
     },
     {
+      "name": "jpeg-decode-parameters-outside-subset",
+      "serialization": "classic-xref",
+      "sha256": "b62a9fe18dbdcd399c1cd118ad17f61d2b3a8ac7c36a2eea34e782ff06e8ba29",
+      "bytes": 1744
+    },
+    {
+      "name": "jpeg-decode-parameters-outside-subset",
+      "serialization": "object-streams",
+      "sha256": "8a27c8d0b99562295619c4542d43bf405b1e7f69c708381d323b385dcfa8a2e0",
+      "bytes": 1379
+    },
+    {
       "name": "truncated-raw-data",
       "serialization": "classic-xref",
       "sha256": "7f5cd4851f848b57f0ac289b953af8a41d872c45eb853165fe45e6df76bc148e",
@@ -376,6 +436,18 @@
       "bytes": 4233
     },
     {
+      "name": "flate-expansion-overflow",
+      "serialization": "classic-xref",
+      "sha256": "2a83ae01912eb4a48a2ff29cfc6c9799fdfe39c6621fc0a81efdebe179e7cd32",
+      "bytes": 70114
+    },
+    {
+      "name": "flate-expansion-overflow",
+      "serialization": "object-streams",
+      "sha256": "07fb003a0de9ecfcfd649252367fd80ecbad37ca205dde3143aa725fa1793589",
+      "bytes": 69480
+    },
+    {
       "name": "unsafe-declared-dimensions",
       "serialization": "classic-xref",
       "sha256": "93e976c8dab3891d6ed8492a65b8828ea75044c1700d63ad4fb4f225cde2dc56",
@@ -408,15 +480,15 @@
       "file": "valid-jpeg-image-classic-xref.pdf",
       "name": "valid-jpeg-image",
       "serialization": "classic-xref",
-      "sha256": "f6e258adf2f40307cdd09b8777b7f4c9cc00ca7d5ee1f4c9174f5747753634ea",
-      "bytes": 1804
+      "sha256": "f87dfc0031fce30daa38f71d56d8f4cce2816c95be593ed24a54243c43edfd5c",
+      "bytes": 1712
     },
     {
       "file": "valid-jpeg-image-object-streams.pdf",
       "name": "valid-jpeg-image",
       "serialization": "object-streams",
-      "sha256": "9e2c7f40203b58eb9beed21f06bd4b7cf13b8979f7edf3a0e22605ae7c76958d",
-      "bytes": 1442
+      "sha256": "d5c1b69aa1903b3ade04a0fd305d34bfc0b4cac40d8e32152d3495ebc01ab425",
+      "bytes": 1347
     },
     {
       "file": "missing-bits-per-component-classic-xref.pdf",

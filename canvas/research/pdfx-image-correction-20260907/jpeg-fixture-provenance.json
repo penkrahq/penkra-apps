@@ -1,0 +1,23 @@
+{
+  "generator": "libjpeg cjpeg",
+  "command": "cjpeg -quality 95 -baseline -optimize -sample 1x1",
+  "source": "deterministic 4x3 PPM RGB bitmap generated in-memory; no network input",
+  "width": 4,
+  "height": 3,
+  "components": 3,
+  "bitsPerComponent": 8,
+  "sha256": "e08260f41d535386f6da2e5bfa5be0777588a26639b4547ebf47c0e3d9b381b8",
+  "popplerRender": {
+    "command": "pdftoppm -png -r 72 -f 1 -l 1 -singlefile",
+    "output": "valid-jpeg-image-classic-xref.png",
+    "width": 40,
+    "height": 40,
+    "stderr": "",
+    "status": "pass"
+  },
+  "historicalMalformedAttempt": {
+    "status": "diagnostic-only",
+    "popplerStderr": "Invalid SOS parameters for sequential JPEG",
+    "usedAsPositiveFixture": false
+  }
+}
