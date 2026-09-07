@@ -746,3 +746,24 @@ Log `/tmp/canvas-luna-build-production-ae57f66-20260907.log`; task exit `1`, wra
 `39` unverified Swift rows and `37` unverified Kotlin rows (`76` total); no missing, extra, or
 invalid rows were reported. This remains an expected closed gate and is not production readiness
 or a capability promotion.
+
+## Publication-head reader audit
+
+The integrated head-reader tests exercise valid saved Yjs state and malformed materialized
+publication-head values, but do not exercise malformed saved Yjs bytes or malformed update
+records. A device-free probe against `readPublishedCanvasLibrary` with `snapshot.state` set to
+invalid base64 returned the raw `InvalidCharacterError` (`code=5`, `Invalid character`); two bytes
+of malformed Yjs state returned raw `Error` (`Unexpected end of array`). Neither was normalized to
+`CANVAS_IMPORT_INTEGRITY`, and restore failure occurs before the reader's `finally` block receives
+the model. This is a concrete reader-boundary gap; no production fix was made.
+
+The reader ignores the Account projection field and restores the Yjs state, so the current tests
+also lack an explicit valid-state/malformed-projection regression demonstrating that the ignored
+projection cannot affect the selected publication. This is a coverage gap rather than a reproduced
+acceptance failure in the current implementation.
+
+Caller isolation was independently probed with a valid stored release: after mutating the first
+result's release document, publication head, and assets map, a second read returned the original
+`frame`, `r1`, and zero assets. No isolation failure was reproduced. The head tests do not currently
+assert this mutation-then-reread contract; the observed isolation comes from detached publication
+metadata, fresh release JSON, and copied blob bytes. No speculative production fix was made.
