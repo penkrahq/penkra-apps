@@ -176,6 +176,45 @@ test("stored retention envelopes validate before publisher-only restore and retu
   assert.notEqual(second.retentions[0].retention.assets[0].bytes[0], 99);
 });
 
+test("readRelease rejects malformed retention transport before reading own or retained assets", async () => {
+  const { publisher, ui, retention } = await fixture();
+  const ownBytes = Uint8Array.of(8, 9, 10);
+  const release = createLibraryRelease(structuredClone(publisher.document), {
+    libraryId: publisher.libraryId,
+    releaseId: "with-own-asset",
+    dependencies: [{ alias: "ui", ...identity(ui) }],
+    assets: [{ path: "own.bin", sha256: hash(ownBytes), size: ownBytes.length, mimeType: "application/octet-stream" }],
+  });
+  const prepared = {
+    release,
+    assets: new Map([["own.bin", ownBytes]]),
+    retentions: [{ alias: "ui", retention: structuredClone(retention) }],
+  };
+  const state = backend();
+  const store = createLibraryStorage(state.api);
+  const original = await store.writeRelease("publisher", prepared);
+  const stored = releaseEnvelope(state, original).content;
+  const cases = [
+    ["malformed retention", { ...stored, retentions: [{ alias: "ui" }] }],
+    ["wrong accepted root", {
+      ...stored,
+      retentions: [{
+        alias: "ui",
+        retention: {
+          ...structuredClone(stored.retentions[0].retention),
+          root: { ...stored.retentions[0].retention.root, releaseId: "wrong" },
+        },
+      }],
+    }],
+  ];
+  for (const [name, content] of cases) {
+    const candidate = await uploadEnvelope(state, content);
+    state.calls.length = 0;
+    await assert.rejects(store.readRelease("publisher", candidate), { code: "CANVAS_IMPORT_INTEGRITY" }, name);
+    assert.deepEqual(state.calls, [{ op: "read", documentId: "publisher", path: candidate.path }], `${name} performed an asset read`);
+  }
+});
+
 test("asset and envelope write failures return no receipt while unrelated blobs remain", async () => {
   const { prepared } = await fixture();
   for (const failure of ["asset", "envelope"]) {
