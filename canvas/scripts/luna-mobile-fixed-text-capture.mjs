@@ -62,16 +62,30 @@ export function classifyFixedTextCase(caseId) {
 export function compareFixedTextPixels(reference, actual, boundary = 2, tolerance = 2) {
   if (!reference || !actual || reference.width !== actual.width || reference.height !== actual.height) return { status: "mismatch", comparedPixels: 0, mismatchedPixels: 0, reason: "capture dimensions differ from reference" };
   let comparedPixels = 0; let mismatchedPixels = 0;
+  const foreground = new Uint8Array(reference.width * reference.height);
+  for (let y = 0; y < reference.height; y += 1) for (let x = 0; x < reference.width; x += 1) {
+    const offset = (y * reference.width + x) * 4;
+    foreground[y * reference.width + x] = reference.pixels[offset + 3] >= 250 && !(reference.pixels[offset] > 245 && reference.pixels[offset + 1] > 245 && reference.pixels[offset + 2] > 245) ? 1 : 0;
+  }
   for (let y = boundary; y < reference.height - boundary; y += 1) for (let x = boundary; x < reference.width - boundary; x += 1) {
+    let interior = foreground[y * reference.width + x];
+    for (let dy = -boundary; dy <= boundary && interior; dy += 1) for (let dx = -boundary; dx <= boundary && interior; dx += 1) if (!foreground[(y + dy) * reference.width + x + dx]) interior = 0;
+    if (!interior) continue;
     const offset = (y * reference.width + x) * 4;
     // Transparent/background pixels do not prove text fidelity; authored
     // solid color pixels are the bounded positive samples used by the other
     // mobile comparators in this repository.
-    if (reference.pixels[offset + 3] < 250 || reference.pixels[offset] > 245 && reference.pixels[offset + 1] > 245 && reference.pixels[offset + 2] > 245) continue;
     comparedPixels += 1;
     if ([0, 1, 2, 3].some((channel) => Math.abs(reference.pixels[offset + channel] - actual.pixels[offset + channel]) > tolerance)) mismatchedPixels += 1;
   }
-  return { status: mismatchedPixels ? "fail" : "pass", comparedPixels, mismatchedPixels, boundaryExclusionPhysicalPixels: boundary, channelTolerance: tolerance };
+  return {
+    status: mismatchedPixels ? "fail" : comparedPixels ? "pass" : "unmeasured",
+    comparedPixels,
+    mismatchedPixels,
+    ...(comparedPixels ? {} : { reason: "no authored solid-color interiors remain after boundary erosion" }),
+    boundaryExclusionPhysicalPixels: boundary,
+    channelTolerance: tolerance,
+  };
 }
 
 export function buildFixedTextDocument(role) {
