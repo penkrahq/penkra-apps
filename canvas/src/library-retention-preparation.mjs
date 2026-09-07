@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { preparePublicLibraryItemContent, releaseIdentity, validateLibraryRelease } from "./library-publication.mjs";
+import { preparePublicLibraryItemContent, releaseIdentity, validateLibraryRelease, validateRetainedLibraryItem } from "./library-publication.mjs";
 import { variableReferences } from "./variable-references.mjs";
 
 // Preparation only. The caller must authorize the root acceptance, and the
@@ -17,11 +17,21 @@ export async function prepareLibraryRetention(rootRelease, requestedItems, reade
   const selectedIdentities = new Map([[JSON.stringify([root.libraryId, root.releaseId]), root.contentHash]]);
   const active = new Set();
 
-  async function visit(release, kind, id) {
+  async function visit(release, kind, id, retained = false) {
     const key = JSON.stringify([identityKey(release), kind, id]);
     if (active.has(key)) throw invalid("CANVAS_IMPORT_CYCLE");
     if (items.has(key)) return;
-    const prepared = preparePublicLibraryItemContent(release, kind, id);
+    // A publication may carry authenticated accepted items rather than upstream
+    // source documents. The reader must select from that accepted public surface;
+    // a missing item never falls back to a live source.
+    const prepared = retained
+      ? structuredClone(await readers.readRetainedItem(releaseIdentity(release), kind, id))
+      : preparePublicLibraryItemContent(release, kind, id);
+    if (retained) {
+      validateRetainedLibraryItem(prepared);
+      if (identityKey(prepared.release) !== identityKey(release)
+        || prepared.item.kind !== kind || prepared.item.id !== id) throw invalid("CANVAS_IMPORT_INTEGRITY");
+    }
     active.add(key);
     for (const reference of externalReferences(prepared.content.resources)) {
       const dependency = prepared.content.dependencies.find(({ alias }) => alias === reference.alias);
@@ -34,6 +44,10 @@ export async function prepareLibraryRetention(rootRelease, requestedItems, reade
       }
       selectedIdentities.set(publicationKey, dependency.contentHash);
       let selected = releases.get(dependencyKey);
+      if (!selected && typeof readers.readRetainedItem === "function") {
+        await visit(dependency, reference.kind, reference.id, true);
+        continue;
+      }
       if (!selected) {
         if (typeof readers.resolveRelease !== "function") throw invalid("CANVAS_IMPORT_RELEASE_RESOLVER_REQUIRED");
         selected = structuredClone(await readers.resolveRelease({
