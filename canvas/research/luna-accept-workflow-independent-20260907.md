@@ -1,4 +1,4 @@
-# Independent accept-workflow review
+# Independent accept-workflow review and no-op correction
 
 Date: 2026-09-07
 
@@ -15,6 +15,8 @@ a capability claim.
 - Approved boundary tests cherry-picked from `45d2727` as local
   `fc1f6b2c72d56ca9e13dcd6d597aa101f4d0a77c`
 - Independent probe: `canvas/src/library-accept-workflow-independent.test.mjs`
+- Narrow source correction: `canvas/src/library-accept-workflow.mjs` (local
+  source commit recorded at handoff)
 
 The requested prerequisites were not present in this worktree. The current
 `canvas/src/library-storage.mjs` `createLibraryStorage()` result exposes
@@ -80,17 +82,33 @@ boundary: publisher denial occurred before consumer upload or append.
 
 ## Post-prerequisite verification
 
-After the approved storage seam was added, the same independent test ran
-unchanged in protocol scope and passed `6/6` with `0` failures, cancellations,
-or skips. It exercised real `publishCanvasLibrary()` ->
+After the approved storage seam was added, the independent test initially
+passed `6/6` with `0` failures, cancellations, or skips. The review then kept a
+dedicated exact repeat of the same release, same items, and same policy. Before
+the correction, that valid repeat reached
+`createDocumentOperationUpdates()` and threw `Canvas operation did not produce
+an undoable update.` This was a concrete workflow defect, not a fixture
+substitution.
+
+The narrow correction imports `isDeepStrictEqual` from `node:util` and compares
+the fully reauthorized, retained-loaded, schema-validated proposed consumer
+with the original materialized consumer. An unchanged result returns
+`accepted:true`, `changed:false`, the detached identity/retention, and the
+captured sequence, without operation ID, append, snapshot, or fabricated undo.
+Changed receipts now explicitly contain `changed:true`. No general
+document-model no-op policy was changed.
+
+After that correction, the independent test passed `7/7` with `0` failures,
+cancellations, or skips. It exercised real `publishCanvasLibrary()` ->
 `acceptCanvasLibrary()` -> fresh `loadRetainedCanvasImports()` using persisted
 fake Account/Yjs state. The successful cases covered nested asset loading after
 publisher deletion, asset-free publisher denial, removed/private public-item
 rejection before append, upload/readback failure, consumer CAS conflict using a
 real Yjs edit, malformed durable append as
 `CANVAS_LIBRARY_ACCEPT_COMMIT_UNKNOWN`, deferred snapshot, exact inverse undo,
-caller/source snapshot isolation, same-source policy preservation, alias
-conflict, and newest-head selection while prior immutable bytes remained.
+caller/source snapshot isolation, exact same-release no-op reacceptance with
+detached receipt data, same-source policy preservation, alias conflict, and
+newest-head selection while prior immutable bytes remained.
 
 Final independent command:
 
@@ -98,7 +116,7 @@ Final independent command:
 node --test canvas/src/library-accept-workflow-independent.test.mjs
 ```
 
-Exit `0`; `6` passed, `0` failed, `0` cancelled, `0` skipped; duration
+Exit `0`; `7` passed, `0` failed, `0` cancelled, `0` skipped; duration
 `312.457458 ms`.
 
 The broader pure focus was:
@@ -107,9 +125,11 @@ The broader pure focus was:
 node --test canvas/src/library-accept-workflow-independent.test.mjs canvas/src/library-accept-workflow.test.mjs canvas/src/library-published-storage.test.mjs canvas/src/library-publish-workflow-independent.test.mjs canvas/src/library-publish-workflow.test.mjs canvas/src/library-publication-head-retentions.test.mjs canvas/src/library-publication-head.test.mjs canvas/src/library-release-retentions.test.mjs canvas/src/library-retained-publication.test.mjs canvas/src/library-published-retention.test.mjs canvas/src/library-published-retention-independent.test.mjs canvas/src/library-retained-imports.test.mjs canvas/src/library-retained-loader.test.mjs canvas/src/library-retention-preparation.test.mjs canvas/src/library-storage.test.mjs canvas/src/library-publication-service.test.mjs canvas/src/canvas-imports.test.mjs canvas/src/library-publication.test.mjs
 ```
 
-Exit `0`; `127` passed, `0` failed, `0` cancelled, `0` skipped; duration
-`440.404375 ms`.
+Exit `0`; `128` passed, `0` failed, `0` cancelled, `0` skipped; duration
+`406.105958 ms`.
 
 The initial missing-method result remains retained as branch-mismatch evidence
 only; it is superseded for acceptance conclusions by the post-prerequisite
-run. No concrete defect remains from the exercised acceptance workflow.
+run. The no-op source defect was corrected narrowly and covered by the exact
+repeat regression. No additional concrete defect remains from the exercised
+acceptance workflow.
