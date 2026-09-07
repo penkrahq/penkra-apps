@@ -70,6 +70,21 @@ test("retention requires an accepted identity while discovery follow may omit it
   }
 });
 
+test("legacy live and exact pin records reject retention without an accepted release identity", () => {
+  const source = document();
+  const contentHash = "a".repeat(64);
+  source.imports = { ui: {
+    documentId: "library", pin: "live",
+    retention: { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 0 },
+  } };
+  assert.throws(() => validateCanvasDocument(source));
+  source.imports.ui = {
+    documentId: "library", pin: "exact", version: 1,
+    retention: { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 0 },
+  };
+  assert.throws(() => validateCanvasDocument(source));
+});
+
 test("physical sizing, bleed and advisory guides belong to frames in any module", () => {
   for (const module of ["generic", "deck", "web", "mobile"]) {
     const source = document();
