@@ -20,13 +20,13 @@ function gridDocument(columns, rows, role = "ios") {
 function schemaResult(document) { return validateCanvasDocument(document, { throw: false }); }
 
 test("grid columns and rows validate the bounded renderer track domain", () => {
-  const valid = [[100, 180], [0, "0fr"], [10.5, 2.25], ["auto"], ["1fr", "2fr"], []];
+  const valid = [[100, 180], [0, "0fr"], [10.5, 2.25], ["auto"], ["1.25fr"], ["1fr", "2fr"], []];
   for (const tracks of valid) {
     assert.equal(schemaResult(gridDocument(tracks, tracks)).valid, true, JSON.stringify(tracks));
     assert.equal(schemaResult(gridDocument(tracks, [100, 180])).valid, true, `columns ${JSON.stringify(tracks)}`);
     assert.equal(schemaResult(gridDocument([100, 180], tracks)).valid, true, `rows ${JSON.stringify(tracks)}`);
   }
-  const invalid = [-1, NaN, Infinity, "-1fr", "+1fr", ".5fr", "1e2fr", " 1fr", "1fr ", "minmax(10, 1fr)", "repeat(2, 1fr)", "50%", {}, null];
+  const invalid = [-1, NaN, Infinity, "-1fr", "+1fr", ".5fr", "1e2fr", `${"4".repeat(400)}.0fr`, " 1fr", "1fr ", "minmax(10, 1fr)", "repeat(2, 1fr)", "50%", {}, null];
   for (const value of invalid) {
     const columns = schemaResult(gridDocument([value], [100]));
     assert.equal(columns.valid, false, `columns ${String(value)}`);
@@ -42,15 +42,18 @@ test("grid columns and rows validate the bounded renderer track domain", () => {
 });
 
 test("auto, fr, fixed, mixed and empty tracks reach finite resolved geometry", () => {
+  const fixtures = [[], [100], ["auto"], ["1fr", "2fr"], [0, "0fr"], [40, "1fr", "auto"]];
   for (const role of ["ios", "android"]) {
-    const document = gridDocument([40, "1fr", "auto"], [30, "2fr", "auto"], role);
-    assert.equal(schemaResult(document).valid, true, role);
-    const ir = buildCapabilityVerificationIR(document, { role, frames: ["screen"] }, capabilityPathInventory());
-    for (const id of ["first", "second"]) {
-      const node = ir.outputs[0].nodes.find((candidate) => candidate.id === id);
-      assert.ok(node, `${role}/${id}`);
-      assert.ok([node.geometry.localX, node.geometry.localY, node.geometry.w, node.geometry.h].every(Number.isFinite), `${role}/${id}`);
-      assert.ok(node.geometry.w > 0 && node.geometry.h > 0, `${role}/${id}`);
+    for (const tracks of fixtures) {
+      const document = gridDocument(tracks, tracks, role);
+      assert.equal(schemaResult(document).valid, true, `${role}/${JSON.stringify(tracks)}`);
+      const ir = buildCapabilityVerificationIR(document, { role, frames: ["screen"] }, capabilityPathInventory());
+      for (const id of ["first", "second"]) {
+        const node = ir.outputs[0].nodes.find((candidate) => candidate.id === id);
+        assert.ok(node, `${role}/${JSON.stringify(tracks)}/${id}`);
+        assert.ok([node.geometry.localX, node.geometry.localY, node.geometry.w, node.geometry.h].every(Number.isFinite), `${role}/${JSON.stringify(tracks)}/${id}`);
+        assert.ok(node.geometry.w > 0 && node.geometry.h > 0, `${role}/${JSON.stringify(tracks)}/${id}`);
+      }
     }
   }
 });
@@ -69,4 +72,7 @@ test("box dimensions retain fill/fit semantics and existing variable cascades re
   const ir = buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"], modes: { appearance: "dark" } }, capabilityPathInventory());
   const first = ir.outputs[0].nodes.find(({ id }) => id === "first");
   assert.ok(first && [first.geometry.localX, first.geometry.localY, first.geometry.w, first.geometry.h].every(Number.isFinite));
+  assert.equal(first.paint.fill, "#abcdef");
+  const resolvedGrid = ir.outputs[0].nodes.find(({ id }) => id === "grid");
+  assert.equal(resolvedGrid.layout.columnGap, 20);
 });
