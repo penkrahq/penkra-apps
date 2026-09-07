@@ -1,0 +1,3 @@
+
+getpwuid_r did not find a match for uid 501
+log: Bad predicate (Unable to parse the format string "eventMessage CONTAINS[c] \"LUNA_FIXED_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_FIXED_TEXT_ROOT\""): eventMessage CONTAINS[c] \"LUNA_FIXED_TEXT_READY\" OR eventMessage CONTAINS[c] \"LUNA_FIXED_TEXT_ROOT\"

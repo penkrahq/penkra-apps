@@ -1,0 +1,444 @@
+--------- beginning of system
+I/ActivityManager(  677): Force stopping com.penkra.canvas.fixture appid=10217 user=0: from pid 3909
+I/ActivityManager(  677): Killing 3861:com.penkra.canvas.fixture/u0a217 (adj 0): stop com.penkra.canvas.fixture due to from pid 3909
+D/CompatChangeReporter(  677): Compat change id reported: 151861875; UID 10217; state: ENABLED
+W/ActivityTaskManager(  677): Force removing ActivityRecord{135512810 u0 com.penkra.canvas.fixture/.MainActivity t403 f}}: app died, no saved state
+V/WindowManagerShell(  927): Transition requested (#21): android.os.BinderProxy@291b701 TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=403 effectiveUid=10217 displayId=0 isRunning=false baseIntent=Intent { flg=0x10000000 cmp=com.penkra.canvas.fixture/.MainActivity } baseActivity=null topActivity=null origActivity=null realActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} numActivities=0 lastActiveTime=71471 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@99369a6} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=null launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=true lastNonFullscreenBounds=Rect(276, 694 - 804, 1774) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 0, 0) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=undefined}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 21 }
+--------- beginning of main
+I/BpBinder(  511): onLastStrongRef automatically unlinking death recipients: 
+D/BackgroundInstallControlService(  677): Package event received: 0
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+D/ViewRootImpl( 1050): Skipping stats log for color mode
+D/StatsLog( 1050): LAUNCHER_ONRESUME
+D/BackgroundInstallControlService(  677): Package event received: 0
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/AppWidgetServiceImpl(  677): startListening() 0
+I/AppWidgetServiceImpl(  677): startListening() 0
+D/WindowManagerShell(  927): setLauncherKeepClearAreaHeight: visible=true, height=527
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+W/IPCThreadState(  677): Sending oneway calls to frozen process.
+D/QuickstepModelDelegate( 1050): notifyAppTargetEvent action=1 launchLocation=workspace/0/[-1,-1]/[1,1]
+I/BpBinder(  511): onLastStrongRef automatically unlinking death recipients: 
+D/NexusLauncherModelDelegate( 1050): notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=6}
+W/InputDispatcher(  677): channel 'dc16495 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity' ~ Consumer closed input channel or an error occurred.  events=0x9
+E/InputDispatcher(  677): channel 'dc16495 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity' ~ Channel is unrecoverably broken and will be disposed!
+I/WindowManager(  677): WIN DEATH: Window{dc16495 u0 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity}
+I/ImeTracker(  677): com.penkra.canvas.fixture:7266c9fb: onRequestHide at ORIGIN_SERVER reason HIDE_REMOVE_CLIENT fromUser false
+I/ImeTracker(  677): com.penkra.canvas.fixture:7266c9fb: onCancelled at PHASE_SERVER_SHOULD_HIDE
+I/AppsFilter(  677): interaction: PackageSetting{c11fd90 com.konsier.app.dev/10214} -> PackageSetting{e07e07d com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{ee5b68e com.penkra.canvas.qa.fonts/10219} -> PackageSetting{e07e07d com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{5422eaf com.penkra.canvas.qa.typomixed0606/10215} -> PackageSetting{e07e07d com.penkra.canvas.fixture/10217} BLOCKED
+I/adbd    (  521): Remote process closed the socket (on MSG_PEEK)
+V/ActivityManager(  677): Got obituary of 3861:com.penkra.canvas.fixture
+I/Zygote  (  456): Process 3861 exited due to signal 9 (Killed)
+W/ActivityManager(  677): setHasOverlayUi called on unknown pid: 3861
+D/CarrierSvcBindHelper( 1042): onHandleForceStop: [com.penkra.canvas.fixture]
+I/AppWidgetServiceImpl(  677): Received broadcast: android.intent.action.PACKAGE_RESTARTED on user 0
+I/AppWidgetServiceImpl(  677): Updating package stopped masked state for uid 10217 package com.penkra.canvas.fixture isStopped true
+I/system_server(  677): AssetManager2(0xb400007770032e18) locale list changing from [] to [en-US]
+I/netd    (  453): tetherGetStats() -> {[]} <0.49ms>
+I/system_server(  677): AssetManager2(0xb4000077700d9178) locale list changing from [] to [en-US]
+D/CarrierSvcBindHelper( 1042): No carrier app for: 0
+D/BaseDepthController( 1050): setSurface:
+D/BaseDepthController( 1050): 	mWaitingOnSurfaceValidity: false
+D/BaseDepthController( 1050): 	mBaseSurface: Surface(name=com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity)/@0xb0cd91
+I/AiAiEcho( 1487): Predicting[0]:  [CONTEXT sampling_count=5 ]
+I/AiAiEcho( 1487): EchoTargets: 
+I/AiAiEcho( 1487): Filtered by AiAi flag check: 
+I/AiAiEcho( 1487): [CONTEXT ratelimit_period="10 SECONDS" ]
+I/AiAiEcho( 1487): #remoteViewsTwiddler: feature disabled.
+I/AiAiEcho( 1487): #postPredictionTargets: Sending updates to UISurface home with targets# 0 (types=[])
+D/wpa_supplicant(  909): nl80211: Drv Event 64 (NL80211_CMD_NOTIFY_CQM) received for wlan0
+D/wpa_supplicant(  909): nl80211: Beacon loss event
+D/wpa_supplicant(  909): wlan0: Event BEACON_LOSS (53) received
+I/wpa_supplicant(  909): wlan0: CTRL-EVENT-BEACON-LOSS 
+I/libprocessgroup(  677): Removed cgroup /sys/fs/cgroup/apps/uid_10217/pid_3861
+W/ActivityTaskManager(  677): Unable to send transaction to client proc com.penkra.canvas.fixture: no app thread
+I/NotificationListener( 1050): Handling notification state refresh for android#0
+D/SsBaseTemplateCard( 1050): No text view can be set up
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+I/SsBaseTemplateCard( 1050): Secondary card pane is null
+V/WindowManagerShell(  927): onTransitionReady(transaction=2907692860113)
+V/WindowManagerShell(  927): onTransitionReady (#21) android.os.BinderProxy@291b701: {id=21 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+V/WindowManagerShell(  927):         {m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x5ec4794 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManagerShell(  927):         {m=CLOSE f=NONE leash=Surface(name=Task=403)/@0x3e1c23d sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManagerShell(  927):         {m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x87c7a32 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+V/WindowManagerShell(  927):     ]}
+V/WindowManagerShell(  927): Playing animation for (#21) android.os.BinderProxy@291b701@0
+V/ShellRecents(  927): RecentsTransitionHandler.startAnimation: no controller found
+V/WindowManagerShell(  927): Transition doesn't have explicit remote, search filters for match for {id=21 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x5ec4794 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=CLOSE f=NONE leash=Surface(name=Task=403)/@0x3e1c23d sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x87c7a32 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@29d9206 windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@63930c7, appThread = android.app.IApplicationThread$Stub$Proxy@42096f4, debugName = overlayBackTransition }}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@496ce1d, appThread = android.app.IApplicationThread$Stub$Proxy@e70c892, debugName = LauncherToDream }}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@60e1263, appThread = android.app.IApplicationThread$Stub$Proxy@92a2e60, debugName = QuickstepLaunchHome }}
+D/RemoteTransitionHandler(  927): Found filterPair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@60e1263, appThread = android.app.IApplicationThread$Stub$Proxy@92a2e60, debugName = QuickstepLaunchHome }}
+V/WindowManagerShell(  927):  Delegate animation for (#21) to RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@60e1263, appThread = android.app.IApplicationThread$Stub$Proxy@92a2e60, debugName = QuickstepLaunchHome }
+D/StateManager( 1050): createAtomicAnimation - fromState: Background, toState: Normal, partial trace:
+D/StateManager( 1050): 	at com.android.quickstep.util.WorkspaceRevealAnim.prepareToAnimate(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:22)
+D/StateManager( 1050): 	at com.android.quickstep.util.WorkspaceRevealAnim.<init>(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:11)
+D/StateManager( 1050): 	at com.android.launcher3.QuickstepTransitionManager.createWallpaperOpenAnimations(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:339)
+D/b/311077782( 1050): LauncherAnimationRunner.setAnimation
+V/WindowManager(  677): Sent Transition (#21) createdAt=09-07 13:53:30.322 via request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=403 effectiveUid=10217 displayId=0 isRunning=false baseIntent=Intent { flg=0x10000000 cmp=com.penkra.canvas.fixture/.MainActivity } baseActivity=null topActivity=null origActivity=null realActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} numActivities=0 lastActiveTime=71471 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{7075a9f Task{c979db #403 type=standard A=10217:com.penkra.canvas.fixture}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=null launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=true lastNonFullscreenBounds=Rect(276, 694 - 804, 1774) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= false isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 0, 0) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=undefined}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 21 }
+V/WindowManager(  677):     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+V/WindowManager(  677):     info={id=21 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+V/WindowManager(  677):         {WCT{RemoteToken{a8584bf Task{65ff867 #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1)/@0x724a548 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManager(  677):         {WCT{RemoteToken{7075a9f Task{c979db #403 type=standard A=10217:com.penkra.canvas.fixture}}} m=CLOSE f=NONE leash=Surface(name=Task=403)/@0x83ff4f9 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManager(  677):         {m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x2adf3eb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+V/WindowManager(  677):     ]}
+W/ActivityTaskManager(  677): callingPackage for (uid=2000, pid=3915) has no WPC
+V/WindowManagerShell(  927):  animated by com.android.wm.shell.transition.RemoteTransitionHandler@ee80a28
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10217, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+I/RanchuHwc(  477): logCompositionFallbackIfChanged: layer 46 CompositionType fallback from 2 to 1
+I/RanchuHwc(  477): logCompositionFallbackIfChanged: layer 47 CompositionType fallback from 2 to 1
+V/SplashScreenExceptionList(  677): SplashScreen checking exception for package com.penkra.canvas.fixture (target sdk:35) -> false
+I/ActivityTaskManager(  677): Add Task{c979db #403 type=standard A=10217:com.penkra.canvas.fixture} to hidden list because adding Task{7c61f36 #404 type=standard A=10217:com.penkra.canvas.fixture}
+I/ActivityTaskManager(  677): START u0 {flg=0x10000000 xflg=0x5 cmp=com.penkra.canvas.fixture/.MainActivity (has extras)} with LAUNCH_MULTIPLE from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+V/WindowManagerShell(  927): Transition requested (#22): android.os.BinderProxy@b2d4539 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=404 effectiveUid=10217 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.penkra.canvas.fixture/.MainActivity } baseActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} topActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} origActivity=null realActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} numActivities=1 lastActiveTime=77830 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@74077e} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 132 - 0, 0) topActivityInfo=ActivityInfo{523c4df com.penkra.canvas.fixture.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=Rect(276, 694 - 804, 1774) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=inactive}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 22 }
+D/ShellSplitScreen(  927): logExit: no-op, mLoggerSessionId is null
+V/WindowManager(  677): Unknown focus tokens, dropping reportFocusChanged
+I/ImeTracker(  677): com.google.android.apps.nexuslauncher:48722df3: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+D/InsetsController( 1050): hide(ime(), fromIme=false)
+I/ImeTracker( 1050): com.google.android.apps.nexuslauncher:48722df3: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+D/CompatChangeReporter(  677): Compat change id reported: 309578419; UID 10217; state: ENABLED
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onFinishInput():2043 
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onStartInput():1293 onStartInput(EditorInfo{EditorInfo{packageName=com.google.android.apps.nexuslauncher, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+I/EmojiCompatManager( 1397): EmojiCompatManager.getEmojiCompatIfLoaded():343 EmojiCompat.init() was never called.
+I/EmojiCompatManager( 1397): java.lang.IllegalStateException: EmojiCompat is not initialized. Please call EmojiCompat.init() first
+I/EmojiCompatManager( 1397): 	at asx.p(PG:6)
+I/EmojiCompatManager( 1397): 	at axb.b(PG:13)
+I/EmojiCompatManager( 1397): 	at jnr.b(PG:2)
+I/EmojiCompatManager( 1397): 	at jnr.c(PG:4)
+I/EmojiCompatManager( 1397): 	at jnr.f(PG:3)
+I/EmojiCompatManager( 1397): 	at jnx.c(PG:3)
+I/EmojiCompatManager( 1397): 	at kif.cz(PG:47)
+I/EmojiCompatManager( 1397): 	at lhl.run(PG:1025)
+I/EmojiCompatManager( 1397): 	at jaf.execute(PG:12)
+I/EmojiCompatManager( 1397): 	at nco.v(PG:13)
+I/EmojiCompatManager( 1397): 	at lhn.m(PG:96)
+I/EmojiCompatManager( 1397): 	at lhn.k(PG:25)
+I/EmojiCompatManager( 1397): 	at kgn.onStartInput(PG:250)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService.doStartInput(InputMethodService.java:3521)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.startInput(InputMethodService.java:879)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.dispatchStartInput(InputMethodService.java:908)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.IInputMethodWrapper.executeMessage(IInputMethodWrapper.java:201)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:44)
+I/EmojiCompatManager( 1397): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loopOnce(Looper.java:248)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loop(Looper.java:338)
+I/EmojiCompatManager( 1397): 	at android.app.ActivityThread.main(ActivityThread.java:9067)
+I/EmojiCompatManager( 1397): 	at java.lang.reflect.Method.invoke(Native Method)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:593)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:932)
+W/PackageConfigPersister(  677): App-specific configuration not found for packageName: com.google.android.apps.nexuslauncher and userId: 0
+I/ImeTracker(  677): system_server:f98a1100: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+W/HWUI    (  927): Image decoding logging dropped!
+I/BpBinder(  511): onLastStrongRef automatically unlinking death recipients: 
+D/SplashScreenView(  927): Build android.window.SplashScreenView{4bb70d7 V.E...... ......ID 0,0-0,0}
+D/SplashScreenView(  927): Icon: view: android.widget.ImageView{d7abdc4 V.ED..... ......I. 0,0-0,0 #1020542 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@cacb4ad size: 420
+D/SplashScreenView(  927): Branding: view: android.view.View{a47f230 G.ED..... ......I. 0,0-0,0 #1020541 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+D/WindowManagerShell(  927): setLauncherKeepClearAreaHeight: visible=false, height=527
+W/SplitSelectStateCtor( 1050): Missing session instanceIds
+D/StatsLog( 1050): LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+I/AppsFilter(  677): interaction: PackageSetting{c11fd90 com.konsier.app.dev/10214} -> PackageSetting{9ff24c5 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{ee5b68e com.penkra.canvas.qa.fonts/10219} -> PackageSetting{9ff24c5 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{5422eaf com.penkra.canvas.qa.typomixed0606/10215} -> PackageSetting{9ff24c5 com.penkra.canvas.fixture/10217} BLOCKED
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10217, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+D/CoreBackPreview(  677): Window{4fa6d2f u0 Splash Screen com.penkra.canvas.fixture}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@b9ad328, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+I/AppWidgetServiceImpl(  677): Received broadcast: android.intent.action.PACKAGE_UNSTOPPED on user 0
+I/AppWidgetServiceImpl(  677): Updating package stopped masked state for uid 10217 package com.penkra.canvas.fixture isStopped false
+D/Zygote  (  456): Forked child process 3919
+I/ActivityManager(  677): Start proc 3919:com.penkra.canvas.fixture/u0a217 for next-top-activity {com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity}
+I/ActivityManager(  677): ProcessObserver broadcast disabled
+I/ImeTracker(  677): system_server:f98a1100: onCancelled at PHASE_SERVER_SHOULD_HIDE
+W/ActivityTaskManager(  677): Unable to send transaction to client proc com.penkra.canvas.fixture: no app thread
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/.canvas.fixture( 3919): Late-enabling -Xcheck:jni
+V/WindowManager(  677): Sent Transition (#22) createdAt=09-07 13:53:30.382 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=404 effectiveUid=10217 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.penkra.canvas.fixture/.MainActivity } baseActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} topActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} origActivity=null realActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} numActivities=1 lastActiveTime=77830 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{e67001f Task{7c61f36 #404 type=standard A=10217:com.penkra.canvas.fixture}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 132 - 0, 0) topActivityInfo=ActivityInfo{adeaf6c com.penkra.canvas.fixture.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=Rect(276, 694 - 804, 1774) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=inactive}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 22 }
+V/WindowManagerShell(  927): onTransitionReady(transaction=2907692860126)
+V/WindowManagerShell(  927): onTransitionReady (#22) android.os.BinderProxy@b2d4539: {id=22 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+V/WindowManagerShell(  927):         {m=OPEN f=NONE leash=Surface(name=Task=404)/@0xf6cf992 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManagerShell(  927):         {m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xe5cef63 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManagerShell(  927):         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x8144760 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+V/WindowManagerShell(  927):     ]}
+V/WindowManagerShell(  927): Transition (#22) android.os.BinderProxy@b2d4539@0 ready while (#21) android.os.BinderProxy@291b701@0 is still animating. Notify the animating transition in case they can be merged
+V/WindowManagerShell(  927):    Merge into remote: RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@60e1263, appThread = android.app.IApplicationThread$Stub$Proxy@92a2e60, debugName = QuickstepLaunchHome }
+V/WindowManagerShell(  927): Transition animation finished (aborted=false), notifying core (#21) android.os.BinderProxy@291b701@0
+V/WindowManager(  677):     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+--------- beginning of kernel
+I/binder  ( 1819): 1819:677 cannot find target node
+E/IPCThreadState(  677): Binder transaction failure. id: 140998, BR_*: 29189, error: -22 (Invalid argument)
+V/WindowManager(  677):     info={id=22 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[
+V/WindowManager(  677):         {WCT{RemoteToken{e67001f Task{7c61f36 #404 type=standard A=10217:com.penkra.canvas.fixture}}} m=OPEN f=NONE leash=Surface(name=Task=404)/@0x5a6be79 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManager(  677):         {WCT{RemoteToken{a8584bf Task{65ff867 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x724a548 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManager(  677):         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x2adf3eb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+V/WindowManager(  677):     ]}
+I/binder  ( 1819): 677:1819 transaction async to 0:0 failed 140998/29189/-22, size 64-0 line 3348
+V/WindowManager(  677): Finish Transition (#21): created at 09-07 13:53:30.322 collect-started=0.018ms request-sent=0.065ms started=6.207ms ready=8.947ms sent=34.608ms commit=10.881ms finished=114.083ms
+W/ActivityManager(  677): pid 677 system sent binder code 7 with flags 1 to frozen apps and got error -32
+W/WindowManager(  677): Exception thrown during dispatchAppVisibility Window{dc16495 u0 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity EXITING}
+W/WindowManager(  677): android.os.DeadObjectException
+W/WindowManager(  677): 	at android.os.BinderProxy.transactNative(Native Method)
+W/WindowManager(  677): 	at android.os.BinderProxy.transact(BinderProxy.java:592)
+W/WindowManager(  677): 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:557)
+W/WindowManager(  677): 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3151)
+W/WindowManager(  677): 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1311)
+W/WindowManager(  677): 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:389)
+W/WindowManager(  677): 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:6650)
+W/WindowManager(  677): 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5561)
+W/WindowManager(  677): 	at com.android.server.wm.Transition.finishTransition(Transition.java:1391)
+W/WindowManager(  677): 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:1029)
+W/WindowManager(  677): 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:496)
+W/WindowManager(  677): 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:261)
+W/WindowManager(  677): 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:223)
+W/WindowManager(  677): 	at android.os.Binder.execTransactInternal(Binder.java:1426)
+W/WindowManager(  677): 	at android.os.Binder.execTransact(Binder.java:1365)
+W/Process (  677): Unable to open /proc/3861/status
+V/WindowManagerShell(  927): Playing animation for (#22) android.os.BinderProxy@b2d4539@0
+V/ShellRecents(  927): RecentsTransitionHandler.startAnimation: no controller found
+V/WindowManagerShell(  927): Transition doesn't have explicit remote, search filters for match for {id=22 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=404)/@0xf6cf992 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xe5cef63 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x8144760 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@29d9206 windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@63930c7, appThread = android.app.IApplicationThread$Stub$Proxy@42096f4, debugName = overlayBackTransition }}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@496ce1d, appThread = android.app.IApplicationThread$Stub$Proxy@e70c892, debugName = LauncherToDream }}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@60e1263, appThread = android.app.IApplicationThread$Stub$Proxy@92a2e60, debugName = QuickstepLaunchHome }}
+V/WindowManagerShell(  927):  Delegate animation for (#22) to null
+V/WindowManagerShell(  927): start default transition animation, info = {id=22 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=404)/@0xf6cf992 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xe5cef63 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x8144760 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+V/WindowManagerShell(  927): loadAnimation: anim=android.view.animation.AnimationSet@ba51ebf animAttr=0x13 type=OPEN isEntrance=false
+V/WindowManagerShell(  927): loadAnimation: anim=android.view.animation.AnimationSet@b66798c animAttr=0x12 type=OPEN isEntrance=true
+V/WindowManagerShell(  927):  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d69f2bf
+I/.canvas.fixture( 3919): Using CollectorTypeCMC GC.
+I/adbd    (  521): jdwp connection from 3919
+D/RecentsView( 1050): onTaskRemoved: 403, not handling task stack changes
+D/RecentsView( 1050): onTaskRemoved: 403, not handling task stack changes
+D/nativeloader( 3919): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+D/BackgroundInstallControlService(  677): Package event received: 0
+E/BpTransactionCompletedListener(  511): Failed to transact (-32)
+W/ActivityTaskManager(  677): takeTaskSnapshot: taskId=58 not found or not visible
+W/ActivityTaskManager(  677): takeTaskSnapshot: taskId=61 not found or not visible
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+D/WorkspaceRevealAnim( 1050): onAnimationEnd: workspace alpha = 1.0
+V/WindowManagerShell(  927): Transition animation finished (aborted=false), notifying core (#22) android.os.BinderProxy@b2d4539@0
+V/WindowManager(  677): Finish Transition (#22): created at 09-07 13:53:30.382 collect-started=0.011ms request-sent=7.705ms started=10.85ms ready=50.646ms sent=51.15ms commit=35.004ms finished=370.107ms
+V/WindowManagerShell(  927): Track 0 became idle
+V/WindowManagerShell(  927): All active transition animations finished
+D/VRI[NexusLauncherActivity]( 1050): visibilityChanged oldVisibility=true newVisibility=false
+D/NexusLauncherModelDelegate( 1050): notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=7}
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+D/nativeloader( 3919): Configuring clns-9 for other apk /data/app/~~XiF5IjFWBQZSqhr54nrKdA==/com.penkra.canvas.fixture-JMXL4nWTNIMbvXoGypvByg==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~XiF5IjFWBQZSqhr54nrKdA==/com.penkra.canvas.fixture-JMXL4nWTNIMbvXoGypvByg==/lib/arm64:/data/app/~~XiF5IjFWBQZSqhr54nrKdA==/com.penkra.canvas.fixture-JMXL4nWTNIMbvXoGypvByg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.penkra.canvas.fixture
+D/CompatChangeReporter( 3919): Compat change id reported: 202956589; UID 10217; state: ENABLED
+I/.canvas.fixture( 3919): AssetManager2(0xb40000777000e298) locale list changing from [] to [en-US]
+V/GraphicsEnvironment( 3919): Currently set values for:
+V/GraphicsEnvironment( 3919):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment( 3919):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment( 3919): com.penkra.canvas.fixture is not listed in per-application setting
+V/GraphicsEnvironment( 3919): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment( 3919): com.penkra.canvas.fixture is not listed in ANGLE allowlist or settings, returning default
+V/GraphicsEnvironment( 3919): Neither updatable production driver nor prerelease driver is supported.
+D/CompatChangeReporter( 3919): Compat change id reported: 279646685; UID 10217; state: ENABLED
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ENABLE_FAKE_FOCUS
+D/CompatChangeReporter(  677): Compat change id reported: 324203798; UID 10217; state: ENABLED
+D/BackgroundInstallControlService(  677): Package event received: 0
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/DisplayManager( 3919): Choreographer implicitly registered for the refresh rate.
+I/.canvas.fixture( 3919): AssetManager2(0xb400007770017258) locale list changing from [] to [en-US]
+E/ashmem  ( 3919): Pinning is deprecated since Android Q. Please use trim or other methods.
+I/EGL_emulation( 3919): Opening libGLESv1_CM_emulation.so
+I/EGL_emulation( 3919): Opening libGLESv2_emulation.so
+D/CompatChangeReporter( 3919): Compat change id reported: 309578419; UID 10217; state: ENABLED
+D/DesktopModeFlags( 3919): Toggle override initialized to: OVERRIDE_UNSET
+W/HWUI    ( 3919): Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+W/HWUI    ( 3919): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+D/CompatChangeReporter( 3919): Compat change id reported: 352594277; UID 10217; state: ENABLED
+D/CompatChangeReporter( 3919): Compat change id reported: 349153669; UID 10217; state: ENABLED
+W/HWUI    ( 3919): Unknown dataspace 0
+I/servicemanager(  219): Caller(pid=3919,uid=10217,sid=u:r:untrusted_app:s0:c217,c256,c512,c768) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+I/servicemanager(  219): Caller(pid=3919,uid=10217,sid=u:r:untrusted_app:s0:c217,c256,c512,c768) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+I/servicemanager(  219): Caller(pid=3919,uid=10217,sid=u:r:untrusted_app:s0:c217,c256,c512,c768) Found mapper/ranchu in device VINTF manifest.
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+D/CoreBackPreview(  677): Window{622e0b8 u0 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@48c29f7, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+I/CanvasFixedText( 3919): LUNA_FIXED_TEXT_READY case=top-level-decorations nonce=fixed-text-android-420-1-top-level-decorations-850d4c08-35c0-480c-811c-ba9b86204b25
+I/CanvasFixedText( 3919): LUNA_FIXED_TEXT_ROOT case=top-level-decorations nonce=fixed-text-android-420-1-top-level-decorations-850d4c08-35c0-480c-811c-ba9b86204b25 x=0.0 y=0.0 width=893 height=473 scale=2.625
+I/ActivityTaskManager(  677): Displayed com.penkra.canvas.fixture/.MainActivity for user 0: +825ms
+D/BaseDepthController( 1050): setSurface:
+D/BaseDepthController( 1050): 	mWaitingOnSurfaceValidity: false
+D/BaseDepthController( 1050): 	mBaseSurface: null
+D/BaseDepthController( 1050): mSurface is null and mCurrentBlur is: 0
+D/StateManager( 1050): goToState - fromState: Normal, toState: Normal, partial trace:
+D/StateManager( 1050): 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:4)
+D/StateManager( 1050): 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:1)
+D/StateManager( 1050): 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:34)
+D/StatsLog( 1050): LAUNCHER_ONSTOP
+D/StatsLog( 1050): LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+I/AppWidgetServiceImpl(  677): setAppWidgetHidden() 0
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/ImeTracker(  677): com.penkra.canvas.fixture:e6bd0fc1: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+D/InsetsController( 3919): hide(ime(), fromIme=false)
+I/ImeTracker( 3919): com.penkra.canvas.fixture:e6bd0fc1: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onFinishInput():2043 
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+I/ImeTracker(  677): system_server:a9aa9f45: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onStartInput():1293 onStartInput(EditorInfo{EditorInfo{packageName=com.penkra.canvas.fixture, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+I/ImeTracker(  677): system_server:a9aa9f45: onCancelled at PHASE_SERVER_SHOULD_HIDE
+I/EmojiCompatManager( 1397): EmojiCompatManager.getEmojiCompatIfLoaded():343 EmojiCompat.init() was never called.
+I/EmojiCompatManager( 1397): java.lang.IllegalStateException: EmojiCompat is not initialized. Please call EmojiCompat.init() first
+I/EmojiCompatManager( 1397): 	at asx.p(PG:6)
+I/EmojiCompatManager( 1397): 	at axb.b(PG:13)
+I/EmojiCompatManager( 1397): 	at jnr.b(PG:2)
+I/EmojiCompatManager( 1397): 	at jnr.c(PG:4)
+I/EmojiCompatManager( 1397): 	at jnr.f(PG:3)
+I/EmojiCompatManager( 1397): 	at jnx.c(PG:3)
+I/EmojiCompatManager( 1397): 	at kif.cz(PG:47)
+I/EmojiCompatManager( 1397): 	at lhl.run(PG:1025)
+I/EmojiCompatManager( 1397): 	at jaf.execute(PG:12)
+I/EmojiCompatManager( 1397): 	at nco.v(PG:13)
+I/EmojiCompatManager( 1397): 	at lhn.m(PG:96)
+I/EmojiCompatManager( 1397): 	at lhn.k(PG:25)
+I/EmojiCompatManager( 1397): 	at kgn.onStartInput(PG:250)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService.doStartInput(InputMethodService.java:3521)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.startInput(InputMethodService.java:879)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.dispatchStartInput(InputMethodService.java:908)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.IInputMethodWrapper.executeMessage(IInputMethodWrapper.java:201)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:44)
+I/EmojiCompatManager( 1397): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loopOnce(Looper.java:248)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loop(Looper.java:338)
+I/EmojiCompatManager( 1397): 	at android.app.ActivityThread.main(ActivityThread.java:9067)
+I/EmojiCompatManager( 1397): 	at java.lang.reflect.Method.invoke(Native Method)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:593)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:932)
+W/PackageConfigPersister(  677): App-specific configuration not found for packageName: com.penkra.canvas.fixture and userId: 0
+I/.canvas.fixture( 3919): Compiler allocated 5111KB to compile void android.view.ViewRootImpl.performTraversals()
+D/BoundBrokerSvc( 1266): onUnbind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+I/FontLog ( 1266): Received query Noto Color Emoji Compat, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Query [emojicompat-emoji-font] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false}, isVf false} [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false}, isVf false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Pulling font file for id = 19, cache size = 19 [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Pulling font file for id = 19, cache size = 19 [CONTEXT service_id=132 ]
+I/netd    (  453): tetherGetStats() -> {[]} <0.77ms>
+W/WindowOnBackDispatcher(  927): sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda13@98aadeb
+D/CoreBackPreview(  677): Window{4fa6d2f u0 Splash Screen com.penkra.canvas.fixture EXITING}: Setting back callback null
+D/BoundBrokerSvc( 1712): onUnbind: Intent { act=com.google.android.gms.feedback.internal.IFeedbackService dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsBoundBrokerService }
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 1 txSpeed: 1
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed -1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.9, 0.0, 0.0 rx=0.6 bcn=0 [on:0 tx:0 rx:0 period:3010] from screen [on:0 period:2104417126] score=60
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: allSubInfos.size()=1
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: newSubsInfoListPerPriority.size()=0
+D/SatelliteController( 1042): evaluateESOSProfilesPrioritization: no satellite subscription available
+E/TaskPersister(  677): File error accessing recents directory (directory doesn't exist?).
+D/OomAdjuster(  677): Not killing cached processes
+I/ForwardSyncCache( 2365): reclaimMemory: Clearing caches
+W/BugleSpam( 2365): trimming memory: closing msg model.
+W/Bugle   ( 2365): TextClassifierLibManagerImpl: Reclaiming memory at level: 40
+I/system_server(  677): AssetManager2(0xb40000777004b198) locale list changing from [] to [en-US]
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={10169} in 0ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={20169} in 1ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={10134} in 1ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={20134} in 0ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={10141} in 0ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={20141} in 1ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={10163} in 0ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={20163} in 1ms
+E/FrameTracker(  927): force finish cuj, time out: J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14711, 14929426, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14783, 4003015, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14791, 3599516, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14799, 3625558, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14815, 4281351, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14823, 3736435, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14838, 4260936, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+W/FrameTracker(  927): Missed SF frame:JANK_COMPOSER, 14853, 3250728, CUJ=J<SPLASHSCREEN_EXIT_ANIM>
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 1 txSpeed: 1
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed -1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.3, 0.0, 0.0 rx=0.2 bcn=0 [on:0 tx:0 rx:0 period:3004] from screen [on:0 period:2104420130] score=60
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={10136} in 0ms
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET, states=14
+D/InetDiagMessage(  677): Destroyed 0 sockets, proto=IPPROTO_TCP, family=AF_INET6, states=14
+D/InetDiagMessage(  677): Destroyed live tcp sockets for uids={20136} in 1ms
+

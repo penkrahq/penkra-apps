@@ -1,0 +1,38 @@
+{
+  "platform": "ios",
+  "device": "iphone-large",
+  "contentSize": "large",
+  "caseId": "marks-and-paragraphs",
+  "classification": "semantics",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-iphone-large-large-marks-and-paragraphs-6c03e664-24ad-4027-897d-c6829713cd8b",
+  "readiness": {
+    "root": {
+      "x": 31,
+      "y": 361,
+      "width": 340,
+      "height": 180
+    },
+    "scale": 3
+  },
+  "stability": {
+    "hashes": [
+      "f263b565b16a59eae0b8781abb95e206b2b95bc6c5bdfc511b106779d1c1521b",
+      "f263b565b16a59eae0b8781abb95e206b2b95bc6c5bdfc511b106779d1c1521b"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-04/captures/iphone-large/large/marks-and-paragraphs/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 5482,
+    "mismatchedPixels": 217,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1206,
+    "height": 2622
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-09-07",
+  "devices": [
+    {
+      "key": "iphone-large",
+      "udid": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "state": "Booted",
+      "contentSize": "large",
+      "initialStateEvidence": "native-ios-run-01/commands.json: no boot or shutdown command for this device"
+    },
+    {
+      "key": "ipad-large",
+      "udid": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "state": "Shutdown",
+      "contentSize": "unknown",
+      "initialStateEvidence": "native-ios-run-01/commands.json: boot then shutdown by runner"
+    }
+  ],
+  "verificationCommands": [
+    "xcrun simctl list devices",
+    "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size"
+  ],
+  "restored": true
+}

@@ -1,0 +1,38 @@
+{
+  "platform": "android",
+  "density": 320,
+  "fontScale": 1,
+  "caseId": "text-growth-fixed-width-height",
+  "classification": "line-wrapping",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-android-320-1-text-growth-fixed-width-height-10add1cb-561f-4d8d-8d44-4872b324e72b",
+  "readiness": {
+    "root": {
+      "x": 0,
+      "y": 0,
+      "width": 680,
+      "height": 360
+    },
+    "scale": 2
+  },
+  "stability": {
+    "hashes": [
+      "46b3c8a089007e21eda91f9cc75912e30a2d19051e0394e86cdc89048c963c7e",
+      "46b3c8a089007e21eda91f9cc75912e30a2d19051e0394e86cdc89048c963c7e"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-android-run-02/captures/density-320-font-1/text-growth-fixed-width-height/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 682,
+    "mismatchedPixels": 469,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1080,
+    "height": 2400
+  }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "devices"
+    ],
+    "started": "2026-09-07T19:48:58.376Z",
+    "finished": "2026-09-07T19:48:58.441Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta/Library/Android/sdk/emulator/emulator",
+    "args": [
+      "-list-avds"
+    ],
+    "started": "2026-09-07T19:48:58.441Z",
+    "finished": "2026-09-07T19:48:58.441Z",
+    "exitCode": "ENOENT"
+  }
+]

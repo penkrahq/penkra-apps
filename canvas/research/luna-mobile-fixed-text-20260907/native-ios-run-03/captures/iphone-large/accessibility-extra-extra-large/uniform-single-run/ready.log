@@ -1,0 +1,8 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 13:25:49.911 Df log[21613:0] [com.apple.log:] log run noninteractively, parent: 97696 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788809139' '--predicate' 'eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_ROOT"'
+2026-09-07 13:25:50.565 Df CanvasFixedTextEvidence[21782:548334d] (Foundation) LUNA_FIXED_TEXT_READY case=fixed-text-uniform-single-run nonce=fixed-text-iphone-large-accessibility-extra-extra-large-uniform-single-run-394f0ed8-0684-4624-b1f1-f8a858bbde78
+2026-09-07 13:25:50.566 Df CanvasFixedTextEvidence[21782:548334d] (Foundation) LUNA_FIXED_TEXT_ROOT case=fixed-text-uniform-single-run nonce=fixed-text-iphone-large-accessibility-extra-extra-large-uniform-single-run-394f0ed8-0684-4624-b1f1-f8a858bbde78 frame=31.000,361.000 340.000x180.000 scale=3.000
+2026-09-07 13:25:51.380 Df log[21846:0] [com.apple.log:] log run noninteractively, parent: 97696 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788809149' '--predicate' 'eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_ROOT"'
+2026-09-07 13:25:51.613 Df log[21856:0] [com.apple.log:] log run noninteractively, parent: 97696 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788809139' '--predicate' 'eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_ROOT"'
+
+getpwuid_r did not find a match for uid 501

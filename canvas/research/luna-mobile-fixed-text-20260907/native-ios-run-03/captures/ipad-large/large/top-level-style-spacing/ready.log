@@ -1,0 +1,6 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 13:27:48.206 Df CanvasFixedTextEvidence[28576:5487e91] (Foundation) LUNA_FIXED_TEXT_READY case=fixed-text-top-level-style-spacing nonce=fixed-text-ipad-large-large-top-level-style-spacing-8d2f5499-d4d7-4b56-b26e-fbbfd3b52dd5
+2026-09-07 13:27:48.207 Df CanvasFixedTextEvidence[28576:5487e91] (Foundation) LUNA_FIXED_TEXT_ROOT case=fixed-text-top-level-style-spacing nonce=fixed-text-ipad-large-large-top-level-style-spacing-8d2f5499-d4d7-4b56-b26e-fbbfd3b52dd5 frame=202.000,480.000 340.000x180.000 scale=2.000
+2026-09-07 13:27:49.678 Df log[29241:0] [com.apple.log:] log run noninteractively, parent: 25324 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--start' '@1788809267' '--predicate' 'eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_READY" OR eventMessage CONTAINS[c] "LUNA_FIXED_TEXT_ROOT"'
+
+getpwuid_r did not find a match for uid 501

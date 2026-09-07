@@ -1,0 +1,483 @@
+--------- beginning of main
+I/BugleSimStateTracker( 2365): Is carrier config for identified carrier: true
+I/BugleSimStateTracker( 2365): default call SIM: redacted-pii:sim_id[chars:20,last3:897], default sms SIM redacted-pii:sim_id[chars:20,last3:897]. default data SIM redacted-pii:sim_id[chars:20,last3:897].
+--------- beginning of system
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = RECEIVE_SMS, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = RECEIVE_WAP_PUSH, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = SEND_SMS, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = READ_CELL_BROADCASTS, mode = allow, callingUid = 1001, oldMode = allow
+E/SmsApplication( 1042): com.google.android.apps.messaging lost android:read_cell_broadcasts:  (fixing)
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 10146, code = READ_CELL_BROADCASTS, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = READ_SMS, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = RECEIVE_SMS, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = RECEIVE_WAP_PUSH, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = SEND_SMS, mode = allow, callingUid = 1001, oldMode = allow
+W/AppOpService(  677): Ignored setUidMode call for runtime permission app op: uid = 1001, code = READ_CELL_BROADCASTS, mode = allow, callingUid = 1001, oldMode = allow
+D/ImsResolver( 1042): maybeAddedImsService, packageName: com.penkra.canvas.fixture
+V/ImsResolver( 1042): searchForImsServices: package=com.penkra.canvas.fixture, users=[UserHandle{0}]
+W/VvmPkgInstalledRcvr( 1042): carrierVvmPkgAdded: carrier vvm packages doesn't contain com.penkra.canvas.fixture
+D/ActivityThread( 1042): Package [com.penkra.canvas.fixture] reported as REPLACED, but missing application info. Assuming REMOVED.
+E/RoleControllerServiceImpl(  677): Default/fallback role holder package doesn't qualify for the role, package: com.google.android.gms, role: android.app.role.WALLET
+V/ImsResolver( 1042): searchForImsServices: package=com.penkra.canvas.fixture, users=[UserHandle{0}]
+D/SatelliteController( 1042): packageStateChanged: package:com.penkra.canvas.fixture DefaultSmsPackageName:com.google.android.apps.messaging
+V/SatelliteController( 1042): Neither SMS or SatelliteGateway package
+I/ImsExternalCallTracker( 1042): handleVideoCapabilitiesChanged : isVideoCapable = false
+D/ImsExternalCallTracker( 1042): refreshCallPullState
+I/Telephony( 1042): handleVideoCapabilitesChanged. Video capability - false
+I/HeadsetPhoneState( 1020): stopListenForPhoneState(), no listener indicates nothing is listening
+W/HeadsetPhoneState( 1020): startListenForPhoneState, no event to listen
+V/SimultaneousCallingTracker( 1042): Received EVENT 101
+D/SimultaneousCallingTracker( 1042): Ignoring updatePhoneMapAndSimultaneousCallSupportMap since device is not DSDA capable.
+I/ImsExternalCallTracker( 1042): handleVideoCapabilitiesChanged : isVideoCapable = false
+D/ImsExternalCallTracker( 1042): refreshCallPullState
+I/Telephony( 1042): handleVideoCapabilitesChanged. Video capability - false
+D/Telephony( 1042): isEmergencyPreferredAccount: subId=1, activeData=1
+D/Telephony( 1042): isEmergencyPreferredAccount: Device does not require preference.
+W/Telephony( 1042): registerMmTelCapabilityCallback: registration failed, no ImsService available. Exception: code: 1
+I/Telephony( 1042): isRttCurrentlySupported -- regular acct, hasVoiceAvailability: false
+I/Telephony( 1042):  isRttSupported: false
+I/Telephony( 1042):  alwaysAllowWhileRoaming: false
+I/Telephony( 1042):  isRoaming: false
+I/Telephony( 1042):  isOnWfc: false
+I/BugleSimStateTracker( 2365): Looking up Fi through package names.
+I/BugleSimStateTracker( 2365): All newly built SimSubscriptionInfos: [(simId: redacted-pii:sim_id[chars:20,last3:897],
+I/BugleSimStateTracker( 2365): subId: 1,
+I/BugleSimStateTracker( 2365): simSlot: 0,
+I/BugleSimStateTracker( 2365): imsi: redacted-pii:imsi[chars:15],
+I/BugleSimStateTracker( 2365): phoneNumber: redacted-pii:phone_number[chars:12,last2:67],
+I/BugleSimStateTracker( 2365): countryCode: US,
+I/BugleSimStateTracker( 2365): networkOperatorName: T-Mobile,
+I/BugleSimStateTracker( 2365): subscriptionGroupUuid: ,
+I/BugleSimStateTracker( 2365): mcc: 310,
+I/BugleSimStateTracker( 2365): mnc: 260,
+I/BugleSimStateTracker( 2365): simCarrierId: 1,
+I/BugleSimStateTracker( 2365): iccid: redacted-pii:sim_iccid[chars:20],
+I/BugleSimStateTracker( 2365): isFi: false,
+I/BugleSimStateTracker( 2365): loggableGuid: dd2a5a71-efcd-4719-a49e-063a54b171d9,
+I/BugleSimStateTracker( 2365): formattedMsisdn: redacted-pii:phone_number[chars:12,last2:67],
+I/BugleSimStateTracker( 2365): simOperatorName: T-Mobile,
+I/BugleSimStateTracker( 2365): simOperator: 310260,
+I/BugleSimStateTracker( 2365): groupIdLevel1: ,
+I/BugleSimStateTracker( 2365): preferredSubscriptionName: T-Mobile)]
+I/system_server(  677): AssetManager2(0xb4000077700550f8) locale list changing from [] to [en-US]
+I/BugleSimStateTracker( 2365): Storing updatedSimSubscriptionInfos: [(redacted-pii:sim_id[chars:20,last3:897], dd2a5a71-efcd-4719-a49e-063a54b171d9)]
+I/BugleSimStateTracker( 2365): No newly loaded SIMs on phone sim state update.
+W/SignedPackage(  677): Cannot get ApplicationInfo for package: com.google.android.devicelockcontroller
+I/WM-WorkerWrapper( 2365): Worker result SUCCESS for Work [ id=5427edee-e345-4bba-b1d9-6634f9e937f2, tags={ com.google.android.apps.messaging.shared.datamodel.workqueue.WorkQueueWorkerShim,sim_state_update_queue-WORK_TYPE_UPDATE_PHONE_SIMS_STATE } ]
+D/WM-Processor( 2365): pst 5427edee-e345-4bba-b1d9-6634f9e937f2 executed; reschedule = false
+D/WM-SystemJobService( 2365): 5427edee-e345-4bba-b1d9-6634f9e937f2 executed on JobScheduler
+D/WM-GreedyScheduler( 2365): Cancelling work ID 5427edee-e345-4bba-b1d9-6634f9e937f2
+I/ActivityManager(  677): Force stopping com.penkra.canvas.fixture appid=10217 user=0: from pid 3779
+I/WindowManager(  677):   Force removing ActivityRecord{45110950 u0 com.penkra.canvas.fixture/.MainActivity t401 f} isExiting}
+W/WindowManager(  677): removeAppToken: Attempted to remove non-existing token: Token{35b7c94 ActivityRecord{45110950 u0 com.penkra.canvas.fixture/.MainActivity t401 f} isExiting}}
+D/WM-GreedyScheduler( 2365): Ignoring {WorkSpec: a6359601-b3fb-4c78-924f-58734cc9d541}. Requires device idle.
+D/WM-GreedyScheduler( 2365): Ignoring {WorkSpec: 6b6ceea6-48de-4025-9a5b-1a3af1980279}. Requires device idle.
+D/WM-GreedyScheduler( 2365): Ignoring {WorkSpec: fc230ee4-9198-4ba2-a84d-68a2cd8f44c6}. Requires device idle.
+D/WM-GreedyScheduler( 2365): Ignoring {WorkSpec: ee323566-5a4b-4309-b5c9-6df8a0fe389d}. Requires device idle.
+D/WM-GreedyScheduler( 2365): Ignoring {WorkSpec: 119f8746-d735-4593-b9bd-e476ee194c7e}. Requires ContentUri triggers.
+D/WM-GreedyScheduler( 2365): Ignoring {WorkSpec: 42eccf14-f620-46ce-ab81-18fe68349f17}. Requires ContentUri triggers.
+D/WM-GreedyScheduler( 2365): Starting tracking for 2b445ab6-6c0e-406a-870f-0ad55d9d6834,5cb37536-b5e6-4f5e-897c-36cbc492e03c
+I/AppsFilter(  677): interaction: PackageSetting{c11fd90 com.konsier.app.dev/10214} -> PackageSetting{2f66f24 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{ee5b68e com.penkra.canvas.qa.fonts/10219} -> PackageSetting{2f66f24 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{5422eaf com.penkra.canvas.qa.typomixed0606/10215} -> PackageSetting{2f66f24 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppWidgetServiceImpl(  677): Received broadcast: android.intent.action.PACKAGE_RESTARTED on user 0
+I/AppWidgetServiceImpl(  677): Updating package stopped masked state for uid 10217 package com.penkra.canvas.fixture isStopped true
+W/MediaProvider( 1474): WorkProfileOwnerApps cache is empty
+D/PickerSyncLockManager( 1474): Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@b7b5c01[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+D/CloseableReentrantLock( 1474): Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@b7b5c01[Locked by thread main]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+D/CloseableReentrantLock( 1474): Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@b7b5c01[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+I/fiis    ( 1490): (REDACTED) O received %s
+I/fiis    ( 1490): (REDACTED) O received %s
+I/Telephony( 1042): TelecomAccountRegistry$AccountEntry: registerPstnPhoneAccount: Registering account=[[ ] PhoneAccount: ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, 1, UserHandle{0} Capabilities: CallProvider MultiUser PlaceEmerg SimSub  Audio Routes: BESW Schemes: tel voicemail  Extras: Bundle[{android.telecom.extra.SUPPORTS_VIDEO_CALLING_FALLBACK=true}] GroupId: *** SC Restrictions: [ ]] with Telecom. subId=1
+I/fiis    ( 1490): (REDACTED) O received %s
+I/Telecom (  677): TelecomServiceImpl$1: registerPhoneAccount: account=[[ ] PhoneAccount: ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, 1, UserHandle{0} Capabilities: CallProvider MultiUser PlaceEmerg SimSub  Audio Routes: BESW Schemes: tel voicemail  Extras: Bundle[{android.telecom.extra.SUPPORTS_VIDEO_CALLING_FALLBACK=true}] GroupId: *** SC Restrictions: [ ]]: TSI.rPA(cap)@AJU🔒
+I/Telecom (  677): PhoneAccountRegistrar: Modify account: [ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, 1, UserHandle{0}]: TSI.rPA(cap)@AJU🔒
+I/Telecom (  677): CallsManager: handlePhoneAccountChanged: phoneAccount=[[X] PhoneAccount: ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, 1, UserHandle{0} Capabilities: CallProvider MultiUser PlaceEmerg SimSub  Audio Routes: BESW Schemes: tel voicemail  Extras: Bundle[{android.telecom.extra.SUPPORTS_VIDEO_CALLING_FALLBACK=true}] GroupId: *** SC Restrictions: [ ]]: TSI.rPA(cap)@AJU🔒
+I/Telecom (  677): PhoneAccountRegistrar: getSimCallManager: SimCallManager for subId 1 queried, returning: null: TSI.rPA(cap)@AJU🔒
+I/Telecom (  677): PhoneAccountRegistrar: Notifying telephony of voice service override change for 1 SIMs, hasService = false: TSI.rPA(cap)@AJU🔒
+I/PhoneInterfaceManager( 1042): setVoiceServiceStateOverride: subId=1, phone=Handler (com.android.internal.telephony.GsmCdmaPhone) {49ab8be}, hasService=false, callingPackage=com.android.server.telecom
+D/SatelliteController( 1042): iisInCarrierRoamingNbIotNtn: satellite is disabled
+W/ActivityTaskManager(  677): callingPackage for (uid=2000, pid=3786) has no WPC
+D/CarrierSvcBindHelper( 1042): onHandleForceStop: [com.penkra.canvas.fixture]
+D/CarrierSvcBindHelper( 1042): No carrier app for: 0
+I/system_server(  677): AssetManager2(0xb400007770057cb8) locale list changing from [] to [en-US]
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10217, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_OVERRIDE
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_USER_ASPECT_RATIO_FULLSCREEN_OVERRIDE
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_RESIZEABLE_ACTIVITY_OVERRIDES
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_MIN_ASPECT_RATIO_OVERRIDE
+W/adua    ( 1587): Abort, client detached.
+W/adua    ( 1587): Abort, client detached.
+I/Fitness ( 1266): FitCleanupIntentOperation received Intent android.intent.action.PACKAGE_REMOVED [CONTEXT service_id=17 ]
+I/ProximityAuth( 1266): [RecentAppsMediator] Package added: (user=UserHandle{0}) com.penkra.canvas.fixture
+I/FontLog ( 1266): Package com.penkra.canvas.fixture has no metadata [CONTEXT service_id=132 ]
+I/Auth    ( 1712): [SupervisedAccountIntentOperationV2] onHandleIntent: android.intent.action.PACKAGE_ADDED [CONTEXT service_id=42 ]
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ALLOW_ORIENTATION_OVERRIDE
+I/HeadsetPhoneState( 1020): stopListenForPhoneState(), no listener indicates nothing is listening
+W/HeadsetPhoneState( 1020): startListenForPhoneState, no event to listen
+V/SplashScreenExceptionList(  677): SplashScreen checking exception for package com.penkra.canvas.fixture (target sdk:35) -> false
+I/ActivityTaskManager(  677): Add Task{9dfa8e7 #401 type=standard A=10217:com.penkra.canvas.fixture} to hidden list because adding Task{3d2ac23 #402 type=standard A=10217:com.penkra.canvas.fixture}
+I/BpBinder(  511): onLastStrongRef automatically unlinking death recipients: 
+I/ndroid.systemui(  927): AssetManager2(0xb400007770068018) locale list changing from [] to [en-US]
+D/CompatChangeReporter(  677): Compat change id reported: 309578419; UID 10217; state: ENABLED
+I/ActivityTaskManager(  677): START u0 {flg=0x10000000 xflg=0x5 cmp=com.penkra.canvas.fixture/.MainActivity (has extras)} with LAUNCH_MULTIPLE from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+V/WindowManagerShell(  927): Transition requested (#18): android.os.BinderProxy@dd5ce6b TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=402 effectiveUid=10217 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.penkra.canvas.fixture/.MainActivity } baseActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} topActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} origActivity=null realActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} numActivities=1 lastActiveTime=64029 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@aafadc8} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 132 - 0, 0) topActivityInfo=ActivityInfo{4701e61 com.penkra.canvas.fixture.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=Rect(276, 694 - 804, 1774) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=inactive}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 18 }
+D/ShellSplitScreen(  927): logExit: no-op, mLoggerSessionId is null
+W/HWUI    (  927): Image decoding logging dropped!
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10217, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+D/SplashScreenView(  927): Build android.window.SplashScreenView{4ba880c V.E...... ......ID 0,0-0,0}
+D/SplashScreenView(  927): Icon: view: android.widget.ImageView{e27c555 V.ED..... ......I. 0,0-0,0 #1020542 android:id/splashscreen_icon_view} drawable: com.android.wm.shell.startingsurface.SplashscreenIconDrawableFactory$ImmobileIconDrawable@9cd1b6a size: 420
+D/SplashScreenView(  927): Branding: view: android.view.View{8ab285b G.ED..... ......I. 0,0-0,0 #1020541 android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+D/Zygote  (  456): Forked child process 3803
+I/ActivityManager(  677): Start proc 3803:com.penkra.canvas.fixture/u0a217 for next-top-activity {com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity}
+I/ActivityManager(  677): ProcessObserver broadcast disabled
+W/SplitSelectStateCtor( 1050): Missing session instanceIds
+D/StatsLog( 1050): LAUNCHER_SPLIT_SELECTION_EXIT_INTERRUPTED
+I/AppsFilter(  677): interaction: PackageSetting{c11fd90 com.konsier.app.dev/10214} -> PackageSetting{83f4777 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{ee5b68e com.penkra.canvas.qa.fonts/10219} -> PackageSetting{83f4777 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppsFilter(  677): interaction: PackageSetting{5422eaf com.penkra.canvas.qa.typomixed0606/10215} -> PackageSetting{83f4777 com.penkra.canvas.fixture/10217} BLOCKED
+I/AppWidgetServiceImpl(  677): Received broadcast: android.intent.action.PACKAGE_UNSTOPPED on user 0
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/AppWidgetServiceImpl(  677): Updating package stopped masked state for uid 10217 package com.penkra.canvas.fixture isStopped false
+D/CoreBackPreview(  677): Window{3d918aa u0 Splash Screen com.penkra.canvas.fixture}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@faf1650, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+D/WorkspaceRevealAnim( 1050): onAnimationEnd: workspace alpha = 1.0
+V/WindowManagerShell(  927): Transition animation finished (aborted=false), notifying core (#17) android.os.BinderProxy@f9c90e7@0
+E/IPCThreadState(  677): Binder transaction failure. id: 130828, BR_*: 29189, error: -22 (Invalid argument)
+W/ActivityManager(  677): pid 677 system sent binder code 7 with flags 1 to frozen apps and got error -32
+V/WindowManager(  677): Finish Transition (#17): created at 09-07 13:53:15.965 collect-started=0.361ms request-sent=4.439ms started=14.828ms ready=129.99ms sent=131.405ms commit=175.234ms finished=669.234ms
+W/WindowManager(  677): Exception thrown during dispatchAppVisibility Window{7cfd725 u0 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity EXITING}
+W/WindowManager(  677): android.os.DeadObjectException
+W/WindowManager(  677): 	at android.os.BinderProxy.transactNative(Native Method)
+W/WindowManager(  677): 	at android.os.BinderProxy.transact(BinderProxy.java:592)
+W/WindowManager(  677): 	at android.view.IWindow$Stub$Proxy.dispatchAppVisibility(IWindow.java:557)
+W/WindowManager(  677): 	at com.android.server.wm.WindowState.sendAppVisibilityToClients(WindowState.java:3151)
+W/WindowManager(  677): 	at com.android.server.wm.WindowContainer.sendAppVisibilityToClients(WindowContainer.java:1311)
+W/WindowManager(  677): 	at com.android.server.wm.WindowToken.setClientVisible(WindowToken.java:389)
+W/WindowManager(  677): 	at com.android.server.wm.ActivityRecord.setClientVisible(ActivityRecord.java:6650)
+W/WindowManager(  677): 	at com.android.server.wm.ActivityRecord.commitVisibility(ActivityRecord.java:5561)
+W/WindowManager(  677): 	at com.android.server.wm.Transition.finishTransition(Transition.java:1391)
+W/WindowManager(  677): 	at com.android.server.wm.TransitionController.finishTransition(TransitionController.java:1029)
+W/WindowManager(  677): 	at com.android.server.wm.WindowOrganizerController.finishTransition(WindowOrganizerController.java:496)
+W/WindowManager(  677): 	at android.window.IWindowOrganizerController$Stub.onTransact(IWindowOrganizerController.java:261)
+W/WindowManager(  677): 	at com.android.server.wm.WindowOrganizerController.onTransact(WindowOrganizerController.java:223)
+W/WindowManager(  677): 	at android.os.Binder.execTransactInternal(Binder.java:1426)
+W/WindowManager(  677): 	at android.os.Binder.execTransact(Binder.java:1365)
+W/Process (  677): Unable to open /proc/3633/status
+--------- beginning of kernel
+I/binder  ( 1191): 1191:677 cannot find target node
+I/binder  ( 1191): 677:1191 transaction async to 0:0 failed 130828/29189/-22, size 64-0 line 3348
+I/.canvas.fixture( 3803): Late-enabling -Xcheck:jni
+V/WindowManagerShell(  927): Track 0 became idle
+D/WindowManagerShell(  927): setLauncherKeepClearAreaHeight: visible=false, height=527
+W/adua    ( 1587): Abort, client detached.
+D/RecentsView( 1050): onTaskRemoved: 401, not handling task stack changes
+D/RecentsView( 1050): onTaskRemoved: 401, not handling task stack changes
+W/SQLiteLog( 1712): (28) double-quoted string literal: "com.penkra.canvas.fixture"
+I/.canvas.fixture( 3803): Using CollectorTypeCMC GC.
+I/adbd    (  521): jdwp connection from 3803
+V/WindowManager(  677): Sent Transition (#18) createdAt=09-07 13:53:16.564 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=402 effectiveUid=10217 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.penkra.canvas.fixture/.MainActivity } baseActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} topActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} origActivity=null realActivity=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity} numActivities=1 lastActiveTime=64029 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{65c2069 Task{3d2ac23 #402 type=standard A=10217:com.penkra.canvas.fixture}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 132 - 0, 0) topActivityInfo=ActivityInfo{14ffaee com.penkra.canvas.fixture.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=Rect(276, 694 - 804, 1774) capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=-9 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { freeformCameraCompatMode=inactive}} topActivityMainWindowFrame=null}, pipChange = null, remoteTransition = null, displayChange = null, flags = 0, debugId = 18 }
+V/WindowManager(  677):     startWCT=WindowContainerTransaction { changes= {} hops= [] errorCallbackToken=null taskFragmentOrganizer=null }
+V/WindowManager(  677):     info={id=18 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[
+V/WindowManager(  677):         {WCT{RemoteToken{65c2069 Task{3d2ac23 #402 type=standard A=10217:com.penkra.canvas.fixture}}} m=OPEN f=NONE leash=Surface(name=Task=402)/@0x64f6688 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManager(  677):         {WCT{RemoteToken{a8584bf Task{65ff867 #1 type=home}}} m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0x724a548 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManager(  677):         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x2adf3eb sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+V/WindowManager(  677):     ]}
+V/WindowManagerShell(  927): onTransitionReady(transaction=2907692860018)
+V/WindowManagerShell(  927): onTransitionReady (#18) android.os.BinderProxy@dd5ce6b: {id=18 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[
+V/WindowManagerShell(  927):         {m=OPEN f=NONE leash=Surface(name=Task=402)/@0xc218e2f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManagerShell(  927):         {m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xaf60c3c sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},
+V/WindowManagerShell(  927):         {m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x4e5adc5 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}
+V/WindowManagerShell(  927):     ]}
+V/WindowManagerShell(  927): Playing animation for (#18) android.os.BinderProxy@dd5ce6b@1
+V/ShellRecents(  927): RecentsTransitionHandler.startAnimation: no controller found
+V/WindowManagerShell(  927): Transition doesn't have explicit remote, search filters for match for {id=18 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=402)/@0xc218e2f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xaf60c3c sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x4e5adc5 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=undefined independent=true modes=[CLOSE,TO_BACK] flags=IN_TASK_WITH_EMBEDDED_ACTIVITY mustBeTask=false order=ANY topActivity=null launchCookie=null taskFragmentToken=android.os.BinderProxy@29d9206 windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@63930c7, appThread = android.app.IApplicationThread$Stub$Proxy@42096f4, debugName = overlayBackTransition }}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x0 checks=[{atype=dream independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{atype=home independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@496ce1d, appThread = android.app.IApplicationThread$Stub$Proxy@e70c892, debugName = LauncherToDream }}
+V/WindowManagerShell(  927):  Checking filter Pair{{types=[] flags=0x0] notFlags=0x100 checks=[{atype=home independent=true modes=[OPEN,TO_FRONT] flags=NONE mustBeTask=false order=TOP topActivity=ComponentInfo{com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity} launchCookie=null windowingMode=undefined},{atype=standard independent=true modes=[CLOSE,TO_BACK] flags=NONE mustBeTask=false order=ANY topActivity=null launchCookie=null windowingMode=undefined},{NOT atype=undefined independent=true modes=[] flags=NONE mustBeTask=true order=ANY topActivity=null launchCookie=null customAnim=true windowingMode=undefined}]} RemoteTransition { remoteTransition = android.window.IRemoteTransition$Stub$Proxy@60e1263, appThread = android.app.IApplicationThread$Stub$Proxy@92a2e60, debugName = QuickstepLaunchHome }}
+V/WindowManagerShell(  927):  Delegate animation for (#18) to null
+V/WindowManagerShell(  927): start default transition animation, info = {id=18 t=OPEN f=0x0 trk=1 r=[0@Point(0, 0)] c=[{m=OPEN f=NONE leash=Surface(name=Task=402)/@0xc218e2f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=SHOW_WALLPAPER leash=Surface(name=Task=1)/@0xaf60c3c sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1},{m=TO_BACK f=IS_WALLPAPER leash=Surface(name=WallpaperWindowToken{19b8f8f showWhenLocked=false})/@0x4e5adc5 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0}]}
+V/WindowManagerShell(  927): loadAnimation: anim=android.view.animation.AnimationSet@142de4b animAttr=0x13 type=OPEN isEntrance=false
+V/WindowManagerShell(  927): loadAnimation: anim=android.view.animation.AnimationSet@235b028 animAttr=0x12 type=OPEN isEntrance=true
+V/WindowManagerShell(  927):  animated by com.android.wm.shell.transition.DefaultTransitionHandler@d69f2bf
+D/BoundBrokerSvc( 1712): onBind: Intent { act=com.google.android.gms.feedback.internal.IFeedbackService dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsBoundBrokerService }
+D/BoundBrokerSvc( 1712): Loading bound service for intent: Intent { act=com.google.android.gms.feedback.internal.IFeedbackService dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsBoundBrokerService }
+D/nativeloader( 3803): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+D/BackgroundInstallControlService(  677): Package event received: 0
+W/ActivityTaskManager(  677): takeTaskSnapshot: taskId=58 not found or not visible
+W/ActivityTaskManager(  677): takeTaskSnapshot: taskId=61 not found or not visible
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001c398) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001f278) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001ef58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700214d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700133d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001aa98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700214d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001ef58) locale list changing from [] to [en-US]
+E/AppOps  (  677): attributionTag VCN not declared in manifest of android
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001f278) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700168f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001c398) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001ba38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001dfb8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001ccf8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001e918) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770021b18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770020e98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001bd58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001d978) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002a7b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002e318) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002d9b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001fef8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770032af8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002ef98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002dff8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770022798) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770022478) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001c9d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770022158) locale list changing from [] to [en-US]
+V/WindowManagerShell(  927): Transition animation finished (aborted=false), notifying core (#18) android.os.BinderProxy@dd5ce6b@1
+V/WindowManager(  677): Finish Transition (#18): created at 09-07 13:53:16.564 collect-started=0.082ms request-sent=23.523ms started=32.638ms ready=108.235ms sent=131.756ms commit=40.014ms finished=457.354ms
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770027298) locale list changing from [] to [en-US]
+V/WindowManagerShell(  927): Track 1 became idle
+D/VRI[NexusLauncherActivity]( 1050): visibilityChanged oldVisibility=true newVisibility=false
+V/WindowManagerShell(  927): All active transition animations finished
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002a178) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028eb8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001e2d8) locale list changing from [] to [en-US]
+E/BpTransactionCompletedListener(  511): Failed to transact (-32)
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023a58) locale list changing from [] to [en-US]
+D/NexusLauncherModelDelegate( 1050): notifySmartspaceEvent: SmartspaceTargetEvent{mSmartspaceTarget=null, mSmartspaceActionId='null', mEventType=7}
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770029e58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023738) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700246d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770029b38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700275b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002adf8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770024d18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025cb8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770026f78) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025fd8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028558) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025678) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028b98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002aad8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770027f18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028238) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025038) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001c6b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025998) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770022dd8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001ec38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770024098) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700211b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001f8b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023418) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700217f8) locale list changing from [] to [en-US]
+I/NearbyUWB( 1266): Initiating shutdown of ServiceControllerRouter dfko@ed4b341. [CONTEXT service_id=49 ]
+I/NearbyUWB( 1266): Completed shutdown of ServiceControllerRouter dfko@ed4b341. [CONTEXT service_id=49 ]
+I/Nearby  ( 1266): Successfully shutdown executor ServiceControllerRouter.offBinderSerializer. [CONTEXT service_id=49 ]
+I/Nearby  ( 1266): Successfully shutdown executor NearbyUwbServiceExecutor. [CONTEXT service_id=49 ]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001b3f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770020858) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770018838) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770018b58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770016c18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700162b8) locale list changing from [] to [en-US]
+I/netd    (  453): tetherGetStats() -> {[]} <0.28ms>
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770013d38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700181f8) locale list changing from [] to [en-US]
+D/nativeloader( 3803): Configuring clns-9 for other apk /data/app/~~XiF5IjFWBQZSqhr54nrKdA==/com.penkra.canvas.fixture-JMXL4nWTNIMbvXoGypvByg==/base.apk. target_sdk_version=35, uses_libraries=, library_path=/data/app/~~XiF5IjFWBQZSqhr54nrKdA==/com.penkra.canvas.fixture-JMXL4nWTNIMbvXoGypvByg==/lib/arm64:/data/app/~~XiF5IjFWBQZSqhr54nrKdA==/com.penkra.canvas.fixture-JMXL4nWTNIMbvXoGypvByg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.penkra.canvas.fixture
+D/CompatChangeReporter( 3803): Compat change id reported: 202956589; UID 10217; state: ENABLED
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777000e298) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770015c78) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777000df78) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001b0d8) locale list changing from [] to [en-US]
+I/.canvas.fixture( 3803): AssetManager2(0xb40000777000e298) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770018518) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700104f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001b718) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770030898) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770015638) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002e638) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700165d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700327d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770030578) locale list changing from [] to [en-US]
+V/GraphicsEnvironment( 3803): Currently set values for:
+V/GraphicsEnvironment( 3803):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment( 3803):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment( 3803): com.penkra.canvas.fixture is not listed in per-application setting
+V/GraphicsEnvironment( 3803): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment( 3803): com.penkra.canvas.fixture is not listed in ANGLE allowlist or settings, returning default
+V/GraphicsEnvironment( 3803): Neither updatable production driver nor prerelease driver is supported.
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002f5d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002fc18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002c3d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002ca18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002c0b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770030ed8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002ec78) locale list changing from [] to [en-US]
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002bd98) locale list changing from [] to [en-US]
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 1 txSpeed: 1
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed -1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.3, 0.0, 0.0 rx=0.2 bcn=0 [on:0 tx:0 rx:0 period:126189] from screen [on:0 period:2104402098] score=60
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770031838) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002dcd8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002ba78) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002d058) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002f8f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770039218) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777003a4d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700372d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770039538) locale list changing from [] to [en-US]
+D/CompatChangeReporter( 3803): Compat change id reported: 279646685; UID 10217; state: ENABLED
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770036fb8) locale list changing from [] to [en-US]
+W/OptProp (  677): Cannot read opt property android.window.PROPERTY_COMPAT_ENABLE_FAKE_FOCUS
+D/CompatChangeReporter(  677): Compat change id reported: 324203798; UID 10217; state: ENABLED
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777003a1b8) locale list changing from [] to [en-US]
+D/BackgroundInstallControlService(  677): Package event received: 0
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/DisplayManager( 3803): Choreographer implicitly registered for the refresh rate.
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770034d58) locale list changing from [] to [en-US]
+I/.canvas.fixture( 3803): AssetManager2(0xb40000777001a138) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770033778) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777003ab18) locale list changing from [] to [en-US]
+E/ashmem  ( 3803): Pinning is deprecated since Android Q. Please use trim or other methods.
+D/CompatChangeReporter( 3803): Compat change id reported: 309578419; UID 10217; state: ENABLED
+D/DesktopModeFlags( 3803): Toggle override initialized to: OVERRIDE_UNSET
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770035078) locale list changing from [] to [en-US]
+I/EGL_emulation( 3803): Opening libGLESv1_CM_emulation.so
+I/EGL_emulation( 3803): Opening libGLESv2_emulation.so
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770036658) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770036c98) locale list changing from [] to [en-US]
+W/HWUI    ( 3803): Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+W/HWUI    ( 3803): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770038bd8) locale list changing from [] to [en-US]
+D/CompatChangeReporter( 3803): Compat change id reported: 352594277; UID 10217; state: ENABLED
+I/servicemanager(  219): Caller(pid=3803,uid=10217,sid=u:r:untrusted_app:s0:c217,c256,c512,c768) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+D/CompatChangeReporter( 3803): Compat change id reported: 349153669; UID 10217; state: ENABLED
+W/HWUI    ( 3803): Unknown dataspace 0
+I/servicemanager(  219): Caller(pid=3803,uid=10217,sid=u:r:untrusted_app:s0:c217,c256,c512,c768) Found android.hardware.graphics.allocator.IAllocator/default in device VINTF manifest.
+I/servicemanager(  219): Caller(pid=3803,uid=10217,sid=u:r:untrusted_app:s0:c217,c256,c512,c768) Found mapper/ranchu in device VINTF manifest.
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770033a98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770034a38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770039e98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770036338) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770035cf8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770036018) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770038598) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770035398) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700375f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700388b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700343f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770037f58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777003c418) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700356b8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777003ff78) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777003c0f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770040298) locale list changing from [] to [en-US]
+D/CoreBackPreview(  677): Window{aee163c u0 com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@e0b9979, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+I/CanvasFixedText( 3803): LUNA_FIXED_TEXT_READY case=uniform-single-run nonce=fixed-text-android-420-1-uniform-single-run-83a6f697-29a5-4871-9815-9cb5e7e0f26e
+I/CanvasFixedText( 3803): LUNA_FIXED_TEXT_ROOT case=uniform-single-run nonce=fixed-text-android-420-1-uniform-single-run-83a6f697-29a5-4871-9815-9cb5e7e0f26e x=0.0 y=0.0 width=893 height=473 scale=2.625
+I/ActivityTaskManager(  677): Displayed com.penkra.canvas.fixture/.MainActivity for user 0: +1s167ms
+D/BaseDepthController( 1050): setSurface:
+D/BaseDepthController( 1050): 	mWaitingOnSurfaceValidity: false
+D/BaseDepthController( 1050): 	mBaseSurface: null
+D/BaseDepthController( 1050): mSurface is null and mCurrentBlur is: 0
+D/StateManager( 1050): goToState - fromState: Normal, toState: Normal, partial trace:
+D/StateManager( 1050): 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:4)
+D/StateManager( 1050): 	at com.android.launcher3.statemanager.StateManager.moveToRestState(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:1)
+D/StateManager( 1050): 	at com.android.launcher3.statemanager.StatefulActivity.onStop(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:34)
+D/StatsLog( 1050): LAUNCHER_ONSTOP
+I/ImeTracker(  677): com.penkra.canvas.fixture:a08dcf28: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+I/AppWidgetServiceImpl(  677): setAppWidgetHidden() 0
+D/InsetsController( 3803): hide(ime(), fromIme=false)
+I/ImeTracker( 3803): com.penkra.canvas.fixture:a08dcf28: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+D/StatsLog( 1050): LAUNCHER_GOOGLE_SEARCH_RESTORE_LIST_SIZE_AFTER_ACTIVITY_RESTART
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onFinishInput():2043 
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+I/ImeTracker(  677): system_server:45a4aa6c: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+I/ImeTracker(  677): system_server:45a4aa6c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onStartInput():1293 onStartInput(EditorInfo{EditorInfo{packageName=com.penkra.canvas.fixture, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+I/EmojiCompatManager( 1397): EmojiCompatManager.getEmojiCompatIfLoaded():343 EmojiCompat.init() was never called.
+I/EmojiCompatManager( 1397): java.lang.IllegalStateException: EmojiCompat is not initialized. Please call EmojiCompat.init() first
+I/EmojiCompatManager( 1397): 	at asx.p(PG:6)
+I/EmojiCompatManager( 1397): 	at axb.b(PG:13)
+I/EmojiCompatManager( 1397): 	at jnr.b(PG:2)
+I/EmojiCompatManager( 1397): 	at jnr.c(PG:4)
+I/EmojiCompatManager( 1397): 	at jnr.f(PG:3)
+I/EmojiCompatManager( 1397): 	at jnx.c(PG:3)
+I/EmojiCompatManager( 1397): 	at kif.cz(PG:47)
+I/EmojiCompatManager( 1397): 	at lhl.run(PG:1025)
+I/EmojiCompatManager( 1397): 	at jaf.execute(PG:12)
+I/EmojiCompatManager( 1397): 	at nco.v(PG:13)
+I/EmojiCompatManager( 1397): 	at lhn.m(PG:96)
+I/EmojiCompatManager( 1397): 	at lhn.k(PG:25)
+I/EmojiCompatManager( 1397): 	at kgn.onStartInput(PG:250)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService.doStartInput(InputMethodService.java:3521)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.startInput(InputMethodService.java:879)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.dispatchStartInput(InputMethodService.java:908)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.IInputMethodWrapper.executeMessage(IInputMethodWrapper.java:201)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:44)
+I/EmojiCompatManager( 1397): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loopOnce(Looper.java:248)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loop(Looper.java:338)
+I/EmojiCompatManager( 1397): 	at android.app.ActivityThread.main(ActivityThread.java:9067)
+I/EmojiCompatManager( 1397): 	at java.lang.reflect.Method.invoke(Native Method)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:593)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:932)
+W/PackageConfigPersister(  677): App-specific configuration not found for packageName: com.penkra.canvas.fixture and userId: 0
+W/System  ( 1050): A resource failed to call release. 
+W/System  ( 1050): A resource failed to call release. 
+W/System  ( 1050): A resource failed to call release. 
+W/System  ( 1050): A resource failed to call release. 
+W/System  ( 1050): A resource failed to call release. 
+W/System  ( 1050): A resource failed to call release. 
+I/.canvas.fixture( 3803): Compiler allocated 5111KB to compile void android.view.ViewRootImpl.performTraversals()
+I/FontLog ( 1266): Received query Noto Color Emoji Compat, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Query [emojicompat-emoji-font] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false}, isVf false} [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false}, isVf false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Pulling font file for id = 17, cache size = 17 [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Pulling font file for id = 17, cache size = 17 [CONTEXT service_id=132 ]
+W/WindowOnBackDispatcher(  927): sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda13@c07cca4
+D/CoreBackPreview(  677): Window{3d918aa u0 Splash Screen com.penkra.canvas.fixture EXITING}: Setting back callback null
+W/.apps.safetyhub( 2813): Missing inline cache for int pqt.a(java.lang.Object)
+D/OomAdjuster(  677): Not killing cached processes
+D/BoundBrokerSvc( 1712): onUnbind: Intent { act=com.google.android.gms.notifications.capping.api.NotificationsCappingApiService.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.GmsApiService }
+D/BoundBrokerSvc( 1266): onUnbind: Intent { act=com.google.android.gms.pseudonymous.service.START xflg=0x4 pkg=com.google.android.gms }
+D/BoundBrokerSvc( 1266): onUnbind: Intent { act=com.google.android.gms.pseudonymous.service.START dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentApiService }
+D/BoundBrokerSvc( 1266): onUnbind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentApiService }
+I/netd    (  453): tetherGetStats() -> {[]} <0.77ms>
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=5 freq=2447 RxLinkSpeed=2
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 5Mbps, Tx Link speed: 5Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 2 txSpeed: 5
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed -1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=5 tx=1.1, 0.0, 0.0 rx=0.9 bcn=0 [on:0 tx:0 rx:0 period:3004] from screen [on:0 period:2104405102] score=60
+E/TaskPersister(  677): File error accessing recents directory (directory doesn't exist?).
+

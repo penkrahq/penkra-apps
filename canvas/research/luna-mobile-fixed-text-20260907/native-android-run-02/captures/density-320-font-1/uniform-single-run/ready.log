@@ -1,0 +1,471 @@
+--------- beginning of main
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700181f8) locale list changing from [] to [en-US]
+W/System  ( 1050): A resource failed to call release. 
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770038278) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777002b118) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/CanvasFixedText( 5073): LUNA_FIXED_TEXT_READY case=uniform-single-run nonce=fixed-text-android-320-1-uniform-single-run-c19ceb3f-f343-49dd-9658-2ba2a94e399d
+I/CanvasFixedText( 5073): LUNA_FIXED_TEXT_ROOT case=uniform-single-run nonce=fixed-text-android-320-1-uniform-single-run-c19ceb3f-f343-49dd-9658-2ba2a94e399d x=0.0 y=0.0 width=680 height=360 scale=2.0
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770033db8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700505f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/ActivityTaskManager(  677): Displayed com.penkra.canvas.fixture/.MainActivity for user 0: +1s116ms
+I/FontLog ( 1266): Received query Noto Color Emoji Compat, URI content://com.google.android.gms.fonts [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Query [emojicompat-emoji-font] resolved to {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false}, isVf false} [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Fetch {Noto Color Emoji Compat, wdth 100.0, wght 400, ital 0.0, bestEffort false}, isVf false} end status Status{statusCode=SUCCESS, resolution=null} [CONTEXT service_id=132 ]
+I/ImeTracker(  677): com.penkra.canvas.fixture:8185fda5: onRequestHide at ORIGIN_SERVER reason HIDE_UNSPECIFIED_WINDOW fromUser false
+D/InsetsController( 5073): hide(ime(), fromIme=false)
+I/ImeTracker( 5073): com.penkra.canvas.fixture:8185fda5: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+I/netd    (  453): tetherGetStats() -> {[]} <0.21ms>
+I/FontLog ( 1266): Pulling font file for id = 39, cache size = 12 [CONTEXT service_id=132 ]
+I/FontLog ( 1266): Pulling font file for id = 39, cache size = 12 [CONTEXT service_id=132 ]
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onFinishInput():2043 
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 0, locked = false
+I/ImeTracker(  677): system_server:499a19e3: onRequestHide at ORIGIN_SERVER reason IME_REQUESTED_CHANGED_LISTENER fromUser false
+I/ImeTracker(  677): system_server:499a19e3: onCancelled at PHASE_SERVER_SHOULD_HIDE
+I/GoogleInputMethodService( 1397): GoogleInputMethodService.onStartInput():1293 onStartInput(EditorInfo{EditorInfo{packageName=com.penkra.canvas.fixture, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+I/Module  ( 1397): DeviceLockedStatusModuleProvider$Module.updateDeviceLockedStatus():100 repeatCheckTimes = 1, locked = false
+I/EmojiCompatManager( 1397): EmojiCompatManager.getEmojiCompatIfLoaded():343 EmojiCompat.init() was never called.
+I/EmojiCompatManager( 1397): java.lang.IllegalStateException: EmojiCompat is not initialized. Please call EmojiCompat.init() first
+I/EmojiCompatManager( 1397): 	at asx.p(PG:6)
+I/EmojiCompatManager( 1397): 	at axb.b(PG:13)
+I/EmojiCompatManager( 1397): 	at jnr.b(PG:2)
+I/EmojiCompatManager( 1397): 	at jnr.c(PG:4)
+I/EmojiCompatManager( 1397): 	at jnr.f(PG:3)
+I/EmojiCompatManager( 1397): 	at jnx.c(PG:3)
+I/EmojiCompatManager( 1397): 	at kif.cz(PG:47)
+I/EmojiCompatManager( 1397): 	at lhl.run(PG:1025)
+I/EmojiCompatManager( 1397): 	at jaf.execute(PG:12)
+I/EmojiCompatManager( 1397): 	at nco.v(PG:13)
+I/EmojiCompatManager( 1397): 	at lhn.m(PG:96)
+I/EmojiCompatManager( 1397): 	at lhn.k(PG:25)
+I/EmojiCompatManager( 1397): 	at kgn.onStartInput(PG:250)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService.doStartInput(InputMethodService.java:3521)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.startInput(InputMethodService.java:879)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.InputMethodService$InputMethodImpl.dispatchStartInput(InputMethodService.java:908)
+I/EmojiCompatManager( 1397): 	at android.inputmethodservice.IInputMethodWrapper.executeMessage(IInputMethodWrapper.java:201)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.HandlerCaller$MyHandler.handleMessage(HandlerCaller.java:44)
+I/EmojiCompatManager( 1397): 	at android.os.Handler.dispatchMessage(Handler.java:110)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loopOnce(Looper.java:248)
+I/EmojiCompatManager( 1397): 	at android.os.Looper.loop(Looper.java:338)
+I/EmojiCompatManager( 1397): 	at android.app.ActivityThread.main(ActivityThread.java:9067)
+I/EmojiCompatManager( 1397): 	at java.lang.reflect.Method.invoke(Native Method)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:593)
+I/EmojiCompatManager( 1397): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:932)
+--------- beginning of system
+W/PackageConfigPersister(  677): App-specific configuration not found for packageName: com.penkra.canvas.fixture and userId: 0
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777003a7f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777003ecb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770038bd8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770049258) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770053b18) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770058618) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777005e6f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770057998) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700181f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770039b78) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777004d0d8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 1 txSpeed: 1
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed -1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.0, 0.0, 0.0 rx=0.0 bcn=0 [on:0 tx:0 rx:0 period:3008] from screen [on:0 period:2104555368] score=60
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770036fb8) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777004ffb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/WindowOnBackDispatcher(  927): sendCancelIfRunning: isInProgress=false callback=android.view.ViewRootImpl$$ExternalSyntheticLambda13@cf92bab
+D/CoreBackPreview(  677): Window{f9dd3a6 u0 Splash Screen com.penkra.canvas.fixture EXITING}: Setting back callback null
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770052858) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770039538) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770057cb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770053e38) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/.canvas.fixture( 5073): Compiler allocated 5111KB to compile void android.view.ViewRootImpl.performTraversals()
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770021b18) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/LoaderTask( 1050): load widgets finished
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Settings sectionName: S
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Photos sectionName: P
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Battery sectionName: B
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Chrome sectionName: C
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Gmail sectionName: G
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Drive sectionName: D
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Clock sectionName: C
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Contacts sectionName: C
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Calendar sectionName: C
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Maps sectionName: M
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: YouTube Music sectionName: Y
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: YouTube sectionName: Y
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Google sectionName: G
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Android System Intelligence sectionName: A
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Digital Wellbeing sectionName: D
+D/AlphabeticIndexCompat( 1050): computeSectionName: cs: Conversations sectionName: C
+D/LoaderTask( 1050): bindWidgets finished
+D/LoaderTask( 1050): saving all widgets in icon cache
+D/LoaderTask( 1050): finish icon update
+D/QuickstepModelDelegate( 1050): Successfully registered for launcher snapshot logging!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/AppSearchIcing(  677): status-util.h:31: Error: 5, Message: Document (com.google.android.googlequicksearchbox$OneSearchZeroStateGoogleSuggestions/default, zp) not found.
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770029818) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700482b8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/b/387844520( 1050): getOutlineOffsetX: measured width = 132, mNormalizedIconSize = 121, last updated width = 132
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770024098) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/SsBaseTemplateCard( 1050): No text view can be set up
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+I/SsBaseTemplateCard( 1050): Secondary card pane is null
+D/SsBaseTemplateCard( 1050): No text view can be set up
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+D/SsBaseTemplateCard( 1050): Passed-in item info is null
+I/SsBaseTemplateCard( 1050): Secondary card pane is null
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770035cf8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+E/ZeroStateWebSuggestDataLoader( 1050): Failed to fetch suggestions from AppSearch
+E/ZeroStateWebSuggestDataLoader( 1050): java.util.NoSuchElementException: No value present
+E/ZeroStateWebSuggestDataLoader( 1050): 	at java.util.Optional.get(Optional.java:143)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at y2.x.onResult(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:33)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.app.appsearch.SearchSessionUtil$1.lambda$onResult$0(go/retraceme 9d1b0eb8afe1d0bca7ff6f98d5e450578c137217f678797f24205462b21ce4f6:144)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.app.appsearch.SearchSessionUtil$1.$r8$lambda$CEk3q8sDAQVhU3rQwVueB8FAj_M(go/retraceme 9d1b0eb8afe1d0bca7ff6f98d5e450578c137217f678797f24205462b21ce4f6:1)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.app.appsearch.SearchSessionUtil$1$$ExternalSyntheticLambda0.run(go/retraceme 9d1b0eb8afe1d0bca7ff6f98d5e450578c137217f678797f24205462b21ce4f6:22)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.os.Handler.handleCallback(Handler.java:995)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.os.Handler.dispatchMessage(Handler.java:103)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.os.Looper.loopOnce(Looper.java:248)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.os.Looper.loop(Looper.java:338)
+E/ZeroStateWebSuggestDataLoader( 1050): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/OneSearchSuggestProvider( 1050): Created the binder channel successfully for end point service =com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService , mChannel=k1{delegate=e{logId=5, target=directaddress:///AndroidComponentAddress%5BIntent%20%7B%20act=grpc.io.action.BIND%20cmp=com.google.android.googlequicksearchbox/com.google.android.apps.search.googleapp.search.suggest.plugins.onesearch.server.OneSearchSuggestService%20%7D%5D}} , mOneSearchConnection=M2.Z@6252771
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/gbko    ( 4157): (REDACTED) Scoped context discovery schemas: %s.
+I/fwnm    ( 4157): (REDACTED) Created gRPC endpoint for service %s
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770049bb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/WifiService(  677): getVerboseLoggingLevel uid=10147
+D/BackgroundInstallControlService(  677): Package event received: 0
+I/DynamiteModule( 4157): Considering local module com.google.android.gms.cronet_dynamite:0 and remote module com.google.android.gms.cronet_dynamite:3611
+I/DynamiteModule( 4157): Selected remote version of com.google.android.gms.cronet_dynamite, version >= 3611
+V/DynamiteModule( 4157): Dynamite loader version >= 2, using loadModule2NoCrashUtils
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770027f18) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/earchbox:search( 4157): AssetManager2(0xb4000077700133d8) locale list changing from [] to [en-US]
+I/earchbox:search( 4157): AssetManager2(0xb40000777000df78) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777002aad8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/nativeloader( 4157): Configuring clns-11 for other apk . target_sdk_version=35, uses_libraries=ALL, library_path=/data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/nativeloader( 4157): Load /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk!/lib/arm64-v8a/libcronet.139.0.7205.3.so using isolated ns clns-11 (caller=/data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk): ok
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770028b98) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777002d378) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/HttpFlagsLoader( 4157): HTTP flags log line (Impl): Using live production flag values from Google
+I/cn_CronetLibraryLoader( 4157): Cronet version: 139.0.7205.3, arch: aarch64
+D/ConnectivityService(  677): requestNetwork for uid/pid:10147/4157 activeRequest: null callbackRequest: 164 [NetworkRequest [ REQUEST id=165, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10147 RequestorUid: 10147 RequestorPkg: com.google.android.googlequicksearchbox UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC|LP
+D/ConnectivityService(  677): NetReassign [165 : null → 100] [c 0] [a 1] [i 0]
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770039b78) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/WifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=165, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10147 RequestorUid: 10147 RequestorPkg: com.google.android.googlequicksearchbox UnderlyingNetworks: Null] ]
+V/WifiNetworkFactory(  677): Accepted network request NetworkRequest [ REQUEST id=165, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10147 RequestorUid: 10147 RequestorPkg: com.google.android.googlequicksearchbox UnderlyingNetworks: Null] ]
+D/UntrustedWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=165, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10147 RequestorUid: 10147 RequestorPkg: com.google.android.googlequicksearchbox UnderlyingNetworks: Null] ]
+D/OemPaidWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=165, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10147 RequestorUid: 10147 RequestorPkg: com.google.android.googlequicksearchbox UnderlyingNetworks: Null] ]
+D/MultiInternetWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=165, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10147 RequestorUid: 10147 RequestorPkg: com.google.android.googlequicksearchbox UnderlyingNetworks: Null] ]
+W/chromium( 4157): [0907/135550.908651:WARNING:components/cronet/url_request_context_config.cc:769] Unrecognized Cronet experimental option "enable_telemetry" with params "true
+W/chromium( 4157): 
+D/ConnectivityService(  677): NetReassign [no changes] [c 0] [a 1] [i 0]
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770057cb8) locale list changing from [] to [en-US]
+D/OneSearchSuggestProvider( 1050): Forcefully shut down the binder channel
+I/IPCThreadState( 1050): oneway function results for code 2 on binder at 0xb400007800086de0 will be dropped but finished with status UNKNOWN_TRANSACTION
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770036fb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770051bd8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+D/SearchTargetUtil( 1050): queryLength=0 size=15
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=extra_tall_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+D/SearchTargetUtil( 1050): layoutType=short_icon_row resultType=131072 packageName=com.google.android.googlequicksearchbox
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700249f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770020218) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770023418) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770028558) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777001aa98) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777000f238) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770028238) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770025998) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770049bb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770035cf8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/LauncherActivityCachingLogic( 1050): loadIcon: Default app icon returned from PackageManager. component=ComponentInfo{com.penkra.canvas.qa.fonts/com.penkra.canvas.fixture.MainActivity}, user=UserHandle{0}
+W/LauncherActivityCachingLogic( 1050): java.lang.Exception
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.LauncherActivityCachingLogic.loadIcon(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:11)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.LauncherActivityCachingLogic.loadIcon(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:1)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.BaseIconCache.addIconToDBAndMemCache(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:23)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.IconCacheUpdateHandler$SerializedIconUpdateTask.run(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:105)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Handler.handleCallback(Handler.java:995)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Handler.dispatchMessage(Handler.java:103)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Looper.loopOnce(Looper.java:248)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Looper.loop(Looper.java:338)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700291d8) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770029818) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700569f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/LauncherActivityCachingLogic( 1050): loadIcon: Default app icon returned from PackageManager. component=ComponentInfo{com.penkra.canvas.fixture/com.penkra.canvas.fixture.MainActivity}, user=UserHandle{0}
+W/LauncherActivityCachingLogic( 1050): java.lang.Exception
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.LauncherActivityCachingLogic.loadIcon(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:11)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.LauncherActivityCachingLogic.loadIcon(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:1)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.BaseIconCache.addIconToDBAndMemCache(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:23)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.IconCacheUpdateHandler$SerializedIconUpdateTask.run(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:105)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Handler.handleCallback(Handler.java:995)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Handler.dispatchMessage(Handler.java:103)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Looper.loopOnce(Looper.java:248)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Looper.loop(Looper.java:338)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777003e998) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777004e078) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770053e38) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770030578) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770023738) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/LauncherActivityCachingLogic( 1050): loadIcon: Default app icon returned from PackageManager. component=ComponentInfo{com.penkra.canvas.qa.typomixed0606/com.penkra.canvas.fixture.MainActivity}, user=UserHandle{0}
+W/LauncherActivityCachingLogic( 1050): java.lang.Exception
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.LauncherActivityCachingLogic.loadIcon(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:11)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.LauncherActivityCachingLogic.loadIcon(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:1)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.BaseIconCache.addIconToDBAndMemCache(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:23)
+W/LauncherActivityCachingLogic( 1050): 	at com.android.launcher3.icons.cache.IconCacheUpdateHandler$SerializedIconUpdateTask.run(go/retraceme 43e00d9cd0eb17b3d9dd30fc1741b1c71445c4c0f7c8c9b81300265c86c5b873:105)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Handler.handleCallback(Handler.java:995)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Handler.dispatchMessage(Handler.java:103)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Looper.loopOnce(Looper.java:248)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.Looper.loop(Looper.java:338)
+W/LauncherActivityCachingLogic( 1050): 	at android.os.HandlerThread.run(HandlerThread.java:85)
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770025038) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770022ab8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770032198) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770020538) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777001e5f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700249f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770016f38) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770039538) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770039b78) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770031518) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770031518) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777002b438) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770052858) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777004ffb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770051bd8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777001f598) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770023418) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770028558) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777004dd58) locale list changing from [] to [en-US]
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777004e078) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700569f8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb4000077700482b8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770035cf8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770039e98) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770049bb8) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb400007770025998) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+I/s.nexuslauncher( 1050): AssetManager2(0xb40000777002b438) locale list changing from [] to [en-US]
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+W/HWUI    ( 1050): Image decoding logging dropped!
+E/TaskPersister(  677): File error accessing recents directory (directory doesn't exist?).
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 1 txSpeed: 1
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed -1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=0.0, 0.0, 0.0 rx=0.0 bcn=0 [on:0 tx:0 rx:0 period:3006] from screen [on:0 period:2104558374] score=60
+

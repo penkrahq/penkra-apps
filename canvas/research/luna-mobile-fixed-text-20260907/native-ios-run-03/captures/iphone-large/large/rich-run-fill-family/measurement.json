@@ -1,0 +1,38 @@
+{
+  "platform": "ios",
+  "device": "iphone-large",
+  "contentSize": "large",
+  "caseId": "rich-run-fill-family",
+  "classification": "rich-run",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-iphone-large-large-rich-run-fill-family-72d9e4f1-bf2e-4174-889f-b1b036b7a365",
+  "readiness": {
+    "root": {
+      "x": 31,
+      "y": 361,
+      "width": 340,
+      "height": 180
+    },
+    "scale": 3
+  },
+  "stability": {
+    "hashes": [
+      "136fdc1d7d7c470c3bc3c44771a4115562e91a19cc1de4834902d63b7cdf0aa9",
+      "136fdc1d7d7c470c3bc3c44771a4115562e91a19cc1de4834902d63b7cdf0aa9"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/large/rich-run-fill-family/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 9212,
+    "mismatchedPixels": 3774,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1206,
+    "height": 2622
+  }
+}

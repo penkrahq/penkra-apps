@@ -1,0 +1,38 @@
+{
+  "platform": "ios",
+  "device": "iphone-large",
+  "contentSize": "large",
+  "caseId": "rich-run-decorations",
+  "classification": "decorations",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-iphone-large-large-rich-run-decorations-564b6a6d-ac31-4b23-b248-ddaf8416f71b",
+  "readiness": {
+    "root": {
+      "x": 31,
+      "y": 361,
+      "width": 340,
+      "height": 180
+    },
+    "scale": 3
+  },
+  "stability": {
+    "hashes": [
+      "31079bc89717385dda29905c62061cf281a02c5dc087a8d66da07acd87e0a8bc",
+      "31079bc89717385dda29905c62061cf281a02c5dc087a8d66da07acd87e0a8bc"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-04/captures/iphone-large/large/rich-run-decorations/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 3259,
+    "mismatchedPixels": 395,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1206,
+    "height": 2622
+  }
+}

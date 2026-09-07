@@ -1,0 +1,38 @@
+{
+  "platform": "android",
+  "density": 420,
+  "fontScale": 2,
+  "caseId": "marks-and-paragraphs",
+  "classification": "semantics",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-android-420-2-marks-and-paragraphs-2bd71ee8-911d-412e-9c6f-f45603a7ae9d",
+  "readiness": {
+    "root": {
+      "x": 0,
+      "y": 0,
+      "width": 893,
+      "height": 473
+    },
+    "scale": 2.625
+  },
+  "stability": {
+    "hashes": [
+      "1d762bc01880e3a29923eb4264d40d1c5cdd6bdfb359e032d17e8fe1330d0469",
+      "1d762bc01880e3a29923eb4264d40d1c5cdd6bdfb359e032d17e8fe1330d0469"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-android-run-02/captures/density-420-font-2/marks-and-paragraphs/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 3663,
+    "mismatchedPixels": 1873,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1080,
+    "height": 2400
+  }
+}

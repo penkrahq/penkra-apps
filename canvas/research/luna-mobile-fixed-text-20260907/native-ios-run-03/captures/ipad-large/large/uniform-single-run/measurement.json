@@ -1,0 +1,38 @@
+{
+  "platform": "ios",
+  "device": "ipad-large",
+  "contentSize": "large",
+  "caseId": "uniform-single-run",
+  "classification": "typography",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-ipad-large-large-uniform-single-run-717e25e2-14ea-4887-ae66-e2b07fa19faf",
+  "readiness": {
+    "root": {
+      "x": 202,
+      "y": 480,
+      "width": 340,
+      "height": 180
+    },
+    "scale": 2
+  },
+  "stability": {
+    "hashes": [
+      "0afa1a7fb03d8a8def5440d260ea9b28f20a63f177a5373c2c332107380d9d3f",
+      "0afa1a7fb03d8a8def5440d260ea9b28f20a63f177a5373c2c332107380d9d3f"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/ipad-large/large/uniform-single-run/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 4732,
+    "mismatchedPixels": 2784,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1488,
+    "height": 2266
+  }
+}

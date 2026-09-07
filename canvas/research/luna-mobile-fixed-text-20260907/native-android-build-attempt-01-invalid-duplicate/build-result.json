@@ -1,0 +1,8 @@
+{
+  "exitCode": 1,
+  "command": "./gradlew --no-daemon --max-workers 2 :app:assembleDebug",
+  "fixtureRoot": "/private/tmp/canvas-fixed-text-compose-build.SV2kyz",
+  "result": "BUILD FAILED in 1m 6s",
+  "reason": "duplicate MainActivity and FixedTextSelection declarations because MainActivity.kt was copied to both generated and app package directories",
+  "gradleTasks": "28 actionable tasks: 28 executed"
+}

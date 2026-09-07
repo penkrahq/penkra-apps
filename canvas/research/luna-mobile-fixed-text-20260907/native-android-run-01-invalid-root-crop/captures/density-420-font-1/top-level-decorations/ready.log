@@ -1,0 +1,422 @@
+--------- beginning of main
+W/IndexableItem( 3266): indexing key is not set:Intent { act=com.google.android.gms.fido.fido2.ui.hybrid.LINKED_DEVICES_SETTINGS cat=[android.intent.category.DEFAULT] pkg=com.google.android.gms } [CONTEXT service_id=231 ]
+W/IndexableItem( 3266): indexing key is not set:Intent { act=com.google.android.googlequicksearchbox.action.PRIVACY_SETTINGS flg=0x10000000 cmp=com.google.android.googlequicksearchbox/com.google.android.apps.gsa.velvet.ui.settings.PublicSettingsActivity } [CONTEXT service_id=231 ]
+W/IndexableItem( 3266): indexing key is not set:Intent { cmp=com.google.android.gms/.locationsharing.activity.LocationSharingRedirectActivity } [CONTEXT service_id=231 ]
+I/TrustedTime( 1266): TrustedTimeStateMachine onRunOneOffNetworkTimeUpdateTask() [CONTEXT service_id=326 ]
+I/resolv  (  453): GetAddrInfoHandler::run: {100 786532 100 983140 10144 0}
+I/resolv  (  453): res_nmkquery: (QUERY, IN, A)
+I/resolv  (  453): res_nmkquery: (QUERY, IN, AAAA)
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.time.trustedtime.singleuserapi.service.TrustedTimeMaintenanceTaskService started execution. cause:5 exec_start_elapsed_seconds: 39 [CONTEXT service_id=218 ]
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.clearcut.uploader.QosUploaderService started execution. cause:5 exec_start_elapsed_seconds: 39 [CONTEXT service_id=218 ]
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libfbjni.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.clearcut.uploader.QosUploaderService finished executing. cause:5 result: 1 elapsed_millis: 44 uptime_millis: 44 exec_start_elapsed_seconds: 39 [CONTEXT service_id=218 ]
+D/BoundBrokerSvc( 2883): onBind: Intent { act=com.google.android.gms.droidguard.DroidGuardFastRefreshGmsTaskBoundService.ACTION_TASK_READY dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.UnstableInternalBoundBrokerService }
+D/BoundBrokerSvc( 2883): Loading bound service for intent: Intent { act=com.google.android.gms.droidguard.DroidGuardFastRefreshGmsTaskBoundService.ACTION_TASK_READY dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.UnstableInternalBoundBrokerService }
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.droidguard.DroidGuardFastRefreshGmsTaskBoundService started execution. cause:5 exec_start_elapsed_seconds: 39 [CONTEXT service_id=218 ]
+I/DynamiteModule( 2883): Considering local module com.google.android.gms.cronet_dynamite:0 and remote module com.google.android.gms.cronet_dynamite:3611
+I/DynamiteModule( 2883): Selected remote version of com.google.android.gms.cronet_dynamite, version >= 3611
+I/id.gms.unstable( 2883): AssetManager2(0xb40000777001b718) locale list changing from [] to [en-US]
+I/id.gms.unstable( 2883): AssetManager2(0xb400007770015c78) locale list changing from [] to [en-US]
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libreactnative.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+D/jni_lib_merge( 3194): Entering merged library JNI_OnLoad.
+D/jni_lib_merge( 3194): Preparing 13 pre-merged libs (including stub)
+D/jni_lib_merge( 3194): Preparing to register libfabricjni_so.  onload_func: 0x763e9c65bc
+D/jni_lib_merge( 3194): Preparing to register libreact_devsupportjni_so.  onload_func: 0x763ec2026c
+D/jni_lib_merge( 3194): Preparing to register libreact_featureflagsjni_so.  onload_func: 0x763ec33794
+D/jni_lib_merge( 3194): Preparing to register libreact_newarchdefaults_so.  onload_func: 0x763ece09cc
+D/jni_lib_merge( 3194): Preparing to register libreact_tracingjni_so.  onload_func: 0x763eff40f8
+D/jni_lib_merge( 3194): Preparing to register libreactnativeblob_so.  onload_func: 0x763f008194
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_so.  onload_func: 0x763f02ce64
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_common_so.  onload_func: 0x763f032c88
+D/jni_lib_merge( 3194): Preparing to register librninstance_so.  onload_func: 0x763f0b7038
+D/jni_lib_merge( 3194): Preparing to register libturbomodulejsijni_so.  onload_func: 0x763f216740
+D/jni_lib_merge( 3194): Preparing to register libuimanagerjni_so.  onload_func: 0x763f22d92c
+D/jni_lib_merge( 3194): Preparing to register libyoga_so.  onload_func: 0x763f23d3b0
+D/jni_lib_merge( 3194): About to register 12 actual methods.
+D/nativeloader( 2883): Configuring clns-11 for other apk . target_sdk_version=36, uses_libraries=ALL, library_path=/data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+D/nativeloader( 2883): Load /data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk!/lib/arm64-v8a/libcronet.139.0.7205.3.so using isolated ns clns-11 (caller=/data/user_de/0/com.google.android.gms/app_chimera/m/00000001/CronetDynamite.apk): ok
+I/cn_CronetLibraryLoader( 2883): Cronet version: 139.0.7205.3, arch: aarch64
+D/ConnectivityService(  677): requestNetwork for uid/pid:10144/2883 activeRequest: null callbackRequest: 140 [NetworkRequest [ REQUEST id=141, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10144 RequestorUid: 10144 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC|LP
+D/ConnectivityService(  677): NetReassign [141 : null → 100] [c 0] [a 2] [i 0]
+D/ConnectivityService(  677): NetReassign [no changes] [c 0] [a 0] [i 0]
+D/WifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=141, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10144 RequestorUid: 10144 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+V/WifiNetworkFactory(  677): Accepted network request NetworkRequest [ REQUEST id=141, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10144 RequestorUid: 10144 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+D/UntrustedWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=141, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10144 RequestorUid: 10144 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+D/OemPaidWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=141, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10144 RequestorUid: 10144 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+D/MultiInternetWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=141, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10144 RequestorUid: 10144 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ]
+I/resolv  (  453): GetAddrInfoHandler::run: {100 786532 100 983140 10144 0}
+I/resolv  (  453): res_nmkquery: (QUERY, IN, AAAA)
+I/resolv  (  453): res_nmkquery: (QUERY, IN, A)
+W/IndexDataConverter( 3055): Skipping null deep link for raw indexable com.android.settings/Android Safe Browsing
+W/IndexDataConverter( 3055): Skipping null deep link for raw indexable com.android.settings/Google
+W/IndexDataConverter( 3055): Skipping null deep link for raw indexable com.android.settings/Android Safe Browsing
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libreact_codegen_rnscreens.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+D/jni_lib_merge( 3194): Entering merged library JNI_OnLoad.
+D/jni_lib_merge( 3194): Preparing 13 pre-merged libs (including stub)
+D/jni_lib_merge( 3194): Preparing to register libfabricjni_so.  onload_func: 0x763e9c65bc
+D/jni_lib_merge( 3194): Preparing to register libreact_devsupportjni_so.  onload_func: 0x763ec2026c
+D/jni_lib_merge( 3194): Preparing to register libreact_featureflagsjni_so.  onload_func: 0x763ec33794
+D/jni_lib_merge( 3194): Preparing to register libreact_newarchdefaults_so.  onload_func: 0x763ece09cc
+D/jni_lib_merge( 3194): Preparing to register libreact_tracingjni_so.  onload_func: 0x763eff40f8
+D/jni_lib_merge( 3194): Preparing to register libreactnativeblob_so.  onload_func: 0x763f008194
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_so.  onload_func: 0x763f02ce64
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_common_so.  onload_func: 0x763f032c88
+D/jni_lib_merge( 3194): Preparing to register librninstance_so.  onload_func: 0x763f0b7038
+D/jni_lib_merge( 3194): Preparing to register libturbomodulejsijni_so.  onload_func: 0x763f216740
+D/jni_lib_merge( 3194): Preparing to register libuimanagerjni_so.  onload_func: 0x763f22d92c
+D/jni_lib_merge( 3194): Preparing to register libyoga_so.  onload_func: 0x763f23d3b0
+D/jni_lib_merge( 3194): About to register 12 actual methods.
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libreact_codegen_TrueSheetSpec.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+D/jni_lib_merge( 3194): Entering merged library JNI_OnLoad.
+D/jni_lib_merge( 3194): Preparing 13 pre-merged libs (including stub)
+D/jni_lib_merge( 3194): Preparing to register libfabricjni_so.  onload_func: 0x763e9c65bc
+D/jni_lib_merge( 3194): Preparing to register libreact_devsupportjni_so.  onload_func: 0x763ec2026c
+D/jni_lib_merge( 3194): Preparing to register libreact_featureflagsjni_so.  onload_func: 0x763ec33794
+D/jni_lib_merge( 3194): Preparing to register libreact_newarchdefaults_so.  onload_func: 0x763ece09cc
+D/jni_lib_merge( 3194): Preparing to register libreact_tracingjni_so.  onload_func: 0x763eff40f8
+D/jni_lib_merge( 3194): Preparing to register libreactnativeblob_so.  onload_func: 0x763f008194
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_so.  onload_func: 0x763f02ce64
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_common_so.  onload_func: 0x763f032c88
+D/jni_lib_merge( 3194): Preparing to register librninstance_so.  onload_func: 0x763f0b7038
+D/jni_lib_merge( 3194): Preparing to register libturbomodulejsijni_so.  onload_func: 0x763f216740
+D/jni_lib_merge( 3194): Preparing to register libuimanagerjni_so.  onload_func: 0x763f22d92c
+D/jni_lib_merge( 3194): Preparing to register libyoga_so.  onload_func: 0x763f23d3b0
+D/jni_lib_merge( 3194): About to register 12 actual methods.
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libreact_codegen_rnsvg.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+D/jni_lib_merge( 3194): Entering merged library JNI_OnLoad.
+D/jni_lib_merge( 3194): Preparing 13 pre-merged libs (including stub)
+D/jni_lib_merge( 3194): Preparing to register libfabricjni_so.  onload_func: 0x763e9c65bc
+D/jni_lib_merge( 3194): Preparing to register libreact_devsupportjni_so.  onload_func: 0x763ec2026c
+D/jni_lib_merge( 3194): Preparing to register libreact_featureflagsjni_so.  onload_func: 0x763ec33794
+D/jni_lib_merge( 3194): Preparing to register libreact_newarchdefaults_so.  onload_func: 0x763ece09cc
+D/jni_lib_merge( 3194): Preparing to register libreact_tracingjni_so.  onload_func: 0x763eff40f8
+D/jni_lib_merge( 3194): Preparing to register libreactnativeblob_so.  onload_func: 0x763f008194
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_so.  onload_func: 0x763f02ce64
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_common_so.  onload_func: 0x763f032c88
+D/jni_lib_merge( 3194): Preparing to register librninstance_so.  onload_func: 0x763f0b7038
+D/jni_lib_merge( 3194): Preparing to register libturbomodulejsijni_so.  onload_func: 0x763f216740
+D/jni_lib_merge( 3194): Preparing to register libuimanagerjni_so.  onload_func: 0x763f22d92c
+D/jni_lib_merge( 3194): Preparing to register libyoga_so.  onload_func: 0x763f23d3b0
+D/jni_lib_merge( 3194): About to register 12 actual methods.
+D/WifiClientModeImpl[15875:wlan0](  677): updateLinkLayerStatsRssiSpeedFrequencyCapabilities rssi=-50 TxLinkspeed=1 freq=2447 RxLinkSpeed=2
+D/WifiDataStall(  677): tx tput in kbps: 11000
+D/WifiDataStall(  677): rx tput in kbps: 11000
+V/WifiConfigManager(  677): Updating scan detail cache freq=2447 BSSID=00:13:10:85:fe:01 RSSI=-50 for "AndroidWifi"NONE
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/WifiThroughputPredictor(  677):  utilization (LLS) 80 isBluetoothConnected: false final utilization: 80
+D/WifiThroughputPredictor(  677):  BW: 0 RSSI: -50 Nss: 1 Mode: 1 symDur: 4000 snrDb 30 bitPerTone: 4500 rate: 54 throughput: 11
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libreact_codegen_RNKC.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+D/jni_lib_merge( 3194): Entering merged library JNI_OnLoad.
+D/jni_lib_merge( 3194): Preparing 13 pre-merged libs (including stub)
+D/jni_lib_merge( 3194): Preparing to register libfabricjni_so.  onload_func: 0x763e9c65bc
+D/jni_lib_merge( 3194): Preparing to register libreact_devsupportjni_so.  onload_func: 0x763ec2026c
+D/jni_lib_merge( 3194): Preparing to register libreact_featureflagsjni_so.  onload_func: 0x763ec33794
+D/jni_lib_merge( 3194): Preparing to register libreact_newarchdefaults_so.  onload_func: 0x763ece09cc
+D/jni_lib_merge( 3194): Preparing to register libreact_tracingjni_so.  onload_func: 0x763eff40f8
+D/jni_lib_merge( 3194): Preparing to register libreactnativeblob_so.  onload_func: 0x763f008194
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_so.  onload_func: 0x763f02ce64
+D/jni_lib_merge( 3194): Preparing to register libreactnativejni_common_so.  onload_func: 0x763f032c88
+D/jni_lib_merge( 3194): Preparing to register librninstance_so.  onload_func: 0x763f0b7038
+D/jni_lib_merge( 3194): Preparing to register libturbomodulejsijni_so.  onload_func: 0x763f216740
+D/jni_lib_merge( 3194): Preparing to register libuimanagerjni_so.  onload_func: 0x763f22d92c
+D/jni_lib_merge( 3194): Preparing to register libyoga_so.  onload_func: 0x763f23d3b0
+D/jni_lib_merge( 3194): About to register 12 actual methods.
+D/WifiScoreCard(  677): BSSID update SIGNAL_POLL ID: 10023120 SSID: "AndroidWifi", BSSID: 00:13:10:85:fe:01, MAC: 02:15:b2:00:00:00, IP: /10.0.2.16, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: legacy, RSSI: -50, Link speed: 1Mbps, Tx Link speed: 1Mbps, Max Supported Tx Link speed: 11Mbps, Rx Link speed: 2Mbps, Max Supported Rx Link speed: 11Mbps, Frequency: 2447MHz, Net ID: 0, Metered hint: false, score: 60, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: 1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none>"AndroidWifi"openMLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>, Vendor Data: <none>
+D/WifiScoreCard(  677): txRate: 31 txSpeed: 1
+D/WifiScoreCard(  677): network update SIGNAL_POLL "AndroidWifi" ID: 353851559 RSSI -50 txSpeed 1
+D/WifiClientModeImpl[15875:wlan0](  677):  ClientModeImpl$L2ConnectedState screen=on 1 0 "AndroidWifi" 00:13:10:85:fe:01 rssi=-50 f=2447 sc=60 link=1 tx=30.1, 0.0, 0.0 rx=27.9 bcn=0 [on:0 tx:0 rx:0 period:3002] from screen [on:0 period:2104253747] score=60
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libreact_codegen_safeareacontext.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+I/resolv  (  453): res_nsend: used send_dg 145 terrno: 0
+I/resolv  (  453): doQuery: rcode=0, ancount=4, return value=145
+I/resolv  (  453): res_nsend: used send_dg 260 terrno: 0
+I/resolv  (  453): doQuery: rcode=0, ancount=8, return value=260
+I/resolv  (  453): res_nsend: used send_dg 164 terrno: 0
+I/resolv  (  453): doQuery: rcode=0, ancount=8, return value=164
+I/resolv  (  453): res_nsend: used send_dg 97 terrno: 0
+I/resolv  (  453): doQuery: rcode=0, ancount=4, return value=97
+D/WifiNetworkSelector(  677): Current connected network: 0
+V/WifiConnectivityManager(  677): No full band scan because current network is sufficient
+I/AidlLazyServiceRegistrar( 3098): Process has 0 (of 1 available) client(s) in use after notification android.hardware.drm.IDrmFactory/clearkey has clients: 0
+I/AidlLazyServiceRegistrar( 3098): Trying to shut down the service. No clients in use for any service in process.
+I/AidlLazyServiceRegistrar( 3098): Unregistered all clients and exiting
+--------- beginning of kernel
+I/servicemanager(  219): Notifying android.hardware.drm.IDrmFactory/clearkey they don't (previously: do) have clients when we now have no record of a client
+I/WifiScanningService(  677): Registering listener= com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@fef2e39 uid=1000 packageName=null workSource=WorkSource{1000}
+I/servicemanager(  219): Caller(pid=3098,uid=1013,sid=u:r:hal_drm_clearkey_aidl:s0) Unregistering android.hardware.drm.IDrmFactory/clearkey
+I/BpBinder(  219): onLastStrongRef automatically unlinking death recipients:
+I/init    (    1): Service 'vendor.drm-clearkey-service' (pid 3098) exited with status 0 oneshot service took 3.437000 seconds in background
+I/init    (    1): Sending signal 9 to service 'vendor.drm-clearkey-service' (pid 3098) process group...
+I/libprocessgroup(    1): Removed cgroup /sys/fs/cgroup/system/uid_1013/pid_3098
+I/WifiScanningService(  677): start scan: ClientInfo[uid=1000, package=null, attributionTag=null, com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@fef2e39] package null AttributionTag null
+V/WifiConnectivityManager(  677): schedulePeriodicScanTimer intervalMs 20000
+I/WifiScanningService(  677): addSingleScanRequest: ClientInfo[uid=1000, package=null, attributionTag=null, com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@fef2e39],WorkSource{1010}, ScanSettings {  type:HIGH ACCURACY band:unspecified ignoreLocationSettings:false period:0 reportEvents:3 numBssidsPerScan:0 maxScansToCache:0 rnrSetting:2 6GhzPscOnlyEnabled:false channels:[ 2447  ]  } 
+W/gs.intelligence( 3055): Suspending all threads took: 5.805ms
+D/WifiScanningService(  677): replySucceeded onSuccess
+D/nativeloader( 3194): Load /data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!/lib/arm64-v8a/libappmodules.so using class loader ns clns-9 (caller=/data/app/~~R6wSHjlHXPIdYBMCvclPQQ==/com.konsier.app.dev-s5tHCfH-2HVBzUubkrGVAA==/base.apk!classes21.dex): ok
+D/wpa_supplicant(  909): nl80211: Drv Event 33 (NL80211_CMD_TRIGGER_SCAN) received for wlan0
+D/wpa_supplicant(  909): wlan0: nl80211: Scan trigger
+D/wpa_supplicant(  909): wlan0: Event SCAN_STARTED (47) received
+D/wpa_supplicant(  909): wlan0: External program started a scan
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10189, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+I/Choreographer( 3194): Skipped 43 frames!  The application may be doing too much work on its main thread.
+D/Zygote  (  456): Forked child process 3439
+--------- beginning of system
+I/ActivityManager(  677): Start proc 3439:com.google.android.photopicker/u0a189 for broadcast {com.google.android.photopicker/com.android.photopicker.PhotopickerDeviceConfigReceiver}
+I/ActivityManager(  677): ProcessObserver broadcast disabled
+I/oid.photopicker( 3439): Using CollectorTypeCMC GC.
+E/oid.photopicker( 3439): Not starting debugger since process cannot load the jdwp agent.
+D/nativeloader( 3439): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+I/netd    (  453): tetherGetStats() -> {[]} <0.28ms>
+D/ApplicationLoaders( 3439): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/ApplicationLoaders( 3439): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+D/wpa_supplicant(  909): nl80211: Drv Event 34 (NL80211_CMD_NEW_SCAN_RESULTS) received for wlan0
+D/wpa_supplicant(  909): wlan0: nl80211: New scan results available
+D/wpa_supplicant(  909): nl80211: Scan probed for SSID ''
+D/wpa_supplicant(  909): nl80211: Scan included frequencies: 2447
+D/wpa_supplicant(  909): wlan0: Event SCAN_RESULTS (3) received
+D/WifiNl80211Manager(  677): Scan result ready event
+D/WifiNative(  677): Scan result ready event
+D/WifiNl80211Manager(  677): get 1 scan results from wificond
+D/WifiNative(  677): get 1 scan results from wificond
+I/WifiScanner( 1266): onFullResults
+D/wpa_supplicant(  909): nl80211: Received scan results (1 BSSes)
+D/wpa_supplicant(  909): nl80211: Scan results indicate BSS status with 00:13:10:85:fe:01 as associated
+I/WifiScanningService(  677): singleScanResults: ClientInfo[uid=1000, package=null, attributionTag=null, com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@fef2e39],results=1
+I/WifiScanningService(  677): singleScanResults listener: ClientInfo[uid=1000, package=android, attributionTag=null, com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@c45e6ab],results=1
+I/WifiScanningService(  677): singleScanResults listener: ClientInfo[uid=1000, package=android, attributionTag=null, com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@f696920],results=1
+I/WifiScanningService(  677): singleScanResults listener: ClientInfo[uid=1000, package=android, attributionTag=null, com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@1efb9dc],results=1
+I/WifiScanningService(  677): singleScanResults listener: ClientInfo[uid=10144, package=com.google.android.gms, attributionTag=network_location_provider, android.net.wifi.IWifiScannerListener$Stub$Proxy@d4dbe52],results=1
+I/WifiScanningService(  677): Unregistering listener= com.android.server.wifi.scanner.WifiScannerInternal$ScanListener@fef2e39 uid=1000 packageName=null workSource=WorkSource{1000}
+D/wpa_supplicant(  909): wlan0: BSS: Start scan result update 3
+D/wpa_supplicant(  909): BSS: last_scan_res_used=1/32
+D/wpa_supplicant(  909): wlan0: New scan results available (own=0 ext=1)
+D/wpa_supplicant(  909): wlan0: Do not use results from externally requested scan operation for network selection
+D/wpa_supplicant(  909): p2p-dev-wlan0: Updating scan results from sibling
+D/wpa_supplicant(  909): nl80211: Received scan results (1 BSSes)
+D/wpa_supplicant(  909): p2p-dev-wlan0: BSS: Start scan result update 3
+D/wpa_supplicant(  909): BSS: last_scan_res_used=1/32
+D/wpa_supplicant(  909): p2p-dev-wlan0: New scan results available (own=0 ext=1)
+D/wpa_supplicant(  909): p2p-dev-wlan0: Do not use results from externally requested scan operation for network selection
+D/WifiScanRequestProxy(  677): Scan results received
+D/WifiScanRequestProxy(  677): Received 1 scan results
+I/HalDevMgr(  677): bestIfaceCreationProposal is null, requestIface=STA, existingIface=[name=wlan0 type=STA]
+V/WifiConnectivityManager(  677): AllSingleScanListener onResults: start network selection
+V/WifiConfigManager(  677): getSavedNetworkFromScanResult Found "AndroidWifi"NONE for AndroidWifi[[ESS]]
+D/nativeloader( 3439): Configuring clns-shared-9 for other apk /apex/com.android.mediaprovider/priv-app/PhotopickerGoogle@360527520/PhotopickerGoogle.apk. target_sdk_version=36, uses_libraries=, library_path=/apex/com.android.mediaprovider/priv-app/PhotopickerGoogle@360527520/lib/arm64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.photopicker:/apex/com.android.mediaprovider/priv-app/PhotopickerGoogle@360527520:/system/lib64:/system_ext/lib64
+D/nativeloader( 3439): InitApexLibraries:
+D/nativeloader( 3439):   com_android_adservices: libhpke_jni.so:libtflite_support_classifiers_native.so
+D/nativeloader( 3439):   com_android_appsearch: libicing.so
+D/nativeloader( 3439):   com_android_art: libartservice.so
+D/nativeloader( 3439):   com_android_bt: libbluetooth_jni.so
+D/nativeloader( 3439):   com_android_conscrypt: libjavacrypto.so
+D/nativeloader( 3439):   com_android_mediaprovider: libpdfclient.so
+D/nativeloader( 3439):   com_android_nfcservices: libnfc_nci_jni.so
+D/nativeloader( 3439):   com_android_ondevicepersonalization: libfcp_cpp_dep_jni.so:libfcp_hpke_jni.so
+D/nativeloader( 3439):   com_android_os_statsd: libstats_jni.so
+D/nativeloader( 3439):   com_android_tethering: libandroid_net_connectivity_com_android_net_module_util_jni.so:libframework-connectivity-jni.so:libframework-connectivity-tiramisu-jni.so:libmainlinecronet.133.0.6876.3.so:libservice-connectivity.so:libservice-thread-jni.so:stable_cronet_libcrypto.so:stable_cronet_libssl.so
+D/nativeloader( 3439):   com_android_uwb: libuwb_uci_jni_rust.so
+D/nativeloader( 3439):   com_android_virt: libvirtualizationservice_jni.so:libvirtualmachine_jni.so
+D/nativeloader( 3439):   com_android_wifi: libservice-wifi-jni.so
+D/WifiNetworkSelector(  677): Current connected network: 0
+D/WifiNetworkSelector(  677): wlan0: Current connected network already sufficient. Skip network selection.
+V/WifiLastResortWatchdog(  677): updateAvailableNetworks: size = 0
+V/WifiLastResortWatchdog(  677): mWatchdogFeatureEnabled: true
+V/WifiLastResortWatchdog(  677): mWatchdogAllowedToTrigger: true
+V/WifiLastResortWatchdog(  677): mRecentAvailableNetworks: 1
+V/WifiLastResortWatchdog(  677):  00:13:10:85:fe:01: "AndroidWifi" HasEverConnected: true, Failures: {Assoc: 0, Auth: 0, Dhcp: 0}, Age: 2
+V/WifiLastResortWatchdog(  677): mSsidFailureCount:
+V/WifiLastResortWatchdog(  677): "AndroidWifi": 1, HasEverConnected: true, Failures: {Assoc: 0, Auth: 0, Dhcp: 0}
+V/WifiConnectivityManager(  677): AllSingleScanListener:  No candidates
+I/PlatformConfigurator( 1266): Committed boot-stable namespaces. [CONTEXT service_id=204 ]
+I/oid.photopicker( 3439): AssetManager2(0xb4000077700104f8) locale list changing from [] to [en-US]
+V/GraphicsEnvironment( 3439): Currently set values for:
+V/GraphicsEnvironment( 3439):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment( 3439):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment( 3439): com.google.android.photopicker is not listed in per-application setting
+V/GraphicsEnvironment( 3439): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment( 3439): com.google.android.photopicker is not listed in ANGLE allowlist or settings, returning default
+V/GraphicsEnvironment( 3439): Neither updatable production driver nor prerelease driver is supported.
+I/PlatformConfigurator( 1266): Setting runtime properties for all namespaces. Build id google/sdk_gphone64_arm64/emu64a:16/BE2A.250530.026.F3/13894323:userdebug/dev-keys [CONTEXT service_id=204 ]
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10109, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+D/PhotopickerDeviceConfigReceiver( 3439): onReceive: will evaluate Photopicker components with new DeviceConfig.
+D/PhotopickerDeviceConfigReceiver( 3439): Setting true state for com.android.photopicker.MainActivity
+D/PhotopickerDeviceConfigReceiver( 3439): Setting true state for com.android.photopicker.PhotopickerGetContentActivity
+D/PhotopickerDeviceConfigReceiver( 3439): Setting true state for com.android.photopicker.PhotopickerUserSelectActivity
+D/Zygote  (  456): Forked child process 3451
+I/ActivityManager(  677): Start proc 3451:com.android.externalstorage/u0a109 for broadcast {com.android.externalstorage/com.android.externalstorage.MountReceiver}
+I/ActivityManager(  677): ProcessObserver broadcast disabled
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770022798) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770020538) locale list changing from [] to [en-US]
+I/externalstorage( 3451): Using CollectorTypeCMC GC.
+E/externalstorage( 3451): Not starting debugger since process cannot load the jdwp agent.
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700230f8) locale list changing from [] to [en-US]
+D/nativeloader( 3451): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001c078) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001c9d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001d018) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001f598) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001d658) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001e2d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002a178) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770027298) locale list changing from [] to [en-US]
+D/nativeloader( 3451): Configuring clns-shared-9 for other apk /system/priv-app/ExternalStorageProvider/ExternalStorageProvider.apk. target_sdk_version=36, uses_libraries=, library_path=/system/priv-app/ExternalStorageProvider/lib/arm64:/system/lib64:/system_ext/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.android.externalstorage:/system/priv-app/ExternalStorageProvider:/system/lib64:/system_ext/lib64
+I/externalstorage( 3451): AssetManager2(0xb4000077700104f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028eb8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023a58) locale list changing from [] to [en-US]
+V/GraphicsEnvironment( 3451): Currently set values for:
+V/GraphicsEnvironment( 3451):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment( 3451):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment( 3451): com.android.externalstorage is not listed in per-application setting
+V/GraphicsEnvironment( 3451): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment( 3451): com.android.externalstorage is not listed in ANGLE allowlist or settings, returning default
+V/GraphicsEnvironment( 3451): Neither updatable production driver nor prerelease driver is supported.
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023738) locale list changing from [] to [en-US]
+E/ashmem  ( 3451): Pinning is deprecated since Android Q. Please use trim or other methods.
+D/ExternalStorage( 3451): After updating volumes, found 1 active roots
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700262f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023d78) locale list changing from [] to [en-US]
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10169, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+D/CompatChangeReporter(  677): Compat change id reported: 151861875; UID 10169; state: ENABLED
+D/ExternalStorage( 3451): After updating volumes, found 1 active roots
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770021e38) locale list changing from [] to [en-US]
+D/ExternalStorage( 3451): After updating volumes, found 1 active roots
+D/Zygote  (  456): Forked child process 3463
+I/ActivityManager(  677): Start proc 3463:com.google.android.apps.photos/u0a169 for broadcast {com.google.android.apps.photos/com.google.android.apps.photos.sdcard.envcache.ExternalStorageStateChangeBroadcastReceiver}
+I/ActivityManager(  677): ProcessObserver broadcast disabled
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770027bf8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770029818) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002a498) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700246d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770029b38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770026938) locale list changing from [] to [en-US]
+I/oid.apps.photos( 3463): Using CollectorTypeCMC GC.
+E/oid.apps.photos( 3463): Not starting debugger since process cannot load the jdwp agent.
+D/nativeloader( 3463): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+D/ApplicationLoaders( 3463): Returning zygote-cached class loader: /system/framework/org.apache.http.legacy.jar
+D/ApplicationLoaders( 3463): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+D/ApplicationLoaders( 3463): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770026c58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002adf8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025fd8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028558) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028b98) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770028238) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777002aad8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700249f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700291d8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700294f8) locale list changing from [] to [en-US]
+D/nativeloader( 3463): InitLlndkLibrariesProduct: libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libapexsupport.so:libavf.so:libbinder_ndk.so:libc.so:libcgrouprc.so:libclang_rt.asan-aarch64-android.so:libclang_rt.hwasan-aarch64-android.so:libcom.android.tethering.connectivity_native.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libselinux.so:libsync.so:libvendorsupport.so:libvndksupport.so:libvulkan.so
+D/nativeloader( 3463): Configuring product-clns-9 for unbundled product apk /product/app/Photos/Photos.apk. target_sdk_version=35, uses_libraries=, library_path=/product/app/Photos/lib/arm64:/product/app/Photos/Photos.apk!/lib/arm64-v8a:/product/lib64:/system/product/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.apps.photos:/product/lib64:/system/product/lib64
+D/nativeloader( 3463): InitVndkspLibrariesProduct: VNDK is deprecated with product
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770025998) locale list changing from [] to [en-US]
+D/CompatChangeReporter( 3463): Compat change id reported: 202956589; UID 10169; state: ENABLED
+I/oid.apps.photos( 3463): AssetManager2(0xb40000777000f238) locale list changing from [] to [en-US]
+V/GraphicsEnvironment( 3463): Currently set values for:
+V/GraphicsEnvironment( 3463):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment( 3463):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment( 3463): com.google.android.apps.photos is not listed in per-application setting
+V/GraphicsEnvironment( 3463): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment( 3463): com.google.android.apps.photos is not listed in ANGLE allowlist or settings, returning default
+V/GraphicsEnvironment( 3463): Neither updatable production driver nor prerelease driver is supported.
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001ec38) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770020218) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770024098) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770023418) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001fbd8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770016c18) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770020858) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770018838) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777001b3f8) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770015958) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770018b58) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770015318) locale list changing from [] to [en-US]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770013d38) locale list changing from [] to [en-US]
+I/TrustedTime( 1266): SntpTimeSignal: SntpTimeSignalImpl{serverSocketAddress=time.google.com/216.239.35.4:123, response=NtpMessage{header=NtpHeader{leapIndicator=0, versionNumber=3, mode=4, stratum=1, pollInterval=Duration{seconds=1, nanosOfSecond=0}, precisionExponent=-20, rootDelay=Duration{seconds=0, nanosOfSecond=0}, rootDispersion=Duration{seconds=0, nanosOfSecond=91552}, referenceIdentifier='GOOG', referenceTimestamp=ee499418.883a5771, originateTimestamp=421e86e2.04a9043d, receiveTimestamp=ee499418.883a5772, transmitTimestamp=ee499418.883a5774}}, resultTicks=Ticks{originalTicker=PlatformTicker, value=40052634601}, resultInstant=Instant{seconds=1788810648, nanosOfSecond=762245722}, clientOffset=Duration{seconds=-1, nanosOfSecond=357034722}, totalTransactionDuration=Duration{seconds=0, nanosOfSecond=460211000}, roundTripDuration=Duration{seconds=0, nanosOfSecond=460211000}, responseInstant=Instant{seconds=1788810649, nanosOfSecond=405211000}} [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Client ticker: PlatformTicker [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Client instant source: PlatformInstantSource [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Server instant: Instant{seconds=1788810648, nanosOfSecond=762245722} [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): At ticks: Ticks{originalTicker=PlatformTicker, value=40052634601} [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Current ticks: Ticks{originalTicker=PlatformTicker, value=40053895810} [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Offset between client and server: Duration{seconds=-1, nanosOfSecond=357034722} [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Client instant now: Instant{seconds=1788810649, nanosOfSecond=407000000} [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Network time update is successful. Scheduling next task. [CONTEXT service_id=326 ]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700194b8) locale list changing from [] to [en-US]
+D/nativeloader( 3463): Load /product/app/Photos/Photos.apk!/lib/arm64-v8a/libnative_crash_handler_jni.so using class loader ns product-clns-9 (caller=/product/app/Photos/Photos.apk!classes4.dex): ok
+I/TrustedTime( 1266): Attempting to schedule one-off maintenance task [CONTEXT service_id=326 ]
+I/TrustedTime( 1266): Scheduling maintenance task 'OneOffTrustedTimeMaintenanceTask' [CONTEXT service_id=326 ]
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700181f8) locale list changing from [] to [en-US]
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.time.trustedtime.singleuserapi.service.TrustedTimeMaintenanceTaskService finished executing. cause:5 result: 1 elapsed_millis: 795 uptime_millis: 795 exec_start_elapsed_seconds: 39 [CONTEXT service_id=218 ]
+D/BoundBrokerSvc( 1266): onUnbind: Intent { act=com.google.android.gms.time.trustedtime.singleuserapi.service.TrustedTimeMaintenanceTaskService.ACTION_TASK_READY dat=chimera-action:/... xflg=0x4 cmp=com.google.android.gms/.chimera.PersistentInternalBoundBrokerService }
+V/GrammaticalInflectionUtils(  677): AttributionSource: AttributionSource { uid = 10153, packageName = null, attributionTag = null, token = android.os.Binder@544e582, deviceId = 0, next = null } does not have READ_SYSTEM_GRAMMATICAL_GENDER permission.
+I/.apps.wellbeing( 1430): AssetManager2(0xb40000777000e298) locale list changing from [] to [en-US]
+D/Zygote  (  456): Forked child process 3483
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+I/ActivityManager(  677): Start proc 3483:com.android.chrome/u0a153 for broadcast {com.android.chrome/com.google.android.apps.chrome.rlz.RevenueStatsConfigurationUpdateReceiver}
+I/ActivityManager(  677): ProcessObserver broadcast disabled
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+I/.android.chrome( 3483): Using CollectorTypeCMC GC.
+E/.android.chrome( 3483): Not starting debugger since process cannot load the jdwp agent.
+D/nativeloader( 3483): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+D/CompatChangeReporter( 3483): Compat change id reported: 242716250; UID 10153; state: ENABLED
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.gass.chimera.SchedulePeriodicTasksService started execution. cause:5 exec_start_elapsed_seconds: 40 [CONTEXT service_id=218 ]
+V/ActivityThread( 3463): getPackageInfo() caused update to cached ApplicationInfo for package com.google.android.apps.photos
+I/oid.apps.photos( 3463): AssetManager2(0xb40000777000f878) locale list changing from [] to [en-US]
+W/.android.chrome( 3483): Failed to find entry 'classes.dex': Entry not found
+W/ActivityThread( 3463): getPackageInfo() called with an older ApplicationInfo than the cached version for package com.google.android.apps.photos
+D/nativeloader( 3483): Configuring clns-9 for other apk /data/app/~~3afCD3JW29fKbcOolHV2rw==/com.google.android.trichromelibrary_694313732-GfJuIUS58ktesLjrwxnhrw==/TrichromeLibrary.apk. target_sdk_version=34, uses_libraries=ALL, library_path=/data/app/~~HgSdwTmZygBu9aKvDl7WQQ==/com.android.chrome-XzJ74GLKK-IAufpX27RZZw==/lib/arm64:/data/app/~~HgSdwTmZygBu9aKvDl7WQQ==/com.android.chrome-XzJ74GLKK-IAufpX27RZZw==/Chrome.apk!/lib/arm64-v8a:/data/app/~~3afCD3JW29fKbcOolHV2rw==/com.google.android.trichromelibrary_694313732-GfJuIUS58ktesLjrwxnhrw==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.android.chrome
+W/ActivityThread( 3463): getPackageInfo() called with an older ApplicationInfo than the cached version for package com.google.android.apps.photos
+W/ActivityThread( 3463): getPackageInfo() called with an older ApplicationInfo than the cached version for package com.google.android.apps.photos
+E/ashmem  ( 3463): Pinning is deprecated since Android Q. Please use trim or other methods.
+D/CompatChangeReporter( 3463): Compat change id reported: 311402873; UID 10169; state: ENABLED
+D/CompatChangeReporter( 3463): Compat change id reported: 323349338; UID 10169; state: ENABLED
+W/JobInfo ( 3463): Job 'com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService#1043' has a deadline with no functional constraints. The deadline won't improve job execution latency. Consider removing the deadline.
+D/CompatChangeReporter(  677): Compat change id reported: 311402873; UID 10169; state: ENABLED
+D/CompatChangeReporter(  677): Compat change id reported: 323349338; UID 10169; state: ENABLED
+W/JobInfo (  677): Job 'com.google.android.apps.photos/com.google.android.libraries.social.async.BackgroundTaskJobService#1043' has a deadline with no functional constraints. The deadline won't improve job execution latency. Consider removing the deadline.
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+W/ActivityThread( 3463): getPackageInfo() called with an older ApplicationInfo than the cached version for package com.google.android.apps.photos
+W/JobInfo ( 3463): Requested important-while-foreground flag for job555000022 is ignored and takes no effect
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+W/JobInfo ( 3463): Requested important-while-foreground flag for job555000031 is ignored and takes no effect
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770018518) locale list changing from [] to [en-US]
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+I/.apps.wellbeing( 1430): AssetManager2(0xb4000077700104f8) locale list changing from [] to [en-US]
+I/SdkSandboxManager(  677): Reconciling sdk data package directories for 0
+D/ConnectivityService(  677): requestNetwork for uid/pid:10169/3463 activeRequest: null callbackRequest: 143 [NetworkRequest [ REQUEST id=144, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST
+D/ConnectivityService(  677): NetReassign [144 : null → 100] [c 1] [a 0] [i 0]
+D/WifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=144, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+V/WifiNetworkFactory(  677): Accepted network request NetworkRequest [ REQUEST id=144, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+D/UntrustedWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=144, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+D/OemPaidWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=144, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+D/MultiInternetWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=144, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+I/.apps.wellbeing( 1430): AssetManager2(0xb400007770016f38) locale list changing from [] to [en-US]
+D/nativeloader( 3483): Configuring clns-10 for other apk /data/app/~~HgSdwTmZygBu9aKvDl7WQQ==/com.android.chrome-XzJ74GLKK-IAufpX27RZZw==/Chrome.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~HgSdwTmZygBu9aKvDl7WQQ==/com.android.chrome-XzJ74GLKK-IAufpX27RZZw==/lib/arm64:/data/app/~~HgSdwTmZygBu9aKvDl7WQQ==/com.android.chrome-XzJ74GLKK-IAufpX27RZZw==/Chrome.apk!/lib/arm64-v8a:/data/app/~~3afCD3JW29fKbcOolHV2rw==/com.google.android.trichromelibrary_694313732-GfJuIUS58ktesLjrwxnhrw==/TrichromeLibrary.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.android.chrome
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+W/JobInfo ( 3463): Requested important-while-foreground flag for job555000033 is ignored and takes no effect
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+I/NetworkScheduler.Stats( 1266): Task com.google.android.gms/com.google.android.gms.gass.chimera.SchedulePeriodicTasksService finished executing. cause:5 result: 1 elapsed_millis: 89 uptime_millis: 89 exec_start_elapsed_seconds: 40 [CONTEXT service_id=218 ]
+E/JobScheduler.JobStatus(  677): App com.google.android.apps.photos became active but still in NEVER bucket
+D/CompatChangeReporter( 3463): Compat change id reported: 279646685; UID 10169; state: ENABLED
+D/CompatChangeReporter( 3463): Compat change id reported: 270674727; UID 10169; state: ENABLED
+I/.android.chrome( 3483): AssetManager2(0xb40000777000e298) locale list changing from [] to [en-US]
+D/ConnectivityService(  677): requestNetwork for uid/pid:10169/3463 activeRequest: null callbackRequest: 145 [NetworkRequest [ REQUEST id=146, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC
+D/ConnectivityService(  677): NetReassign [146 : null → 100] [c 0] [a 1] [i 0]
+D/WifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=146, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+V/WifiNetworkFactory(  677): Accepted network request NetworkRequest [ REQUEST id=146, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+D/UntrustedWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=146, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+D/OemPaidWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=146, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+D/MultiInternetWifiNetworkFactory(  677): got request NetworkRequest [ REQUEST id=146, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED&NOT_BANDWIDTH_CONSTRAINED Uid: 10169 RequestorUid: 10169 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+V/GraphicsEnvironment( 3483): Currently set values for:
+V/GraphicsEnvironment( 3483):   angle_gl_driver_selection_pkgs=[]
+V/GraphicsEnvironment( 3483):   angle_gl_driver_selection_values=[]
+V/GraphicsEnvironment( 3483): com.android.chrome is not listed in per-application setting
+V/GraphicsEnvironment( 3483): ANGLE allowlist from config: com.dreamgames.royalmatch com.dts.freefiremax com.dxx.firenow com.gramgames.mergedragons com.ludo.king com.mojang.minecraftpe com.my.defense com.nintendo.zaka com.os.airforce com.playrix.fishdomdd.gplay io.teslatech.callbreak jp.konami.prospia net.peakgames.toonblast
+V/GraphicsEnvironment( 3483): com.android.chrome is not listed in ANGLE allowlist or settings, returning default
+V/GraphicsEnvironment( 3483): Neither updatable production driver nor prerelease driver is supported.
+

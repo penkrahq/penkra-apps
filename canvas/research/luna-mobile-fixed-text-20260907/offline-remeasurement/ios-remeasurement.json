@@ -1,0 +1,1707 @@
+{
+  "package": "luna-mobile-fixed-text-20260907",
+  "generatedAt": "offline-deterministic",
+  "comparator": {
+    "rule": "authored solid-color interiors after eroding connected glyph/foreground by a two-physical-pixel band",
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2,
+    "registration": "none",
+    "zeroInteriorSamples": "unmeasured"
+  },
+  "matrix": {
+    "expectedEntries": 33,
+    "states": [
+      "iphone-large/large",
+      "iphone-large/accessibility-extra-extra-large",
+      "ipad-large/large"
+    ],
+    "cases": [
+      "uniform-single-run",
+      "top-level-style-spacing",
+      "top-level-decorations",
+      "rich-run-fill-family",
+      "rich-run-size",
+      "rich-run-italic-spacing",
+      "rich-run-decorations",
+      "marks-and-paragraphs",
+      "text-growth-auto",
+      "text-growth-fixed-width",
+      "text-growth-fixed-width-height"
+    ]
+  },
+  "rawRuns": [
+    {
+      "runId": "native-ios-run-03",
+      "counts": {
+        "entries": 33,
+        "measured": 15,
+        "pass": 0,
+        "fail": 15,
+        "unmeasured": 18,
+        "byClassification": {
+          "typography": {
+            "unmeasured": 1,
+            "fail": 5
+          },
+          "decorations": {
+            "unmeasured": 4,
+            "fail": 2
+          },
+          "rich-run": {
+            "fail": 4,
+            "unmeasured": 5
+          },
+          "semantics": {
+            "unmeasured": 2,
+            "fail": 1
+          },
+          "text-growth": {
+            "fail": 2,
+            "unmeasured": 1
+          },
+          "line-wrapping": {
+            "unmeasured": 5,
+            "fail": 1
+          }
+        }
+      },
+      "entries": 33
+    },
+    {
+      "runId": "native-ios-run-04",
+      "counts": {
+        "entries": 18,
+        "measured": 18,
+        "pass": 1,
+        "fail": 17,
+        "unmeasured": 0,
+        "byClassification": {
+          "typography": {
+            "fail": 1
+          },
+          "decorations": {
+            "fail": 4
+          },
+          "rich-run": {
+            "pass": 1,
+            "fail": 4
+          },
+          "semantics": {
+            "fail": 2
+          },
+          "text-growth": {
+            "fail": 1
+          },
+          "line-wrapping": {
+            "fail": 5
+          }
+        }
+      },
+      "entries": 18
+    }
+  ],
+  "preservedInvalidAttempts": [
+    {
+      "runId": "native-ios-run-01-invalid-predicate",
+      "preserved": true,
+      "files": [
+        "build-result.json",
+        "binary-facts.json"
+      ]
+    },
+    {
+      "runId": "native-ios-run-02-root-crop-failure",
+      "preserved": true,
+      "files": [
+        "build-result.json",
+        "binary-facts.json"
+      ]
+    }
+  ],
+  "counts": {
+    "entries": 33,
+    "pass": 0,
+    "fail": 32,
+    "unmeasured": 1,
+    "byState": {
+      "iphone-large/large": {
+        "entries": 11,
+        "pass": 0,
+        "fail": 10,
+        "unmeasured": 1
+      },
+      "iphone-large/accessibility-extra-extra-large": {
+        "entries": 11,
+        "pass": 0,
+        "fail": 11,
+        "unmeasured": 0
+      },
+      "ipad-large/large": {
+        "entries": 11,
+        "pass": 0,
+        "fail": 11,
+        "unmeasured": 0
+      }
+    },
+    "byClassification": {
+      "typography": {
+        "entries": 6,
+        "pass": 0,
+        "fail": 6,
+        "unmeasured": 0
+      },
+      "decorations": {
+        "entries": 6,
+        "pass": 0,
+        "fail": 6,
+        "unmeasured": 0
+      },
+      "rich-run": {
+        "entries": 9,
+        "pass": 0,
+        "fail": 8,
+        "unmeasured": 1
+      },
+      "semantics": {
+        "entries": 3,
+        "pass": 0,
+        "fail": 3,
+        "unmeasured": 0
+      },
+      "text-growth": {
+        "entries": 3,
+        "pass": 0,
+        "fail": 3,
+        "unmeasured": 0
+      },
+      "line-wrapping": {
+        "entries": 6,
+        "pass": 0,
+        "fail": 6,
+        "unmeasured": 0
+      }
+    }
+  },
+  "entries": [
+    {
+      "identity": "ipad-large/large/marks-and-paragraphs",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-marks-and-paragraphs-cb6f5379-f25a-4665-aecc-3a04ce2f45c5",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "3a755dd183dff3fdae865ec304dea0212b6a6b730bc573fbc3b5c819e909e7e1",
+          "3a755dd183dff3fdae865ec304dea0212b6a6b730bc573fbc3b5c819e909e7e1"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1405,
+        "mismatchedPixels": 54,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/marks-and-paragraphs/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/marks-and-paragraphs/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/marks-and-paragraphs/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/marks-and-paragraphs/crop.png",
+        "reference": "references/ios/ipad-large-large/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/rich-run-decorations",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-rich-run-decorations-7267320f-e5f7-448e-9158-9987a339867a",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "ce7c85e5cc11fbb9578fb78a8082aea115effa119aac1e277d01f5e6a098197f",
+          "ce7c85e5cc11fbb9578fb78a8082aea115effa119aac1e277d01f5e6a098197f"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 528,
+        "mismatchedPixels": 41,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/rich-run-decorations/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/rich-run-decorations/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/rich-run-decorations/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/rich-run-decorations/crop.png",
+        "reference": "references/ios/ipad-large-large/rich-run-decorations.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/rich-run-fill-family",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-rich-run-fill-family-d54f73ba-e60b-47fb-a929-c7c9553c47f9",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "79ddacd3bb5c4f401c8f88a28091ca0a26765a769d0a863a0c8126413378a95c",
+          "79ddacd3bb5c4f401c8f88a28091ca0a26765a769d0a863a0c8126413378a95c"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 401,
+        "mismatchedPixels": 13,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/rich-run-fill-family/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/rich-run-fill-family/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/rich-run-fill-family/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/rich-run-fill-family/crop.png",
+        "reference": "references/ios/ipad-large-large/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/rich-run-italic-spacing",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-rich-run-italic-spacing-46bc4ec0-fe0b-4398-a813-9ba0cfab530b",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "54271f0acaf34eb5697f0dcc81fc6043c434b3b8087e842903e09d8bcb4832d1",
+          "54271f0acaf34eb5697f0dcc81fc6043c434b3b8087e842903e09d8bcb4832d1"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 165,
+        "mismatchedPixels": 28,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/rich-run-italic-spacing/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/rich-run-italic-spacing/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/rich-run-italic-spacing/crop.png",
+        "reference": "references/ios/ipad-large-large/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/rich-run-size",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-rich-run-size-54f79418-b09f-4ee2-8a32-07006405110b",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "f41eaeb237a09b1ef4c4de3938712f70bbe95a47ed6db0ba87c709f21b471bf3",
+          "f41eaeb237a09b1ef4c4de3938712f70bbe95a47ed6db0ba87c709f21b471bf3"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2207,
+        "mismatchedPixels": 1,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/rich-run-size/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/rich-run-size/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/rich-run-size/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/rich-run-size/crop.png",
+        "reference": "references/ios/ipad-large-large/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/text-growth-auto",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-text-growth-auto-c6fbf1c9-ef85-4df5-b25f-e409cd7bde92",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "7e81871f9fb5d354ccf20da4a5fc71e1db6bccde9a8cd14102238354c965e615",
+          "7e81871f9fb5d354ccf20da4a5fc71e1db6bccde9a8cd14102238354c965e615"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 401,
+        "mismatchedPixels": 19,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/ipad-large/large/text-growth-auto/ready.log",
+        "fullA": "native-ios-run-03/captures/ipad-large/large/text-growth-auto/full-a.png",
+        "fullB": "native-ios-run-03/captures/ipad-large/large/text-growth-auto/full-b.png",
+        "crop": "native-ios-run-03/captures/ipad-large/large/text-growth-auto/crop.png",
+        "reference": "references/ios/ipad-large-large/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/text-growth-fixed-width",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-text-growth-fixed-width-01023d5d-2b4e-40fb-b911-c743456c4c8b",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "065117f0fae9a3c59b01b9eafcec9fe7e426abe1b3beb0801d045cff2c1c8ea8",
+          "065117f0fae9a3c59b01b9eafcec9fe7e426abe1b3beb0801d045cff2c1c8ea8"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1127,
+        "mismatchedPixels": 127,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width/crop.png",
+        "reference": "references/ios/ipad-large-large/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/text-growth-fixed-width-height",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-text-growth-fixed-width-height-b922439b-16a5-4235-af54-90dff3204618",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "d5ad700ff79c95991ab1ac1e713d1839ea279df8dbb1f43184246b18ca43ef98",
+          "d5ad700ff79c95991ab1ac1e713d1839ea279df8dbb1f43184246b18ca43ef98"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 682,
+        "mismatchedPixels": 112,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/text-growth-fixed-width-height/crop.png",
+        "reference": "references/ios/ipad-large-large/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/top-level-decorations",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-top-level-decorations-04a8b994-3690-4b53-ba48-d72b76a4d0dc",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "1b50d3689283538f7e84e6e00128d3000b3abd8287ec7eb1f802f567b1d2753e",
+          "1b50d3689283538f7e84e6e00128d3000b3abd8287ec7eb1f802f567b1d2753e"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 621,
+        "mismatchedPixels": 12,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/ipad-large/large/top-level-decorations/ready.log",
+        "fullA": "native-ios-run-04/captures/ipad-large/large/top-level-decorations/full-a.png",
+        "fullB": "native-ios-run-04/captures/ipad-large/large/top-level-decorations/full-b.png",
+        "crop": "native-ios-run-04/captures/ipad-large/large/top-level-decorations/crop.png",
+        "reference": "references/ios/ipad-large-large/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/top-level-style-spacing",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-top-level-style-spacing-8d2f5499-d4d7-4b56-b26e-fbbfd3b52dd5",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "89a89bd1c11820d32e545953f8ec56e13a88be913e0e4cb286c69f3e1040a2d0",
+          "89a89bd1c11820d32e545953f8ec56e13a88be913e0e4cb286c69f3e1040a2d0"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 331,
+        "mismatchedPixels": 202,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/ipad-large/large/top-level-style-spacing/ready.log",
+        "fullA": "native-ios-run-03/captures/ipad-large/large/top-level-style-spacing/full-a.png",
+        "fullB": "native-ios-run-03/captures/ipad-large/large/top-level-style-spacing/full-b.png",
+        "crop": "native-ios-run-03/captures/ipad-large/large/top-level-style-spacing/crop.png",
+        "reference": "references/ios/ipad-large-large/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "ipad-large/large/uniform-single-run",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-uniform-single-run-717e25e2-14ea-4887-ae66-e2b07fa19faf",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "0afa1a7fb03d8a8def5440d260ea9b28f20a63f177a5373c2c332107380d9d3f",
+          "0afa1a7fb03d8a8def5440d260ea9b28f20a63f177a5373c2c332107380d9d3f"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 383,
+        "mismatchedPixels": 15,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/ipad-large/large/uniform-single-run/ready.log",
+        "fullA": "native-ios-run-03/captures/ipad-large/large/uniform-single-run/full-a.png",
+        "fullB": "native-ios-run-03/captures/ipad-large/large/uniform-single-run/full-b.png",
+        "crop": "native-ios-run-03/captures/ipad-large/large/uniform-single-run/crop.png",
+        "reference": "references/ios/ipad-large-large/uniform-single-run.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/marks-and-paragraphs",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-marks-and-paragraphs-a0863709-9ef3-459e-9ff6-96c668851c7c",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "238730bebd7ca62e1f9e8b53b4152419e04852ee910b926a4adb705d6f24543c",
+          "238730bebd7ca62e1f9e8b53b4152419e04852ee910b926a4adb705d6f24543c"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 5482,
+        "mismatchedPixels": 217,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/marks-and-paragraphs/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/marks-and-paragraphs/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/marks-and-paragraphs/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/marks-and-paragraphs/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/rich-run-decorations",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-decorations-1668f1a0-7acc-4b81-8abe-acfc13b0ae73",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "416a4aca49947d09854cb66b6d9b31e6d8e13d81bb3757966e72ceae6d2ecaa9",
+          "416a4aca49947d09854cb66b6d9b31e6d8e13d81bb3757966e72ceae6d2ecaa9"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3259,
+        "mismatchedPixels": 395,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-decorations/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-decorations/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-decorations/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-decorations/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/rich-run-decorations.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/rich-run-fill-family",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-fill-family-a1917af0-7929-450d-8802-7a4ec910326f",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "9f64f2946b2741f8f0fcd115ca2bea3cc51c8541e3c0eaafb66b1cf293f2c091",
+          "9f64f2946b2741f8f0fcd115ca2bea3cc51c8541e3c0eaafb66b1cf293f2c091"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3020,
+        "mismatchedPixels": 123,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-fill-family/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-fill-family/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-fill-family/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-fill-family/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/rich-run-italic-spacing",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-italic-spacing-bba6a65c-515c-46a1-a540-11199e9426bf",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "2b613be9cc0c1e19d355d89c9cf2d1ce6118051477834078fa0cab03940eba8d",
+          "2b613be9cc0c1e19d355d89c9cf2d1ce6118051477834078fa0cab03940eba8d"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1663,
+        "mismatchedPixels": 249,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/rich-run-italic-spacing/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/rich-run-italic-spacing/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/rich-run-italic-spacing/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/rich-run-size",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-size-c906520f-9f17-494c-904b-491e28331288",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "22764dc0ddfdd49587fa505342e4ef728b5ea43e6770da92b6bc6645e3fb2335",
+          "22764dc0ddfdd49587fa505342e4ef728b5ea43e6770da92b6bc6645e3fb2335"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 6917,
+        "mismatchedPixels": 1,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-size/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-size/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-size/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-size/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/text-growth-auto",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-text-growth-auto-cab64418-e9e8-4da3-bc41-59a0f36ad02a",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "64339d80870ed8f57542daf4918345316faa864e82c92f0d4d6ec6bf8c94bd52",
+          "64339d80870ed8f57542daf4918345316faa864e82c92f0d4d6ec6bf8c94bd52"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3037,
+        "mismatchedPixels": 79,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-auto/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-auto/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-auto/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-auto/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/text-growth-fixed-width",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-text-growth-fixed-width-720746f5-7c42-42cb-9bfd-6811f1ccc759",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "a4d75ff1aca3147ecf599110e55d9261a67b15ce813ce1b5aa18b901594216bb",
+          "a4d75ff1aca3147ecf599110e55d9261a67b15ce813ce1b5aa18b901594216bb"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 7515,
+        "mismatchedPixels": 922,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/text-growth-fixed-width-height",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-text-growth-fixed-width-height-0b29100f-c423-437d-b62d-3887f25332fe",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "4a9b4ab8737b9c07d67b1d110427e455467851ff1fc48311c500cb235b62fb66",
+          "4a9b4ab8737b9c07d67b1d110427e455467851ff1fc48311c500cb235b62fb66"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4985,
+        "mismatchedPixels": 1013,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width-height/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/top-level-decorations",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-top-level-decorations-5a9b7abd-ea67-4aa4-8da7-3b836223f508",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "136346ce194bcdb7a5255262faa340ff8d3a4249215efd7430dd9126fd155979",
+          "136346ce194bcdb7a5255262faa340ff8d3a4249215efd7430dd9126fd155979"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3749,
+        "mismatchedPixels": 144,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-decorations/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-decorations/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-decorations/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-decorations/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/top-level-style-spacing",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-top-level-style-spacing-5a4f32f4-5286-4187-890a-1530b495cda1",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3",
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2946,
+        "mismatchedPixels": 1652,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-style-spacing/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-style-spacing/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-style-spacing/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-style-spacing/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "iphone-large/accessibility-extra-extra-large/uniform-single-run",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-uniform-single-run-394f0ed8-0684-4624-b1f1-f8a858bbde78",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "64833d6a217379aece60e6298d07936b1ec05ee74e7f1ff3a6d5788e116429b7",
+          "64833d6a217379aece60e6298d07936b1ec05ee74e7f1ff3a6d5788e116429b7"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2983,
+        "mismatchedPixels": 119,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/uniform-single-run/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/uniform-single-run/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/uniform-single-run/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/uniform-single-run/crop.png",
+        "reference": "references/ios/iphone-large-accessibility-extra-extra-large/uniform-single-run.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/marks-and-paragraphs",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-marks-and-paragraphs-6c03e664-24ad-4027-897d-c6829713cd8b",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "f263b565b16a59eae0b8781abb95e206b2b95bc6c5bdfc511b106779d1c1521b",
+          "f263b565b16a59eae0b8781abb95e206b2b95bc6c5bdfc511b106779d1c1521b"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 5482,
+        "mismatchedPixels": 217,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/marks-and-paragraphs/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/marks-and-paragraphs/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/marks-and-paragraphs/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/marks-and-paragraphs/crop.png",
+        "reference": "references/ios/iphone-large-large/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/rich-run-decorations",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-rich-run-decorations-564b6a6d-ac31-4b23-b248-ddaf8416f71b",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "31079bc89717385dda29905c62061cf281a02c5dc087a8d66da07acd87e0a8bc",
+          "31079bc89717385dda29905c62061cf281a02c5dc087a8d66da07acd87e0a8bc"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3259,
+        "mismatchedPixels": 395,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/rich-run-decorations/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/rich-run-decorations/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/rich-run-decorations/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/rich-run-decorations/crop.png",
+        "reference": "references/ios/iphone-large-large/rich-run-decorations.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/rich-run-fill-family",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-rich-run-fill-family-72d9e4f1-bf2e-4174-889f-b1b036b7a365",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "136fdc1d7d7c470c3bc3c44771a4115562e91a19cc1de4834902d63b7cdf0aa9",
+          "136fdc1d7d7c470c3bc3c44771a4115562e91a19cc1de4834902d63b7cdf0aa9"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3020,
+        "mismatchedPixels": 123,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/large/rich-run-fill-family/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/large/rich-run-fill-family/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/large/rich-run-fill-family/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/large/rich-run-fill-family/crop.png",
+        "reference": "references/ios/iphone-large-large/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/rich-run-italic-spacing",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "pass",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no authored solid-color interiors remain after boundary erosion",
+      "nonce": "fixed-text-iphone-large-large-rich-run-italic-spacing-9453d8d8-83a0-405e-ae20-d00eed9c3f39",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "e3334472f9cba458f1cec0820b2d4544aa337a8cc6e4a7637fc07c686b16803d",
+          "e3334472f9cba458f1cec0820b2d4544aa337a8cc6e4a7637fc07c686b16803d"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "unmeasured",
+        "comparedPixels": 0,
+        "mismatchedPixels": 0,
+        "reason": "no authored solid-color interiors remain after boundary erosion",
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/rich-run-italic-spacing/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/rich-run-italic-spacing/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/rich-run-italic-spacing/crop.png",
+        "reference": "references/ios/iphone-large-large/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/rich-run-size",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-rich-run-size-b8b0b9da-ad2f-4616-9a91-d692bbe57e33",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "3a9bd1f80d58b03196f24b795cd5d0e630248e5ac729e28139c7139c64ce22ca",
+          "3a9bd1f80d58b03196f24b795cd5d0e630248e5ac729e28139c7139c64ce22ca"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 6917,
+        "mismatchedPixels": 1,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/large/rich-run-size/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/large/rich-run-size/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/large/rich-run-size/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/large/rich-run-size/crop.png",
+        "reference": "references/ios/iphone-large-large/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/text-growth-auto",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-text-growth-auto-0f2eb3c4-53a7-4aa9-8a04-a63e5f3a468d",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "a4470f4b5bd43bdecbdcaf5396b4cefe1ab3d24d94193c0420e75ada588a5776",
+          "a4470f4b5bd43bdecbdcaf5396b4cefe1ab3d24d94193c0420e75ada588a5776"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3037,
+        "mismatchedPixels": 3037,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/large/text-growth-auto/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/large/text-growth-auto/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/large/text-growth-auto/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/large/text-growth-auto/crop.png",
+        "reference": "references/ios/iphone-large-large/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/text-growth-fixed-width",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-text-growth-fixed-width-fc20f7dc-9dd0-4e1b-b38b-5dddad2f0b8c",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "a4d75ff1aca3147ecf599110e55d9261a67b15ce813ce1b5aa18b901594216bb",
+          "a4d75ff1aca3147ecf599110e55d9261a67b15ce813ce1b5aa18b901594216bb"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 7515,
+        "mismatchedPixels": 922,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width/crop.png",
+        "reference": "references/ios/iphone-large-large/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/text-growth-fixed-width-height",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-text-growth-fixed-width-height-986c31a1-dba7-4895-8046-02ab9a7fc996",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "e29e58e913c6b7d8850b1a37bcc660d48f9a75b8193605ddcf60f391baedbb3f",
+          "e29e58e913c6b7d8850b1a37bcc660d48f9a75b8193605ddcf60f391baedbb3f"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4985,
+        "mismatchedPixels": 1013,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/text-growth-fixed-width-height/crop.png",
+        "reference": "references/ios/iphone-large-large/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/top-level-decorations",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-top-level-decorations-3eda4684-e97b-488c-925b-5466d7f7ef3a",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "2b9e31dd54fbf7aa921bfa6142db4e6e817849b55fd66e396057548255524686",
+          "2b9e31dd54fbf7aa921bfa6142db4e6e817849b55fd66e396057548255524686"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3749,
+        "mismatchedPixels": 144,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/top-level-decorations/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/top-level-decorations/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/top-level-decorations/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/top-level-decorations/crop.png",
+        "reference": "references/ios/iphone-large-large/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/top-level-style-spacing",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-ios-run-03",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-top-level-style-spacing-2966ce86-fa88-4dcb-a466-963cf3d4cee4",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3",
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2937,
+        "mismatchedPixels": 1648,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-03/captures/iphone-large/large/top-level-style-spacing/ready.log",
+        "fullA": "native-ios-run-03/captures/iphone-large/large/top-level-style-spacing/full-a.png",
+        "fullB": "native-ios-run-03/captures/iphone-large/large/top-level-style-spacing/full-b.png",
+        "crop": "native-ios-run-03/captures/iphone-large/large/top-level-style-spacing/crop.png",
+        "reference": "references/ios/iphone-large-large/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "iphone-large/large/uniform-single-run",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-ios-run-04",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-uniform-single-run-058fe0c2-0999-43ae-91e7-c9aeaf6a329e",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "b0368737809fe5db24220069362c632433427efc89490e738b99f2f11c065e1d",
+          "b0368737809fe5db24220069362c632433427efc89490e738b99f2f11c065e1d"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2983,
+        "mismatchedPixels": 119,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      },
+      "paths": {
+        "readyLog": "native-ios-run-04/captures/iphone-large/large/uniform-single-run/ready.log",
+        "fullA": "native-ios-run-04/captures/iphone-large/large/uniform-single-run/full-a.png",
+        "fullB": "native-ios-run-04/captures/iphone-large/large/uniform-single-run/full-b.png",
+        "crop": "native-ios-run-04/captures/iphone-large/large/uniform-single-run/crop.png",
+        "reference": "references/ios/iphone-large-large/uniform-single-run.png"
+      }
+    }
+  ]
+}

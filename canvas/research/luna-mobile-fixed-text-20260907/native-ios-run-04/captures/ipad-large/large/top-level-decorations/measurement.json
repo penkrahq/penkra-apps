@@ -1,0 +1,38 @@
+{
+  "platform": "ios",
+  "device": "ipad-large",
+  "contentSize": "large",
+  "caseId": "top-level-decorations",
+  "classification": "decorations",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-ipad-large-large-top-level-decorations-04a8b994-3690-4b53-ba48-d72b76a4d0dc",
+  "readiness": {
+    "root": {
+      "x": 202,
+      "y": 480,
+      "width": 340,
+      "height": 180
+    },
+    "scale": 2
+  },
+  "stability": {
+    "hashes": [
+      "1b50d3689283538f7e84e6e00128d3000b3abd8287ec7eb1f802f567b1d2753e",
+      "1b50d3689283538f7e84e6e00128d3000b3abd8287ec7eb1f802f567b1d2753e"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-04/captures/ipad-large/large/top-level-decorations/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 621,
+    "mismatchedPixels": 12,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1488,
+    "height": 2266
+  }
+}

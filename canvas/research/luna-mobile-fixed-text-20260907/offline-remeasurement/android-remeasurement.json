@@ -1,0 +1,2057 @@
+{
+  "package": "luna-mobile-fixed-text-20260907",
+  "generatedAt": "offline-deterministic",
+  "comparator": {
+    "rule": "authored solid-color interiors after eroding connected glyph/foreground by a two-physical-pixel band",
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2,
+    "registration": "none",
+    "zeroInteriorSamples": "unmeasured"
+  },
+  "matrix": {
+    "expectedEntries": 44,
+    "states": [
+      "density-420-font-1",
+      "density-420-font-2",
+      "density-320-font-1",
+      "density-320-font-2"
+    ],
+    "cases": [
+      "uniform-single-run",
+      "top-level-style-spacing",
+      "top-level-decorations",
+      "rich-run-fill-family",
+      "rich-run-size",
+      "rich-run-italic-spacing",
+      "rich-run-decorations",
+      "marks-and-paragraphs",
+      "text-growth-auto",
+      "text-growth-fixed-width",
+      "text-growth-fixed-width-height"
+    ]
+  },
+  "counts": {
+    "entries": 44,
+    "pass": 0,
+    "fail": 43,
+    "unmeasured": 1
+  },
+  "byState": {
+    "density-420-font-1": {
+      "entries": 11,
+      "pass": 0,
+      "fail": 11,
+      "unmeasured": 0
+    },
+    "density-420-font-2": {
+      "entries": 11,
+      "pass": 0,
+      "fail": 11,
+      "unmeasured": 0
+    },
+    "density-320-font-1": {
+      "entries": 11,
+      "pass": 0,
+      "fail": 11,
+      "unmeasured": 0
+    },
+    "density-320-font-2": {
+      "entries": 11,
+      "pass": 0,
+      "fail": 10,
+      "unmeasured": 1
+    }
+  },
+  "entries": [
+    {
+      "identity": "density-320-font-1/marks-and-paragraphs",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-marks-and-paragraphs-b319042c-4303-4822-b788-df8494a69d68",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "df61a6ec5c775b0ef8142257b36f73fa8f9f62237d154c785455e9c1c8d283a5",
+          "df61a6ec5c775b0ef8142257b36f73fa8f9f62237d154c785455e9c1c8d283a5"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1405,
+        "mismatchedPixels": 675,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/marks-and-paragraphs/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/marks-and-paragraphs/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/marks-and-paragraphs/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/marks-and-paragraphs/crop.png",
+        "reference": "references/android/density-320-font-1/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/rich-run-decorations",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-rich-run-decorations-3d4c1b92-333a-45a1-a0a9-7230d57c4ae0",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "1bcbb5f71b8d067ca2b0b9c9af13095dc5afee32d01b7422cd3d5d209b5b8932",
+          "1bcbb5f71b8d067ca2b0b9c9af13095dc5afee32d01b7422cd3d5d209b5b8932"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 528,
+        "mismatchedPixels": 424,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/rich-run-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/rich-run-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/rich-run-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/rich-run-decorations/crop.png",
+        "reference": "references/android/density-320-font-1/rich-run-decorations.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/rich-run-fill-family",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-rich-run-fill-family-782f8722-7f9d-4c08-8167-aeb0c60a6c15",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "707361a8963a108348584a592f729c18c52bc49b8332c2b3e8634fb9c288cb73",
+          "707361a8963a108348584a592f729c18c52bc49b8332c2b3e8634fb9c288cb73"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 401,
+        "mismatchedPixels": 334,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/rich-run-fill-family/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/rich-run-fill-family/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/rich-run-fill-family/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/rich-run-fill-family/crop.png",
+        "reference": "references/android/density-320-font-1/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/rich-run-italic-spacing",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-rich-run-italic-spacing-db1edb6c-a4ef-45a9-8456-0fddb0caaf18",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "28a6dbb170c273d8fb4b753c76a70ab2bf5ef810ddec391e28536101ce5d319c",
+          "28a6dbb170c273d8fb4b753c76a70ab2bf5ef810ddec391e28536101ce5d319c"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 165,
+        "mismatchedPixels": 107,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/rich-run-italic-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/rich-run-italic-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/rich-run-italic-spacing/crop.png",
+        "reference": "references/android/density-320-font-1/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/rich-run-size",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-rich-run-size-7a3b020f-93bb-4592-ba74-c11306f72d44",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "70042ade8eb487bc9926ae8497e54da1607fa4070708f29a1a8db3e67399e9ad",
+          "70042ade8eb487bc9926ae8497e54da1607fa4070708f29a1a8db3e67399e9ad"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2207,
+        "mismatchedPixels": 1205,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/rich-run-size/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/rich-run-size/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/rich-run-size/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/rich-run-size/crop.png",
+        "reference": "references/android/density-320-font-1/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/text-growth-auto",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-text-growth-auto-2d5a8c53-2427-4d1b-b4bc-263c6cd86f86",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "2d764d831aeb96291dca86da8404bc04f2ba1ff3e42c7eb1467163a9b0f54a01",
+          "2d764d831aeb96291dca86da8404bc04f2ba1ff3e42c7eb1467163a9b0f54a01"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 401,
+        "mismatchedPixels": 301,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/text-growth-auto/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/text-growth-auto/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/text-growth-auto/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/text-growth-auto/crop.png",
+        "reference": "references/android/density-320-font-1/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/text-growth-fixed-width",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-text-growth-fixed-width-eb976f85-5324-4f55-b891-85a9166c3924",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "2456a4064ae314867aae922c1d78e4ba1d7516ca136f6f9c53e09cf3d63bb17f",
+          "2456a4064ae314867aae922c1d78e4ba1d7516ca136f6f9c53e09cf3d63bb17f"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1127,
+        "mismatchedPixels": 835,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width/crop.png",
+        "reference": "references/android/density-320-font-1/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/text-growth-fixed-width-height",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-text-growth-fixed-width-height-10add1cb-561f-4d8d-8d44-4872b324e72b",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "46b3c8a089007e21eda91f9cc75912e30a2d19051e0394e86cdc89048c963c7e",
+          "46b3c8a089007e21eda91f9cc75912e30a2d19051e0394e86cdc89048c963c7e"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 682,
+        "mismatchedPixels": 469,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/text-growth-fixed-width-height/crop.png",
+        "reference": "references/android/density-320-font-1/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/top-level-decorations",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-top-level-decorations-28e20c65-0a7b-4988-8c6e-e1b96498bc64",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "da9bdf6b06e1a6a78fb883b0622fb882f90534578068d6d5e0d330e622672b62",
+          "da9bdf6b06e1a6a78fb883b0622fb882f90534578068d6d5e0d330e622672b62"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 621,
+        "mismatchedPixels": 510,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/top-level-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/top-level-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/top-level-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/top-level-decorations/crop.png",
+        "reference": "references/android/density-320-font-1/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/top-level-style-spacing",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-top-level-style-spacing-ca2fab00-4fe0-47cd-8dc5-f0a396e663e8",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "6cacf1d58317ecb014697541772b39ab305b3fd41ef2f6cefa9600f5b71d44d7",
+          "6cacf1d58317ecb014697541772b39ab305b3fd41ef2f6cefa9600f5b71d44d7"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 331,
+        "mismatchedPixels": 234,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/top-level-style-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/top-level-style-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/top-level-style-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/top-level-style-spacing/crop.png",
+        "reference": "references/android/density-320-font-1/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "density-320-font-1/uniform-single-run",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-1-uniform-single-run-c19ceb3f-f343-49dd-9658-2ba2a94e399d",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "f9d4f6d74536f2888a0e6b19c47a33a660f4c9814897091c1fe1aaf9b0aa415f",
+          "f9d4f6d74536f2888a0e6b19c47a33a660f4c9814897091c1fe1aaf9b0aa415f"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 383,
+        "mismatchedPixels": 267,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-1/uniform-single-run/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-1/uniform-single-run/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-1/uniform-single-run/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-1/uniform-single-run/crop.png",
+        "reference": "references/android/density-320-font-1/uniform-single-run.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/marks-and-paragraphs",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-marks-and-paragraphs-abf6c19c-cba0-4505-b52b-218520271d02",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "d82d1116f8bcbd7bdef29307fe1b93c5ea803f61c8cd8473981ec6a5f606440b",
+          "d82d1116f8bcbd7bdef29307fe1b93c5ea803f61c8cd8473981ec6a5f606440b"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1405,
+        "mismatchedPixels": 732,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/marks-and-paragraphs/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/marks-and-paragraphs/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/marks-and-paragraphs/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/marks-and-paragraphs/crop.png",
+        "reference": "references/android/density-320-font-2/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/rich-run-decorations",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "unmeasured",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "exact readiness/root receipt missing"
+    },
+    {
+      "identity": "density-320-font-2/rich-run-fill-family",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-rich-run-fill-family-88a1942c-02d7-4ab8-9571-07d76d31c5b9",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "c4d98b8f0a95fa0d8a9f1abdcf3ecccc7054dcbf01e20f785a9f3434f7ca0101",
+          "c4d98b8f0a95fa0d8a9f1abdcf3ecccc7054dcbf01e20f785a9f3434f7ca0101"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 401,
+        "mismatchedPixels": 332,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/rich-run-fill-family/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/rich-run-fill-family/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/rich-run-fill-family/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/rich-run-fill-family/crop.png",
+        "reference": "references/android/density-320-font-2/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/rich-run-italic-spacing",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-rich-run-italic-spacing-c49ced50-4906-4eac-9c71-f941368050b6",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "6232d1dd35319335de2c5d1cf1913f5115aaefc15c16b3d495a91eaffdf2de61",
+          "6232d1dd35319335de2c5d1cf1913f5115aaefc15c16b3d495a91eaffdf2de61"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 165,
+        "mismatchedPixels": 108,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/rich-run-italic-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/rich-run-italic-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/rich-run-italic-spacing/crop.png",
+        "reference": "references/android/density-320-font-2/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/rich-run-size",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-rich-run-size-e432c9f8-974a-4020-b568-c8eb94f0163b",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "1e2013270cd67bc586636e203c9074b8fe8ed4d6b93480b0e3ce0a4ef3ae94bb",
+          "1e2013270cd67bc586636e203c9074b8fe8ed4d6b93480b0e3ce0a4ef3ae94bb"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2207,
+        "mismatchedPixels": 1385,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/rich-run-size/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/rich-run-size/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/rich-run-size/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/rich-run-size/crop.png",
+        "reference": "references/android/density-320-font-2/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/text-growth-auto",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-text-growth-auto-a3eddba5-dd15-4181-b49f-23195775f55d",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "7a936bedaf2d6fe15c1f3492150b78737b8dd7e3d1149f683a2e083cc84e2d50",
+          "7a936bedaf2d6fe15c1f3492150b78737b8dd7e3d1149f683a2e083cc84e2d50"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 401,
+        "mismatchedPixels": 317,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/text-growth-auto/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/text-growth-auto/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/text-growth-auto/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/text-growth-auto/crop.png",
+        "reference": "references/android/density-320-font-2/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/text-growth-fixed-width",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-text-growth-fixed-width-6e079654-5774-4309-a6ca-3aa1df4bd1cb",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "39cb74d6502b78fc2b0983a3648dd49f9843a70cb7aa0c568c78c31aa6e2f2c3",
+          "39cb74d6502b78fc2b0983a3648dd49f9843a70cb7aa0c568c78c31aa6e2f2c3"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1127,
+        "mismatchedPixels": 882,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width/crop.png",
+        "reference": "references/android/density-320-font-2/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/text-growth-fixed-width-height",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-text-growth-fixed-width-height-0a461494-9a9e-499b-baaf-8dda7aec43e9",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "02e6bb74484154e99fda2173314d29b3e4ee8735952befc391d1db2df3964a32",
+          "02e6bb74484154e99fda2173314d29b3e4ee8735952befc391d1db2df3964a32"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 682,
+        "mismatchedPixels": 500,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/text-growth-fixed-width-height/crop.png",
+        "reference": "references/android/density-320-font-2/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/top-level-decorations",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-top-level-decorations-ed2f63c3-a4e5-4e2d-af00-5614a96f52ed",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "5fda3533e4c3a7f5335e0e0b1f5c965b341bb3416679d3299333fa4810fe8869",
+          "5fda3533e4c3a7f5335e0e0b1f5c965b341bb3416679d3299333fa4810fe8869"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 621,
+        "mismatchedPixels": 522,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/top-level-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/top-level-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/top-level-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/top-level-decorations/crop.png",
+        "reference": "references/android/density-320-font-2/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/top-level-style-spacing",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-top-level-style-spacing-7624b272-18c9-44af-ba7b-8f9255b23bfc",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "65d91b93336ff2132cb82ca8783616966dc2bb6210f9b7d5fda3bbf3885c9b8b",
+          "65d91b93336ff2132cb82ca8783616966dc2bb6210f9b7d5fda3bbf3885c9b8b"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 331,
+        "mismatchedPixels": 243,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/top-level-style-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/top-level-style-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/top-level-style-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/top-level-style-spacing/crop.png",
+        "reference": "references/android/density-320-font-2/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "density-320-font-2/uniform-single-run",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-320-2-uniform-single-run-44bab10d-3dfb-43dd-98c8-2f6032dd8e8f",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 680,
+          "height": 360
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "ff24b9e5ce75638b52a2184aa132c7a0c6bf67aec927f7fc5f985143a57bffd7",
+          "ff24b9e5ce75638b52a2184aa132c7a0c6bf67aec927f7fc5f985143a57bffd7"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 383,
+        "mismatchedPixels": 276,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-320-font-2/uniform-single-run/ready.log",
+        "fullA": "native-android-run-02/captures/density-320-font-2/uniform-single-run/full-a.png",
+        "fullB": "native-android-run-02/captures/density-320-font-2/uniform-single-run/full-b.png",
+        "crop": "native-android-run-02/captures/density-320-font-2/uniform-single-run/crop.png",
+        "reference": "references/android/density-320-font-2/uniform-single-run.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/marks-and-paragraphs",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-marks-and-paragraphs-81865122-be82-4a03-b8ab-39dae53a7a58",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "f4b307f5d41a511295a8b2f714986c17a565e1177b22bc288f7d412006f5c603",
+          "f4b307f5d41a511295a8b2f714986c17a565e1177b22bc288f7d412006f5c603"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3663,
+        "mismatchedPixels": 1860,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/marks-and-paragraphs/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/marks-and-paragraphs/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/marks-and-paragraphs/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/marks-and-paragraphs/crop.png",
+        "reference": "references/android/density-420-font-1/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/rich-run-decorations",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-rich-run-decorations-75e442ed-238a-424b-86b3-518131190d5d",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "e1719a5d09743deac298820638a38842c886d77d83bc8bfe2bd12f3eef3fc202",
+          "e1719a5d09743deac298820638a38842c886d77d83bc8bfe2bd12f3eef3fc202"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1869,
+        "mismatchedPixels": 1349,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/rich-run-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/rich-run-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/rich-run-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/rich-run-decorations/crop.png",
+        "reference": "references/android/density-420-font-1/rich-run-decorations.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/rich-run-fill-family",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-rich-run-fill-family-1f2b2312-fd0a-49fd-bb8a-3fdd16f1b781",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "8db07ef63627ec036f9cf5b46a6c8c8b45c658a08cccfa45e76150848533e7bb",
+          "8db07ef63627ec036f9cf5b46a6c8c8b45c658a08cccfa45e76150848533e7bb"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1762,
+        "mismatchedPixels": 1278,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/rich-run-fill-family/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/rich-run-fill-family/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/rich-run-fill-family/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/rich-run-fill-family/crop.png",
+        "reference": "references/android/density-420-font-1/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/rich-run-italic-spacing",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-rich-run-italic-spacing-c5fa9668-604a-4801-b05a-c004b4f69d01",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "2d4f9ebd3475d001ce67ed3953bc73a3dae2c964aa003dad1fc3a1b6a853564d",
+          "2d4f9ebd3475d001ce67ed3953bc73a3dae2c964aa003dad1fc3a1b6a853564d"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 980,
+        "mismatchedPixels": 543,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/rich-run-italic-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/rich-run-italic-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/rich-run-italic-spacing/crop.png",
+        "reference": "references/android/density-420-font-1/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/rich-run-size",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-rich-run-size-0d7b1cb5-35b4-41b9-90d7-9387eb3c5d1b",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "e70431bfd5ba91f8726b8fa4f3f0513d6ce6d5f300065ad18360ef51f3453d17",
+          "e70431bfd5ba91f8726b8fa4f3f0513d6ce6d5f300065ad18360ef51f3453d17"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4775,
+        "mismatchedPixels": 2379,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/rich-run-size/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/rich-run-size/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/rich-run-size/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/rich-run-size/crop.png",
+        "reference": "references/android/density-420-font-1/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/text-growth-auto",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-text-growth-auto-60f953e8-d27c-446c-9225-21f687423cde",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "569c966fd8c52e003896ae851864660b66991299a3a599cb57824f1217288b92",
+          "569c966fd8c52e003896ae851864660b66991299a3a599cb57824f1217288b92"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1792,
+        "mismatchedPixels": 1124,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/text-growth-auto/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/text-growth-auto/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/text-growth-auto/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/text-growth-auto/crop.png",
+        "reference": "references/android/density-420-font-1/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/text-growth-fixed-width",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-text-growth-fixed-width-4e74985f-2241-474f-a027-54b398115628",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "14a1ec6690271c250cbb9763aecf5375e4b84bbd7620acc01f17be269d712366",
+          "14a1ec6690271c250cbb9763aecf5375e4b84bbd7620acc01f17be269d712366"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4446,
+        "mismatchedPixels": 3244,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width/crop.png",
+        "reference": "references/android/density-420-font-1/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/text-growth-fixed-width-height",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-text-growth-fixed-width-height-05b49044-6b8b-491c-914a-142a78546b71",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "b3b31ef7a76ac19e3685930648b3c974b686a83aaf39472b121fb86aa9194021",
+          "b3b31ef7a76ac19e3685930648b3c974b686a83aaf39472b121fb86aa9194021"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2848,
+        "mismatchedPixels": 1859,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/text-growth-fixed-width-height/crop.png",
+        "reference": "references/android/density-420-font-1/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/top-level-decorations",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-top-level-decorations-850d4c08-35c0-480c-811c-ba9b86204b25",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "0d2b8fba3e0295839207f9f9e50a0af01e48a476abc8703f8634dcde542b4d82",
+          "0d2b8fba3e0295839207f9f9e50a0af01e48a476abc8703f8634dcde542b4d82"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1854,
+        "mismatchedPixels": 1374,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/top-level-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/top-level-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/top-level-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/top-level-decorations/crop.png",
+        "reference": "references/android/density-420-font-1/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/top-level-style-spacing",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-top-level-style-spacing-2a64f2ca-617f-458f-a5d7-8cd7925defd2",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "59109a5a13fd71cac867c18e13d057b3177ecae21ce1c826abec9871f6b78243",
+          "59109a5a13fd71cac867c18e13d057b3177ecae21ce1c826abec9871f6b78243"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1635,
+        "mismatchedPixels": 1148,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/top-level-style-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/top-level-style-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/top-level-style-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/top-level-style-spacing/crop.png",
+        "reference": "references/android/density-420-font-1/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "density-420-font-1/uniform-single-run",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-1-uniform-single-run-83a6f697-29a5-4871-9815-9cb5e7e0f26e",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "eb7d19f66437a4d9dceabf0369f26b7b4a8b97fbb8184313ef866207f95ee844",
+          "eb7d19f66437a4d9dceabf0369f26b7b4a8b97fbb8184313ef866207f95ee844"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1615,
+        "mismatchedPixels": 1199,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-1/uniform-single-run/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-1/uniform-single-run/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-1/uniform-single-run/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-1/uniform-single-run/crop.png",
+        "reference": "references/android/density-420-font-1/uniform-single-run.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/marks-and-paragraphs",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-marks-and-paragraphs-2bd71ee8-911d-412e-9c6f-f45603a7ae9d",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "1d762bc01880e3a29923eb4264d40d1c5cdd6bdfb359e032d17e8fe1330d0469",
+          "1d762bc01880e3a29923eb4264d40d1c5cdd6bdfb359e032d17e8fe1330d0469"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 3663,
+        "mismatchedPixels": 1873,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/marks-and-paragraphs/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/marks-and-paragraphs/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/marks-and-paragraphs/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/marks-and-paragraphs/crop.png",
+        "reference": "references/android/density-420-font-2/marks-and-paragraphs.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/rich-run-decorations",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-rich-run-decorations-0d5dcc20-0599-43b9-9d17-1b7f9687aa17",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "ae3daf6850875de48125dde1b48bcbd06e4a1bff3de57b80aebdb6940ed2f629",
+          "ae3daf6850875de48125dde1b48bcbd06e4a1bff3de57b80aebdb6940ed2f629"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1869,
+        "mismatchedPixels": 1356,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/rich-run-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/rich-run-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/rich-run-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/rich-run-decorations/crop.png",
+        "reference": "references/android/density-420-font-2/rich-run-decorations.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/rich-run-fill-family",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-rich-run-fill-family-cbe2eb06-c616-4a96-99b6-7f6443e5ff06",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "729d516430bf41d700edb950e0e8ea69131672f82be9f734dadb5504f3a915b9",
+          "729d516430bf41d700edb950e0e8ea69131672f82be9f734dadb5504f3a915b9"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1762,
+        "mismatchedPixels": 1278,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/rich-run-fill-family/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/rich-run-fill-family/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/rich-run-fill-family/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/rich-run-fill-family/crop.png",
+        "reference": "references/android/density-420-font-2/rich-run-fill-family.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/rich-run-italic-spacing",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-rich-run-italic-spacing-52e1295f-e828-407e-a6eb-8c9cbcd092c6",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "2d5f02ce5d25cd5f840f22c95411b347fa992a3f5aa7e47a8f18264a9bc39140",
+          "2d5f02ce5d25cd5f840f22c95411b347fa992a3f5aa7e47a8f18264a9bc39140"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 980,
+        "mismatchedPixels": 538,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/rich-run-italic-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/rich-run-italic-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/rich-run-italic-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/rich-run-italic-spacing/crop.png",
+        "reference": "references/android/density-420-font-2/rich-run-italic-spacing.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/rich-run-size",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-rich-run-size-27483746-71be-49c7-8f07-63e423fc683c",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "0697d5d3224e9e8a16261e1010afc4e620a2fef91a60e7c64f32a4d51f232502",
+          "0697d5d3224e9e8a16261e1010afc4e620a2fef91a60e7c64f32a4d51f232502"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4775,
+        "mismatchedPixels": 2539,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/rich-run-size/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/rich-run-size/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/rich-run-size/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/rich-run-size/crop.png",
+        "reference": "references/android/density-420-font-2/rich-run-size.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/text-growth-auto",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-text-growth-auto-ec65d4c7-1a1d-4c11-9bb1-cbb57af6ffa0",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "e0aa5a97483ac46cb712493851a5c5163506a9232d264a46c8d30def7cacf117",
+          "e0aa5a97483ac46cb712493851a5c5163506a9232d264a46c8d30def7cacf117"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1792,
+        "mismatchedPixels": 1130,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/text-growth-auto/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/text-growth-auto/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/text-growth-auto/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/text-growth-auto/crop.png",
+        "reference": "references/android/density-420-font-2/text-growth-auto.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/text-growth-fixed-width",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-text-growth-fixed-width-0312b69b-bc29-42cc-8840-9dee67e89cf5",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "70160e9c7ec356ca24a73fc62333c4923bcfe388af5582b2730f85d6b1d63723",
+          "70160e9c7ec356ca24a73fc62333c4923bcfe388af5582b2730f85d6b1d63723"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4446,
+        "mismatchedPixels": 3282,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width/crop.png",
+        "reference": "references/android/density-420-font-2/text-growth-fixed-width.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/text-growth-fixed-width-height",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-text-growth-fixed-width-height-e979d47d-6782-46fc-9f2b-6b54772e2615",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "47a4c3283a9234af51e0ef6ae978fc16b7e2bb02d40d2793ec7d9c3c81b84fd7",
+          "47a4c3283a9234af51e0ef6ae978fc16b7e2bb02d40d2793ec7d9c3c81b84fd7"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 2848,
+        "mismatchedPixels": 1897,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width-height/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width-height/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width-height/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/text-growth-fixed-width-height/crop.png",
+        "reference": "references/android/density-420-font-2/text-growth-fixed-width-height.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/top-level-decorations",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-top-level-decorations-3b9154cb-5d00-410c-b93a-ec5fb882560a",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "c9aa4d008a248d217f1d7013d62532d0d82b8dc822dbf52f6240f559acc724fc",
+          "c9aa4d008a248d217f1d7013d62532d0d82b8dc822dbf52f6240f559acc724fc"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1854,
+        "mismatchedPixels": 1381,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/top-level-decorations/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/top-level-decorations/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/top-level-decorations/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/top-level-decorations/crop.png",
+        "reference": "references/android/density-420-font-2/top-level-decorations.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/top-level-style-spacing",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-top-level-style-spacing-47b1a23b-3538-4443-80cd-a5e13ca740cb",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "a42df4cffc206df858ab1e6f5aee2fd490a2038a563f85bd324dac4b6173beee",
+          "a42df4cffc206df858ab1e6f5aee2fd490a2038a563f85bd324dac4b6173beee"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1635,
+        "mismatchedPixels": 1168,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/top-level-style-spacing/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/top-level-style-spacing/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/top-level-style-spacing/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/top-level-style-spacing/crop.png",
+        "reference": "references/android/density-420-font-2/top-level-style-spacing.png"
+      }
+    },
+    {
+      "identity": "density-420-font-2/uniform-single-run",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "sourceRun": "native-android-run-02",
+      "sourceRowStatus": "fail",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-android-420-2-uniform-single-run-710b882f-7d99-4021-92d6-8e70a0184820",
+      "readiness": {
+        "root": {
+          "x": 0,
+          "y": 0,
+          "width": 893,
+          "height": 473
+        },
+        "scale": 2.625
+      },
+      "stability": {
+        "hashes": [
+          "aca77cb2c87dda8375d77d4ff92ca2886a131177f3763f12578cce11fa9f27d8",
+          "aca77cb2c87dda8375d77d4ff92ca2886a131177f3763f12578cce11fa9f27d8"
+        ],
+        "stable": true
+      },
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 1615,
+        "mismatchedPixels": 1201,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1080,
+        "height": 2400
+      },
+      "paths": {
+        "readyLog": "native-android-run-02/captures/density-420-font-2/uniform-single-run/ready.log",
+        "fullA": "native-android-run-02/captures/density-420-font-2/uniform-single-run/full-a.png",
+        "fullB": "native-android-run-02/captures/density-420-font-2/uniform-single-run/full-b.png",
+        "crop": "native-android-run-02/captures/density-420-font-2/uniform-single-run/crop.png",
+        "reference": "references/android/density-420-font-2/uniform-single-run.png"
+      }
+    }
+  ]
+}

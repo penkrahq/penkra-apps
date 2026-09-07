@@ -1,0 +1,38 @@
+{
+  "platform": "android",
+  "density": 420,
+  "fontScale": 1,
+  "caseId": "top-level-decorations",
+  "classification": "decorations",
+  "status": "fail",
+  "measurementStatus": "measured",
+  "nonce": "fixed-text-android-420-1-top-level-decorations-850d4c08-35c0-480c-811c-ba9b86204b25",
+  "readiness": {
+    "root": {
+      "x": 0,
+      "y": 0,
+      "width": 893,
+      "height": 473
+    },
+    "scale": 2.625
+  },
+  "stability": {
+    "hashes": [
+      "0d2b8fba3e0295839207f9f9e50a0af01e48a476abc8703f8634dcde542b4d82",
+      "0d2b8fba3e0295839207f9f9e50a0af01e48a476abc8703f8634dcde542b4d82"
+    ],
+    "stable": true
+  },
+  "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-android-run-02/captures/density-420-font-1/top-level-decorations/crop.png",
+  "comparison": {
+    "status": "fail",
+    "comparedPixels": 1854,
+    "mismatchedPixels": 1374,
+    "boundaryExclusionPhysicalPixels": 2,
+    "channelTolerance": 2
+  },
+  "fullDimensions": {
+    "width": 1080,
+    "height": 2400
+  }
+}

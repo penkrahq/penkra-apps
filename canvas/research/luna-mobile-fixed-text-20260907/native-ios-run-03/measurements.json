@@ -1,0 +1,1036 @@
+{
+  "platform": "ios",
+  "entries": [
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "f8d9514ee3dfa1196d4799b79dbde6ca92320804eac7a1ab57a9dffd1b8fe3b9",
+          "64833d6a217379aece60e6298d07936b1ec05ee74e7f1ff3a6d5788e116429b7"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-top-level-style-spacing-2966ce86-fa88-4dcb-a466-963cf3d4cee4",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3",
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/large/top-level-style-spacing/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 10093,
+        "mismatchedPixels": 7096,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "96b84f256c28a6715c6442fbcafce57e854e4ef2651360ccd8afef517b932ce7",
+          "3da17e38013e6057e0aa59b1c01cfb8dc8fa26b89ec84925f0ac495cef24f13d"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-rich-run-fill-family-72d9e4f1-bf2e-4174-889f-b1b036b7a365",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "136fdc1d7d7c470c3bc3c44771a4115562e91a19cc1de4834902d63b7cdf0aa9",
+          "136fdc1d7d7c470c3bc3c44771a4115562e91a19cc1de4834902d63b7cdf0aa9"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/large/rich-run-fill-family/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 9212,
+        "mismatchedPixels": 3774,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-rich-run-size-b8b0b9da-ad2f-4616-9a91-d692bbe57e33",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "3a9bd1f80d58b03196f24b795cd5d0e630248e5ac729e28139c7139c64ce22ca",
+          "3a9bd1f80d58b03196f24b795cd5d0e630248e5ac729e28139c7139c64ce22ca"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/large/rich-run-size/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 11649,
+        "mismatchedPixels": 2471,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "8c9213d5a2194ce2bb41f94a9d460f9653b79576d85c8f6e588d6d099c324ad0",
+          "dd5bdef358c29cf8959d239f3eba8feee09ca31f2843bf87058f4a5fb4dd0f61"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "777bbbfa9f1a6e8cb74e4d145b30c2a9918fdcad4ec66e705a09aeaa9a50ee24",
+          "f5953129af2a1a560a225373a17982b8831c09f1c364fae240c845eb60ddda94"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "c9d54f743843e87803b421392a1cd360b457be09061350a55ebddd26a76173ea",
+          "ee6207a5253dcbad0538b6ff1a2d202fa4f4732ffc8253c5711d4fc0942319f7"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-large-text-growth-auto-0f2eb3c4-53a7-4aa9-8a04-a63e5f3a468d",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "a4470f4b5bd43bdecbdcaf5396b4cefe1ab3d24d94193c0420e75ada588a5776",
+          "a4470f4b5bd43bdecbdcaf5396b4cefe1ab3d24d94193c0420e75ada588a5776"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/large/text-growth-auto/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 9522,
+        "mismatchedPixels": 9522,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "686e083b1f5abf1e17488b5d33d9aabe36db048da664f09de79647e84ca51c10",
+          "df3163189962db391b5897fec884c6b1898ed512f0aabf399bf40eefda9f6c05"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "ad38d6263c82c792a50dc87154eaaf2d327396cd4a09e92886363944c62a10dc",
+          "1aecc3e70a47d591db3f0e0f8bcc1b4d691315bf65db02a144e6e2cfe1c3641e"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-uniform-single-run-394f0ed8-0684-4624-b1f1-f8a858bbde78",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "64833d6a217379aece60e6298d07936b1ec05ee74e7f1ff3a6d5788e116429b7",
+          "64833d6a217379aece60e6298d07936b1ec05ee74e7f1ff3a6d5788e116429b7"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/uniform-single-run/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 9925,
+        "mismatchedPixels": 4238,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-top-level-style-spacing-5a4f32f4-5286-4187-890a-1530b495cda1",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3",
+          "72b6bf0017202c43a44ddb3ed8e5924983bfe7f48e514417d6d4f83e37276fc3"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-style-spacing/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 10097,
+        "mismatchedPixels": 7101,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-top-level-decorations-5a9b7abd-ea67-4aa4-8da7-3b836223f508",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "136346ce194bcdb7a5255262faa340ff8d3a4249215efd7430dd9126fd155979",
+          "136346ce194bcdb7a5255262faa340ff8d3a4249215efd7430dd9126fd155979"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/top-level-decorations/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 11868,
+        "mismatchedPixels": 4721,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-fill-family-a1917af0-7929-450d-8802-7a4ec910326f",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "9f64f2946b2741f8f0fcd115ca2bea3cc51c8541e3c0eaafb66b1cf293f2c091",
+          "9f64f2946b2741f8f0fcd115ca2bea3cc51c8541e3c0eaafb66b1cf293f2c091"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-fill-family/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 9212,
+        "mismatchedPixels": 3774,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-size-c906520f-9f17-494c-904b-491e28331288",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "22764dc0ddfdd49587fa505342e4ef728b5ea43e6770da92b6bc6645e3fb2335",
+          "22764dc0ddfdd49587fa505342e4ef728b5ea43e6770da92b6bc6645e3fb2335"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-size/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 11649,
+        "mismatchedPixels": 2471,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "071b43e2ab781a78b824c79ec9b01626aec92eb96dc53d30e663a477f05196cf",
+          "ac27d8561e3385fbbbf01a2c977c72436baea6f93825aba16fbb064aab9795d0"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-rich-run-decorations-1668f1a0-7acc-4b81-8abe-acfc13b0ae73",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "416a4aca49947d09854cb66b6d9b31e6d8e13d81bb3757966e72ceae6d2ecaa9",
+          "416a4aca49947d09854cb66b6d9b31e6d8e13d81bb3757966e72ceae6d2ecaa9"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/rich-run-decorations/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 9317,
+        "mismatchedPixels": 4111,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-marks-and-paragraphs-a0863709-9ef3-459e-9ff6-96c668851c7c",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "238730bebd7ca62e1f9e8b53b4152419e04852ee910b926a4adb705d6f24543c",
+          "238730bebd7ca62e1f9e8b53b4152419e04852ee910b926a4adb705d6f24543c"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/marks-and-paragraphs/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 11404,
+        "mismatchedPixels": 3324,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "7a2a63b84f62f2be286db7ae32d3632cf52f1c89f0cb1297a0619951527611f5",
+          "545e4c9e4abea3771292c9b4090343e1cb93278776fc614edff390a506475df7"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "6ef54b60a166ec52afd8849de10526fd0ccd9f0c938313a593ed25ef15556029",
+          "ae7a8e1e77175329c6273a28b933875b0ac403023bc56bbdb5888420d18a5ac9"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "iphone-large",
+      "contentSize": "accessibility-extra-extra-large",
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-iphone-large-accessibility-extra-extra-large-text-growth-fixed-width-height-0b29100f-c423-437d-b62d-3887f25332fe",
+      "readiness": {
+        "root": {
+          "x": 31,
+          "y": 361,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 3
+      },
+      "stability": {
+        "hashes": [
+          "4a9b4ab8737b9c07d67b1d110427e455467851ff1fc48311c500cb235b62fb66",
+          "4a9b4ab8737b9c07d67b1d110427e455467851ff1fc48311c500cb235b62fb66"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/iphone-large/accessibility-extra-extra-large/text-growth-fixed-width-height/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 15477,
+        "mismatchedPixels": 8190,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1206,
+        "height": 2622
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-uniform-single-run-717e25e2-14ea-4887-ae66-e2b07fa19faf",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "0afa1a7fb03d8a8def5440d260ea9b28f20a63f177a5373c2c332107380d9d3f",
+          "0afa1a7fb03d8a8def5440d260ea9b28f20a63f177a5373c2c332107380d9d3f"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/ipad-large/large/uniform-single-run/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4732,
+        "mismatchedPixels": 2784,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-top-level-style-spacing-8d2f5499-d4d7-4b56-b26e-fbbfd3b52dd5",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "89a89bd1c11820d32e545953f8ec56e13a88be913e0e4cb286c69f3e1040a2d0",
+          "89a89bd1c11820d32e545953f8ec56e13a88be913e0e4cb286c69f3e1040a2d0"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/ipad-large/large/top-level-style-spacing/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4801,
+        "mismatchedPixels": 3763,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "1203218d053bc424a338356f06287d965deade34a7a3a22b58f933cd5a84ddf5",
+          "d6ae3a2a78ef613188fd561efb43cf7e209f7f2da385c405df5c06b6e1da5936"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "a01287489b3f0248d3038b06ac796f512fb4bf29db74b5c836c3d127f518d086",
+          "af611d14da991c3bc22b1e9bddcb9fb686052c13380b3774225175da076dfacb"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "3ab5395ee643deb24056786c9260776aa4bcdba2183500c20fc2a3f955c44ad5",
+          "9487baabd963a3f473882e0bc3734b5e61ed9b018932643db9e8465aa31640f1"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "3b04946326c1d6ec3292256efc00521f6b4b05b89df0a585937ffb18863c9d93",
+          "dbe1b53ef1257f8f8e3900821ef4cdefc6109e325ea9f9c7da659ddacb1a49b2"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "43827db3eccc4b863ec4b37bc4383e9fbad63af95d1aea7e59d6224cb778f43a",
+          "12fd0fcf53da0a82bea31bc44d52784d27e503cc350ae8a42f4de523744c247d"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "740fa7d181bbcb3589502083b50a69aa06952f49aa4517d136e1d833cbbdd84f",
+          "13081bd82f0efb3a3183a25339c758d8fd785cc2f3b7b4d0c55b97f653c62b2e"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "fail",
+      "measurementStatus": "measured",
+      "nonce": "fixed-text-ipad-large-large-text-growth-auto-c6fbf1c9-ef85-4df5-b25f-e409cd7bde92",
+      "readiness": {
+        "root": {
+          "x": 202,
+          "y": 480,
+          "width": 340,
+          "height": 180
+        },
+        "scale": 2
+      },
+      "stability": {
+        "hashes": [
+          "7e81871f9fb5d354ccf20da4a5fc71e1db6bccde9a8cd14102238354c965e615",
+          "7e81871f9fb5d354ccf20da4a5fc71e1db6bccde9a8cd14102238354c965e615"
+        ],
+        "stable": true
+      },
+      "capturePath": "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-ios-run-03/captures/ipad-large/large/text-growth-auto/crop.png",
+      "comparison": {
+        "status": "fail",
+        "comparedPixels": 4522,
+        "mismatchedPixels": 2593,
+        "boundaryExclusionPhysicalPixels": 2,
+        "channelTolerance": 2
+      },
+      "fullDimensions": {
+        "width": 1488,
+        "height": 2266
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "554f6ba34767d1fe430d48e43af7fc1abba384748469132e535f5a6916cf2037",
+          "8c6afc438c3bd5180cdb342197b00115f55220cfdec92757c437e82c198899a3"
+        ],
+        "stable": false
+      }
+    },
+    {
+      "platform": "ios",
+      "device": "ipad-large",
+      "contentSize": "large",
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "reason": "consecutive full-frame hashes differ",
+      "stability": {
+        "hashes": [
+          "dfafd393ff92a69f574a6710d881ff02cdc5b67bd2cb1ec52ae117f222bfc729",
+          "6d724add9f3e1ffa1536767d21463bc05adb10c45737852657c8070a402b052b"
+        ],
+        "stable": false
+      }
+    }
+  ],
+  "counts": {
+    "entries": 33,
+    "measured": 15,
+    "pass": 0,
+    "fail": 15,
+    "unmeasured": 18,
+    "byClassification": {
+      "typography": {
+        "unmeasured": 1,
+        "fail": 5
+      },
+      "decorations": {
+        "unmeasured": 4,
+        "fail": 2
+      },
+      "rich-run": {
+        "fail": 4,
+        "unmeasured": 5
+      },
+      "semantics": {
+        "unmeasured": 2,
+        "fail": 1
+      },
+      "text-growth": {
+        "fail": 2,
+        "unmeasured": 1
+      },
+      "line-wrapping": {
+        "unmeasured": 5,
+        "fail": 1
+      }
+    }
+  },
+  "sourceHashes": {
+    "sourceSha256": "cb53dfdb2f4c1327a014027e04ecb72145a7acf38ea631630c883ba09d5484bf",
+    "files": [
+      {
+        "path": "compose/generated/CanvasFlowLayout.kt",
+        "bytes": 311,
+        "sha256": "3786c3b62f255be23fb75e898c7b864983ae88fe0622a4086c2c94f02b7b4d4c"
+      },
+      {
+        "path": "compose/generated/FixedTextMarksAndParagraphs.kt",
+        "bytes": 2510,
+        "sha256": "65c0251b5da6d4bb51f1d653cbba7212ddf97e52f471056f805929b12f2804d1"
+      },
+      {
+        "path": "compose/generated/FixedTextMixedSizeRichRuns.kt",
+        "bytes": 2302,
+        "sha256": "d542982ed74109b17a2535c31ffeeee04f2ecab0cd378db268f0d01f2a25c536"
+      },
+      {
+        "path": "compose/generated/FixedTextRichRunDecorations.kt",
+        "bytes": 2573,
+        "sha256": "ebc7f3b393059ead57f286f4affc6a8d1b77b0c233d6b4f6870f592f8a7234a1"
+      },
+      {
+        "path": "compose/generated/FixedTextRichRunFillAndFamily.kt",
+        "bytes": 2310,
+        "sha256": "ea11e684dc7de954ad1b9adb335d6ef64978b76fde07b434924fb2d2f7de7ee9"
+      },
+      {
+        "path": "compose/generated/FixedTextRichRunItalicAndFractionalSpacing.kt",
+        "bytes": 2441,
+        "sha256": "ee7a5b5b7c5e824036bbc17fe7ba9da34bbec6bd35ee9f1219920a01ef0c04e7"
+      },
+      {
+        "path": "compose/generated/FixedTextTextGrowthAuto.kt",
+        "bytes": 2181,
+        "sha256": "3a1c94da40ce5bf65cf7c2b5be82f0ccb3232f40f51207cd496a7837dbffea04"
+      },
+      {
+        "path": "compose/generated/FixedTextTextGrowthFixedWidth.kt",
+        "bytes": 2222,
+        "sha256": "82766879a9499f181fbb9e915ae2c71914dc627d85137e24fedcc04efee97779"
+      },
+      {
+        "path": "compose/generated/FixedTextTextGrowthFixedWidthHeight.kt",
+        "bytes": 2150,
+        "sha256": "10e5ef149b1a9be43779dfefcca0eeb723acf61c8fe4273b53e85fb8b6bc0efb"
+      },
+      {
+        "path": "compose/generated/FixedTextTopLevelDecorations.kt",
+        "bytes": 2233,
+        "sha256": "f3cd992e584106b687ce74b3685761ea693d01e03df348b56d87db9303e6e844"
+      },
+      {
+        "path": "compose/generated/FixedTextTopLevelStyleAndFractionalSpacing.kt",
+        "bytes": 2271,
+        "sha256": "f78ae3fa6fd337bf0b9b900f04cc97833f4b5595f5d8cac1d9db1c5444ba3b13"
+      },
+      {
+        "path": "compose/generated/FixedTextUniformSingleRunText.kt",
+        "bytes": 2134,
+        "sha256": "eabd2cae7cd2e1467d8464d34ed040e4d6fc3babccb0b65f74f57955a2e1538a"
+      },
+      {
+        "path": "compose/generated/MainActivity.kt",
+        "bytes": 2104,
+        "sha256": "ac025c390c489b46084f07f1ae2d69e418beca59fd0b337e9d4ab00e95fb06d8"
+      },
+      {
+        "path": "project.yml",
+        "bytes": 968,
+        "sha256": "795541ee863e15c048cfdfff01309508f1651018358692cfd9ddcd869199c501"
+      },
+      {
+        "path": "swift/FixedTextMarksAndParagraphs.swift",
+        "bytes": 934,
+        "sha256": "13d463e2804ba7cf922cba39eead3af5550612e9ce5579a228d517c55b991223"
+      },
+      {
+        "path": "swift/FixedTextMixedSizeRichRuns.swift",
+        "bytes": 769,
+        "sha256": "9bcfcea9dfbb7562c451cd6382aa42f5bf35997cf33610b71c79453a00ab9d22"
+      },
+      {
+        "path": "swift/FixedTextRichRunDecorations.swift",
+        "bytes": 948,
+        "sha256": "49dc5bb47f5c27cc4cd0867d0e2e29f88aa3c0c932c63ef4f496208d4971bb65"
+      },
+      {
+        "path": "swift/FixedTextRichRunFillAndFamily.swift",
+        "bytes": 768,
+        "sha256": "32ea54e895c684d37fb30e981ddb6ea7513e2c5665b76b274ef70a3438f15b69"
+      },
+      {
+        "path": "swift/FixedTextRichRunItalicAndFractionalSpacing.swift",
+        "bytes": 801,
+        "sha256": "27a5cf2f18b00e3ab245355e9e3fe88ad1630403d8569523b74432a8c6b7058e"
+      },
+      {
+        "path": "swift/FixedTextTextGrowthAuto.swift",
+        "bytes": 619,
+        "sha256": "610394bf97c4e18ef25377f3a5ce52e75dce08e0d916bf07c29e71da5fcc14f7"
+      },
+      {
+        "path": "swift/FixedTextTextGrowthFixedWidth.swift",
+        "bytes": 686,
+        "sha256": "1b15b9b35a80334ec2c981ed11ef7e1f4a5b4cda4de6efd5eceac56b8c126f03"
+      },
+      {
+        "path": "swift/FixedTextTextGrowthFixedWidthHeight.swift",
+        "bytes": 655,
+        "sha256": "56b689115d3e4a5124ba3022b5d2478b85a6cfb94a54f8a64c6324513005b2ba"
+      },
+      {
+        "path": "swift/FixedTextTopLevelDecorations.swift",
+        "bytes": 663,
+        "sha256": "ab4f3657958f07296cd62b4185ccfc3c5a3e5a15aef83cab4a1f6db4387e2313"
+      },
+      {
+        "path": "swift/FixedTextTopLevelStyleAndFractionalSpacing.swift",
+        "bytes": 672,
+        "sha256": "ceddfeddd4da6adfb3915a10e76bb2b94aa272ad426eb90d530e96915000ec49"
+      },
+      {
+        "path": "swift/FixedTextUniformSingleRunText.swift",
+        "bytes": 639,
+        "sha256": "e68543e7372071b704be291ca2473a678e63fc57dceff2fda7c85a499e1de0b8"
+      },
+      {
+        "path": "swift/FlowLayout.swift",
+        "bytes": 2057,
+        "sha256": "8f24648f683d118e9524c689c754447a2a35fae7f1c74ee29970351682841728"
+      },
+      {
+        "path": "swift/SimulatorHost/FixedTextApp.swift",
+        "bytes": 3125,
+        "sha256": "9715bb18f6685b5299239281d426352f09ed031258598b1de1198484dbf11e2d"
+      }
+    ]
+  }
+}

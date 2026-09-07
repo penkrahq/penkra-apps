@@ -1,0 +1,612 @@
+{
+  "platform": "android",
+  "entries": [
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 420,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 1,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "uniform-single-run",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "top-level-style-spacing",
+      "classification": "typography",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "top-level-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-fill-family",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-size",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-italic-spacing",
+      "classification": "rich-run",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "rich-run-decorations",
+      "classification": "decorations",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "marks-and-paragraphs",
+      "classification": "semantics",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "text-growth-auto",
+      "classification": "text-growth",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    },
+    {
+      "platform": "android",
+      "density": 320,
+      "fontScale": 2,
+      "caseId": "text-growth-fixed-width-height",
+      "classification": "line-wrapping",
+      "status": "unmeasured",
+      "measurementStatus": "unmeasured",
+      "reason": "no connected emulator and no configured AVD; no native readiness receipt or frame exists"
+    }
+  ],
+  "counts": {
+    "entries": 44,
+    "measured": 0,
+    "pass": 0,
+    "fail": 0,
+    "unmeasured": 44,
+    "byClassification": {
+      "typography": {
+        "unmeasured": 8
+      },
+      "decorations": {
+        "unmeasured": 8
+      },
+      "rich-run": {
+        "unmeasured": 12
+      },
+      "semantics": {
+        "unmeasured": 4
+      },
+      "text-growth": {
+        "unmeasured": 4
+      },
+      "line-wrapping": {
+        "unmeasured": 8
+      }
+    }
+  },
+  "sourceHashes": {
+    "sourceSha256": "cb53dfdb2f4c1327a014027e04ecb72145a7acf38ea631630c883ba09d5484bf",
+    "files": [
+      {
+        "path": "compose/generated/CanvasFlowLayout.kt",
+        "bytes": 311,
+        "sha256": "3786c3b62f255be23fb75e898c7b864983ae88fe0622a4086c2c94f02b7b4d4c"
+      },
+      {
+        "path": "compose/generated/FixedTextMarksAndParagraphs.kt",
+        "bytes": 2510,
+        "sha256": "65c0251b5da6d4bb51f1d653cbba7212ddf97e52f471056f805929b12f2804d1"
+      },
+      {
+        "path": "compose/generated/FixedTextMixedSizeRichRuns.kt",
+        "bytes": 2302,
+        "sha256": "d542982ed74109b17a2535c31ffeeee04f2ecab0cd378db268f0d01f2a25c536"
+      },
+      {
+        "path": "compose/generated/FixedTextRichRunDecorations.kt",
+        "bytes": 2573,
+        "sha256": "ebc7f3b393059ead57f286f4affc6a8d1b77b0c233d6b4f6870f592f8a7234a1"
+      },
+      {
+        "path": "compose/generated/FixedTextRichRunFillAndFamily.kt",
+        "bytes": 2310,
+        "sha256": "ea11e684dc7de954ad1b9adb335d6ef64978b76fde07b434924fb2d2f7de7ee9"
+      },
+      {
+        "path": "compose/generated/FixedTextRichRunItalicAndFractionalSpacing.kt",
+        "bytes": 2441,
+        "sha256": "ee7a5b5b7c5e824036bbc17fe7ba9da34bbec6bd35ee9f1219920a01ef0c04e7"
+      },
+      {
+        "path": "compose/generated/FixedTextTextGrowthAuto.kt",
+        "bytes": 2181,
+        "sha256": "3a1c94da40ce5bf65cf7c2b5be82f0ccb3232f40f51207cd496a7837dbffea04"
+      },
+      {
+        "path": "compose/generated/FixedTextTextGrowthFixedWidth.kt",
+        "bytes": 2222,
+        "sha256": "82766879a9499f181fbb9e915ae2c71914dc627d85137e24fedcc04efee97779"
+      },
+      {
+        "path": "compose/generated/FixedTextTextGrowthFixedWidthHeight.kt",
+        "bytes": 2150,
+        "sha256": "10e5ef149b1a9be43779dfefcca0eeb723acf61c8fe4273b53e85fb8b6bc0efb"
+      },
+      {
+        "path": "compose/generated/FixedTextTopLevelDecorations.kt",
+        "bytes": 2233,
+        "sha256": "f3cd992e584106b687ce74b3685761ea693d01e03df348b56d87db9303e6e844"
+      },
+      {
+        "path": "compose/generated/FixedTextTopLevelStyleAndFractionalSpacing.kt",
+        "bytes": 2271,
+        "sha256": "f78ae3fa6fd337bf0b9b900f04cc97833f4b5595f5d8cac1d9db1c5444ba3b13"
+      },
+      {
+        "path": "compose/generated/FixedTextUniformSingleRunText.kt",
+        "bytes": 2134,
+        "sha256": "eabd2cae7cd2e1467d8464d34ed040e4d6fc3babccb0b65f74f57955a2e1538a"
+      },
+      {
+        "path": "compose/generated/MainActivity.kt",
+        "bytes": 2104,
+        "sha256": "ac025c390c489b46084f07f1ae2d69e418beca59fd0b337e9d4ab00e95fb06d8"
+      },
+      {
+        "path": "project.yml",
+        "bytes": 968,
+        "sha256": "795541ee863e15c048cfdfff01309508f1651018358692cfd9ddcd869199c501"
+      },
+      {
+        "path": "swift/FixedTextMarksAndParagraphs.swift",
+        "bytes": 934,
+        "sha256": "13d463e2804ba7cf922cba39eead3af5550612e9ce5579a228d517c55b991223"
+      },
+      {
+        "path": "swift/FixedTextMixedSizeRichRuns.swift",
+        "bytes": 769,
+        "sha256": "9bcfcea9dfbb7562c451cd6382aa42f5bf35997cf33610b71c79453a00ab9d22"
+      },
+      {
+        "path": "swift/FixedTextRichRunDecorations.swift",
+        "bytes": 948,
+        "sha256": "49dc5bb47f5c27cc4cd0867d0e2e29f88aa3c0c932c63ef4f496208d4971bb65"
+      },
+      {
+        "path": "swift/FixedTextRichRunFillAndFamily.swift",
+        "bytes": 768,
+        "sha256": "32ea54e895c684d37fb30e981ddb6ea7513e2c5665b76b274ef70a3438f15b69"
+      },
+      {
+        "path": "swift/FixedTextRichRunItalicAndFractionalSpacing.swift",
+        "bytes": 801,
+        "sha256": "27a5cf2f18b00e3ab245355e9e3fe88ad1630403d8569523b74432a8c6b7058e"
+      },
+      {
+        "path": "swift/FixedTextTextGrowthAuto.swift",
+        "bytes": 619,
+        "sha256": "610394bf97c4e18ef25377f3a5ce52e75dce08e0d916bf07c29e71da5fcc14f7"
+      },
+      {
+        "path": "swift/FixedTextTextGrowthFixedWidth.swift",
+        "bytes": 686,
+        "sha256": "1b15b9b35a80334ec2c981ed11ef7e1f4a5b4cda4de6efd5eceac56b8c126f03"
+      },
+      {
+        "path": "swift/FixedTextTextGrowthFixedWidthHeight.swift",
+        "bytes": 655,
+        "sha256": "56b689115d3e4a5124ba3022b5d2478b85a6cfb94a54f8a64c6324513005b2ba"
+      },
+      {
+        "path": "swift/FixedTextTopLevelDecorations.swift",
+        "bytes": 663,
+        "sha256": "ab4f3657958f07296cd62b4185ccfc3c5a3e5a15aef83cab4a1f6db4387e2313"
+      },
+      {
+        "path": "swift/FixedTextTopLevelStyleAndFractionalSpacing.swift",
+        "bytes": 672,
+        "sha256": "ceddfeddd4da6adfb3915a10e76bb2b94aa272ad426eb90d530e96915000ec49"
+      },
+      {
+        "path": "swift/FixedTextUniformSingleRunText.swift",
+        "bytes": 639,
+        "sha256": "e68543e7372071b704be291ca2473a678e63fc57dceff2fda7c85a499e1de0b8"
+      },
+      {
+        "path": "swift/FlowLayout.swift",
+        "bytes": 2057,
+        "sha256": "8f24648f683d118e9524c689c754447a2a35fae7f1c74ee29970351682841728"
+      },
+      {
+        "path": "swift/SimulatorHost/FixedTextApp.swift",
+        "bytes": 3125,
+        "sha256": "9715bb18f6685b5299239281d426352f09ed031258598b1de1198484dbf11e2d"
+      }
+    ]
+  }
+}

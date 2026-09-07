@@ -1,0 +1,4207 @@
+[
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "devices"
+    ],
+    "started": "2026-09-07T19:53:06.093Z",
+    "finished": "2026-09-07T19:53:06.117Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/emulator/emulator",
+    "args": [
+      "-list-avds"
+    ],
+    "started": "2026-09-07T19:53:06.117Z",
+    "finished": "2026-09-07T19:53:06.160Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "wait-for-device"
+    ],
+    "started": "2026-09-07T19:53:06.162Z",
+    "finished": "2026-09-07T19:53:14.729Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "getprop",
+      "sys.boot_completed"
+    ],
+    "started": "2026-09-07T19:53:14.729Z",
+    "finished": "2026-09-07T19:53:14.822Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density"
+    ],
+    "started": "2026-09-07T19:53:14.822Z",
+    "finished": "2026-09-07T19:53:14.937Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "get",
+      "system",
+      "font_scale"
+    ],
+    "started": "2026-09-07T19:53:14.937Z",
+    "finished": "2026-09-07T19:53:15.003Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "install",
+      "-r",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/mobile-text-capture-prep/canvas/research/luna-mobile-fixed-text-20260907/native-android-run-01-invalid-root-crop/app-debug.apk"
+    ],
+    "started": "2026-09-07T19:53:15.044Z",
+    "finished": "2026-09-07T19:53:16.390Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density",
+      "420"
+    ],
+    "started": "2026-09-07T19:53:16.390Z",
+    "finished": "2026-09-07T19:53:16.513Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "put",
+      "system",
+      "font_scale",
+      "1"
+    ],
+    "started": "2026-09-07T19:53:16.513Z",
+    "finished": "2026-09-07T19:53:16.611Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:16.612Z",
+    "finished": "2026-09-07T19:53:16.737Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:16.737Z",
+    "finished": "2026-09-07T19:53:16.798Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "uniform-single-run",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-uniform-single-run-83a6f697-29a5-4871-9815-9cb5e7e0f26e"
+    ],
+    "started": "2026-09-07T19:53:16.798Z",
+    "finished": "2026-09-07T19:53:16.916Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:53:21.916Z",
+    "finished": "2026-09-07T19:53:21.944Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:21.946Z",
+    "finished": "2026-09-07T19:53:22.155Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:22.657Z",
+    "finished": "2026-09-07T19:53:22.846Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:23.606Z",
+    "finished": "2026-09-07T19:53:23.720Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:23.720Z",
+    "finished": "2026-09-07T19:53:23.766Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-style-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-top-level-style-spacing-2a64f2ca-617f-458f-a5d7-8cd7925defd2"
+    ],
+    "started": "2026-09-07T19:53:23.766Z",
+    "finished": "2026-09-07T19:53:23.821Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:53:28.822Z",
+    "finished": "2026-09-07T19:53:28.852Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:28.853Z",
+    "finished": "2026-09-07T19:53:29.039Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:29.540Z",
+    "finished": "2026-09-07T19:53:29.730Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:30.489Z",
+    "finished": "2026-09-07T19:53:30.606Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:30.607Z",
+    "finished": "2026-09-07T19:53:30.662Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-top-level-decorations-850d4c08-35c0-480c-811c-ba9b86204b25"
+    ],
+    "started": "2026-09-07T19:53:30.662Z",
+    "finished": "2026-09-07T19:53:30.709Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:53:35.715Z",
+    "finished": "2026-09-07T19:53:35.761Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:35.762Z",
+    "finished": "2026-09-07T19:53:35.953Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:36.455Z",
+    "finished": "2026-09-07T19:53:36.640Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:37.448Z",
+    "finished": "2026-09-07T19:53:37.556Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:37.556Z",
+    "finished": "2026-09-07T19:53:37.597Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-fill-family",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-rich-run-fill-family-1f2b2312-fd0a-49fd-bb8a-3fdd16f1b781"
+    ],
+    "started": "2026-09-07T19:53:37.597Z",
+    "finished": "2026-09-07T19:53:37.643Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:53:42.643Z",
+    "finished": "2026-09-07T19:53:42.669Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:42.670Z",
+    "finished": "2026-09-07T19:53:42.878Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:43.380Z",
+    "finished": "2026-09-07T19:53:43.579Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:44.345Z",
+    "finished": "2026-09-07T19:53:44.459Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:44.459Z",
+    "finished": "2026-09-07T19:53:44.539Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-size",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-rich-run-size-0d7b1cb5-35b4-41b9-90d7-9387eb3c5d1b"
+    ],
+    "started": "2026-09-07T19:53:44.539Z",
+    "finished": "2026-09-07T19:53:44.596Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:53:49.598Z",
+    "finished": "2026-09-07T19:53:49.627Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:49.632Z",
+    "finished": "2026-09-07T19:53:49.849Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:50.351Z",
+    "finished": "2026-09-07T19:53:50.551Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:51.291Z",
+    "finished": "2026-09-07T19:53:51.400Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:51.400Z",
+    "finished": "2026-09-07T19:53:51.452Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-italic-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-rich-run-italic-spacing-c5fa9668-604a-4801-b05a-c004b4f69d01"
+    ],
+    "started": "2026-09-07T19:53:51.452Z",
+    "finished": "2026-09-07T19:53:51.529Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:53:56.530Z",
+    "finished": "2026-09-07T19:53:56.559Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:56.560Z",
+    "finished": "2026-09-07T19:53:56.757Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:53:57.258Z",
+    "finished": "2026-09-07T19:53:57.444Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:53:58.196Z",
+    "finished": "2026-09-07T19:53:58.305Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:53:58.305Z",
+    "finished": "2026-09-07T19:53:58.376Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-rich-run-decorations-75e442ed-238a-424b-86b3-518131190d5d"
+    ],
+    "started": "2026-09-07T19:53:58.376Z",
+    "finished": "2026-09-07T19:53:58.427Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:03.427Z",
+    "finished": "2026-09-07T19:54:03.458Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:03.460Z",
+    "finished": "2026-09-07T19:54:03.655Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:04.157Z",
+    "finished": "2026-09-07T19:54:04.381Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:05.148Z",
+    "finished": "2026-09-07T19:54:05.263Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:05.263Z",
+    "finished": "2026-09-07T19:54:05.308Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "marks-and-paragraphs",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-marks-and-paragraphs-81865122-be82-4a03-b8ab-39dae53a7a58"
+    ],
+    "started": "2026-09-07T19:54:05.308Z",
+    "finished": "2026-09-07T19:54:05.371Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:10.373Z",
+    "finished": "2026-09-07T19:54:10.412Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:10.416Z",
+    "finished": "2026-09-07T19:54:10.626Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:11.127Z",
+    "finished": "2026-09-07T19:54:11.318Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:12.060Z",
+    "finished": "2026-09-07T19:54:12.173Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:12.173Z",
+    "finished": "2026-09-07T19:54:12.219Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-auto",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-text-growth-auto-60f953e8-d27c-446c-9225-21f687423cde"
+    ],
+    "started": "2026-09-07T19:54:12.219Z",
+    "finished": "2026-09-07T19:54:12.292Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:17.294Z",
+    "finished": "2026-09-07T19:54:17.326Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:17.327Z",
+    "finished": "2026-09-07T19:54:17.513Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:18.014Z",
+    "finished": "2026-09-07T19:54:18.204Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:18.948Z",
+    "finished": "2026-09-07T19:54:19.059Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:19.059Z",
+    "finished": "2026-09-07T19:54:19.111Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-text-growth-fixed-width-4e74985f-2241-474f-a027-54b398115628"
+    ],
+    "started": "2026-09-07T19:54:19.111Z",
+    "finished": "2026-09-07T19:54:19.163Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:24.163Z",
+    "finished": "2026-09-07T19:54:24.198Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:24.199Z",
+    "finished": "2026-09-07T19:54:24.382Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:24.883Z",
+    "finished": "2026-09-07T19:54:25.073Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:25.820Z",
+    "finished": "2026-09-07T19:54:25.930Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:25.930Z",
+    "finished": "2026-09-07T19:54:25.980Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width-height",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-1-text-growth-fixed-width-height-05b49044-6b8b-491c-914a-142a78546b71"
+    ],
+    "started": "2026-09-07T19:54:25.980Z",
+    "finished": "2026-09-07T19:54:26.046Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:31.047Z",
+    "finished": "2026-09-07T19:54:31.087Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:31.089Z",
+    "finished": "2026-09-07T19:54:31.275Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:31.777Z",
+    "finished": "2026-09-07T19:54:31.960Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density",
+      "420"
+    ],
+    "started": "2026-09-07T19:54:32.704Z",
+    "finished": "2026-09-07T19:54:32.736Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "put",
+      "system",
+      "font_scale",
+      "2"
+    ],
+    "started": "2026-09-07T19:54:32.736Z",
+    "finished": "2026-09-07T19:54:32.773Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:32.774Z",
+    "finished": "2026-09-07T19:54:32.888Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:32.888Z",
+    "finished": "2026-09-07T19:54:32.971Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "uniform-single-run",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-uniform-single-run-710b882f-7d99-4021-92d6-8e70a0184820"
+    ],
+    "started": "2026-09-07T19:54:32.971Z",
+    "finished": "2026-09-07T19:54:33.040Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:38.041Z",
+    "finished": "2026-09-07T19:54:38.077Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:38.078Z",
+    "finished": "2026-09-07T19:54:38.264Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:38.765Z",
+    "finished": "2026-09-07T19:54:38.946Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:39.688Z",
+    "finished": "2026-09-07T19:54:39.802Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:39.802Z",
+    "finished": "2026-09-07T19:54:39.851Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-style-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-top-level-style-spacing-47b1a23b-3538-4443-80cd-a5e13ca740cb"
+    ],
+    "started": "2026-09-07T19:54:39.851Z",
+    "finished": "2026-09-07T19:54:39.909Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:44.909Z",
+    "finished": "2026-09-07T19:54:44.953Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:44.955Z",
+    "finished": "2026-09-07T19:54:45.265Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:45.767Z",
+    "finished": "2026-09-07T19:54:45.991Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:46.760Z",
+    "finished": "2026-09-07T19:54:46.874Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:46.874Z",
+    "finished": "2026-09-07T19:54:46.924Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-top-level-decorations-3b9154cb-5d00-410c-b93a-ec5fb882560a"
+    ],
+    "started": "2026-09-07T19:54:46.924Z",
+    "finished": "2026-09-07T19:54:47.014Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:52.013Z",
+    "finished": "2026-09-07T19:54:52.050Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:52.051Z",
+    "finished": "2026-09-07T19:54:52.238Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:52.744Z",
+    "finished": "2026-09-07T19:54:52.944Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:54:53.729Z",
+    "finished": "2026-09-07T19:54:53.842Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:54:53.842Z",
+    "finished": "2026-09-07T19:54:53.882Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-fill-family",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-rich-run-fill-family-cbe2eb06-c616-4a96-99b6-7f6443e5ff06"
+    ],
+    "started": "2026-09-07T19:54:53.882Z",
+    "finished": "2026-09-07T19:54:53.947Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:54:58.948Z",
+    "finished": "2026-09-07T19:54:58.983Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:58.984Z",
+    "finished": "2026-09-07T19:54:59.177Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:54:59.678Z",
+    "finished": "2026-09-07T19:54:59.869Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:00.634Z",
+    "finished": "2026-09-07T19:55:00.748Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:00.748Z",
+    "finished": "2026-09-07T19:55:00.797Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-size",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-rich-run-size-27483746-71be-49c7-8f07-63e423fc683c"
+    ],
+    "started": "2026-09-07T19:55:00.797Z",
+    "finished": "2026-09-07T19:55:00.860Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:05.861Z",
+    "finished": "2026-09-07T19:55:05.889Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:05.890Z",
+    "finished": "2026-09-07T19:55:06.119Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:06.620Z",
+    "finished": "2026-09-07T19:55:06.819Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:07.564Z",
+    "finished": "2026-09-07T19:55:07.678Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:07.678Z",
+    "finished": "2026-09-07T19:55:07.730Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-italic-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-rich-run-italic-spacing-52e1295f-e828-407e-a6eb-8c9cbcd092c6"
+    ],
+    "started": "2026-09-07T19:55:07.730Z",
+    "finished": "2026-09-07T19:55:07.796Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:12.797Z",
+    "finished": "2026-09-07T19:55:12.828Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:12.829Z",
+    "finished": "2026-09-07T19:55:13.013Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:13.513Z",
+    "finished": "2026-09-07T19:55:13.698Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:14.478Z",
+    "finished": "2026-09-07T19:55:14.598Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:14.598Z",
+    "finished": "2026-09-07T19:55:14.646Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-rich-run-decorations-0d5dcc20-0599-43b9-9d17-1b7f9687aa17"
+    ],
+    "started": "2026-09-07T19:55:14.646Z",
+    "finished": "2026-09-07T19:55:14.742Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:19.743Z",
+    "finished": "2026-09-07T19:55:19.773Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:19.776Z",
+    "finished": "2026-09-07T19:55:19.998Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:20.500Z",
+    "finished": "2026-09-07T19:55:20.688Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:21.460Z",
+    "finished": "2026-09-07T19:55:21.577Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:21.577Z",
+    "finished": "2026-09-07T19:55:21.631Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "marks-and-paragraphs",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-marks-and-paragraphs-2bd71ee8-911d-412e-9c6f-f45603a7ae9d"
+    ],
+    "started": "2026-09-07T19:55:21.631Z",
+    "finished": "2026-09-07T19:55:21.729Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:26.729Z",
+    "finished": "2026-09-07T19:55:26.757Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:26.758Z",
+    "finished": "2026-09-07T19:55:26.955Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:27.456Z",
+    "finished": "2026-09-07T19:55:27.641Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:28.383Z",
+    "finished": "2026-09-07T19:55:28.492Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:28.492Z",
+    "finished": "2026-09-07T19:55:28.535Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-auto",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-text-growth-auto-ec65d4c7-1a1d-4c11-9bb1-cbb57af6ffa0"
+    ],
+    "started": "2026-09-07T19:55:28.535Z",
+    "finished": "2026-09-07T19:55:28.595Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:33.596Z",
+    "finished": "2026-09-07T19:55:33.628Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:33.628Z",
+    "finished": "2026-09-07T19:55:33.817Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:34.319Z",
+    "finished": "2026-09-07T19:55:34.510Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:35.267Z",
+    "finished": "2026-09-07T19:55:35.381Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:35.381Z",
+    "finished": "2026-09-07T19:55:35.435Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-text-growth-fixed-width-0312b69b-bc29-42cc-8840-9dee67e89cf5"
+    ],
+    "started": "2026-09-07T19:55:35.435Z",
+    "finished": "2026-09-07T19:55:35.495Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:40.497Z",
+    "finished": "2026-09-07T19:55:40.525Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:40.526Z",
+    "finished": "2026-09-07T19:55:40.711Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:41.213Z",
+    "finished": "2026-09-07T19:55:41.402Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:42.152Z",
+    "finished": "2026-09-07T19:55:42.260Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:42.260Z",
+    "finished": "2026-09-07T19:55:42.309Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width-height",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-420-2-text-growth-fixed-width-height-e979d47d-6782-46fc-9f2b-6b54772e2615"
+    ],
+    "started": "2026-09-07T19:55:42.309Z",
+    "finished": "2026-09-07T19:55:42.381Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:47.382Z",
+    "finished": "2026-09-07T19:55:47.416Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:47.417Z",
+    "finished": "2026-09-07T19:55:47.609Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:48.113Z",
+    "finished": "2026-09-07T19:55:48.306Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density",
+      "320"
+    ],
+    "started": "2026-09-07T19:55:49.048Z",
+    "finished": "2026-09-07T19:55:49.136Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "put",
+      "system",
+      "font_scale",
+      "1"
+    ],
+    "started": "2026-09-07T19:55:49.136Z",
+    "finished": "2026-09-07T19:55:49.175Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:49.176Z",
+    "finished": "2026-09-07T19:55:49.297Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:49.297Z",
+    "finished": "2026-09-07T19:55:49.361Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "uniform-single-run",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-uniform-single-run-c19ceb3f-f343-49dd-9658-2ba2a94e399d"
+    ],
+    "started": "2026-09-07T19:55:49.361Z",
+    "finished": "2026-09-07T19:55:49.412Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:55:54.413Z",
+    "finished": "2026-09-07T19:55:54.441Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:54.443Z",
+    "finished": "2026-09-07T19:55:54.633Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:55:55.136Z",
+    "finished": "2026-09-07T19:55:55.327Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:55:56.021Z",
+    "finished": "2026-09-07T19:55:56.175Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:55:56.175Z",
+    "finished": "2026-09-07T19:55:56.237Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-style-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-top-level-style-spacing-ca2fab00-4fe0-47cd-8dc5-f0a396e663e8"
+    ],
+    "started": "2026-09-07T19:55:56.237Z",
+    "finished": "2026-09-07T19:55:56.292Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:01.293Z",
+    "finished": "2026-09-07T19:56:01.330Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:01.331Z",
+    "finished": "2026-09-07T19:56:01.517Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:02.019Z",
+    "finished": "2026-09-07T19:56:02.213Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:02.898Z",
+    "finished": "2026-09-07T19:56:03.008Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:03.008Z",
+    "finished": "2026-09-07T19:56:03.051Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-top-level-decorations-28e20c65-0a7b-4988-8c6e-e1b96498bc64"
+    ],
+    "started": "2026-09-07T19:56:03.051Z",
+    "finished": "2026-09-07T19:56:03.117Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:08.118Z",
+    "finished": "2026-09-07T19:56:08.151Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:08.152Z",
+    "finished": "2026-09-07T19:56:08.345Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:08.844Z",
+    "finished": "2026-09-07T19:56:09.052Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:09.739Z",
+    "finished": "2026-09-07T19:56:09.847Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:09.847Z",
+    "finished": "2026-09-07T19:56:09.889Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-fill-family",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-rich-run-fill-family-782f8722-7f9d-4c08-8167-aeb0c60a6c15"
+    ],
+    "started": "2026-09-07T19:56:09.889Z",
+    "finished": "2026-09-07T19:56:09.946Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:14.947Z",
+    "finished": "2026-09-07T19:56:14.990Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:14.991Z",
+    "finished": "2026-09-07T19:56:15.178Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:15.679Z",
+    "finished": "2026-09-07T19:56:15.866Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:16.570Z",
+    "finished": "2026-09-07T19:56:16.683Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:16.683Z",
+    "finished": "2026-09-07T19:56:16.752Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-size",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-rich-run-size-7a3b020f-93bb-4592-ba74-c11306f72d44"
+    ],
+    "started": "2026-09-07T19:56:16.752Z",
+    "finished": "2026-09-07T19:56:16.811Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:21.811Z",
+    "finished": "2026-09-07T19:56:21.840Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:21.841Z",
+    "finished": "2026-09-07T19:56:22.029Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:22.531Z",
+    "finished": "2026-09-07T19:56:22.716Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:23.404Z",
+    "finished": "2026-09-07T19:56:23.510Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:23.510Z",
+    "finished": "2026-09-07T19:56:23.563Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-italic-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-rich-run-italic-spacing-db1edb6c-a4ef-45a9-8456-0fddb0caaf18"
+    ],
+    "started": "2026-09-07T19:56:23.563Z",
+    "finished": "2026-09-07T19:56:23.645Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:28.646Z",
+    "finished": "2026-09-07T19:56:28.686Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:28.687Z",
+    "finished": "2026-09-07T19:56:28.869Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:29.371Z",
+    "finished": "2026-09-07T19:56:29.547Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:30.235Z",
+    "finished": "2026-09-07T19:56:30.345Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:30.345Z",
+    "finished": "2026-09-07T19:56:30.396Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-rich-run-decorations-3d4c1b92-333a-45a1-a0a9-7230d57c4ae0"
+    ],
+    "started": "2026-09-07T19:56:30.396Z",
+    "finished": "2026-09-07T19:56:30.489Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:35.491Z",
+    "finished": "2026-09-07T19:56:35.517Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:35.518Z",
+    "finished": "2026-09-07T19:56:35.698Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:36.200Z",
+    "finished": "2026-09-07T19:56:36.382Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:37.062Z",
+    "finished": "2026-09-07T19:56:37.176Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:37.177Z",
+    "finished": "2026-09-07T19:56:37.215Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "marks-and-paragraphs",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-marks-and-paragraphs-b319042c-4303-4822-b788-df8494a69d68"
+    ],
+    "started": "2026-09-07T19:56:37.215Z",
+    "finished": "2026-09-07T19:56:37.271Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:42.271Z",
+    "finished": "2026-09-07T19:56:42.297Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:42.298Z",
+    "finished": "2026-09-07T19:56:42.495Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:42.997Z",
+    "finished": "2026-09-07T19:56:43.181Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:43.878Z",
+    "finished": "2026-09-07T19:56:43.990Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:43.990Z",
+    "finished": "2026-09-07T19:56:44.056Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-auto",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-text-growth-auto-2d5a8c53-2427-4d1b-b4bc-263c6cd86f86"
+    ],
+    "started": "2026-09-07T19:56:44.056Z",
+    "finished": "2026-09-07T19:56:44.149Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:49.151Z",
+    "finished": "2026-09-07T19:56:49.180Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:49.181Z",
+    "finished": "2026-09-07T19:56:49.362Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:49.863Z",
+    "finished": "2026-09-07T19:56:50.057Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:50.757Z",
+    "finished": "2026-09-07T19:56:50.865Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:50.865Z",
+    "finished": "2026-09-07T19:56:50.915Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-text-growth-fixed-width-eb976f85-5324-4f55-b891-85a9166c3924"
+    ],
+    "started": "2026-09-07T19:56:50.915Z",
+    "finished": "2026-09-07T19:56:50.973Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:56:55.975Z",
+    "finished": "2026-09-07T19:56:56.010Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:56.011Z",
+    "finished": "2026-09-07T19:56:56.194Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:56:56.695Z",
+    "finished": "2026-09-07T19:56:56.888Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:56:57.572Z",
+    "finished": "2026-09-07T19:56:57.688Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:56:57.688Z",
+    "finished": "2026-09-07T19:56:57.733Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width-height",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-1-text-growth-fixed-width-height-10add1cb-561f-4d8d-8d44-4872b324e72b"
+    ],
+    "started": "2026-09-07T19:56:57.733Z",
+    "finished": "2026-09-07T19:56:57.792Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:02.793Z",
+    "finished": "2026-09-07T19:57:02.826Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:02.827Z",
+    "finished": "2026-09-07T19:57:03.012Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:03.513Z",
+    "finished": "2026-09-07T19:57:03.693Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density",
+      "320"
+    ],
+    "started": "2026-09-07T19:57:04.378Z",
+    "finished": "2026-09-07T19:57:04.410Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "put",
+      "system",
+      "font_scale",
+      "2"
+    ],
+    "started": "2026-09-07T19:57:04.410Z",
+    "finished": "2026-09-07T19:57:04.441Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:04.442Z",
+    "finished": "2026-09-07T19:57:04.564Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:04.564Z",
+    "finished": "2026-09-07T19:57:04.609Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "uniform-single-run",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-uniform-single-run-44bab10d-3dfb-43dd-98c8-2f6032dd8e8f"
+    ],
+    "started": "2026-09-07T19:57:04.609Z",
+    "finished": "2026-09-07T19:57:04.667Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:09.669Z",
+    "finished": "2026-09-07T19:57:09.700Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:09.701Z",
+    "finished": "2026-09-07T19:57:09.888Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:10.390Z",
+    "finished": "2026-09-07T19:57:10.575Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:11.268Z",
+    "finished": "2026-09-07T19:57:11.377Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:11.377Z",
+    "finished": "2026-09-07T19:57:11.430Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-style-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-top-level-style-spacing-7624b272-18c9-44af-ba7b-8f9255b23bfc"
+    ],
+    "started": "2026-09-07T19:57:11.430Z",
+    "finished": "2026-09-07T19:57:11.491Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:16.492Z",
+    "finished": "2026-09-07T19:57:16.521Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:16.522Z",
+    "finished": "2026-09-07T19:57:16.713Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:17.214Z",
+    "finished": "2026-09-07T19:57:17.409Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:18.111Z",
+    "finished": "2026-09-07T19:57:18.221Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:18.222Z",
+    "finished": "2026-09-07T19:57:18.278Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "top-level-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-top-level-decorations-ed2f63c3-a4e5-4e2d-af00-5614a96f52ed"
+    ],
+    "started": "2026-09-07T19:57:18.278Z",
+    "finished": "2026-09-07T19:57:18.317Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:23.318Z",
+    "finished": "2026-09-07T19:57:23.344Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:23.344Z",
+    "finished": "2026-09-07T19:57:23.530Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:24.032Z",
+    "finished": "2026-09-07T19:57:24.228Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:24.913Z",
+    "finished": "2026-09-07T19:57:25.027Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:25.027Z",
+    "finished": "2026-09-07T19:57:25.080Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-fill-family",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-rich-run-fill-family-88a1942c-02d7-4ab8-9571-07d76d31c5b9"
+    ],
+    "started": "2026-09-07T19:57:25.080Z",
+    "finished": "2026-09-07T19:57:25.138Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:30.139Z",
+    "finished": "2026-09-07T19:57:30.177Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:30.178Z",
+    "finished": "2026-09-07T19:57:30.378Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:30.879Z",
+    "finished": "2026-09-07T19:57:31.133Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:31.843Z",
+    "finished": "2026-09-07T19:57:31.958Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:31.958Z",
+    "finished": "2026-09-07T19:57:32.010Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-size",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-rich-run-size-e432c9f8-974a-4020-b568-c8eb94f0163b"
+    ],
+    "started": "2026-09-07T19:57:32.010Z",
+    "finished": "2026-09-07T19:57:32.055Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:37.056Z",
+    "finished": "2026-09-07T19:57:37.084Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:37.085Z",
+    "finished": "2026-09-07T19:57:37.276Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:37.780Z",
+    "finished": "2026-09-07T19:57:37.992Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:38.703Z",
+    "finished": "2026-09-07T19:57:38.827Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:38.827Z",
+    "finished": "2026-09-07T19:57:38.917Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-italic-spacing",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-rich-run-italic-spacing-c49ced50-4906-4eac-9c71-f941368050b6"
+    ],
+    "started": "2026-09-07T19:57:38.917Z",
+    "finished": "2026-09-07T19:57:39.036Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:44.037Z",
+    "finished": "2026-09-07T19:57:44.074Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:44.076Z",
+    "finished": "2026-09-07T19:57:44.287Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:44.789Z",
+    "finished": "2026-09-07T19:57:44.978Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:45.674Z",
+    "finished": "2026-09-07T19:57:45.791Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:45.791Z",
+    "finished": "2026-09-07T19:57:45.836Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "rich-run-decorations",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-rich-run-decorations-d7fb0183-7160-4153-bdd8-2f3317b31f97"
+    ],
+    "started": "2026-09-07T19:57:45.836Z",
+    "finished": "2026-09-07T19:57:45.891Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:50.892Z",
+    "finished": "2026-09-07T19:57:50.923Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:50.924Z",
+    "finished": "2026-09-07T19:57:51.038Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:51.038Z",
+    "finished": "2026-09-07T19:57:51.113Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "marks-and-paragraphs",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-marks-and-paragraphs-abf6c19c-cba0-4505-b52b-218520271d02"
+    ],
+    "started": "2026-09-07T19:57:51.113Z",
+    "finished": "2026-09-07T19:57:51.199Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:57:56.200Z",
+    "finished": "2026-09-07T19:57:56.230Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:56.230Z",
+    "finished": "2026-09-07T19:57:56.441Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:57:56.942Z",
+    "finished": "2026-09-07T19:57:57.141Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:57:57.835Z",
+    "finished": "2026-09-07T19:57:57.952Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:57:57.952Z",
+    "finished": "2026-09-07T19:57:58.008Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-auto",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-text-growth-auto-a3eddba5-dd15-4181-b49f-23195775f55d"
+    ],
+    "started": "2026-09-07T19:57:58.008Z",
+    "finished": "2026-09-07T19:57:58.084Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:58:03.085Z",
+    "finished": "2026-09-07T19:58:03.114Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:58:03.114Z",
+    "finished": "2026-09-07T19:58:03.303Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:58:03.804Z",
+    "finished": "2026-09-07T19:58:03.990Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:58:04.675Z",
+    "finished": "2026-09-07T19:58:04.784Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:58:04.784Z",
+    "finished": "2026-09-07T19:58:04.828Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-text-growth-fixed-width-6e079654-5774-4309-a6ca-3aa1df4bd1cb"
+    ],
+    "started": "2026-09-07T19:58:04.828Z",
+    "finished": "2026-09-07T19:58:04.909Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:58:09.910Z",
+    "finished": "2026-09-07T19:58:09.939Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:58:09.940Z",
+    "finished": "2026-09-07T19:58:10.131Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:58:10.631Z",
+    "finished": "2026-09-07T19:58:10.830Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "logcat",
+      "-c"
+    ],
+    "started": "2026-09-07T19:58:11.512Z",
+    "finished": "2026-09-07T19:58:11.621Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "force-stop",
+      "com.penkra.canvas.fixture"
+    ],
+    "started": "2026-09-07T19:58:11.621Z",
+    "finished": "2026-09-07T19:58:11.663Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "am",
+      "start",
+      "-n",
+      "com.penkra.canvas.fixture/.MainActivity",
+      "--es",
+      "canvasCase",
+      "text-growth-fixed-width-height",
+      "--es",
+      "canvasNonce",
+      "fixed-text-android-320-2-text-growth-fixed-width-height-0a461494-9a9e-499b-baaf-8dda7aec43e9"
+    ],
+    "started": "2026-09-07T19:58:11.663Z",
+    "finished": "2026-09-07T19:58:11.712Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "logcat",
+      "-d",
+      "-v",
+      "brief",
+      "-t",
+      "400"
+    ],
+    "started": "2026-09-07T19:58:16.713Z",
+    "finished": "2026-09-07T19:58:16.748Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:58:16.749Z",
+    "finished": "2026-09-07T19:58:16.943Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "exec-out",
+      "screencap",
+      "-p"
+    ],
+    "started": "2026-09-07T19:58:17.449Z",
+    "finished": "2026-09-07T19:58:17.653Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density",
+      "reset"
+    ],
+    "started": "2026-09-07T19:58:18.359Z",
+    "finished": "2026-09-07T19:58:18.422Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "put",
+      "system",
+      "font_scale",
+      "1.0"
+    ],
+    "started": "2026-09-07T19:58:18.422Z",
+    "finished": "2026-09-07T19:58:18.461Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "wm",
+      "density"
+    ],
+    "started": "2026-09-07T19:58:18.462Z",
+    "finished": "2026-09-07T19:58:18.509Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "shell",
+      "settings",
+      "get",
+      "system",
+      "font_scale"
+    ],
+    "started": "2026-09-07T19:58:18.509Z",
+    "finished": "2026-09-07T19:58:18.556Z",
+    "exitCode": 0
+  },
+  {
+    "command": "/Users/emmanuelgyekyeatta-penkra/Library/Android/sdk/platform-tools/adb",
+    "args": [
+      "-s",
+      "emulator-5554",
+      "emu",
+      "kill"
+    ],
+    "started": "2026-09-07T19:58:18.557Z",
+    "finished": "2026-09-07T19:58:18.575Z",
+    "exitCode": 0
+  }
+]
