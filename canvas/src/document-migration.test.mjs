@@ -125,6 +125,58 @@ test("migration preserves legacy boolean tokens and canonicalizes annotated node
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
+test("migration collapses one uniformly selected withdrawn axis into static cascade values", () => {
+  const source = {
+    module: "generic",
+    axes: { portal: { modes: [{ name: "patient" }, { name: "admin" }] } },
+    variables: { ink: { tokenType: "color", cascade: [
+      { value: "#111111" },
+      { value: "#222222", when: { portal: "patient" } },
+      { value: "#333333", when: { portal: "admin" } },
+    ] } },
+    paragraphStyles: {}, imports: {}, flows: [],
+    children: [{ id: "screen", type: "frame", modes: { portal: "admin" }, children: [] }],
+  };
+  const result = migrateCanvasDocument(source);
+  assert.deepEqual(result.document.axes, {});
+  assert.equal(result.document.children[0].modes, undefined);
+  assert.deepEqual(result.document.variables.ink.cascade, [{ value: "#111111" }, { value: "#333333" }]);
+  assert.ok(result.notes.some((note) => note.includes("Collapsed uniformly selected legacy axis `portal` at mode `admin`")));
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
+});
+
+test("migration refuses to flatten a withdrawn axis when sibling selections differ", () => {
+  const source = {
+    module: "generic", axes: { portal: { modes: [{ name: "patient" }, { name: "admin" }] } },
+    variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "patient", type: "frame", modes: { portal: "patient" }, children: [] },
+      { id: "admin", type: "frame", modes: { portal: "admin" }, children: [] },
+    ],
+  };
+  assert.throws(() => migrateCanvasDocument(source), /multiple active modes/u);
+});
+
+test("migration materializes refs whose legacy targets are nested in an export frame", () => {
+  const source = {
+    module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [{ id: "route", type: "frame", role: "route", width: 800, height: 600, children: [
+      { id: "nested-component", type: "frame", reusable: true, width: 100, height: 40, children: [
+        { id: "nested-label", type: "text", content: "Label", paragraphs: [{ from: 0, to: 5 }], marks: [] },
+      ] },
+      { id: "instance", type: "ref", ref: "nested-component", x: 20, y: 30 },
+    ] }],
+  };
+  const result = migrateCanvasDocument(source);
+  const instance = result.document.children[0].children[1];
+  assert.equal(instance.type, "frame");
+  assert.equal(instance.id, "instance");
+  assert.equal(instance.x, 20);
+  assert.equal(instance.children[0].id, "instance/nested-label");
+  assert.ok(result.notes.some((note) => note.includes("legacy target was nested inside an export frame")));
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
+});
+
 test("migration bounds accumulated legacy validation diagnostics for the App response boundary", () => {
   const source = {
     module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],

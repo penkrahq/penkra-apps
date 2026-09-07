@@ -30,14 +30,19 @@ export function migrateM3DropReusable(source) {
 export function migrateM4Descendants(source) {
   const document = structuredClone(source);
   const nodes = indexNodes(document.children);
+  const parents = indexParents(document.children);
   let changes = 0;
   const notes = [];
   walkNodes(document.children, (instance) => {
-    if (instance.type !== "ref" || !isRecord(instance.descendants)) return;
+    if (instance.type !== "ref") return;
     const target = nodes.get(instance.ref);
+    const nestedInRole = target ? hasRoleAncestor(instance.ref, nodes, parents) : false;
+    if (!isRecord(instance.descendants) && !nestedInRole) return;
     if (target) {
       replaceObject(instance, materializeLegacyInstance(instance, target, notes));
-      notes.push(`Approximated ref \`${instance.id}\` as a materialized clone so its descendant overrides remain visible.`);
+      notes.push(nestedInRole
+        ? `Approximated ref \`${instance.id}\` as a materialized clone because its legacy target was nested inside an export frame.`
+        : `Approximated ref \`${instance.id}\` as a materialized clone so its descendant overrides remain visible.`);
     } else {
       const missing = instance.ref;
       const fallback = { ...structuredClone(instance), type: "group", children: [] };
@@ -48,6 +53,23 @@ export function migrateM4Descendants(source) {
     changes += 1;
   });
   return { document, changes, notes };
+}
+
+function indexParents(children, parentId = null, output = new Map()) {
+  for (const node of children ?? []) {
+    if (typeof node?.id === "string") output.set(node.id, parentId);
+    indexParents(node?.children, node?.id ?? parentId, output);
+  }
+  return output;
+}
+
+function hasRoleAncestor(nodeId, nodes, parents) {
+  let ancestor = parents.get(nodeId);
+  while (ancestor) {
+    if (nodes.get(ancestor)?.role) return true;
+    ancestor = parents.get(ancestor);
+  }
+  return false;
 }
 
 export function migrateM1DelimitedVariables(source) {

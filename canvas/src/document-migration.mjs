@@ -66,6 +66,7 @@ export function migrateCanvasDocument(source) {
     renameAppearanceConditions(document);
     notes.push("Renamed the legacy light/dark theme axis to appearance, including mode selections and cascade conditions.");
   }
+  collapseUniformLegacyAxes(document, notes);
   if (!document.variables || typeof document.variables !== "object" || Array.isArray(document.variables)) document.variables = {};
   if (!document.paragraphStyles || typeof document.paragraphStyles !== "object" || Array.isArray(document.paragraphStyles)) document.paragraphStyles = {};
   if (document.imports === undefined) document.imports = {};
@@ -102,6 +103,58 @@ export function migrateCanvasDocument(source) {
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
+}
+
+function collapseUniformLegacyAxes(document, notes) {
+  const unsupported = Object.keys(document.axes ?? {}).filter((name) => name === "portal");
+  for (const axis of unsupported) {
+    const selected = new Set();
+    const collect = (nodes) => {
+      for (const node of nodes ?? []) {
+        if (typeof node?.modes?.[axis] === "string") selected.add(node.modes[axis]);
+        collect(node?.children);
+      }
+    };
+    collect(document.children);
+    if (selected.size > 1) {
+      throw migrationError(`Legacy axis ${axis} has multiple active modes and cannot be collapsed without changing sibling rendering.`);
+    }
+    const mode = [...selected][0] ?? document.axes[axis]?.modes?.[0]?.name;
+    if (typeof mode !== "string" || !mode) throw migrationError(`Legacy axis ${axis} has no selectable mode.`);
+    collapseAxisConditions(document, axis, mode);
+    delete document.axes[axis];
+    notes.push(`Collapsed uniformly selected legacy axis \`${axis}\` at mode \`${mode}\` into static values; Canvas axes are appearance and viewport.`);
+  }
+}
+
+function collapseAxisConditions(value, axis, mode) {
+  if (Array.isArray(value)) {
+    const cascade = value.length > 0 && value.every((entry) => entry && typeof entry === "object"
+      && !Array.isArray(entry) && Object.hasOwn(entry, "value"));
+    if (cascade) {
+      for (let index = value.length - 1; index >= 0; index -= 1) {
+        const entry = value[index];
+        if (entry.when?.[axis] !== undefined && entry.when[axis] !== mode) {
+          value.splice(index, 1);
+          continue;
+        }
+        if (entry.when && Object.hasOwn(entry.when, axis)) {
+          delete entry.when[axis];
+          if (Object.keys(entry.when).length === 0) delete entry.when;
+        }
+        collapseAxisConditions(entry.value, axis, mode);
+      }
+      return;
+    }
+    value.forEach((entry) => collapseAxisConditions(entry, axis, mode));
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  if (value.modes && typeof value.modes === "object" && !Array.isArray(value.modes)) {
+    delete value.modes[axis];
+    if (Object.keys(value.modes).length === 0) delete value.modes;
+  }
+  for (const child of Object.values(value)) collapseAxisConditions(child, axis, mode);
 }
 
 function canonicalizeLegacyTextAlignment(document, notes) {
