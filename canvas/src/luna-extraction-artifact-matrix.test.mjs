@@ -7,6 +7,7 @@ import test from "node:test";
 import { PDFDocument } from "pdf-lib";
 import { openBrowser } from "../compatibility/browser-fixture.mjs";
 import { extractDocumentNode, extractDocumentNodes } from "./export-service.mjs";
+import { preflightPdfx4 } from "./exporters/pdfx-preflight.mjs";
 import {
   MARKER, ROLELESS_SPECS, TRIANGLE, colorBounds, compareMarkerBounds, compareTriangleMeasurement, decodePng,
   inspectPdf, inspectPdfPages, parseSvg, physicalDocument, rolelessDocument, runTool, sha256, triangleMeasurement,
@@ -153,14 +154,14 @@ test("directory extraction publishes three named artifacts per format and exact-
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test("physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 gate leaves no file", async () => {
+test("physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 writer publishes a verified artifact", async () => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-roleless-extraction-physical-"));
   const outcomes = []; const failures = [];
+  const trimWidth = 210 * 72 / 25.4; const trimHeight = 297 * 72 / 25.4;
   try {
     const physicalPath = join(directory, "a4-roleless.pdf");
     await collectCase(outcomes, failures, "physical/pdf", async () => {
       await extractDocumentNode(physicalDocument(), { nodeId: ROLELESS_SPECS[0].id, format: "pdf", destination: physicalPath }, ASSETS);
-      const trimWidth = 210 * 72 / 25.4; const trimHeight = 297 * 72 / 25.4;
       const expectedPhysicalMarker = {
         x: Math.round(9 + MARKER.x * trimWidth / ROLELESS_SPECS[0].width),
         y: Math.round(9 + MARKER.y * trimHeight / ROLELESS_SPECS[0].height),
@@ -187,8 +188,26 @@ test("physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 
       assert.equal(observed.triangleComparison.ok, true, JSON.stringify(observed.triangleComparison));
       assert.equal(observed.imageXObjectLines.length, 0);
     });
-    const unverifiedPath = join(directory, "unverified.pdf");
-    await expectCode(outcomes, failures, "physical/pdf-x4", unverifiedPath, "CANVAS_PDF_PROFILE_UNVERIFIED", () => extractDocumentNode(rolelessDocument([ROLELESS_SPECS[0]]), { nodeId: ROLELESS_SPECS[0].id, format: "pdf", profile: "PDF/X-4", destination: unverifiedPath }, ASSETS));
+    const pdfxPath = join(directory, "writer-verified.pdf");
+    await collectCase(outcomes, failures, "physical/pdf-x4", async () => {
+      const result = await extractDocumentNode(physicalDocument(), { nodeId: ROLELESS_SPECS[0].id, format: "pdf", profile: "PDF/X-4", destination: pdfxPath }, ASSETS);
+      assert.deepEqual(result.artifacts, [pdfxPath]);
+      const bytes = await readFile(pdfxPath);
+      assert.equal(bytes.subarray(0, 8).toString("latin1"), "%PDF-1.6");
+      const pdfx = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+      assert.equal(pdfx.getPages().length, 1);
+      const page = pdfx.getPages()[0];
+      assert.ok(Math.abs(page.getTrimBox().width - trimWidth) < 0.001);
+      assert.ok(Math.abs(page.getTrimBox().height - trimHeight) < 0.001);
+      assert.ok(Math.abs(page.getMediaBox().width - (trimWidth + 18)) < 0.001);
+      assert.ok(Math.abs(page.getMediaBox().height - (trimHeight + 18)) < 0.001);
+      const report = await preflightPdfx4(bytes);
+      assert.deepEqual(report.issues, []);
+      assert.equal(report.canvasWriterSubset?.verified, true);
+      assert.equal(report.conformant, false);
+    });
+    const invalidProfilePath = join(directory, "invalid-profile.pdf");
+    await expectCode(outcomes, failures, "physical/invalid-profile", invalidProfilePath, "CANVAS_PDF_PROFILE_UNKNOWN", () => extractDocumentNode(rolelessDocument([ROLELESS_SPECS[0]]), { nodeId: ROLELESS_SPECS[0].id, format: "pdf", profile: "PDF/X-3", destination: invalidProfilePath }, ASSETS));
     assert.deepEqual(failures, []);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
