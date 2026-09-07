@@ -92,12 +92,17 @@ function swiftVector(node) {
 
 function swiftContainer(node, descendants, children, options, depth, root = false, parentLayout = "none", access = "") {
   const indent = "  ".repeat(depth);
-  const childLayout = node.layout.layout === "grid" ? "none" : node.layout.layout || (node.layout.wrap ? "wrap" : "none");
+  // Yoga has already resolved wrapped children, including line breaks and
+  // cross-axis alignment. FlowLayout would measure SwiftUI subviews again and
+  // can therefore produce different positions for fixed-size Canvas nodes.
+  // Use the resolved local geometry for this case; ordinary linear stacks
+  // retain their native layout lowering.
+  const childLayout = node.layout.wrap ? "resolved" : node.layout.layout === "grid" ? "none" : node.layout.layout || "none";
   const inner = descendants.map((child) => swiftNode(child, children, options, depth + 1, childLayout)).filter(Boolean).join("\n");
   const { row, column } = mobileGaps(node);
   let open;
   if (node.layout.layout === "grid") open = "ZStack(alignment: .topLeading)";
-  else if (node.layout.wrap) open = `FlowLayout(spacing: ${column}, rowSpacing: ${row})`;
+  else if (node.layout.wrap) open = "ZStack(alignment: .topLeading)";
   else if (node.layout.layout === "horizontal") open = `HStack(alignment: ${swiftAlignment(node.layout.alignItems)}, spacing: ${column})`;
   else if (node.layout.layout === "vertical") open = `VStack(alignment: ${swiftHorizontalAlignment(node.layout.alignItems)}, spacing: ${row})`;
   else open = "ZStack(alignment: .topLeading)";
@@ -107,7 +112,9 @@ function swiftContainer(node, descendants, children, options, depth, root = fals
     ? `.background(alignment: .topLeading) { ${swiftVector({ ...node, vector: roundedRectangleVector(node), paint: { fill: node.paint.fill, opacity: 1 } })} }`
     : `.background(${swiftPaint(node.paint.fill, node)}, ignoresSafeAreaEdges: [])`;
   const insets = mobilePadding(node);
-  const padding = insets && node.layout.layout !== "grid" ? `.padding(EdgeInsets(top: ${n(insets[0])}, leading: ${n(insets[3])}, bottom: ${n(insets[2])}, trailing: ${n(insets[1])}))` : "";
+  // Resolved child positions already include authored padding. Applying a
+  // second SwiftUI padding modifier would move every wrapped child twice.
+  const padding = insets && node.layout.layout !== "grid" && !node.layout.wrap ? `.padding(EdgeInsets(top: ${n(insets[0])}, leading: ${n(insets[3])}, bottom: ${n(insets[2])}, trailing: ${n(insets[1])}))` : "";
   const rootFrame = root ? `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)})` : "";
   const clip = !node.clip ? "" : node.paint.cornerRadius != null
     ? `.clipShape(${swiftPath({ ...node, vector: roundedRectangleVector(node) })})`
@@ -145,11 +152,19 @@ function swiftGeometry(node, parentLayout, afterFrame = "") {
     const sizing = node.layout.textGrowth === "auto"
       ? ".fixedSize(horizontal: true, vertical: true)"
       : `.frame(width: ${n(node.geometry.w)}, alignment: ${swiftFrameAlignment(node)}).fixedSize(horizontal: false, vertical: true)`;
+    if (parentLayout === "resolved") {
+      // A wrapped container is lowered as a fixed-position ZStack. Keep the
+      // resolver's measured box even for intrinsic text modes; asking SwiftUI
+      // to measure the Text again would otherwise change a line break or row
+      // height on a different device/font configuration.
+      return `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)}).position(x: ${n(node.geometry.localX + node.geometry.w / 2)}, y: ${n(node.geometry.localY + node.geometry.h / 2)})`;
+    }
     return ["grid", "horizontal", "vertical", "wrap"].includes(parentLayout)
       ? sizing
       : `${sizing}.offset(x: ${n(node.geometry.localX)}, y: ${n(node.geometry.localY)})`;
   }
   const base = `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)})${afterFrame}`;
+  if (parentLayout === "resolved") return `${base}.position(x: ${n(node.geometry.localX + node.geometry.w / 2)}, y: ${n(node.geometry.localY + node.geometry.h / 2)})`;
   if (["grid", "horizontal", "vertical", "wrap"].includes(parentLayout)) return base;
   return `${base}.position(x: ${n(node.geometry.localX + node.geometry.w / 2)}, y: ${n(node.geometry.localY + node.geometry.h / 2)})`;
 }
@@ -258,10 +273,10 @@ function composeContainer(node, descendants, children, options, depth, root = fa
       : verticalJustify === "end"
         ? `Arrangement.spacedBy(${row}.dp, androidx.compose.ui.Alignment.Bottom)`
         : `Arrangement.spacedBy(${row}.dp)`;
-  const parentLayout = node.layout.layout || (node.layout.wrap ? "wrap" : "none");
+  const parentLayout = node.layout.wrap ? "resolved" : node.layout.layout || "none";
   const overlays = parentLayout !== "none" ? descendants.filter((child) => child.layout.layoutPosition === "absolute") : [];
   const flowDescendants = overlays.length ? descendants.filter((child) => child.layout.layoutPosition !== "absolute") : descendants;
-  const content = flowDescendants.map((child) => composeNode(child, children, options, depth + 1, parentLayout)).filter(Boolean).join("\n");
+  const content = (node.layout.wrap ? descendants : flowDescendants).map((child) => composeNode(child, children, options, depth + 1, node.layout.wrap ? "resolved" : parentLayout)).filter(Boolean).join("\n");
   const overlayContent = overlays.map((child) => composeNode(child, children, options, depth + 1, "none")).filter(Boolean).join("\n");
   const withOverlays = (body) => overlays.length ? `${indent}Box(modifier = ${containerModifier}) {\n${body}\n${overlayContent}\n${indent}}` : body;
   let modifier = root ? composeModifier(node, "vertical") : suppliedModifier;
@@ -272,7 +287,9 @@ function composeContainer(node, descendants, children, options, depth, root = fa
   }
   if (node.clip) modifier += node.paint.cornerRadius != null ? `.canvasClipShape(${composeRoundedShape(node)})` : ".canvasClipToBounds()";
   const insets = mobilePadding(node);
-  if (insets && node.layout.layout !== "grid") modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
+  // Resolved child offsets include padding; do not apply it again in the
+  // fixed-position wrapped lowering.
+  if (insets && node.layout.layout !== "grid" && !node.layout.wrap) modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
   const containerModifier = isGradientFill(node.paint.fill) ? composeGradientModifier(node, modifier) : modifier;
   if (node.layout.layout === "grid") {
     // Canvas has already resolved track sizes, cell placement, gaps and padding.
@@ -281,7 +298,7 @@ function composeContainer(node, descendants, children, options, depth, root = fa
     const positioned = descendants.map((child) => composeNode(child, children, options, depth + 1, "none")).filter(Boolean).join("\n");
     return `${indent}Box(modifier = ${containerModifier}) {\n${positioned}\n${indent}}`;
   }
-  if (node.layout.wrap) return withOverlays(`${indent}FlowRow(modifier = ${overlays.length ? "Modifier" : containerModifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`);
+  if (node.layout.wrap) return `${indent}Box(modifier = ${containerModifier}) {\n${content}\n${indent}}`;
   if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : containerModifier}, horizontalArrangement = ${horizontalArrangement}, verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
   if (node.layout.layout === "vertical") return withOverlays(`${indent}Column(modifier = ${overlays.length ? "Modifier" : containerModifier}, verticalArrangement = ${verticalArrangement}, horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`);
   return `${indent}Box(modifier = ${containerModifier}) {\n${content}\n${indent}}`;
@@ -321,7 +338,8 @@ function composeModifier(node, parentLayout) {
   // dimensions inside that cell instead of stretching e.g. a circle to a pill.
   if (parentLayout === "grid") value += ".wrapContentSize(androidx.compose.ui.Alignment.TopStart)";
   if (!["grid", "horizontal", "vertical", "wrap"].includes(parentLayout)) value += `.offset(${n(node.geometry.localX)}.dp, ${n(node.geometry.localY)}.dp)`;
-  if (node.type === "text" && node.layout.textGrowth === "auto") value += ".wrapContentSize(androidx.compose.ui.Alignment.TopStart, unbounded = true)";
+  if (parentLayout === "resolved") value += `.size(${n(node.geometry.w)}.dp, ${n(node.geometry.h)}.dp)`;
+  else if (node.type === "text" && node.layout.textGrowth === "auto") value += ".wrapContentSize(androidx.compose.ui.Alignment.TopStart, unbounded = true)";
   else if (node.type === "text" && node.layout.textGrowth === "fixed-width") value += `.width(${n(node.geometry.w)}.dp).wrapContentHeight(androidx.compose.ui.Alignment.Top, unbounded = true)`;
   else value += `.size(${n(node.geometry.w)}.dp, ${n(node.geometry.h)}.dp)`;
   if (node.semantics.decorative) return `${value}.clearAndSetSemantics { }`;
