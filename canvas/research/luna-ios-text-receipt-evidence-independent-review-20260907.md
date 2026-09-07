@@ -24,9 +24,12 @@ CANVAS_IOS_TEXT_RECEIPT_EVIDENCE_ROOT=/Users/emmanuelgyekyeatta-penkra/Penkra/ca
 node --test canvas/src/luna-ios-text-receipt-evidence-independent.test.mjs
 ```
 
-Result: 4 passed, 0 failed, 0 cancelled, 0 skipped. The verifier is portable:
-it has no sibling-worktree default and requires explicit corpus and harness
-roots.
+Result: 5 passed, 0 failed, 0 cancelled, 0 skipped. The verifier is portable:
+its defaults resolve `canvas/scripts` and
+`canvas/research/luna-ios-text-receipt-20260907` relative to the test module;
+the explicit absolute overrides above select the preserved sibling corpus for
+this review. With no overrides in this delivery worktree, the absent helper
+causes a nonzero `ERR_MODULE_NOT_FOUND` failure rather than a skip, as required.
 
 ## Verified evidence
 
