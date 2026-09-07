@@ -10,7 +10,8 @@ import { preflightPdfx4 } from "./pdfx-preflight.mjs";
 const EVIDENCE_DIRECTORY = new URL("../../research/pdfx-image-correction-20260907/", import.meta.url);
 const RETAIN_EVIDENCE = process.env.LUNA_PDFX_IMAGE_CORRECTION_RETAIN_EVIDENCE === "1";
 const SRGB_BYTES = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
-const JPEG_BYTES = Uint8Array.from(Buffer.from("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////2wBDAf//////////////////////////////////////////////////////////////////////////////////////wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIQAxAAAAH/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAEFAqf/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAEDAQE/AYf/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oACAECAQE/AYf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAY/Aqf/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/9oACAEBAAE/IYf/2gAMAwEAAgADAAAAEP/EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQMBAT8QH//EABQRAQAAAAAAAAAAAAAAAAAAABD/2gAIAQIBAT8QH//EABQQAQAAAAAAAAAAAAAAAAAAABD/2gAIAQEAAT8QH//Z", "base64"));
+const JPEG_BYTES = Uint8Array.from(Buffer.from("/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAIBAQEBAQIBAQECAgICAgQDAgICAgUEBAMEBgUGBgYFBgYGBwkIBgcJBwYGCAsICQoKCgoKBggLDAsKDAkKCgr/2wBDAQICAgICAgUDAwUKBwYHCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgr/wAARCAADAAQDAREAAhEBAxEB/8QAFAABAAAAAAAAAAAAAAAAAAAABv/EAB4QAAEFAAMBAQAAAAAAAAAAAAMBAgQFBgcSEwAR/8QAFAEBAAAAAAAAAAAAAAAAAAAAB//EAB8RAAMBAAICAwEAAAAAAAAAAAECAwQREgUGAAcTIv/aAAwDAQACEQMRAD8ARTJt1x9yRu8NgNTd0VRTbuzgQINLeSYjECE3kNX+RGqYiDYxqlJ2I5GN7OX8T44kMXmPSvXvJeQyZ730Ykq7Uzwp/VLXZggebCU+SSsZBIpyeiLyfjx9OZs+v17Xpuoej69HZmHZmKP+QZieSzlUUu55ej9q0LVd3b//2Q==", "base64"));
+const JPEG_SHA256 = "e08260f41d535386f6da2e5bfa5be0777588a26639b4547ebf47c0e3d9b381b8";
 const SERIALIZATION_VARIANTS = Object.freeze([
   { name: "classic-xref", useObjectStreams: false },
   { name: "object-streams", useObjectStreams: true },
@@ -97,10 +98,16 @@ async function jpegPdf() {
   const image = await pdf.embedJpg(JPEG_BYTES);
   const page = pdf.addPage([40, 40]);
   page.drawImage(image, { x: 0, y: 0, width: 20, height: 20 });
+  const info = pdf.context.lookup(pdf.context.trailerInfo.Info);
+  info.set(PDFName.of("CreationDate"), PDFString.of("D:20000101000000Z"));
+  info.set(PDFName.of("ModDate"), PDFString.of("D:20000101000000Z"));
   return pdf.save({ useObjectStreams: false });
 }
 
 const JPEG_BASELINE_BYTES = await jpegPdf();
+
+assert.equal(sha256(JPEG_BYTES), JPEG_SHA256);
+const MAX_DECODED_IMAGE_BYTES = 64 * 1024 * 1024;
 
 function resolve(pdf, value) {
   return value instanceof PDFRef ? pdf.context.lookup(value) : value;
@@ -115,12 +122,20 @@ function images(pdf) {
     .filter(({ object }) => object instanceof PDFRawStream && object.dict.get(PDFName.of("Subtype"))?.decodeText?.() === "Image");
 }
 
+function xObjectDictionary(pdf) {
+  const page = pdf.getPages()[0];
+  const resources = resolve(pdf, page.node.Resources());
+  const xObjects = resources instanceof PDFDict ? resolve(pdf, resources.get(PDFName.of("XObject"))) : undefined;
+  assert.ok(xObjects instanceof PDFDict, "fixture has XObject resources");
+  return xObjects;
+}
+
 function fixtureImages(pdf) {
   const entries = images(pdf);
   const opaque = entries.find(({ object }) => !object.dict.has(PDFName.of("SMask")));
   const alpha = entries.find(({ object }) => object.dict.has(PDFName.of("SMask")));
   assert.ok(opaque && alpha, "writer fixture has opaque and alpha images");
-  return { opaque, alpha };
+  return { opaque, alpha, xObjects: xObjectDictionary(pdf) };
 }
 
 const n = (value) => PDFNumber.of(value);
@@ -147,6 +162,10 @@ const CASES = [
   { name: "named-colorspace-outside-subset", base: "png", mutate: ({ image }) => set(image.dict, "ColorSpace", name("DeviceCMYK")), expected: ["IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"] },
   { name: "imagemask-true-outside-subset", base: "png", mutate: ({ image }) => set(image.dict, "ImageMask", PDFBool.True), expected: ["IMAGE_MASK_OUTSIDE_SUBSET"] },
   { name: "imagemask-nonboolean-invalid", base: "png", mutate: ({ image }) => set(image.dict, "ImageMask", name("True")), expected: ["IMAGE_MASK_INVALID"] },
+  { name: "softmask-context-image-first", base: "png", mutate: ({ opaque, alpha, xObjects }) => { set(alpha.object.dict, "SMask", opaque.raw); reorderImages(xObjects, [opaque, alpha]); }, expected: ["IMAGE_SOFT_MASK_INVALID"], exact: true },
+  { name: "softmask-context-softmask-first", base: "png", mutate: ({ opaque, alpha, xObjects }) => { set(alpha.object.dict, "SMask", opaque.raw); reorderImages(xObjects, [alpha, opaque]); }, expected: ["IMAGE_SOFT_MASK_INVALID"], exact: true },
+  { name: "softmask-imagemask-true-invalid", base: "png", mutate: ({ pdf, image }) => { const mask = grayMask(pdf); const maskObject = resolve(pdf, mask); set(maskObject.dict, "ImageMask", PDFBool.True); set(image.dict, "SMask", mask); }, expected: ["IMAGE_MASK_OUTSIDE_SUBSET", "IMAGE_SOFT_MASK_INVALID"] },
+  { name: "softmask-imagemask-nonboolean-invalid", base: "png", mutate: ({ pdf, image }) => { const mask = grayMask(pdf); const maskObject = resolve(pdf, mask); set(maskObject.dict, "ImageMask", name("True")); set(image.dict, "SMask", mask); }, expected: ["IMAGE_MASK_INVALID", "IMAGE_SOFT_MASK_INVALID"] },
   { name: "missing-softmask-invalid", base: "png", mutate: ({ image }) => set(image.dict, "SMask", name("None")), expected: ["IMAGE_SOFT_MASK_INVALID"] },
   { name: "dangling-softmask-invalid", base: "png", mutate: ({ image }) => set(image.dict, "SMask", PDFRef.of(888888, 0)), expected: ["IMAGE_SOFT_MASK_INVALID"] },
   { name: "nonstream-softmask-invalid", base: "png", mutate: ({ pdf, image }) => set(image.dict, "SMask", pdf.context.obj({ Subtype: name("Image") })), expected: ["IMAGE_SOFT_MASK_INVALID"] },
@@ -163,11 +182,24 @@ const CASES = [
   { name: "softmask-cycle-two-node", base: "png", mutate: ({ image, pdf }) => { const first = grayMask(pdf); const second = grayMask(pdf); set(resolve(pdf, first).dict, "SMask", second); set(resolve(pdf, second).dict, "SMask", first); set(image.dict, "SMask", first); }, expected: ["IMAGE_SOFT_MASK_INVALID"] },
   { name: "unknown-image-filter", base: "png", mutate: ({ image }) => set(image.dict, "Filter", name("UnknownDecode")), expected: ["IMAGE_FILTER_OUTSIDE_SUBSET"] },
   { name: "decode-parameters-outside-subset", base: "png", mutate: ({ image, pdf }) => set(image.dict, "DecodeParms", pdf.context.obj({ Predictor: n(1) })), expected: ["IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET"] },
+  { name: "jpeg-decode-parameters-outside-subset", base: "jpeg", mutate: ({ image, pdf }) => set(image.dict, "DecodeParms", pdf.context.obj({ Predictor: n(1) })), expected: ["IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET"] },
   { name: "truncated-raw-data", base: "png", mutate: ({ image }) => { const data = decodePDFRawStream(image).decode(); del(image.dict, "Filter"); image.contents = data.subarray(0, 1); }, expected: ["IMAGE_DATA_LENGTH_INVALID"] },
   { name: "truncated-flate-data", base: "png", mutate: ({ image }) => { const data = decodePDFRawStream(image).decode(); image.contents = deflateSync(data.subarray(0, 1)); }, expected: ["IMAGE_DATA_LENGTH_INVALID"] },
   { name: "malformed-flate-data", base: "png", mutate: ({ image }) => { image.contents = Uint8Array.of(0); }, expected: ["IMAGE_DATA_INVALID"] },
+  { name: "flate-expansion-overflow", base: "png", mutate: ({ image }) => { image.contents = deflateSync(new Uint8Array(MAX_DECODED_IMAGE_BYTES + 1)); }, expected: ["IMAGE_DATA_INVALID"] },
   { name: "unsafe-declared-dimensions", base: "png", mutate: ({ image }) => set(image.dict, "Width", n(1000000000000)), expected: ["IMAGE_DIMENSION_INVALID"] },
 ];
+
+function reorderImages(xObjects, entries) {
+  const original = [...xObjects.entries()];
+  for (const [key] of original) xObjects.delete(key);
+  for (const entry of entries) {
+    const originalEntry = original.find(([key]) => key.decodeText() === entry.name);
+    assert.ok(originalEntry, `missing image resource ${entry.name}`);
+    xObjects.set(originalEntry[0], originalEntry[1]);
+  }
+  for (const originalEntry of original) if (!entries.some(({ name }) => name === originalEntry[0].decodeText())) xObjects.set(originalEntry[0], originalEntry[1]);
+}
 
 function resolveMask(pdf, image, alpha) {
   const rawMask = image.dict.get(PDFName.of("SMask")) ?? alpha.object.dict.get(PDFName.of("SMask"));
@@ -176,6 +208,16 @@ function resolveMask(pdf, image, alpha) {
 
 assert.ok(CASES.length >= 25);
 if (RETAIN_EVIDENCE) await mkdir(EVIDENCE_DIRECTORY, { recursive: true });
+
+test("JPEG fixture provenance and dimensions are deterministic", async () => {
+  assert.equal(sha256(JPEG_BYTES), JPEG_SHA256);
+  const pdf = await PDFDocument.load(JPEG_BASELINE_BYTES, { updateMetadata: false, throwOnInvalidObject: true });
+  const image = images(pdf)[0].object;
+  assert.equal(image.dict.get(PDFName.of("Width")).asNumber(), 4);
+  assert.equal(image.dict.get(PDFName.of("Height")).asNumber(), 3);
+  assert.equal(image.dict.get(PDFName.of("ColorSpace")).decodeText(), "DeviceRGB");
+  assert.equal(image.dict.get(PDFName.of("BitsPerComponent")).asNumber(), 8);
+});
 
 async function prepare(caseDefinition) {
   const source = caseDefinition.base === "jpeg" ? JPEG_BASELINE_BYTES : PNG_BASELINE_BYTES;
@@ -196,6 +238,7 @@ async function runCase(caseDefinition, variant) {
   assert.equal(sha256(bytes), beforeHash, `${caseDefinition.name}/${variant.name} inspection mutated bytes`);
   assert.deepEqual(issueSummary(first), issueSummary(second), `${caseDefinition.name}/${variant.name} is nondeterministic`);
   const observed = imageCodes(first);
+  if (caseDefinition.exact) assert.deepEqual(observed, caseDefinition.expected, `${caseDefinition.name}/${variant.name} unexpected image issue sequence`);
   for (const expected of caseDefinition.expected) assert.ok(observed.includes(expected), `${caseDefinition.name}/${variant.name} missing ${expected}`);
   if (caseDefinition.expected.length === 0) assert.deepEqual(observed, [], `${caseDefinition.name}/${variant.name} unexpected image issue`);
   const record = { name: caseDefinition.name, serialization: variant.name, base: caseDefinition.base, sha256: beforeHash, bytes: bytes.length, imageIssues: imageIssues(first), issueCodes: first.issues.map(({ code }) => code), expected: caseDefinition.expected };
