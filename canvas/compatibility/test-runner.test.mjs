@@ -7,6 +7,30 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const runner = fileURLToPath(new URL("../scripts/test.mjs", import.meta.url));
+for (const invalidKind of ["missing", "directory", "glob"]) {
+  test(`strict runner rejects ${invalidKind} paths before executing any fixture`, { timeout: 15_000 }, async () => {
+    const root = await mkdtemp(join(tmpdir(), "canvas-test-runner-"));
+    try {
+      const sentinel = join(root, "executed");
+      const fixture = join(root, "fixture.mjs");
+      await writeFile(fixture, `import { writeFileSync } from 'node:fs'; writeFileSync(${JSON.stringify(sentinel)}, 'executed');`);
+      const invalid = invalidKind === "directory" ? root : join(root, invalidKind === "glob" ? "*.mjs" : "missing.mjs");
+      const env = { ...process.env };
+      delete env.NODE_TEST_CONTEXT;
+      const result = await new Promise((resolve, reject) => {
+        const child = spawn(process.execPath, [runner, fixture, invalid], { env, timeout: 10_000 });
+        let stderr = "";
+        child.stderr.on("data", (chunk) => { stderr += chunk; });
+        child.stdout.resume();
+        child.on("error", reject);
+        child.on("close", (code) => resolve({ code, stderr }));
+      });
+      assert.equal(result.code, 1);
+      assert.match(result.stderr, /CANVAS_TEST_FILE_INVALID/u);
+      await assert.rejects(access(sentinel), { code: "ENOENT" });
+    } finally { await rm(root, { recursive: true, force: true }); }
+  });
+}
 test("strict runner rejects CLI flags before executing any fixture", { timeout: 15_000 }, async () => {
   const root = await mkdtemp(join(tmpdir(), "canvas-test-runner-"));
   try {
