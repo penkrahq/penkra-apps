@@ -94,6 +94,7 @@ const state = {
   document: null,
   assets: new Map(),
   imports: Object.create(null),
+  importSignature: null,
   model: null,
   selectedId: null,
   expandedLayerIds: new Set(),
@@ -379,6 +380,7 @@ async function openDocument(documentId) {
       { documentId },
     );
     state.imports = retained.imports;
+    state.importSignature = JSON.stringify(materialize(state.model).imports ?? {});
     state.assets = new Map([...assets, ...retained.assets]);
     invalidateDocumentProjection();
     const offlineUpdate = performanceMonitor.measure(
@@ -433,7 +435,13 @@ async function openDocument(documentId) {
           if (!changed) return;
           state.engineDocumentDirty = true;
           state.engineDocumentDirtyReason = "realtime-remote-update";
-          if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
+          if (JSON.stringify(currentMaterializedDocument().imports ?? {}) !== state.importSignature) {
+            void refreshRetainedImports(documentId)
+              .catch((error) => console.warn("Canvas could not refresh retained imports.", error))
+              .finally(() => {
+                if (state.document?.id === documentId) render();
+              });
+          } else if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
             void refreshDocumentAssets(documentId)
               .catch((error) => console.warn("Canvas could not refresh document assets.", error))
               .finally(() => {
@@ -468,6 +476,7 @@ async function openDocument(documentId) {
       ),
       { documentId },
     );
+    await refreshRetainedImports(documentId);
     collapseEditorPanels();
     state.loading = false;
     setSync("saved", "Saved");
@@ -506,6 +515,7 @@ function closeDocument() {
   state.updateListener = null;
   state.assets = new Map();
   state.imports = Object.create(null);
+  state.importSignature = null;
   state.persistence?.destroy();
   state.undo?.destroy();
   state.model?.doc.destroy();
@@ -556,6 +566,24 @@ async function refreshDocumentAssets(documentId) {
   state.compatibilityDocument = null;
   state.engineDocumentDirty = true;
   state.engineDocumentDirtyReason = "document-assets-refreshed";
+}
+
+async function refreshRetainedImports(documentId) {
+  if (state.document?.id !== documentId || !state.model) return false;
+  const source = currentMaterializedDocument();
+  const signature = JSON.stringify(source.imports ?? {});
+  if (signature === state.importSignature) return false;
+  const retained = await loadRetainedCanvasImports(
+    api,
+    { ...source, imports: source.imports ?? {} },
+    { documentId },
+  );
+  if (state.document?.id !== documentId || !state.model) return false;
+  state.imports = retained.imports;
+  state.importSignature = signature;
+  state.assets = new Map([...state.assets, ...retained.assets]);
+  invalidateDocumentProjection();
+  return true;
 }
 
 function collapseEditorPanels() {
