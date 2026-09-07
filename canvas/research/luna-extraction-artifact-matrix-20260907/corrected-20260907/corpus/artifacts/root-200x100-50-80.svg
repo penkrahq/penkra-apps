@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100" role="img" lang="en">
+<rect id="root-200x100-50-80" x="0" y="0" width="200" height="100" fill="#ffffff" stroke="none" stroke-width="1" opacity="1"/>
+<rect id="root-200x100-50-80-marker" x="10" y="12" width="20" height="16" fill="#123456" stroke="none" stroke-width="1" opacity="1"/>
+<path id="root-200x100-50-80-triangle" d="M 0 25 L 15 0 L 30 25 Z" fill="#ff0000" fill-rule="nonzero" stroke="none" stroke-width="1" vector-effect="non-scaling-stroke" opacity="1" transform="translate(40 15) scale(1 1) translate(0 0)"/>
+</svg>

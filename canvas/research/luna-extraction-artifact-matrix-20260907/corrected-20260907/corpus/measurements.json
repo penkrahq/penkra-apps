@@ -1,0 +1,2214 @@
+{
+  "retained": [
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "png",
+      "sourceIndex": 0,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 17338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": true,
+      "path": "artifacts/root-80x60-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "svg",
+      "sourceIndex": 1,
+      "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8"
+      },
+      "retained": true,
+      "path": "artifacts/root-80x60-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 2,
+      "hash": "7b2665c2350a09745ce80cfdcc2a45e36aebb8aa71bcdda52cfc6d70cf94147a",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 4238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "7b2665c2350a09745ce80cfdcc2a45e36aebb8aa71bcdda52cfc6d70cf94147a"
+      },
+      "retained": true,
+      "path": "artifacts/root-80x60-neg40-neg30.pdf"
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "png",
+      "sourceIndex": 3,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 41338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": true,
+      "path": "artifacts/root-120x90-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "svg",
+      "sourceIndex": 4,
+      "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8"
+      },
+      "retained": true,
+      "path": "artifacts/root-120x90-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 5,
+      "hash": "31c0f98e85a988817df8f2226569a7aa3de2ccb7d772d37e0ed3d9c2ab840f10",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 10238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "31c0f98e85a988817df8f2226569a7aa3de2ccb7d772d37e0ed3d9c2ab840f10"
+      },
+      "retained": true,
+      "path": "artifacts/root-120x90-neg40-neg30.pdf"
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "png",
+      "sourceIndex": 6,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 78138,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": true,
+      "path": "artifacts/root-200x100-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "svg",
+      "sourceIndex": 7,
+      "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e"
+      },
+      "retained": true,
+      "path": "artifacts/root-200x100-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 8,
+      "hash": "4f7cb1b60976a9a678952654e2103ebf181784db8e558a391001a9289d6aca06",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 19438,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "4f7cb1b60976a9a678952654e2103ebf181784db8e558a391001a9289d6aca06"
+      },
+      "retained": true,
+      "path": "artifacts/root-200x100-neg40-neg30.pdf"
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "png",
+      "sourceIndex": 9,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 48538,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": true,
+      "path": "artifacts/root-90x140-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "svg",
+      "sourceIndex": 10,
+      "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25"
+      },
+      "retained": true,
+      "path": "artifacts/root-90x140-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 11,
+      "hash": "a13664c5324d10bcce4cdbdb1f77834911d27805658151d65118fdb2e74bf35a",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 12038,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "a13664c5324d10bcce4cdbdb1f77834911d27805658151d65118fdb2e74bf35a"
+      },
+      "retained": true,
+      "path": "artifacts/root-90x140-neg40-neg30.pdf"
+    }
+  ],
+  "single": [
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "png",
+      "sourceIndex": 0,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 17338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "svg",
+      "sourceIndex": 0,
+      "hash": "e075b51b36dfa085a9456ca75390db07e02a0880d082cde90fc50c883fbdcea3",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "e075b51b36dfa085a9456ca75390db07e02a0880d082cde90fc50c883fbdcea3"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "pdf",
+      "sourceIndex": 0,
+      "hash": "7a8bf8523d4f3902d96f07fd2732c004ef10308f1e8094e005cc8479cfb59ce0",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 4238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "7a8bf8523d4f3902d96f07fd2732c004ef10308f1e8094e005cc8479cfb59ce0"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "png",
+      "sourceIndex": 1,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 17338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "svg",
+      "sourceIndex": 1,
+      "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "pdf",
+      "sourceIndex": 1,
+      "hash": "7a8bf8523d4f3902d96f07fd2732c004ef10308f1e8094e005cc8479cfb59ce0",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 4238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "7a8bf8523d4f3902d96f07fd2732c004ef10308f1e8094e005cc8479cfb59ce0"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 2,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 17338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 2,
+      "hash": "126c152b62f3046f3777adff5575108a25c1b9643b3da3ee68c145ec09c8872e",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "126c152b62f3046f3777adff5575108a25c1b9643b3da3ee68c145ec09c8872e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 2,
+      "hash": "7b2665c2350a09745ce80cfdcc2a45e36aebb8aa71bcdda52cfc6d70cf94147a",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 4238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "7b2665c2350a09745ce80cfdcc2a45e36aebb8aa71bcdda52cfc6d70cf94147a"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "png",
+      "sourceIndex": 3,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 41338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "svg",
+      "sourceIndex": 3,
+      "hash": "35bc286d5f18df6ebd5eb856d696aa04d618664133af8c9d0c8b96f72c518e67",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "35bc286d5f18df6ebd5eb856d696aa04d618664133af8c9d0c8b96f72c518e67"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "pdf",
+      "sourceIndex": 3,
+      "hash": "2308b6f777d89076ce800f37082af3920a9133e32987af0cae8bc15644fdab49",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 10238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "2308b6f777d89076ce800f37082af3920a9133e32987af0cae8bc15644fdab49"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "png",
+      "sourceIndex": 4,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 41338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "svg",
+      "sourceIndex": 4,
+      "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "pdf",
+      "sourceIndex": 4,
+      "hash": "2308b6f777d89076ce800f37082af3920a9133e32987af0cae8bc15644fdab49",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 10238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "2308b6f777d89076ce800f37082af3920a9133e32987af0cae8bc15644fdab49"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 5,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 41338,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 5,
+      "hash": "59824eac8a6ad64b35e2b46baa6e55aa5b7ae08b94b5150b807a3479cd34548a",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "59824eac8a6ad64b35e2b46baa6e55aa5b7ae08b94b5150b807a3479cd34548a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 5,
+      "hash": "31c0f98e85a988817df8f2226569a7aa3de2ccb7d772d37e0ed3d9c2ab840f10",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 10238,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "31c0f98e85a988817df8f2226569a7aa3de2ccb7d772d37e0ed3d9c2ab840f10"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "png",
+      "sourceIndex": 6,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 78138,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "svg",
+      "sourceIndex": 6,
+      "hash": "7f0f09504c5440ad1daebdfd82b308dd0c8b81b2738db46ff7d0cbe7c1a494d0",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "7f0f09504c5440ad1daebdfd82b308dd0c8b81b2738db46ff7d0cbe7c1a494d0"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "pdf",
+      "sourceIndex": 6,
+      "hash": "7d683c9c4417ba8ae4a7dc91d28fbe803b95585d1e9f1c9c2611cee422a9a4f8",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 19438,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "7d683c9c4417ba8ae4a7dc91d28fbe803b95585d1e9f1c9c2611cee422a9a4f8"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "png",
+      "sourceIndex": 7,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 78138,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "svg",
+      "sourceIndex": 7,
+      "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "pdf",
+      "sourceIndex": 7,
+      "hash": "4f7cb1b60976a9a678952654e2103ebf181784db8e558a391001a9289d6aca06",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 19438,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "4f7cb1b60976a9a678952654e2103ebf181784db8e558a391001a9289d6aca06"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 8,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 78138,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 8,
+      "hash": "839acdfe6ca14b1a51fb2d6f31509114b549e623ab74897c0e85a207fd2f3376",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "839acdfe6ca14b1a51fb2d6f31509114b549e623ab74897c0e85a207fd2f3376"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 8,
+      "hash": "4f7cb1b60976a9a678952654e2103ebf181784db8e558a391001a9289d6aca06",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 19438,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "4f7cb1b60976a9a678952654e2103ebf181784db8e558a391001a9289d6aca06"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "png",
+      "sourceIndex": 9,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 48538,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "svg",
+      "sourceIndex": 9,
+      "hash": "5bbd65a3888fe2a64e9404789204dffeae04f45ccd3568de0eab70050d5cdc01",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "5bbd65a3888fe2a64e9404789204dffeae04f45ccd3568de0eab70050d5cdc01"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "pdf",
+      "sourceIndex": 9,
+      "hash": "748f27fa94c9dcdbb70819ef275f6d1274966c04f572636007f887d76e2e7d9c",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 12038,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "748f27fa94c9dcdbb70819ef275f6d1274966c04f572636007f887d76e2e7d9c"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "png",
+      "sourceIndex": 10,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 48538,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "svg",
+      "sourceIndex": 10,
+      "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "pdf",
+      "sourceIndex": 10,
+      "hash": "a13664c5324d10bcce4cdbdb1f77834911d27805658151d65118fdb2e74bf35a",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 12038,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "a13664c5324d10bcce4cdbdb1f77834911d27805658151d65118fdb2e74bf35a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 11,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "triangle": {
+          "bounds": {
+            "x": 81,
+            "y": 32,
+            "width": 58,
+            "height": 48,
+            "samples": 1430
+          },
+          "samples": 1430,
+          "expectedInteriorSampleCount": 1170,
+          "matchedInteriorSampleCount": 1170,
+          "definiteExteriorSampleCount": 48538,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5136494252873564,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 1500,
+          "excludedBoundaryPixels": 2
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 11,
+      "hash": "66899591da63aaad06ad31f88832ddf77b35274edc9407afed3f8f67fb86d797",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "66899591da63aaad06ad31f88832ddf77b35274edc9407afed3f8f67fb86d797"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 11,
+      "hash": "a13664c5324d10bcce4cdbdb1f77834911d27805658151d65118fdb2e74bf35a",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "triangle": {
+          "bounds": {
+            "x": 41,
+            "y": 16,
+            "width": 28,
+            "height": 24,
+            "samples": 355
+          },
+          "samples": 355,
+          "expectedInteriorSampleCount": 220,
+          "matchedInteriorSampleCount": 220,
+          "definiteExteriorSampleCount": 12038,
+          "redExteriorSampleCount": 0,
+          "interiorAgreement": 1,
+          "occupancy": 0.5282738095238095,
+          "expectedOccupancy": 0.5,
+          "expectedArea": 375,
+          "excludedBoundaryPixels": 2
+        },
+        "imageXObjectLines": [],
+        "hash": "a13664c5324d10bcce4cdbdb1f77834911d27805658151d65118fdb2e74bf35a"
+      },
+      "retained": true
+    }
+  ],
+  "summary": {
+    "singleArtifacts": {
+      "requested": 36,
+      "passed": 36
+    },
+    "directoryArtifacts": {
+      "requested": 9,
+      "passed": 9,
+      "records": [
+        {
+          "format": "png",
+          "artifacts": [
+            {
+              "id": "root-80x60-0-0",
+              "path": "directory-png/root-80x60-0-0.png",
+              "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+            },
+            {
+              "id": "root-120x90-0-0",
+              "path": "directory-png/root-120x90-0-0.png",
+              "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+            },
+            {
+              "id": "root-200x100-0-0",
+              "path": "directory-png/root-200x100-0-0.png",
+              "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+            }
+          ],
+          "resultArtifacts": [
+            "root-80x60-0-0.png",
+            "root-120x90-0-0.png",
+            "root-200x100-0-0.png"
+          ]
+        },
+        {
+          "format": "svg",
+          "artifacts": [
+            {
+              "id": "root-80x60-0-0",
+              "path": "directory-svg/root-80x60-0-0.svg",
+              "hash": "e075b51b36dfa085a9456ca75390db07e02a0880d082cde90fc50c883fbdcea3"
+            },
+            {
+              "id": "root-120x90-0-0",
+              "path": "directory-svg/root-120x90-0-0.svg",
+              "hash": "35bc286d5f18df6ebd5eb856d696aa04d618664133af8c9d0c8b96f72c518e67"
+            },
+            {
+              "id": "root-200x100-0-0",
+              "path": "directory-svg/root-200x100-0-0.svg",
+              "hash": "7f0f09504c5440ad1daebdfd82b308dd0c8b81b2738db46ff7d0cbe7c1a494d0"
+            }
+          ],
+          "resultArtifacts": [
+            "root-80x60-0-0.svg",
+            "root-120x90-0-0.svg",
+            "root-200x100-0-0.svg"
+          ]
+        },
+        {
+          "format": "pdf",
+          "artifacts": [
+            {
+              "id": "root-80x60-0-0",
+              "path": "directory-pdf/root-80x60-0-0.pdf",
+              "hash": "9cb60fe062e4844edc586dcc0ee32e5557a2aee5341e1e8a7f6a15a8ee820046"
+            },
+            {
+              "id": "root-120x90-0-0",
+              "path": "directory-pdf/root-120x90-0-0.pdf",
+              "hash": "2a01fb3f0041683aaeb0bd7fb4bacc9031bef5564d182d9f6706c5a35c0681f6"
+            },
+            {
+              "id": "root-200x100-0-0",
+              "path": "directory-pdf/root-200x100-0-0.pdf",
+              "hash": "57eb5c98388e7954f043d46d1888059e00629bf4db40e573fe9749f64ebe48c9"
+            }
+          ],
+          "resultArtifacts": [
+            "root-80x60-0-0.pdf",
+            "root-120x90-0-0.pdf",
+            "root-200x100-0-0.pdf"
+          ]
+        }
+      ]
+    },
+    "multiPdf": {
+      "requested": 1,
+      "pages": 3,
+      "pageMeasurements": [
+        {
+          "width": 80,
+          "height": 60,
+          "marker": {
+            "x": 10,
+            "y": 12,
+            "width": 20,
+            "height": 16,
+            "samples": 320
+          },
+          "markerComparison": {
+            "ok": true,
+            "deltas": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "triangle": {
+            "bounds": {
+              "x": 41,
+              "y": 16,
+              "width": 28,
+              "height": 24,
+              "samples": 355
+            },
+            "samples": 355,
+            "expectedInteriorSampleCount": 220,
+            "matchedInteriorSampleCount": 220,
+            "definiteExteriorSampleCount": 4238,
+            "redExteriorSampleCount": 0,
+            "interiorAgreement": 1,
+            "occupancy": 0.5282738095238095,
+            "expectedOccupancy": 0.5,
+            "expectedArea": 375,
+            "excludedBoundaryPixels": 2
+          },
+          "triangleComparison": {
+            "ok": true,
+            "bounds": {
+              "ok": true,
+              "deltas": {
+                "x": 1,
+                "y": 1,
+                "width": 2,
+                "height": 1
+              }
+            },
+            "occupancyDelta": 0.028273809523809534,
+            "occupancyTolerance": 0.15,
+            "interiorAgreement": 1,
+            "minimumInteriorAgreement": 0.95,
+            "redExteriorSampleCount": 0,
+            "exteriorAllowance": 0
+          }
+        },
+        {
+          "width": 120,
+          "height": 90,
+          "marker": {
+            "x": 10,
+            "y": 12,
+            "width": 20,
+            "height": 16,
+            "samples": 320
+          },
+          "markerComparison": {
+            "ok": true,
+            "deltas": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "triangle": {
+            "bounds": {
+              "x": 41,
+              "y": 16,
+              "width": 28,
+              "height": 24,
+              "samples": 355
+            },
+            "samples": 355,
+            "expectedInteriorSampleCount": 220,
+            "matchedInteriorSampleCount": 220,
+            "definiteExteriorSampleCount": 10238,
+            "redExteriorSampleCount": 0,
+            "interiorAgreement": 1,
+            "occupancy": 0.5282738095238095,
+            "expectedOccupancy": 0.5,
+            "expectedArea": 375,
+            "excludedBoundaryPixels": 2
+          },
+          "triangleComparison": {
+            "ok": true,
+            "bounds": {
+              "ok": true,
+              "deltas": {
+                "x": 1,
+                "y": 1,
+                "width": 2,
+                "height": 1
+              }
+            },
+            "occupancyDelta": 0.028273809523809534,
+            "occupancyTolerance": 0.15,
+            "interiorAgreement": 1,
+            "minimumInteriorAgreement": 0.95,
+            "redExteriorSampleCount": 0,
+            "exteriorAllowance": 0
+          }
+        },
+        {
+          "width": 200,
+          "height": 100,
+          "marker": {
+            "x": 10,
+            "y": 12,
+            "width": 20,
+            "height": 16,
+            "samples": 320
+          },
+          "markerComparison": {
+            "ok": true,
+            "deltas": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "triangle": {
+            "bounds": {
+              "x": 41,
+              "y": 16,
+              "width": 28,
+              "height": 24,
+              "samples": 355
+            },
+            "samples": 355,
+            "expectedInteriorSampleCount": 220,
+            "matchedInteriorSampleCount": 220,
+            "definiteExteriorSampleCount": 19438,
+            "redExteriorSampleCount": 0,
+            "interiorAgreement": 1,
+            "occupancy": 0.5282738095238095,
+            "expectedOccupancy": 0.5,
+            "expectedArea": 375,
+            "excludedBoundaryPixels": 2
+          },
+          "triangleComparison": {
+            "ok": true,
+            "bounds": {
+              "ok": true,
+              "deltas": {
+                "x": 1,
+                "y": 1,
+                "width": 2,
+                "height": 1
+              }
+            },
+            "occupancyDelta": 0.028273809523809534,
+            "occupancyTolerance": 0.15,
+            "interiorAgreement": 1,
+            "minimumInteriorAgreement": 0.95,
+            "redExteriorSampleCount": 0,
+            "exteriorAllowance": 0
+          }
+        }
+      ],
+      "hash": "00ecd6ad62a9a5da7df8ba8f0e0808793de4d5e91e37fec9c174178c8321a157"
+    },
+    "physicalPdf": {
+      "hash": "00bb3ee8b9d5b763a8d9f8b09aebb0acbdf208b9abf0a43348332454d61eaced",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 613.276,
+          "height": 859.89
+        },
+        "pdfLibSize": {
+          "width": 613.2755905511812,
+          "height": 859.8897637795276
+        },
+        "mediaBox": {
+          "x": 0,
+          "y": 0,
+          "width": 613.2755905511812,
+          "height": 859.8897637795276
+        },
+        "bleedBox": {
+          "x": 0,
+          "y": 0,
+          "width": 613.2755905511812,
+          "height": 859.8897637795276
+        },
+        "trimBox": {
+          "x": 9,
+          "y": 9,
+          "width": 595.2755905511812,
+          "height": 841.8897637795276
+        },
+        "imageXObjectLines": [],
+        "rendered": {
+          "width": 614,
+          "height": 860
+        },
+        "marker": {
+          "x": 83,
+          "y": 177,
+          "width": 149,
+          "height": 225,
+          "samples": 33525
+        },
+        "markerComparison": {
+          "ok": false,
+          "deltas": {
+            "x": 64,
+            "y": 156,
+            "width": 129,
+            "height": 209
+          }
+        },
+        "triangle": null,
+        "triangleComparison": null
+      }
+    },
+    "rejected": {
+      "multiPngSvg": "CANVAS_EXTRACT_FORMAT_SINGLE_UNIT",
+      "pdfX4": "CANVAS_PDF_PROFILE_UNVERIFIED"
+    }
+  }
+}

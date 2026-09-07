@@ -1,0 +1,25 @@
+{
+  "oracle": {
+    "apex": "top",
+    "excludedBoundaryPixels": 2,
+    "minimumInteriorAgreement": 0.95,
+    "definiteExteriorExactRedAllowance": 0,
+    "occupancyTolerance": 0.15
+  },
+  "singlePngTriangleChecks": { "requested": 12, "passed": 12 },
+  "directoryPngTriangleChecks": { "requested": 3, "passed": 3 },
+  "singlePdfRenderedTriangleChecks": { "requested": 12, "passed": 12 },
+  "directoryPdfRenderedTriangleChecks": { "requested": 3, "passed": 3 },
+  "multiPdfRenderedTriangleChecks": { "requested": 3, "passed": 3, "ordered": true },
+  "physicalPdfRenderedTriangleChecks": { "requested": 1, "passed": 1 },
+  "realPngScaleChecks": { "scale1": "pass", "scale2": "pass" },
+  "svgNativeBrowserChecks": { "newArtifacts": 12, "retainedArtifacts": 4, "passed": 16 },
+  "negativeFixtures": {
+    "missing": "rejected",
+    "fullRectangle": "rejected",
+    "verticallyFlippedSameBoundsAndArea": "rejected",
+    "shiftedThreePixels": "rejected"
+  },
+  "historicalReport": "../corpus/verification.md",
+  "unrun": []
+}
