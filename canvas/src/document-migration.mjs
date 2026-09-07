@@ -235,12 +235,12 @@ export async function createCanvasMigrationCopy(api, documentId, payload, {
   let reportPath = null;
   let reportCreated = false;
   try {
-    const sourceAssets = validateAssetInventory(await api.listAssets(documentId), documentId);
+    const sourceAssets = payload.assets === undefined
+      ? validateAssetInventory(await api.listAssets(documentId), documentId)
+      : validateAssetInventory(payload.assets, documentId);
     copy = await api.createDocument({ title: copyTitle, source: migrated.document, initialUpdate: encodeState(model) });
     if (!copy?.id) throw migrationError("Canvas migration createDocument returned no copy ID.");
-    for (const asset of sourceAssets) {
-      await api.uploadAsset(copy.id, { ...asset, bytes: await api.readAsset(documentId, asset) });
-    }
+    await transferAssets(api, documentId, copy.id, sourceAssets);
     const verified = await api.getDocumentProjection(copy.id);
     if (!verified?.snapshot?.source || !sameProjection(verified.snapshot.source, migrated.document)) {
       throw migrationError(`Migrated copy ${copy.id} did not round-trip its canonical projection.`);
@@ -316,6 +316,38 @@ function sameAssetInventory(left, right) {
     const copy = byPath.get(asset.path);
     return copy?.sha256 === asset.sha256 && copy.size === asset.size && copy.mimeType === asset.mimeType;
   });
+}
+
+async function transferAssets(api, sourceDocumentId, destinationDocumentId, assets) {
+  // Keep a bounded number of read/upload chains active. Each worker owns an
+  // asset index, and the failure flag prevents any worker from claiming more
+  // work after an error while Promise.all below settles already-started work.
+  const next = { index: 0 };
+  let failed = false;
+  const failures = [];
+  const worker = async () => {
+    while (true) {
+      if (failed) return;
+      const index = next.index;
+      next.index += 1;
+      if (index >= assets.length) return;
+      const asset = assets[index];
+      try {
+        const bytes = await api.readAsset(sourceDocumentId, asset);
+        await api.uploadAsset(destinationDocumentId, { ...asset, bytes });
+      } catch (error) {
+        failures.push({ index, error });
+        failed = true;
+        return;
+      }
+    }
+  };
+  const workerCount = Math.min(4, assets.length);
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  if (failures.length) {
+    failures.sort((left, right) => left.index - right.index);
+    throw failures[0].error;
+  }
 }
 
 function sameProjection(left, right) {

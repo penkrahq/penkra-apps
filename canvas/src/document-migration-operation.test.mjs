@@ -26,6 +26,19 @@ function emptySource() {
   return { module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [] };
 }
 
+function assetInventory(count) {
+  return Array.from({ length: count }, (_, index) => ({
+    path: `images/${index}.png`,
+    sha256: `sha-${index}`,
+    size: 1,
+    mimeType: "image/png",
+  }));
+}
+
+function pause(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 function fakeApi({
   payload,
   copiedAssets = [],
@@ -143,4 +156,114 @@ test("rename failure deletes the copy and report", async () => {
   await assert.rejects(createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory }), /rename failed/u);
   assert.deepEqual(events.filter(([name]) => name === "delete"), [["delete", COPY_ID]]);
   await assert.rejects(access(reportPath));
+});
+
+test("transfers eight payload assets concurrently with at most four in flight and one read/upload each", async () => {
+  const assets = assetInventory(8);
+  const originalAssets = structuredClone(assets);
+  const payload = makePayload(emptySource());
+  payload.assets = assets;
+  const events = [];
+  let active = 0;
+  let maximum = 0;
+  const reads = new Map();
+  const uploads = new Map();
+  const api = fakeApi({
+    payload,
+    sourceAssets: assets,
+    copiedAssets: [...assets].reverse(),
+    events,
+    readAsset: async (_id, asset) => {
+      reads.set(asset.path, (reads.get(asset.path) ?? 0) + 1);
+      active += 1;
+      maximum = Math.max(maximum, active);
+      await pause(12);
+      active -= 1;
+      return new Uint8Array([asset.path.charCodeAt(7)]);
+    },
+    uploadAsset: async (_id, asset) => {
+      uploads.set(asset.path, (uploads.get(asset.path) ?? 0) + 1);
+      active += 1;
+      maximum = Math.max(maximum, active);
+      await pause(12);
+      active -= 1;
+    },
+  });
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-concurrency-"));
+  const result = await createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory });
+  assert.equal(result.assetCount, 8);
+  assert.equal(maximum, 4);
+  assert.ok(maximum > 1);
+  assert.deepEqual([...reads.values()], Array(8).fill(1));
+  assert.deepEqual([...uploads.values()], Array(8).fill(1));
+  assert.deepEqual(payload.assets, originalAssets);
+  assert.equal(events.filter(([name]) => name === "list").length, 0);
+});
+
+test("asset failure is reported in source order and cleanup waits for every started transfer", async () => {
+  const assets = assetInventory(8);
+  const payload = makePayload(emptySource());
+  payload.assets = assets;
+  const events = [];
+  let active = 0;
+  const api = fakeApi({
+    payload,
+    sourceAssets: assets,
+    copiedAssets: [],
+    events,
+    readAsset: async (_id, asset) => new Uint8Array([asset.path.charCodeAt(7)]),
+    uploadAsset: async (_id, asset) => {
+      active += 1;
+      try {
+        if (asset.path === "images/1.png") {
+          await pause(5);
+          throw new Error("failure at source index 1");
+        }
+        if (asset.path === "images/0.png") await pause(30);
+        else await pause(10);
+      } finally {
+        active -= 1;
+      }
+    },
+  });
+  const originalDelete = api.deleteDocument;
+  api.deleteDocument = async (id) => {
+    events.push(["delete-state", id, active]);
+    return originalDelete.call(api, id);
+  };
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-failure-settle-"));
+  await assert.rejects(
+    createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory }),
+    { message: "failure at source index 1" },
+  );
+  assert.deepEqual(events.filter(([name]) => name === "delete"), [["delete", COPY_ID]]);
+  assert.deepEqual(events.filter(([name]) => name === "delete-state"), [["delete-state", COPY_ID, 0]]);
+  const deleteIndex = events.findIndex(([name]) => name === "delete");
+  assert.ok(events.every((event, index) => event[0] !== "upload" || index < deleteIndex));
+});
+
+test("asset inventory comparison is independent of source and destination ordering", async () => {
+  const assets = assetInventory(3);
+  const payload = makePayload(emptySource());
+  payload.assets = assets;
+  const events = [];
+  const api = fakeApi({ payload, sourceAssets: assets, copiedAssets: [assets[2], assets[0], assets[1]], events });
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-inventory-order-"));
+  const result = await createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory });
+  assert.equal(result.assetCount, 3);
+});
+
+test("asset inventory falls back to listAssets only when payload assets are absent", async () => {
+  const assets = assetInventory(2);
+  const payload = makePayload(emptySource());
+  let sourceListCalls = 0;
+  const fallbackApi = fakeApi({ payload, sourceAssets: assets, copiedAssets: assets });
+  const listAssets = fallbackApi.listAssets;
+  fallbackApi.listAssets = async (id) => {
+    if (id === SOURCE_ID) sourceListCalls += 1;
+    return listAssets.call(fallbackApi, id);
+  };
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-inventory-fallback-"));
+  await createCanvasMigrationCopy(fallbackApi, SOURCE_ID, payload, { reportDirectory });
+  assert.equal(sourceListCalls, 1);
 });
