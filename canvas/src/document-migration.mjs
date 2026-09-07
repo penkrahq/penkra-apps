@@ -580,7 +580,9 @@ async function transferAssets(api, sourceDocumentId, destinationDocumentId, asse
           const bytes = await api.readAsset(sourceDocumentId, entry.asset);
           await api.uploadAsset(destinationDocumentId, { ...entry.asset, bytes });
         } catch (error) {
-          failures.push({ index: entry.index, error });
+          const contextual = new Error(`Asset ${entry.asset.path} (${entry.asset.mimeType}, ${entry.asset.sha256}) failed: ${String(error?.message ?? error)}`);
+          contextual.code = error?.code;
+          failures.push({ index: entry.index, error: contextual });
           failed = true;
           return;
         }

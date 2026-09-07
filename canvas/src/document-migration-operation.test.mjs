@@ -267,7 +267,7 @@ test("asset failure is reported in source order and cleanup waits for every star
   const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-failure-settle-"));
   await assert.rejects(
     createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory }),
-    { message: "failure at source index 1" },
+    /Asset images\/1\.png \(image\/png, sha-1\) failed: failure at source index 1/u,
   );
   assert.deepEqual(events.filter(([name]) => name === "delete"), [["delete", COPY_ID]]);
   assert.deepEqual(events.filter(([name]) => name === "delete-state"), [["delete-state", COPY_ID, 0]]);
