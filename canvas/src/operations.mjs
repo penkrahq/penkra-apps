@@ -18,6 +18,7 @@ import { publishCanvasLibrary } from "./library-publish-workflow.mjs";
 import { readPublishedCanvasLibrary } from "./library-publication-head.mjs";
 import { acceptCanvasLibrary } from "./library-accept-workflow.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
+import { assertExportAvailable } from "./export-availability.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -271,6 +272,7 @@ runtime.operations.handle("documents.undo", async ({ documentId, operationId }) 
 });
 
 runtime.operations.handle("documents.export", async (input) => {
+  assertExportAvailable(input.format);
   if (input.bindings !== undefined && (!Array.isArray(input.bindings) || input.bindings.length === 0 || input.bindings.length > 1000)) {
     const error = new Error("Export bindings must contain between one and 1000 binding sets.");
     error.code = "CANVAS_EXPORT_BINDINGS";

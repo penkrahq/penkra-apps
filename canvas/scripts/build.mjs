@@ -4,10 +4,10 @@ import { join } from "node:path";
 
 const root = new URL("../", import.meta.url);
 const output = new URL("../dist/", import.meta.url);
-const { assertAllCapabilityTables } = await import(new URL("src/capability-tables.mjs", root));
+const { assertReleaseExportCapabilities } = await import(new URL("src/export-availability.mjs", root));
 const developmentBuildWithUnverifiedCapabilities =
   process.env.CANVAS_DEV_BUILD_WITH_UNVERIFIED_CAPABILITIES === "1";
-if (!developmentBuildWithUnverifiedCapabilities) assertAllCapabilityTables();
+if (!developmentBuildWithUnverifiedCapabilities) assertReleaseExportCapabilities();
 const yjsEntry = new URL("node_modules/yjs/dist/yjs.mjs", root).pathname;
 const lazyOperationModules = ["document-inspection", "script-runtime", "document-screenshot"];
 const dedupeYjsPlugin = {
