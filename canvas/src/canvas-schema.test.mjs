@@ -15,6 +15,10 @@ test("published import identities and explicit public surfaces are structural do
   assert.ok(!capabilityPathInventory().includes("root.library"));
   for (const change of [
     (copy) => { copy.imports.ui.contentHash = "bad"; },
+    (copy) => { copy.imports.ui.contentHash = []; },
+    (copy) => { copy.imports.ui.contentHash = {}; },
+    (copy) => { copy.imports.ui.contentHash = 7; },
+    (copy) => { copy.imports.ui.contentHash = null; },
     (copy) => { delete copy.imports.ui.releaseId; },
     (copy) => { copy.imports.ui.pin = "live"; },
     (copy) => { copy.library.public.push({ kind: "component", id: "slide" }); },
@@ -49,6 +53,12 @@ test("accepted retention descriptors are strict storage-owned import data", () =
     assert.throws(() => validateCanvasDocument(invalid));
     assert.throws(() => validateLibraryStorageDescriptor(invalid.imports.ui.retention), { code: "CANVAS_IMPORT_INTEGRITY" });
   }
+  for (const sha256 of [[], {}, 7, null]) {
+    const invalid = structuredClone(source);
+    invalid.imports.ui.retention.sha256 = sha256;
+    assert.throws(() => validateLibraryStorageDescriptor(invalid.imports.ui.retention), { code: "CANVAS_IMPORT_INTEGRITY" });
+  }
+  assert.deepEqual(validateLibraryStorageDescriptor(source.imports.ui.retention), source.imports.ui.retention);
 });
 
 test("retention requires an accepted identity while discovery follow may omit it", () => {

@@ -41,6 +41,17 @@ test("normalizeImportRecord clones and validates an accepted retention descripto
   }
 });
 
+test("normalizeImportRecord does not coerce non-string content hashes", () => {
+  const contentHash = "a".repeat(64);
+  const valid = normalizeImportRecord({ documentId: "library", updatePolicy: "pinned", releaseId: "r1", contentHash });
+  assert.equal(valid.contentHash, contentHash);
+  for (const invalidHash of [[], {}, 7, null]) {
+    assert.throws(() => normalizeImportRecord({
+      documentId: "library", updatePolicy: "pinned", releaseId: "r1", contentHash: invalidHash,
+    }), { code: "CANVAS_IMPORT_INVALID" });
+  }
+});
+
 test("normalizeImportRecord requires accepted IDs whenever retention is present", () => {
   const contentHash = "a".repeat(64);
   const retention = { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 0 };
