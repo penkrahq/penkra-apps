@@ -372,20 +372,6 @@ async function openDocument(documentId) {
       () => state.persistence.whenSynced,
       { documentId },
     );
-    const retainedSource = materialize(state.model);
-    const retained = await performanceMonitor.measureAsync(
-      "document.retained-imports",
-      () => loadRetainedCanvasImports(
-        api,
-        { ...retainedSource, imports: retainedSource.imports ?? {} },
-        { documentId },
-      ),
-      { documentId },
-    );
-    state.imports = retained.imports;
-    state.importSignature = JSON.stringify(retainedSource.imports ?? {});
-    state.assets = new Map([...assets, ...retained.assets]);
-    invalidateDocumentProjection();
     const offlineUpdate = performanceMonitor.measure(
       "document.offline-diff",
       () => Y.encodeStateAsUpdate(state.model.doc, serverStateVector),
@@ -439,7 +425,7 @@ async function openDocument(documentId) {
           state.engineDocumentDirty = true;
           state.engineDocumentDirtyReason = "realtime-remote-update";
           if (JSON.stringify(currentMaterializedDocument().imports ?? {}) !== state.importSignature) {
-            void scheduleRetainedImportRefresh(documentId);
+            if (!state.loading) void scheduleRetainedImportRefresh(documentId);
           } else if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
             void refreshDocumentAssets(documentId)
               .catch((error) => console.warn("Canvas could not refresh document assets.", error))
@@ -476,8 +462,11 @@ async function openDocument(documentId) {
       { documentId },
     );
     await reconcileFromServer(documentId);
-    if (state.importRefreshPromise) await state.importRefreshPromise;
-    await refreshRetainedImports(documentId, true);
+    await performanceMonitor.measureAsync(
+      "document.retained-imports",
+      () => refreshRetainedImports(documentId, true),
+      { documentId },
+    );
     collapseEditorPanels();
     state.loading = false;
     setSync("saved", "Saved");
