@@ -6,7 +6,7 @@ import { join } from "node:path";
 
 import {
   ACTUAL_CROP_METHOD, DIAGNOSTIC_CASE_IDS, DIAGNOSTIC_STATES, STALE_REGISTRATION_LABEL,
-  analyzeRetainedEvidence, boundsFromMask, comparePixelArrays, connectedComponents,
+  analyzeRetainedEvidence, boundsFromMask, comparePixelArrays, connectedComponents, mismatchCategories, mismatchCategoryTotal,
 } from "../scripts/luna-ios-text-receipt-offline-diagnostic-20260907.mjs";
 
 const evidenceRoot = new URL("../research/luna-ios-text-receipt-20260907/native-run-01", import.meta.url).pathname;
@@ -29,6 +29,10 @@ test("synthetic foreground components and comparator preserve exact pixel rule",
   actualPixels[(3 * 7 + 3) * 4] = 10;
   const comparison = comparePixelArrays({ width: 7, height: 7, pixels: referencePixels }, { width: 7, height: 7, pixels: actualPixels });
   assert.equal(comparison.comparedPixels, 9); assert.equal(comparison.mismatchedPixels, 1); assert.deepEqual(comparison.bounds, { minX: 3, minY: 3, maxX: 3, maxY: 3, width: 1, height: 1, count: 1 });
+  const overlapMask = new Uint8Array(9 * 9); for (let y = 0; y < 9; y += 1) for (let x = 0; x < 9; x += 1) { const outer = x === 0 || x === 8 || y === 0 || y === 8; const inner = ((x === 2 || x === 6) && y >= 2 && y <= 6) || ((y === 2 || y === 6) && x >= 2 && x <= 6); if (outer || inner) overlapMask[y * 9 + x] = 1; }
+  const overlapComponents = connectedComponents(overlapMask, 9, 9); assert.equal(overlapComponents.length, 2); assert.ok(overlapComponents[0].maxX >= overlapComponents[1].minX && overlapComponents[0].maxY >= overlapComponents[1].minY, "synthetic component bounds must overlap");
+  const overlapReference = { width: 9, height: 9, pixels: new Uint8Array(9 * 9 * 4) }; const overlapActual = { width: 9, height: 9, pixels: new Uint8Array(9 * 9 * 4) }; for (let index = 0; index < overlapReference.pixels.length; index += 4) { overlapReference.pixels.set([18, 52, 86, 255], index); overlapActual.pixels.set([18, 52, 86, 255], index); } for (let index = 0; index < overlapMask.length; index += 1) if (overlapMask[index]) overlapActual.pixels[index * 4] = 10;
+  const overlapCount = overlapMask.reduce((sum, value) => sum + value, 0); const categories = mismatchCategories(overlapReference, overlapActual, null, { mask: overlapMask, components: overlapComponents, mismatchedPixels: overlapCount }, "case-01"); assert.equal(mismatchCategoryTotal(categories), overlapCount);
 });
 
 test("retained diagnostic is exact 30-entry Cartesian evidence and recomputes deterministically", async () => {
@@ -47,6 +51,7 @@ test("retained diagnostic is exact 30-entry Cartesian evidence and recomputes de
     assert.equal(generated.report.comparator.actualCropMethod, ACTUAL_CROP_METHOD);
     assert.ok(generated.report.entries.every(({ provenance }) => provenance.fullFrameHashesMatchRecorded && provenance.fullFrameStable));
     assert.ok(generated.report.entries.every(({ comparison }) => comparison.comparedPixels > 0 && comparison.mismatchedPixels >= 0));
+    assert.ok(generated.report.entries.every(({ comparison, mismatchClassification }) => Object.values(mismatchClassification).reduce((sum, value) => sum + value, 0) === comparison.mismatchedPixels));
   } finally { await rm(temp, { recursive: true, force: true }); }
 });
 
