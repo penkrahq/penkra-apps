@@ -68,12 +68,21 @@ test("SwiftUI emits paragraph alignment when all paragraphs agree and preserves 
   assert.match(swift, /Text\("First\\n"\)/u);
 });
 
-test("SwiftUI rejects mixed paragraph alignments and unsupported landmark/link-name semantics explicitly", () => {
+test("SwiftUI rejects mixed paragraph alignments and omits unsupported landmark/link-name semantics", () => {
   const mixed = sourceDocument("ios", { children: [{ id: "copy", type: "text", width: 200, height: 80, content: "A\nB", paragraphs: [{ from: 0, to: 2, align: "start" }, { from: 2, to: 3, align: "end" }] }] });
   assert.throws(() => exportSwiftUI(ir("ios", mixed)), { code: "CANVAS_MOBILE_SEMANTICS_UNSUPPORTED" });
   for (const field of ["landmark", "linkName"]) {
     const document = sourceDocument("ios", { screen: { [field]: field === "landmark" ? "main" : "Open" } });
-    assert.throws(() => exportSwiftUI(ir("ios", document)), { code: "CANVAS_MOBILE_SEMANTICS_UNSUPPORTED" });
+    const swift = exportSwiftUI(ir("ios", document)).get("SemanticScreen.swift");
+    assert.doesNotMatch(swift, /main|Open/u);
+  }
+});
+
+test("Compose omits unsupported landmark/link-name semantics without inventing labels or actions", () => {
+  for (const field of ["landmark", "linkName"]) {
+    const document = sourceDocument("android", { screen: { [field]: field === "landmark" ? "main" : "Open" } });
+    const kotlin = exportCompose(ir("android", document)).get("SemanticScreen.kt");
+    assert.doesNotMatch(kotlin, /main|Open/u);
   }
 });
 

@@ -247,8 +247,6 @@ function swiftTextAlignment(node) {
 
 function swiftAccessibility(node) {
   if (node.semantics.decorative) return ".accessibilityRepresentation { EmptyView() }.accessibilityHidden(true)";
-  if (node.semantics.landmark != null) throw mobileSemanticError(node.id, `SwiftUI has no native landmark role for ${JSON.stringify(node.semantics.landmark)}.`);
-  if (node.semantics.linkName != null) throw mobileSemanticError(node.id, "SwiftUI has no native link-name semantic without a link action.");
   let value = node.semantics.description ? `.accessibilityLabel(${JSON.stringify(node.semantics.description)})` : "";
   if (node.type === "text") {
     const levels = new Set(node.semantics.paragraphs.map((paragraph) => paragraph.headingLevel).filter(Boolean));
@@ -442,8 +440,6 @@ function composeModifier(node, parentLayout) {
   else if (node.type === "text" && node.layout.textGrowth === "fixed-width") value += `.width(${n(node.geometry.w)}.dp).wrapContentHeight(androidx.compose.ui.Alignment.Top, unbounded = true)`;
   else value += `.size(${n(node.geometry.w)}.dp, ${n(node.geometry.h)}.dp)`;
   if (node.semantics.decorative) return `${value}.clearAndSetSemantics { }`;
-  if (node.semantics.landmark != null) throw mobileSemanticError(node.id, `Compose has no native landmark role for ${JSON.stringify(node.semantics.landmark)}.`);
-  if (node.semantics.linkName != null) throw mobileSemanticError(node.id, "Compose has no native link-name semantic without a link action.");
   if (node.semantics.description) value += `.semantics { contentDescription = ${JSON.stringify(node.semantics.description)} }`;
   if (node.type === "text") {
     const levels = new Set(node.semantics.paragraphs.map((paragraph) => paragraph.headingLevel).filter(Boolean));

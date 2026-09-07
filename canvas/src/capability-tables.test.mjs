@@ -82,3 +82,13 @@ test("mobile icon vocabulary uses the deterministic raster fallback", () => {
     }
   }
 });
+
+test("mobile landmark and link-purpose fields are intentional semantic omissions", () => {
+  for (const format of ["swift", "kotlin"]) {
+    const table = capabilityTableFor(format).properties;
+    for (const path of ["properties.accessibility.landmark", "properties.accessibility.linkName"]) {
+      assert.equal(table[path].verdict, "ignore", `${format}:${path}`);
+      assert.match(table[path].reason, /without inventing navigation behavior/u);
+    }
+  }
+});
