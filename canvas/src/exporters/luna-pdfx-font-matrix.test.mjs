@@ -436,24 +436,25 @@ for (const caseDefinition of CASES) {
   }
 }
 
-test("aggregate configured PDF/X export keeps closed publication gate", async () => {
+test("aggregate configured PDF/X export returns a writer-verified embedded-font PDF", async () => {
   const source = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
   const printer = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
-  await assert.rejects(
-    () => exportPdf(makeIR(), {
-      profile: "PDF/X-4",
-      outputIntent: printer,
-      sourceColorProfile: source,
-      fonts: { "Inter:400": FONT_BYTES },
-    }),
-    (error) => {
-      assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED");
-      assert.equal(error.preflight.conformant, false);
-      assert.deepEqual(error.preflight.issues.filter(({ code }) => code.startsWith("FONT_") || code.startsWith("TEXT_FONT_")), []);
-      assert.ok(error.preflight.uncovered.length > 0);
-      return true;
-    },
-  );
+  const bytes = await exportPdf(makeIR(), {
+    profile: "PDF/X-4",
+    outputIntent: printer,
+    sourceColorProfile: source,
+    fonts: { "Inter:400": FONT_BYTES },
+  });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  const report = await preflightPdfx4(bytes);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset.verified, true);
+  assert.equal(report.conformant, false);
+  assert.ok(pageFonts(pdf).entries.length >= 1);
+  assert.ok(pageFont(pdf).program);
 });
 
 test("font matrix has no skipped cases and writes machine-readable evidence", async () => {

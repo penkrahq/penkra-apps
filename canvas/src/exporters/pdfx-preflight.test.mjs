@@ -8,18 +8,21 @@ import { exportPdf } from "./pdf.mjs";
 const srgb = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
 const codes = (report) => report.issues.map((issue) => issue.code);
 
-test("a clean generated-subset report cannot publish PDF/X while conformance coverage is incomplete", async () => {
+test("a clean generated-subset writer publishes while standalone conformance remains incomplete", async () => {
   const printer = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
-  await assert.rejects(() => exportPdf({ outputs: [{ id: "frame", width: 200, height: 300, nodes: [] }] }, {
+  const bytes = await exportPdf({ outputs: [{ id: "frame", width: 200, height: 300, nodes: [] }] }, {
     profile: "PDF/X-4", outputIntent: printer, sourceColorProfile: srgb,
-  }), (error) => {
-    assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED");
-    assert.deepEqual(error.preflight.issues, []);
-    assert.equal(error.preflight.canvasWriterSubset.verified, true);
-    assert.equal(error.preflight.conformant, false);
-    assert.ok(error.preflight.uncovered.length > 0);
-    return true;
   });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  assert.deepEqual(pdf.getPages()[0].getSize(), { width: 200, height: 300 });
+  const report = await preflightPdfx4(bytes);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset.verified, true);
+  assert.equal(report.conformant, false);
+  assert.ok(report.uncovered.length > 0);
 });
 
 test("preflight invokes the subset policy after parsing and preserves the closed baseline", async () => {

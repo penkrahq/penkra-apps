@@ -240,13 +240,17 @@ test("operators inside strings and comments do not alter cross-stream state", as
   assert.deepEqual(contentIssues(report), [], "serialized lexical data must not execute");
 });
 
-test("configured PDF/X exporter reaches the unchanged publication gate with zero content subset issues", async () => {
-  await assert.rejects(() => exportPdf({ outputs: [{ id: "page", width: 200, height: 300, physical: { w: 200, h: 300, unit: "px" }, nodes: [] }] }, {
+test("configured PDF/X exporter returns a writer-verified PDF with zero content subset issues", async () => {
+  const bytes = await exportPdf({ outputs: [{ id: "page", width: 200, height: 300, physical: { w: 200, h: 300, unit: "px" }, nodes: [] }] }, {
     profile: "PDF/X-4", outputIntent: printer, sourceColorProfile: srgb,
-  }), (error) => {
-    assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED");
-    assert.deepEqual(error.preflight.issues.filter((issue) => contentCodes.has(issue.code)), []);
-    assert.equal(error.preflight.conformant, false);
-    return true;
   });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  const report = await preflightPdfx4(bytes);
+  assert.deepEqual(report.issues.filter((issue) => contentCodes.has(issue.code)), []);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset.verified, true);
+  assert.equal(report.conformant, false);
 });

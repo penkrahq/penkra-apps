@@ -183,14 +183,19 @@ async function runCase(definition, serialization) {
 
 for (const definition of CASES) for (const serialization of SERIALIZATIONS) test(`serialized metadata ${definition.name} ${serialization.name}`, async () => runCase(definition, serialization));
 
-test("fully configured PDF/X export remains closed after metadata verification", async () => {
-  await assert.rejects(() => exportPdf({ outputs: [{ id: "metadata-gate", width: 200, height: 300, nodes: [] }] }, {
+test("fully configured PDF/X export returns metadata-wired writer bytes", async () => {
+  const bytes = await exportPdf({ outputs: [{ id: "metadata-gate", width: 200, height: 300, nodes: [] }] }, {
     profile: "PDF/X-4", outputIntent: PRINTER_BYTES, sourceColorProfile: SRGB_BYTES,
-  }), (error) => {
-    assert.match(error.code, /^CANVAS_PDF_PROFILE_/u);
-    assert.equal(error.preflight.conformant, false);
-    return true;
   });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  assert.ok(pdf.catalog.get(PDFName.of("Metadata")));
+  const report = await preflightPdfx4(bytes);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset.verified, true);
+  assert.equal(report.conformant, false);
 });
 
 test("serialized metadata validation isolates parser state", async () => {

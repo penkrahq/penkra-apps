@@ -238,24 +238,25 @@ test("configured image baseline reports ordinary/helper/subset findings without 
   assert.ok(imageEntries(await PDFDocument.load(BASELINE_BYTES, { updateMetadata: false })).length === 2);
 });
 
-test("fully configured PDF/X image export keeps the closed gate and returns no artifact", async () => {
-  await assert.rejects(
-    () => exportPdf(imageIR(), {
-      title: "Canvas configured image matrix",
-      profile: "PDF/X-4",
-      outputIntent: PRINTER_BYTES,
-      sourceColorProfile: SRGB_BYTES,
-      rasterizeNode: async (id) => id === "opaque-image" ? OPAQUE_PNG : TRANSPARENT_PNG,
-    }),
-    (error) => {
-      assert.ok(["CANVAS_PDF_PROFILE_UNVERIFIED", "CANVAS_PDF_PROFILE_INVALID"].includes(error.code));
-      assert.ok(error.preflight);
-      assert.equal(error.preflight.conformant, false);
-      assert.ok(Array.isArray(error.preflight.issues));
-      assert.ok(Array.isArray(error.preflight.uncovered));
-      return true;
-    },
-  );
+test("fully configured PDF/X image export returns writer-verified bytes with alpha image resources", async () => {
+  const bytes = await exportPdf(imageIR(), {
+    title: "Canvas configured image matrix",
+    profile: "PDF/X-4",
+    outputIntent: PRINTER_BYTES,
+    sourceColorProfile: SRGB_BYTES,
+    rasterizeNode: async (id) => id === "opaque-image" ? OPAQUE_PNG : TRANSPARENT_PNG,
+  });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  const report = await preflightPdfx4(bytes);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset.verified, true);
+  assert.equal(report.conformant, false);
+  const entries = imageEntries(pdf);
+  assert.equal(entries.length, 2);
+  assert.ok(entries.some(({ object }) => object.dict.has(PDFName.of("SMask"))));
 });
 
 test("successive image PDFs do not leak checker state", async () => {

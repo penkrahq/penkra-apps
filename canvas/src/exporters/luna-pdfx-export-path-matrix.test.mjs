@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { deflateSync } from "node:zlib";
 import test from "node:test";
+import { PDFArray, PDFDict, PDFDocument, PDFName, PDFRawStream, PDFRef, decodePDFRawStream } from "pdf-lib";
 import { vectorForNode } from "../vector-path.mjs";
 import { exportPdf } from "./pdf.mjs";
+import { preflightPdfx4 } from "./pdfx-preflight.mjs";
 
 const PRINTER_BYTES = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
 const SRGB_BYTES = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
@@ -13,8 +15,8 @@ const PDFX_OPTIONS = Object.freeze({
   profile: "PDF/X-4",
   outputIntent: PRINTER_BYTES,
   sourceColorProfile: SRGB_BYTES,
-  fonts: { "Inter:400": INTER_BYTES },
 });
+const TEXT_OPTIONS = Object.freeze({ ...PDFX_OPTIONS, fonts: { "Inter:400": INTER_BYTES } });
 
 function node(id, type, geometry, paint, extra = {}) {
   return { id, z: extra.z ?? 0, type, capability: extra.capability ?? { verdict: "native" }, geometry, paint, ...extra };
@@ -129,6 +131,7 @@ const CASES = Object.freeze([
     ir: () => singlePage([node("text", "text", { x: 20, y: 20, w: 200, h: 60 }, {}, {
       semantics: { content: "Identity-H Inter 123", runs: [{ from: 0, to: 19, fontFamily: "Inter", fontSize: 24 }] },
     })], { width: 240, height: 120 }),
+    options: TEXT_OPTIONS,
   },
   {
     name: "alpha-png-asset",
@@ -148,26 +151,89 @@ assert.equal(CASES.length, 12);
 
 async function assertPdfxCandidate(caseDefinition) {
   const options = { ...PDFX_OPTIONS, ...(caseDefinition.options ?? {}) };
-  let returned;
-  try {
-    returned = await exportPdf(caseDefinition.ir(), options);
-  } catch (error) {
-    assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED", `${caseDefinition.name}: unexpected early error ${error.code}: ${error.message}`);
-    assert.ok(error.preflight, `${caseDefinition.name}: missing preflight report`);
-    assert.equal(error.preflight.status, "verified-canvas-writer-subset", caseDefinition.name);
-    assert.deepEqual(error.preflight.issues, [], caseDefinition.name);
-    assert.equal(error.preflight.canvasWriterSubset?.verified, true, caseDefinition.name);
-    assert.equal(error.preflight.conformant, false, caseDefinition.name);
-    assert.ok(error.preflight.uncovered.length > 0, `${caseDefinition.name}: gate coverage must remain incomplete`);
-    return {
-      name: caseDefinition.name,
-      errorCode: error.code,
-      status: error.preflight.status,
-      issues: error.preflight.issues,
-      conformant: error.preflight.conformant,
-    };
+  const bytes = await exportPdf(caseDefinition.ir(), options);
+  assert.ok(bytes instanceof Uint8Array, `${caseDefinition.name}: exportPdf must return Uint8Array`);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6", `${caseDefinition.name}: PDF header`);
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  const report = await preflightPdfx4(bytes);
+  assert.equal(report.status, "verified-canvas-writer-subset", caseDefinition.name);
+  assert.deepEqual(report.issues, [], caseDefinition.name);
+  assert.equal(report.canvasWriterSubset?.verified, true, caseDefinition.name);
+  assert.equal(report.conformant, false, caseDefinition.name);
+  assert.ok(report.uncovered.length > 0, `${caseDefinition.name}: gate coverage must remain incomplete`);
+  assertOutputShape(caseDefinition, pdf, bytes);
+  return { name: caseDefinition.name, bytes: bytes.length, pages: pdf.getPages().length, issues: report.issues, conformant: report.conformant };
+}
+
+function resolve(pdf, value) { return value instanceof PDFRef ? pdf.context.lookup(value) : value; }
+
+function contentText(pdf, page) {
+  const contents = resolve(pdf, page.node.get(PDFName.of("Contents")));
+  const streams = contents instanceof PDFArray ? contents.asArray().map((value) => resolve(pdf, value)) : [contents];
+  return streams.filter((stream) => stream instanceof PDFRawStream)
+    .map((stream) => Buffer.from(decodePDFRawStream(stream).decode()).toString("latin1"))
+    .join("\n");
+}
+
+function embeddedImages(pdf) {
+  return pdf.context.enumerateIndirectObjects().map(([, object]) => object)
+    .filter((object) => object instanceof PDFRawStream && object.dict.get(PDFName.of("Subtype"))?.decodeText?.() === "Image");
+}
+
+function embeddedFontDescriptors(pdf) {
+  return pdf.context.enumerateIndirectObjects().map(([, object]) => object)
+    .filter((object) => object instanceof PDFDict && object.has(PDFName.of("FontFile2")));
+}
+
+function assertPageBox(page, output) {
+  const physical = output.physical ?? { w: output.width, h: output.height, unit: "px" };
+  const scale = physical.unit === "in" ? 72 : physical.unit === "mm" ? 72 / 25.4 : 0.75;
+  const trimWidth = physical.w * scale;
+  const trimHeight = physical.h * scale;
+  const bleed = Number(output.bleed ?? 0);
+  const close = (actual, expected, label) => assert.ok(Math.abs(actual - expected) < 1e-8, `${output.id}/${label}: ${actual} != ${expected}`);
+  const media = page.getMediaBox();
+  const trim = page.getTrimBox();
+  close(media.width, trimWidth + bleed * 2, "media width");
+  close(media.height, trimHeight + bleed * 2, "media height");
+  close(trim.x, bleed, "trim x");
+  close(trim.y, bleed, "trim y");
+  close(trim.width, trimWidth, "trim width");
+  close(trim.height, trimHeight, "trim height");
+  assert.deepEqual(page.getCropBox(), media, `${output.id}/crop`);
+  assert.deepEqual(page.getBleedBox(), media, `${output.id}/bleed`);
+}
+
+function assertOutputShape(caseDefinition, pdf, bytes) {
+  const outputs = caseDefinition.ir().outputs;
+  assert.equal(pdf.getPages().length, outputs.length, `${caseDefinition.name}: page count`);
+  outputs.forEach((outputDefinition, index) => assertPageBox(pdf.getPages()[index], outputDefinition));
+  const pagesText = pdf.getPages().map((page) => contentText(pdf, page)).join("\n");
+  const images = embeddedImages(pdf);
+  const fonts = embeddedFontDescriptors(pdf);
+  if (caseDefinition.name === "exact-embedded-inter-text") {
+    assert.ok(fonts.length > 0, "text case has an embedded FontFile2 descriptor");
+    assert.match(pagesText, /BT/u, "text case has text operators");
+    assert.match(pagesText, /Tj/u, "text case has show-text operators");
+  } else {
+    assert.equal(fonts.length, 0, `${caseDefinition.name}: unexpected embedded font`);
   }
-  assert.fail(`${caseDefinition.name}: exportPdf returned ${returned?.length ?? 0} bytes instead of closing the PDF/X gate`);
+  if (caseDefinition.name === "alpha-png-asset") {
+    assert.equal(images.length, 2, "alpha case has color and soft-mask image XObjects");
+    const image = images.find((candidate) => candidate.dict.has(PDFName.of("SMask")));
+    assert.ok(image, "alpha case has a parent image XObject");
+    const mask = resolve(pdf, image.dict.get(PDFName.of("SMask")));
+    assert.ok(mask instanceof PDFRawStream, "alpha image has an SMask image stream");
+    assert.match(pagesText, /Do/u, "alpha case has image draw operator");
+  } else {
+    assert.equal(images.length, 0, `${caseDefinition.name}: unexpected image XObject`);
+  }
+  if (["path-nonzero", "polygon"].includes(caseDefinition.name)) assert.match(pagesText, /\sf\b/u, `${caseDefinition.name}: native fill path`);
+  if (caseDefinition.name === "path-evenodd-hole") assert.match(pagesText, /f\*/u, "evenodd path operator");
+  if (["solid-rgb-rectangle", "gray-black-rectangles", "translucent-fill", "ellipse", "multipage-differing-physical-size-and-bleed"].includes(caseDefinition.name)) {
+    assert.doesNotMatch(pagesText, /\/Subtype\s*\/Image/u, `${caseDefinition.name}: native geometry must not rasterize`);
+  }
+  assert.ok(bytes.length > 0, `${caseDefinition.name}: nonempty serialized output`);
 }
 
 for (const caseDefinition of CASES) {
@@ -180,7 +246,7 @@ test("negative control invalid glyph is rejected before PDF/X serialization", as
   const ir = singlePage([node("missing-glyph", "text", { x: 20, y: 20, w: 200, h: 60 }, {}, {
     semantics: { content: "\u{10ffff}", runs: [{ from: 0, to: 2, fontFamily: "Inter", fontSize: 24 }] },
   })], { width: 240, height: 120 });
-  await assert.rejects(() => exportPdf(ir, PDFX_OPTIONS), { code: "CANVAS_PDF_GLYPH_MISSING" });
+  await assert.rejects(() => exportPdf(ir, TEXT_OPTIONS), { code: "CANVAS_PDF_GLYPH_MISSING" });
 });
 
 test("negative control shaped text with a different embedded font identity is rejected", async () => {
@@ -192,7 +258,7 @@ test("negative control shaped text with a different embedded font identity is re
       lines: [{ runs: [{ fakeBold: false, fakeItalic: false, glyphs: [36], positions: [0, 0], offsets: [0], size: 24 }] }],
     },
   })], { width: 240, height: 120 });
-  await assert.rejects(() => exportPdf(ir, PDFX_OPTIONS), { code: "CANVAS_PDF_FONT_MISMATCH" });
+  await assert.rejects(() => exportPdf(ir, TEXT_OPTIONS), { code: "CANVAS_PDF_FONT_MISMATCH" });
 });
 
 test("negative control invalid physical page geometry is rejected before serialization", async () => {

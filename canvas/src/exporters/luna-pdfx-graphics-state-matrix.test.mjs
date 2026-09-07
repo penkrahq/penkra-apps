@@ -344,13 +344,18 @@ test("ordinary exportPdf transparency controls expose serialized ExtGState shape
   }
 });
 
-test("configured PDF/X transparency export remains fail-closed", async () => {
-  await assert.rejects(() => exportPdf(transparencyIR(), { profile: "PDF/X-4", outputIntent: PRINTER_BYTES, sourceColorProfile: SRGB_BYTES }), (error) => {
-    PROFILE_GATE_RESULT = { code: error.code, conformant: error.preflight?.conformant ?? null, issues: error.preflight?.issues ?? [] };
-    assert.match(error.code, /^CANVAS_PDF_PROFILE_/u);
-    assert.equal(error.preflight.conformant, false);
-    return true;
-  });
+test("configured PDF/X transparency export returns a writer-verified PDF while aggregate remains false", async () => {
+  const bytes = await exportPdf(transparencyIR(), { profile: "PDF/X-4", outputIntent: PRINTER_BYTES, sourceColorProfile: SRGB_BYTES });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  const report = await preflightPdfx4(bytes);
+  PROFILE_GATE_RESULT = { code: "returned", conformant: report.conformant, issues: report.issues };
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset.verified, true);
+  assert.equal(report.conformant, false);
+  assert.ok((await extractExtGStateShapes(bytes)).length >= 1);
 });
 
 test("graphics state matrix has exact membership and gate observation", async () => {

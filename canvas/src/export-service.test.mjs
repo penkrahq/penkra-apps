@@ -3,7 +3,8 @@ import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { PDFDocument } from "pdf-lib";
+import { PDFArray, PDFDocument, PDFName, PDFRawStream, decodePDFRawStream } from "pdf-lib";
+import { inspectPdfxOutputProfile, preflightPdfx4 } from "./exporters/pdfx-preflight.mjs";
 import { readOoxmlPackage, readXmlPart } from "./ooxml-package.mjs";
 
 import { exportDocumentBatch, extractDocumentNode, extractDocumentNodes, publishPreparedDocumentExports } from "./export-service.mjs";
@@ -84,11 +85,36 @@ test("documents.extract writes roleless PDF at 72 DPI or declared physical trim 
     const page = (await PDFDocument.load(await readFile(physicalPath))).getPages()[0];
     assert.deepEqual(page.getTrimBox(), { x: 9, y: 9, width: 288, height: 216 });
     await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", scale: 2, destination: join(directory, "invalid.pdf") }), { code: "CANVAS_EXTRACT_SCALE_UNSUPPORTED" });
-    // No caller-supplied ICC is needed: the bundled default reaches the
-    // conformance gate, which must still prevent publication.
-    const unverifiedPath = join(directory, "unverified.pdf");
-    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-4", destination: unverifiedPath }), { code: "CANVAS_PDF_PROFILE_UNVERIFIED" });
-    await assert.rejects(readFile(unverifiedPath), { code: "ENOENT" });
+    const pdfxPath = join(directory, "writer-verified.pdf");
+    const pdfxResult = await extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-4", destination: pdfxPath });
+    assert.deepEqual(pdfxResult.artifacts, [pdfxPath]);
+    const pdfxBytes = await readFile(pdfxPath);
+    assert.equal(pdfxBytes.subarray(0, 8).toString("latin1"), "%PDF-1.6");
+    const pdfx = await PDFDocument.load(pdfxBytes, { updateMetadata: false, throwOnInvalidObject: true });
+    assert.equal(pdfx.getPages().length, 1);
+    assert.deepEqual(pdfx.getPages()[0].getSize(), { width: 320, height: 180 });
+    const report = await preflightPdfx4(pdfxBytes);
+    assert.deepEqual(report.issues, []);
+    assert.equal(report.canvasWriterSubset.verified, true);
+    assert.equal(report.conformant, false);
+    const intents = pdfx.catalog.lookup(PDFName.of("OutputIntents"));
+    assert.ok(intents instanceof PDFArray);
+    const intent = pdfx.context.lookup(intents.get(0));
+    const profile = pdfx.context.lookup(intent.get(PDFName.of("DestOutputProfile")));
+    assert.ok(profile instanceof PDFRawStream);
+    const profileReport = inspectPdfxOutputProfile(decodePDFRawStream(profile).decode());
+    assert.equal(profileReport.deviceClass, "prtr");
+    assert.equal(profileReport.channels, 4);
+    assert.deepEqual(profileReport.issues, []);
+
+    const occupied = join(directory, "occupied-pdfx.pdf");
+    await writeFile(occupied, "preserved", { flag: "wx" });
+    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-4", destination: occupied }), { code: "CANVAS_EXPORT_EXISTS" });
+    assert.equal(await readFile(occupied, "utf8"), "preserved");
+
+    const invalidProfilePath = join(directory, "invalid-profile.pdf");
+    await assert.rejects(extractDocumentNode(document, { nodeId: "art", format: "pdf", profile: "PDF/X-3", destination: invalidProfilePath }), { code: "CANVAS_PDF_PROFILE_UNKNOWN" });
+    await assert.rejects(readFile(invalidProfilePath), { code: "ENOENT" });
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
