@@ -922,3 +922,31 @@ Exit `0`; `161` passed, `0` failed, `0` cancelled, `0` skipped; duration `459.50
 This covered library imports, resolver/schema/API, publication head/service, retained-publication
 and published-retention composition, storage/retention/materializer/loader, and the real storage
 protocol. No native test or build ran.
+
+## Published-retention storage and publication-head transport
+
+The next approved seam batch was applied after the preceding preparation batch, in exact order:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `9594dcb103050bb812a9ccf0874aae819a83624e` | `9225f6b8e805ace1b73e68d01d7bc0b26b9136f3` |
+| `6f24b2708247551556af06a2fc573466c1982598` | `85e67c626f07d731653a963552e90afaa3fa0dec` |
+| `a228b9ebd7014710c2eaaebdc27274759a8de793` | `559ea97c84798b5535edb7d343a274db791409f2` |
+| `8e21e83f7ae7cc85286eaafe87fda410c655fe4b` | `967b5e25afbe2aaaab3668fd365655648ab6990a` |
+| `e57b2914dbb89331ba00385b3b5ef10c99c12ddc` | `4d93bff5f88d2768b55b83c989248304e20b3215` |
+| `233ba52e9582aeec13103c7b1c7847f1ccfb092b` | `e82fdab7fa106790a406c6b303ba77b12ede9a03` |
+
+Scope inspection found only the reviewed `library-storage.mjs` and
+`library-publication-head.mjs` source seams, their focused tests, and research evidence. The
+batch adds published-retention storage acceptance and forwards optional retained transport from
+publication heads. It adds no public registration, operations workflow, native/device work,
+backend, manifest, capability, or protected-file changes. The separately reviewed root publish
+workflow `4969724` was not integrated.
+
+Strict integrated command (log: `/tmp/luna-library-seam-20260907.log`):
+
+`node --test $(rg --files canvas/src -g 'library-*.test.mjs' | sort) canvas/src/canvas-imports.test.mjs canvas/src/canvas-resolver.test.mjs canvas/src/canvas-schema.test.mjs canvas/src/canvas-api.test.mjs canvas/src/luna-library-storage-protocol.test.mjs`
+
+Exit `0`; `169` passed, `0` failed, `0` cancelled, `0` skipped; duration `517.640958 ms`.
+This covered library/head/storage/retention/materializer/loader, import/resolver/schema/API,
+published-retention composition, and the real storage protocol tests. No native action ran.
