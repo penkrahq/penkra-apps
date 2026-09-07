@@ -234,7 +234,7 @@ test("published library content reaches PPTX/HTML and roleless SVG/PDF artifacts
   }
 });
 
-test("library artifact collision preflight and honest mobile capability gates publish nothing", async () => {
+test("library artifact collision preflight is atomic and mobile fallbacks publish complete bundles", async () => {
   const fixture = publicationFixture();
   fixture.registry.publish(fixture.releaseV1);
   const consumer = consumerDocument(fixture.v1Record);
@@ -249,8 +249,9 @@ test("library artifact collision preflight and honest mobile capability gates pu
     await assert.rejects(readFile(collision), { code: "ENOENT" });
     for (const role of ["ios", "android"]) {
       const destination = join(directory, `${role}-bundle`);
-      await assert.rejects(exportDocumentBatch(consumer, [{ role, frames: [role], destination, imports: loaded.imports, modes: { appearance: "light" } }], { assets: new Map() }), { code: "CANVAS_CAPABILITY_UNVERIFIED" });
-      await assert.rejects(readFile(destination), { code: "ENOENT" });
+      const result = await exportDocumentBatch(consumer, [{ role, frames: [role], destination, imports: loaded.imports, modes: { appearance: "light" } }], { assets: new Map() });
+      assert.equal(result.rasterized.length > 0, true);
+      assert.equal((await readdir(destination)).length > 0, true);
     }
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
