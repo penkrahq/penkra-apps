@@ -372,16 +372,18 @@ async function openDocument(documentId) {
       () => state.persistence.whenSynced,
       { documentId },
     );
+    const retainedSource = materialize(state.model);
     const retained = await performanceMonitor.measureAsync(
       "document.retained-imports",
-      () => {
-        const source = materialize(state.model);
-        return loadRetainedCanvasImports(api, { ...source, imports: source.imports ?? {} }, { documentId });
-      },
+      () => loadRetainedCanvasImports(
+        api,
+        { ...retainedSource, imports: retainedSource.imports ?? {} },
+        { documentId },
+      ),
       { documentId },
     );
     state.imports = retained.imports;
-    state.importSignature = JSON.stringify(materialize(state.model).imports ?? {});
+    state.importSignature = JSON.stringify(retainedSource.imports ?? {});
     state.assets = new Map([...assets, ...retained.assets]);
     invalidateDocumentProjection();
     const offlineUpdate = performanceMonitor.measure(
