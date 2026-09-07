@@ -94,7 +94,9 @@ function buildGridHostSource(ir) {
   const cases = ir.outputs.map((output) => ({ id: output.id, source: sourceName(output.name) }));
   const switchCases = cases.map(({ id, source }) => `    case ${JSON.stringify(id)}: return AnyView(${source}())`).join("\n");
   const ids = cases.map(({ id }) => JSON.stringify(id)).join(", ");
-  return `import SwiftUI
+  return `import Foundation
+import SwiftUI
+import UIKit
 
 enum GridFixtureSelection {
   static let knownCaseIDs: Set<String> = [${ids}]
@@ -111,10 +113,25 @@ struct GridFixtureScreen: View {
   let caseID: String
   let nonce: String
 
+  private func emitRootGeometry(_ frame: CGRect) {
+    let window = UIApplication.shared.connectedScenes
+      .compactMap { ($0 as? UIWindowScene)?.windows.first(where: { $0.isKeyWindow }) }
+      .first
+    let windowFrame = window?.frame ?? .zero
+    let screenBounds = window?.screen.bounds ?? UIScreen.main.bounds
+    let scale = window?.screen.scale ?? UIScreen.main.scale
+    let line = String(format: "LUNA_GRID_ROOT case=%@ nonce=%@ frame=%.3f,%.3f %.3fx%.3f window=%.3f,%.3f %.3fx%.3f screen=%.3f,%.3f %.3fx%.3f scale=%.3f", caseID, nonce, frame.minX, frame.minY, frame.width, frame.height, windowFrame.minX, windowFrame.minY, windowFrame.width, windowFrame.height, screenBounds.minX, screenBounds.minY, screenBounds.width, screenBounds.height, scale)
+    NSLog("%@", line)
+  }
+
   var body: some View {
     GridFixtureSelection.view(for: caseID)
+      .frame(width: 340, height: 400, alignment: .topLeading)
       .accessibilityIdentifier("luna-grid-fixture-\\(caseID)")
       .onAppear { NSLog("LUNA_GRID_READY case=%@ nonce=%@", caseID, nonce) }
+      .background(GeometryReader { proxy in
+        Color.clear.onAppear { emitRootGeometry(proxy.frame(in: .global)) }
+      })
   }
 }
 
@@ -265,6 +282,24 @@ export function launchArguments(caseID, nonce) {
   assert.ok(GRID_CASE_IDS.includes(caseID), `Unknown grid fixture case ${caseID}.`);
   assert.ok(typeof nonce === "string" && nonce.length > 0, "Grid fixture nonce must be non-empty.");
   return ["--grid-case", caseID, "--grid-nonce", nonce];
+}
+
+function escapeRegex(value) { return String(value).replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"); }
+
+export function rootGeometryReceipt(caseID, nonce, logText) {
+  const number = "(-?(?:\\d+(?:\\.\\d*)?|\\.\\d+))";
+  const pattern = new RegExp(`LUNA_GRID_ROOT case=${escapeRegex(caseID)} nonce=${escapeRegex(nonce)} frame=${number},${number} ${number}x${number} window=${number},${number} ${number}x${number} screen=${number},${number} ${number}x${number} scale=${number}(?:\\n|$)`, "u");
+  const match = String(logText).match(pattern);
+  if (!match) return null;
+  const values = match.slice(1).map(Number);
+  return {
+    caseID,
+    nonce,
+    root: { x: values[0], y: values[1], width: values[2], height: values[3] },
+    window: { x: values[4], y: values[5], width: values[6], height: values[7] },
+    screen: { x: values[8], y: values[9], width: values[10], height: values[11] },
+    scale: values[12],
+  };
 }
 
 export const GRID_CASE_IDS = Object.freeze(buildGridDocument().children.map(({ id }) => id));
