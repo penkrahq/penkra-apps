@@ -10,7 +10,7 @@ This evidence covers the narrow Canvas writer serialization envelope seam. It is
 - Reviewed root commits applied in order: `ccd2a06`, `b201169`, `1284fcc`, `5908887`
 - Reviewed independent commits applied in order: `51258ff`, `f6a1d40`, `175f513`, `de4569c`, `9c501cb`
 - Wiring source commit: `731643f` (`Wire PDF envelope inspection into preflight`)
-- Test/evidence commit: pending after this report is added
+- Test/evidence correction commit: pending after this report is updated
 
 The source change is limited to `pdfx-preflight.mjs`: `preflightPdfx4` invokes `inspectCanvasPdfEnvelope` before `PDFDocument.load`; envelope issues are prepended to the semantic report, including the parse-failure fallback. `conformant:false`, the publication gate, and `PDFX_UNCOVERED` are unchanged.
 
@@ -34,12 +34,15 @@ All commands ran in the `canvas` directory of this worktree.
 |---|---:|---|
 | `bun install --frozen-lockfile` | 0 | 72 locked packages installed; no source/lockfile changes |
 | `node --test src/exporters/pdf-serialization-envelope.test.mjs src/exporters/luna-pdf-envelope-independent.test.mjs src/exporters/pdfx-serialization-boundary.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/exporters/pdfx-fonts.test.mjs src/export-service.test.mjs` | 0 | 69 passed, 0 failed, 0 cancelled, 0 skipped |
-| `node --test src/exporters/*.test.mjs src/export-service.test.mjs` | 0 | 742 passed, 0 failed, 0 cancelled, 0 skipped; duration 27.115 s |
+| `node --test src/exporters/*.test.mjs src/export-service.test.mjs` | 0 | 742 passed, 0 failed, 0 cancelled, 0 skipped; duration 27.115 s (pre-correction baseline) |
+| `node --test src/exporters/luna-pdfx-graphics-state-matrix.test.mjs src/exporters/pdfx-serialization-boundary.test.mjs src/exporters/pdf-serialization-envelope.test.mjs` | 0 | 166 passed, 0 failed, 0 cancelled, 0 skipped |
 | `git diff --check` | 0 | clean |
 
 Full-run log: `/tmp/pdf-envelope-wiring-run-AreUns/full-selection.log`.
 
-The full selection initially exposed two historical read-only evidence comparisons because object-stream records now intentionally include `PDF_SERIALIZATION_OUTSIDE_SUBSET`. The final run passes after two narrow test-only acknowledgments: both preserve all prior semantic issue checks, filter only the new envelope marker for historical comparison, and assert that marker on object-stream records. The graphics-state historical corpus also had an existing dangling-resource observation at `Catalog/Pages/Kids[0]/Resources/ExtGState/State`; the current test preserves that exact graph diagnostic separately rather than treating it as a serialization result.
+The full selection initially exposed two historical read-only evidence comparisons because the new envelope marker was absent from retained records. The prior final run passed after narrow acknowledgments. This correction establishes the actual graphics-state projection: ordinary `pdf.save({useObjectStreams:false})` and `pdf.save({useObjectStreams:true})` both retain the PDF 1.7 header, so both serializer records receive exactly `{ code: "PDF_SERIALIZATION_OUTSIDE_SUBSET", object: "file@0", detail: "header-outside-writer-subset" }`. The current matrix records and asserts that projection for both serializers; historical normalization removes only that exact code/path marker, never arbitrary outside-subset issues.
+
+For `dangling-state-resource`, the corrected test explicitly asserts `OBJECT_GRAPH_INVALID` at `Catalog/Pages/Kids[0]/Resources/ExtGState/State` for both serializer records before normalizing that one proven historical addition. Retained PDFs and historical manifests are untouched.
 
 ## Gate and scope observations
 

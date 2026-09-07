@@ -32,6 +32,18 @@ const number = (value) => PDFNumber.of(value);
 const issueSummary = (report) => report.issues.map(({ code, object }) => ({ code, object }));
 const graphicsIssues = (report) => report.issues.filter(({ code }) => GRAPHICS_CODES.has(code)).map(({ code, object }) => ({ code, object }));
 const nonGraphicsIssues = (report) => report.issues.filter(({ code }) => !GRAPHICS_CODES.has(code)).map(({ code, object }) => ({ code, object }));
+const serializationIssues = (report) => report.issues
+  .filter(({ code }) => code.startsWith("PDF_SERIALIZATION_"))
+  .map(({ code, object, detail }) => ({ code, object, detail }));
+const EXPECTED_PDF_SAVE_ENVELOPE = Object.freeze([{
+  code: "PDF_SERIALIZATION_OUTSIDE_SUBSET",
+  object: "file@0",
+  detail: "header-outside-writer-subset",
+}]);
+const EXPECTED_DANGLING_GRAPH_ISSUE = Object.freeze({
+  code: "OBJECT_GRAPH_INVALID",
+  object: "Catalog/Pages/Kids[0]/Resources/ExtGState/State",
+});
 
 const RETAINED_ARTIFACTS = new Set([
   "valid-type-extgstate/classic-xref",
@@ -259,6 +271,8 @@ async function runCase(definition, serialization) {
   const second = await preflightPdfx4(bytes);
   assert.equal(sha256(bytes), beforeHash, `${definition.name}/${serialization.name} mutated input bytes`);
   assert.deepEqual(issueSummary(first), issueSummary(second), `${definition.name}/${serialization.name} report order changed`);
+  const observedSerialization = serializationIssues(first);
+  assert.deepEqual(observedSerialization, EXPECTED_PDF_SAVE_ENVELOPE, `${definition.name}/${serialization.name} envelope projection`);
   const observedGraphics = graphicsIssues(first);
   const observedState = observedGraphics.filter(({ code }) => !code.startsWith("CONTENT_RESOURCE_"));
   if (!definition.review) {
@@ -279,6 +293,7 @@ async function runCase(definition, serialization) {
     intendedRule: definition.intendedRule ?? "Existing Type-present checker behavior is asserted exactly.",
     graphicsIssues: observedGraphics,
     nonGraphicsIssues: nonGraphicsIssues(first),
+    serializationIssues: observedSerialization,
     stateRef: prepared.stateRef?.toString() ?? null,
   };
   if (RETAIN_EVIDENCE && RETAINED_ARTIFACTS.has(`${definition.name}/${serialization.name}`)) {
@@ -344,6 +359,23 @@ test("graphics state matrix has exact membership and gate observation", async ()
   assert.equal(new Set(RESULTS.map(({ name }) => name)).size, CASES.length);
 });
 
+test("graphics state records exact envelope and dangling-resource projections for both serializers", () => {
+  const current = new Map(RESULTS.map((record) => [`${record.name}/${record.serialization}`, record]));
+  for (const serialization of SERIALIZATIONS) {
+    const record = current.get(`valid-type-extgstate/${serialization.name}`);
+    assert.ok(record, `missing valid envelope projection for ${serialization.name}`);
+    assert.deepEqual(record.serializationIssues, EXPECTED_PDF_SAVE_ENVELOPE, serialization.name);
+    const dangling = current.get(`dangling-state-resource/${serialization.name}`);
+    assert.ok(dangling, `missing dangling projection for ${serialization.name}`);
+    assert.deepEqual(
+      dangling.nonGraphicsIssues.filter(({ code, object }) => code === EXPECTED_DANGLING_GRAPH_ISSUE.code && object === EXPECTED_DANGLING_GRAPH_ISSUE.object),
+      [EXPECTED_DANGLING_GRAPH_ISSUE],
+      `${serialization.name} dangling graph issue`,
+    );
+    assert.deepEqual(dangling.serializationIssues, EXPECTED_PDF_SAVE_ENVELOPE, `${serialization.name} dangling envelope`);
+  }
+});
+
 async function snapshot() {
   return Promise.all((await readdir(EVIDENCE_DIRECTORY)).sort().map(async (file) => ({ file, bytes: (await stat(new URL(file, EVIDENCE_DIRECTORY))).size })));
 }
@@ -372,18 +404,14 @@ if (!RETAIN_EVIDENCE) test("graphics state default mode is read-only and verifie
     const fresh = current.get(`${historical.name}/${historical.serialization}`);
     assert.ok(fresh, `missing current matrix identity ${historical.name}/${historical.serialization}`);
     assert.deepEqual(fresh.graphicsIssues, historical.graphicsIssues);
-    // Preserve the historical semantic observations while acknowledging the
-    // new explicit envelope marker for object-stream inputs.
-    const historicalGraphObservation = fresh.name === "dangling-state-resource"
-      && fresh.nonGraphicsIssues.some(({ code, object }) => code === "OBJECT_GRAPH_INVALID" && object === "Catalog/Pages/Kids[0]/Resources/ExtGState/State");
+    // Preserve historical semantic observations while normalizing only the
+    // proven PDF-save envelope marker and dangling-resource graph addition.
     assert.deepEqual(
-      fresh.nonGraphicsIssues.filter(({ code, object }) => code !== "PDF_SERIALIZATION_OUTSIDE_SUBSET"
-        && !(historicalGraphObservation && code === "OBJECT_GRAPH_INVALID" && object === "Catalog/Pages/Kids[0]/Resources/ExtGState/State")),
+      fresh.nonGraphicsIssues.filter(({ code, object }) => !(code === EXPECTED_PDF_SAVE_ENVELOPE[0].code && object === EXPECTED_PDF_SAVE_ENVELOPE[0].object)
+        && !(historical.name === "dangling-state-resource" && code === EXPECTED_DANGLING_GRAPH_ISSUE.code && object === EXPECTED_DANGLING_GRAPH_ISSUE.object)),
       historical.nonGraphicsIssues,
     );
-    if (historical.serialization === "object-streams") {
-      assert.ok(fresh.nonGraphicsIssues.some(({ code }) => code === "PDF_SERIALIZATION_OUTSIDE_SUBSET"));
-    }
+    assert.deepEqual(fresh.serializationIssues, EXPECTED_PDF_SAVE_ENVELOPE, `${historical.name}/${historical.serialization} envelope history`);
   }
   for (const artifact of manifest.retainedArtifacts) {
     const bytes = new Uint8Array(await readBytes(new URL(artifact.file, EVIDENCE_DIRECTORY)));
