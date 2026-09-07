@@ -359,6 +359,32 @@ the regression incorrectly called gated `exportPdf` as though it returned PDF/X 
 test-only assumptions were corrected; the identical final selection above then passed. No broad
 source change or native action occurred.
 
+## Library-runtime final review (read-only)
+
+The exact committed library-runtime review was verified at HEAD
+`51ce2a893b7b4df3e5cab7792e84035a89ed230d` on branch
+`codex/canvas-library-runtime-20260907`, using task-owned archive
+`/tmp/luna-library-final-review-JFGN7N`. Evidence commit `19b9309` adds only
+`canvas/research/luna-library-final-independent-review-20260907.md`; it was not integrated as
+runtime source. The reviewed source authority is `7070484` and `ee803d2`, with tests `aa50e34`
+and `15497b2`. The supplied identifier `LS0027070484` is not a literal in the committed tree.
+
+Exact-revision focused command:
+
+`node --test src/library-storage.test.mjs src/library-retained-imports.test.mjs`
+
+Result: exit `0`, `23` pass, `0` fail, `0` cancelled, `0` skipped. The targeted reproduction
+selection also exited `0`, with `7` pass and `0` fail/cancel/skip, covering malformed retention
+envelopes, incomplete cross-root item/asset closure, same-release alias isolation, nested
+dependency manifests, colliding dependency assets, and duplicate-asset rejection.
+
+The review confirms malformed `readRetention` envelopes reject `CANVAS_IMPORT_INTEGRITY` before
+return; cross-root borrowing rejects; same-release item/asset surfaces and nested manifests stay
+isolated; redundant/conflicting assets reject; and valid private local closure remains internal.
+`readRetention` authenticates through the accepted descriptor, then validates restored size/hash.
+No Merkle proof is demanded. No reproducible remaining bug was found in the requested scope, and
+no source/native/device/capability/storage schema change was made.
+
 ## Independent delivery review blockers
 
 The independent review report was read-only verified from delivery HEAD
