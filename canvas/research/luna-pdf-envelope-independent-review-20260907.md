@@ -6,9 +6,7 @@ This is an independent review of root candidate `ccd2a060e1f456d0e45fd1e6b381113
 
 The root worktree was read-only; its pre-existing untracked `canvas/node_modules` was not touched. Exploratory execution used the isolated detached checkout:
 
-```text
-/tmp/pdf-envelope-review-WMmVCA
-```
+`/tmp/pdf-envelope-review-corrected-KlbxPC`
 
 Root baseline command:
 
@@ -18,34 +16,30 @@ node --test src/exporters/pdf-serialization-envelope.test.mjs
 
 Result: **10 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0`.
 
-Independent command, with the exact root helper supplied externally:
+Corrected paired-checkout command, using the test's default sibling implementation URL and default relative retained candidate path:
 
 ```text
-PDF_ENVELOPE_SOURCE=/tmp/pdf-envelope-review-WMmVCA/canvas/src/exporters/pdf-serialization-envelope.mjs \
-PDF_ENVELOPE_CANDIDATE=/tmp/pdf-envelope-review-WMmVCA/canvas/research/pdfx-image-correction-20260907/valid-writer-baseline-classic-xref.pdf \
-node --test src/exporters/luna-pdf-envelope-independent.test.mjs
+cd /tmp/pdf-envelope-review-corrected-KlbxPC/canvas
+node --test src/exporters/pdf-serialization-envelope.test.mjs \
+  src/exporters/luna-pdf-envelope-independent.test.mjs
 ```
 
-Result in luna-pdf: **10 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0`.
-
-The same test was staged beside the root implementation in the isolated checkout and rerun with the same result: **10 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0`. The retained candidate was loaded and re-saved in memory with `PDFDocument.save({ useObjectStreams: false })`; no PDF or corpus was generated or retained by this review.
+The checkout used a temporary symlink to the root worktree's already-installed `canvas/node_modules`; no dependency files were copied or modified. The first attempt without dependencies exited `1` before test discovery with `ERR_MODULE_NOT_FOUND: pdf-lib`; the rerun with that symlink completed **20 pass, 0 fail, 0 cancelled, 0 skipped**, exit `0` (10 root tests plus 10 independent tests). `PDF_ENVELOPE_SOURCE` and `PDF_ENVELOPE_CANDIDATE` remain optional overrides for isolated review worktrees; after integration the default command above is self-contained. The retained candidate was loaded and re-saved in memory with `PDFDocument.save({ useObjectStreams: false })`; no PDF or corpus was generated or retained by this review.
 
 ## Matrix covered
 
 - Actual pdf-lib classic output and the retained valid candidate after classic re-save.
 - Correct 20-byte xref records with LF, CR, and CRLF endings.
 - Strings and binary streams containing fake `endstream`, `endobj`, `trailer`, and `startxref` delimiters.
-- Exact, short, overlong, indirect, and negative direct stream lengths.
+- Exact and short direct stream lengths, the legal alternate framing where the separator EOL is the final declared data byte, plus-two framing, indirect lengths, and negative direct lengths.
 - Raw object integer/real spelling, including signed integer boundaries and real magnitude boundaries.
 - Decoded name-byte limits, escaped bytes, null names, duplicate decoded dictionary keys, and malformed arrays/dictionaries.
 - Wrong `startxref`, wrong xref offsets, object identity mismatch, free/generation mismatch, missing references, xref size holes, repeated xref sections, trailing bytes, object streams, and incremental-style trailing data.
 - A deterministic 256-input malformed xref mutation loop. All calls returned a boolean result and issue array; all 256 were rejected in under 2 seconds.
 
-## Concrete finding
+## Stream-length observation — no proven serialization defect
 
-### Accepted direct stream length mismatch
-
-The helper accepts a one-byte-overlong direct stream length when the extra byte is the separator EOL immediately before `endstream`.
+Adobe PDF 1.6 section 3.2.7/Table 3.4 ([primary reference](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/pdfreference1.6.pdf), printed pages 37-38) permits stream data to end at the declared `/Length`, with an optional extra EOL before `endstream`. Therefore the previously described “Length+1” case is not established invalid at the serialization layer: the final separator EOL can itself be the last declared stream-data byte.
 
 Fixture payload bytes are:
 
@@ -53,13 +47,13 @@ Fixture payload bytes are:
 endstream\nendobj\ntrailer\n\x00\xff
 ```
 
-The stream dictionary declares `/Length 28` for the 27-byte payload, while the fixture retains the normal EOL before `endstream`. `inspectCanvasPdfEnvelope` returns:
+The stream dictionary declares `/Length 28` for the 27 bytes shown, while the fixture retains the normal EOL before `endstream`. The helper returns:
 
 ```json
 {"verified":true,"serialization":"classic-xref","objectCount":2,"issues":[]}
 ```
 
-The same fixture with `/Length 26` rejects with `expected-endstream`; `/Length 29` also rejects with `expected-endstream`. The behavior follows source lines 199-203: the declared length is consumed, then one optional CR/LF is skipped before `endstream`. This is a concrete accepted length mismatch under the helper's own valid-fixture convention. No production fix was made; root owns the policy and implementation decision.
+The same fixture with `/Length 26` rejects with `expected-endstream`; `/Length 29` rejects with `expected-endstream`. The behavior follows source lines 199-203: after consuming the declared data, the helper accepts an optional CR/LF before `endstream`. This is an observed alternate legal framing, not a proven bug or accepted-malformed finding. Semantic consumers or filters may impose additional constraints, which this envelope checker does not assess. No production fix was made.
 
 ## Observed protections and scope limits
 
