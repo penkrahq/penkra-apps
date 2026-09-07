@@ -476,7 +476,7 @@ async function openDocument(documentId) {
       { documentId },
     );
     await reconcileFromServer(documentId);
-    await refreshRetainedImports(documentId);
+    await refreshRetainedImports(documentId, true);
     if (state.importRefreshPromise) await state.importRefreshPromise;
     collapseEditorPanels();
     state.loading = false;
@@ -570,11 +570,11 @@ async function refreshDocumentAssets(documentId) {
   state.engineDocumentDirtyReason = "document-assets-refreshed";
 }
 
-async function refreshRetainedImports(documentId) {
+async function refreshRetainedImports(documentId, force = false) {
   if (state.document?.id !== documentId || !state.model) return false;
   const source = currentMaterializedDocument();
   const signature = JSON.stringify(source.imports ?? {});
-  if (signature === state.importSignature) return false;
+  if (!force && signature === state.importSignature) return false;
   const retained = await loadRetainedCanvasImports(
     api,
     { ...source, imports: source.imports ?? {} },
