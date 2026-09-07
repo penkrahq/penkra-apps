@@ -236,7 +236,8 @@ function validateImports(imports, errors) {
   for (const [alias, record] of Object.entries(imports)) {
     if (!/^[A-Za-z][\w-]*$/u.test(alias)) errors.push(`Import alias ${alias} is invalid.`);
     if (plainObject(record) && record.updatePolicy !== undefined) {
-      const identity = typeof record.releaseId === "string" && record.releaseId.length > 0 && !/[\u0000-\u001f\u007f]/u.test(record.releaseId) && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "");
+      const identity = typeof record.releaseId === "string" && record.releaseId.length > 0 && !/[\u0000-\u001f\u007f]/u.test(record.releaseId)
+        && typeof record.contentHash === "string" && /^[a-f0-9]{64}$/u.test(record.contentHash);
       if (typeof record.documentId !== "string" || !record.documentId || /[\u0000-\u001f\u007f]/u.test(record.documentId)
         || !["follow", "pinned"].includes(record.updatePolicy) || record.pin !== undefined || record.version !== undefined
         || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined || record.retention !== undefined) && !identity)
@@ -249,7 +250,7 @@ function validateImports(imports, errors) {
 export function validateLibraryStorageDescriptor(value) {
   if (!plainObject(value) || Object.keys(value).some((key) => !["path", "sha256", "size", "mimeType"].includes(key))
     || typeof value.path !== "string" || !/^_canvas\/library-content\/[a-f0-9]{64}$/u.test(value.path)
-    || !/^[a-f0-9]{64}$/u.test(value.sha256 ?? "") || value.path !== `_canvas/library-content/${value.sha256}`
+    || typeof value.sha256 !== "string" || !/^[a-f0-9]{64}$/u.test(value.sha256) || value.path !== `_canvas/library-content/${value.sha256}`
     || !Number.isSafeInteger(value.size) || value.size < 0
     || (value.mimeType !== undefined && typeof value.mimeType !== "string")) {
     const error = new Error("Canvas library storage descriptor is invalid.");

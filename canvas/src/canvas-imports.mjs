@@ -70,7 +70,7 @@ export function normalizeImportRecord(record) {
   if (record.releaseId !== undefined && (typeof record.releaseId !== "string" || !record.releaseId || /[\u0000-\u001f\u007f]/u.test(record.releaseId))) throw importError(`Import ${record.documentId} has an invalid releaseId.`);
   const acceptedIdentity = typeof record.releaseId === "string" && record.releaseId.length > 0
     && !/[\u0000-\u001f\u007f]/u.test(record.releaseId)
-    && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "");
+    && typeof record.contentHash === "string" && /^[a-f0-9]{64}$/u.test(record.contentHash);
   if (record.updatePolicy === "follow") {
     if (record.retention !== undefined && !acceptedIdentity) {
       throw importError(`Following import ${record.documentId} with retention needs both accepted releaseId and contentHash.`, "CANVAS_IMPORT_INTEGRITY");
@@ -85,7 +85,7 @@ export function normalizeImportRecord(record) {
     throw importError(`Import ${record.documentId} with retention needs both accepted releaseId and contentHash.`, "CANVAS_IMPORT_INTEGRITY");
   }
   if (record.updatePolicy === "pinned" && typeof record.releaseId === "string" && record.releaseId
-    && /^[a-f0-9]{64}$/u.test(record.contentHash ?? "")) {
+    && typeof record.contentHash === "string" && /^[a-f0-9]{64}$/u.test(record.contentHash)) {
     return { documentId: record.documentId, updatePolicy: "pinned", releaseId: record.releaseId, contentHash: record.contentHash, ...(retention ? { retention } : {}) };
   }
   throw importError(`Import ${record.documentId} must follow publications or pin an exact releaseId and contentHash.`);
