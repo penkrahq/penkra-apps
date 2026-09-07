@@ -6,6 +6,42 @@ import { variableReferences } from "./variable-references.mjs";
 
 const ALIAS_PATTERN = /^[A-Za-z][\w-]*$/u;
 
+// Validate a stored minimal retention without reconstructing a full release
+// document. Stored assets may still have their storage descriptors rather than
+// restored bytes; readRetention invokes this once before and once after the
+// public blob readback.
+export function validateRetainedCanvasRetention(retention, options = {}) {
+  const allowStoredAssets = options.allowStoredAssets === true;
+  validateRetentionEnvelope(retention);
+  const root = validateRootIdentity(retention.root);
+  const requested = validateRequestedItems(retention.requestedItems);
+  const groups = new Map();
+  const releaseHashes = new Map();
+  const assetRecords = new Map();
+  validateRetentionAssets(retention.assets, assetRecords, { allowStoredAssets, rejectDuplicates: true });
+  const seenItems = new Set();
+  for (const retained of retention.items) {
+    validateRetainedLibraryItem(retained);
+    const itemIdentity = `${identityKey(validateIdentity(retained.release))}\u0000${publicItemKey(retained.item.kind, retained.item.id)}`;
+    if (seenItems.has(itemIdentity)) throw integrity(`Retained item ${itemIdentity} is duplicated.`);
+    seenItems.add(itemIdentity);
+    ingestItem(retained, groups, releaseHashes);
+  }
+  const rootGroup = groups.get(identityKey(root));
+  if (!rootGroup) throw integrity("Retained root item bundle is missing.");
+  const rootItems = new Set(retention.items
+    .filter(({ release }) => release && identityKey(release) === identityKey(root))
+    .map(({ item }) => item && publicItemKey(item.kind, item.id)));
+  if (!rootItems.size) throw integrity("Retained root item bundle is missing.");
+  const requestedKeys = new Set(requested.map(({ kind, id }) => publicItemKey(kind, id)));
+  for (const key of rootItems) if (!requestedKeys.has(key)) throw integrity("Retained root exposes an unaccepted item.");
+  for (const key of requestedKeys) if (!rootItems.has(key)) throw integrity("Retained root is missing an accepted item.");
+  validateAssetUses(groups, assetRecords);
+  validateDependencyGraph(groups);
+  validateExternalClosure(groups);
+  return true;
+}
+
 // Materialize authenticated, minimal retention bundles into the import shape
 // consumed by the existing resolver. This is deliberately synchronous and
 // side-effect free: callers have already read and authenticated the bundles.
@@ -32,6 +68,7 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
     if (!normalized.releaseId || !normalized.contentHash) throw integrity(`Import ${alias} has no accepted release identity.`);
     const retention = retentionMap.get(alias);
     validateRetentionEnvelope(retention);
+    validateRetainedCanvasRetention(retention);
     const root = validateIdentity(retention.root);
     if (root.libraryId !== normalized.documentId || root.releaseId !== normalized.releaseId || root.contentHash !== normalized.contentHash) {
       throw integrity(`Retention for ${alias} does not match its accepted release identity.`);
@@ -216,19 +253,31 @@ function validateIdentity(identity) {
   return { libraryId: identity.libraryId, releaseId: identity.releaseId, contentHash: identity.contentHash };
 }
 
+function validateRootIdentity(identity) {
+  if (!plainObject(identity) || Object.keys(identity).some((key) => !["libraryId", "releaseId", "contentHash"].includes(key))) throw integrity("Retained root identity is malformed.");
+  return validateIdentity(identity);
+}
+
 function validateAssetDescriptor(asset) {
   if (!plainObject(asset) || typeof asset.path !== "string" || !asset.path || asset.path !== asset.path.normalize("NFC") || asset.path.startsWith("/") || asset.path.includes("\\") || /[\u0000-\u001f\u007f:]/u.test(asset.path) || asset.path.split("/").some((part) => !part || part === "." || part === "..") || !/^[a-f0-9]{64}$/u.test(asset.sha256 ?? "") || !Number.isSafeInteger(asset.size) || asset.size < 0 || (asset.mimeType !== undefined && typeof asset.mimeType !== "string")) throw integrity("Retained asset descriptor is malformed.");
 }
 
-function validateRetentionAssets(assets, assetRecords) {
+function validateRetentionAssets(assets, assetRecords, options = {}) {
+  const allowStoredAssets = options.allowStoredAssets === true;
+  const rejectDuplicates = options.rejectDuplicates === true;
+  const seen = new Set();
   for (const asset of assets) {
-    if (!plainObject(asset) || !asset.release || !(asset.bytes instanceof Uint8Array)) throw integrity("Retained asset bytes are malformed.");
+    if (!plainObject(asset) || !asset.release) throw integrity("Retained asset bytes are malformed.");
     const release = validateIdentity(asset.release);
     const descriptor = { path: asset.path, sha256: asset.sha256, size: asset.size, ...(asset.mimeType !== undefined ? { mimeType: asset.mimeType } : {}) };
     validateAssetDescriptor(descriptor);
-    if (asset.bytes.byteLength !== descriptor.size || hash(asset.bytes) !== descriptor.sha256) throw integrity(`Retained asset ${descriptor.path} failed its content hash check.`);
+    const hasBytes = asset.bytes instanceof Uint8Array;
+    if (!hasBytes && (!allowStoredAssets || !plainObject(asset.storage))) throw integrity("Retained asset bytes are malformed.");
+    if (hasBytes && (asset.bytes.byteLength !== descriptor.size || hash(asset.bytes) !== descriptor.sha256)) throw integrity(`Retained asset ${descriptor.path} failed its content hash check.`);
     const key = assetKey(release, descriptor.path);
-    const materialized = { ...descriptor, bytes: new Uint8Array(asset.bytes) };
+    if (rejectDuplicates && seen.has(key)) throw integrity(`Retained asset ${descriptor.path} is duplicated.`);
+    seen.add(key);
+    const materialized = { ...descriptor, ...(hasBytes ? { bytes: new Uint8Array(asset.bytes) } : { bytes: undefined }) };
     const prior = assetRecords.get(key);
     if (prior && !sameAsset(prior, materialized)) throw integrity(`Retained asset ${descriptor.path} has conflicting bytes.`);
     assetRecords.set(key, materialized);
@@ -240,6 +289,14 @@ function validateAssetUses(groups, assetRecords) {
     const source = assetRecords.get(assetKey(group.identity, descriptor.path));
     if (!source || !sameAsset(source, { ...descriptor, bytes: source?.bytes })) throw integrity(`Retained asset ${descriptor.path} is missing or changed.`);
   }
+  for (const group of groups.values()) for (const value of group.resources.values()) inspectResourceAssets(value, group);
+}
+
+function inspectResourceAssets(value, group) {
+  if (Array.isArray(value)) return value.forEach((item) => inspectResourceAssets(item, group));
+  if (!plainObject(value)) return;
+  if (value.type === "image" && typeof value.url === "string" && !group.assets.has(value.url)) throw integrity(`Retained asset ${value.url} is missing from its closure.`);
+  for (const nested of Object.values(value)) inspectResourceAssets(nested, group);
 }
 
 function validateDependencyGraph(groups) {
@@ -254,6 +311,31 @@ function validateDependencyGraph(groups) {
     visiting.delete(key); visited.add(key);
   };
   for (const group of groups.values()) visit(group);
+}
+
+function validateExternalClosure(groups) {
+  for (const group of groups.values()) for (const value of group.resources.values()) {
+    inspect(value, (kind, reference) => {
+      const separator = reference.indexOf(":");
+      if (separator <= 0) return;
+      const alias = reference.slice(0, separator);
+      const id = reference.slice(separator + 1);
+      const dependency = group.dependencies.get(alias);
+      const dependencyGroup = dependency && groups.get(identityKey(dependency));
+      if (!dependencyGroup || !dependencyGroup.items.has(publicItemKey(kind, id))) throw integrity(`Retained ${kind}:${reference} is missing from its dependency closure.`);
+    });
+  }
+}
+
+function inspect(value, check) {
+  if (typeof value === "string") {
+    for (const match of variableReferences(value)) check("variable", match[1]);
+  } else if (Array.isArray(value)) value.forEach((item) => inspect(item, check));
+  else if (plainObject(value)) {
+    if (value.type === "ref" && typeof value.ref === "string") check("component", value.ref);
+    if (typeof value.style === "string") check("paragraphStyle", value.style);
+    Object.values(value).forEach((item) => inspect(item, check));
+  }
 }
 
 function validateExternalReferences(resources, dependencies) {
@@ -294,7 +376,11 @@ function snapshotRetentions(value) {
 function identityKey(identity) { return JSON.stringify([identity.libraryId, identity.releaseId, identity.contentHash]); }
 function assetKey(identity, path) { return `${identityKey(identity)}\u0000${path}`; }
 function hash(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
-function sameAsset(left, right) { return left.path === right.path && left.sha256 === right.sha256 && left.size === right.size && (left.mimeType ?? undefined) === (right.mimeType ?? undefined) && left.bytes instanceof Uint8Array && right.bytes instanceof Uint8Array && hash(left.bytes) === hash(right.bytes) && left.bytes.length === right.bytes.length; }
+function sameAsset(left, right) {
+  if (left.path !== right.path || left.sha256 !== right.sha256 || left.size !== right.size || (left.mimeType ?? undefined) !== (right.mimeType ?? undefined)) return false;
+  if (!(left.bytes instanceof Uint8Array) || !(right.bytes instanceof Uint8Array)) return left.bytes === undefined && right.bytes === undefined;
+  return hash(left.bytes) === hash(right.bytes) && left.bytes.length === right.bytes.length;
+}
 function collectReleases(group, groups, output, active) { const key = identityKey(group.identity); if (active.has(key)) return; active.add(key); output.set(key, { ...group.identity }); for (const dependency of group.dependencies.values()) collectReleases(groups.get(identityKey(dependency)), groups, output, active); active.delete(key); }
 function compareIdentity(left, right) { return left.libraryId.localeCompare(right.libraryId) || left.releaseId.localeCompare(right.releaseId); }
 function comparePublicItems(left, right) { return left.kind.localeCompare(right.kind) || left.id.localeCompare(right.id); }

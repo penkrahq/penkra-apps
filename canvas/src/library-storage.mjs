@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { validateLibraryRelease } from "./library-publication.mjs";
 import { prepareLibraryRetention } from "./library-retention-preparation.mjs";
+import { validateRetainedCanvasRetention } from "./library-retained-imports.mjs";
 
 const PREFIX = "_canvas/library-content/";
 const MIME = "application/vnd.penkra.canvas.library+json";
@@ -123,9 +124,10 @@ export function createLibraryStorage(api) {
       const content = await readEnvelope(documentId, descriptor, "retention");
       // Integrity is anchored by the accepted descriptor, not by re-reading a
       // mutable source or trusting a source document after access was revoked.
-      if (!content.root || !Array.isArray(content.items) || !content.items.length
-        || !Array.isArray(content.requestedItems) || !content.requestedItems.length) throw invalid("CANVAS_IMPORT_INTEGRITY");
-      return { ...content, assets: await restoreAssets(documentId, content.assets) };
+      validateRetainedCanvasRetention(content, { allowStoredAssets: true });
+      const restored = { ...content, assets: await restoreAssets(documentId, content.assets) };
+      validateRetainedCanvasRetention(restored);
+      return restored;
     },
   };
 }
