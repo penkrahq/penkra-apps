@@ -16,6 +16,7 @@ import { collectImageFills, materializeDocumentImages } from "./image-materializ
 import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
 import { publishCanvasLibrary } from "./library-publish-workflow.mjs";
 import { readPublishedCanvasLibrary } from "./library-publication-head.mjs";
+import { acceptCanvasLibrary } from "./library-accept-workflow.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 
 const runtime = globalThis.penkra;
@@ -337,6 +338,10 @@ runtime.operations.handle("libraries.inspect", async ({ documentId }) => {
     items: selected.release.publicItems.map((item) => structuredClone(item)),
   };
 });
+
+runtime.operations.handle("libraries.accept", async (input) =>
+  acceptCanvasLibrary(api, input),
+);
 
 function operationResult(structuredContent, screenshots) {
   const metadata = screenshots.map(({ data: _data, ...screenshot }) => screenshot);
