@@ -16,7 +16,22 @@ export async function prepareLibraryRelease(api, document, options) {
     ownedAssets.set(asset.path, bytes);
     return { path: asset.path, sha256: createHash("sha256").update(bytes).digest("hex"), size: bytes.byteLength, ...(asset.mimeType === undefined ? {} : { mimeType: asset.mimeType }) };
   });
-  const loaded = await loadCanvasImports(api, snapshot, {
+  // Retention is consumer-local transport metadata. Normalize the author's
+  // records before removing it so accepted follow identities cannot be
+  // bypassed by turning a retained import into a latest-release lookup.
+  const loadSnapshot = structuredClone(snapshot);
+  const normalizedImports = new Map();
+  for (const [alias, value] of Object.entries(snapshot.imports ?? {})) {
+    const record = normalizeImportRecord(value);
+    if (record.retention && record.updatePolicy === "follow"
+      && (record.releaseId === undefined || record.contentHash === undefined)) {
+      throw importIntegrity(`Following retained import ${record.documentId} needs both accepted releaseId and contentHash.`);
+    }
+    const semanticRecord = withoutRetention(record);
+    normalizedImports.set(alias, semanticRecord);
+    loadSnapshot.imports[alias] = semanticRecord;
+  }
+  const loaded = await loadCanvasImports(api, loadSnapshot, {
     rootDocumentId: libraryId,
     accountId,
     resolveRelease,
@@ -24,7 +39,7 @@ export async function prepareLibraryRelease(api, document, options) {
   });
   const dependencies = [];
   for (const [alias, imported] of Object.entries(loaded.imports)) {
-    const record = normalizeImportRecord(snapshot.imports[alias]);
+    const record = normalizedImports.get(alias);
     const { libraryId, releaseId, contentHash } = imported.identity;
     dependencies.push({ alias, libraryId, releaseId, contentHash });
     // Retain author update policy while locking the release's accepted content.
@@ -37,3 +52,9 @@ export async function prepareLibraryRelease(api, document, options) {
 }
 
 function invalid(message) { const error = new Error(message); error.code = "CANVAS_LIBRARY_INVALID"; return error; }
+function importIntegrity(message) { const error = new Error(message); error.code = "CANVAS_IMPORT_INTEGRITY"; return error; }
+function withoutRetention(record) {
+  const semanticRecord = { ...record };
+  delete semanticRecord.retention;
+  return semanticRecord;
+}
