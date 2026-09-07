@@ -1271,7 +1271,10 @@ function layerRow({ node, depth, hasChildren }) {
   const issue = state.compatibilityNodeIds.has(sourceId);
   const type = String(node.type).toLowerCase();
   const expanded = hasChildren && state.expandedLayerIds.has(node.id);
-  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
+  const role = type === "frame" && node.role
+    ? `<span class="layer-role">${escapeHtml({ slide: "Slide", route: "Route", ios: "iOS", android: "Android" }[node.role] ?? node.role)}</span>`
+    : "";
+  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${role}${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
 }
 
 function renderInspector(selection) {
