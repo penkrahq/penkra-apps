@@ -1,0 +1,19 @@
+{
+  "singlePngTriangleChecks": { "requested": 12, "passed": 12 },
+  "directoryPngTriangleChecks": { "requested": 3, "passed": 3 },
+  "singlePdfRenderedTriangleChecks": { "requested": 12, "passed": 12 },
+  "directoryPdfRenderedTriangleChecks": { "requested": 3, "passed": 3 },
+  "multiPdfRenderedTriangleChecks": { "requested": 3, "passed": 3, "ordered": true },
+  "physicalPdfRenderedTriangleChecks": { "requested": 1, "passed": 1 },
+  "retainedSemanticChecks": { "requested": 12, "passed": 12 },
+  "svgNativeBrowserChecks": { "newArtifacts": 12, "retainedArtifacts": 4, "passed": 16 },
+  "negativeOmittedTriangle": {
+    "fixture": "one roleless root with its triangle child removed",
+    "redSamples": 0,
+    "interiorSampleCount": 0,
+    "occupancy": 0,
+    "comparatorAccepted": false
+  },
+  "subprocessTimeoutSeconds": 30,
+  "unrun": []
+}
