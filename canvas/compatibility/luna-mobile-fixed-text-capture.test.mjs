@@ -59,7 +59,10 @@ test("source preparation is deterministic, native-free, and retains all referenc
     assert.equal(iosReferences.length, 3);
     assert.equal(androidReferences.length, 4);
     const iosFiles = await readFile(join(first, "swift", "Sources", "CanvasFixedText", "FixedTextUniformSingleRunText.swift"), "utf8");
-    assert.match(iosFiles, /Text\("Canvas fixed text"\)/u);
+    assert.match(
+      iosFiles,
+      /Text\(\{ var value = AttributedString\("Canvas fixed text"\); value\.languageIdentifier = "en"; return value \}\(\)\)/u,
+    );
     const rich = await readFile(join(first, "compose", "generated", "FixedTextMixedSizeRichRuns.kt"), "utf8").catch(() => "");
     assert.match(rich, /append\("Small "\)/u);
     assert.match(rich, /append\("BIG"\)/u);
