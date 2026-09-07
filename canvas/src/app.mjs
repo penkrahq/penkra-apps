@@ -868,7 +868,7 @@ function render() {
     root.innerHTML = `<main class="shell empty"><div><span class="muted">Loading Canvas…</span></div></main>`;
     return;
   }
-  if (state.error && !state.document) {
+  if (state.error) {
     root.innerHTML = `<main class="shell empty"><div><h2>Canvas couldn’t open</h2><p>${escapeHtml(state.error)}</p><button class="button" data-action="retry">Try again</button></div></main>`;
     bindCommon();
     return;
