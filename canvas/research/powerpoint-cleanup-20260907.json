@@ -1,0 +1,227 @@
+{
+  "method": "Fresh AX URL verification and individual window close buttons; no process termination or lock unlinking",
+  "records": [
+    {
+      "school": 6,
+      "method": "AX close button",
+      "nextSchool": 7,
+      "at": "2026-09-07T07:47:10.864Z"
+    },
+    {
+      "school": 7,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%207.pptx",
+      "at": "2026-09-07T07:47:32.072Z",
+      "after": "Window: \"School 8\", App: Microsoft PowerPoint.\n0 standard window School 8, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%208.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, settabl"
+    },
+    {
+      "school": 8,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%208.pptx",
+      "at": "2026-09-07T07:47:34.183Z",
+      "after": "Window: \"School 9\", App: Microsoft PowerPoint.\n0 standard window School 9, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%209.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, settabl"
+    },
+    {
+      "school": 9,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%209.pptx",
+      "at": "2026-09-07T07:47:35.971Z",
+      "after": "Window: \"School 10\", App: Microsoft PowerPoint.\n0 standard window School 10, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2010.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 10,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2010.pptx",
+      "at": "2026-09-07T07:47:48.797Z",
+      "after": "Window: \"School 11\", App: Microsoft PowerPoint.\n0 standard window School 11, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2011.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 11,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2011.pptx",
+      "at": "2026-09-07T07:47:50.630Z",
+      "after": "Window: \"School 12\", App: Microsoft PowerPoint.\n0 standard window School 12, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2012.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 12,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2012.pptx",
+      "at": "2026-09-07T07:47:52.757Z",
+      "after": "Window: \"School 13\", App: Microsoft PowerPoint.\n0 standard window School 13, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2013.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 13,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2013.pptx",
+      "at": "2026-09-07T07:48:17.299Z",
+      "after": "Window: \"School 14\", App: Microsoft PowerPoint.\n0 standard window School 14, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2014.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 14,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2014.pptx",
+      "at": "2026-09-07T07:48:19.133Z",
+      "after": "Window: \"School 15\", App: Microsoft PowerPoint.\n0 standard window School 15, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2015.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 15,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2015.pptx",
+      "at": "2026-09-07T07:48:20.887Z",
+      "after": "Window: \"School 16\", App: Microsoft PowerPoint.\n0 standard window School 16, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2016.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 16,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2016.pptx",
+      "at": "2026-09-07T07:48:33.289Z",
+      "after": "Window: \"School 17\", App: Microsoft PowerPoint.\n0 standard window School 17, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2017.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 17,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2017.pptx",
+      "at": "2026-09-07T07:48:35.011Z",
+      "after": "Window: \"School 18\", App: Microsoft PowerPoint.\n0 standard window School 18, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2018.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 18,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2018.pptx",
+      "at": "2026-09-07T07:48:36.672Z",
+      "after": "Window: \"School 19\", App: Microsoft PowerPoint.\n0 standard window School 19, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2019.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 19,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2019.pptx",
+      "at": "2026-09-07T07:48:46.233Z",
+      "after": "Window: \"School 21\", App: Microsoft PowerPoint.\n0 standard window School 21, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2021.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 21,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2021.pptx",
+      "at": "2026-09-07T07:48:47.912Z",
+      "after": "Window: \"School 22\", App: Microsoft PowerPoint.\n0 standard window School 22, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2022.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 22,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2022.pptx",
+      "at": "2026-09-07T07:48:49.566Z",
+      "after": "Window: \"School 23\", App: Microsoft PowerPoint.\n0 standard window School 23, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2023.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 23,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2023.pptx",
+      "at": "2026-09-07T07:49:01.626Z",
+      "after": "Window: \"School 24\", App: Microsoft PowerPoint.\n0 standard window School 24, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2024.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 24,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2024.pptx",
+      "at": "2026-09-07T07:49:03.195Z",
+      "after": "Window: \"School 25\", App: Microsoft PowerPoint.\n0 standard window School 25, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2025.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 25,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2025.pptx",
+      "at": "2026-09-07T07:49:05.067Z",
+      "after": "Window: \"School 26\", App: Microsoft PowerPoint.\n0 standard window School 26, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2026.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 26,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2026.pptx",
+      "at": "2026-09-07T07:49:17.692Z",
+      "after": "Window: \"School 27\", App: Microsoft PowerPoint.\n0 standard window School 27, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2027.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 27,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2027.pptx",
+      "at": "2026-09-07T07:49:19.156Z",
+      "after": "Window: \"School 28\", App: Microsoft PowerPoint.\n0 standard window School 28, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2028.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 28,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2028.pptx",
+      "at": "2026-09-07T07:49:20.623Z",
+      "after": "Window: \"School 29\", App: Microsoft PowerPoint.\n0 standard window School 29, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2029.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 29,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2029.pptx",
+      "at": "2026-09-07T07:50:09.810Z",
+      "after": "Window: \"School 30\", App: Microsoft PowerPoint.\n0 standard window School 30, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2030.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 30,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2030.pptx",
+      "at": "2026-09-07T07:50:11.495Z",
+      "after": "Window: \"School 31\", App: Microsoft PowerPoint.\n0 standard window School 31, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2031.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 31,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2031.pptx",
+      "at": "2026-09-07T07:50:12.765Z",
+      "after": "Window: \"School 32\", App: Microsoft PowerPoint.\n0 standard window School 32, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2032.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 32,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2032.pptx",
+      "at": "2026-09-07T07:50:51.141Z",
+      "after": "Window: \"School 33\", App: Microsoft PowerPoint.\n0 standard window School 33, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2033.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 33,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2033.pptx",
+      "at": "2026-09-07T07:50:52.292Z",
+      "after": "Window: \"School 34\", App: Microsoft PowerPoint.\n0 standard window School 34, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2034.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 34,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2034.pptx",
+      "at": "2026-09-07T07:50:53.494Z",
+      "after": "Window: \"School 35\", App: Microsoft PowerPoint.\n0 standard window School 35, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2035.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 35,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2035.pptx",
+      "at": "2026-09-07T07:51:00.915Z",
+      "after": "Window: \"School 36\", App: Microsoft PowerPoint.\n0 standard window School 36, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2036.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 36,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2036.pptx",
+      "at": "2026-09-07T07:51:01.956Z",
+      "after": "Window: \"School 37\", App: Microsoft PowerPoint.\n0 standard window School 37, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2037.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 37,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2037.pptx",
+      "at": "2026-09-07T07:51:02.981Z",
+      "after": "Window: \"School 38\", App: Microsoft PowerPoint.\n0 standard window School 38, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2038.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 38,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2038.pptx",
+      "at": "2026-09-07T07:51:14.636Z",
+      "after": "Window: \"School 39\", App: Microsoft PowerPoint.\n0 standard window School 39, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2039.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, sett"
+    },
+    {
+      "school": 39,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%2039.pptx",
+      "at": "2026-09-07T07:51:15.601Z",
+      "after": "Window: \"School 2\", App: Microsoft PowerPoint.\n0 standard window School 2, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%202.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, settabl"
+    },
+    {
+      "school": 2,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%202.pptx",
+      "at": "2026-09-07T07:51:16.506Z",
+      "after": "Window: \"School 3\", App: Microsoft PowerPoint.\n0 standard window School 3, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%203.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, settabl"
+    },
+    {
+      "school": 3,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%203.pptx",
+      "at": "2026-09-07T07:51:23.846Z",
+      "after": "Window: \"School 4\", App: Microsoft PowerPoint.\n0 standard window School 4, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%204.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, settabl"
+    },
+    {
+      "school": 4,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%204.pptx",
+      "at": "2026-09-07T07:51:24.807Z",
+      "after": "Window: \"School 5\", App: Microsoft PowerPoint.\n0 standard window School 5, Secondary Actions: Raise, URL: file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%205.pptx\n\t1 split group\n\t\t2 split group\n\t\t\t3 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t\t\t4 collection Description: Thumbnail Pane, ID: PPT.SlideNavigationCollectionView\n\t\t\t\t\t5 section (disabled)\n\t\t\t\t\t\t6 Thumbnail Slide 1 of 1 Slides, Has Notes\n\t\t\t\t7 scroll bar (disabled, settable, float) 0\n\t\t\t8 splitter (disabled, settabl"
+    },
+    {
+      "school": 5,
+      "url": "file:///Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-pptx-native-batch-20260907/run-4uxvfr/pptx/School%205.pptx",
+      "at": "2026-09-07T07:51:26.760Z",
+      "after": "Window: \"\", App: Microsoft PowerPoint.\n0 standard window Open new and recent files, ID: DocStage, Secondary Actions: Raise\n\t1 scroll area Secondary Actions: Scroll Up, Scroll Down\n\t\t2 collection\n\t\t\t3 section (disabled)\n\t\t\t\t4 Template (1 of 7) Blank Presentation\n\t\t\t\t5 Template (2 of 7) Welcome to PowerPoint\n\t\t\t\t6 Template (3 of 7) Madison\n\t\t\t\t7 Template (4 of 7) Atlas\n\t\t\t\t8 Template (5 of 7) Gallery\n\t\t\t\t9 Template (6 of 7) Parcel\n\t\t\t\t10 Template (7 of 7) Wood Type\n\t\t11 disclosure triangle Themes, Value: 1\n\t\t12 text Themes\n\t\t13 button More themes\n\t\t14 tab Recents, Value: 1\n\t\t15 tab Favorites, Va"
+    }
+  ]
+}
