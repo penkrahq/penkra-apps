@@ -2,6 +2,12 @@
 
 Evidence only; the owning Canvas TODO remains the planning authority and was not edited.
 
+## 2026-09-07 08:09 UTC source verification
+
+At combined source HEAD `4b1329d`, `npm run build:dev` exited 0. The strict command `node scripts/test.mjs src/*.test.mjs src/exporters/*.test.mjs collaboration/pen-yjs-model.test.mjs` passed 747 tests, zero failures/cancellations/skips, exit 0, in 10412 ms. This explicitly excludes `compatibility/*.test.mjs` and does not supersede the earlier full-suite Compose cancellation. Native compilation was not started alongside the iOS worker's compiler lease.
+
+Fresh Computer Use in the original numbered Dev1 restored Canvas's document list. Read-only installation metadata identifies Canvas 0.2.40, sideload package digest `03c351437d853567cfccfaec1afcef35ee82819e674719857a4944d49592265e`, installed September 5. That is an older package, not installed acceptance of the newly built combined source. No installation metadata or live documents were changed by this check.
+
 The isolated combined branch starts from preserved baseline `5ea92fc` and integrates delivery `a8cf125`, migration safeguards `81416f5`, and mobile clipping fixtures `3c0dd51`. The original dirty checkout was not reset or replaced.
 
 - Full combined suite: 440 passed, zero failed/cancelled/skipped, exit 0, 118467 ms. Log: `/tmp/canvas-local-combined-suite-20260906.log`.
