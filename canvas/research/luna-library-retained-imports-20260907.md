@@ -12,6 +12,7 @@ behavior.
 
 - `770520e` — `canvas: materialize retained library imports`
 - `24b92a8` — `test(canvas): cover retained library import materialization`
+- `d80ec1c` — `test(canvas): cover valid retained asset mutation`
 
 ## Command and result
 
