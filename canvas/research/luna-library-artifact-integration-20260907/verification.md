@@ -83,12 +83,17 @@ The default integration test is read-only against `corrected/`: it validates
 every manifest hash and byte count, resolves every local HTML `src`/`href`,
 checks retained PPTX/SVG/PDF semantics, performs bounded browser and Poppler
 checks, and proves the omitted `html/assets/raster-4.png` fixture fails.
+The browser bounds are observation timeouts only; they do not cancel an
+underlying `openBrowser` operation or prove child-process termination. Color
+checks report finite positive samples within cropped expected regions; they do
+not prove that color is absent elsewhere in the image.
 
 Independent retained-file inspection found PPTX text/colors and no picture
 fallback, HTML original IDs plus four ordinal asset references, SVG viewBox
 `0 0 420 240` with native rectangles and embedded raster text, and a one-page
 PDF with extracted text, zero image XObjects, embedded Inter, and bounded
-positive rendered samples for both library colors and the consumer-local color.
+positive rendered samples within expected regions for both library colors and
+the consumer-local color.
 
 No mobile compiler/device work, Canvas document mutation, host release, or
 durable-library persistence claim was made.

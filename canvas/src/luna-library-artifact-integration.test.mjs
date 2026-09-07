@@ -27,6 +27,7 @@ function style(document, id) { return document.paragraphStyles[node(document, id
 function importRecord(document, record) { document.imports.ui = record; return document; }
 
 function bounded(promise, label, timeoutMs = 20_000) {
+  // Observation timeout only: Promise.race does not cancel the underlying operation.
   let timer;
   return Promise.race([
     promise,
@@ -46,9 +47,7 @@ function crop(image, region) {
 
 function assertColorRegion(image, color, region, label) {
   const observed = colorBounds(crop(image, region), color);
-  assert.ok(Number.isFinite(observed.samples) && observed.samples > 0, `${label}: expected finite positive samples`);
-  assert.ok(Number.isFinite(observed.x) && Number.isFinite(observed.y), `${label}: expected finite bounds`);
-  assert.ok(observed.x >= 0 && observed.y >= 0 && observed.x + observed.width <= region.width && observed.y + observed.height <= region.height, `${label}: color escaped expected region`);
+  assert.ok(Number.isFinite(observed.samples) && observed.samples > 0, `${label}: expected finite positive samples within expected region`);
   return observed;
 }
 
