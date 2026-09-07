@@ -309,6 +309,29 @@ The proposed minimal future harness changes are: re-read/hash/size-check fullB i
 and capture an app-owned root-origin/safe-area receipt for crop origin. No fix was implemented,
 and any next native run requires a new integration lease.
 
+## PDF/X subset-policy helper review (read-only, not integrated)
+
+Candidate commits `85f0ea8` (one standalone source file), `a471df7` (one test file), and `ec3f2d8`
+(one evidence file) remain unpicked. The helper exports only
+`inspectPdfxSubsetPolicy(pdf) -> { issues }` with `{ code, clause, object }`; it is not wired into
+the emitter, PDF preflight, conformance result, capability table, or any storage/materializer
+path. The reported direct selection passed `24/24` with `0` failures, cancellations, or skips
+(`9` new policy tests plus `15` existing preflight tests).
+
+The source statically covers catalog `Perms`, exact catalog metadata identity, four viewer
+preference box/clip fields, inline/indirect/unreachable arrays/dictionaries/streams, shared-object
+deduplication, cycles, and deterministic missing-reference diagnostics. One concrete policy gap
+was found: the implementation checks object `Type` values `OCG`/`OCMD` and `OC`/`HalftoneType`
+keys, but never checks the catalog `OCProperties` key itself. Thus a catalog containing
+`OCProperties` whose value is an otherwise ordinary or empty dictionary can pass this standalone
+policy inspector, despite its comment claiming optional-content dictionary/key coverage. The
+existing nine tests likewise omit a catalog `OCProperties` case.
+
+The helper's viewer test also exercises only direct per-page `BleedBox` presence when accepting
+BleedBox preferences; inherited/page-tree behavior is not covered. The helper remains a
+review-only diagnostic and the PDF/X publication gate remains closed. No source fix, wiring, or
+native action was taken.
+
 ## Independent delivery review blockers
 
 The independent review report was read-only verified from delivery HEAD
