@@ -1,4 +1,4 @@
-# Independent accept-workflow review: prerequisite seam blocked
+# Independent accept-workflow review
 
 Date: 2026-09-07
 
@@ -23,9 +23,10 @@ The requested prerequisites were not present in this worktree. The current
 unconditionally at line 41.
 
 An existing isolated commit, `9225f6b8e805ace1b73e68d01d7bc0b26b9136f3`, adds
-that method, but it is not an ancestor of this lane and was not cherry-picked
-because the task explicitly limited cherry-picks to the accept workflow source
-and tests. No production file was edited for this review.
+that method. After the initial reproduction, the approved equivalent
+`9594dcb` was cherry-picked as local `cb7d9a4`, together with its isolated test
+`6f24b27` (`263c8e4`) and evidence `a228b9e` (`cda3964`). No new production
+change was authored in this review.
 
 ## Concrete reproduction
 
@@ -77,9 +78,38 @@ fresh retained loader with upstream reads unavailable.
 The publisher-denied, asset-free case did execute and preserved the required
 boundary: publisher denial occurred before consumer upload or append.
 
-No conclusion is drawn about the blocked behavior, hash identities, operation
-payloads, inverse replay, or post-deletion loading until the storage seam is
-made available in this lane. The precise next prerequisite is the approved
-`retainPublishedItems` storage implementation (or an equivalent authorized
-base update); silently substituting `retainItems` would not test the requested
-acceptance protocol.
+## Post-prerequisite verification
+
+After the approved storage seam was added, the same independent test ran
+unchanged in protocol scope and passed `6/6` with `0` failures, cancellations,
+or skips. It exercised real `publishCanvasLibrary()` ->
+`acceptCanvasLibrary()` -> fresh `loadRetainedCanvasImports()` using persisted
+fake Account/Yjs state. The successful cases covered nested asset loading after
+publisher deletion, asset-free publisher denial, removed/private public-item
+rejection before append, upload/readback failure, consumer CAS conflict using a
+real Yjs edit, malformed durable append as
+`CANVAS_LIBRARY_ACCEPT_COMMIT_UNKNOWN`, deferred snapshot, exact inverse undo,
+caller/source snapshot isolation, same-source policy preservation, alias
+conflict, and newest-head selection while prior immutable bytes remained.
+
+Final independent command:
+
+```text
+node --test canvas/src/library-accept-workflow-independent.test.mjs
+```
+
+Exit `0`; `6` passed, `0` failed, `0` cancelled, `0` skipped; duration
+`312.457458 ms`.
+
+The broader pure focus was:
+
+```text
+node --test canvas/src/library-accept-workflow-independent.test.mjs canvas/src/library-accept-workflow.test.mjs canvas/src/library-published-storage.test.mjs canvas/src/library-publish-workflow-independent.test.mjs canvas/src/library-publish-workflow.test.mjs canvas/src/library-publication-head-retentions.test.mjs canvas/src/library-publication-head.test.mjs canvas/src/library-release-retentions.test.mjs canvas/src/library-retained-publication.test.mjs canvas/src/library-published-retention.test.mjs canvas/src/library-published-retention-independent.test.mjs canvas/src/library-retained-imports.test.mjs canvas/src/library-retained-loader.test.mjs canvas/src/library-retention-preparation.test.mjs canvas/src/library-storage.test.mjs canvas/src/library-publication-service.test.mjs canvas/src/canvas-imports.test.mjs canvas/src/library-publication.test.mjs
+```
+
+Exit `0`; `127` passed, `0` failed, `0` cancelled, `0` skipped; duration
+`440.404375 ms`.
+
+The initial missing-method result remains retained as branch-mismatch evidence
+only; it is superseded for acceptance conclusions by the post-prerequisite
+run. No concrete defect remains from the exercised acceptance workflow.
