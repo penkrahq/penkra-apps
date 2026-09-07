@@ -51,6 +51,7 @@ export function buildExporterIR(document, request) {
       width: graphNode.width,
       height: graphNode.height,
       unit: "px",
+      lang: resolved.document.lang ?? null,
       ...(physical ? { physical } : {}),
       ...(frame.bleed !== undefined ? { bleed: frame.bleed } : {}),
       ...(frame.safeMargin !== undefined ? { safeMargin: frame.safeMargin } : {}),
@@ -61,7 +62,7 @@ export function buildExporterIR(document, request) {
         export: frame.export ?? "default",
         geometry: { x: 0, y: 0, localX: 0, localY: 0, w: graphNode.width, h: graphNode.height, rotation: graphNode.rotation ?? 0 },
         paint: { fill: frame.fill ?? null, stroke: frame.stroke ?? null, effect: frame.effect ?? null, cornerRadius: frame.cornerRadius ?? null, opacity: graphNode.opacity, blendMode: frame.blendMode ?? "normal" },
-        semantics: { description: frame.description ?? null, decorative: frame.decorative === true, landmark: frame.landmark ?? null },
+        semantics: { description: frame.description ?? null, decorative: frame.decorative === true, landmark: frame.landmark ?? null, linkName: frame.linkName ?? null },
         layout: semanticLayout(frame),
         variants: semanticVariants(authoredById.get(frameId) ?? frame),
         capability: rootCapability,
@@ -163,7 +164,7 @@ export function buildExtractionIR(document, request) {
     unit: "px",
     ...(format === "pdf" ? { physical: source.physical, bleed: source.bleed ?? 0 } : {}),
     origin: { x: bounds.minX, y: bounds.minY },
-    root: { id: request.nodeId, type: "frame", semantics: { description: source.description ?? null, decorative: source.decorative === true }, capability: { verdict: "native" } },
+    root: { id: request.nodeId, type: "frame", semantics: { description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null }, capability: { verdict: "native" } },
     nodes,
   };
   const rasters = rasterScopes(nodes, { rasterPolicy: [{ scale: extractionScale, density: `${extractionScale}x`, ppi: null }] }, graph, [output]);
@@ -430,7 +431,12 @@ export function richTextRuns(node, paragraphStyles, documentLanguage = null) {
     return { ...rest, language: lang };
   });
 }
-function textBase(node) { return Object.fromEntries(["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "fill", "underline", "strikethrough"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]])); }
+function textBase(node) {
+  const base = Object.fromEntries(["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "fill", "underline", "strikethrough"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]]));
+  if (node.lang !== undefined) base.lang = node.lang;
+  else if (node.language !== undefined) base.language = node.language;
+  return base;
+}
 function semanticLayout(node) { return Object.fromEntries(["textGrowth", "layout", "gap", "rowGap", "columnGap", "padding", "alignItems", "justifyContent", "layoutPosition", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "width", "height"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]])); }
 function needsIsolation(node) { return Number(node.opacity ?? 1) < 1 || ![undefined, "normal", "pass_through"].includes(node.blendMode) || node.clip === true; }
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }

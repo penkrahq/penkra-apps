@@ -38,7 +38,8 @@ function assertScreenNames(outputs) {
 function swiftScreen(output, options) {
   const children = groupChildren(output.nodes);
   const root = output.root ?? rootNode(output);
-  return `import SwiftUI\n\npublic struct ${sourceName(output.name)}: View {\n  public init() {${options.fontCatalog?.size ? " CanvasFonts.register() " : ""}}\n  public var body: some View {\n${swiftContainer(root, orderedChildren(root, children), children, options, 2, true)}\n      .accessibilityElement(children: .contain)${swiftAccessibility(root)}\n  }\n}\n`;
+  const language = output.lang ? swiftLanguageModifier(output.lang) : "";
+  return `import SwiftUI\n\npublic struct ${sourceName(output.name)}: View {\n  public init() {${options.fontCatalog?.size ? " CanvasFonts.register() " : ""}}\n  public var body: some View {\n${swiftContainer(root, orderedChildren(root, children), children, options, 2, true)}\n      .accessibilityElement(children: .contain)${swiftAccessibility(root)}${language}\n  }\n}\n`;
 }
 
 function swiftNode(node, children, options, depth, parentLayout) {
@@ -51,7 +52,7 @@ function swiftNode(node, children, options, depth, parentLayout) {
     if (!data) throw new Error(`SwiftUI rasterizer is required for ${node.id}.`);
     return `${indent}CanvasRasterImage(base64: ${JSON.stringify(data)})${position}${access}`;
   }
-  if (node.type === "text") return `${indent}(${swiftText(node, options)})${swiftTextAlignment(node)}.opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
+  if (node.type === "text") return `${indent}(${swiftText(node, options)})${swiftTextAlignment(node)}.opacity(${n(node.paint.opacity ?? 1)})${position}${access}${swiftLanguage(node)}`;
   if (node.vector) return `${indent}${swiftVector(node)}${position}${access}`;
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return swiftContainer(node, descendants, children, options, depth, false, parentLayout, access);
@@ -147,7 +148,9 @@ function swiftGeometry(node, parentLayout, afterFrame = "") {
 }
 
 function swiftTextAlignment(node) {
-  const alignment = node.semantics.textAlign;
+  const alignments = new Set(node.semantics.paragraphs.map((paragraph) => paragraph.effectiveAlign).filter(Boolean));
+  if (alignments.size > 1) throw mobileSemanticError(node.id, "SwiftUI cannot represent different alignments on paragraphs within one Text view.");
+  const alignment = node.semantics.textAlign ?? [...alignments][0];
   if (alignment === undefined) return "";
   const native = { start: "leading", center: "center", end: "trailing" }[alignment];
   if (!native) throw new Error(`SwiftUI Text cannot emit ${alignment} alignment for ${node.id}.`);
@@ -156,14 +159,35 @@ function swiftTextAlignment(node) {
 
 function swiftAccessibility(node) {
   if (node.semantics.decorative) return ".accessibilityRepresentation { EmptyView() }.accessibilityHidden(true)";
+  if (node.semantics.landmark != null) throw mobileSemanticError(node.id, `SwiftUI has no native landmark role for ${JSON.stringify(node.semantics.landmark)}.`);
+  if (node.semantics.linkName != null) throw mobileSemanticError(node.id, "SwiftUI has no native link-name semantic without a link action.");
   let value = node.semantics.description ? `.accessibilityLabel(${JSON.stringify(node.semantics.description)})` : "";
-  if (node.type === "text" && node.semantics.paragraphs.some((paragraph) => paragraph.headingLevel)) value += ".accessibilityAddTraits(.isHeader)";
+  if (node.type === "text") {
+    const levels = new Set(node.semantics.paragraphs.map((paragraph) => paragraph.headingLevel).filter(Boolean));
+    if (levels.size > 1) throw mobileSemanticError(node.id, "SwiftUI cannot represent different heading levels on paragraphs within one Text view.");
+    const level = [...levels][0];
+    if (level) value += `.accessibilityHeading(.h${level})`;
+  }
   return value;
+}
+
+function swiftLanguage(node) {
+  const runs = node.semantics.runs ?? [];
+  const runLanguages = new Set(runs.map((run) => run.language ?? node.semantics.language).filter(Boolean));
+  if (!node.semantics.language && runs.some((run) => !run.language) && runLanguages.size) throw mobileSemanticError(node.id, "SwiftUI cannot represent a language override when the remaining runs have no explicit language.");
+  if (runLanguages.size > 1) throw mobileSemanticError(node.id, "SwiftUI cannot represent multiple run languages in one Text view.");
+  const language = [...runLanguages][0] ?? node.semantics.language;
+  return language ? swiftLanguageModifier(language) : "";
+}
+
+function swiftLanguageModifier(language) {
+  return `.environment(\\.locale, Locale(identifier: ${JSON.stringify(language)}))`;
 }
 
 function composeScreen(output, options) {
   const children = groupChildren(output.nodes);
   const root = output.root ?? rootNode(output);
+  if (output.lang) throw mobileSemanticError(output.id, "Compose has no native document-language semantic; export cannot represent BCP-47 language metadata without inventing a visual label.");
   return `package generated.canvas\n\nimport android.graphics.BitmapFactory\nimport android.util.Base64\nimport androidx.compose.foundation.Image\nimport androidx.compose.foundation.Canvas\nimport androidx.compose.foundation.background\nimport androidx.compose.foundation.layout.*\nimport androidx.compose.foundation.lazy.grid.GridCells\nimport androidx.compose.foundation.lazy.grid.LazyVerticalGrid\nimport androidx.compose.foundation.shape.CircleShape\nimport androidx.compose.foundation.shape.RoundedCornerShape\nimport androidx.compose.material3.Text\nimport androidx.compose.runtime.Composable\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.Path\nimport androidx.compose.ui.graphics.PathFillType\nimport androidx.compose.ui.graphics.asImageBitmap\nimport androidx.compose.ui.semantics.clearAndSetSemantics\nimport androidx.compose.ui.semantics.contentDescription\nimport androidx.compose.ui.semantics.heading\nimport androidx.compose.ui.semantics.semantics\nimport androidx.compose.ui.text.SpanStyle\nimport androidx.compose.ui.text.buildAnnotatedString\nimport androidx.compose.ui.text.withStyle\nimport androidx.compose.ui.text.font.FontStyle\nimport androidx.compose.ui.text.font.FontWeight\nimport androidx.compose.ui.text.style.TextDecoration\nimport androidx.compose.ui.unit.dp\nimport androidx.compose.ui.unit.em\nimport androidx.compose.ui.unit.sp\n\n@OptIn(ExperimentalLayoutApi::class)\n@Composable fun ${sourceName(output.name)}() {\n${composeContainer(root, orderedChildren(root, children), children, options, 1, true)}\n}\n`;
 }
 
@@ -277,12 +301,13 @@ function composeTextAlignment(node) {
 
 function composeText(node, options) {
   const runs = node.semantics.runs.length ? node.semantics.runs : [{ from: 0, to: node.semantics.content.length }];
-  const baseSize = composeBaseFontSize(runs);
-  const body = runs.map((run, index) => {
+  assertComposeLanguage(node);
+  const runExpression = (run, index) => {
     const decorations = [run.underline ? "TextDecoration.Underline" : null, run.strikethrough ? "TextDecoration.LineThrough" : null].filter(Boolean);
     const style = [`color = ${composeColor(run.fill ?? "#000000")}`, `fontSize = with(androidx.compose.ui.platform.LocalDensity.current) { ${n(run.fontSize ?? 16)}.dp.toSp() }`, `fontWeight = FontWeight(${Number(run.weight ?? run.fontWeight ?? 400)})`, run.letterSpacing != null ? `letterSpacing = with(androidx.compose.ui.platform.LocalDensity.current) { ${n(run.letterSpacing)}.dp.toSp() }` : null, (run.italic || run.fontStyle === "italic") ? "fontStyle = FontStyle.Italic" : null, decorations.length ? `textDecoration = ${decorations.length === 1 ? decorations[0] : `TextDecoration.combine(listOf(${decorations.join(", ")}))`}` : null].filter(Boolean).join(", ");
     return `withStyle(SpanStyle(${style}${options.fontCatalog?.size ? `, fontFamily = canvasFont${index}` : ""})) { append(${JSON.stringify(node.semantics.content.slice(run.from, run.to))}) }`;
-  }).join("; ");
+  };
+  const body = composeParagraphBody(node, runs, runExpression);
   const expression = `buildAnnotatedString { ${body} }`;
   const declarations = options.fontCatalog?.size ? runs.map((run, index) => `val canvasFont${index} = CanvasFonts.family(${JSON.stringify(mobileFontKey(run))})`) : [];
   return declarations.length ? `run { ${declarations.join("; ")}; ${expression} }` : expression;
@@ -298,9 +323,48 @@ function composeModifier(node, parentLayout) {
   else if (node.type === "text" && node.layout.textGrowth === "fixed-width") value += `.width(${n(node.geometry.w)}.dp).wrapContentHeight(androidx.compose.ui.Alignment.Top, unbounded = true)`;
   else value += `.size(${n(node.geometry.w)}.dp, ${n(node.geometry.h)}.dp)`;
   if (node.semantics.decorative) return `${value}.clearAndSetSemantics { }`;
+  if (node.semantics.landmark != null) throw mobileSemanticError(node.id, `Compose has no native landmark role for ${JSON.stringify(node.semantics.landmark)}.`);
+  if (node.semantics.linkName != null) throw mobileSemanticError(node.id, "Compose has no native link-name semantic without a link action.");
   if (node.semantics.description) value += `.semantics { contentDescription = ${JSON.stringify(node.semantics.description)} }`;
-  if (node.type === "text" && node.semantics.paragraphs.some((paragraph) => paragraph.headingLevel)) value += ".semantics { heading() }";
+  if (node.type === "text") {
+    const levels = new Set(node.semantics.paragraphs.map((paragraph) => paragraph.headingLevel).filter(Boolean));
+    if (levels.size > 1) throw mobileSemanticError(node.id, "Compose cannot represent different heading levels on paragraphs within one Text node.");
+    if (levels.size) value += ".semantics { heading() }";
+  }
   return value;
+}
+
+function assertComposeLanguage(node) {
+  const languages = new Set([
+    node.semantics.language,
+    ...(node.semantics.runs ?? []).map((run) => run.language),
+  ].filter(Boolean));
+  if (languages.size) throw mobileSemanticError(node.id, "Compose has no native text-language semantic; export cannot represent BCP-47 language metadata without inventing a visual label.");
+}
+
+function composeParagraphBody(node, runs, runExpression) {
+  const paragraphs = node.semantics.paragraphs?.length
+    ? node.semantics.paragraphs
+    : [{ from: 0, to: node.semantics.content.length }];
+  return paragraphs.map((paragraph) => {
+    const pieces = runs.map((run, index) => {
+      const from = Math.max(run.from, paragraph.from);
+      const to = Math.min(run.to, paragraph.to);
+      return from < to ? runExpression({ ...run, from, to }, index) : null;
+    }).filter(Boolean);
+    const body = pieces.length ? pieces.join("; ") : `append(${JSON.stringify(node.semantics.content.slice(paragraph.from, paragraph.to))})`;
+    const align = paragraph.effectiveAlign;
+    if (!align) return body;
+    const native = { start: "Start", center: "Center", end: "End", justify: "Justify" }[align];
+    if (!native) throw new Error(`Compose paragraph cannot emit ${align} alignment for ${node.id}.`);
+    return `withStyle(androidx.compose.ui.text.ParagraphStyle(textAlign = androidx.compose.ui.text.style.TextAlign.${native})) { ${body} }`;
+  }).join("; ");
+}
+
+function mobileSemanticError(nodeId, message) {
+  const error = new Error(`${message} (${nodeId}).`);
+  error.code = "CANVAS_MOBILE_SEMANTICS_UNSUPPORTED";
+  return error;
 }
 
 function groupChildren(nodes) { const map = new Map(); for (const node of nodes) { const list = map.get(node.parent) ?? []; list.push(node); map.set(node.parent, list); } return map; }
