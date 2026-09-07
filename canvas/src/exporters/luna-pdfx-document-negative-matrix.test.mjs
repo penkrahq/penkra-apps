@@ -318,7 +318,16 @@ if (!RETAIN_EVIDENCE) test("document-negative default mode is read-only and veri
   for (const expected of resultManifest.cases) {
     const actual = generated.get(`${expected.name}/${expected.serialization}`);
     assert.ok(actual, `${expected.name}/${expected.serialization} was not regenerated`);
-    assert.deepEqual(actual, expected);
+    // The envelope seam adds one intentional observation to object-stream
+    // records; retain every prior semantic issue in this historical corpus.
+    const comparable = {
+      ...actual,
+      allIssues: actual.allIssues.filter(({ code }) => code !== "PDF_SERIALIZATION_OUTSIDE_SUBSET"),
+    };
+    assert.deepEqual(comparable, expected);
+    if (actual.serialization === "object-streams") {
+      assert.ok(actual.allIssues.some(({ code }) => code === "PDF_SERIALIZATION_OUTSIDE_SUBSET"));
+    }
   }
   for (const artifact of hashManifest.retainedArtifacts) {
     const bytes = new Uint8Array(await readFile(new URL(artifact.file, EVIDENCE_DIRECTORY)));
