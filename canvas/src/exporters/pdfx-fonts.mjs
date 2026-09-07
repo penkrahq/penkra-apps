@@ -1,6 +1,7 @@
 import fontkit from "@pdf-lib/fontkit";
 import { PDFArray, PDFDict, PDFName, PDFNumber, PDFRawStream, PDFRef, decodePDFRawStream } from "pdf-lib";
 import { readPdfContent } from "./pdf-content.mjs";
+import { lookupPdfResourceName } from "./pdf-resource-name.mjs";
 
 export function inspectPdfxFonts(pdf) {
   const issues = [];
@@ -87,13 +88,17 @@ export function inspectPdfxFonts(pdf) {
         else if (operator === "Q") { if (!stack.length) add("GRAPHICS_STACK_UNDERFLOW", path, "6.1"); else active = stack.pop(); }
         else if (operator === "Tf") {
           if (operands.length !== 2 || operands[0].kind !== "name" || operands[1].kind !== "number") { active = null; add("TEXT_FONT_OPERAND_INVALID", path, "6.1"); }
-          else active = fontFor(get(fontResources, operands[0].value), `${path}/Font/${operands[0].value}`);
+          else {
+            const rawFont = lookupPdfResourceName(fontResources, operands[0].value);
+            active = fontFor(rawFont === undefined ? undefined : resolve(rawFont), `${path}/Font/${operands[0].value}`);
+          }
         } else if (["Tj", "'", '"'].includes(operator)) checkString(operands.at(-1), active, path);
         else if (operator === "TJ") {
           if (operands.length !== 1 || operands[0].kind !== "array") add("TEXT_OPERAND_INVALID", path, "6.1");
           else for (const item of operands[0].value) if (item.kind !== "number") checkString(item, active, path);
         } else if (operator === "Do") {
-          const xobject = get(get(resources, "XObject"), operands[0]?.value);
+          const rawXObject = lookupPdfResourceName(get(resources, "XObject"), operands[0]?.value);
+          const xobject = rawXObject === undefined ? undefined : resolve(rawXObject);
           if (!(xobject instanceof PDFRawStream)) add("XOBJECT_UNRESOLVED", path, "6.3");
           else if (name(get(xobject.dict, "Subtype")) === "Form") add("FONT_FORM_CONTENT_OUTSIDE_SUBSET", path);
         }

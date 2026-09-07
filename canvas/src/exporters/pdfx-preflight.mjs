@@ -8,6 +8,7 @@ import { inspectPdfxSubsetPolicy } from "./pdfx-subset-policy.mjs";
 import { PDF_ARCHITECTURAL_LIMITS, inspectContentNumberSpellings, inspectContentValueLimits, inspectIndirectObjectCount, inspectPdfObjectLimits } from "./pdfx-limits.mjs";
 import { inspectCanvasPdfEnvelope } from "./pdf-serialization-envelope.mjs";
 import { readPdfContent } from "./pdf-content.mjs";
+import { lookupPdfResourceName } from "./pdf-resource-name.mjs";
 import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
 // Checks serialized objects, not the caller's requested export settings. This is
@@ -324,7 +325,7 @@ function inspectNamedContentResource(operator, resourceName, resources, location
   const { resolve, get, name, add } = context;
   const categories = { gs: "ExtGState", Do: "XObject", Tf: "Font", BDC: "Properties" };
   const category = get(resources, categories[operator]);
-  const raw = category instanceof PDFDict ? category.get(PDFName.of(resourceName)) : undefined;
+  const raw = lookupPdfResourceName(category, resourceName);
   if (raw === undefined) { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
   let value;
   try { value = resolve(raw); }
