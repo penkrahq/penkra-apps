@@ -1,0 +1,1431 @@
+{
+  "retained": [
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "png",
+      "sourceIndex": 0,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": true,
+      "path": "artifacts/root-80x60-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "svg",
+      "sourceIndex": 1,
+      "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8"
+      },
+      "retained": true,
+      "path": "artifacts/root-80x60-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 2,
+      "hash": "f7ada851833281cc3959766858b08cba927f534990d4c7ad41f7ec3670006721",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "f7ada851833281cc3959766858b08cba927f534990d4c7ad41f7ec3670006721"
+      },
+      "retained": true,
+      "path": "artifacts/root-80x60-neg40-neg30.pdf"
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "png",
+      "sourceIndex": 3,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": true,
+      "path": "artifacts/root-120x90-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "svg",
+      "sourceIndex": 4,
+      "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8"
+      },
+      "retained": true,
+      "path": "artifacts/root-120x90-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 5,
+      "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e"
+      },
+      "retained": true,
+      "path": "artifacts/root-120x90-neg40-neg30.pdf"
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "png",
+      "sourceIndex": 6,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": true,
+      "path": "artifacts/root-200x100-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "svg",
+      "sourceIndex": 7,
+      "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e"
+      },
+      "retained": true,
+      "path": "artifacts/root-200x100-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 8,
+      "hash": "cb7f2109f18fa54d34e3550cc143694e838d922eba3804ef5038295766fc65e5",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "cb7f2109f18fa54d34e3550cc143694e838d922eba3804ef5038295766fc65e5"
+      },
+      "retained": true,
+      "path": "artifacts/root-200x100-neg40-neg30.pdf"
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "png",
+      "sourceIndex": 9,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": true,
+      "path": "artifacts/root-90x140-0-0.png"
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "svg",
+      "sourceIndex": 10,
+      "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25"
+      },
+      "retained": true,
+      "path": "artifacts/root-90x140-50-80.svg"
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 11,
+      "hash": "5ad951aaff9fd7fa55e9af5728a348e3645d3f042adb8ef924fed0e9a8227308",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "5ad951aaff9fd7fa55e9af5728a348e3645d3f042adb8ef924fed0e9a8227308"
+      },
+      "retained": true,
+      "path": "artifacts/root-90x140-neg40-neg30.pdf"
+    }
+  ],
+  "single": [
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "png",
+      "sourceIndex": 0,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "svg",
+      "sourceIndex": 0,
+      "hash": "e075b51b36dfa085a9456ca75390db07e02a0880d082cde90fc50c883fbdcea3",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "e075b51b36dfa085a9456ca75390db07e02a0880d082cde90fc50c883fbdcea3"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-0-0",
+      "format": "pdf",
+      "sourceIndex": 0,
+      "hash": "6e83911f3bd1177ce4832878f1d6dd4d74bfbd256aa21700bd7240f91f0c06ea",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "6e83911f3bd1177ce4832878f1d6dd4d74bfbd256aa21700bd7240f91f0c06ea"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "png",
+      "sourceIndex": 1,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "svg",
+      "sourceIndex": 1,
+      "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "910e9cf23894b700bb2dd557a144a6309f69b75e776042440a6e83e8b94263b8"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-50-80",
+      "format": "pdf",
+      "sourceIndex": 1,
+      "hash": "7eebda55d36070a8e2d65aa2a2143f98e6e13d81d3e40a5490acae4ea784079a",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "7eebda55d36070a8e2d65aa2a2143f98e6e13d81d3e40a5490acae4ea784079a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 2,
+      "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af",
+      "measurement": {
+        "dimensions": {
+          "width": 160,
+          "height": 120
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 2,
+      "hash": "126c152b62f3046f3777adff5575108a25c1b9643b3da3ee68c145ec09c8872e",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          80,
+          60
+        ],
+        "marker": {
+          "id": "root-80x60-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-80x60-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "126c152b62f3046f3777adff5575108a25c1b9643b3da3ee68c145ec09c8872e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-80x60-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 2,
+      "hash": "f7ada851833281cc3959766858b08cba927f534990d4c7ad41f7ec3670006721",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 80,
+          "height": 60
+        },
+        "rendered": {
+          "width": 80,
+          "height": 60
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "f7ada851833281cc3959766858b08cba927f534990d4c7ad41f7ec3670006721"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "png",
+      "sourceIndex": 3,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "svg",
+      "sourceIndex": 3,
+      "hash": "35bc286d5f18df6ebd5eb856d696aa04d618664133af8c9d0c8b96f72c518e67",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "35bc286d5f18df6ebd5eb856d696aa04d618664133af8c9d0c8b96f72c518e67"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-0-0",
+      "format": "pdf",
+      "sourceIndex": 3,
+      "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "png",
+      "sourceIndex": 4,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "svg",
+      "sourceIndex": 4,
+      "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "16f0c55c5d297bf13de9bec1b9e82db6d093587efa1a0c52821d099c3d2f46d8"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-50-80",
+      "format": "pdf",
+      "sourceIndex": 4,
+      "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 5,
+      "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e",
+      "measurement": {
+        "dimensions": {
+          "width": 240,
+          "height": 180
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 5,
+      "hash": "59824eac8a6ad64b35e2b46baa6e55aa5b7ae08b94b5150b807a3479cd34548a",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          120,
+          90
+        ],
+        "marker": {
+          "id": "root-120x90-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-120x90-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "59824eac8a6ad64b35e2b46baa6e55aa5b7ae08b94b5150b807a3479cd34548a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-120x90-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 5,
+      "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 120,
+          "height": 90
+        },
+        "rendered": {
+          "width": 120,
+          "height": 90
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "8d4b45e9a4cc22f39c86750f969393145f077645812974656a4b6812e015568e"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "png",
+      "sourceIndex": 6,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "svg",
+      "sourceIndex": 6,
+      "hash": "7f0f09504c5440ad1daebdfd82b308dd0c8b81b2738db46ff7d0cbe7c1a494d0",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "7f0f09504c5440ad1daebdfd82b308dd0c8b81b2738db46ff7d0cbe7c1a494d0"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-0-0",
+      "format": "pdf",
+      "sourceIndex": 6,
+      "hash": "aa28c3ce83d2cd557f006343dada8e227edd0994c52c62df2848eba1f52947a6",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "aa28c3ce83d2cd557f006343dada8e227edd0994c52c62df2848eba1f52947a6"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "png",
+      "sourceIndex": 7,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "svg",
+      "sourceIndex": 7,
+      "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "aa2a1c776b6ff5ec04581dc75f0a6ddd021606cb7a5e68e722a796e749975d6e"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-50-80",
+      "format": "pdf",
+      "sourceIndex": 7,
+      "hash": "aa28c3ce83d2cd557f006343dada8e227edd0994c52c62df2848eba1f52947a6",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "aa28c3ce83d2cd557f006343dada8e227edd0994c52c62df2848eba1f52947a6"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 8,
+      "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a",
+      "measurement": {
+        "dimensions": {
+          "width": 400,
+          "height": 200
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 8,
+      "hash": "839acdfe6ca14b1a51fb2d6f31509114b549e623ab74897c0e85a207fd2f3376",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          200,
+          100
+        ],
+        "marker": {
+          "id": "root-200x100-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-200x100-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "839acdfe6ca14b1a51fb2d6f31509114b549e623ab74897c0e85a207fd2f3376"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-200x100-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 8,
+      "hash": "cb7f2109f18fa54d34e3550cc143694e838d922eba3804ef5038295766fc65e5",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 200,
+          "height": 100
+        },
+        "rendered": {
+          "width": 200,
+          "height": 100
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "cb7f2109f18fa54d34e3550cc143694e838d922eba3804ef5038295766fc65e5"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "png",
+      "sourceIndex": 9,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "svg",
+      "sourceIndex": 9,
+      "hash": "5bbd65a3888fe2a64e9404789204dffeae04f45ccd3568de0eab70050d5cdc01",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-0-0-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-0-0-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "5bbd65a3888fe2a64e9404789204dffeae04f45ccd3568de0eab70050d5cdc01"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-0-0",
+      "format": "pdf",
+      "sourceIndex": 9,
+      "hash": "80e2bbe858f8adbc3f2714d37d994b2c5fb4bbae9f8b552ff7a02b555b77ea3b",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "80e2bbe858f8adbc3f2714d37d994b2c5fb4bbae9f8b552ff7a02b555b77ea3b"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "png",
+      "sourceIndex": 10,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "svg",
+      "sourceIndex": 10,
+      "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-50-80-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-50-80-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "0bbc3fbb1129be23d0f7f7d22ea6b5587ca999cd72cbbc2bc9bee88bd6335f25"
+      },
+      "retained": true
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-50-80",
+      "format": "pdf",
+      "sourceIndex": 10,
+      "hash": "80e2bbe858f8adbc3f2714d37d994b2c5fb4bbae9f8b552ff7a02b555b77ea3b",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "80e2bbe858f8adbc3f2714d37d994b2c5fb4bbae9f8b552ff7a02b555b77ea3b"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "png",
+      "sourceIndex": 11,
+      "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1",
+      "measurement": {
+        "dimensions": {
+          "width": 180,
+          "height": 280
+        },
+        "marker": {
+          "x": 20,
+          "y": 24,
+          "width": 40,
+          "height": 32,
+          "samples": 1280
+        },
+        "hash": "92c2e8d6e9ce9a6b501ca7c3df8fb91c887c6722493e0ae4fe15a7dc49542be1"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "svg",
+      "sourceIndex": 11,
+      "hash": "66899591da63aaad06ad31f88832ddf77b35274edc9407afed3f8f67fb86d797",
+      "measurement": {
+        "viewBox": [
+          0,
+          0,
+          90,
+          140
+        ],
+        "marker": {
+          "id": "root-90x140-neg40-neg30-marker",
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16
+        },
+        "triangle": {
+          "id": "root-90x140-neg40-neg30-triangle",
+          "d": "M 0 25 L 15 0 L 30 25 Z",
+          "transform": "translate(40 15) scale(1 1) translate(0 0)"
+        },
+        "hash": "66899591da63aaad06ad31f88832ddf77b35274edc9407afed3f8f67fb86d797"
+      },
+      "retained": false
+    },
+    {
+      "case": "single",
+      "id": "root-90x140-neg40-neg30",
+      "format": "pdf",
+      "sourceIndex": 11,
+      "hash": "5ad951aaff9fd7fa55e9af5728a348e3645d3f042adb8ef924fed0e9a8227308",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 90,
+          "height": 140
+        },
+        "rendered": {
+          "width": 90,
+          "height": 140
+        },
+        "marker": {
+          "x": 10,
+          "y": 12,
+          "width": 20,
+          "height": 16,
+          "samples": 320
+        },
+        "imageXObjectLines": [],
+        "hash": "5ad951aaff9fd7fa55e9af5728a348e3645d3f042adb8ef924fed0e9a8227308"
+      },
+      "retained": true
+    }
+  ],
+  "summary": {
+    "singleArtifacts": {
+      "requested": 36,
+      "passed": 36
+    },
+    "directoryArtifacts": {
+      "requested": 9,
+      "passed": 9,
+      "records": [
+        {
+          "format": "png",
+          "artifacts": [
+            {
+              "id": "root-80x60-0-0",
+              "path": "directory-png/root-80x60-0-0.png",
+              "hash": "5b71025101910ca96064077faec5bd59c96a733a93025428c466a7f0e637e8af"
+            },
+            {
+              "id": "root-120x90-0-0",
+              "path": "directory-png/root-120x90-0-0.png",
+              "hash": "ee7988972ed01638900b66dad0cb34bdcaf8aab92e8ab14ad16ed884ad05ae7e"
+            },
+            {
+              "id": "root-200x100-0-0",
+              "path": "directory-png/root-200x100-0-0.png",
+              "hash": "39c3eb720f82e96693e4801aebac8cb60ad977d755c1992ec45be7b1e5a0940a"
+            }
+          ],
+          "resultArtifacts": [
+            "root-80x60-0-0.png",
+            "root-120x90-0-0.png",
+            "root-200x100-0-0.png"
+          ]
+        },
+        {
+          "format": "svg",
+          "artifacts": [
+            {
+              "id": "root-80x60-0-0",
+              "path": "directory-svg/root-80x60-0-0.svg",
+              "hash": "e075b51b36dfa085a9456ca75390db07e02a0880d082cde90fc50c883fbdcea3"
+            },
+            {
+              "id": "root-120x90-0-0",
+              "path": "directory-svg/root-120x90-0-0.svg",
+              "hash": "35bc286d5f18df6ebd5eb856d696aa04d618664133af8c9d0c8b96f72c518e67"
+            },
+            {
+              "id": "root-200x100-0-0",
+              "path": "directory-svg/root-200x100-0-0.svg",
+              "hash": "7f0f09504c5440ad1daebdfd82b308dd0c8b81b2738db46ff7d0cbe7c1a494d0"
+            }
+          ],
+          "resultArtifacts": [
+            "root-80x60-0-0.svg",
+            "root-120x90-0-0.svg",
+            "root-200x100-0-0.svg"
+          ]
+        },
+        {
+          "format": "pdf",
+          "artifacts": [
+            {
+              "id": "root-80x60-0-0",
+              "path": "directory-pdf/root-80x60-0-0.pdf",
+              "hash": "f301e643cfd2399cb49b1bc30398ee6f43f8b92e0125a96a6a5c5fef9d4dc202"
+            },
+            {
+              "id": "root-120x90-0-0",
+              "path": "directory-pdf/root-120x90-0-0.pdf",
+              "hash": "104ad472517e241e592aca41bff3fa3afdf63e286bd89f5a912430a5b73ba019"
+            },
+            {
+              "id": "root-200x100-0-0",
+              "path": "directory-pdf/root-200x100-0-0.pdf",
+              "hash": "e66bb93e293dc80ef61ca37314c7933b91e072d06a6331ffb42e7e4771d08584"
+            }
+          ],
+          "resultArtifacts": [
+            "root-80x60-0-0.pdf",
+            "root-120x90-0-0.pdf",
+            "root-200x100-0-0.pdf"
+          ]
+        }
+      ]
+    },
+    "multiPdf": {
+      "requested": 1,
+      "pages": 3,
+      "hash": "1444df12b495571fb1c8cf434de24d0145a4916e996539391a913f4e0f81985d"
+    },
+    "physicalPdf": {
+      "hash": "246d00da8628595ea68299223209845ccd0349756b2ffe73e7c9ba78a3f5677f",
+      "measurement": {
+        "pages": 1,
+        "pageSize": {
+          "width": 613.276,
+          "height": 859.89
+        },
+        "pdfLibSize": {
+          "width": 613.2755905511812,
+          "height": 859.8897637795276
+        },
+        "mediaBox": {
+          "x": 0,
+          "y": 0,
+          "width": 613.2755905511812,
+          "height": 859.8897637795276
+        },
+        "bleedBox": {
+          "x": 0,
+          "y": 0,
+          "width": 613.2755905511812,
+          "height": 859.8897637795276
+        },
+        "trimBox": {
+          "x": 9,
+          "y": 9,
+          "width": 595.2755905511812,
+          "height": 841.8897637795276
+        },
+        "imageXObjectLines": [],
+        "rendered": {
+          "width": 614,
+          "height": 860
+        },
+        "marker": {
+          "x": 83,
+          "y": 177,
+          "width": 149,
+          "height": 225,
+          "samples": 33525
+        },
+        "markerComparison": {
+          "ok": false,
+          "deltas": {
+            "x": 64,
+            "y": 156,
+            "width": 129,
+            "height": 209
+          }
+        }
+      }
+    },
+    "rejected": {
+      "multiPngSvg": "CANVAS_EXTRACT_FORMAT_SINGLE_UNIT",
+      "pdfX4": "CANVAS_PDF_PROFILE_UNVERIFIED"
+    }
+  }
+}
