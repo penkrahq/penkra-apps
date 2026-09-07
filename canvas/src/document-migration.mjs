@@ -92,7 +92,12 @@ export function migrateCanvasDocument(source) {
   try {
     validateCanvasDocument(document);
   } catch (error) {
-    throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${error.message}`);
+    const detail = String(error?.message ?? error);
+    const limit = 4_000;
+    const bounded = detail.length > limit
+      ? `${detail.slice(0, limit)}\n… ${detail.length - limit} additional characters omitted.`
+      : detail;
+    throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
 }

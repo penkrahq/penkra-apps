@@ -99,6 +99,19 @@ test("migration leaves already-valid paragraph ranges and metadata byte-for-byte
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
+test("migration bounds accumulated legacy validation diagnostics for the App response boundary", () => {
+  const source = {
+    module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: Array.from({ length: 500 }, (_, index) => ({ id: `invalid-${index}`, type: "not-a-node" })),
+  };
+  assert.throws(() => migrateCanvasDocument(source), (error) => {
+    assert.equal(error.code, "CANVAS_MIGRATION_INVALID");
+    assert.match(error.message, /additional characters omitted/u);
+    assert.ok(error.message.length < 4_300);
+    return true;
+  });
+});
+
 test("copy migration verifies the copy before renaming the untouched original", async () => {
   const calls = [];
   let createdSource;
