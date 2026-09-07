@@ -134,6 +134,63 @@ test("aliases to one release may accept different public items without leaking e
   assert.throws(() => buildRetainedCanvasImports(source({ first: importRecord(release) }, [{ id: "bad", type: "rectangle", fill: "${first:accent}" }]), new Map([["first", first]])), { code: "CANVAS_LIBRARY_ITEM_PRIVATE" });
 });
 
+test("same-release aliases materialize only their own resources and assets", async () => {
+  const alphaBytes = Uint8Array.of(1, 1, 1); const betaBytes = Uint8Array.of(2, 2, 2);
+  const release = createLibraryRelease({ ...source({}, [
+    { id: "alpha", type: "frame", fill: { type: "image", url: "alpha.png" } },
+    { id: "beta", type: "frame", fill: { type: "image", url: "beta.png" } },
+  ]), library: { public: [{ kind: "component", id: "alpha" }, { kind: "component", id: "beta" }] } }, {
+    libraryId: "split", releaseId: "r1", assets: [
+      { path: "alpha.png", size: 3, sha256: sha(alphaBytes) }, { path: "beta.png", size: 3, sha256: sha(betaBytes) },
+    ],
+  });
+  const releases = new Map([[release.libraryId, release]]);
+  const assets = new Map([["split:alpha.png", alphaBytes], ["split:beta.png", betaBytes]]);
+  const first = await retain(release, [{ kind: "component", id: "alpha" }], releases, assets);
+  const second = await retain(release, [{ kind: "component", id: "beta" }], releases, assets);
+  const consumer = source({ first: importRecord(release), second: importRecord(release) }, [
+    { id: "one", type: "ref", ref: "first:alpha" }, { id: "two", type: "ref", ref: "second:beta" },
+  ]);
+  const built = buildRetainedCanvasImports(consumer, new Map([["first", first], ["second", second]]));
+  assert.deepEqual(built.imports.first.document.children.map(({ id }) => id), ["alpha"]);
+  assert.deepEqual(built.imports.second.document.children.map(({ id }) => id), ["beta"]);
+  assert.deepEqual([...built.assets.keys()].sort(), ["imports/first/alpha.png", "imports/second/beta.png"]);
+  assert.equal(built.imports.first.document.children.some(({ id }) => id === "beta"), false);
+  assert.equal(built.imports.second.document.children.some(({ id }) => id === "alpha"), false);
+});
+
+test("shared dependency aliases keep root-local nested public manifests", async () => {
+  const dependency = createLibraryRelease({ ...source({}, [
+    { id: "a", type: "frame", fill: "#a" }, { id: "b", type: "frame", fill: "#b" },
+  ]), library: { public: [{ kind: "component", id: "a" }, { kind: "component", id: "b" }] } }, { libraryId: "shared-dependency", releaseId: "r1" });
+  const rootA = createLibraryRelease({ ...source({ dep: importRecord(dependency) }, [{ id: "rootA", type: "frame", children: [{ id: "useA", type: "ref", ref: "dep:a" }] }]), library: { public: [{ kind: "component", id: "rootA" }] } }, { libraryId: "root-a", releaseId: "r1", dependencies: [{ alias: "dep", ...identity(dependency) }] });
+  const rootB = createLibraryRelease({ ...source({ dep: importRecord(dependency) }, [{ id: "rootB", type: "frame", children: [{ id: "useB", type: "ref", ref: "dep:b" }] }]), library: { public: [{ kind: "component", id: "rootB" }] } }, { libraryId: "root-b", releaseId: "r1", dependencies: [{ alias: "dep", ...identity(dependency) }] });
+  const releases = new Map([[dependency.libraryId, dependency], [rootA.libraryId, rootA], [rootB.libraryId, rootB]]);
+  const first = await retain(rootA, [{ kind: "component", id: "rootA" }], releases);
+  const second = await retain(rootB, [{ kind: "component", id: "rootB" }], releases);
+  const consumer = source({ first: importRecord(rootA), second: importRecord(rootB) }, [
+    { id: "one", type: "ref", ref: "first:rootA" }, { id: "two", type: "ref", ref: "second:rootB" },
+  ]);
+  const built = buildRetainedCanvasImports(consumer, new Map([["first", first], ["second", second]]));
+  assert.deepEqual(built.imports.first.imports.dep.release.publicItems.map(({ kind, id }) => `${kind}:${id}`), ["component:a"]);
+  assert.deepEqual(built.imports.second.imports.dep.release.publicItems.map(({ kind, id }) => `${kind}:${id}`), ["component:b"]);
+  assert.equal(built.imports.first.imports.dep.document.children.some(({ id }) => id === "b"), false);
+  assert.equal(built.imports.second.imports.dep.document.children.some(({ id }) => id === "a"), false);
+});
+
+test("one incomplete root retention is rejected even when another alias supplies the same release closure", async () => {
+  const bytes = Uint8Array.of(3, 3, 3);
+  const release = createLibraryRelease({ ...source({}, [{ id: "card", type: "frame", fill: { type: "image", url: "card.png" } }]), library: { public: [{ kind: "component", id: "card" }] } }, { libraryId: "closure-split", releaseId: "r1", assets: [{ path: "card.png", size: 3, sha256: sha(bytes) }] });
+  const retention = await retain(release, [{ kind: "component", id: "card" }], new Map([[release.libraryId, release]]), new Map([["closure-split:card.png", bytes]]));
+  const incompleteItem = structuredClone(retention);
+  incompleteItem.items = [];
+  const incompleteAsset = structuredClone(retention);
+  incompleteAsset.assets = [];
+  const consumer = source({ first: importRecord(release), second: importRecord(release) });
+  assert.throws(() => buildRetainedCanvasImports(consumer, new Map([["first", incompleteItem], ["second", retention]])), { code: "CANVAS_IMPORT_INTEGRITY" });
+  assert.throws(() => buildRetainedCanvasImports(consumer, new Map([["first", incompleteAsset], ["second", retention]])), { code: "CANVAS_IMPORT_INTEGRITY" });
+});
+
 test("overlapping accepted component parent and child materialize one root without duplicate ids", async () => {
   const document = { ...source({}, [{ id: "parent", type: "frame", children: [{ id: "child", type: "rectangle", fill: "#123456" }] }, { id: "child", type: "rectangle", fill: "#123456" }]), library: { public: [{ kind: "component", id: "parent" }, { kind: "component", id: "child" }] } };
   const release = createLibraryRelease(document, { libraryId: "overlap", releaseId: "r1" });
