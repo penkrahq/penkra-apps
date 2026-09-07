@@ -12,7 +12,7 @@ export const LOCAL_BODY = "#00ff00";
 export function libraryDocument(light, dark) {
   return {
     version: "2.17", module: "generic",
-    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark", media: "(prefers-color-scheme: dark)" }] } },
     variables: {
       privateAccent: { tokenType: "color", cascade: [{ value: light }, { value: dark, when: { appearance: "dark" } }] },
       accent: { tokenType: "color", cascade: [{ value: "${privateAccent}" }] },
@@ -55,7 +55,7 @@ export function consumerDocument(importRecord) {
   const childrenFor = sharedChildren;
   return {
     version: "2.17", module: "generic",
-    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark", media: "(prefers-color-scheme: dark)" }] } },
     variables: { accent: { tokenType: "color", cascade: [{ value: LOCAL_ACCENT }] } },
     paragraphStyles: { body: { fill: LOCAL_BODY, fontFamily: "Inter", fontSize: 22 } },
     imports: { ui: importRecord }, flows: [],
@@ -93,4 +93,3 @@ export function walk(node, result = []) {
 }
 
 export function allNodes(document) { return (document.children ?? []).flatMap((node) => walk(node)); }
-
