@@ -1,0 +1,26 @@
+{
+  "caseId": "vertical-start-g10-none",
+  "expectedBounds": {
+    "child-1": {
+      "x": 20,
+      "y": 60,
+      "width": 40,
+      "height": 30,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 20,
+      "y": 100,
+      "width": 40,
+      "height": 30,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 20,
+      "y": 140,
+      "width": 40,
+      "height": 30,
+      "color": "#2a9d8f"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "caseId": "vertical-start-g0-asymmetric",
+  "direction": "vertical",
+  "justifyContent": "start",
+  "gap": 0,
+  "padding": "asymmetric",
+  "density": 320,
+  "fontScale": 1,
+  "scale": 2,
+  "referencePath": "vertical-start-g0-asymmetric/reference-320.png",
+  "capturePath": "vertical-start-g0-asymmetric/capture-320-font-1.png",
+  "expectedBounds": {
+    "child-1": {
+      "x": 120,
+      "y": 140,
+      "width": 80,
+      "height": 60,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 120,
+      "y": 200,
+      "width": 80,
+      "height": 60,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 120,
+      "y": 260,
+      "width": 80,
+      "height": 60,
+      "color": "#2a9d8f"
+    }
+  },
+  "observedBounds": {
+    "child-1": {
+      "x": 120,
+      "y": 140,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "child-2": {
+      "x": 120,
+      "y": 200,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    },
+    "child-3": {
+      "x": 120,
+      "y": 260,
+      "width": 80,
+      "height": 60,
+      "interiorPixels": 4800
+    }
+  },
+  "comparedPixels": 12768,
+  "mismatchedPixels": 0,
+  "status": "pass",
+  "boundaryExclusionPixels": 2,
+  "channelTolerance": 2,
+  "boundMismatches": []
+}

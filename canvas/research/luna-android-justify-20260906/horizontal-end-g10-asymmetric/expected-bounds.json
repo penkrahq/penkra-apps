@@ -1,0 +1,26 @@
+{
+  "caseId": "horizontal-end-g10-asymmetric",
+  "expectedBounds": {
+    "child-1": {
+      "x": 160,
+      "y": 70,
+      "width": 40,
+      "height": 30,
+      "color": "#123456"
+    },
+    "child-2": {
+      "x": 210,
+      "y": 70,
+      "width": 40,
+      "height": 30,
+      "color": "#f4a261"
+    },
+    "child-3": {
+      "x": 260,
+      "y": 70,
+      "width": 40,
+      "height": 30,
+      "color": "#2a9d8f"
+    }
+  }
+}

@@ -1,0 +1,1890 @@
+{
+  "package": "luna-android-justify-20260906",
+  "caseCount": 24,
+  "caseIds": [
+    "horizontal-start-g0-none",
+    "horizontal-start-g0-asymmetric",
+    "horizontal-start-g10-none",
+    "horizontal-start-g10-asymmetric",
+    "horizontal-center-g0-none",
+    "horizontal-center-g0-asymmetric",
+    "horizontal-center-g10-none",
+    "horizontal-center-g10-asymmetric",
+    "horizontal-end-g0-none",
+    "horizontal-end-g0-asymmetric",
+    "horizontal-end-g10-none",
+    "horizontal-end-g10-asymmetric",
+    "vertical-start-g0-none",
+    "vertical-start-g0-asymmetric",
+    "vertical-start-g10-none",
+    "vertical-start-g10-asymmetric",
+    "vertical-center-g0-none",
+    "vertical-center-g0-asymmetric",
+    "vertical-center-g10-none",
+    "vertical-center-g10-asymmetric",
+    "vertical-end-g0-none",
+    "vertical-end-g0-asymmetric",
+    "vertical-end-g10-none",
+    "vertical-end-g10-asymmetric"
+  ],
+  "settingsPerCase": 4,
+  "measurementCount": 96,
+  "captureCount": 96,
+  "files": [
+    {
+      "path": "build-horizontal-center-g0-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "b11511e13b93fe6cb65b0d0de64fd70711347b94cd5de246b9cbdc264548cdee"
+    },
+    {
+      "path": "build-horizontal-center-g0-none.log",
+      "bytes": 2254,
+      "sha256": "1b91a6179967485ea3ff206f53d07726b2a42d1ed432a32f0fe363916e69d89b"
+    },
+    {
+      "path": "build-horizontal-center-g10-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "d1f70c7132e77a2f24df890e7f219c3a314356e68824d6e4c5b5692da73cd3b1"
+    },
+    {
+      "path": "build-horizontal-center-g10-none.log",
+      "bytes": 2254,
+      "sha256": "b11511e13b93fe6cb65b0d0de64fd70711347b94cd5de246b9cbdc264548cdee"
+    },
+    {
+      "path": "build-horizontal-end-g0-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "e5f73103609d43bae771c165061952dfae71b59d7c6f05540e9406a6b0f32b6b"
+    },
+    {
+      "path": "build-horizontal-end-g0-none.log",
+      "bytes": 2254,
+      "sha256": "bbad02d5ea0d0c2686eedc6a42a1c4ce3de8914cb67fac9ddb6d2feb678129cb"
+    },
+    {
+      "path": "build-horizontal-end-g10-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "e5f73103609d43bae771c165061952dfae71b59d7c6f05540e9406a6b0f32b6b"
+    },
+    {
+      "path": "build-horizontal-end-g10-none.log",
+      "bytes": 2254,
+      "sha256": "d1f70c7132e77a2f24df890e7f219c3a314356e68824d6e4c5b5692da73cd3b1"
+    },
+    {
+      "path": "build-horizontal-start-g0-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "b502e0dbe480b561aff1a7a91e1e68e65860d382dd92de475f5793265c9c45ad"
+    },
+    {
+      "path": "build-horizontal-start-g0-none.log",
+      "bytes": 2254,
+      "sha256": "d1f70c7132e77a2f24df890e7f219c3a314356e68824d6e4c5b5692da73cd3b1"
+    },
+    {
+      "path": "build-horizontal-start-g10-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "e5f73103609d43bae771c165061952dfae71b59d7c6f05540e9406a6b0f32b6b"
+    },
+    {
+      "path": "build-horizontal-start-g10-none.log",
+      "bytes": 2254,
+      "sha256": "9af7e881afa3ec78d5174e67c1840bade45f2955d600d489c60d385ec5ae8954"
+    },
+    {
+      "path": "build-vertical-center-g0-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "38046b902c8a779ceeefccb956c01d2783e88072081e68bad623f335069affd5"
+    },
+    {
+      "path": "build-vertical-center-g0-none.log",
+      "bytes": 2254,
+      "sha256": "e6f3a8e269831b844a249e3f2c57518f012968aaa43d04cd389ec16b552950c1"
+    },
+    {
+      "path": "build-vertical-center-g10-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "e5f73103609d43bae771c165061952dfae71b59d7c6f05540e9406a6b0f32b6b"
+    },
+    {
+      "path": "build-vertical-center-g10-none.log",
+      "bytes": 2254,
+      "sha256": "e5f73103609d43bae771c165061952dfae71b59d7c6f05540e9406a6b0f32b6b"
+    },
+    {
+      "path": "build-vertical-end-g0-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "b11511e13b93fe6cb65b0d0de64fd70711347b94cd5de246b9cbdc264548cdee"
+    },
+    {
+      "path": "build-vertical-end-g0-none.log",
+      "bytes": 2254,
+      "sha256": "4d171f8e2d5fcb73850b825fcf99d42f82708e61ef746456f237f97a69fe79db"
+    },
+    {
+      "path": "build-vertical-end-g10-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "b502e0dbe480b561aff1a7a91e1e68e65860d382dd92de475f5793265c9c45ad"
+    },
+    {
+      "path": "build-vertical-end-g10-none.log",
+      "bytes": 2254,
+      "sha256": "d1f70c7132e77a2f24df890e7f219c3a314356e68824d6e4c5b5692da73cd3b1"
+    },
+    {
+      "path": "build-vertical-start-g0-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "bbad02d5ea0d0c2686eedc6a42a1c4ce3de8914cb67fac9ddb6d2feb678129cb"
+    },
+    {
+      "path": "build-vertical-start-g0-none.log",
+      "bytes": 2254,
+      "sha256": "b502e0dbe480b561aff1a7a91e1e68e65860d382dd92de475f5793265c9c45ad"
+    },
+    {
+      "path": "build-vertical-start-g10-asymmetric.log",
+      "bytes": 2254,
+      "sha256": "ac7bd159d3decbdbaa73cedae03c9609daa63d9b887fdd2226a94471579fd99f"
+    },
+    {
+      "path": "build-vertical-start-g10-none.log",
+      "bytes": 2254,
+      "sha256": "e6f3a8e269831b844a249e3f2c57518f012968aaa43d04cd389ec16b552950c1"
+    },
+    {
+      "path": "device-settings-initial.json",
+      "bytes": 133,
+      "sha256": "78c0c102f7e5149a0fc7394d486caa4195e0b47c9c929d7f4dfa1be469318fa4"
+    },
+    {
+      "path": "device-settings-restored.json",
+      "bytes": 87,
+      "sha256": "beb4e6b27fbb4a39a3581e9d629977eed0b1b46f08369f6e3c2f12c56250ee16"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/capture-320-font-1.png",
+      "bytes": 21427,
+      "sha256": "53e8cfc61b2cc6a9a69c5c3d0f7c3ae5d1e7f724bffef037b1e37f95d1e390fb"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/capture-320-font-2.png",
+      "bytes": 26010,
+      "sha256": "7cedc7c34a42b41a4efc0a375a02f1626467e8863716ff69d17a8d7d66a018b5"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/capture-420-font-1.png",
+      "bytes": 24021,
+      "sha256": "f5df602e36004e4405af1ebfae2aca25a523830c4b9ea5ef8a553a71fb7ea7a3"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/capture-420-font-2.png",
+      "bytes": 28649,
+      "sha256": "7b8145c9433d0a42f954ac1b28e4b29d66ffc90080653fac3d73a4020846227d"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/expected-bounds.json",
+      "bytes": 433,
+      "sha256": "0aaba2ff8391983f6a4b8e95ead8482920963fc9d71a4e3617cba2888a468f6b"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4107,
+      "sha256": "814e178c3c4cdd616b56af28294b7aec956477c344625bb2fad07996ae337cce"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/measurement-320-font-1.json",
+      "bytes": 1283,
+      "sha256": "8017c7d9b3e97abeaaead28c44173f294c0110ba54f5afd417fde1c2a992ee05"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/measurement-320-font-2.json",
+      "bytes": 1283,
+      "sha256": "75f27d64089cfa58a5b46b97b9a12f00bf574ba1ec36923d7a70813deb53a2e6"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/measurement-420-font-1.json",
+      "bytes": 1293,
+      "sha256": "d4964d3321870a2da600c9056213e16a98d2a580eea5b114e3db68f5b3ccff74"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/measurement-420-font-2.json",
+      "bytes": 1293,
+      "sha256": "e88d4241bee93c6a1bc8cd45a259ae42131cac834e08eaa6eb3336bc99a35062"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/reference-320.png",
+      "bytes": 4066,
+      "sha256": "ea7ba7996790dcd8e474abce7a2caa87fa5cf1239f8d0cf1197e4a89b1b23d78"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/reference-420.png",
+      "bytes": 6140,
+      "sha256": "7420be5742d04eca97a6f2919930addf670a9be029bb1c12a0061e4a2802c307"
+    },
+    {
+      "path": "horizontal-center-g0-asymmetric/source.json",
+      "bytes": 1419,
+      "sha256": "8d86bab750c312dae3d0c171dcd80f26bf8ec16aa52d372d2a8f07e409724a5d"
+    },
+    {
+      "path": "horizontal-center-g0-none/capture-320-font-1.png",
+      "bytes": 21837,
+      "sha256": "4d2208674c385c86c4294f8ffb9f2dcb31282d8efa05921c9909444f22a4d60e"
+    },
+    {
+      "path": "horizontal-center-g0-none/capture-320-font-2.png",
+      "bytes": 26857,
+      "sha256": "aefe108bea7c59201238ca2e118dbd0eb7db271b67d8a0ca5ac23703a5d2925d"
+    },
+    {
+      "path": "horizontal-center-g0-none/capture-420-font-1.png",
+      "bytes": 24486,
+      "sha256": "f61357d51586e5f91a0abeec39bcffc9f99cab42a78880b47d3d6c3feaa83a72"
+    },
+    {
+      "path": "horizontal-center-g0-none/capture-420-font-2.png",
+      "bytes": 29523,
+      "sha256": "e300eccf8004cb7fdaf95c6ccc66c3ca33b923bd125d8dd95cabb2230e332093"
+    },
+    {
+      "path": "horizontal-center-g0-none/expected-bounds.json",
+      "bytes": 427,
+      "sha256": "b0e67495f4b21bb5e655004e0bb50c1dc64dbbcf9acd11232fc6e667ae03782c"
+    },
+    {
+      "path": "horizontal-center-g0-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-center-g0-none/generated/MobileFixture.kt",
+      "bytes": 4042,
+      "sha256": "01d67e8eaf4a86e9356b56908f467299843fcfff507b7d9a78ec6ecd9664143a"
+    },
+    {
+      "path": "horizontal-center-g0-none/measurement-320-font-1.json",
+      "bytes": 1259,
+      "sha256": "accf293e714544932010f6467e21e5d026ea2047e0803ea82cd807ebfcc1ec8f"
+    },
+    {
+      "path": "horizontal-center-g0-none/measurement-320-font-2.json",
+      "bytes": 1259,
+      "sha256": "6a48ffd3d5a6ba39cc7bcf723d7772a30789978e932ff30a9c3788ccbe61a6fe"
+    },
+    {
+      "path": "horizontal-center-g0-none/measurement-420-font-1.json",
+      "bytes": 1269,
+      "sha256": "ec8119749ceeefa786238b1464f5884c8db8d7473f239b06793b82b4928ebcd0"
+    },
+    {
+      "path": "horizontal-center-g0-none/measurement-420-font-2.json",
+      "bytes": 1269,
+      "sha256": "bbef89509cbdf769c1f2f487e647f2b6298137ff24d4e66e6f102a3cdf44de7f"
+    },
+    {
+      "path": "horizontal-center-g0-none/reference-320.png",
+      "bytes": 4065,
+      "sha256": "219d0f1251f05646487ca2eaff02ccce32528027d8ba95c6f20a5832f6769bc9"
+    },
+    {
+      "path": "horizontal-center-g0-none/reference-420.png",
+      "bytes": 6197,
+      "sha256": "e87ed0f6e77dbd6b898e401e75f527aeed445c4c2fff21a038bd2832322f355a"
+    },
+    {
+      "path": "horizontal-center-g0-none/source.json",
+      "bytes": 1314,
+      "sha256": "dd38352fe03a2c6c05e069e8b11c6bebb1655a7f6f801640e997b784dfd94814"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/capture-320-font-1.png",
+      "bytes": 21427,
+      "sha256": "611dbb233363a4dab75e3239d23fb9204654af0e484cc5b1a4bbb1f10b8507c3"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/capture-320-font-2.png",
+      "bytes": 26058,
+      "sha256": "12c624abedf88084e97c2a0c1d43bde8cca7413ecde8d6d51089b9c1086218a9"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/capture-420-font-1.png",
+      "bytes": 24243,
+      "sha256": "4274917f9ced838e4e3f72ba7c8404604b133461292e30ec183de6e7eca498da"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/capture-420-font-2.png",
+      "bytes": 29012,
+      "sha256": "4b268e17b66a40aeed6cf952fa9414739abf7e3f9ba3b35dece9edffd9227f69"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/expected-bounds.json",
+      "bytes": 434,
+      "sha256": "1ef2e9eee63fe44580bbf59637537ac967e87e6b51fa663267494aecdefbd3f1"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4108,
+      "sha256": "23c7d6e44e4cc1e863f69ee6a4a98e553b7f0f6dd0bbf530173c95d33e1a5676"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/measurement-320-font-1.json",
+      "bytes": 1287,
+      "sha256": "ac671987af5f1c3996d770f6682277450f34a9b3775334107975439a57010a88"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/measurement-320-font-2.json",
+      "bytes": 1287,
+      "sha256": "c5686b0dffb0616c131420af865408186deec14a3fbb23056ca53164b73d048c"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/measurement-420-font-1.json",
+      "bytes": 1297,
+      "sha256": "b10e7e758ec429017fe21890354d542def6218cf0d639f6f10de148663da466b"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/measurement-420-font-2.json",
+      "bytes": 1297,
+      "sha256": "28d57835ba1f28f5f6474e90e0f84fb8a17d812aadedb21ceaf4f5038f6fb8f1"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/reference-320.png",
+      "bytes": 4086,
+      "sha256": "709dc4e6199064b0ac32ff944d45493b6ed8b8da3281b53167c2ecdd6003ffa1"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/reference-420.png",
+      "bytes": 6241,
+      "sha256": "c6cc6ccd7cc85183c5af75f4b3c6255afe5c9c5b6a13097856442e650bf45235"
+    },
+    {
+      "path": "horizontal-center-g10-asymmetric/source.json",
+      "bytes": 1421,
+      "sha256": "bb942007737393475148d28d58e4b7d04b380cfbea0a57a3ae2590904627ca71"
+    },
+    {
+      "path": "horizontal-center-g10-none/capture-320-font-1.png",
+      "bytes": 22002,
+      "sha256": "a4a006a801ade779b73cc36b7f44bab5dc70f4d1cd5bd9c7109375844564ff7c"
+    },
+    {
+      "path": "horizontal-center-g10-none/capture-320-font-2.png",
+      "bytes": 27040,
+      "sha256": "e5b0f51bcb607260fbb89c2929db33623a64a5b57095444436d2267d2e16baa6"
+    },
+    {
+      "path": "horizontal-center-g10-none/capture-420-font-1.png",
+      "bytes": 24676,
+      "sha256": "d27250eecaa008ef9b3a430b73271f61cd310f5c1127d8cab105d19b3410ba19"
+    },
+    {
+      "path": "horizontal-center-g10-none/capture-420-font-2.png",
+      "bytes": 29687,
+      "sha256": "4975c6cef59985e1715c4e6358b99db63a4942c5c4303b187e3bf44bd41e247e"
+    },
+    {
+      "path": "horizontal-center-g10-none/expected-bounds.json",
+      "bytes": 428,
+      "sha256": "47c2bcb97999a28100ee22d10cefff67b1a8590fa1909945e28cc4e71d54a933"
+    },
+    {
+      "path": "horizontal-center-g10-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-center-g10-none/generated/MobileFixture.kt",
+      "bytes": 4043,
+      "sha256": "01e319dd694e800f474ea0361414b2cf40bde16a02e650257c33f4f49e5233e6"
+    },
+    {
+      "path": "horizontal-center-g10-none/measurement-320-font-1.json",
+      "bytes": 1263,
+      "sha256": "7fd29270600208c700b5afdb76f2041917f376035075e9a16caa45889528ab29"
+    },
+    {
+      "path": "horizontal-center-g10-none/measurement-320-font-2.json",
+      "bytes": 1263,
+      "sha256": "20468d9e0f7cc958316f1e6685e19eb882b95fd380d3018bb6387b95e4721611"
+    },
+    {
+      "path": "horizontal-center-g10-none/measurement-420-font-1.json",
+      "bytes": 1273,
+      "sha256": "3f85572799b2ff6d2c30aa4795433cf22135d0485357688922f69e8310eec69c"
+    },
+    {
+      "path": "horizontal-center-g10-none/measurement-420-font-2.json",
+      "bytes": 1273,
+      "sha256": "c7de8da0a31e01e2a77a58317222f5b78ed69378650c8b6f5834a557b9033721"
+    },
+    {
+      "path": "horizontal-center-g10-none/reference-320.png",
+      "bytes": 4085,
+      "sha256": "87ecf14d3288e12754506d2566790553e036301196036f131bd9b7b1c6a11c59"
+    },
+    {
+      "path": "horizontal-center-g10-none/reference-420.png",
+      "bytes": 6228,
+      "sha256": "168acf0c4663017498cc452752556e3733acd5f9f0db2537fe0b6ab6852a17b0"
+    },
+    {
+      "path": "horizontal-center-g10-none/source.json",
+      "bytes": 1316,
+      "sha256": "50ea462f80395e454198cd81598d369c9779d152fd35c3b6abb41e331866c990"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/capture-320-font-1.png",
+      "bytes": 22021,
+      "sha256": "1125bc2591a9f404942cc16e1605a1f88c3dad925614ad7232ec0e2c050853a6"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/capture-320-font-2.png",
+      "bytes": 27199,
+      "sha256": "b3d6a14e70297295476525055bfa0d20ad93f4a3f1ff9e1a102298a5e24b621e"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/capture-420-font-1.png",
+      "bytes": 24229,
+      "sha256": "d71303f255e21dc10dc472b564ee240789b926e2b67e57e4213c6cd5eec1df69"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/capture-420-font-2.png",
+      "bytes": 29883,
+      "sha256": "667e480692ed82b770cef62b22634251a6a0e66ae80266b0aa0ba3927afbda76"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/expected-bounds.json",
+      "bytes": 430,
+      "sha256": "d91bf9931bd8154919685f09304fc1bf932aa42529098932a53ff1b644d1b2f0"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4092,
+      "sha256": "106f793c4e4e8457710b01ca78a3df154bd82f90694037dc1713e814bb8807ba"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/measurement-320-font-1.json",
+      "bytes": 1271,
+      "sha256": "cdb004777610555c1b980b43880c0fe11edf9295837c14e5de9ce4a66ea31806"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/measurement-320-font-2.json",
+      "bytes": 1271,
+      "sha256": "aeb0dbdc532799612bbe855898e0fb71094326fa67735b0701004750945fb18d"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/measurement-420-font-1.json",
+      "bytes": 1281,
+      "sha256": "a3c44f13dfa932508217ec6a96e6e103aa30aafc7074af8a1750eff215d98d7a"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/measurement-420-font-2.json",
+      "bytes": 1281,
+      "sha256": "f84f6bf033a7f0c773cf523bf3e98724fbcf8bfcf379f26bbeff0d7ab52365cd"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/reference-320.png",
+      "bytes": 4064,
+      "sha256": "9e5559dfe8cc223d7e32fbd0305fd3763a647498e8f6a7d8d5fc64a3f418aa1d"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/reference-420.png",
+      "bytes": 6193,
+      "sha256": "9a905b8a9c29d9a13c876d2c2a3e22ff3a9aeb1f580f34c0d0a0be44927d389d"
+    },
+    {
+      "path": "horizontal-end-g0-asymmetric/source.json",
+      "bytes": 1413,
+      "sha256": "c84d196c9b31ced29fe24902f59832980e9ac3f9db0c2e27eacd2933ce11cff0"
+    },
+    {
+      "path": "horizontal-end-g0-none/capture-320-font-1.png",
+      "bytes": 21902,
+      "sha256": "cb8ffdb3d54521e4844958b6cb19733db6b081c2ead595335a1e2a9051381e52"
+    },
+    {
+      "path": "horizontal-end-g0-none/capture-320-font-2.png",
+      "bytes": 27094,
+      "sha256": "dfd2bf37dc4e1057baaad069da1b8d988f403ec5d564e570640f65dd7aecdd90"
+    },
+    {
+      "path": "horizontal-end-g0-none/capture-420-font-1.png",
+      "bytes": 24513,
+      "sha256": "952536bf2f8c3e85369899c03351325903e4aab7aa8e8e2d1d14ac619609b928"
+    },
+    {
+      "path": "horizontal-end-g0-none/capture-420-font-2.png",
+      "bytes": 29637,
+      "sha256": "8b62f7830e83c727d51cf41550526969f7812356984d97f20ec2655fedf612f3"
+    },
+    {
+      "path": "horizontal-end-g0-none/expected-bounds.json",
+      "bytes": 424,
+      "sha256": "ee449e335718f33184dd7e52d8ab4289da1bf5c99569a2ee260a1c4f4ce1d0d3"
+    },
+    {
+      "path": "horizontal-end-g0-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-end-g0-none/generated/MobileFixture.kt",
+      "bytes": 4027,
+      "sha256": "35b43a33c006e3bf30f8c59e52790fcd8abbada204942b398d3e2537de7ae767"
+    },
+    {
+      "path": "horizontal-end-g0-none/measurement-320-font-1.json",
+      "bytes": 1247,
+      "sha256": "1d5a10a7c83ecb0a83836394fbdf86dea29c14a55e9f78f835dab15cf4f68b3d"
+    },
+    {
+      "path": "horizontal-end-g0-none/measurement-320-font-2.json",
+      "bytes": 1247,
+      "sha256": "4b66479c3a3fdaaf56a67f3fe4c6a211e70de3aac1ceed27b8db387652754f96"
+    },
+    {
+      "path": "horizontal-end-g0-none/measurement-420-font-1.json",
+      "bytes": 1257,
+      "sha256": "d02e417106f17902c716ef28d003fdb0b84693ebf741030b7cfde10762b75546"
+    },
+    {
+      "path": "horizontal-end-g0-none/measurement-420-font-2.json",
+      "bytes": 1257,
+      "sha256": "457756b12127c997491cb9844ff5aa665c0e7d047327b6c9d7fc04a153b6669f"
+    },
+    {
+      "path": "horizontal-end-g0-none/reference-320.png",
+      "bytes": 4064,
+      "sha256": "7e4072705412fb180f4503459ac4cbad1cde4557d0ffc0debe95d9404788a094"
+    },
+    {
+      "path": "horizontal-end-g0-none/reference-420.png",
+      "bytes": 6142,
+      "sha256": "fbadb74f54fb89d9dcfbbb084eff6342a491f9989e0d0fc6a9e8f712a4f141e7"
+    },
+    {
+      "path": "horizontal-end-g0-none/source.json",
+      "bytes": 1308,
+      "sha256": "d3b0c6be9f65eb9fa61025ccc9955f43a1cf2e9849736dace708ee155695fdf6"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/capture-320-font-1.png",
+      "bytes": 21560,
+      "sha256": "349075b21b9d94c131d11370bdc4f1648b5936d967f1ef74c5d1ce5d8757ad3d"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/capture-320-font-2.png",
+      "bytes": 26477,
+      "sha256": "d9a69498bbb589608363b5afc32a9b2f2a8ca2f91070725db916f39c03939d32"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/capture-420-font-1.png",
+      "bytes": 24027,
+      "sha256": "30338652b9d0164db0d5827f82d819c60ce4b0bdfe8ca79440f73b9707e35483"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/capture-420-font-2.png",
+      "bytes": 28848,
+      "sha256": "91a6ec833dc77c57ce3dd85ea22dd7f31a0978c71c4fd356bce71b405c836b06"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/expected-bounds.json",
+      "bytes": 431,
+      "sha256": "ec6bb812665b4a79b5cb7520cdc605a3be9a1fe32562ee3cc8ec239e53ce189f"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4093,
+      "sha256": "c283b4c72521937e0fbac8f65c5828a631d46f49ffc995cf650e0a070affe8b1"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/measurement-320-font-1.json",
+      "bytes": 1275,
+      "sha256": "f0293eb0c44e81d79b12ab7c5b7a57c9a307ea94453a785db27731a329f79e03"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/measurement-320-font-2.json",
+      "bytes": 1275,
+      "sha256": "285ebb60f9c5d00d6ab8fa7358396bc3a5a8b3cd08136322e94cfbd0bb9d42a2"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/measurement-420-font-1.json",
+      "bytes": 1285,
+      "sha256": "b41e2e417be9f49013ca0fb86a1515d9045875007afbaa6cb355fd037b706ed9"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/measurement-420-font-2.json",
+      "bytes": 1285,
+      "sha256": "d62a8b01f3c5aa8571f7bb1bd67c8392f44221784f8a087528e308179658a1b7"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/reference-320.png",
+      "bytes": 4086,
+      "sha256": "5f2ab3b6036ae7a3a33607813abbf83302a151b5e31a40db055ea8fc9b8ef5c1"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/reference-420.png",
+      "bytes": 6238,
+      "sha256": "893efde062791395f10b54fff0891bb969c6057e8391a15791770ff6fa9cc70d"
+    },
+    {
+      "path": "horizontal-end-g10-asymmetric/source.json",
+      "bytes": 1415,
+      "sha256": "fac28d9ff0bf9522cc9cea9645f0efb21265c7b4e68894a30978746dde7042e2"
+    },
+    {
+      "path": "horizontal-end-g10-none/capture-320-font-1.png",
+      "bytes": 22031,
+      "sha256": "99e2e1a5ff66fd17a72030af2289e43923386805aa393a4a38c34c79d629be81"
+    },
+    {
+      "path": "horizontal-end-g10-none/capture-320-font-2.png",
+      "bytes": 27022,
+      "sha256": "c1e964a99a765828afd85e51d5401bce4d336d2755646718292293010b5ff219"
+    },
+    {
+      "path": "horizontal-end-g10-none/capture-420-font-1.png",
+      "bytes": 24656,
+      "sha256": "1754559baf8ab50c43eba9af52f91d6ddff3623e6194c92946a7a41e2eb74aa0"
+    },
+    {
+      "path": "horizontal-end-g10-none/capture-420-font-2.png",
+      "bytes": 29740,
+      "sha256": "aed970fda2409a5227e607ec9ffd7bfdfd62541e3e67d0790f808b6dbcdda281"
+    },
+    {
+      "path": "horizontal-end-g10-none/expected-bounds.json",
+      "bytes": 425,
+      "sha256": "29546a749da192717726900cda99132c7d42c6658e33ac902fdb3ea7ba6b4626"
+    },
+    {
+      "path": "horizontal-end-g10-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-end-g10-none/generated/MobileFixture.kt",
+      "bytes": 4028,
+      "sha256": "1c0e513a1a8a8c9cb42df7f7ccd0d1313a43fb791ef505644882725313de0d33"
+    },
+    {
+      "path": "horizontal-end-g10-none/measurement-320-font-1.json",
+      "bytes": 1251,
+      "sha256": "49f92b866f4bdf8c3a39cd5acf46d4524223abcbd3a8c4d731caf5c609ffe12c"
+    },
+    {
+      "path": "horizontal-end-g10-none/measurement-320-font-2.json",
+      "bytes": 1251,
+      "sha256": "b77b6a3f2996ed516a0d478a6a504e082bce51cb6359103a780a2a8699bc53eb"
+    },
+    {
+      "path": "horizontal-end-g10-none/measurement-420-font-1.json",
+      "bytes": 1261,
+      "sha256": "1478205f659a3a5a17c9dc27fa02e4bc177b086d1af702b4964b0e42d0aa8e6d"
+    },
+    {
+      "path": "horizontal-end-g10-none/measurement-420-font-2.json",
+      "bytes": 1261,
+      "sha256": "3f92b3c99dd826c0601fc50dfc96ff6b1497a9357914a98864929ad02e41f827"
+    },
+    {
+      "path": "horizontal-end-g10-none/reference-320.png",
+      "bytes": 4087,
+      "sha256": "08cd3014ebdd5f4c6443b1fa1bbbd8962fa97582a8e3cbf279af62f428884741"
+    },
+    {
+      "path": "horizontal-end-g10-none/reference-420.png",
+      "bytes": 6225,
+      "sha256": "126567f5c83ed9eb0481a90a870ae8c8a1c49f85a8f2361f1d056d0efc15a7bc"
+    },
+    {
+      "path": "horizontal-end-g10-none/source.json",
+      "bytes": 1310,
+      "sha256": "486ee337fa7f1f2ed6324778023213a690ea6898517e6a9d73557a8eff692718"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/capture-320-font-1.png",
+      "bytes": 21632,
+      "sha256": "35e5d76bff8a3c1028e01d30b045e6ba92aaa2a0096114121dd0d5ea082e7c02"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/capture-320-font-2.png",
+      "bytes": 26426,
+      "sha256": "4a08ab1b1a23125afd0bde7f277d629962b22f71c2c070c5c0d7c0aba9734130"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/capture-420-font-1.png",
+      "bytes": 24212,
+      "sha256": "ca8955a0c077fcef11ad083c7e6022c5198b9e13cc90f93bcf9427b98d8d4d27"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/capture-420-font-2.png",
+      "bytes": 28935,
+      "sha256": "467ef83eae4efe0f4cadbea82d89af382d757a99e1f2d1a7c6351d1cb545cbcb"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/expected-bounds.json",
+      "bytes": 431,
+      "sha256": "5c087b8313ece9d8b5a547d3e39146617a667a0dc2a1c7a8de6796fa92ea8c53"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4094,
+      "sha256": "3cf8f1e88dbbba92a88a6af9c6d4e5049bb319cf73740595cf223f8154f9bed2"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/measurement-320-font-1.json",
+      "bytes": 1279,
+      "sha256": "02a7d0c6aeb5e4ea96041aa85d31a690d6f8bfbe00788d565bcf92ac89b9974f"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/measurement-320-font-2.json",
+      "bytes": 1279,
+      "sha256": "8bcfbb7ad14c4478ca2448fb2ae082d5d4e047f968ef9436d777982312b39b45"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/measurement-420-font-1.json",
+      "bytes": 1289,
+      "sha256": "b8bdec75ba9d51845a1ff9f84d4a58ffd2e78b22130e1b553d0e9c91c80e7c3c"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/measurement-420-font-2.json",
+      "bytes": 1289,
+      "sha256": "a74af7788a325a44686917130bcb32cb4d12e02c9895d3a57b38c72488f8e2a7"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/reference-320.png",
+      "bytes": 4066,
+      "sha256": "9661aec9303bcd96c2045ccf137c7af978603b0933f206c7980122b00d91b447"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/reference-420.png",
+      "bytes": 6192,
+      "sha256": "11bd3bea40b8ae4ac1a5451294659608bea5855b1ec91eaaaafa78b112714e85"
+    },
+    {
+      "path": "horizontal-start-g0-asymmetric/source.json",
+      "bytes": 1417,
+      "sha256": "f383686d18b00754c235e2fabc68b13b75bf38ffb21e44a66b213de3fdaf1edc"
+    },
+    {
+      "path": "horizontal-start-g0-none/capture-320-font-1.png",
+      "bytes": 21113,
+      "sha256": "9c6c446e6feecb130f7c8b77ff15b649e77fc5359406466a41677c42d10d81e6"
+    },
+    {
+      "path": "horizontal-start-g0-none/capture-320-font-2.png",
+      "bytes": 25575,
+      "sha256": "4332f1cc81830ed57fca869f070067c4469ab27550176536181be19df3c576e9"
+    },
+    {
+      "path": "horizontal-start-g0-none/capture-420-font-1.png",
+      "bytes": 24325,
+      "sha256": "86868b6686fa9a19a7d0a75027e2d3c11510d4b4b482a6c29c459968c9dbec07"
+    },
+    {
+      "path": "horizontal-start-g0-none/capture-420-font-2.png",
+      "bytes": 28124,
+      "sha256": "40c3d6d8c379732d6298c8cdfb608fce3e9fcd510739ce6042f716f44b08ce5c"
+    },
+    {
+      "path": "horizontal-start-g0-none/expected-bounds.json",
+      "bytes": 424,
+      "sha256": "2a4c9c477dc8b1764402cbae7a42bc1483674f2771ff80a2abd5e6811c4434cc"
+    },
+    {
+      "path": "horizontal-start-g0-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-start-g0-none/generated/MobileFixture.kt",
+      "bytes": 4029,
+      "sha256": "e9528bd33f26b9fceb03912f03f189cf9c62090f0ffadca32f9d0c7b64a0939e"
+    },
+    {
+      "path": "horizontal-start-g0-none/measurement-320-font-1.json",
+      "bytes": 1253,
+      "sha256": "1e92194e6a71918641df4950095e270d63d42fcaf20532c50a9eea39ba455d59"
+    },
+    {
+      "path": "horizontal-start-g0-none/measurement-320-font-2.json",
+      "bytes": 1253,
+      "sha256": "4ae3e403753a7469e450b83b0d072d4c3cfa1ad3d3f4ff7ca7d48bcb9617d2a9"
+    },
+    {
+      "path": "horizontal-start-g0-none/measurement-420-font-1.json",
+      "bytes": 1263,
+      "sha256": "0f92cd2a5e2eacb3784cc647cdc2d5eec789e9a645a3184ec3086dcbd35ceaa8"
+    },
+    {
+      "path": "horizontal-start-g0-none/measurement-420-font-2.json",
+      "bytes": 1263,
+      "sha256": "5e032d33877e1d3cce932122d908f22a1e822230add08505cbf916e9a5e20c9d"
+    },
+    {
+      "path": "horizontal-start-g0-none/reference-320.png",
+      "bytes": 4064,
+      "sha256": "7c6fb6eb5218ef1f69ba103d860b0fffe09744f4931c26dc7a9efcb3f83e74ac"
+    },
+    {
+      "path": "horizontal-start-g0-none/reference-420.png",
+      "bytes": 6196,
+      "sha256": "8b235a7bf579c6ed944ede4c771953d51d263e818d24ad5739c925d2e2dde91f"
+    },
+    {
+      "path": "horizontal-start-g0-none/source.json",
+      "bytes": 1312,
+      "sha256": "d00bb49b0c8ca2da77074e8b1de9d0bf627f9989db252bf20a59410f571a1d8d"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/capture-320-font-1.png",
+      "bytes": 21828,
+      "sha256": "b80efb560bf152fced286253d47608f613d1efe64cae492d2750df2ec6f2d78d"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/capture-320-font-2.png",
+      "bytes": 26883,
+      "sha256": "fd7550c0d9c6d80675b8e9f5eb564603179dff69726b3c2083f9c74e43ba6821"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/capture-420-font-1.png",
+      "bytes": 24496,
+      "sha256": "0872c388b44c3bee13227a3ceb6449f4bddadf1b778fab2272086c39cdf9c502"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/capture-420-font-2.png",
+      "bytes": 29616,
+      "sha256": "c6d5b14f6348973e29ea71145b09d16a04b23babf8755cca2d25646d25e0a22b"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/expected-bounds.json",
+      "bytes": 432,
+      "sha256": "dd1dfbcddc24945bf9a1094468ee821acdb7b5ba12563be504d9dbd7634a0eb6"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4095,
+      "sha256": "c5b4c15edbded6562b11d64a7d7db712f5b3bb9723d9f21e4cc03d9bb2bb7417"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/measurement-320-font-1.json",
+      "bytes": 1283,
+      "sha256": "cc38102fb99a7aead3108e6fb2ca1dd825d369717b22f640107b80acf7f8217d"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/measurement-320-font-2.json",
+      "bytes": 1283,
+      "sha256": "a3e4cc680b19489d386a823d4c76d8ddcdb38e049f502b688c473a6fa7cfdddb"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/measurement-420-font-1.json",
+      "bytes": 1293,
+      "sha256": "9a28a709e69c29a4369b161402d8d001a3472c85d3dd63987d444ff528ff1b82"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/measurement-420-font-2.json",
+      "bytes": 1293,
+      "sha256": "b4af498df16211f5aefd9da2e198dd7b82e53fa0a946aeaba91a19064c0c2129"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/reference-320.png",
+      "bytes": 4086,
+      "sha256": "ce283c039c5eb9b4908a898fa8ac14417b08ef1c67d47c23d07478081bbda017"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/reference-420.png",
+      "bytes": 6230,
+      "sha256": "4351b66591b21c36102500091278b972527b3c33a0d7dfb5a085b7662fe9b451"
+    },
+    {
+      "path": "horizontal-start-g10-asymmetric/source.json",
+      "bytes": 1419,
+      "sha256": "1effa04df7551310311a4c5bd2382452245e0f70452a5df985f744c11709bc56"
+    },
+    {
+      "path": "horizontal-start-g10-none/capture-320-font-1.png",
+      "bytes": 21409,
+      "sha256": "fdbecafad06af7a0dcf3994f6d3cd24ee94ad818d14d88da907d574bb5f39dbc"
+    },
+    {
+      "path": "horizontal-start-g10-none/capture-320-font-2.png",
+      "bytes": 26098,
+      "sha256": "89522248d3a7239ee7496acb6078d5e1deb1fbee8361bce043f1afefcb5eb599"
+    },
+    {
+      "path": "horizontal-start-g10-none/capture-420-font-1.png",
+      "bytes": 24393,
+      "sha256": "946f9106e452bc6bd2ce0feb8ad8445f69def3ecec6e96591276e753919b5f27"
+    },
+    {
+      "path": "horizontal-start-g10-none/capture-420-font-2.png",
+      "bytes": 28592,
+      "sha256": "8d3856fae106071ec14c1ea527dbc11509a0cbc24983e57848b2e10b05938d08"
+    },
+    {
+      "path": "horizontal-start-g10-none/expected-bounds.json",
+      "bytes": 425,
+      "sha256": "3c167b391c420d354e169c90b814910bf0543d07ddea027374f0d107bd9e1aa1"
+    },
+    {
+      "path": "horizontal-start-g10-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "horizontal-start-g10-none/generated/MobileFixture.kt",
+      "bytes": 4030,
+      "sha256": "157f5033e0c6ca61cd0111131a457b96dc17623e8a29049f1fa40eda0aa2f371"
+    },
+    {
+      "path": "horizontal-start-g10-none/measurement-320-font-1.json",
+      "bytes": 1257,
+      "sha256": "bc634231b314516a041d059bbf8a6d4cae31aa26def5d92c50b86901a139a317"
+    },
+    {
+      "path": "horizontal-start-g10-none/measurement-320-font-2.json",
+      "bytes": 1257,
+      "sha256": "e13217df35ef4127d2cc6e2ad9575b40e7d47d10dcb5d223d5a72f7cea61a216"
+    },
+    {
+      "path": "horizontal-start-g10-none/measurement-420-font-1.json",
+      "bytes": 1267,
+      "sha256": "46685f2eaee1d187f1f97391a7994aa5e93861e2486fd7429e9988c015c3595b"
+    },
+    {
+      "path": "horizontal-start-g10-none/measurement-420-font-2.json",
+      "bytes": 1267,
+      "sha256": "85a2837a7d5e257dfe743c62bc7d7a30c9c6e3e1b6cc3280b32052e87aed16f8"
+    },
+    {
+      "path": "horizontal-start-g10-none/reference-320.png",
+      "bytes": 4087,
+      "sha256": "1eae5b4811daeb9cb7191556d41cb4622208efdc868d409d634c86ae93aa881a"
+    },
+    {
+      "path": "horizontal-start-g10-none/reference-420.png",
+      "bytes": 6226,
+      "sha256": "b56b95664b56d133c9e60098d395dd20449ad68b0413a6c7efc609d580fef110"
+    },
+    {
+      "path": "horizontal-start-g10-none/source.json",
+      "bytes": 1314,
+      "sha256": "63bad22de5ec0c601ea437dda5ea99ec694d07a82c5d230730209cf88064d58c"
+    },
+    {
+      "path": "measurements-absolute-baseline.json",
+      "bytes": 157827,
+      "sha256": "ff2cb72cbf3f9228a58e9d9e4cbe26307a47583dc20c3f8d971d8b678286853f"
+    },
+    {
+      "path": "measurements.json",
+      "bytes": 134019,
+      "sha256": "21d4a97aea091d75ede242ffaf74edd6357fc7861257c5a70126e40ed46e1216"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4130,
+      "sha256": "a56fc180b8e1a7cc4042d7b3a137acf20af48a08517017a17d7fd727cf96d709"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/capture-320-font-1.png",
+      "bytes": 21563,
+      "sha256": "dbb2886d6096938c8399bfb160e7fd6087ae030052f5fcb402b21e73994a6916"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/capture-320-font-2.png",
+      "bytes": 25503,
+      "sha256": "2790dad11115a75e774601bb3ca0ed89045c87b6ec80d11b90d7d56f672ee65d"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/capture-420-font-1.png",
+      "bytes": 24183,
+      "sha256": "62953e999e701c7a7a6fb1d3a247531a81d1cc28c13aa8197b33430314801a09"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/capture-420-font-2.png",
+      "bytes": 28972,
+      "sha256": "b3409032c7fb72129895ed2218eade9b67a06dd1e8a83734ceeeb0905c9d33de"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/expected-bounds.json",
+      "bytes": 431,
+      "sha256": "c46ecf8a08df425da82b2470c6381f5652c84e74a8fbe4965699995f0b0bbb45"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4110,
+      "sha256": "68d0c6baf40cd8eeefb498ee1ed589e657ebdc0a7fd3f9e97ba7e5e3cbff4072"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/measurement-320-font-1.json",
+      "bytes": 1275,
+      "sha256": "1336ae3ed289f9083e3caa97957e7da50ee007759e42fa5885f1fa3797de6e65"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/measurement-320-font-2.json",
+      "bytes": 1275,
+      "sha256": "9ec5454b5f216e946c6b9717624616f591fea21cddeb1169447acf0f5ad8abdc"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/measurement-420-font-1.json",
+      "bytes": 1285,
+      "sha256": "2e1f098fc55e0743c6f9b5c4ca614e31d7269e9cf638f055341694cd91494bb0"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/measurement-420-font-2.json",
+      "bytes": 1285,
+      "sha256": "b5e3eb5107758b9c84c80fcbc882627137842b7d598232649abe31d93a054d22"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/reference-320.png",
+      "bytes": 4079,
+      "sha256": "d9134383838458e2eae32db0db9d5940656a91e0a46e5fab34995c3c259d2253"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/reference-420.png",
+      "bytes": 6209,
+      "sha256": "bdd76e2415e3b4e9ce45102eb1378a93e384279ad143780be43e92f1376ccfb1"
+    },
+    {
+      "path": "vertical-center-g0-asymmetric/source.json",
+      "bytes": 1415,
+      "sha256": "38cfe8d25e8c7eb0fc0af94462c1d3d8e1aad5e40357c6e0998b26d02fa3029d"
+    },
+    {
+      "path": "vertical-center-g0-none/capture-320-font-1.png",
+      "bytes": 22050,
+      "sha256": "e05439c0bb3f2055b992d861bbfbc76c19ac5010b191ccabbdec3b59046b1153"
+    },
+    {
+      "path": "vertical-center-g0-none/capture-320-font-2.png",
+      "bytes": 27387,
+      "sha256": "f7a440353f47d34e5800bcf115c29bcfeb095aaf0f3b845cbb0b9254fa661639"
+    },
+    {
+      "path": "vertical-center-g0-none/capture-420-font-1.png",
+      "bytes": 24795,
+      "sha256": "ab292cd82383562c0dd1086c218526174a9f56567701890a39ce303406d4f4a8"
+    },
+    {
+      "path": "vertical-center-g0-none/capture-420-font-2.png",
+      "bytes": 30000,
+      "sha256": "cb9c12874e46ddd8386cdc2a55ef2555cd37d01ada716d71dd210c8b04e8f190"
+    },
+    {
+      "path": "vertical-center-g0-none/expected-bounds.json",
+      "bytes": 425,
+      "sha256": "4888a2c1e79d5a6a190431732e831a34fa225d85f39d7e49eaea58105d698650"
+    },
+    {
+      "path": "vertical-center-g0-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-center-g0-none/generated/MobileFixture.kt",
+      "bytes": 4045,
+      "sha256": "3b041df8fcb35ee2d810ecb9e4f72ee441694e0bdd3bc0b91ee296eb6ba4502f"
+    },
+    {
+      "path": "vertical-center-g0-none/measurement-320-font-1.json",
+      "bytes": 1245,
+      "sha256": "f4484192a1e03c768b826e9d94dc28e5e4a34de1dbe3cd7f9d2c40f8e050c941"
+    },
+    {
+      "path": "vertical-center-g0-none/measurement-320-font-2.json",
+      "bytes": 1245,
+      "sha256": "2ee1ddcbb370ae35a9f7c0757d616e6365abe5bcd85d5571181fb6ee0cf796a7"
+    },
+    {
+      "path": "vertical-center-g0-none/measurement-420-font-1.json",
+      "bytes": 1255,
+      "sha256": "c8f68145ff71448fe963cdff1f9a157b298253949985745232261f2ba0615980"
+    },
+    {
+      "path": "vertical-center-g0-none/measurement-420-font-2.json",
+      "bytes": 1255,
+      "sha256": "7d443b8a9ab0a17b2d3bdb705ea1e63cbdd8727dc6ffd09ac1205796be949c74"
+    },
+    {
+      "path": "vertical-center-g0-none/reference-320.png",
+      "bytes": 4079,
+      "sha256": "c1f32aed16f6b6792b37b79f73f3f95314d91f394ad2c93271b2af754c91517e"
+    },
+    {
+      "path": "vertical-center-g0-none/reference-420.png",
+      "bytes": 6226,
+      "sha256": "225f5aa06f02f0193c483fe8b721c4354848a48cb4bd76322e93f68f3b2eeab1"
+    },
+    {
+      "path": "vertical-center-g0-none/source.json",
+      "bytes": 1310,
+      "sha256": "2c37fe12c847f642051346b3ade41185d3976a677013e3099720b9d448a34339"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/capture-320-font-1.png",
+      "bytes": 21381,
+      "sha256": "22b8523687719983728c3639e9ab389ff4eb41e2651bbbe4d272e52b0071b453"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/capture-320-font-2.png",
+      "bytes": 26063,
+      "sha256": "21d8a96bef6202c13eb449ca859152fab59a5ec6e4db9ab91636406aa1c7f2cb"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/capture-420-font-1.png",
+      "bytes": 23540,
+      "sha256": "410d0ff5e4c3b4bf4e29bf2a1e53a12e7bbcd2246850034295d38102869d6547"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/capture-420-font-2.png",
+      "bytes": 28082,
+      "sha256": "5b4dea2c33b0a0bea04bc9a6d2f2659f3f3cdcfbaa3800ffbbb2cfae1ba07bd8"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/expected-bounds.json",
+      "bytes": 432,
+      "sha256": "1bcb34eb91ddece90953dc1b96d1d5030a14f6572748f53a41967b5ac85d2044"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4111,
+      "sha256": "3332fde17df6da97b3436915342aba88916a6c72e28e0f283a95dd0f233748f0"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/measurement-320-font-1.json",
+      "bytes": 1279,
+      "sha256": "76d91ff8d09b7ca9bf9f7586e6f40a6e6b51679633794c6e94c9e2f56cb1a0aa"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/measurement-320-font-2.json",
+      "bytes": 1279,
+      "sha256": "7ff70894abe4b67dff7199acf702f4d0c85cea0aec7817049cc4ae98eaa1545b"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/measurement-420-font-1.json",
+      "bytes": 1289,
+      "sha256": "8d1961cacd4559024f80c0c8527365563bd7c64d1a40e651a642921a721d1284"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/measurement-420-font-2.json",
+      "bytes": 1289,
+      "sha256": "2724765ebf9223e9a06d33144903c9f212d6bb34d9a4562ade147ed5fb10b27d"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/reference-320.png",
+      "bytes": 4098,
+      "sha256": "bb6ea05e577d849231a1c1c46c0b93fdc1681c9ca709e8356f697fa4085967c8"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/reference-420.png",
+      "bytes": 6300,
+      "sha256": "d72b59fe4c7b1cf6dfab5baba0a92601ac75c3bf17b205c607fde8a606d85a31"
+    },
+    {
+      "path": "vertical-center-g10-asymmetric/source.json",
+      "bytes": 1417,
+      "sha256": "bb5b073ce896a4a0e0797405a39a206d7be80709442784d75970ae9479217d2e"
+    },
+    {
+      "path": "vertical-center-g10-none/capture-320-font-1.png",
+      "bytes": 21591,
+      "sha256": "7ed6ef7f17335f8c3bac7d202dfef89eb7953cb3463a94568c84fecad109ad9e"
+    },
+    {
+      "path": "vertical-center-g10-none/capture-320-font-2.png",
+      "bytes": 26407,
+      "sha256": "57861d1d269bdcb68c833e1c53708c3790f134e544473b4b18f81baaadbe940e"
+    },
+    {
+      "path": "vertical-center-g10-none/capture-420-font-1.png",
+      "bytes": 24163,
+      "sha256": "69c3d2633370949d2e767e60a4b0604a2bdc84cdc6264c168c0d8595ceb5924c"
+    },
+    {
+      "path": "vertical-center-g10-none/capture-420-font-2.png",
+      "bytes": 29000,
+      "sha256": "1bf243fc6b5ef8aaa4b375b2e51dd15ba7eb8595c7755dc3ebefcd0dc63d56a0"
+    },
+    {
+      "path": "vertical-center-g10-none/expected-bounds.json",
+      "bytes": 426,
+      "sha256": "dc7b235bf955d8da598f3d53643179b77320f786d85411e639fcce00f3b8b168"
+    },
+    {
+      "path": "vertical-center-g10-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-center-g10-none/generated/MobileFixture.kt",
+      "bytes": 4046,
+      "sha256": "ae414c19b27073d627604c2ea9b1cbf7c2832e6f6cf466e766710dfb3f4acf0c"
+    },
+    {
+      "path": "vertical-center-g10-none/measurement-320-font-1.json",
+      "bytes": 1249,
+      "sha256": "5377c8cfcf1007423d57348532c7e846cd0719497d0b5c89c4d6c0fbde9b6dc9"
+    },
+    {
+      "path": "vertical-center-g10-none/measurement-320-font-2.json",
+      "bytes": 1249,
+      "sha256": "3f2f1090badfcf4cde056336e061318a168add2148ef64e1f1b6d9bdf5b2a3f6"
+    },
+    {
+      "path": "vertical-center-g10-none/measurement-420-font-1.json",
+      "bytes": 1259,
+      "sha256": "a7f1867a33c9f635e100b979476734a7d63f61a734c6fe7c920aa4f9ee547490"
+    },
+    {
+      "path": "vertical-center-g10-none/measurement-420-font-2.json",
+      "bytes": 1259,
+      "sha256": "af8986d1a934bf4f3a5639f6789a98b7ac79cb4ac80e85359a90b345e6777012"
+    },
+    {
+      "path": "vertical-center-g10-none/reference-320.png",
+      "bytes": 4098,
+      "sha256": "f358656adf2d892002b55dffed6589c2d1c1b2f69215bf3b75d6e982a0606e61"
+    },
+    {
+      "path": "vertical-center-g10-none/reference-420.png",
+      "bytes": 6289,
+      "sha256": "dace554766556fdeed20d2e8c9a16b36c4545648f3f0dfd12b322b4f7c8147ed"
+    },
+    {
+      "path": "vertical-center-g10-none/source.json",
+      "bytes": 1312,
+      "sha256": "8549bc19394748b44c61bac04b6725907e046c2530ad62928a50c654b28a2b42"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/capture-320-font-1.png",
+      "bytes": 21308,
+      "sha256": "4f5da2394da9fc58acd6eb77e94208af315e376a3b37184f2c5c206e022874b2"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/capture-320-font-2.png",
+      "bytes": 26020,
+      "sha256": "44fb5afc70f5bf0afb6ca6eeaa348196e8696a777c433705b525202b6d9c8e45"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/capture-420-font-1.png",
+      "bytes": 24283,
+      "sha256": "8a8af0bed1fb4a89d8de42663da6b2cb03dea9070a141fafe2c673091e321cfe"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/capture-420-font-2.png",
+      "bytes": 29046,
+      "sha256": "f79185f65eed8b2b15273fbba390b28f551d8c5a23ff39ac4b276fe777bb6183"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/expected-bounds.json",
+      "bytes": 428,
+      "sha256": "0836d4c2ed473a2663067fe153ea10e671592653a4085acbbbd4b5b37096a4c1"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4100,
+      "sha256": "def2f2e7ef1da0f22b7e80f65b646aba3f798b4fe4c69bfc311be00df9e0444d"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/measurement-320-font-1.json",
+      "bytes": 1263,
+      "sha256": "19fe853a86b14a2de5a7861e9cab0458489f17b779c8d4d6c1bc330a41dacbe2"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/measurement-320-font-2.json",
+      "bytes": 1263,
+      "sha256": "6a536b46da1ad34cc4cfe8de0a3ce0ff1ae9d8b2cf093f7b3b99c8792614702e"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/measurement-420-font-1.json",
+      "bytes": 1273,
+      "sha256": "6c93f2b4eb2b5258ec3c1d85c8a7e7b799581e382837ce867ea3e11025516a00"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/measurement-420-font-2.json",
+      "bytes": 1273,
+      "sha256": "9b40cdabc53f8d6c87eb67d31c170b6480f05a4e4d3fb8c9ff0c20a556c53035"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/reference-320.png",
+      "bytes": 4079,
+      "sha256": "570f40d3aca719046790acd123547284a50b879cde4ff959aa5784d7a4d11f74"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/reference-420.png",
+      "bytes": 6183,
+      "sha256": "d769732158d7313331145221ac8a20d374cc4d65aed8637aaf0599d30629e93c"
+    },
+    {
+      "path": "vertical-end-g0-asymmetric/source.json",
+      "bytes": 1409,
+      "sha256": "95ee0b5eb7c2e0b3ec3f957008f2fb3af67fccddd8fc37ec7a3d3c9e3122fbee"
+    },
+    {
+      "path": "vertical-end-g0-none/capture-320-font-1.png",
+      "bytes": 21640,
+      "sha256": "2d86f679c9484e10d829dc3747c6a1e3251076b1b615cb4021131ef01131a87f"
+    },
+    {
+      "path": "vertical-end-g0-none/capture-320-font-2.png",
+      "bytes": 26446,
+      "sha256": "f80c4cbe51f9e44fc85c77002479558dc1dcefef00a9228075fc48215ba8b936"
+    },
+    {
+      "path": "vertical-end-g0-none/capture-420-font-1.png",
+      "bytes": 24186,
+      "sha256": "85e84d65b1b37b5594a58980c43f0d6547d1c8241fffc04e4e51a0467deb4473"
+    },
+    {
+      "path": "vertical-end-g0-none/capture-420-font-2.png",
+      "bytes": 28887,
+      "sha256": "1d1376ff6f6ab4920c640f51f5af7c0f4c652eec8c78af4a206c220f42766640"
+    },
+    {
+      "path": "vertical-end-g0-none/expected-bounds.json",
+      "bytes": 422,
+      "sha256": "146d2d25f1b2a40ded0c50a17e4be7395f35eeeb6b77f2023fdfb80eabd56886"
+    },
+    {
+      "path": "vertical-end-g0-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-end-g0-none/generated/MobileFixture.kt",
+      "bytes": 4035,
+      "sha256": "1bddaf9c362179feaed61d7b44b99bd69fa7449746cc72a9e5e795d4fcca2937"
+    },
+    {
+      "path": "vertical-end-g0-none/measurement-320-font-1.json",
+      "bytes": 1233,
+      "sha256": "45608b933ac589d46a1d15ee6657e9d3c0e85ee09cef1728b0a584260916e8bf"
+    },
+    {
+      "path": "vertical-end-g0-none/measurement-320-font-2.json",
+      "bytes": 1233,
+      "sha256": "f2953e348895cf48bb2dbede2acf433462e19c0fa920565635c1f04693a25ad4"
+    },
+    {
+      "path": "vertical-end-g0-none/measurement-420-font-1.json",
+      "bytes": 1243,
+      "sha256": "66b80c1e7a30baa5cea0ce3d4688dfde04fd57fc72cf7e0c90561e0175531145"
+    },
+    {
+      "path": "vertical-end-g0-none/measurement-420-font-2.json",
+      "bytes": 1243,
+      "sha256": "902b3ff18b37ff34c80a3ff1a2064a85a70acdaee081c7edc6a8355a723a2aef"
+    },
+    {
+      "path": "vertical-end-g0-none/reference-320.png",
+      "bytes": 4079,
+      "sha256": "bb5bfdee0817a148094c4df4d3d23f844a37c8e2d67ec92d1e80269407a832e0"
+    },
+    {
+      "path": "vertical-end-g0-none/reference-420.png",
+      "bytes": 6195,
+      "sha256": "aa6bfb6ac866993ad8e3a35c8afa913270a25fc57b81230a97d6eda03eff207e"
+    },
+    {
+      "path": "vertical-end-g0-none/source.json",
+      "bytes": 1304,
+      "sha256": "4ac39b7d84baea173eba5599eda82f967b51e8008090cf2263ec3b620db511de"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/capture-320-font-1.png",
+      "bytes": 21927,
+      "sha256": "233426e1fa43cbc802f81fcbc9e2b70b8d44ef0c70bc277b1a85afed65a33ecf"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/capture-320-font-2.png",
+      "bytes": 27148,
+      "sha256": "f1a4dbc6d3fb30147b52ab81aad1325a0cdc5030e3507ec72d97f383726cace2"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/capture-420-font-1.png",
+      "bytes": 24327,
+      "sha256": "5f46b7cd2f0c8e263a88fbe57f9ac040519265ee9d974ff874dbd758a088219f"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/capture-420-font-2.png",
+      "bytes": 29773,
+      "sha256": "2066a01372e3723bd3568aa4f3969ad1b6dffa45407e18f487ff804e8b546aeb"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/expected-bounds.json",
+      "bytes": 429,
+      "sha256": "7effe1007e56803ae668c2d26abaa5d3257859bd74e73158a2c04d444c27efd2"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4101,
+      "sha256": "9107ea3c276cc080c14162c4e92aef5e19f7446360a1f63ba19dc4815d147b95"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/measurement-320-font-1.json",
+      "bytes": 1267,
+      "sha256": "7534b399ce83b69edd48dee0f57b75d4d88db083de27c383aa93a4477576d628"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/measurement-320-font-2.json",
+      "bytes": 1267,
+      "sha256": "f48b086abaee00dbe5a0d971dcd413da5edc39511e1879405c936684c26e2098"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/measurement-420-font-1.json",
+      "bytes": 1277,
+      "sha256": "4420205a404184c17aba5fc903741842ca5469053573f6b1122f19d46fc630c6"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/measurement-420-font-2.json",
+      "bytes": 1277,
+      "sha256": "938a5602ec25591809b79f10bf0b703a121f58291f441bc6681801be74097ae6"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/reference-320.png",
+      "bytes": 4098,
+      "sha256": "8e0c5b88b9fb95ecb75fb657dacfc88e3ae2dbf787a77e0a9c7819db9c2c68f5"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/reference-420.png",
+      "bytes": 6214,
+      "sha256": "4bdfd17beb540b336256f63319b4715a2b55a7738235742fa68d500ed9eff71b"
+    },
+    {
+      "path": "vertical-end-g10-asymmetric/source.json",
+      "bytes": 1411,
+      "sha256": "5b44a43e2d3f2cbdd1e4793ff7604a20dbb08b0ba5701c0bab399808359fd1c6"
+    },
+    {
+      "path": "vertical-end-g10-none/capture-320-font-1.png",
+      "bytes": 21786,
+      "sha256": "ee75589a4ae19a3b18c94ee07b5665e50d351bb19b0b7013b2fb22b0e8608679"
+    },
+    {
+      "path": "vertical-end-g10-none/capture-320-font-2.png",
+      "bytes": 26845,
+      "sha256": "e7b9a37db6af303ccc48d2a813186b92fed7c7d5756312a44c391edcde01b204"
+    },
+    {
+      "path": "vertical-end-g10-none/capture-420-font-1.png",
+      "bytes": 24298,
+      "sha256": "160ebb135e1a23c764bf22225291fa57c9c627eeb257ab53e5ea83dca8dbc5a9"
+    },
+    {
+      "path": "vertical-end-g10-none/capture-420-font-2.png",
+      "bytes": 29376,
+      "sha256": "37c180507a7d238f815890e2ed7917c4f292ace23c331ef04ccf1c7c63ad9684"
+    },
+    {
+      "path": "vertical-end-g10-none/expected-bounds.json",
+      "bytes": 423,
+      "sha256": "bb064085c78ac73dd782b19d96f96947825e6d7112ae5f91c007f0f05ad334e4"
+    },
+    {
+      "path": "vertical-end-g10-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-end-g10-none/generated/MobileFixture.kt",
+      "bytes": 4036,
+      "sha256": "68d31c3110df3c5a9bc41d196603ae854d7ee2d4f577ca11b65c04ecf3f91b8b"
+    },
+    {
+      "path": "vertical-end-g10-none/measurement-320-font-1.json",
+      "bytes": 1237,
+      "sha256": "630867f56b1d598c2476557e027c6bb95bc48ad204aa7004a57085fc2fddf9b0"
+    },
+    {
+      "path": "vertical-end-g10-none/measurement-320-font-2.json",
+      "bytes": 1237,
+      "sha256": "a0394580e8a286cf4757e814f404588ba2c47631dd5b7c011aac2228697f2435"
+    },
+    {
+      "path": "vertical-end-g10-none/measurement-420-font-1.json",
+      "bytes": 1247,
+      "sha256": "d4ad933f27a068a2532080707a67368c81da52952ccd250611f695ad84bb86cf"
+    },
+    {
+      "path": "vertical-end-g10-none/measurement-420-font-2.json",
+      "bytes": 1247,
+      "sha256": "03ad3773b3b719e56ffff878ff0ca5b6f48757847465da682f7cbb75d5e01765"
+    },
+    {
+      "path": "vertical-end-g10-none/reference-320.png",
+      "bytes": 4098,
+      "sha256": "7e8a438fca8ff005b200758377793a19929cda82a42b3b90fb556b290fa5446f"
+    },
+    {
+      "path": "vertical-end-g10-none/reference-420.png",
+      "bytes": 6287,
+      "sha256": "cee9dec005bb7eb7e7a4b92a9e34e74c694fe43023b1ab0d57b27b078f7de061"
+    },
+    {
+      "path": "vertical-end-g10-none/source.json",
+      "bytes": 1306,
+      "sha256": "497e90e7729cc042666abce3b698e1e531a9630df0df99c68115b6d562983420"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/capture-320-font-1.png",
+      "bytes": 21838,
+      "sha256": "f17f89fc441c1fdea2010fd6f6201896f4cc7511a4cede61d925e27f4dfb1473"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/capture-320-font-2.png",
+      "bytes": 26861,
+      "sha256": "dc76e40a7d526dfc78045d8205023de6aff61ef5e985be05992dc0d537913199"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/capture-420-font-1.png",
+      "bytes": 24497,
+      "sha256": "b99eed932884e740e30b2e0818e2cda57e79c8d14137f9884dcb91677aac4b76"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/capture-420-font-2.png",
+      "bytes": 29325,
+      "sha256": "8de707af96cc714adc67021ee9444a0e463df99043d996fe80ec554d58145cfe"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/expected-bounds.json",
+      "bytes": 429,
+      "sha256": "62246fa57bab59c14d8e1333b3fc678486669e9447699e11f6b4e97a4d9c9eb4"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4097,
+      "sha256": "6c25f570cca40a74cf76408be1575defe69f90be44c0d3a315db27047665f658"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/measurement-320-font-1.json",
+      "bytes": 1271,
+      "sha256": "a4e2941dc88f118b8c7a8091c608ff31dcb4011c0390487ff4354aef1f8cf9e8"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/measurement-320-font-2.json",
+      "bytes": 1271,
+      "sha256": "4507a7e7314bc1b31c0cccbfa9005bf463feb2a09292d437a6edcb33cf17656c"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/measurement-420-font-1.json",
+      "bytes": 1281,
+      "sha256": "3bff366d4f5c44f8d215fbe489686f5b819602191139d3580d92af4666055414"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/measurement-420-font-2.json",
+      "bytes": 1281,
+      "sha256": "83999faaacbbbb8f545cb310cb9ef28271cb5931523baa60b7e0b549ebc13b96"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/reference-320.png",
+      "bytes": 4079,
+      "sha256": "313800fdf6027913acf801617bcdfb4dd6ff1f82737ab19d03d7e6f03088d58b"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/reference-420.png",
+      "bytes": 6200,
+      "sha256": "6774edf52a4ef4213ae58c1654ac2867e1c8780e29d02e7f7ea45c379cc44e3a"
+    },
+    {
+      "path": "vertical-start-g0-asymmetric/source.json",
+      "bytes": 1413,
+      "sha256": "be2b7e333ec8902b6e4d53e06768114e5bb2ccf86f0852d0c551a43e84a61ed0"
+    },
+    {
+      "path": "vertical-start-g0-none/capture-320-font-1.png",
+      "bytes": 21888,
+      "sha256": "dc94ca18e552d598f6390b8e21c69caa8089fd470e4eb98c117a892ea6db1c9c"
+    },
+    {
+      "path": "vertical-start-g0-none/capture-320-font-2.png",
+      "bytes": 26402,
+      "sha256": "7dc5e266e07a49b74bf46f160f144207def4d55bf679a11577223d510a0d97ff"
+    },
+    {
+      "path": "vertical-start-g0-none/capture-420-font-1.png",
+      "bytes": 24654,
+      "sha256": "bee411a5583f72229c194987f2034f74be63d58e74ec8f4120714ef7b04b6021"
+    },
+    {
+      "path": "vertical-start-g0-none/capture-420-font-2.png",
+      "bytes": 29733,
+      "sha256": "ac2781dd0231323a2aee02cc244fb896f10648373ad2e728999836da16fa8556"
+    },
+    {
+      "path": "vertical-start-g0-none/expected-bounds.json",
+      "bytes": 422,
+      "sha256": "59ad436f27e219e249029535f36d62fd52ce7385c574927c2e0fe0e227d0096a"
+    },
+    {
+      "path": "vertical-start-g0-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-start-g0-none/generated/MobileFixture.kt",
+      "bytes": 4032,
+      "sha256": "f2f68902ea873c9e372363e696074128a4d52526bb9d34f47e43b8e66dc4c3c3"
+    },
+    {
+      "path": "vertical-start-g0-none/measurement-320-font-1.json",
+      "bytes": 1241,
+      "sha256": "afdd159caa2724f5e4dc970fd0253cf58e9ddcb6dc6c467c301f4aebb4be3f05"
+    },
+    {
+      "path": "vertical-start-g0-none/measurement-320-font-2.json",
+      "bytes": 1241,
+      "sha256": "7d90802117684583c6fb6fedd64184b34352949644fbf4f12f5ed32fcfce7076"
+    },
+    {
+      "path": "vertical-start-g0-none/measurement-420-font-1.json",
+      "bytes": 1251,
+      "sha256": "95bd67bca69c94909f100195b73d26cbb2dfc79fbccade1ce71453afccf19a46"
+    },
+    {
+      "path": "vertical-start-g0-none/measurement-420-font-2.json",
+      "bytes": 1251,
+      "sha256": "44f6569b7638ab0c2b506e2ff2e33e9185f163c5087fb1b3dd52bd3fcb58756f"
+    },
+    {
+      "path": "vertical-start-g0-none/reference-320.png",
+      "bytes": 4079,
+      "sha256": "3ea37f3ea4badafc377abc7ca8579429df04cbc26418a0df0149216b434df8dc"
+    },
+    {
+      "path": "vertical-start-g0-none/reference-420.png",
+      "bytes": 6183,
+      "sha256": "7cb08fa8033222f0206705d64e2a6c79b38a1c8d0da5bc0d71a75e9bee157fe4"
+    },
+    {
+      "path": "vertical-start-g0-none/source.json",
+      "bytes": 1308,
+      "sha256": "9f29c4e74dd282871046979cf789b1567337dd8cdca1693e3a82a65f57d8e9c6"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/capture-320-font-1.png",
+      "bytes": 21788,
+      "sha256": "3e6460c1e371d3dca970deecc181248536506378abea86372c2ed5000c9a8dcb"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/capture-320-font-2.png",
+      "bytes": 26869,
+      "sha256": "467154cc0b04df281b3080e85f0b19808df3fb35b4f707e1d7624333b9e2e44b"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/capture-420-font-1.png",
+      "bytes": 24452,
+      "sha256": "23a1666945309453b2514d401fa061bbc176a5b48a2113b2942b3bf5d0a3a961"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/capture-420-font-2.png",
+      "bytes": 29337,
+      "sha256": "a20de10d45a05b528d2098ffca9769b5d824a6ee50530f117a22e92db2ee614c"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/expected-bounds.json",
+      "bytes": 430,
+      "sha256": "82bcc8b974b0e0450304b5c7334a6358c65cc5d216385ad868f570f3f7aa3bda"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/generated/MobileFixture.kt",
+      "bytes": 4098,
+      "sha256": "41246e9199e985701e83d4a015aed75d8fdd9c879db6730f9755e7b9bf863f06"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/measurement-320-font-1.json",
+      "bytes": 1275,
+      "sha256": "bab97ff56c3b6e235562ef255882f6d9bf42f81e1a18b738cd6ab183fd911379"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/measurement-320-font-2.json",
+      "bytes": 1275,
+      "sha256": "b1edda605d080290de386433b9fdb863f9aabc22582d3bf35b538f19b20dce14"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/measurement-420-font-1.json",
+      "bytes": 1285,
+      "sha256": "a922ec85358434474df8bb9b62345227fb2ad3bcc0eecb8b38342fc218445b1a"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/measurement-420-font-2.json",
+      "bytes": 1285,
+      "sha256": "ebf57d25ece91ca47604712f8ec321fd232e06ee0d16875ee834df154b66aba4"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/reference-320.png",
+      "bytes": 4098,
+      "sha256": "e331d9afa26ccde309f7eb608fd4a8a0f281bf21e4bad82111865d40d5c5b8ec"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/reference-420.png",
+      "bytes": 6288,
+      "sha256": "78d507d17ee26823ebee92ddf26afea6e0c5cd186852c04a0a632ba0396a3168"
+    },
+    {
+      "path": "vertical-start-g10-asymmetric/source.json",
+      "bytes": 1415,
+      "sha256": "e354c2315f5ebf9c1a86679403fa93e0ddc390186787981c16e7277be5d8459d"
+    },
+    {
+      "path": "vertical-start-g10-none/capture-320-font-1.png",
+      "bytes": 22158,
+      "sha256": "9837616fbe6ea8c1de891ddb8942499d7504ab24ffbc9944dfc6e61a580215b1"
+    },
+    {
+      "path": "vertical-start-g10-none/capture-320-font-2.png",
+      "bytes": 27329,
+      "sha256": "c0eb3ec75b0154dfca3f4f0a98987f869fbc7a393e91befd2ba06207a9c0e62f"
+    },
+    {
+      "path": "vertical-start-g10-none/capture-420-font-1.png",
+      "bytes": 24744,
+      "sha256": "1dc8b37ce15d306e5b64a14f08f21c8de324f5a6b43bda47188404b05e6a6efb"
+    },
+    {
+      "path": "vertical-start-g10-none/capture-420-font-2.png",
+      "bytes": 29891,
+      "sha256": "6c1e5a3b88cc29792f6a44375c3b24d91417d57c7b69511e0c66d1e4ffd9a613"
+    },
+    {
+      "path": "vertical-start-g10-none/expected-bounds.json",
+      "bytes": 424,
+      "sha256": "60650b0a6a2cadb5270dd30f8500e7e4d4ac1e4c6ee638425e686f56a84e9a5f"
+    },
+    {
+      "path": "vertical-start-g10-none/generated/CanvasFlowLayout.kt",
+      "bytes": 599,
+      "sha256": "3d037418b4fd296e505a6bd64a44472cfb82d0f651b7f90581149f317d87ea8b"
+    },
+    {
+      "path": "vertical-start-g10-none/generated/MobileFixture.kt",
+      "bytes": 4033,
+      "sha256": "070f44a1cb9b86a8c055f1c6fe4c243bc0d39551469afb6ff6800988c7fcb684"
+    },
+    {
+      "path": "vertical-start-g10-none/measurement-320-font-1.json",
+      "bytes": 1245,
+      "sha256": "cefddd4abda2a85fb3ddd233d9558d18411362c7cd79f90a52a977c0d09d0be2"
+    },
+    {
+      "path": "vertical-start-g10-none/measurement-320-font-2.json",
+      "bytes": 1245,
+      "sha256": "786042468c4fc6b1035f690c61162dfdc82fae8b1780e3f43b79d64f23aef0e5"
+    },
+    {
+      "path": "vertical-start-g10-none/measurement-420-font-1.json",
+      "bytes": 1255,
+      "sha256": "762c667520a8fcc2230ed769d1792850998119e1b773762824f159d6ef368fd1"
+    },
+    {
+      "path": "vertical-start-g10-none/measurement-420-font-2.json",
+      "bytes": 1255,
+      "sha256": "e44b6c62330afe8f2ddb9d09203bdc9e16a2a606d5488452efa0f941318fce2d"
+    },
+    {
+      "path": "vertical-start-g10-none/reference-320.png",
+      "bytes": 4098,
+      "sha256": "e395556c4ec195c8c0e5842092c19f09bad34f2fbc740818eee71abbf0601432"
+    },
+    {
+      "path": "vertical-start-g10-none/reference-420.png",
+      "bytes": 6266,
+      "sha256": "d08e15ce14ab21c0c70c2a12d65fc99dd50578fac9842753fa3a7c85bcd9c30a"
+    },
+    {
+      "path": "vertical-start-g10-none/source.json",
+      "bytes": 1310,
+      "sha256": "51365c882652b12b45b9efba0febed8206c51405b15dc82e2353a057683e1ad6"
+    },
+    {
+      "path": "visual/contact-horizontal-center.png",
+      "bytes": 43774,
+      "sha256": "54982f9ebb7a9448a8333eadbbac5775a9ebff15d2782511c4b854f2b87fadf5"
+    },
+    {
+      "path": "visual/contact-horizontal-end.png",
+      "bytes": 43750,
+      "sha256": "31870fb61fb96c2ba121666c452ca7898b0c5882650793f27980056c758f0cd0"
+    },
+    {
+      "path": "visual/contact-horizontal-start.png",
+      "bytes": 43394,
+      "sha256": "33740e9cd5f8b6989be694caae982a6299e525fda3c5b8b3b4f682a8a1d4e869"
+    },
+    {
+      "path": "visual/contact-vertical-center.png",
+      "bytes": 43449,
+      "sha256": "8c4902d874ba870d0640b8bf7437e68625882c07b4c7ac52c477beffff0f1661"
+    },
+    {
+      "path": "visual/contact-vertical-end.png",
+      "bytes": 43471,
+      "sha256": "2debc5c5cf43032627d0ac3e4c1acee4e2430195ecba4334dd0f4a5f6b99cba9"
+    },
+    {
+      "path": "visual/contact-vertical-start.png",
+      "bytes": 44284,
+      "sha256": "36db4474e6df2949e337f38827163bc2e454aa3258f5f2c2dc856ed7a0fc89fd"
+    }
+  ]
+}

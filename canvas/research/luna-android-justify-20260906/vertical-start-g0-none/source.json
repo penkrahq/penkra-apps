@@ -1,0 +1,60 @@
+{
+  "version": "2.17",
+  "module": "mobile",
+  "axes": {},
+  "variables": {},
+  "paragraphStyles": {},
+  "imports": {},
+  "flows": [],
+  "children": [
+    {
+      "id": "justify-root-vertical-start-g0-none",
+      "type": "frame",
+      "role": "android",
+      "name": "Mobile Fixture",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 400,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "container",
+          "type": "frame",
+          "x": 20,
+          "y": 60,
+          "width": 300,
+          "height": 280,
+          "fill": "#FFFFFF",
+          "layout": "vertical",
+          "justifyContent": "start",
+          "gap": 0,
+          "children": [
+            {
+              "id": "child-1",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#123456"
+            },
+            {
+              "id": "child-2",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#f4a261"
+            },
+            {
+              "id": "child-3",
+              "type": "rectangle",
+              "width": 40,
+              "height": 30,
+              "fill": "#2a9d8f"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
