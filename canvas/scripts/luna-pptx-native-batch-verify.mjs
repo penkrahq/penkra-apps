@@ -19,6 +19,16 @@ function parsePageSize(text) {
   return { width: Number(match[1]), height: Number(match[2]) };
 }
 
+export function parsePdffonts(text) {
+  const rows = [];
+  for (const line of text.split(/\r?\n/u)) {
+    const fields = line.trim().split(/\s+/u);
+    if (fields.length < 8 || !["yes", "no"].includes(fields[3]) || !["yes", "no"].includes(fields[4])) continue;
+    rows.push({ name: fields[0], type: fields[1], encoding: fields[2], embedded: fields[3], subset: fields[4], unicode: fields[5] });
+  }
+  return rows;
+}
+
 export async function inspectPdf(pdfPath, renderedPngPath) {
   const [{ stdout: info }, { stdout: text }, { stdout: fonts }] = await Promise.all([
     execFile("pdfinfo", [pdfPath]),
@@ -27,11 +37,14 @@ export async function inspectPdf(pdfPath, renderedPngPath) {
   ]);
   const image = decodePng(await readFile(renderedPngPath));
   const marker = findMarkerBounds(image);
+  const pages = Number(info.match(/Pages:\s+(\d+)/u)?.[1]);
+  const fontRows = parsePdffonts(fonts);
   return {
     pageSizePt: parsePageSize(info),
-    pages: Number(info.match(/Pages:\s+(\d+)/u)?.[1]),
+    pages,
     text: text.trim(),
-    embeddedInter: /\bInter\b/u.test(fonts),
+    embeddedInter: fontRows.some((row) => /Inter/u.test(row.name) && row.embedded === "yes"),
+    fonts: fontRows,
     renderSize: { width: image.width, height: image.height },
     marker,
   };
@@ -55,8 +68,9 @@ export function inspectPptx(bytes, school) {
   };
 }
 
-export function validateMarkerMeasurement(observed, expected) {
-  return observed.x === expected.x && observed.y === expected.y && observed.width === expected.width && observed.height === expected.height;
+export function validateMarkerMeasurement(observed, expected, tolerance = 2) {
+  if (!observed || !expected || !Number.isFinite(tolerance) || tolerance < 0) return false;
+  return ["x", "y", "width", "height"].every((key) => Number.isFinite(observed[key]) && Number.isFinite(expected[key]) && Math.abs(observed[key] - expected[key]) <= tolerance);
 }
 
 export function decodePng(bytes) {

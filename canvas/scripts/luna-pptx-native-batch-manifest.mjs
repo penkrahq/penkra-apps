@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { inspectPdf, sha256 } from "./luna-pptx-native-batch-verify.mjs";
+import { inspectPdf, sha256, validateMarkerMeasurement } from "./luna-pptx-native-batch-verify.mjs";
 
 const root = fileURLToPath(new URL("../research/luna-pptx-native-batch-20260907/run-4uxvfr/", import.meta.url));
 const rel = (path) => relative(root, path).split("\\").join("/");
@@ -15,7 +15,10 @@ for (let index = 1; index <= 40; index += 1) {
   const legacyPath = join(root, "ui", `school-${String(index).padStart(2, "0")}.jpg`);
   const screenshotPath = index <= 5 ? finalPath : legacyPath;
   let receipt = null;
-  try { receipt = JSON.parse(await readFile(join(root, "ui-final", `observation-${String(index).padStart(2, "0")}.json`), "utf8")); } catch { /* bulk receipt was not retained */ }
+  for (const receiptDirectory of ["ui-final", "ui"]) {
+    if (receipt) break;
+    try { receipt = JSON.parse(await readFile(join(root, receiptDirectory, `observation-${String(index).padStart(2, "0")}.json`), "utf8")); } catch { /* try the other retained receipt directory */ }
+  }
   ui.push({ index, expectedSchool: `School ${index}`, screenshot: rel(screenshotPath), screenshotExists: true, screenshotSha256: sha256(await readFile(screenshotPath)), visualInspected: true, stateReceiptRetained: Boolean(receipt), bulkStateObserved: true, windowTitle: receipt?.windowTitle ?? `School ${index}`, slideCount: receipt?.slideCount ?? true, schoolTitle: receipt?.schoolTitle ?? true, repairOrFontWarning: receipt?.repairOrFontWarning ?? false, urlMatches: receipt?.urlMatches ?? true });
 }
 
@@ -30,7 +33,10 @@ for (const spec of pdfSpecs) {
   const renderedPath = join(root, spec.rendered);
   const observed = await inspectPdf(pdfPath, renderedPath);
   const expected = { pageSizePt: { width: 720, height: 405 }, renderSize: { width: 800, height: 450 }, marker: { x: spec.expectedX, y: 0, width: 20, height: 20 } };
-  const status = JSON.stringify(observed) === JSON.stringify({ ...observed, pageSizePt: expected.pageSizePt, renderSize: expected.renderSize, marker: expected.marker }) ? "pass" : "mismatch";
+  const status = observed.pages === 1
+    && JSON.stringify(observed.pageSizePt) === JSON.stringify(expected.pageSizePt)
+    && JSON.stringify(observed.renderSize) === JSON.stringify(expected.renderSize)
+    && validateMarkerMeasurement(observed.marker, expected.marker) ? "pass" : "mismatch";
   pdf.push({ index: spec.index, expectedSchool: `School ${spec.index}`, pdf: spec.pdf, pdfSha256: sha256(await readFile(pdfPath)), rendered: spec.rendered, renderedSha256: sha256(await readFile(renderedPath)), expected, observed, status });
 }
 
