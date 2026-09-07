@@ -80,11 +80,11 @@
         "count": 280817
       },
       "mismatchClassification": {
-        "glyphEdge": 2355,
-        "decoration": 151499,
-        "colorInterior": 195,
+        "glyphEdge": 1839,
+        "nonbaselineForegroundCandidate": 145991,
+        "colorInterior": 102,
         "interior": 0,
-        "topology": 139046
+        "topology": 132885
       }
     },
     "byState": {
@@ -104,7 +104,7 @@
         },
         "mismatchClassification": {
           "glyphEdge": 1155,
-          "decoration": 2091,
+          "nonbaselineForegroundCandidate": 2091,
           "colorInterior": 0,
           "interior": 0,
           "topology": 647
@@ -125,11 +125,11 @@
           "count": 276266
         },
         "mismatchClassification": {
-          "glyphEdge": 1191,
-          "decoration": 148845,
-          "colorInterior": 195,
+          "glyphEdge": 675,
+          "nonbaselineForegroundCandidate": 143337,
+          "colorInterior": 102,
           "interior": 0,
-          "topology": 138313
+          "topology": 132152
         }
       },
       "ipad-large": {
@@ -148,7 +148,7 @@
         },
         "mismatchClassification": {
           "glyphEdge": 9,
-          "decoration": 563,
+          "nonbaselineForegroundCandidate": 563,
           "colorInterior": 0,
           "interior": 0,
           "topology": 86
@@ -171,11 +171,11 @@
           "count": 23539
         },
         "mismatchClassification": {
-          "glyphEdge": 219,
-          "decoration": 0,
+          "glyphEdge": 160,
+          "nonbaselineForegroundCandidate": 0,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 24119
+          "topology": 23379
         }
       },
       "case-02": {
@@ -193,11 +193,11 @@
           "count": 30451
         },
         "mismatchClassification": {
-          "glyphEdge": 219,
-          "decoration": 30145,
+          "glyphEdge": 160,
+          "nonbaselineForegroundCandidate": 29494,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 988
+          "topology": 797
         }
       },
       "case-03": {
@@ -215,11 +215,11 @@
           "count": 28298
         },
         "mismatchClassification": {
-          "glyphEdge": 254,
-          "decoration": 28906,
+          "glyphEdge": 217,
+          "nonbaselineForegroundCandidate": 27049,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 1115
+          "topology": 1032
         }
       },
       "case-04": {
@@ -237,11 +237,11 @@
           "count": 35210
         },
         "mismatchClassification": {
-          "glyphEdge": 254,
-          "decoration": 35693,
+          "glyphEdge": 217,
+          "nonbaselineForegroundCandidate": 33961,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 1096
+          "topology": 1032
         }
       },
       "case-06": {
@@ -259,11 +259,11 @@
           "count": 35788
         },
         "mismatchClassification": {
-          "glyphEdge": 353,
-          "decoration": 0,
+          "glyphEdge": 263,
+          "nonbaselineForegroundCandidate": 0,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 37266
+          "topology": 35525
         }
       },
       "case-07": {
@@ -281,11 +281,11 @@
           "count": 31019
         },
         "mismatchClassification": {
-          "glyphEdge": 219,
-          "decoration": 30611,
+          "glyphEdge": 160,
+          "nonbaselineForegroundCandidate": 30062,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 988
+          "topology": 797
         }
       },
       "case-08": {
@@ -303,11 +303,11 @@
           "count": 26435
         },
         "mismatchClassification": {
-          "glyphEdge": 225,
-          "decoration": 26144,
+          "glyphEdge": 181,
+          "nonbaselineForegroundCandidate": 25425,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 976
+          "topology": 829
         }
       },
       "case-10": {
@@ -325,11 +325,11 @@
           "count": 23689
         },
         "mismatchClassification": {
-          "glyphEdge": 309,
-          "decoration": 0,
-          "colorInterior": 195,
+          "glyphEdge": 208,
+          "nonbaselineForegroundCandidate": 0,
+          "colorInterior": 102,
           "interior": 0,
-          "topology": 24131
+          "topology": 23379
         }
       },
       "case-11": {
@@ -347,11 +347,11 @@
           "count": 22521
         },
         "mismatchClassification": {
-          "glyphEdge": 175,
-          "decoration": 0,
+          "glyphEdge": 159,
+          "nonbaselineForegroundCandidate": 0,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 23417
+          "topology": 22362
         }
       },
       "case-12": {
@@ -369,11 +369,11 @@
           "count": 23867
         },
         "mismatchClassification": {
-          "glyphEdge": 128,
-          "decoration": 0,
+          "glyphEdge": 114,
+          "nonbaselineForegroundCandidate": 0,
           "colorInterior": 0,
           "interior": 0,
-          "topology": 24950
+          "topology": 23753
         }
       }
     }
@@ -929,7 +929,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 16
@@ -1458,7 +1458,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 16,
+        "nonbaselineForegroundCandidate": 16,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -2236,7 +2236,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 239,
+        "nonbaselineForegroundCandidate": 239,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -3072,7 +3072,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 239,
+        "nonbaselineForegroundCandidate": 239,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -3652,7 +3652,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 9,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 16
@@ -4152,7 +4152,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 16,
+        "nonbaselineForegroundCandidate": 16,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -4759,7 +4759,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 53,
+        "nonbaselineForegroundCandidate": 53,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -5230,7 +5230,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 16
@@ -5810,7 +5810,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 22
@@ -6281,7 +6281,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 0,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 16
@@ -7530,11 +7530,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 125,
-        "decoration": 0,
+        "glyphEdge": 66,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 24035
+        "topology": 23295
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -8906,11 +8906,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 125,
-        "decoration": 30061,
+        "glyphEdge": 66,
+        "nonbaselineForegroundCandidate": 29410,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 988
+        "topology": 797
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -10345,11 +10345,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 92,
-        "decoration": 27804,
+        "glyphEdge": 55,
+        "nonbaselineForegroundCandidate": 25947,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 987
+        "topology": 904
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -11910,11 +11910,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 92,
-        "decoration": 34591,
+        "glyphEdge": 55,
+        "nonbaselineForegroundCandidate": 32859,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 968
+        "topology": 904
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -12881,11 +12881,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 246,
-        "decoration": 0,
+        "glyphEdge": 156,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 37199
+        "topology": 35458
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -14182,11 +14182,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 125,
-        "decoration": 30527,
+        "glyphEdge": 66,
+        "nonbaselineForegroundCandidate": 29978,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 988
+        "topology": 797
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -15531,11 +15531,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 96,
-        "decoration": 25862,
+        "glyphEdge": 52,
+        "nonbaselineForegroundCandidate": 25143,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 948
+        "topology": 801
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -16844,11 +16844,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 216,
-        "decoration": 0,
-        "colorInterior": 195,
+        "glyphEdge": 115,
+        "nonbaselineForegroundCandidate": 0,
+        "colorInterior": 102,
         "interior": 0,
-        "topology": 24047
+        "topology": 23295
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -18148,11 +18148,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 40,
-        "decoration": 0,
+        "glyphEdge": 24,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 23287
+        "topology": 22232
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -19416,11 +19416,11 @@
         "lineBandDelta": null
       },
       "mismatchClassification": {
-        "glyphEdge": 34,
-        "decoration": 0,
+        "glyphEdge": 20,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
-        "topology": 24866
+        "topology": 23669
       },
       "geometryEvidence": {
         "boundsEqual": false,
@@ -20249,7 +20249,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 94,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 68
@@ -21139,7 +21139,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 94,
-        "decoration": 68,
+        "nonbaselineForegroundCandidate": 68,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -22250,7 +22250,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 162,
-        "decoration": 863,
+        "nonbaselineForegroundCandidate": 863,
         "colorInterior": 0,
         "interior": 0,
         "topology": 128
@@ -23419,7 +23419,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 162,
-        "decoration": 863,
+        "nonbaselineForegroundCandidate": 863,
         "colorInterior": 0,
         "interior": 0,
         "topology": 128
@@ -24224,7 +24224,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 98,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 51
@@ -25085,7 +25085,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 94,
-        "decoration": 68,
+        "nonbaselineForegroundCandidate": 68,
         "colorInterior": 0,
         "interior": 0,
         "topology": 0
@@ -26025,7 +26025,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 129,
-        "decoration": 229,
+        "nonbaselineForegroundCandidate": 229,
         "colorInterior": 0,
         "interior": 0,
         "topology": 28
@@ -26857,7 +26857,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 93,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 68
@@ -27932,7 +27932,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 135,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 108
@@ -28764,7 +28764,7 @@
       },
       "mismatchClassification": {
         "glyphEdge": 94,
-        "decoration": 0,
+        "nonbaselineForegroundCandidate": 0,
         "colorInterior": 0,
         "interior": 0,
         "topology": 68
