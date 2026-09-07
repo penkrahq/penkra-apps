@@ -357,16 +357,7 @@ async function openDocument(documentId) {
         stateBytes: payload.snapshot?.stateBytes ?? 0,
       },
     );
-    const retained = await performanceMonitor.measureAsync(
-      "document.retained-imports",
-      () => {
-        const source = materialize(state.model);
-        return loadRetainedCanvasImports(api, { ...source, imports: source.imports ?? {} }, { documentId });
-      },
-      { documentId },
-    );
-    state.imports = retained.imports;
-    state.assets = new Map([...assets, ...retained.assets]);
+    state.assets = new Map(assets);
     invalidateDocumentProjection();
     const serverStateVector = performanceMonitor.measure(
       "document.state-vector",
@@ -379,6 +370,17 @@ async function openDocument(documentId) {
       () => state.persistence.whenSynced,
       { documentId },
     );
+    const retained = await performanceMonitor.measureAsync(
+      "document.retained-imports",
+      () => {
+        const source = materialize(state.model);
+        return loadRetainedCanvasImports(api, { ...source, imports: source.imports ?? {} }, { documentId });
+      },
+      { documentId },
+    );
+    state.imports = retained.imports;
+    state.assets = new Map([...assets, ...retained.assets]);
+    invalidateDocumentProjection();
     const offlineUpdate = performanceMonitor.measure(
       "document.offline-diff",
       () => Y.encodeStateAsUpdate(state.model.doc, serverStateVector),
