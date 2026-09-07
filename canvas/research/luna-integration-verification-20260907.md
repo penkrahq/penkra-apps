@@ -281,6 +281,34 @@ materializer validation does not excuse accepting `root:{}`, `items:[{}]`, and
 `requestedItems:[{}]`. LS-001 remains assigned to the zero-byte API/storage path and was not
 duplicated. No source fix or unapproved runtime commit was integrated.
 
+## Offline iOS transformation diagnosis (read-only, not integrated)
+
+Diagnostic commits `36052b5` (harness/tests) and `a418c61` (audit artifacts) were inspected but
+not picked. The diagnostic test/exporter selection reported `41` pass, `0` fail, `0` cancelled,
+`0` skipped. No build, device mutation, recapture, or exporter source change occurred.
+
+The retained evidence establishes a capture-origin mismatch, not an emitter offset: generated
+Swift uses a fixed `340x400` root with no outer position/frame (variant source line 13),
+`GridFixtureHost.swift:54` places it directly in `WindowGroup`, and the capture runner crop
+(`luna-ios-grid-production-capture.mjs:98-103`) centers those dimensions against the full physical
+screenshot rather than the WindowGroup safe-area content origin. Generated Swift positions match
+`38/38`; dimension-valid native outputs preserve x/width/height with uniform y displacement:
+ iPhone `+42 px / +14 pt` and iPad `+7 px / +3.5 pt`. Exact runtime inset values were not retained
+and are not claimed.
+
+The three `880x924` anomalies are stale/inconsistent crop outputs. Replaying `sips` from retained
+final fullB bytes produced the expected `1020x1200` for both iPhone cases and `680x800` for iPad.
+The iPhone Large reversed case has final fullB `1206x2622` with matching recorded/final hash but
+an unreproducible `880x924` crop. The iPhone XXL and iPad controls have final fullB
+`652x2702`/`904x2702` hashes differing from recorded pre-crop hashes, with stale `880x924` crops.
+Runner lines `79-82` hash fullB, while `131-135` invoke `sips` without a pre-crop immutability
+check or exact output-dimension assertion.
+
+The proposed minimal future harness changes are: re-read/hash/size-check fullB immediately before
+`sips`; write to a unique temporary crop path; assert exact `340*scale x 400*scale` dimensions;
+and capture an app-owned root-origin/safe-area receipt for crop origin. No fix was implemented,
+and any next native run requires a new integration lease.
+
 ## Independent delivery review blockers
 
 The independent review report was read-only verified from delivery HEAD
