@@ -44,7 +44,7 @@ export async function prepareDocumentExport(document, request, options = {}) {
   let artifact;
   if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "route") {
-    const hrefs = new Map(ir.rasters.map((raster) => [raster.id, `assets/${validateOutputSegment(raster.id)}.png`]));
+    const hrefs = new Map(ir.rasters.map((raster, index) => [raster.id, `assets/raster-${index + 1}.png`]));
     artifact = exportWeb(ir, { rasterHref: (id) => hrefs.get(id) });
     for (const [id, href] of hrefs) artifact.set(href, Buffer.from((await screenshot(id)).data, "base64"));
   }
