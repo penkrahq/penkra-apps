@@ -169,7 +169,9 @@ export function createCanvasApi(runtime = globalThis.penkra) {
 
 function uploadedAsset(blob, path) {
   if (!blob || typeof blob !== "object") {
-    throw new Error("Canvas asset upload completed without blob metadata.");
+    const error = new Error("Canvas asset upload completed without blob metadata.");
+    error.code = "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID";
+    throw error;
   }
   // The Account blob projection identifies content, while the Pencil-relative
   // path belongs to this document and is supplied on upload. Preserve that
