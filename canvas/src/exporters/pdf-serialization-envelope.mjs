@@ -70,6 +70,11 @@ export function inspectCanvasPdfEnvelope(input) {
         }
         if (bytes.includes(0)) fail("null-name-byte", start);
         if (bytes.length > 127) fail("name-byte-limit", start);
+        // ISO 15930-7:2010 6.6 requires UTF-8 for font/separation names.
+        // This writer subset applies that restriction to every object name;
+        // other binary PDF names are outside our subset, not universally invalid.
+        try { new TextDecoder("utf-8", { fatal: true }).decode(new Uint8Array(bytes)); }
+        catch { fail("name-utf8-outside-writer-subset", start, true); }
         return { kind: "name", value: Buffer.from(bytes).toString("latin1") };
       }
       if (text[position] === "(") {

@@ -98,6 +98,19 @@ test("names use decoded byte identity and limits", () => {
   assert.equal(report("/\xff").issues[0].code, "PDF_SERIALIZATION_OUTSIDE_SUBSET");
 });
 
+test("escaped names reject invalid UTF-8 without rewriting decoded identity", () => {
+  for (const value of ["/#C0#AF", "/#ED#A0#80", "/#F4#90#80#80", "/#80", "/#C3", "/#FF"]) {
+    const result = report(value);
+    assert.equal(result.verified, false, value);
+    assert.equal(result.issues[0].code, "PDF_SERIALIZATION_OUTSIDE_SUBSET");
+    assert.equal(result.issues[0].detail, "name-utf8-outside-writer-subset");
+  }
+  for (const value of ["/ASCII", "/#C3#A9", "/#F0#9F#98#80", "/#F4#8F#BF#BF", "/#23#20"]) {
+    assert.equal(report(value).verified, true, value);
+  }
+  assert.equal(report("<< /#C3#A9 1 /#c3#a9 2 >>").issues[0].detail, "dictionary-key-invalid-or-duplicate");
+});
+
 test("stream payload is skipped by exact direct length, not searched for keywords", () => {
   const payload = "endstream\nendobj\ntrailer\n\x00\xff";
   const stream = `<< /Length ${payload.length} >>\nstream\n${payload}\nendstream`;
