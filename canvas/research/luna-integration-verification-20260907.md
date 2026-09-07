@@ -1373,3 +1373,31 @@ device, live-document, Dev1, or capability action occurred.
 
 Final combined source/test/evidence HEAD is
 `11e7e2dd392197abcd8ef756ab68361108ce72ca`; a separate evidence-only commit follows.
+
+## Grid schema correction integration
+
+The approved grid schema correction batch was cherry-picked in exact order after combined HEAD
+`bd8cd96e49652201644624caddaa2577ee88cdc3`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `24ae387c2735b4f1ed3ce946b217b20d28d2f439` | `61f17a845751e4d65ba388e592f39e7ad7bb9271` |
+| `2edb8e9ad359aafaceda4c8ecfec467b110e93fe` | `ae93fb773821bcec66c81d20faf420921a148949` |
+| `285f7788977edc72e7b3a3ca11ed38673971871f` | `8daf035d0a71199a578fc5f86b8f06e7359847fe` |
+
+Scope inspection confirmed one `canvas-schema.mjs` grid-track validator/schema correction, grid
+audit/test updates including the new schema matrix, and research evidence. No protected,
+capability, engine, native, device, or unrelated paths changed; no patch-equivalent was skipped.
+
+The bounded integrated test selection was:
+
+`node scripts/test.mjs src/luna-grid-capability-audit.test.mjs src/luna-grid-schema-matrix.test.mjs`
+
+Log: `/tmp/canvas-grid-schema-correction-focused-20260907.log`. Exit `0`; `5` passed,
+`0` failed, `0` cancelled, `0` skipped; Node-reported duration `389.703708 ms`
+(`/usr/bin/time` real `0.43 s`). The broad source/exporter/Yjs and compatibility reruns remain
+deferred until the stale PDF extraction assertion is corrected. No build, app validation, native,
+device, capability, or evidence regeneration action occurred.
+
+Final combined source/test integration HEAD is
+`8daf035d0a71199a578fc5f86b8f06e7359847fe`; a separate evidence-only commit follows.
