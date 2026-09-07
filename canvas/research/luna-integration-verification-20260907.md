@@ -1277,3 +1277,55 @@ regenerated or re-audited, and no native/device action ran.
 
 Final combined source/test integration HEAD is
 `ab776b52d97d9073b574b0ecd5798844103ee869`; a separate evidence-only commit follows.
+
+## PDF/X writer publication-boundary integration
+
+The approved writer batch was cherry-picked in exact order after combined HEAD
+`537293d555538ee6802f7ad8229f15dd80d7ef0c`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `8b4cd1f093fd042bd2a161b3853488ddae036776` | `d3834e00443fce1d867b2ecbede363e73fb53e35` |
+| `a321e40c78857c0a40a193a9948bb91b2a8e0d4d` | `172810d059c572aa5530739c5f885b97e4bf557f` |
+| `8dfc41628d004322ad238dced0419048c099696f` | `358a3ee3f30b97368a286e0ba3342cb7a6fe8a91` |
+| `f0432441e780c0ea37e365d17893779f55069bd2` | `5032b76959ad52eb26a411a13fbb99117cce3ed6` |
+| `5b4d6ae492b25a7f702dbf7b749a44bc39d2af9d` | `1ea374004477462b2e4660f838ddda49f27accbd` |
+
+Full-stat and diff inspection confirmed the reviewed writer gate, returned-artifact test updates,
+writer evidence, isolated render-probe script/evidence, and public profile-help/evidence change.
+No protected files, capability promotion, native sources, or unrelated worker commits were
+included. `ff1a53f13fafc520a42ded3baec46dca50d47752` was verified as a duplicate of `8b4cd1f`
+and was not picked.
+
+The strict source/exporter/Yjs command ran once:
+
+`node scripts/test.mjs src/*.test.mjs src/exporters/*.test.mjs collaboration/pen-yjs-model.test.mjs`
+
+Log: `/tmp/canvas-pdfx-writer-full-source-exporter-yjs-20260907.log`. Exit `1`; `1,810` passed,
+`1` failed, `0` cancelled, `0` skipped; Node-reported duration `44,686.282041 ms`
+(`/usr/bin/time` real `44.74 s`). The sole failure is the stale pre-boundary expectation in
+`src/luna-extraction-artifact-matrix.test.mjs:156`:
+`physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 gate leaves no file`.
+It expected `CANVAS_PDF_PROFILE_UNVERIFIED` and no destination, but the approved writer boundary
+returned the validated writer-subset artifact, so the destination existed.
+
+The explicit compatibility selection discovered 37 files, excluding only
+`compatibility/mobile-export-compilation.test.mjs`:
+
+`node scripts/test.mjs <37 discovered compatibility test files, excluding compatibility/mobile-export-compilation.test.mjs>`
+
+The exact 37-file expanded list is retained at
+`/tmp/canvas-pdfx-writer-compatibility-no-mobile-20260907.files`; log:
+`/tmp/canvas-pdfx-writer-compatibility-no-mobile-20260907.log`. Exit `1`; `179` passed,
+`1` failed, `0` cancelled, `0` skipped; Node-reported duration `74,686.60225 ms`
+(`/usr/bin/time` real `74.74 s`). The sole failure is
+`compatibility/pdf-profile-conformance.test.mjs:72`,
+`unverified PDF/X-4 profile cannot be mislabeled`, which still expects the old rejection.
+
+No source fix was made for either stale expectation. Because the required test prerequisite did
+not pass, `npm run build:dev`, isolated public `penkra app test`, and the expected-fail-closed
+production `npm run build` were not run in this turn; no installed Dev1 acceptance, sideload,
+release, live-document action, native compile, device action, or capability change occurred.
+The public manifest wording now comes from the separately integrated `5b4d6ae` commit and the
+profile enum/request shape is unchanged. Final combined HEAD is
+`1ea374004477462b2e4660f838ddda49f27accbd`; a separate evidence-only commit follows.
