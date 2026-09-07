@@ -47,7 +47,7 @@ export const CANVAS_SCHEMA = deepFreeze({
     } },
     axis: { type: "object", required: ["modes"], fields: { modes: { type: "array", items: { type: "object" }, minItems: 1 } } },
     variable: { type: "object", required: ["tokenType", "cascade"], fields: {
-      tokenType: { type: "enum", values: ["color", "dimension", "number", "string", "fontFamily", "duration"] },
+      tokenType: { type: "enum", values: ["color", "dimension", "number", "string", "fontFamily", "duration", "boolean"] },
       cascade: { type: "array", items: { type: "object" }, minItems: 1 },
     } },
     property: { type: "object", required: ["type"], fields: {
@@ -227,7 +227,7 @@ function validateAxes(axes, errors) {
 }
 
 function validateVariables(variables, errors) {
-  const tokenTypes = new Set(["color", "dimension", "number", "string", "fontFamily", "duration"]);
+  const tokenTypes = new Set(["color", "dimension", "number", "string", "fontFamily", "duration", "boolean"]);
   for (const [name, variable] of Object.entries(variables)) {
     if (!plainObject(variable) || typeof variable.tokenType !== "string" || !variable.tokenType
       || !Array.isArray(variable.cascade) || variable.cascade.length === 0)

@@ -99,6 +99,30 @@ test("migration leaves already-valid paragraph ranges and metadata byte-for-byte
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
+test("migration preserves legacy boolean tokens and canonicalizes annotated node sizing", () => {
+  const source = {
+    module: "generic", axes: {},
+    variables: { visible: { type: "boolean", value: true } },
+    paragraphStyles: {}, imports: {}, flows: [],
+    children: [{
+      id: "outer", type: "frame", width: "fill_container(220)", height: "fit_content(64)",
+      minWidth: "fill_container(191.2)", children: [
+        { id: "label", type: "text", content: "Label", width: "fill_container(191.2)", paragraphs: [{ from: 0, to: 5 }], marks: [] },
+      ],
+    }],
+  };
+  const before = structuredClone(source);
+  const result = migrateCanvasDocument(source);
+  assert.deepEqual(result.document.variables.visible, { tokenType: "boolean", cascade: [{ value: true }] });
+  assert.equal(result.document.children[0].width, "fill_container");
+  assert.equal(result.document.children[0].height, "fit_content");
+  assert.equal(result.document.children[0].minWidth, "fill_container");
+  assert.equal(result.document.children[0].children[0].width, "fill_container");
+  assert.ok(result.notes.some((note) => note.includes("Canonicalized 4 legacy annotated sizing value(s)")));
+  assert.deepEqual(source, before);
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
+});
+
 test("migration bounds accumulated legacy validation diagnostics for the App response boundary", () => {
   const source = {
     module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
@@ -107,7 +131,7 @@ test("migration bounds accumulated legacy validation diagnostics for the App res
   assert.throws(() => migrateCanvasDocument(source), (error) => {
     assert.equal(error.code, "CANVAS_MIGRATION_INVALID");
     assert.match(error.message, /additional characters omitted/u);
-    assert.ok(error.message.length < 4_300);
+    assert.ok(error.message.length < 1_900);
     return true;
   });
 });

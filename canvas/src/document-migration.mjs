@@ -52,6 +52,7 @@ export function migrateCanvasDocument(source) {
     notes.push(...(result.notes ?? []));
   }
   repairLegacyParagraphs(document, notes);
+  canonicalizeLegacyAnnotatedDimensions(document, notes);
   if (Object.hasOwn(document, "version")) {
     delete document.version;
     notes.push("Dropped the obsolete OpenPencil format marker; Canvas has no Pencil file-compatibility contract.");
@@ -93,13 +94,33 @@ export function migrateCanvasDocument(source) {
     validateCanvasDocument(document);
   } catch (error) {
     const detail = String(error?.message ?? error);
-    const limit = 4_000;
+    const limit = 1_600;
     const bounded = detail.length > limit
       ? `${detail.slice(0, limit)}\n… ${detail.length - limit} additional characters omitted.`
       : detail;
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
+}
+
+function canonicalizeLegacyAnnotatedDimensions(document, notes) {
+  const dimensionKeys = new Set(["width", "height", "minWidth", "maxWidth", "minHeight", "maxHeight"]);
+  let changes = 0;
+  const visit = (nodes) => {
+    for (const node of nodes ?? []) {
+      for (const key of dimensionKeys) {
+        const value = node?.[key];
+        if (typeof value !== "string") continue;
+        const match = /^(fill_container|fit_content)\([^)]*\)$/u.exec(value);
+        if (!match) continue;
+        node[key] = match[1];
+        changes += 1;
+      }
+      visit(node?.children);
+    }
+  };
+  visit(document.children);
+  if (changes) notes.push(`Canonicalized ${changes} legacy annotated sizing value(s) while preserving fill/fit layout intent.`);
 }
 
 function repairLegacyParagraphs(document, notes) {
