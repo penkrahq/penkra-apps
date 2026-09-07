@@ -56,9 +56,10 @@ function swiftNode(node, children, options, depth, parentLayout) {
   if (node.vector) return `${indent}${swiftVector(node)}${position}${access}`;
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return swiftContainer(node, descendants, children, options, depth, false, parentLayout, access);
-  if (node.type !== "ellipse" && node.paint.cornerRadius != null) return `${indent}${swiftVector({ ...node, vector: roundedRectangleVector(node) })}${position}${access}`;
+  if (node.type !== "ellipse" && node.paint.cornerRadius != null && !isGradientFill(node.paint.fill)) return `${indent}${swiftVector({ ...node, vector: roundedRectangleVector(node) })}${position}${access}`;
+  if (isTransformedRadial(node.paint.fill)) return `${indent}${swiftGradientCanvas(node)}${position}${access}`;
   const shape = node.type === "ellipse" ? "Ellipse()" : "Rectangle()";
-  return `${indent}${shape}.fill(${swiftColor(solid(node.paint.fill))}).opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
+  return `${indent}${shape}.fill(${swiftPaint(node.paint.fill, node)}).opacity(${n(node.paint.opacity ?? 1)})${position}${access}`;
 }
 
 function swiftPath(node) {
@@ -74,7 +75,7 @@ function swiftPath(node) {
 function swiftVector(node) {
   const path = swiftPath(node);
   const stroke = mobileVectorStroke(node);
-  const fill = `${path}.fill(${swiftColor(solid(node.paint.fill))}, style: FillStyle(eoFill: ${node.vector.fillRule === "evenodd"}))`;
+  const fill = `${path}.fill(${swiftPaint(node.paint.fill, node)}, style: FillStyle(eoFill: ${node.vector.fillRule === "evenodd"}))`;
   let overlay = "";
   if (stroke) {
     const style = `StrokeStyle(lineWidth: ${n(stroke.width * (stroke.align === "center" ? 1 : 2))}, lineCap: .${stroke.cap}, lineJoin: .${stroke.join}, miterLimit: 4, dash: [${stroke.dash.map(n).join(", ")}])`;
@@ -100,9 +101,11 @@ function swiftContainer(node, descendants, children, options, depth, root = fals
   else if (node.layout.layout === "horizontal") open = `HStack(alignment: ${swiftAlignment(node.layout.alignItems)}, spacing: ${column})`;
   else if (node.layout.layout === "vertical") open = `VStack(alignment: ${swiftHorizontalAlignment(node.layout.alignItems)}, spacing: ${row})`;
   else open = "ZStack(alignment: .topLeading)";
-  const background = !solid(node.paint.fill) ? "" : node.paint.cornerRadius != null
+  const background = !hasPaint(node.paint.fill) ? "" : isTransformedRadial(node.paint.fill)
+    ? `.background(alignment: .topLeading) { ${swiftGradientCanvas(node)} }`
+    : node.paint.cornerRadius != null && !isGradientFill(node.paint.fill)
     ? `.background(alignment: .topLeading) { ${swiftVector({ ...node, vector: roundedRectangleVector(node), paint: { fill: node.paint.fill, opacity: 1 } })} }`
-    : `.background(${swiftColor(solid(node.paint.fill))}, ignoresSafeAreaEdges: [])`;
+    : `.background(${swiftPaint(node.paint.fill, node)}, ignoresSafeAreaEdges: [])`;
   const insets = mobilePadding(node);
   const padding = insets && node.layout.layout !== "grid" ? `.padding(EdgeInsets(top: ${n(insets[0])}, leading: ${n(insets[3])}, bottom: ${n(insets[2])}, trailing: ${n(insets[1])}))` : "";
   const rootFrame = root ? `.frame(width: ${n(node.geometry.w)}, height: ${n(node.geometry.h)}, alignment: ${swiftFrameAlignment(node)})` : "";
@@ -199,6 +202,7 @@ function composeNode(node, children, options, depth, parentLayout) {
   if (node.vector) return `${indent}${composeVector(node, modifier)}`;
   const descendants = orderedChildren(node, children);
   if (descendants.length || ["frame", "group", "ref"].includes(node.type)) return composeContainer(node, descendants, children, options, depth, false, modifier);
+  if (isGradientFill(node.paint.fill)) return `${indent}${composeGradientCanvas(node, modifier)}`;
   if (node.type === "ellipse") return `${indent}Canvas(modifier = ${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)})) { drawOval(color = ${composeColor(solid(node.paint.fill))}) }`;
   const shape = composeRoundedShape(node);
   return `${indent}Spacer(${modifier}.alpha(${kotlinFloat(node.paint.opacity ?? 1)}).background(${composeColor(solid(node.paint.fill))}, ${shape}))`;
@@ -259,24 +263,28 @@ function composeContainer(node, descendants, children, options, depth, root = fa
   const flowDescendants = overlays.length ? descendants.filter((child) => child.layout.layoutPosition !== "absolute") : descendants;
   const content = flowDescendants.map((child) => composeNode(child, children, options, depth + 1, parentLayout)).filter(Boolean).join("\n");
   const overlayContent = overlays.map((child) => composeNode(child, children, options, depth + 1, "none")).filter(Boolean).join("\n");
-  const withOverlays = (body) => overlays.length ? `${indent}Box(modifier = ${modifier}) {\n${body}\n${overlayContent}\n${indent}}` : body;
+  const withOverlays = (body) => overlays.length ? `${indent}Box(modifier = ${containerModifier}) {\n${body}\n${overlayContent}\n${indent}}` : body;
   let modifier = root ? composeModifier(node, "vertical") : suppliedModifier;
   if (node.paint.opacity != null) modifier += `.alpha(${kotlinFloat(node.paint.opacity)})`;
-  if (solid(node.paint.fill)) modifier += `.background(${composeColor(solid(node.paint.fill))}${node.paint.cornerRadius != null ? `, ${composeRoundedShape(node)}` : ""})`;
+  if (hasPaint(node.paint.fill)) {
+    const shape = node.paint.cornerRadius != null && !isGradientFill(node.paint.fill) ? `, ${composeRoundedShape(node)}` : "";
+    modifier += isGradientFill(node.paint.fill) ? "" : `.background(${composeColor(solid(node.paint.fill))}${shape})`;
+  }
   if (node.clip) modifier += node.paint.cornerRadius != null ? `.canvasClipShape(${composeRoundedShape(node)})` : ".canvasClipToBounds()";
   const insets = mobilePadding(node);
   if (insets && node.layout.layout !== "grid") modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
+  const containerModifier = isGradientFill(node.paint.fill) ? composeGradientModifier(node, modifier) : modifier;
   if (node.layout.layout === "grid") {
     // Canvas has already resolved track sizes, cell placement, gaps and padding.
     // Reflowing through equal native cells discards that geometry and source
     // order is not necessarily cell order. Keep all children in paint order.
     const positioned = descendants.map((child) => composeNode(child, children, options, depth + 1, "none")).filter(Boolean).join("\n");
-    return `${indent}Box(modifier = ${modifier}) {\n${positioned}\n${indent}}`;
+    return `${indent}Box(modifier = ${containerModifier}) {\n${positioned}\n${indent}}`;
   }
-  if (node.layout.wrap) return withOverlays(`${indent}FlowRow(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`);
-  if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = ${horizontalArrangement}, verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
-  if (node.layout.layout === "vertical") return withOverlays(`${indent}Column(modifier = ${overlays.length ? "Modifier" : modifier}, verticalArrangement = ${verticalArrangement}, horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`);
-  return `${indent}Box(modifier = ${modifier}) {\n${content}\n${indent}}`;
+  if (node.layout.wrap) return withOverlays(`${indent}FlowRow(modifier = ${overlays.length ? "Modifier" : containerModifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`);
+  if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : containerModifier}, horizontalArrangement = ${horizontalArrangement}, verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
+  if (node.layout.layout === "vertical") return withOverlays(`${indent}Column(modifier = ${overlays.length ? "Modifier" : containerModifier}, verticalArrangement = ${verticalArrangement}, horizontalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "End" : node.layout.alignItems === "center" ? "CenterHorizontally" : "Start"}) {\n${content}\n${indent}}`);
+  return `${indent}Box(modifier = ${containerModifier}) {\n${content}\n${indent}}`;
 }
 
 function composeBaseFontSize(runs) {
@@ -370,14 +378,138 @@ function sourceName(value) { const name = String(value).normalize("NFC").replace
 function identifier(value) { const result = String(value).replace(/[^A-Za-z0-9]/gu, ""); return result ? result[0].toUpperCase() + result.slice(1) : "Raster"; }
 function n(value) { return Number(Number(value).toFixed(3)); }
 function kotlinFloat(value) { const rounded = Number(Number(value).toFixed(3)); return Number.isInteger(rounded) ? `${rounded}.0f` : `${rounded}f`; }
-function solid(fill) {
-  if (Array.isArray(fill)) {
-    const active = fill.filter((paint) => paint?.enabled !== false);
-    if (active.length > 1) throw new Error("Mobile multi-paint emission is not implemented.");
-    return solid(active[0]);
+function activePaints(fill) {
+  return (Array.isArray(fill) ? fill : [fill]).filter((paint) => paint != null && paint.enabled !== false);
+}
+function hasPaint(fill) { return activePaints(fill).length > 0; }
+function selectedPaint(fill) {
+  const active = activePaints(fill);
+  if (active.length > 1) {
+    const error = new Error("Mobile multi-paint emission is unsupported because ordered compositing is not implemented.");
+    error.code = "CANVAS_MOBILE_MULTIPAINT_UNSUPPORTED";
+    throw error;
   }
-  if (fill?.enabled === false) return null;
-  return typeof fill === "string" || typeof fill?.color === "string" ? fill : null;
+  return active[0] ?? null;
+}
+function isGradientFill(fill) { return selectedPaint(fill)?.type === "gradient"; }
+function gradientKind(fill) {
+  const value = selectedPaint(fill);
+  if (!value || value.type !== "gradient") return null;
+  const kind = value.gradientType ?? "linear";
+  if (!["linear", "radial"].includes(kind)) {
+    const error = new Error(`Mobile gradient type ${kind} is unsupported.`);
+    error.code = "CANVAS_MOBILE_GRADIENT_UNSUPPORTED";
+    throw error;
+  }
+  return kind;
+}
+function gradientStops(fill) {
+  const value = selectedPaint(fill);
+  const colors = value?.colors;
+  if (!Array.isArray(colors) || colors.length < 2) {
+    const error = new Error("Mobile gradients require at least two color stops.");
+    error.code = "CANVAS_MOBILE_GRADIENT_INVALID";
+    throw error;
+  }
+  const stops = colors.filter((stop) => stop?.enabled !== false).map((stop) => {
+    const position = Number(stop.position);
+    if (!Number.isFinite(position) || position < 0 || position > 1) {
+      const error = new Error("Mobile gradient stop positions must be finite numbers between 0 and 1.");
+      error.code = "CANVAS_MOBILE_GRADIENT_INVALID";
+      throw error;
+    }
+    return { position, color: stop.color ?? stop.value };
+  });
+  if (stops.length < 2 || stops.some((stop) => stop.color == null)) {
+    const error = new Error("Mobile gradients require two enabled color stops with colors.");
+    error.code = "CANVAS_MOBILE_GRADIENT_INVALID";
+    throw error;
+  }
+  return stops;
+}
+function gradientGeometry(fill, node) {
+  const value = selectedPaint(fill);
+  const center = { x: Number(value.center?.x ?? 0.5), y: Number(value.center?.y ?? 0.5) };
+  const size = { width: Number(value.size?.width ?? 1), height: Number(value.size?.height ?? 1) };
+  const rotation = Number(value.rotation ?? 0);
+  if (![center.x, center.y, size.width, size.height, rotation].every(Number.isFinite) || size.width <= 0 || size.height <= 0) {
+    const error = new Error("Mobile gradient center, size and rotation must be finite and size must be positive.");
+    error.code = "CANVAS_MOBILE_GRADIENT_INVALID";
+    throw error;
+  }
+  const angle = rotation * Math.PI / 180;
+  const dx = Math.cos(angle) * size.width / 2;
+  const dy = Math.sin(angle) * size.height / 2;
+  return { center, size, rotation, start: { x: center.x - dx, y: center.y - dy }, end: { x: center.x + dx, y: center.y + dy }, radius: Math.max(Number(node.geometry.w) * size.width, Number(node.geometry.h) * size.height) / 2 };
+}
+function isTransformedRadial(fill) {
+  return gradientKind(fill) === "radial" && (() => {
+    const value = selectedPaint(fill);
+    return Number(value.center?.x ?? 0.5) !== 0.5 || Number(value.center?.y ?? 0.5) !== 0.5 || Number(value.size?.width ?? 1) !== 1 || Number(value.size?.height ?? 1) !== 1 || Number(value.rotation ?? 0) !== 0;
+  })();
+}
+function swiftStops(fill) {
+  return gradientStops(fill).map((stop) => `.init(color: ${swiftColor(stop.color)}, location: ${n(stop.position)})`).join(", ");
+}
+function swiftGradient(fill, node) {
+  const kind = gradientKind(fill);
+  const geometry = gradientGeometry(fill, node);
+  const gradient = `Gradient(stops: [${swiftStops(fill)}])`;
+  if (kind === "linear") return `LinearGradient(gradient: ${gradient}, startPoint: UnitPoint(x: ${n(geometry.start.x)}, y: ${n(geometry.start.y)}), endPoint: UnitPoint(x: ${n(geometry.end.x)}, y: ${n(geometry.end.y)}))`;
+  if (isTransformedRadial(fill)) {
+    const error = new Error(`Transformed radial gradient for ${node.id} must be emitted through its native Canvas shader surface.`);
+    error.code = "CANVAS_MOBILE_GRADIENT_TRANSFORM_CONTEXT_REQUIRED";
+    throw error;
+  }
+  return `RadialGradient(gradient: ${gradient}, center: UnitPoint(x: ${n(geometry.center.x)}, y: ${n(geometry.center.y)}), startRadius: 0, endRadius: ${n(geometry.radius)})`;
+}
+function swiftPaint(fill, node) {
+  const value = selectedPaint(fill);
+  if (!value) return swiftColor("transparent");
+  if (value.type === "gradient") return swiftGradient(fill, node);
+  return swiftColor(solid(fill));
+}
+function swiftGradientCanvas(node) {
+  const fill = node.paint.fill;
+  const geometry = gradientGeometry(fill, node);
+  const path = node.type === "ellipse" ? "Path(ellipseIn: CGRect(origin: .zero, size: size))" : "Path(CGRect(origin: .zero, size: size))";
+  const inverseTransform = `CGAffineTransform(translationX: center.x, y: center.y).rotated(by: -${n(geometry.rotation * Math.PI / 180)}).scaledBy(x: ${n(1 / geometry.size.width)}, y: ${n(1 / geometry.size.height)}).translatedBy(x: -center.x, y: -center.y)`;
+  return `Canvas { context, size in let center = CGPoint(x: ${n(geometry.center.x)} * size.width, y: ${n(geometry.center.y)} * size.height); let path = ${path}.applying(${inverseTransform}); context.translateBy(x: center.x, y: center.y); context.rotate(by: .degrees(${n(geometry.rotation)})); context.scaleBy(x: ${n(geometry.size.width)}, y: ${n(geometry.size.height)}); context.translateBy(x: -center.x, y: -center.y); context.fill(path, with: .radialGradient(Gradient(stops: [${swiftStops(fill)}]), center: center, startRadius: 0, endRadius: ${n(geometry.radius)})) }.opacity(${n(node.paint.opacity ?? 1)})`;
+}
+function composeStops(fill) {
+  return gradientStops(fill).map((stop) => `${kotlinFloat(stop.position)} to ${composeColor(stop.color)}`).join(", ");
+}
+function composeGradientCanvas(node, modifier) {
+  const fill = node.paint.fill;
+  const kind = gradientKind(fill);
+  const geometry = gradientGeometry(fill, node);
+  const brush = kind === "linear"
+    ? `androidx.compose.ui.graphics.Brush.linearGradient(colorStops = arrayOf(${composeStops(fill)}), start = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.start.x)} * size.width, ${kotlinFloat(geometry.start.y)} * size.height), end = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.end.x)} * size.width, ${kotlinFloat(geometry.end.y)} * size.height))`
+    : `androidx.compose.ui.graphics.Brush.radialGradient(colorStops = arrayOf(${composeStops(fill)}), center = center, radius = ${kotlinFloat(Math.max(Number(node.geometry.w), Number(node.geometry.h)) / 2)})`;
+  const draw = node.type === "ellipse" ? `drawOval(brush = brush)` : `drawRect(brush = brush)`;
+  const transform = kind === "radial" && isTransformedRadial(fill)
+    ? `withTransform({ rotate(${kotlinFloat(geometry.rotation)}, center); scale(${kotlinFloat(geometry.size.width)}, ${kotlinFloat(geometry.size.height)}, center) }) { ${draw} }`
+    : draw;
+  return `Canvas(modifier = ${modifier}) { val center = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.center.x)} * size.width, ${kotlinFloat(geometry.center.y)} * size.height); val brush = ${brush}; ${transform} }`;
+}
+function composeGradientModifier(node, baseModifier) {
+  const fill = node.paint.fill;
+  const kind = gradientKind(fill);
+  const geometry = gradientGeometry(fill, node);
+  const brush = kind === "linear"
+    ? `androidx.compose.ui.graphics.Brush.linearGradient(colorStops = arrayOf(${composeStops(fill)}), start = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.start.x)} * size.width, ${kotlinFloat(geometry.start.y)} * size.height), end = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.end.x)} * size.width, ${kotlinFloat(geometry.end.y)} * size.height))`
+    : `androidx.compose.ui.graphics.Brush.radialGradient(colorStops = arrayOf(${composeStops(fill)}), center = center, radius = ${kotlinFloat(geometry.radius)})`;
+  const draw = "drawRect(brush = brush)";
+  const transformed = kind === "radial" && isTransformedRadial(fill)
+    ? `withTransform({ rotate(${kotlinFloat(geometry.rotation)}, center); scale(${kotlinFloat(geometry.size.width)}, ${kotlinFloat(geometry.size.height)}, center) }) { ${draw} }`
+    : draw;
+  return `androidx.compose.ui.draw.drawWithCache(${baseModifier}) { val center = androidx.compose.ui.geometry.Offset(${kotlinFloat(geometry.center.x)} * size.width, ${kotlinFloat(geometry.center.y)} * size.height); val brush = ${brush}; onDrawBehind { ${transformed} } }`;
+}
+function solid(fill) {
+  const value = selectedPaint(fill);
+  if (value == null) return null;
+  if (typeof value === "string" || typeof value?.color === "string") return value;
+  return null;
 }
 function swiftColor(value) { const rgba = rgbaHex(value); return `Color(red: ${rgba.r}, green: ${rgba.g}, blue: ${rgba.b}, opacity: ${rgba.a})`; }
 function composeColor(value) { return `Color(0x${rgbaHex(value).argb})`; }
