@@ -1,0 +1,25 @@
+name: CanvasGridEvidence
+options:
+  bundleIdPrefix: com.penkra.canvas.qa
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  CanvasGridEvidence:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - swift
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.penkra.canvas.qa.grid
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+schemes:
+  CanvasGridEvidence:
+    build:
+      targets:
+        CanvasGridEvidence: all

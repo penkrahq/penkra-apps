@@ -1,0 +1,3820 @@
+{
+  "format": "swift",
+  "projection": "semantic",
+  "lang": "en",
+  "axes": {},
+  "modes": {},
+  "outputs": [
+    {
+      "kind": "ios",
+      "index": 0,
+      "id": "grid-c100-180-r60-100-normal",
+      "name": "iOS Grid grid-c100-180-r60-100-normal",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c100-180-r60-100-normal",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c100-180-r60-100-normal-grid",
+          "type": "frame",
+          "parent": "grid-c100-180-r60-100-normal",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-normal-grid",
+          "z": 0,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-normal-grid",
+          "z": 1,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-normal-grid",
+          "z": 2,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-normal-grid",
+          "z": 3,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 1,
+      "id": "grid-c100-180-r60-100-reversed",
+      "name": "iOS Grid grid-c100-180-r60-100-reversed",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c100-180-r60-100-reversed",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c100-180-r60-100-reversed-grid",
+          "type": "frame",
+          "parent": "grid-c100-180-r60-100-reversed",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-reversed-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-reversed-grid",
+          "z": 1,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-reversed-grid",
+          "z": 2,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-reversed-grid",
+          "z": 3,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 2,
+      "id": "grid-c100-180-r60-100-only-2-2",
+      "name": "iOS Grid grid-c100-180-r60-100-only-2-2",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c100-180-r60-100-only-2-2",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c100-180-r60-100-only-2-2-grid",
+          "type": "frame",
+          "parent": "grid-c100-180-r60-100-only-2-2",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r60-100-only-2-2-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 3,
+      "id": "grid-c100-180-r100-60-normal",
+      "name": "iOS Grid grid-c100-180-r100-60-normal",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c100-180-r100-60-normal",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c100-180-r100-60-normal-grid",
+          "type": "frame",
+          "parent": "grid-c100-180-r100-60-normal",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              100,
+              60
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-normal-grid",
+          "z": 0,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-normal-grid",
+          "z": 1,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-normal-grid",
+          "z": 2,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-normal-grid",
+          "z": 3,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 4,
+      "id": "grid-c100-180-r100-60-reversed",
+      "name": "iOS Grid grid-c100-180-r100-60-reversed",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c100-180-r100-60-reversed",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c100-180-r100-60-reversed-grid",
+          "type": "frame",
+          "parent": "grid-c100-180-r100-60-reversed",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              100,
+              60
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-reversed-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-reversed-grid",
+          "z": 1,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-reversed-grid",
+          "z": 2,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-reversed-grid",
+          "z": 3,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 5,
+      "id": "grid-c100-180-r100-60-only-2-2",
+      "name": "iOS Grid grid-c100-180-r100-60-only-2-2",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c100-180-r100-60-only-2-2",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c100-180-r100-60-only-2-2-grid",
+          "type": "frame",
+          "parent": "grid-c100-180-r100-60-only-2-2",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              100,
+              60
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c100-180-r100-60-only-2-2-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 6,
+      "id": "grid-c180-100-r60-100-normal",
+      "name": "iOS Grid grid-c180-100-r60-100-normal",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c180-100-r60-100-normal",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c180-100-r60-100-normal-grid",
+          "type": "frame",
+          "parent": "grid-c180-100-r60-100-normal",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              180,
+              100
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-normal-grid",
+          "z": 0,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-normal-grid",
+          "z": 1,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-normal-grid",
+          "z": 2,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-normal-grid",
+          "z": 3,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 7,
+      "id": "grid-c180-100-r60-100-reversed",
+      "name": "iOS Grid grid-c180-100-r60-100-reversed",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c180-100-r60-100-reversed",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c180-100-r60-100-reversed-grid",
+          "type": "frame",
+          "parent": "grid-c180-100-r60-100-reversed",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              180,
+              100
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-reversed-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-reversed-grid",
+          "z": 1,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-reversed-grid",
+          "z": 2,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-reversed-grid",
+          "z": 3,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 8,
+      "id": "grid-c180-100-r60-100-only-2-2",
+      "name": "iOS Grid grid-c180-100-r60-100-only-2-2",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c180-100-r60-100-only-2-2",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c180-100-r60-100-only-2-2-grid",
+          "type": "frame",
+          "parent": "grid-c180-100-r60-100-only-2-2",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              180,
+              100
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r60-100-only-2-2-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 9,
+      "id": "grid-c180-100-r100-60-normal",
+      "name": "iOS Grid grid-c180-100-r100-60-normal",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c180-100-r100-60-normal",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c180-100-r100-60-normal-grid",
+          "type": "frame",
+          "parent": "grid-c180-100-r100-60-normal",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              180,
+              100
+            ],
+            "gridTemplateRows": [
+              100,
+              60
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-normal-grid",
+          "z": 0,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-normal-grid",
+          "z": 1,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-normal-grid",
+          "z": 2,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-normal-grid",
+          "z": 3,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 10,
+      "id": "grid-c180-100-r100-60-reversed",
+      "name": "iOS Grid grid-c180-100-r100-60-reversed",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c180-100-r100-60-reversed",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c180-100-r100-60-reversed-grid",
+          "type": "frame",
+          "parent": "grid-c180-100-r100-60-reversed",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              180,
+              100
+            ],
+            "gridTemplateRows": [
+              100,
+              60
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-reversed-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-reversed-grid",
+          "z": 1,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-reversed-grid",
+          "z": 2,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-reversed-grid",
+          "z": 3,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 11,
+      "id": "grid-c180-100-r100-60-only-2-2",
+      "name": "iOS Grid grid-c180-100-r100-60-only-2-2",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-c180-100-r100-60-only-2-2",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-c180-100-r100-60-only-2-2-grid",
+          "type": "frame",
+          "parent": "grid-c180-100-r100-60-only-2-2",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "gridTemplateColumns": [
+              180,
+              100
+            ],
+            "gridTemplateRows": [
+              100,
+              60
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-c180-100-r100-60-only-2-2-grid",
+          "z": 0,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "ios",
+      "index": 12,
+      "id": "grid-control-padding-overlay",
+      "name": "iOS Grid Padding Overlay Control",
+      "width": 340,
+      "height": 400,
+      "unit": "px",
+      "root": {
+        "id": "grid-control-padding-overlay",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 400,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 400
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.ios",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "grid-control-padding-overlay-grid",
+          "type": "frame",
+          "parent": "grid-control-padding-overlay",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 60,
+            "localX": 20,
+            "localY": 60,
+            "w": 300,
+            "h": 280,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#FFFFFF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layout": "grid",
+            "rowGap": 15,
+            "columnGap": 10,
+            "padding": [
+              11,
+              12,
+              13,
+              14
+            ],
+            "gridTemplateColumns": [
+              100,
+              180
+            ],
+            "gridTemplateRows": [
+              60,
+              100
+            ],
+            "width": 300,
+            "height": 280
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.frame",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layout",
+              "properties.rowGap",
+              "properties.columnGap",
+              "properties.padding",
+              "properties.gridTemplateColumns",
+              "properties.gridTemplateRows"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-a",
+          "type": "rectangle",
+          "parent": "grid-control-padding-overlay-grid",
+          "z": 0,
+          "geometry": {
+            "x": 34,
+            "y": 71,
+            "localX": 14,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-b",
+          "type": "rectangle",
+          "parent": "grid-control-padding-overlay-grid",
+          "z": 1,
+          "geometry": {
+            "x": 144,
+            "y": 71,
+            "localX": 124,
+            "localY": 11,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 1,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-c",
+          "type": "rectangle",
+          "parent": "grid-control-padding-overlay-grid",
+          "z": 2,
+          "geometry": {
+            "x": 34,
+            "y": 146,
+            "localX": 14,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#228833",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 1,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "cell-d",
+          "type": "rectangle",
+          "parent": "grid-control-padding-overlay-grid",
+          "z": 3,
+          "geometry": {
+            "x": 144,
+            "y": 146,
+            "localX": 124,
+            "localY": 86,
+            "w": 40,
+            "h": 30,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#663399",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "gridColumn": 2,
+            "gridRow": 2,
+            "width": 40,
+            "height": 30
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.gridColumn",
+              "properties.gridRow"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        },
+        {
+          "id": "absolute-overlay",
+          "type": "rectangle",
+          "parent": "grid-control-padding-overlay-grid",
+          "z": 4,
+          "geometry": {
+            "x": 27,
+            "y": 69,
+            "localX": 7,
+            "localY": 9,
+            "w": 20,
+            "h": 10,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#ABCDEF",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "layoutPosition": "absolute",
+            "width": 20,
+            "height": 10
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.rectangle",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.layoutPosition"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    }
+  ],
+  "notes": [],
+  "flows": [],
+  "rasters": [],
+  "consequences": [],
+  "lowered": [],
+  "colorSpace": "sRGB"
+}

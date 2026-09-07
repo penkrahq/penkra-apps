@@ -1,0 +1,27 @@
+{
+  "mode": "candidate-verification",
+  "publicCapabilityPromotion": false,
+  "paths": [
+    "root.module",
+    "root.lang",
+    "root.axes",
+    "root.variables",
+    "root.paragraphStyles",
+    "root.imports",
+    "root.children",
+    "roles.ios",
+    "nodes.frame",
+    "nodes.rectangle",
+    "properties.layout",
+    "properties.fill",
+    "properties.fill.solid",
+    "properties.columnGap",
+    "properties.rowGap",
+    "properties.padding",
+    "properties.gridTemplateColumns",
+    "properties.gridTemplateRows",
+    "properties.gridColumn",
+    "properties.gridRow",
+    "properties.layoutPosition"
+  ]
+}

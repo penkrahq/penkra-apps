@@ -1,0 +1,23 @@
+{
+  "bundleIdentifier": "com.penkra.canvas.qa.grid",
+  "launchArguments": "--grid-case <exact-case-id> --grid-nonce <per-launch-nonce>",
+  "matrixCases": [
+    "grid-c100-180-r60-100-normal",
+    "grid-c100-180-r60-100-reversed",
+    "grid-c100-180-r60-100-only-2-2",
+    "grid-c100-180-r100-60-normal",
+    "grid-c100-180-r100-60-reversed",
+    "grid-c100-180-r100-60-only-2-2",
+    "grid-c180-100-r60-100-normal",
+    "grid-c180-100-r60-100-reversed",
+    "grid-c180-100-r60-100-only-2-2",
+    "grid-c180-100-r100-60-normal",
+    "grid-c180-100-r100-60-reversed",
+    "grid-c180-100-r100-60-only-2-2"
+  ],
+  "controlCase": "grid-control-padding-overlay",
+  "expectedPrimaryEntries": 36,
+  "build": "xcodebuild -project CanvasGridEvidence.xcodeproj -scheme CanvasGridEvidence -sdk iphonesimulator -configuration Debug -jobs 2",
+  "readiness": "require exact LUNA_GRID_READY case/nonce log receipt and two consecutive identical screenshot hashes",
+  "comparator": "physical edge tolerance <=2; positive eroded-interior color samples; no registration or clipping"
+}
