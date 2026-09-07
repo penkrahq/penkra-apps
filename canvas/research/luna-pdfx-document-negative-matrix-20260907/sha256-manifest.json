@@ -1,0 +1,22 @@
+{
+  "caseCount": 22,
+  "serializationVariantCount": 2,
+  "generatedCaseCount": 44,
+  "retainedArtifactCount": 2,
+  "retainedArtifacts": [
+    {
+      "file": "valid-candidate-control-classic-xref.pdf",
+      "name": "valid-candidate-control",
+      "serialization": "classic-xref",
+      "sha256": "28d285d8b77401100120aae6c99d72773e17f58b9ddf8e319c37cdff46d5fff8",
+      "bytes": 2662755
+    },
+    {
+      "file": "output-profile-unreadable-classic-xref.pdf",
+      "name": "output-profile-unreadable",
+      "serialization": "classic-xref",
+      "sha256": "9cc2a0a7270db590e3060d7ab5a63c70328c218f00a25a63c5773740fee4e885",
+      "bytes": 5154
+    }
+  ]
+}

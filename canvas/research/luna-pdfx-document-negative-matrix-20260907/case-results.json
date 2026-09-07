@@ -1,0 +1,1221 @@
+{
+  "caseCount": 22,
+  "serializationVariantCount": 2,
+  "executedResultCount": 44,
+  "cases": [
+    {
+      "name": "valid-candidate-control",
+      "serialization": "classic-xref",
+      "bytes": 2662755,
+      "sha256": "28d285d8b77401100120aae6c99d72773e17f58b9ddf8e319c37cdff46d5fff8",
+      "expected": [],
+      "targetIssues": [],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "valid-candidate-control",
+      "serialization": "object-streams",
+      "bytes": 2662390,
+      "sha256": "14be958f3c34c94c4eb5c14271f68986a862403f7fa438c94bdd93c01c38c4d1",
+      "expected": [],
+      "targetIssues": [],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "output-condition-unsupported",
+      "serialization": "classic-xref",
+      "bytes": 2662755,
+      "sha256": "25eeb02ee46463f27067a2a2feec55974f5e50acfe7628dad04c64e5bf1958b2",
+      "expected": [
+        "OUTPUT_CONDITION_UNSUPPORTED"
+      ],
+      "targetIssues": [
+        {
+          "code": "OUTPUT_CONDITION_UNSUPPORTED",
+          "object": "OutputIntent"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_CONDITION_UNSUPPORTED",
+          "object": "OutputIntent"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "output-condition-unsupported",
+      "serialization": "object-streams",
+      "bytes": 2662397,
+      "sha256": "aaf2ea95be730a1b767599ae15359ffc5329e7e0fce0276b02a86951382cfbb6",
+      "expected": [
+        "OUTPUT_CONDITION_UNSUPPORTED"
+      ],
+      "targetIssues": [
+        {
+          "code": "OUTPUT_CONDITION_UNSUPPORTED",
+          "object": "OutputIntent"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_CONDITION_UNSUPPORTED",
+          "object": "OutputIntent"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "external-output-profile",
+      "serialization": "classic-xref",
+      "bytes": 2662792,
+      "sha256": "feee88f1e665ca37cdfc6109a11b970a56115623662c8694d6fb5c9f0bb1cb5e",
+      "expected": [
+        "EXTERNAL_OUTPUT_PROFILE"
+      ],
+      "targetIssues": [
+        {
+          "code": "EXTERNAL_OUTPUT_PROFILE",
+          "object": "OutputIntent"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "EXTERNAL_OUTPUT_PROFILE",
+          "object": "OutputIntent"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "external-output-profile",
+      "serialization": "object-streams",
+      "bytes": 2662408,
+      "sha256": "eda3299fc085b7af349d603cea68a0281c1f62ace61c4576515b63b3ea31383e",
+      "expected": [
+        "EXTERNAL_OUTPUT_PROFILE"
+      ],
+      "targetIssues": [
+        {
+          "code": "EXTERNAL_OUTPUT_PROFILE",
+          "object": "OutputIntent"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "EXTERNAL_OUTPUT_PROFILE",
+          "object": "OutputIntent"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-channel-count-mismatch",
+      "serialization": "classic-xref",
+      "bytes": 2662755,
+      "sha256": "3fdbbe03144bb8b5321f7a1cf10d0419418ed864afaffc1c665f750bf3344553",
+      "expected": [
+        "ICC_CHANNEL_COUNT_MISMATCH"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_CHANNEL_COUNT_MISMATCH",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_CHANNEL_COUNT_MISMATCH",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-channel-count-mismatch",
+      "serialization": "object-streams",
+      "bytes": 2662390,
+      "sha256": "37a7f27a05d74ff0a2634f7fc2d1396d588d8bf26a8fdf7db56a9f96127c5fa4",
+      "expected": [
+        "ICC_CHANNEL_COUNT_MISMATCH"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_CHANNEL_COUNT_MISMATCH",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_CHANNEL_COUNT_MISMATCH",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "output-profile-unreadable",
+      "serialization": "classic-xref",
+      "bytes": 5154,
+      "sha256": "9cc2a0a7270db590e3060d7ab5a63c70328c218f00a25a63c5773740fee4e885",
+      "expected": [
+        "OUTPUT_PROFILE_UNREADABLE"
+      ],
+      "targetIssues": [
+        {
+          "code": "OUTPUT_PROFILE_UNREADABLE",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNREADABLE",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "output-profile-unreadable",
+      "serialization": "object-streams",
+      "bytes": 4785,
+      "sha256": "d37ba8bfc3522ab4fae4e8605d6e308264cbb3f22fd983dd3aaa8d208fb61832",
+      "expected": [
+        "OUTPUT_PROFILE_UNREADABLE"
+      ],
+      "targetIssues": [
+        {
+          "code": "OUTPUT_PROFILE_UNREADABLE",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNREADABLE",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "xmp-filter-forbidden",
+      "serialization": "classic-xref",
+      "bytes": 2662213,
+      "sha256": "83797c1fcebc463bfa0366033cafdc06960c0fac11561fd693b49ae0e06dfd87",
+      "expected": [
+        "XMP_FILTER_FORBIDDEN"
+      ],
+      "targetIssues": [
+        {
+          "code": "XMP_FILTER_FORBIDDEN",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "XMP_FILTER_FORBIDDEN",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "xmp-filter-forbidden",
+      "serialization": "object-streams",
+      "bytes": 2661848,
+      "sha256": "f480ef23dda540ee030591f5db5530193698cc7f9a209b63daec252a77681c36",
+      "expected": [
+        "XMP_FILTER_FORBIDDEN"
+      ],
+      "targetIssues": [
+        {
+          "code": "XMP_FILTER_FORBIDDEN",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "XMP_FILTER_FORBIDDEN",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "trailer-id-invalid",
+      "serialization": "classic-xref",
+      "bytes": 2662709,
+      "sha256": "73093cb806724afedfe47a76b4533161478bf750a3c2e033aa8c0ea4ed8797d9",
+      "expected": [
+        "TRAILER_ID_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "trailer-id-invalid",
+      "serialization": "object-streams",
+      "bytes": 2662344,
+      "sha256": "9eb664285fdc61eadbc91f6b4ea4e993914cb616acb88a701b7fc6c15262f8d0",
+      "expected": [
+        "TRAILER_ID_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "TRAILER_ID_INVALID",
+          "object": "trailer/ID"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "pages-missing",
+      "serialization": "classic-xref",
+      "bytes": 2662749,
+      "sha256": "314cb759f19c9f15290aee6215f520cd8fd39b6ff04869be6fc80706efbaf85c",
+      "expected": [
+        "PAGES_MISSING"
+      ],
+      "targetIssues": [
+        {
+          "code": "PAGES_MISSING",
+          "object": "Pages"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "PAGES_MISSING",
+          "object": "Pages"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "pages-missing",
+      "serialization": "object-streams",
+      "bytes": 2662389,
+      "sha256": "95da9f8ccd4dbd1a737dcff9f8a234bc0310e1cd8c0e359af7b90ad3ab01bd49",
+      "expected": [
+        "PAGES_MISSING"
+      ],
+      "targetIssues": [
+        {
+          "code": "PAGES_MISSING",
+          "object": "Pages"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "PAGES_MISSING",
+          "object": "Pages"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "page-box-invalid",
+      "serialization": "classic-xref",
+      "bytes": 2662755,
+      "sha256": "355838296b880d1bd86e3ff0a2440bf177068e7cd8409427ca54cd5f08bf77d8",
+      "expected": [
+        "PAGE_BOX_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "PAGE_BOX_INVALID",
+          "object": "Page[0]/CropBox"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "PAGE_BOX_INVALID",
+          "object": "Page[0]/CropBox"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "page-box-invalid",
+      "serialization": "object-streams",
+      "bytes": 2662395,
+      "sha256": "91c2e4963cd77ce1845878737d8a70034738b6a952058b28df9bbd5c1b05b6ce",
+      "expected": [
+        "PAGE_BOX_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "PAGE_BOX_INVALID",
+          "object": "Page[0]/CropBox"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "PAGE_BOX_INVALID",
+          "object": "Page[0]/CropBox"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "media-box-missing",
+      "serialization": "classic-xref",
+      "bytes": 2662729,
+      "sha256": "8c207cf6e220a7dab7ed60fa07ee12ea53d87e0cc3394dce11300c2fc9ed2562",
+      "expected": [
+        "MEDIA_BOX_MISSING"
+      ],
+      "targetIssues": [
+        {
+          "code": "MEDIA_BOX_MISSING",
+          "object": "Page[0]"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "MEDIA_BOX_MISSING",
+          "object": "Page[0]"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "media-box-missing",
+      "serialization": "object-streams",
+      "bytes": 2662385,
+      "sha256": "132f140a867dc615dba7a2f0413fae8fb1823e1f4771029b0d1f884aee797370",
+      "expected": [
+        "MEDIA_BOX_MISSING"
+      ],
+      "targetIssues": [
+        {
+          "code": "MEDIA_BOX_MISSING",
+          "object": "Page[0]"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "MEDIA_BOX_MISSING",
+          "object": "Page[0]"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "box-outside-crop",
+      "serialization": "classic-xref",
+      "bytes": 2662755,
+      "sha256": "88641b7f176b7e1c4aa81a96f6c90bcbab59fe865f2d40dc23bdcbacce553891",
+      "expected": [
+        "BOX_OUTSIDE_CROP"
+      ],
+      "targetIssues": [
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/TrimBox"
+        },
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/BleedBox"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/TrimBox"
+        },
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/BleedBox"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "box-outside-crop",
+      "serialization": "object-streams",
+      "bytes": 2662390,
+      "sha256": "15a1514f96d2d6c689a3af6a47c462f89f42224ea54fb29380c6c6a5b0698439",
+      "expected": [
+        "BOX_OUTSIDE_CROP"
+      ],
+      "targetIssues": [
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/TrimBox"
+        },
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/BleedBox"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/TrimBox"
+        },
+        {
+          "code": "BOX_OUTSIDE_CROP",
+          "object": "Page[0]/BleedBox"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "canvas-subset-unsupported",
+      "serialization": "classic-xref",
+      "bytes": 2662783,
+      "sha256": "03b302668ca5b362a70c137ef3a0c274428d85a77daae0092edeebb580d5a510",
+      "expected": [
+        "CANVAS_SUBSET_UNSUPPORTED"
+      ],
+      "targetIssues": [
+        {
+          "code": "CANVAS_SUBSET_UNSUPPORTED",
+          "object": "2 0 R/AcroForm"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "CANVAS_SUBSET_UNSUPPORTED",
+          "object": "2 0 R/AcroForm"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "canvas-subset-unsupported",
+      "serialization": "object-streams",
+      "bytes": 2662406,
+      "sha256": "a0d09f047f12356f607cdfd548ad6046424598baf203c44f7e48bb6b9f109a30",
+      "expected": [
+        "CANVAS_SUBSET_UNSUPPORTED"
+      ],
+      "targetIssues": [
+        {
+          "code": "CANVAS_SUBSET_UNSUPPORTED",
+          "object": "2 0 R/AcroForm"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "CANVAS_SUBSET_UNSUPPORTED",
+          "object": "2 0 R/AcroForm"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "presentation-forbidden",
+      "serialization": "classic-xref",
+      "bytes": 2662768,
+      "sha256": "a8431ce2bb12cf87310b4eb4864caac1f517c77c3f4e1d99a4df3e63c92856eb",
+      "expected": [
+        "PRESENTATION_FORBIDDEN"
+      ],
+      "targetIssues": [
+        {
+          "code": "PRESENTATION_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "PRESENTATION_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "presentation-forbidden",
+      "serialization": "object-streams",
+      "bytes": 2662396,
+      "sha256": "d415712fde2073ffd53213ee94d91bc04f31b5f91515ac052877a6ab993a9a8a",
+      "expected": [
+        "PRESENTATION_FORBIDDEN"
+      ],
+      "targetIssues": [
+        {
+          "code": "PRESENTATION_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "PRESENTATION_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "external-resource-forbidden",
+      "serialization": "classic-xref",
+      "bytes": 2662781,
+      "sha256": "4ee5924f38f8778e21bf1fa8bf83cbb637a6f3e728dbc606dfcaf7638528e81d",
+      "expected": [
+        "EXTERNAL_RESOURCE_FORBIDDEN"
+      ],
+      "targetIssues": [
+        {
+          "code": "EXTERNAL_RESOURCE_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "EXTERNAL_RESOURCE_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "external-resource-forbidden",
+      "serialization": "object-streams",
+      "bytes": 2662401,
+      "sha256": "eae5e8cc0d5d9b9169dfa8ddfcab71b06d7151b264eefeb726651995f4b0e564",
+      "expected": [
+        "EXTERNAL_RESOURCE_FORBIDDEN"
+      ],
+      "targetIssues": [
+        {
+          "code": "EXTERNAL_RESOURCE_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "EXTERNAL_RESOURCE_FORBIDDEN",
+          "object": "2 0 R"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "default-rgb-missing",
+      "serialization": "classic-xref",
+      "bytes": 2662723,
+      "sha256": "cb44b5b91738085803466effed00a9a009cd48eb449382d7405a7984c4f495af",
+      "expected": [
+        "DEFAULT_RGB_MISSING"
+      ],
+      "targetIssues": [
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "default-rgb-missing",
+      "serialization": "object-streams",
+      "bytes": 2662383,
+      "sha256": "87681e48c40c667c62d791a15d92a99395d8a6b5fe8ca231b4fdb47f294909f8",
+      "expected": [
+        "DEFAULT_RGB_MISSING"
+      ],
+      "targetIssues": [
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "DEFAULT_RGB_MISSING",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "default-rgb-profile-unreadable",
+      "serialization": "classic-xref",
+      "bytes": 2662854,
+      "sha256": "9ef9d9d29a34f46ff2b8ddd2a0f2fc43b69278a50ed6f959f083f7ba15c4c39f",
+      "expected": [
+        "DEFAULT_RGB_PROFILE_UNREADABLE"
+      ],
+      "targetIssues": [
+        {
+          "code": "DEFAULT_RGB_PROFILE_UNREADABLE",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "DEFAULT_RGB_PROFILE_UNREADABLE",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "default-rgb-profile-unreadable",
+      "serialization": "object-streams",
+      "bytes": 2662476,
+      "sha256": "953677e0bde8990e13a4ae1fd3e32f7694b5367da99f91706410a8ff2736daf2",
+      "expected": [
+        "DEFAULT_RGB_PROFILE_UNREADABLE"
+      ],
+      "targetIssues": [
+        {
+          "code": "DEFAULT_RGB_PROFILE_UNREADABLE",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "DEFAULT_RGB_PROFILE_UNREADABLE",
+          "object": "Page[0]/Resources/ColorSpace/DefaultRGB"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "transparency-group-invalid",
+      "serialization": "classic-xref",
+      "bytes": 2662701,
+      "sha256": "266df1abeb1c2f3267df4ae406a8706400df531e1431729266d100e43fa7ebea",
+      "expected": [
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "transparency-group-invalid",
+      "serialization": "object-streams",
+      "bytes": 2662372,
+      "sha256": "7e2efec8a7d0cc12c906f380f7cef2c699bd244f0dd1f5b3ef00c3dd2f0e523c",
+      "expected": [
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_INVALID",
+          "object": "Page[0]/Group"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "transparency-group-profile-unreadable",
+      "serialization": "classic-xref",
+      "bytes": 2662854,
+      "sha256": "af16c5cd64b964937d945eda4db1ff642f35fb5b495a6a8679c4be1ff9f07a03",
+      "expected": [
+        "TRANSPARENCY_GROUP_PROFILE_UNREADABLE"
+      ],
+      "targetIssues": [
+        {
+          "code": "TRANSPARENCY_GROUP_PROFILE_UNREADABLE",
+          "object": "Page[0]/Group/CS"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_PROFILE_UNREADABLE",
+          "object": "Page[0]/Group/CS"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "transparency-group-profile-unreadable",
+      "serialization": "object-streams",
+      "bytes": 2662476,
+      "sha256": "57b6d57ba6b8a4772564008f89fec257f8c8ff2be215389c36aba90fc068e192",
+      "expected": [
+        "TRANSPARENCY_GROUP_PROFILE_UNREADABLE"
+      ],
+      "targetIssues": [
+        {
+          "code": "TRANSPARENCY_GROUP_PROFILE_UNREADABLE",
+          "object": "Page[0]/Group/CS"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "TRANSPARENCY_GROUP_PROFILE_UNREADABLE",
+          "object": "Page[0]/Group/CS"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-header-invalid",
+      "serialization": "classic-xref",
+      "bytes": 3467447,
+      "sha256": "3100c30a5c01da0aab270f9c07859ad4ad759cf553b497ea5b27d1ae21841377",
+      "expected": [
+        "ICC_HEADER_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_HEADER_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_HEADER_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-header-invalid",
+      "serialization": "object-streams",
+      "bytes": 3467082,
+      "sha256": "7563166dbfcbffb9addae020a6970614e24aed9231c7c821b35f77a43e364530",
+      "expected": [
+        "ICC_HEADER_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_HEADER_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_HEADER_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-version-unsupported",
+      "serialization": "classic-xref",
+      "bytes": 3467447,
+      "sha256": "98af699ef736c3e29185d09f7b36c9e0dfa229b8ea3efd75b147b0e6ee5bc77d",
+      "expected": [
+        "ICC_VERSION_UNSUPPORTED"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_VERSION_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_VERSION_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-version-unsupported",
+      "serialization": "object-streams",
+      "bytes": 3467082,
+      "sha256": "c712d6d81caa73c849b39e2f2bfa7ff52cdac9a3db5166a9f4fdf08f34b21a0b",
+      "expected": [
+        "ICC_VERSION_UNSUPPORTED"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_VERSION_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_VERSION_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-pcs-invalid",
+      "serialization": "classic-xref",
+      "bytes": 3467447,
+      "sha256": "ff1c5c538b39b696f4997e72ec924162769a4c132f460528e8206712f0fab776",
+      "expected": [
+        "ICC_PCS_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_PCS_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_PCS_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-pcs-invalid",
+      "serialization": "object-streams",
+      "bytes": 3467082,
+      "sha256": "2a27b410b0eb4943f773a51a6c34cc0712aad5a941870f0e47cacfa801d0680c",
+      "expected": [
+        "ICC_PCS_INVALID"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_PCS_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_PCS_INVALID",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-tag-table-truncated",
+      "serialization": "classic-xref",
+      "bytes": 3467447,
+      "sha256": "80f6ab81c9a9af75893e661cd158a27edc3ea00989843c3d6d497dd29d6a6f9f",
+      "expected": [
+        "ICC_TAG_TABLE_TRUNCATED"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_TAG_TABLE_TRUNCATED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_TAG_TABLE_TRUNCATED",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    },
+    {
+      "name": "icc-tag-table-truncated",
+      "serialization": "object-streams",
+      "bytes": 3467082,
+      "sha256": "2c55ddfb44e9a71e50abe2ed2188cbede33b2b77ec8f146183332c59cf545668",
+      "expected": [
+        "ICC_TAG_TABLE_TRUNCATED"
+      ],
+      "targetIssues": [
+        {
+          "code": "ICC_TAG_TABLE_TRUNCATED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "allIssues": [
+        {
+          "code": "PDF_VERSION_UNSUPPORTED",
+          "object": "header"
+        },
+        {
+          "code": "ICC_TAG_TABLE_TRUNCATED",
+          "object": "OutputIntent/DestOutputProfile"
+        },
+        {
+          "code": "OUTPUT_PROFILE_UNSUPPORTED",
+          "object": "OutputIntent/DestOutputProfile"
+        }
+      ],
+      "conformant": false,
+      "status": "invalid"
+    }
+  ]
+}
