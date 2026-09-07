@@ -571,21 +571,27 @@ async function refreshDocumentAssets(documentId) {
 }
 
 async function refreshRetainedImports(documentId, force = false) {
-  if (state.document?.id !== documentId || !state.model) return false;
-  const source = currentMaterializedDocument();
-  const signature = JSON.stringify(source.imports ?? {});
-  if (!force && signature === state.importSignature) return false;
-  const retained = await loadRetainedCanvasImports(
-    api,
-    { ...source, imports: source.imports ?? {} },
-    { documentId },
-  );
-  if (state.document?.id !== documentId || !state.model) return false;
-  state.imports = retained.imports;
-  state.importSignature = signature;
-  state.assets = new Map([...state.assets, ...retained.assets]);
-  invalidateDocumentProjection();
-  return true;
+  while (state.document?.id === documentId && state.model) {
+    const source = currentMaterializedDocument();
+    const signature = JSON.stringify(source.imports ?? {});
+    if (!force && signature === state.importSignature) return false;
+    const retained = await loadRetainedCanvasImports(
+      api,
+      { ...source, imports: source.imports ?? {} },
+      { documentId },
+    );
+    if (state.document?.id !== documentId || !state.model) return false;
+    if (JSON.stringify(currentMaterializedDocument().imports ?? {}) !== signature) {
+      force = true;
+      continue;
+    }
+    state.imports = retained.imports;
+    state.importSignature = signature;
+    state.assets = new Map([...state.assets, ...retained.assets]);
+    invalidateDocumentProjection();
+    return true;
+  }
+  return false;
 }
 
 function scheduleRetainedImportRefresh(documentId) {
