@@ -207,12 +207,14 @@ function normalizeDependencies(dependencies) {
   if (!Array.isArray(dependencies)) throw libraryError("Library release dependencies must be an array.");
   const seen = new Set();
   return dependencies.map((dependency) => {
-    if (!plainObject(dependency) || typeof dependency.alias !== "string" || !dependency.alias
+    if (!plainObject(dependency) || typeof dependency.alias !== "string" || !/^[A-Za-z][\w-]*$/u.test(dependency.alias)
       || typeof dependency.libraryId !== "string" || !dependency.libraryId
       || typeof dependency.releaseId !== "string" || !dependency.releaseId
       || !/^[a-f0-9]{64}$/u.test(dependency.contentHash ?? "")) throw libraryError("Library release dependency is invalid.");
     if (seen.has(dependency.alias)) throw libraryError(`Library dependency alias ${dependency.alias} is duplicated.`);
     seen.add(dependency.alias);
+    releaseIdentifier(dependency.libraryId, "dependency.libraryId");
+    releaseIdentifier(dependency.releaseId, "dependency.releaseId");
     return { alias: dependency.alias, libraryId: dependency.libraryId, releaseId: dependency.releaseId, contentHash: dependency.contentHash };
   }).sort((left, right) => compareIdentifiers(left.alias, right.alias));
 }
@@ -252,7 +254,7 @@ function canonicalJson(value) {
 function sha256(value) { return createHash("sha256").update(value).digest("hex"); }
 function compareIdentifiers(left, right) { return left < right ? -1 : left > right ? 1 : 0; }
 function comparePublicItems(left, right) { return compareIdentifiers(left.kind, right.kind) || compareIdentifiers(left.id, right.id); }
-function releaseIdentifier(value, name) { if (typeof value !== "string" || !value || /[\u0000-\u001f]/u.test(value)) throw libraryError(`${name} must be a non-empty identifier.`); return value; }
+function releaseIdentifier(value, name) { if (typeof value !== "string" || !value || /[\u0000-\u001f\u007f]/u.test(value)) throw libraryError(`${name} must be a non-empty identifier.`); return value; }
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
 function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function libraryError(message) { const error = new Error(message); error.code = "CANVAS_LIBRARY_INVALID"; return error; }

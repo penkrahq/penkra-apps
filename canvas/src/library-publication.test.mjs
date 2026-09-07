@@ -93,6 +93,21 @@ test("public change detection includes referenced private token values but exclu
   assert.deepEqual(compareLibraryReleases(second, third).changed, []);
 });
 
+test("publication dependency identifiers are representable by the import loader", () => {
+  const dependency = { alias: "valid_name-2", libraryId: "base", releaseId: "one", contentHash: hash };
+  const publish = (entry) => createLibraryRelease(library(), { libraryId: "ui", releaseId: "one", dependencies: [entry] });
+  assert.equal(publish(dependency).dependencies[0].alias, dependency.alias);
+  for (const alias of ["", "2bad", "bad:name", "bad.name", "bad/name", "bad\u007f"]) {
+    assert.throws(() => publish({ ...dependency, alias }), { code: "CANVAS_LIBRARY_INVALID" });
+  }
+  for (const field of ["libraryId", "releaseId"]) {
+    for (const control of ["\u0000", "\n", "\u007f"]) {
+      assert.throws(() => publish({ ...dependency, [field]: `bad${control}` }), { code: "CANVAS_LIBRARY_INVALID" });
+      assert.throws(() => createLibraryRelease(library(), { libraryId: "ui", releaseId: "one", [field]: `bad${control}` }), { code: "CANVAS_LIBRARY_INVALID" });
+    }
+  }
+});
+
 test("public image resources require owned bytes and include their identity in change detection", () => {
   const document = library();
   document.children[0].fill = { type: "image", url: "images/logo.png" };
