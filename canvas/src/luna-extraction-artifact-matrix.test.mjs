@@ -205,17 +205,29 @@ test("marker comparator rejects null/zero samples and shifts beyond the two-pixe
   assert.equal(compareMarkerBounds(undefined, expected, 2).ok, false);
 });
 
-test("omitting the triangle produces a failing independent visual measurement", async () => {
+test("missing, rectangular, vertically flipped and shifted triangles all fail the independent mask oracle", async () => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-roleless-extraction-missing-triangle-"));
   try {
-    const document = rolelessDocument([ROLELESS_SPECS[0]]);
-    document.children[0].children = document.children[0].children.filter((node) => node.id.endsWith("-marker"));
-    const path = join(directory, "missing-triangle.png");
-    await extractDocumentNode(document, { nodeId: ROLELESS_SPECS[0].id, format: "png", scale: 2, destination: path }, ASSETS);
-    const image = decodePng(await readFile(path));
-    const measurement = triangleMeasurement(image, expectedTriangle(2));
-    assert.equal(measurement.samples, 0);
-    assert.equal(compareTriangleMeasurement(measurement, expectedTriangle(2)).ok, false);
+    const mutations = [
+      ["missing", (triangle, root) => { root.children = root.children.filter((node) => node !== triangle); }],
+      ["rectangle", (triangle) => { triangle.type = "rectangle"; delete triangle.geometry; delete triangle.viewBox; }],
+      ["flipped", (triangle) => { triangle.geometry = "M 0 0 L 15 25 L 30 0 Z"; }],
+      ["shifted-3px", (triangle) => { triangle.x += 3; }],
+    ];
+    for (const [name, mutate] of mutations) {
+      const document = rolelessDocument([ROLELESS_SPECS[0]]);
+      const triangle = document.children[0].children.find((node) => node.id.endsWith("-triangle"));
+      mutate(triangle, document.children[0]);
+      const path = join(directory, `${name}.png`);
+      await extractDocumentNode(document, { nodeId: ROLELESS_SPECS[0].id, format: "png", scale: 2, destination: path }, ASSETS);
+      const measurement = triangleMeasurement(decodePng(await readFile(path)), expectedTriangle(2));
+      assert.equal(compareTriangleMeasurement(measurement, expectedTriangle(2)).ok, false, name);
+      if (name === "missing") assert.equal(measurement.samples, 0);
+    }
+    const realScaleOnePath = join(directory, "real-scale-one.png");
+    await extractDocumentNode(rolelessDocument([ROLELESS_SPECS[0]]), { nodeId: ROLELESS_SPECS[0].id, format: "png", destination: realScaleOnePath }, ASSETS);
+    const realScaleOne = triangleMeasurement(decodePng(await readFile(realScaleOnePath)), expectedTriangle());
+    assert.equal(compareTriangleMeasurement(realScaleOne, expectedTriangle()).ok, true, JSON.stringify(realScaleOne));
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 

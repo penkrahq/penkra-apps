@@ -101,36 +101,68 @@ export function compareMarkerBounds(observed, expected, tolerance = 2) {
   return { ok: fields.every((field) => Number.isFinite(observed[field]) && deltas[field] <= tolerance), deltas };
 }
 
-function triangleInterior(x, y, triangle) {
-  const centerX = x + 0.5; const centerY = y + 0.5;
-  const relativeY = centerY - triangle.y;
-  if (relativeY <= 1 || relativeY >= triangle.height - 1) return false;
-  const fraction = relativeY / triangle.height;
-  const left = triangle.x + triangle.width / 2 * fraction;
-  const right = triangle.x + triangle.width - triangle.width / 2 * fraction;
-  return centerX > left + 1 && centerX < right - 1;
+function cross(a, b, point) {
+  return (b.x - a.x) * (point.y - a.y) - (b.y - a.y) * (point.x - a.x);
+}
+
+function pointInTriangle(point, triangle) {
+  const vertices = [
+    { x: triangle.x + triangle.width / 2, y: triangle.y },
+    { x: triangle.x, y: triangle.y + triangle.height },
+    { x: triangle.x + triangle.width, y: triangle.y + triangle.height },
+  ];
+  const signs = vertices.map((vertex, index) => cross(vertex, vertices[(index + 1) % vertices.length], point));
+  return signs.every((value) => value >= 0) || signs.every((value) => value <= 0);
+}
+
+function distanceToSegment(point, start, end) {
+  const dx = end.x - start.x; const dy = end.y - start.y;
+  const denominator = dx * dx + dy * dy;
+  const projection = denominator ? Math.max(0, Math.min(1, ((point.x - start.x) * dx + (point.y - start.y) * dy) / denominator)) : 0;
+  return Math.hypot(point.x - (start.x + projection * dx), point.y - (start.y + projection * dy));
+}
+
+function triangleBoundaryDistance(point, triangle) {
+  const vertices = [
+    { x: triangle.x + triangle.width / 2, y: triangle.y },
+    { x: triangle.x, y: triangle.y + triangle.height },
+    { x: triangle.x + triangle.width, y: triangle.y + triangle.height },
+  ];
+  return Math.min(...vertices.map((vertex, index) => distanceToSegment(point, vertex, vertices[(index + 1) % vertices.length])));
 }
 
 export function triangleMeasurement(image, expected, hex = TRIANGLE.fill) {
   const bounds = colorBounds(image, hex);
   const color = hex.replace(/^#/, "").match(/../gu).map((part) => Number.parseInt(part, 16));
-  let samples = 0; let interiorSampleCount = 0;
+  let samples = 0; let expectedInteriorSampleCount = 0; let matchedInteriorSampleCount = 0; let definiteExteriorSampleCount = 0; let redExteriorSampleCount = 0;
   for (let y = 0; y < image.height; y += 1) for (let x = 0; x < image.width; x += 1) {
     const index = (y * image.width + x) * image.channels;
-    if (image.pixels[index] !== color[0] || image.pixels[index + 1] !== color[1] || image.pixels[index + 2] !== color[2] || (image.channels === 4 && image.pixels[index + 3] === 0)) continue;
-    samples += 1;
-    if (triangleInterior(x, y, expected)) interiorSampleCount += 1;
+    const red = image.pixels[index] === color[0] && image.pixels[index + 1] === color[1] && image.pixels[index + 2] === color[2] && (image.channels !== 4 || image.pixels[index + 3] > 0);
+    const point = { x: x + 0.5, y: y + 0.5 };
+    const definite = triangleBoundaryDistance(point, expected) > 2;
+    if (definite && pointInTriangle(point, expected)) {
+      expectedInteriorSampleCount += 1;
+      if (red) matchedInteriorSampleCount += 1;
+    } else if (definite) {
+      definiteExteriorSampleCount += 1;
+      if (red) redExteriorSampleCount += 1;
+    }
+    if (red) samples += 1;
   }
   const area = expected.width * expected.height / 2;
   const occupancy = bounds.samples > 0 ? bounds.samples / (bounds.width * bounds.height) : 0;
-  return { bounds, samples, interiorSampleCount, occupancy, expectedOccupancy: 0.5, expectedArea: area };
+  return {
+    bounds, samples, expectedInteriorSampleCount, matchedInteriorSampleCount, definiteExteriorSampleCount, redExteriorSampleCount,
+    interiorAgreement: expectedInteriorSampleCount > 0 ? matchedInteriorSampleCount / expectedInteriorSampleCount : 0,
+    occupancy, expectedOccupancy: 0.5, expectedArea: area, excludedBoundaryPixels: 2,
+  };
 }
 
 export function compareTriangleMeasurement(observed, expected, tolerance = 2) {
-  if (!observed || !observed.bounds || !Number.isFinite(observed.samples) || observed.samples <= 0 || !Number.isFinite(observed.interiorSampleCount) || observed.interiorSampleCount <= 0) return { ok: false, reason: "missing, invalid or zero-sample triangle measurement" };
+  if (!observed || !observed.bounds || !Number.isFinite(observed.samples) || observed.samples <= 0 || !Number.isFinite(observed.expectedInteriorSampleCount) || observed.expectedInteriorSampleCount <= 0 || !Number.isFinite(observed.matchedInteriorSampleCount) || observed.matchedInteriorSampleCount <= 0 || !Number.isFinite(observed.interiorAgreement) || !Number.isFinite(observed.redExteriorSampleCount) || observed.redExteriorSampleCount < 0) return { ok: false, reason: "missing, invalid or zero-sample triangle mask measurement" };
   const bounds = compareMarkerBounds({ ...observed.bounds, samples: observed.samples }, { ...expected, samples: 1 }, tolerance);
   const occupancyDelta = Math.abs(observed.occupancy - 0.5);
-  return { ok: bounds.ok && occupancyDelta <= 0.15, bounds, occupancyDelta, occupancyTolerance: 0.15, interiorSampleCount: observed.interiorSampleCount };
+  return { ok: bounds.ok && observed.interiorAgreement >= 0.95 && observed.redExteriorSampleCount === 0 && occupancyDelta <= 0.15, bounds, occupancyDelta, occupancyTolerance: 0.15, interiorAgreement: observed.interiorAgreement, minimumInteriorAgreement: 0.95, redExteriorSampleCount: observed.redExteriorSampleCount, exteriorAllowance: 0 };
 }
 
 export function parseSvg(svg) {
