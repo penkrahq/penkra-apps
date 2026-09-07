@@ -55,6 +55,7 @@ export function migrateCanvasDocument(source) {
   canonicalizeLegacyAnnotatedDimensions(document, notes);
   canonicalizeLegacyTextAlignment(document, notes);
   wrapLegacyScalarVariableReferences(document, notes);
+  canonicalizeEmptyLegacyPaths(document, notes);
   if (Object.hasOwn(document, "version")) {
     delete document.version;
     notes.push("Dropped the obsolete OpenPencil format marker; Canvas has no Pencil file-compatibility contract.");
@@ -104,6 +105,21 @@ export function migrateCanvasDocument(source) {
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
+}
+
+function canonicalizeEmptyLegacyPaths(document, notes) {
+  let changes = 0;
+  const visit = (nodes) => {
+    for (const node of nodes ?? []) {
+      if (node?.type === "path" && typeof node.geometry === "string" && !node.geometry.trim()) {
+        node.geometry = "M 0 0";
+        changes += 1;
+      }
+      visit(node?.children);
+    }
+  };
+  visit(document.children);
+  if (changes) notes.push(`Canonicalized ${changes} intentionally empty legacy path(s) as zero-length paths with unchanged visual output.`);
 }
 
 function wrapLegacyScalarVariableReferences(document, notes) {

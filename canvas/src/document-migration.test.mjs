@@ -165,6 +165,7 @@ test("migration materializes refs whose legacy targets are nested in an export f
     children: [{ id: "route", type: "frame", role: "route", width: 800, height: 600, children: [
       { id: "nested-component", type: "frame", reusable: true, width: 100, height: 40, children: [
         { id: "nested-label", type: "text", content: "Label", paragraphs: [{ from: 0, to: 5 }], marks: [] },
+        { id: "empty-mark", type: "path", geometry: "   ", width: 10, height: 10, viewBox: [0, 0, 10, 10] },
       ] },
       { id: "instance", type: "ref", ref: "nested-component", x: 20, y: 30 },
     ] }],
@@ -175,7 +176,9 @@ test("migration materializes refs whose legacy targets are nested in an export f
   assert.equal(instance.id, "instance");
   assert.equal(instance.x, 20);
   assert.equal(instance.children[0].id, "instance/nested-label");
+  assert.equal(instance.children[1].geometry, "M 0 0");
   assert.ok(result.notes.some((note) => note.includes("legacy target was nested inside an export frame")));
+  assert.ok(result.notes.some((note) => note.includes("intentionally empty legacy path")));
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
