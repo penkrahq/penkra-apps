@@ -233,6 +233,32 @@ test("serializes different asset paths that share one content hash", async () =>
   assert.ok(maximumTotal <= 4);
 });
 
+test("rehashes only a valid JPEG after an orphaned active-upload conflict", async () => {
+  const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+  const sourceHash = "a".repeat(64);
+  const asset = { path: "images/photo.jpg", sha256: sourceHash, size: bytes.length, mimeType: "image/jpeg" };
+  const payload = makePayload(emptySource());
+  payload.assets = [asset];
+  let uploaded;
+  const api = fakeApi({
+    payload,
+    copiedAssets: [],
+    readAsset: async () => bytes,
+    uploadAsset: async (_id, candidate) => {
+      if (candidate.sha256 === sourceHash) throw new Error("This project file is already uploading");
+      uploaded = candidate;
+      api.listAssets = async () => [{ path: candidate.path, sha256: candidate.sha256, size: candidate.bytes.length, mimeType: candidate.mimeType }];
+    },
+  });
+  const reportDirectory = await mkdtemp(join(tmpdir(), "canvas-migration-jpeg-rehash-"));
+  const result = await createCanvasMigrationCopy(api, SOURCE_ID, payload, { reportDirectory });
+  assert.equal(result.assetCount, 1);
+  assert.notEqual(uploaded.sha256, sourceHash);
+  assert.deepEqual([...uploaded.bytes.subarray(0, 4)], [0xff, 0xd8, 0xff, 0xfe]);
+  assert.deepEqual([...uploaded.bytes.subarray(uploaded.bytes.length - 2)], [0xff, 0xd9]);
+  assert.match(await readFile(result.reportPath, "utf8"), /decoded pixels and logical paths are unchanged/u);
+});
+
 test("asset failure is reported in source order and cleanup waits for every started transfer", async () => {
   const assets = assetInventory(8);
   const payload = makePayload(emptySource());

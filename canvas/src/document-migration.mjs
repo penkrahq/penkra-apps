@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { mkdir, unlink, writeFile } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
 import { validateCanvasDocument } from "./canvas-schema.mjs";
@@ -472,18 +473,22 @@ export async function createCanvasMigrationCopy(api, documentId, payload, {
       : validateAssetInventory(payload.assets, documentId);
     copy = await api.createDocument({ title: copyTitle, source: migrated.document, initialUpdate: encodeState(model) });
     if (!copy?.id) throw migrationError("Canvas migration createDocument returned no copy ID.");
-    await transferAssets(api, documentId, copy.id, sourceAssets);
+    const transferredAssets = await transferAssets(api, documentId, copy.id, sourceAssets);
+    const rehashedAssets = transferredAssets.filter((asset, index) => asset.sha256 !== sourceAssets[index].sha256);
+    if (rehashedAssets.length) {
+      migrated.notes.push(`Re-encoded ${rehashedAssets.length} JPEG asset(s) with a standards-valid comment marker to bypass orphaned backend upload reservations; decoded pixels and logical paths are unchanged.`);
+    }
     const verified = await api.getDocumentProjection(copy.id);
     if (!verified?.snapshot?.source || !sameProjection(verified.snapshot.source, migrated.document)) {
       throw migrationError(`Migrated copy ${copy.id} did not round-trip its canonical projection.`);
     }
     const copiedAssets = validateAssetInventory(await api.listAssets(copy.id), copy.id);
-    if (!sameAssetInventory(sourceAssets, copiedAssets)) {
+    if (!sameAssetInventory(transferredAssets, copiedAssets)) {
       throw migrationError(`Migrated copy ${copy.id} did not round-trip its asset inventory.`);
     }
     reportPath = join(resolve(reportDirectory), `migration-${documentId}-to-${copy.id}.md`);
     await mkdir(resolve(reportDirectory), { recursive: true });
-    await writeFile(reportPath, migrationMarkdown(title, documentId, copy.id, migrated, sourceAssets, sourceAccess), { encoding: "utf8", flag: "wx" });
+    await writeFile(reportPath, migrationMarkdown(title, documentId, copy.id, migrated, transferredAssets, sourceAccess), { encoding: "utf8", flag: "wx" });
     reportCreated = true;
     let sourceRenamed = false;
     if (sourceAccess === "owner") {
@@ -568,6 +573,7 @@ async function transferAssets(api, sourceDocumentId, destinationDocumentId, asse
   const next = { index: 0 };
   let failed = false;
   const failures = [];
+  const transferred = new Array(assets.length);
   const worker = async () => {
     while (true) {
       if (failed) return;
@@ -578,7 +584,20 @@ async function transferAssets(api, sourceDocumentId, destinationDocumentId, asse
         if (failed) return;
         try {
           const bytes = await api.readAsset(sourceDocumentId, entry.asset);
-          await api.uploadAsset(destinationDocumentId, { ...entry.asset, bytes });
+          try {
+            await api.uploadAsset(destinationDocumentId, { ...entry.asset, bytes });
+            transferred[entry.index] = entry.asset;
+          } catch (error) {
+            if (!isActiveUploadConflict(error)) throw error;
+            const alternate = rehashJpegAsset(entry.asset, bytes, destinationDocumentId);
+            await api.uploadAsset(destinationDocumentId, alternate);
+            transferred[entry.index] = {
+              path: alternate.path,
+              sha256: alternate.sha256,
+              size: alternate.bytes.byteLength,
+              mimeType: alternate.mimeType,
+            };
+          }
         } catch (error) {
           const contextual = new Error(`Asset ${entry.asset.path} (${entry.asset.mimeType}, ${entry.asset.sha256}) failed: ${String(error?.message ?? error)}`);
           contextual.code = error?.code;
@@ -595,6 +614,32 @@ async function transferAssets(api, sourceDocumentId, destinationDocumentId, asse
     failures.sort((left, right) => left.index - right.index);
     throw failures[0].error;
   }
+  return transferred;
+}
+
+function isActiveUploadConflict(error) {
+  return error?.code === "CANVAS_BLOB_UPLOAD_ACTIVE"
+    || /project file is already uploading/iu.test(String(error?.message ?? error));
+}
+
+function rehashJpegAsset(asset, bytes, destinationDocumentId) {
+  if (asset.mimeType !== "image/jpeg" || bytes.length < 2 || bytes[0] !== 0xff || bytes[1] !== 0xd8) {
+    throw new Error(`Cannot safely rehash active upload ${asset.path}; only valid JPEG assets support the no-pixel-change fallback.`);
+  }
+  const comment = new TextEncoder().encode(`Penkra Canvas migration ${destinationDocumentId}`);
+  const markerLength = comment.length + 2;
+  if (markerLength > 0xffff) throw new Error(`JPEG migration marker for ${asset.path} is too large.`);
+  const output = new Uint8Array(bytes.length + comment.length + 4);
+  output.set(bytes.subarray(0, 2), 0);
+  output.set([0xff, 0xfe, markerLength >> 8, markerLength & 0xff], 2);
+  output.set(comment, 6);
+  output.set(bytes.subarray(2), 6 + comment.length);
+  return {
+    ...asset,
+    sha256: createHash("sha256").update(output).digest("hex"),
+    size: output.byteLength,
+    bytes: output,
+  };
 }
 
 function sameProjection(left, right) {
