@@ -136,6 +136,8 @@ test("manifest declares exact publish and inspect schemas and registered handler
   assert.deepEqual(publish.input.properties.publicItems.items.required, ["kind", "id"]);
   assert.equal(publish.input.properties.publicItems.items.additionalProperties, false);
   assert.deepEqual(publish.input.properties.publicItems.items.properties.kind.enum, ["variable", "paragraphStyle", "component"]);
+  assert.deepEqual(publish.output.properties.publication.properties.contentHash, { type: "string", minLength: 64, maxLength: 64 });
+  assert.deepEqual(publish.output.properties.publication.properties.storage.properties.sha256, { type: "string", minLength: 64, maxLength: 64 });
   assert.deepEqual(Object.keys(publish.output.properties).sort(), ["documentId", "operationId", "publication", "published", "sequence", "snapshot"]);
   assert.deepEqual(publish.output.required, ["documentId", "published", "operationId", "sequence", "publication", "snapshot"]);
   assert.equal(publish.output.properties.published.const, true);
@@ -151,7 +153,16 @@ test("manifest declares exact publish and inspect schemas and registered handler
   assert.deepEqual(inspect.output.properties.items.items.required, ["kind", "id", "contentHash"]);
   assert.equal(inspect.output.properties.items.items.additionalProperties, false);
   assert.deepEqual(inspect.output.properties.items.items.properties.kind.enum, ["component", "paragraphStyle", "variable"]);
-  assert.equal(inspect.output.properties.items.items.properties.contentHash.pattern, "^[a-f0-9]{64}$");
+  assert.deepEqual(inspect.output.properties.publication.properties.contentHash, { type: "string", minLength: 64, maxLength: 64 });
+  assert.deepEqual(inspect.output.properties.items.items.properties.contentHash, { type: "string", minLength: 64, maxLength: 64 });
+  assert.deepEqual(publish.examples, [{
+    name: "Publish a Canvas card library",
+    input: { documentId: "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9", publicItems: [{ kind: "component", id: "card" }] },
+  }]);
+  assert.deepEqual(inspect.examples, [{
+    name: "Inspect the published Canvas library surface",
+    input: { documentId: "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9" },
+  }]);
 
   const handlers = await registered(makeAccount().account, "coverage");
   for (const entry of entries) assert.equal(typeof handlers.get(entry.handler), "function", entry.handler);
