@@ -890,6 +890,34 @@ capture failure.
 
 No native/device action, rebuild, capability promotion, or historical evidence rewrite occurred.
 
+## Broad non-native regression baseline
+
+At combined HEAD `35175c7813530635b703564287f0211ca5657706`, the requested source/exporter/Yjs
+selection was run from `canvas`:
+
+`node scripts/test.mjs src/*.test.mjs src/exporters/*.test.mjs collaboration/pen-yjs-model.test.mjs`
+
+Log: `/tmp/canvas-source-exporter-yjs-20260907.log`. Exit `0`; `1,733` passed, `0` failed,
+`0` cancelled, `0` skipped; runner duration `43,501 ms` (Node-reported test duration
+`43,442.259833 ms`).
+
+The compatibility selection was discovered with
+`rg --files compatibility -g '*.test.mjs' | rg -v '(^|/)mobile-export-compilation.test.mjs$' | sort`.
+It selected `34` files from `35` total, excluding only `mobile-export-compilation.test.mjs`.
+The corrected file-only invocation was:
+
+`node scripts/test.mjs <the 34 files emitted by the recorded rg discovery>`
+
+Log: `/tmp/canvas-compatibility-no-mobile-export-compilation-20260907-corrected.log`. Exit `0`;
+`164` passed, `0` failed, `0` cancelled, `0` skipped; runner duration `30,724 ms` (Node-reported
+test duration `30,648.927 ms`). The excluded native-compilation test was not selected and no
+native/compiler process was active during final verification.
+
+An initial shell scalar-argument attempt is retained separately at
+`/tmp/canvas-compatibility-no-mobile-export-compilation-20260907.log`; it exited `1` before
+loading tests with `CANVAS_TEST_FILE_INVALID`/`ENAMETOOLONG`. It was a command-construction
+failure, not a test result; the corrected array invocation above is the compatibility result.
+
 ## Retained-publication and published-retention preparation
 
 After the approved storage-transport batch, the exact preparation sequence was integrated in
