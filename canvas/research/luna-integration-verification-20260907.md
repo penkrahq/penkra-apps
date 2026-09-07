@@ -184,3 +184,28 @@ At the orchestration checkpoint, the known-thread poll covered Android
 `interrupted`, `working`, `interrupted`, and `working` (PDF had one queued turn). The local process
 check found no active test or native compiler process. These statuses are telemetry only and do
 not authorize a new build or device action.
+
+## Independent delivery review blockers
+
+The independent review report was read-only verified from delivery HEAD
+`f0c0172c631478efd2ae1bd4028f7728741011df` at
+`/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/canvas/research/luna-library-storage-independent-review-20260907.md`.
+Its SHA-256 is `61fa39091d05c8849e4c0dcc77939157343fa1cac1a80c47360b51343eb89d20`.
+The exact Bun focused protocol selection reported `41` pass, `0` fail, `0` skipped, `0`
+cancelled; it is an in-memory protocol harness and makes no live-persistence claim.
+
+- **LS-001, reproduced, medium integrity boundary:** `createCanvasApi.readAsset` loops only
+  while `offset < asset.size`. A ready receipt for an unpersisted zero-byte blob therefore
+  performs no backend read for that asset. The in-memory reproduction returned
+  `zeroByteWrite=succeeded`, `backendReadRequests=1` (the nonzero envelope read only), and
+  `uploadedZeroAssetPersisted=false`.
+- **LS-002, reproduced, medium input validation:** `readRetention` accepted a correctly hashed
+  `com.penkra.canvas.stored-library/1` retention envelope with
+  `content={root:{},items:[{}],requestedItems:[{}],assets:[]}` and returned the malformed root/items.
+
+Lower-scope observations LS-003 (direct API caller-byte mutation), LS-004 (direct receipt trust),
+and LS-005 (stored descriptor MIME mismatch) are retained in the independent report; the storage
+wrapper mitigates the first two direct-API gaps on its tested route. No source/backend change was
+made, no new compiler lease or native run was started, and no fix is inferred from these findings.
+The combined delivery batch remains integrated through `4c28c13`; these findings are blocking
+review evidence pending coordinator decision.
