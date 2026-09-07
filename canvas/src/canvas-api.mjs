@@ -114,28 +114,30 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     subscribeToDocuments: (listener, options) =>
       runtime.account.subscribe("projects", listener, options),
     uploadAsset: async (id, asset) => {
+      const snapshot = snapshotUploadAsset(asset);
       const root = `/${encodeURIComponent(id)}/blobs/uploads`;
       const started = await request(root, {
         method: "POST",
         body: {
-          path: asset.path,
-          sha256: asset.sha256,
-          size: asset.bytes.byteLength,
-          mimeType: asset.mimeType,
+          path: snapshot.path,
+          sha256: snapshot.sha256,
+          size: snapshot.bytes.byteLength,
+          mimeType: snapshot.mimeType,
         },
       });
-      if (started.status === "ready") return uploadedAsset(started.blob, asset.path);
+      if (started.status === "ready") return uploadedAsset(started.blob, snapshot);
       const chunkSize = started.chunkSize;
-      for (let offset = 0, part = 1; offset < asset.bytes.byteLength; offset += chunkSize, part += 1) {
+      if (!Number.isSafeInteger(chunkSize) || chunkSize <= 0) throw uploadReceiptInvalid("Canvas asset upload returned an invalid chunk size.");
+      for (let offset = 0, part = 1; offset < snapshot.bytes.byteLength; offset += chunkSize, part += 1) {
         await request(`${root}/${encodeURIComponent(started.uploadId)}/parts`, {
           method: "POST",
-          body: { part, bytes: bytesToBase64(asset.bytes.subarray(offset, offset + chunkSize)) },
+          body: { part, bytes: bytesToBase64(snapshot.bytes.subarray(offset, offset + chunkSize)) },
         });
       }
       const completed = await request(`${root}/${encodeURIComponent(started.uploadId)}/complete`, {
         method: "POST",
       });
-      return uploadedAsset(completed.blob, asset.path);
+      return uploadedAsset(completed.blob, snapshot);
     },
     generateImage: (id, input) =>
       request(`/${encodeURIComponent(id)}/images/generate`, {
@@ -167,18 +169,25 @@ export function createCanvasApi(runtime = globalThis.penkra) {
   return api;
 }
 
-function uploadedAsset(blob, path) {
-  if (!blob || typeof blob !== "object") {
-    const error = new Error("Canvas asset upload completed without blob metadata.");
-    error.code = "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID";
-    throw error;
+function snapshotUploadAsset(asset) {
+  if (!asset || typeof asset !== "object" || !(asset.bytes instanceof Uint8Array)) throw uploadReceiptInvalid("Canvas asset upload requires Uint8Array bytes.");
+  return { path: asset.path, sha256: asset.sha256, mimeType: asset.mimeType, bytes: new Uint8Array(asset.bytes) };
+}
+
+function uploadedAsset(blob, snapshot) {
+  if (!blob || typeof blob !== "object" || Array.isArray(blob)
+    || blob.sha256 !== snapshot.sha256 || blob.size !== snapshot.bytes.byteLength
+    || (snapshot.mimeType !== undefined && blob.mimeType !== undefined && blob.mimeType !== snapshot.mimeType)) {
+    throw uploadReceiptInvalid("Canvas asset upload returned invalid blob metadata.");
   }
   // The Account blob projection identifies content, while the Pencil-relative
   // path belongs to this document and is supplied on upload. Preserve that
   // requested path at the Canvas boundary so callers always receive the
   // durable fill URL, even when the backend projection omits it.
-  return { ...blob, path };
+  return { ...blob, path: snapshot.path };
 }
+
+function uploadReceiptInvalid(message) { const error = new Error(message); error.code = "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"; throw error; }
 
 async function readChunkedSnapshot(request, encodedProjectId, snapshot) {
   const [projectionBytes, stateBytes] = await Promise.all([
