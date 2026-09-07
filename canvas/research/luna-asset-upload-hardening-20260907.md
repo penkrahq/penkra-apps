@@ -26,9 +26,13 @@ Ready and multipart-complete receipts must be non-array objects with exactly
 the requested SHA-256 and byte length. Returned MIME is preserved backend
 metadata, including when deduplication returns a prior MIME; an omitted
 returned MIME remains compatible. Backend path normalization cannot replace
-the caller path. Uploading receipts must provide a positive
-safe-integer `chunkSize` before any part request. All these receipt failures
-use `CANVAS_ASSET_UPLOAD_RECEIPT_INVALID`; no retries or cleanup were added.
+the caller path. Uploading receipts must provide a positive safe-integer
+`chunkSize` before any part request. Upload metadata now requires nonempty
+string `path` and `sha256`, optional string `mimeType`, and copied
+`Uint8Array` bytes; no hash-format regex or path spelling restriction was
+added. Null, nonobject, and array start/completion envelopes fail safely.
+All these receipt failures use `CANVAS_ASSET_UPLOAD_RECEIPT_INVALID`; no
+retries or cleanup were added.
 
 ## Tests
 
@@ -38,11 +42,12 @@ Final strict focused command:
 node --test canvas/src/canvas-api.test.mjs canvas/src/luna-asset-upload-integrity.test.mjs canvas/src/luna-library-storage-protocol.test.mjs canvas/src/library-storage.test.mjs canvas/src/luna-asset-empty-read.test.mjs
 ```
 
-Exit `0`; **55 passed, 0 failed, 0 cancelled, 0 skipped**; duration
-`632.609042 ms`. The count includes the four nested phase checks in the
+Exit `0`; **58 passed, 0 failed, 0 cancelled, 0 skipped**; duration
+`317.131959 ms`. The count includes the four nested phase checks in the
 protocol test.
 
-The new six-case suite covers synchronous caller mutation isolation with exact
+The new nine-case suite covers input guards with zero Account calls, safe null
+and nonobject start/completion envelopes, synchronous caller mutation isolation with exact
 multipart chunks, valid ready receipts and backend-path normalization, a
 deduplicated ready receipt whose prior MIME differs from the requested MIME
 while its byte identity remains unchanged, ready receipt missing/wrong hash
@@ -67,6 +72,16 @@ harness, the isolated new suite passed `5/5` before the MIME correction, then
 `6/6` after it; the existing API suite passed `20/20`, and the final combined
 selection above passed completely.
 
+## Input and envelope correction
+
+The follow-up source commit validates upload metadata synchronously before the
+first Account request and validates the start response before reading
+`.status` or `.chunkSize`, plus the completion response before reading
+`.blob`. Existing allowed path spellings, including `../`, remain valid, and
+SHA-256 format validation remains outside this scope. The new regressions prove
+bad array/object metadata makes zero Account calls and malformed null/string/
+array envelopes use the stable receipt error instead of leaking `TypeError`.
+
 ## MIME correction
 
 The backend deduplicates project blobs by owner and SHA-256 and can return the
@@ -83,6 +98,8 @@ backend source was changed.
 - Tests: `1ab9ecc` — `test(canvas): verify asset upload snapshot integrity`
 - MIME correction source: `c5460be` — `fix(canvas): allow deduplicated receipt MIME`
 - MIME correction test: `02d059d` — `test(canvas): cover deduplicated receipt MIME`
+- Input/envelope source: `5284a47` — `fix(canvas): validate upload envelopes and metadata`
+- Input/envelope test: `97d7a5f` — `test(canvas): cover upload metadata envelopes`
 - Evidence: this file, committed separately.
 
 The worktree dependency install used `bun install --frozen-lockfile`; ignored
