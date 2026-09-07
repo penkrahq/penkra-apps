@@ -476,8 +476,8 @@ async function openDocument(documentId) {
       { documentId },
     );
     await reconcileFromServer(documentId);
-    await refreshRetainedImports(documentId, true);
     if (state.importRefreshPromise) await state.importRefreshPromise;
+    await refreshRetainedImports(documentId, true);
     collapseEditorPanels();
     state.loading = false;
     setSync("saved", "Saved");
