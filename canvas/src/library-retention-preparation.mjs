@@ -14,6 +14,7 @@ export async function prepareLibraryRetention(rootRelease, requestedItems, reade
   const items = new Map();
   const assets = new Map();
   const releases = new Map([[identityKey(root), root]]);
+  const selectedIdentities = new Map([[JSON.stringify([root.libraryId, root.releaseId]), root.contentHash]]);
   const active = new Set();
 
   async function visit(release, kind, id) {
@@ -26,6 +27,12 @@ export async function prepareLibraryRetention(rootRelease, requestedItems, reade
       const dependency = prepared.content.dependencies.find(({ alias }) => alias === reference.alias);
       if (!dependency) throw invalid("CANVAS_IMPORT_DEPENDENCY_MISMATCH");
       const dependencyKey = identityKey(dependency);
+      const publicationKey = JSON.stringify([dependency.libraryId, dependency.releaseId]);
+      const acceptedHash = selectedIdentities.get(publicationKey);
+      if (acceptedHash !== undefined && acceptedHash !== dependency.contentHash) {
+        throw invalid("CANVAS_IMPORT_CACHE_INCONSISTENT");
+      }
+      selectedIdentities.set(publicationKey, dependency.contentHash);
       let selected = releases.get(dependencyKey);
       if (!selected) {
         if (typeof readers.resolveRelease !== "function") throw invalid("CANVAS_IMPORT_RELEASE_RESOLVER_REQUIRED");

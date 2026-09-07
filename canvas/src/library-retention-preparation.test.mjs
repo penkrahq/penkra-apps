@@ -22,6 +22,30 @@ function fixture() {
 }
 const requested = [{ kind: "component", id: "wrapper" }];
 
+test("retention rejects two contents claiming one immutable publication identity", async () => {
+  const { base, bytes } = fixture();
+  const changedDocument = structuredClone(base.document);
+  changedDocument.variables.ink.cascade[0].value = "#abcdef";
+  const changed = createLibraryRelease(changedDocument, { libraryId: base.libraryId, releaseId: base.releaseId, assets: base.assets });
+  const root = createLibraryRelease({
+    axes: {}, variables: {}, paragraphStyles: {}, imports: {},
+    library: { public: [{ kind: "component", id: "wrapper" }] },
+    children: [{ id: "wrapper", type: "frame", children: [
+      { id: "first", type: "ref", ref: "first:card" },
+      { id: "second", type: "ref", ref: "second:card" },
+    ] }],
+  }, { libraryId: "root", releaseId: "one", dependencies: [
+    { alias: "first", libraryId: base.libraryId, releaseId: base.releaseId, contentHash: base.contentHash },
+    { alias: "second", libraryId: changed.libraryId, releaseId: changed.releaseId, contentHash: changed.contentHash },
+  ] });
+  let resolutions = 0;
+  await assert.rejects(prepareLibraryRetention(root, requested, {
+    resolveRelease: async ({ contentHash }) => { resolutions++; return contentHash === base.contentHash ? base : changed; },
+    readAsset: async () => bytes,
+  }), { code: "CANVAS_IMPORT_CACHE_INCONSISTENT" });
+  assert.equal(resolutions, 1);
+});
+
 test("retention preparation copies required public dependency closure once, without unrelated private items", async () => {
   const { root, base, bytes } = fixture();
   let resolutions = 0;
