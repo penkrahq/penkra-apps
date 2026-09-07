@@ -51,3 +51,14 @@ accepted follow IDs, tampered/truncated descriptor bytes, and consumer denial.
 
 No loader source, schema, backend, native/device, dependency, capability, or protected file was
 changed. The only worktree change is this evidence-only review note.
+
+## Follow-retention boundary reproduction
+
+An additional exact-revision probe used a valid storage descriptor with
+`{ documentId: "source", updatePolicy: "follow", retention }` but no `releaseId` or `contentHash`.
+At `df4d05c`, `validateCanvasDocument` returned `{ valid: true, errors: [] }`, and
+`normalizeImportRecord` returned the follow record with its retention descriptor and neither
+accepted identity field. `loadRetainedCanvasImports` then rejected with
+`CANVAS_IMPORT_INTEGRITY` (`Import ui has no accepted release identity.`) before calling either
+`readAsset` or `resolveLibraryRelease` (observed call list: `[]`). This is the concrete schema/
+normalizer boundary gap for integration review; no source edit was made here.
