@@ -375,7 +375,7 @@ test("Canvas uploads every multipart byte under the exact Pencil asset path", as
     { status: "uploading", uploadId: "upload-id", chunkSize: 2 },
     { part: 1 },
     { part: 2 },
-    { status: "ready", blob: { sha256: "hash" } },
+    { status: "ready", blob: { sha256: "hash", size: 3 } },
   ];
   const api = createCanvasApi({
     account: {
@@ -393,7 +393,7 @@ test("Canvas uploads every multipart byte under the exact Pencil asset path", as
     mimeType: "image/png",
     bytes: Uint8Array.of(1, 2, 3),
   });
-  assert.deepEqual(result, { sha256: "hash", path: "../shared/hero.png" });
+  assert.deepEqual(result, { sha256: "hash", size: 3, path: "../shared/hero.png" });
   assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), {
     path: "../shared/hero.png",
     sha256: "hash",

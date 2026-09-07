@@ -235,7 +235,7 @@ test("consumer writes propagate access denial and every upload phase failure wit
 
 test("malformed upload receipts fail closed with a stable integrity code", async () => {
   const fixture = simpleFixture();
-  for (const [receipt, code] of [["wrong-hash", "CANVAS_IMPORT_INTEGRITY"], ["wrong-size", "CANVAS_IMPORT_INTEGRITY"], ["missing", "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"]]) {
+  for (const [receipt, code] of [["wrong-hash", "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"], ["wrong-size", "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"], ["missing", "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"]]) {
     const state = runtime({ receipt });
     await assert.rejects(createLibraryStorage(state.api).writeRelease("source", fixture), { code });
   }
