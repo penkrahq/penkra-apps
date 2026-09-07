@@ -53,6 +53,7 @@ export function migrateCanvasDocument(source) {
   }
   repairLegacyParagraphs(document, notes);
   canonicalizeLegacyAnnotatedDimensions(document, notes);
+  canonicalizeLegacyTextAlignment(document, notes);
   if (Object.hasOwn(document, "version")) {
     delete document.version;
     notes.push("Dropped the obsolete OpenPencil format marker; Canvas has no Pencil file-compatibility contract.");
@@ -101,6 +102,21 @@ export function migrateCanvasDocument(source) {
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
+}
+
+function canonicalizeLegacyTextAlignment(document, notes) {
+  let changes = 0;
+  const visit = (nodes) => {
+    for (const node of nodes ?? []) {
+      if (node?.type === "text" && node.textAlignVertical === "middle") {
+        node.textAlignVertical = "center";
+        changes += 1;
+      }
+      visit(node?.children);
+    }
+  };
+  visit(document.children);
+  if (changes) notes.push(`Renamed ${changes} legacy middle text alignment value(s) to canonical center alignment.`);
 }
 
 function canonicalizeLegacyAnnotatedDimensions(document, notes) {
