@@ -5,6 +5,7 @@ import { createLibraryRegistry, createLibraryRelease } from "./library-publicati
 import { loadCanvasImports } from "./canvas-imports.mjs";
 
 const document = (children = [], imports = {}) => ({ module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports, flows: [], children, library: { public: children.map(({ id }) => ({ kind: "component", id })) } });
+const retention = { path: `_canvas/library-content/${"a".repeat(64)}`, sha256: "a".repeat(64), size: 0, mimeType: "application/json" };
 
 test("publication identity is captured before asynchronous dependency reads", async () => {
   const dependency = createLibraryRelease(document([{ id: "card", type: "frame" }]), { libraryId: "base", releaseId: "one" });
@@ -35,6 +36,49 @@ test("publication preparation locks follow dependencies without mutating the aut
   const loaded = await loadCanvasImports({}, document([], { ui: { documentId: "wrapper", updatePolicy: "follow" } }), { resolveRelease: registry.resolve });
   assert.equal(loaded.imports.ui.imports.base.identity.releaseId, "one");
   assert.equal(loaded.imports.ui.imports.base.document.children[0].width, 100);
+});
+
+test("publication identity excludes consumer-local retention while preserving the selected dependency", async () => {
+  const dependency = createLibraryRelease(document([{ id: "card", type: "frame" }]), { libraryId: "base", releaseId: "one" });
+  const accepted = { documentId: "base", updatePolicy: "follow", releaseId: "one", contentHash: dependency.contentHash };
+  const resolverRecords = [];
+  const prepare = async (extra = {}) => {
+    const source = document([{ id: "wrapper", type: "ref", ref: "base:card" }], { base: { ...accepted, ...extra } });
+    const before = structuredClone(source);
+    const prepared = await prepareLibraryRelease({}, source, {
+      libraryId: "wrapper",
+      releaseId: "one",
+      resolveRelease: async (record) => { resolverRecords.push(structuredClone(record)); return dependency; },
+    });
+    assert.deepEqual(source, before);
+    return prepared;
+  };
+
+  const withoutRetention = await prepare();
+  const withRetention = await prepare({ retention });
+  assert.equal(withRetention.release.contentHash, withoutRetention.release.contentHash);
+  assert.deepEqual(resolverRecords, [accepted, accepted]);
+  assert.deepEqual(withRetention.release.document.imports.base, accepted);
+  assert.deepEqual(withRetention.release.dependencies, [{
+    alias: "base", libraryId: "base", releaseId: "one", contentHash: dependency.contentHash,
+  }]);
+});
+
+test("retained follow imports without accepted identity are rejected before source resolution", async () => {
+  const dependency = createLibraryRelease(document([{ id: "card", type: "frame" }]), { libraryId: "base", releaseId: "one" });
+  let resolverCalls = 0;
+  const source = document([{ id: "wrapper", type: "ref", ref: "base:card" }], {
+    base: { documentId: "base", updatePolicy: "follow", retention },
+  });
+  await assert.rejects(
+    () => prepareLibraryRelease({}, source, {
+      libraryId: "wrapper",
+      releaseId: "one",
+      resolveRelease: async () => { resolverCalls += 1; return dependency; },
+    }),
+    { code: "CANVAS_IMPORT_INTEGRITY" },
+  );
+  assert.equal(resolverCalls, 0);
 });
 
 test("publication preparation copies and hashes owned asset bytes before awaiting dependencies", async () => {
