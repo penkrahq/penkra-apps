@@ -1,0 +1,70 @@
+{
+  "sourceSha256": "0aa20cbb1add0586c24f454f4cc4daeab709b88ecb29b0612fc54e40f144c408",
+  "files": [
+    {
+      "path": "_canvas/CanvasFonts.swift",
+      "sha256": "4039c998cfbe429fdb844d6533cbd3cb8f99a82bbbc7f7b98890c8ef4c0e0c85",
+      "bytes": 891
+    },
+    {
+      "path": "_canvas/FlowLayout.swift",
+      "sha256": "8f24648f683d118e9524c689c754447a2a35fae7f1c74ee29970351682841728",
+      "bytes": 2057
+    },
+    {
+      "path": "FONT-INTEGRATION.md",
+      "sha256": "8244072f3b6fbefb6b9d041ba72fbcadfdf7ba8cc84560e3efe1c2339d44b3b6",
+      "bytes": 326
+    },
+    {
+      "path": "LunaIOSFirstSixLetterSpacing.swift",
+      "sha256": "4b9f3659bbc02669e4aa81c50595f3be2c77b75cc4168a65001e09e4e1c53321",
+      "bytes": 828
+    },
+    {
+      "path": "LunaIOSFirstSixOrangeFill.swift",
+      "sha256": "d64cb943426670111896a06e4f87d95b6d44759994d5cba420a47b5c3f30d7fa",
+      "bytes": 807
+    },
+    {
+      "path": "LunaIOSFirstSixStrikethrough.swift",
+      "sha256": "03ca479f1974ea28f19fb4eaee9121e5b0ac0af9cfb6d5eeb541de2fd2aaf8ab",
+      "bytes": 832
+    },
+    {
+      "path": "LunaIOSFirstSixUnderline.swift",
+      "sha256": "d73fd85ed366954b47899d61bfdbfcc6f1031a642460bb26221f08a5e4e8115e",
+      "bytes": 824
+    },
+    {
+      "path": "LunaIOSFullBold700.swift",
+      "sha256": "d0b579b20dc6edfb2fabe11b22eda1b3a34394715a2127c1a1ff523b47bdf47f",
+      "bytes": 658
+    },
+    {
+      "path": "LunaIOSFullLetterSpacing.swift",
+      "sha256": "1a9e99e3ecd39d5a4499bd3629473067ba7bcde2836e616481c0237b9d719d13",
+      "bytes": 679
+    },
+    {
+      "path": "LunaIOSFullStrikethrough.swift",
+      "sha256": "9da4ed13b4cf7d38fdb815431d20659939ea8741031adefeb9eadaf0d0794000",
+      "bytes": 683
+    },
+    {
+      "path": "LunaIOSFullUnderline.swift",
+      "sha256": "2c3244bba3db9443b8c69abdd6eb08c3850f2a2e6a4cc8d5120484b6d56e2ed7",
+      "bytes": 675
+    },
+    {
+      "path": "LunaIOSUnderlineAndStrikethrough.swift",
+      "sha256": "f0913151529af3285de2e6b39ecda5456c5bfe4a122ccbf16463e6d108217530",
+      "bytes": 703
+    },
+    {
+      "path": "LunaIOSUnmarkedRegular.swift",
+      "sha256": "f182624539d0a926b8d8e47cb98d50b5f1c6ab4a350d51edf5037f38e0ea2378",
+      "bytes": 665
+    }
+  ]
+}

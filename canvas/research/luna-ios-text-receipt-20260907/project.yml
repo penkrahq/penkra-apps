@@ -1,0 +1,28 @@
+name: CanvasTextReceiptEvidence
+options:
+  bundleIdPrefix: com.penkra.canvas.qa
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  CanvasTextReceiptEvidence:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - swift/Sources/CanvasTextReceipt
+      - swift/SimulatorHost/App.swift
+      - path: ../luna-ios-text-20260906/exact-font-catalog/Fonts
+        buildPhase: resources
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.penkra.canvas.qa.textreceipt
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+schemes:
+  CanvasTextReceiptEvidence:
+    build:
+      targets:
+        CanvasTextReceiptEvidence: all

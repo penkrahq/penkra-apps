@@ -1,0 +1,28 @@
+{
+  "bundleIdentifier": "com.penkra.canvas.qa.textreceipt",
+  "cases": [
+    "case-01",
+    "case-02",
+    "case-03",
+    "case-04",
+    "case-06",
+    "case-07",
+    "case-08",
+    "case-10",
+    "case-11",
+    "case-12"
+  ],
+  "states": [
+    "iphone-large",
+    "iphone-accessibility-extra-extra-large",
+    "ipad-large"
+  ],
+  "expectedEntries": 30,
+  "pairAttempts": 3,
+  "launchTimeoutMs": 120000,
+  "queryTimeoutMs": 10000,
+  "buildCommand": "xcodebuild -project CanvasTextReceiptEvidence.xcodeproj -scheme CanvasTextReceiptEvidence -sdk iphonesimulator -configuration Debug -jobs 2",
+  "readiness": "exact case+nonce READY, ROOT geometry, runtime PostScript font identities, two stable screenshot hashes",
+  "crop": "receipt-derived byte-preserving CanvasKit crop of a 340x180 authored root",
+  "nativeRun": false
+}

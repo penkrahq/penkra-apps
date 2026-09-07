@@ -1,0 +1,24 @@
+{
+  "fonts": [
+    {
+      "key": "Inter:400:normal",
+      "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf",
+      "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+      "bytes": 342408,
+      "sourcePath": "../luna-ios-text-20260906/exact-font-catalog/Fonts/a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf",
+      "retainedBytesInThisTree": false
+    },
+    {
+      "key": "Inter:700:normal",
+      "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf",
+      "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+      "bytes": 344072,
+      "sourcePath": "../luna-ios-text-20260906/exact-font-catalog/Fonts/fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf",
+      "retainedBytesInThisTree": false
+    }
+  ],
+  "italicCasesExcluded": [
+    "case-05",
+    "case-09"
+  ]
+}
