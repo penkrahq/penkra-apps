@@ -76,3 +76,45 @@ tests passed alongside the `10` new retained-adapter tests.
 
 `git diff --check` passed before the implementation commit. The worktree was
 clean after both commits.
+
+## LS-002 storage-reader follow-up
+
+Source commit: `7070484` (`fix(canvas): validate retained storage reads`)
+Test commit: `aa50e34` (`test(canvas): cover retained storage reader validation`)
+
+The focused command was rerun after these commits:
+
+```text
+node --test src/canvas-imports.test.mjs src/canvas-resolver.test.mjs \
+  src/library-item-content.test.mjs src/library-publication-service.test.mjs \
+  src/library-publication.test.mjs src/library-retained-imports.test.mjs \
+  src/library-retention-preparation.test.mjs src/library-storage.test.mjs
+```
+
+Exit code: `0`; tests `62`; passed `62`; failed `0`; cancelled `0`; skipped
+`0`. `git diff --check` also passed.
+
+`readRetention` now validates the minimal retention envelope before and after
+consumer-blob asset restoration. The pre-restore pass accepts only storage
+asset descriptors; the post-restore pass requires detached bytes and checks
+their size/hash. Both passes validate the full root identity, requested item
+kind/id, root item presence, every retained item canonical content hash,
+duplicate/conflicting release and item identities, dependency closure, and
+asset closure. It does not call source authorization or latest-release lookup.
+
+The exact malformed envelope `{root:{},items:[{}],requestedItems:[{}],assets:[]}`
+and empty/missing root/request/item variants reject from `readRetention` with
+`CANVAS_IMPORT_INTEGRITY`. Valid private local closure remains readable after
+source deletion; returned asset bytes are detached and subsequent reads are
+unchanged after caller mutation.
+
+### Independent public-surface inspection
+
+After the committed focused run, an independent materializer probe found no
+alias-private leakage. A root alias's `release.publicItems` contained only its
+accepted component; retained private local `privateInk` was present in the
+synthetic document only for internal resolution and absent from the manifest.
+A direct consumer reference to `${ui:privateInk}` rejected with
+`CANVAS_LIBRARY_ITEM_PRIVATE`. Two aliases selecting different accepted items
+also retained separate manifests. This is an inspection result, not a broader
+persistence or backend acceptance claim.
