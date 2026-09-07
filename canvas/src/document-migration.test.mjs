@@ -164,6 +164,28 @@ test("migration materializes withdrawn component-variant axes per subtree when s
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
+test("migration preserves legacy ref variants as component enum props without cloning their trees", () => {
+  const source = {
+    module: "generic", themes: { state: ["default", "active"] }, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "button", type: "frame", reusable: true, children: [
+        { id: "surface", type: "rectangle", fill: [{ value: "#777" }, { value: "#111", when: { state: "active" } }] },
+      ] },
+      { id: "normal", type: "ref", ref: "button", theme: { state: "default" } },
+      { id: "pressed", type: "ref", ref: "button", theme: { state: "active" } },
+    ],
+  };
+  const result = migrateCanvasDocument(source);
+  const [button, normal, pressed] = result.document.children;
+  assert.deepEqual(button.properties.state, { type: "enum", values: ["default", "active"], default: "default" });
+  assert.deepEqual(button.children[0].fill, [{ value: "#777" }, { value: "#111", when: { props: { state: "active" } } }]);
+  assert.equal(normal.type, "ref");
+  assert.deepEqual(normal.props, { state: "default" });
+  assert.deepEqual(pressed.props, { state: "active" });
+  assert.ok(result.notes.some((note) => note.includes("component-variant selection(s)")));
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
+});
+
 test("migration materializes refs whose legacy targets are nested in an export frame", () => {
   const source = {
     module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],

@@ -34,6 +34,7 @@ export function migrateCanvasDocument(source) {
     ["M12", migrateM12Contexts],
     ["M13", migrateM13Prompts],
     ["M7", (value) => migrateM7AssignRoles(value)],
+    ["MV", migrateLegacyComponentVariants],
     ["M4", (value) => migrateM4Descendants(value)],
     ["M3", migrateM3DropReusable],
     ["M14", migrateM14ThemesToAxes],
@@ -114,6 +115,65 @@ export function migrateCanvasDocument(source) {
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
+}
+
+function migrateLegacyComponentVariants(source) {
+  const document = structuredClone(source);
+  const definitions = document.themes && typeof document.themes === "object" && !Array.isArray(document.themes)
+    ? document.themes : {};
+  const nodes = new Map();
+  const visit = (children) => {
+    for (const node of children ?? []) {
+      if (typeof node?.id === "string") nodes.set(node.id, node);
+      visit(node?.children);
+    }
+  };
+  visit(document.children);
+  let changes = 0;
+  const notes = [];
+  for (const instance of nodes.values()) {
+    if (instance.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) continue;
+    const target = nodes.get(instance.ref);
+    if (!target || !instance.theme || typeof instance.theme !== "object" || Array.isArray(instance.theme)) continue;
+    for (const [axis, mode] of Object.entries(instance.theme)) {
+      if (["theme", "mode"].includes(axis) || !Array.isArray(definitions[axis]) || !definitions[axis].includes(mode)) continue;
+      target.properties ??= {};
+      const declaration = { type: "enum", values: [...definitions[axis]], default: definitions[axis][0] };
+      if (target.properties[axis] !== undefined
+        && JSON.stringify(target.properties[axis]) !== JSON.stringify(declaration)) {
+        throw migrationError(`Legacy component ${target.id} has an incompatible property named ${axis}.`);
+      }
+      target.properties[axis] = declaration;
+      instance.props ??= {};
+      if (Object.hasOwn(instance.props, axis) && instance.props[axis] !== mode) {
+        throw migrationError(`Legacy ref ${instance.id} selects conflicting ${axis} values.`);
+      }
+      instance.props[axis] = mode;
+      delete instance.theme[axis];
+      if (Object.keys(instance.theme).length === 0) delete instance.theme;
+      rewriteAxisConditionsAsProps(target, axis);
+      changes += 1;
+    }
+  }
+  if (changes) notes.push(`Converted ${changes} legacy component-variant selection(s) into canonical enum properties and instance props.`);
+  return { document, changes, notes };
+}
+
+function rewriteAxisConditionsAsProps(value, axis) {
+  if (Array.isArray(value)) {
+    for (const entry of value) rewriteAxisConditionsAsProps(entry, axis);
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+  if (value.when && typeof value.when === "object" && !Array.isArray(value.when) && Object.hasOwn(value.when, axis)) {
+    value.when.props ??= {};
+    if (Object.hasOwn(value.when.props, axis) && value.when.props[axis] !== value.when[axis]) {
+      throw migrationError(`Legacy component cascade has conflicting ${axis} conditions.`);
+    }
+    value.when.props[axis] = value.when[axis];
+    delete value.when[axis];
+  }
+  for (const child of Object.values(value)) rewriteAxisConditionsAsProps(child, axis);
 }
 
 function canonicalizeEmptyLegacyPaths(document, notes) {
