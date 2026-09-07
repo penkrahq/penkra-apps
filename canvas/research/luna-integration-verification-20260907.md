@@ -185,6 +185,68 @@ At the orchestration checkpoint, the known-thread poll covered Android
 check found no active test or native compiler process. These statuses are telemetry only and do
 not authorize a new build or device action.
 
+## Approved PDF negative matrix integration
+
+After the zero-byte LS-001 work, the coordinator approved exactly `349a6c9`, `edd28fb`, `8752b92`,
+`2cbe2ed`, in that order. Scope inspection found only the named matrix test and its retained
+research evidence; no protected files, production exporter source, capability table, package
+metadata, or PDF/X gate changes were present. All picks were conflict-free:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `349a6c9` | `b712949` |
+| `edd28fb` | `ed7de6b` |
+| `8752b92` | `bf46c34` |
+| `2cbe2ed` | `e6401ab` |
+
+The default read-only command was:
+
+`node scripts/test.mjs src/exporters/luna-pdfx-document-negative-matrix.test.mjs`
+
+Log `/tmp/canvas-luna-pdf-matrix-default-20260907.log`; exit `0`, `47` pass, `0` fail,
+`0` cancelled, `0` skipped; runner duration `17990.061375 ms`, wrapper duration `19 s`.
+Before/after file metadata for the retained evidence directory was identical, proving that this
+run did not regenerate or rewrite the corpus.
+
+The focused preflight/content/service command was:
+
+`node scripts/test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/export-service.test.mjs`
+
+Log `/tmp/canvas-luna-pdf-preflight-content-service-20260907.log`; exit `0`, `36` pass,
+`0` fail, `0` cancelled, `0` skipped; runner duration `4283.237875 ms`, wrapper duration `5 s`.
+
+Independent read-only manifest verification reports `caseCount=22`,
+`serializationVariantCount=2`, `executedResultCount=44`, `uniqueIdentityCount=44`,
+`generatedCaseCount=44`, and `retainedArtifactCount=2`. Both retained PDFs match their recorded
+size and SHA-256 without regeneration:
+
+- `valid-candidate-control-classic-xref.pdf`: `2662755` bytes,
+  `28d285d8b77401100120aae6c99d72773e17f58b9ddf8e319c37cdff46d5fff8`;
+- `output-profile-unreadable-classic-xref.pdf`: `5154` bytes,
+  `9cc2a0a7270db590e3060d7ab5a63c70328c218f00a25a63c5773740fee4e885`.
+
+## Unapproved PDF architectural-limit review
+
+`babfac5`, `be70e15`, and `2f24268` remain unpicked. The candidate has the reported parsed-
+dictionary limitation: `inspectPdfNumber` classifies by `stringValue`/`toString()` and can emit
+`integer-range` for a parsed real `/Probe 2147483648.0` after pdf-lib normalizes it to
+`2147483648`. Its tests do not cover content-stream names longer than 127 bytes; the lexical
+scanner consumes slash names without checking their byte length, while object-graph inspection
+cannot see names embedded in raw page content.
+
+Other concrete findings remain: the candidate omits Table C.1 minimum nonzero real magnitude,
+fractional precision, DeviceN component count, and CID maximum checks; its `1e-50` test only
+asserts non-rejection. `String.fromCharCode(...bytes.subarray(...))` can throw on an oversized
+numeric token, and the broad catch silently stops later lexical diagnostics. Content-limit scans
+also cover page `Contents` only, not Form XObject streams. No source fix was made and the
+publication gate remains closed.
+
+The final post-integration revision is `e6401ab52811e378a5ffbfb17428d7be33e16a98`; tracked
+state is clean apart from the preserved untracked Swift `.build/`. No compiler lease is held and
+the final local process check has no Gradle, xcodebuild, swiftc, or test process. Latest poll
+showed Android working with no queued turn, iOS working with no queued turn, delivery idle, and
+PDF working with two queued turns; Android native work was not resumed by this lane.
+
 ## Independent delivery review blockers
 
 The independent review report was read-only verified from delivery HEAD
