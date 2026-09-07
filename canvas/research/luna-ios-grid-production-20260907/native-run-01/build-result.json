@@ -1,0 +1,10 @@
+{
+  "command": "xcodebuild -project CanvasGridEvidence.xcodeproj -scheme CanvasGridEvidence -sdk iphonesimulator -configuration Debug -jobs 2 -derivedDataPath /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData build",
+  "exitCode": 0,
+  "result": "BUILD SUCCEEDED",
+  "xcodegenLog": "xcodegen.log",
+  "xcodebuildLog": "xcodebuild.log",
+  "temporaryBuildRoot": "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn",
+  "appPath": "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app",
+  "compilerLease": "released immediately after build"
+}

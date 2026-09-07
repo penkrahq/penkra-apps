@@ -1,0 +1,12 @@
+{
+  "hashes": [
+    "477129410924410a5f3411261068578c8bf29bd5a9d370db348985beb72360e8",
+    "477129410924410a5f3411261068578c8bf29bd5a9d370db348985beb72360e8"
+  ],
+  "stable": true,
+  "delayMs": 500,
+  "paths": [
+    "captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-a.png",
+    "captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-b.png"
+  ]
+}

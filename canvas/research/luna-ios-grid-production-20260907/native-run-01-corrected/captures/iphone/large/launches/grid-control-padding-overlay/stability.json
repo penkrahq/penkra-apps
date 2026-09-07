@@ -1,0 +1,12 @@
+{
+  "hashes": [
+    "d2b697c63885d954d4388f33533f72d918d19a55ed86511eba8ad551b3e97924",
+    "1a3d7192f6dd8cbb66a20782372041be2a08643b3c77f5b54b3d5abed5819b2b"
+  ],
+  "stable": false,
+  "delayMs": 500,
+  "paths": [
+    "captures/iphone/large/full/grid-control-padding-overlay-a.png",
+    "captures/iphone/large/full/grid-control-padding-overlay-b.png"
+  ]
+}

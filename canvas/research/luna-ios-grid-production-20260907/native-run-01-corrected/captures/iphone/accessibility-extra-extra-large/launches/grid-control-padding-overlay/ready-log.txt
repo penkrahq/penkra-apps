@@ -1,0 +1,5 @@
+Timestamp               Ty Process[PID:TID]
+2026-09-07 02:51:05.001 Df CanvasGridEvidence[79732:5239177] (Foundation) LUNA_GRID_READY case=grid-control-padding-overlay nonce=grid-run-01-iphone-accessibility-extra-extra-large-grid-control-padding-overlay-26
+2026-09-07 02:51:05.157 Df log[79762:0] [com.apple.log:] log run noninteractively, parent: 74984 (launchd_sim), args: 'log' 'show' '--style' 'compact' '--last' '5s' '--predicate' 'eventMessage CONTAINS[c] "LUNA_GRID_READY"'
+
+getpwuid_r did not find a match for uid 501

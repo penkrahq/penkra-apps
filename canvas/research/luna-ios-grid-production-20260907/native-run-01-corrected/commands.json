@@ -1,0 +1,3331 @@
+[
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:32.030Z",
+    "finished": "2026-09-07T08:48:32.208Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:32.208Z",
+    "finished": "2026-09-07T08:48:32.333Z"
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:32.333Z",
+    "finished": "2026-09-07T08:48:32.474Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:32.474Z",
+    "finished": "2026-09-07T08:48:32.608Z"
+  },
+  {
+    "command": "xcrun simctl boot A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "args": [
+      "simctl",
+      "boot",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:32.638Z",
+    "finished": "2026-09-07T08:48:33.516Z"
+  },
+  {
+    "command": "xcrun simctl bootstatus A3D92728-7F7B-44D1-BE51-155B891905D9 -b",
+    "args": [
+      "simctl",
+      "bootstatus",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "-b"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:33.516Z",
+    "finished": "2026-09-07T08:48:42.573Z"
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:42.573Z",
+    "finished": "2026-09-07T08:48:42.994Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:42.994Z",
+    "finished": "2026-09-07T08:48:43.466Z"
+  },
+  {
+    "command": "xcrun simctl install A3D92728-7F7B-44D1-BE51-155B891905D9 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app",
+    "args": [
+      "simctl",
+      "install",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:43.466Z",
+    "finished": "2026-09-07T08:48:49.515Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size",
+      "large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:49.515Z",
+    "finished": "2026-09-07T08:48:49.696Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-normal --grid-nonce grid-run-01-iphone-large-grid-c100-180-r60-100-normal-1",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c100-180-r60-100-normal-1"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:49.696Z",
+    "finished": "2026-09-07T08:48:50.569Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:50.572Z",
+    "finished": "2026-09-07T08:48:51.695Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:54.197Z",
+    "finished": "2026-09-07T08:48:54.464Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:55.071Z",
+    "finished": "2026-09-07T08:48:55.309Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r60-100-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r60-100-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:55.354Z",
+    "finished": "2026-09-07T08:48:55.395Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-reversed --grid-nonce grid-run-01-iphone-large-grid-c100-180-r60-100-reversed-2",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c100-180-r60-100-reversed-2"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:55.579Z",
+    "finished": "2026-09-07T08:48:55.989Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:48:55.990Z",
+    "finished": "2026-09-07T08:49:00.772Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:03.275Z",
+    "finished": "2026-09-07T08:49:03.513Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:04.057Z",
+    "finished": "2026-09-07T08:49:04.302Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r60-100-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r60-100-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:04.345Z",
+    "finished": "2026-09-07T08:49:04.395Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-only-2-2 --grid-nonce grid-run-01-iphone-large-grid-c100-180-r60-100-only-2-2-3",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c100-180-r60-100-only-2-2-3"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:04.573Z",
+    "finished": "2026-09-07T08:49:04.934Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:04.935Z",
+    "finished": "2026-09-07T08:49:05.846Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:08.348Z",
+    "finished": "2026-09-07T08:49:08.582Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:09.127Z",
+    "finished": "2026-09-07T08:49:09.353Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r60-100-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r60-100-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:09.397Z",
+    "finished": "2026-09-07T08:49:09.438Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-normal --grid-nonce grid-run-01-iphone-large-grid-c100-180-r100-60-normal-4",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c100-180-r100-60-normal-4"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:09.580Z",
+    "finished": "2026-09-07T08:49:09.951Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:09.951Z",
+    "finished": "2026-09-07T08:49:10.886Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:13.388Z",
+    "finished": "2026-09-07T08:49:13.620Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:14.162Z",
+    "finished": "2026-09-07T08:49:14.390Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r100-60-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r100-60-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:14.432Z",
+    "finished": "2026-09-07T08:49:14.469Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-reversed --grid-nonce grid-run-01-iphone-large-grid-c100-180-r100-60-reversed-5",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c100-180-r100-60-reversed-5"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:14.651Z",
+    "finished": "2026-09-07T08:49:15.056Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:15.056Z",
+    "finished": "2026-09-07T08:49:15.975Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:18.477Z",
+    "finished": "2026-09-07T08:49:18.726Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:19.272Z",
+    "finished": "2026-09-07T08:49:19.506Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r100-60-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r100-60-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:19.551Z",
+    "finished": "2026-09-07T08:49:19.593Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-only-2-2 --grid-nonce grid-run-01-iphone-large-grid-c100-180-r100-60-only-2-2-6",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c100-180-r100-60-only-2-2-6"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:19.772Z",
+    "finished": "2026-09-07T08:49:20.147Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:20.148Z",
+    "finished": "2026-09-07T08:49:21.100Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:23.603Z",
+    "finished": "2026-09-07T08:49:23.843Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:24.385Z",
+    "finished": "2026-09-07T08:49:24.648Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r100-60-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r100-60-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c100-180-r100-60-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:24.691Z",
+    "finished": "2026-09-07T08:49:24.733Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-normal --grid-nonce grid-run-01-iphone-large-grid-c180-100-r60-100-normal-7",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c180-100-r60-100-normal-7"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:24.876Z",
+    "finished": "2026-09-07T08:49:25.290Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:25.291Z",
+    "finished": "2026-09-07T08:49:26.226Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:28.727Z",
+    "finished": "2026-09-07T08:49:28.994Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:29.542Z",
+    "finished": "2026-09-07T08:49:29.780Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r60-100-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r60-100-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:29.822Z",
+    "finished": "2026-09-07T08:49:29.862Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-reversed --grid-nonce grid-run-01-iphone-large-grid-c180-100-r60-100-reversed-8",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c180-100-r60-100-reversed-8"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:30.043Z",
+    "finished": "2026-09-07T08:49:30.415Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:30.416Z",
+    "finished": "2026-09-07T08:49:31.341Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:33.843Z",
+    "finished": "2026-09-07T08:49:34.093Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:34.637Z",
+    "finished": "2026-09-07T08:49:34.879Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r60-100-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r60-100-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:34.922Z",
+    "finished": "2026-09-07T08:49:34.959Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-only-2-2 --grid-nonce grid-run-01-iphone-large-grid-c180-100-r60-100-only-2-2-9",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c180-100-r60-100-only-2-2-9"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:35.140Z",
+    "finished": "2026-09-07T08:49:35.521Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:35.521Z",
+    "finished": "2026-09-07T08:49:36.432Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:38.934Z",
+    "finished": "2026-09-07T08:49:39.194Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:39.737Z",
+    "finished": "2026-09-07T08:49:39.971Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r60-100-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r60-100-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r60-100-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:40.013Z",
+    "finished": "2026-09-07T08:49:40.053Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-normal --grid-nonce grid-run-01-iphone-large-grid-c180-100-r100-60-normal-10",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c180-100-r100-60-normal-10"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:40.201Z",
+    "finished": "2026-09-07T08:49:40.624Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:40.625Z",
+    "finished": "2026-09-07T08:49:41.595Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:44.096Z",
+    "finished": "2026-09-07T08:49:44.324Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:44.868Z",
+    "finished": "2026-09-07T08:49:45.119Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r100-60-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r100-60-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:45.161Z",
+    "finished": "2026-09-07T08:49:45.198Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-reversed --grid-nonce grid-run-01-iphone-large-grid-c180-100-r100-60-reversed-11",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c180-100-r100-60-reversed-11"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:45.376Z",
+    "finished": "2026-09-07T08:49:45.791Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:45.791Z",
+    "finished": "2026-09-07T08:49:46.723Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:49.225Z",
+    "finished": "2026-09-07T08:49:49.484Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:50.027Z",
+    "finished": "2026-09-07T08:49:50.245Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r100-60-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r100-60-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:50.288Z",
+    "finished": "2026-09-07T08:49:50.328Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-only-2-2 --grid-nonce grid-run-01-iphone-large-grid-c180-100-r100-60-only-2-2-12",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-c180-100-r100-60-only-2-2-12"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:50.555Z",
+    "finished": "2026-09-07T08:49:51.000Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:51.001Z",
+    "finished": "2026-09-07T08:49:51.987Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:54.489Z",
+    "finished": "2026-09-07T08:49:54.725Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:55.268Z",
+    "finished": "2026-09-07T08:49:55.516Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r100-60-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c180-100-r100-60-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/grid-c180-100-r100-60-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:55.558Z",
+    "finished": "2026-09-07T08:49:55.623Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-control-padding-overlay --grid-nonce grid-run-01-iphone-large-grid-control-padding-overlay-13",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-control-padding-overlay",
+      "--grid-nonce",
+      "grid-run-01-iphone-large-grid-control-padding-overlay-13"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:55.774Z",
+    "finished": "2026-09-07T08:49:56.189Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:56.190Z",
+    "finished": "2026-09-07T08:49:57.167Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-control-padding-overlay-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-control-padding-overlay-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:49:59.668Z",
+    "finished": "2026-09-07T08:49:59.906Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-control-padding-overlay-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-control-padding-overlay-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:00.449Z",
+    "finished": "2026-09-07T08:50:00.684Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size accessibility-extra-extra-large",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size",
+      "accessibility-extra-extra-large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:00.726Z",
+    "finished": "2026-09-07T08:50:00.860Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-normal --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-normal-14",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-normal-14"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:00.860Z",
+    "finished": "2026-09-07T08:50:01.323Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:01.324Z",
+    "finished": "2026-09-07T08:50:02.426Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:04.928Z",
+    "finished": "2026-09-07T08:50:05.180Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:05.724Z",
+    "finished": "2026-09-07T08:50:05.983Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r60-100-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r60-100-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:06.026Z",
+    "finished": "2026-09-07T08:50:06.066Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-reversed --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-reversed-15",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-reversed-15"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:06.243Z",
+    "finished": "2026-09-07T08:50:06.658Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:06.659Z",
+    "finished": "2026-09-07T08:50:07.596Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:10.098Z",
+    "finished": "2026-09-07T08:50:10.330Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:10.872Z",
+    "finished": "2026-09-07T08:50:11.112Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r60-100-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r60-100-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:11.155Z",
+    "finished": "2026-09-07T08:50:11.193Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-only-2-2 --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-only-2-2-16",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r60-100-only-2-2-16"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:11.371Z",
+    "finished": "2026-09-07T08:50:11.751Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:11.752Z",
+    "finished": "2026-09-07T08:50:12.701Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:15.202Z",
+    "finished": "2026-09-07T08:50:15.476Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:16.019Z",
+    "finished": "2026-09-07T08:50:16.264Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r60-100-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r60-100-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:16.309Z",
+    "finished": "2026-09-07T08:50:16.347Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-normal --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-normal-17",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-normal-17"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:16.491Z",
+    "finished": "2026-09-07T08:50:16.866Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:16.867Z",
+    "finished": "2026-09-07T08:50:17.811Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:20.313Z",
+    "finished": "2026-09-07T08:50:20.562Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:21.105Z",
+    "finished": "2026-09-07T08:50:21.338Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r100-60-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r100-60-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:21.380Z",
+    "finished": "2026-09-07T08:50:21.417Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-reversed --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-reversed-18",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-reversed-18"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:21.602Z",
+    "finished": "2026-09-07T08:50:22.004Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:22.005Z",
+    "finished": "2026-09-07T08:50:22.942Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:25.446Z",
+    "finished": "2026-09-07T08:50:25.693Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:26.236Z",
+    "finished": "2026-09-07T08:50:26.475Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r100-60-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r100-60-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:26.517Z",
+    "finished": "2026-09-07T08:50:26.554Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-only-2-2 --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-only-2-2-19",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-only-2-2-19"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:26.735Z",
+    "finished": "2026-09-07T08:50:27.134Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:27.134Z",
+    "finished": "2026-09-07T08:50:28.066Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:30.569Z",
+    "finished": "2026-09-07T08:50:30.831Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:31.374Z",
+    "finished": "2026-09-07T08:50:31.606Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r100-60-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r100-60-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c100-180-r100-60-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:31.651Z",
+    "finished": "2026-09-07T08:50:31.691Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-normal --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-normal-20",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-normal-20"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:31.835Z",
+    "finished": "2026-09-07T08:50:32.196Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:32.197Z",
+    "finished": "2026-09-07T08:50:33.113Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:35.615Z",
+    "finished": "2026-09-07T08:50:35.856Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:36.399Z",
+    "finished": "2026-09-07T08:50:36.632Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r60-100-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r60-100-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:36.674Z",
+    "finished": "2026-09-07T08:50:36.712Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-reversed --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-reversed-21",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-reversed-21"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:36.953Z",
+    "finished": "2026-09-07T08:50:37.335Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:37.336Z",
+    "finished": "2026-09-07T08:50:38.271Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:40.780Z",
+    "finished": "2026-09-07T08:50:41.031Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:41.575Z",
+    "finished": "2026-09-07T08:50:41.809Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r60-100-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r60-100-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:41.851Z",
+    "finished": "2026-09-07T08:50:41.892Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-only-2-2 --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-only-2-2-22",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r60-100-only-2-2-22"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:42.138Z",
+    "finished": "2026-09-07T08:50:42.512Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:42.513Z",
+    "finished": "2026-09-07T08:50:43.444Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:45.947Z",
+    "finished": "2026-09-07T08:50:46.176Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:46.719Z",
+    "finished": "2026-09-07T08:50:46.955Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r60-100-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r60-100-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r60-100-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:46.998Z",
+    "finished": "2026-09-07T08:50:47.037Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-normal --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-normal-23",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-normal",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-normal-23"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:47.201Z",
+    "finished": "2026-09-07T08:50:49.176Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:49.177Z",
+    "finished": "2026-09-07T08:50:50.109Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:52.611Z",
+    "finished": "2026-09-07T08:50:52.858Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:53.402Z",
+    "finished": "2026-09-07T08:50:53.632Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r100-60-normal.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r100-60-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:53.675Z",
+    "finished": "2026-09-07T08:50:53.713Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-reversed --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-reversed-24",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-reversed",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-reversed-24"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:53.969Z",
+    "finished": "2026-09-07T08:50:54.389Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:54.401Z",
+    "finished": "2026-09-07T08:50:55.375Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:57.878Z",
+    "finished": "2026-09-07T08:50:58.113Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:58.656Z",
+    "finished": "2026-09-07T08:50:58.881Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r100-60-reversed.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r100-60-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:58.923Z",
+    "finished": "2026-09-07T08:50:58.959Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-only-2-2 --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-only-2-2-25",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-c180-100-r100-60-only-2-2-25"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:59.214Z",
+    "finished": "2026-09-07T08:50:59.632Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:50:59.633Z",
+    "finished": "2026-09-07T08:51:00.587Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:03.089Z",
+    "finished": "2026-09-07T08:51:03.342Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:03.888Z",
+    "finished": "2026-09-07T08:51:04.133Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r100-60-only-2-2.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-c180-100-r100-60-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-c180-100-r100-60-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:04.175Z",
+    "finished": "2026-09-07T08:51:04.213Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-control-padding-overlay --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-control-padding-overlay-26",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-control-padding-overlay",
+      "--grid-nonce",
+      "grid-run-01-iphone-accessibility-extra-extra-large-grid-control-padding-overlay-26"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:04.381Z",
+    "finished": "2026-09-07T08:51:04.795Z"
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:04.796Z",
+    "finished": "2026-09-07T08:51:05.709Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-control-padding-overlay-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-control-padding-overlay-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:08.211Z",
+    "finished": "2026-09-07T08:51:08.436Z"
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-control-padding-overlay-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-control-padding-overlay-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:08.979Z",
+    "finished": "2026-09-07T08:51:09.234Z"
+  },
+  {
+    "command": "sips -c 1200 1020 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-control-padding-overlay-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-control-padding-overlay.png",
+    "args": [
+      "-c",
+      "1200",
+      "1020",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/full/grid-control-padding-overlay-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/accessibility-extra-extra-large/grid-control-padding-overlay.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:09.277Z",
+    "finished": "2026-09-07T08:51:09.314Z"
+  },
+  {
+    "command": "xcrun simctl boot 8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+    "args": [
+      "simctl",
+      "boot",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:09.599Z",
+    "finished": "2026-09-07T08:51:10.141Z"
+  },
+  {
+    "command": "xcrun simctl bootstatus 8F053C2C-958D-4CC5-AB38-E838CFAC9442 -b",
+    "args": [
+      "simctl",
+      "bootstatus",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "-b"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:10.141Z",
+    "finished": "2026-09-07T08:51:19.632Z"
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:19.632Z",
+    "finished": "2026-09-07T08:51:20.085Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:20.085Z",
+    "finished": "2026-09-07T08:51:20.307Z"
+  },
+  {
+    "command": "xcrun simctl install 8F053C2C-958D-4CC5-AB38-E838CFAC9442 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app",
+    "args": [
+      "simctl",
+      "install",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:20.307Z",
+    "finished": "2026-09-07T08:51:28.412Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size large",
+    "args": [
+      "simctl",
+      "ui",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "content_size",
+      "large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:28.412Z",
+    "finished": "2026-09-07T08:51:28.660Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-normal --grid-nonce grid-run-01-ipad-large-grid-c100-180-r60-100-normal-27",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c100-180-r60-100-normal-27"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:28.660Z",
+    "finished": "2026-09-07T08:51:29.612Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:29.646Z",
+    "finished": "2026-09-07T08:51:30.948Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:33.449Z",
+    "finished": "2026-09-07T08:51:33.722Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:34.269Z",
+    "finished": "2026-09-07T08:51:34.498Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r60-100-normal.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r60-100-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:34.544Z",
+    "finished": "2026-09-07T08:51:34.584Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-reversed --grid-nonce grid-run-01-ipad-large-grid-c100-180-r60-100-reversed-28",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-reversed",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c100-180-r60-100-reversed-28"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:34.697Z",
+    "finished": "2026-09-07T08:51:35.074Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:35.074Z",
+    "finished": "2026-09-07T08:51:36.024Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:38.531Z",
+    "finished": "2026-09-07T08:51:38.783Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:39.330Z",
+    "finished": "2026-09-07T08:51:39.578Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r60-100-reversed.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r60-100-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:39.624Z",
+    "finished": "2026-09-07T08:51:39.662Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-only-2-2 --grid-nonce grid-run-01-ipad-large-grid-c100-180-r60-100-only-2-2-29",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c100-180-r60-100-only-2-2-29"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:39.785Z",
+    "finished": "2026-09-07T08:51:40.123Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:40.123Z",
+    "finished": "2026-09-07T08:51:41.043Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:43.544Z",
+    "finished": "2026-09-07T08:51:43.785Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:44.331Z",
+    "finished": "2026-09-07T08:51:44.565Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r60-100-only-2-2.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r60-100-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r60-100-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:44.611Z",
+    "finished": "2026-09-07T08:51:44.642Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-normal --grid-nonce grid-run-01-ipad-large-grid-c100-180-r100-60-normal-30",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-normal",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c100-180-r100-60-normal-30"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:44.718Z",
+    "finished": "2026-09-07T08:51:45.047Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:45.048Z",
+    "finished": "2026-09-07T08:51:45.975Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:48.478Z",
+    "finished": "2026-09-07T08:51:48.727Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:49.274Z",
+    "finished": "2026-09-07T08:51:49.504Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r100-60-normal.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r100-60-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:49.549Z",
+    "finished": "2026-09-07T08:51:49.579Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-reversed --grid-nonce grid-run-01-ipad-large-grid-c100-180-r100-60-reversed-31",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-reversed",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c100-180-r100-60-reversed-31"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:49.695Z",
+    "finished": "2026-09-07T08:51:50.013Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:50.015Z",
+    "finished": "2026-09-07T08:51:50.963Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:53.464Z",
+    "finished": "2026-09-07T08:51:53.714Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:54.260Z",
+    "finished": "2026-09-07T08:51:54.495Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r100-60-reversed.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r100-60-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:54.541Z",
+    "finished": "2026-09-07T08:51:54.573Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-only-2-2 --grid-nonce grid-run-01-ipad-large-grid-c100-180-r100-60-only-2-2-32",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r100-60-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c100-180-r100-60-only-2-2-32"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:54.686Z",
+    "finished": "2026-09-07T08:51:55.031Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:55.032Z",
+    "finished": "2026-09-07T08:51:55.959Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:58.461Z",
+    "finished": "2026-09-07T08:51:58.722Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:59.267Z",
+    "finished": "2026-09-07T08:51:59.518Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r100-60-only-2-2.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c100-180-r100-60-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c100-180-r100-60-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:59.563Z",
+    "finished": "2026-09-07T08:51:59.597Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-normal --grid-nonce grid-run-01-ipad-large-grid-c180-100-r60-100-normal-33",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c180-100-r60-100-normal-33"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:51:59.677Z",
+    "finished": "2026-09-07T08:52:07.942Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:07.952Z",
+    "finished": "2026-09-07T08:52:09.200Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:11.701Z",
+    "finished": "2026-09-07T08:52:11.955Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:12.500Z",
+    "finished": "2026-09-07T08:52:12.757Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r60-100-normal.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r60-100-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:12.803Z",
+    "finished": "2026-09-07T08:52:12.842Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-reversed --grid-nonce grid-run-01-ipad-large-grid-c180-100-r60-100-reversed-34",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-reversed",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c180-100-r60-100-reversed-34"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:12.962Z",
+    "finished": "2026-09-07T08:52:13.297Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:13.298Z",
+    "finished": "2026-09-07T08:52:14.275Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:16.777Z",
+    "finished": "2026-09-07T08:52:17.065Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:17.610Z",
+    "finished": "2026-09-07T08:52:17.853Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r60-100-reversed.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r60-100-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:17.898Z",
+    "finished": "2026-09-07T08:52:17.930Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r60-100-only-2-2 --grid-nonce grid-run-01-ipad-large-grid-c180-100-r60-100-only-2-2-35",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r60-100-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c180-100-r60-100-only-2-2-35"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:18.050Z",
+    "finished": "2026-09-07T08:52:18.464Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:18.465Z",
+    "finished": "2026-09-07T08:52:19.444Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:21.945Z",
+    "finished": "2026-09-07T08:52:22.196Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:22.742Z",
+    "finished": "2026-09-07T08:52:23.008Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r60-100-only-2-2.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r60-100-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r60-100-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:23.056Z",
+    "finished": "2026-09-07T08:52:23.088Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-normal --grid-nonce grid-run-01-ipad-large-grid-c180-100-r100-60-normal-36",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-normal",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c180-100-r100-60-normal-36"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:23.161Z",
+    "finished": "2026-09-07T08:52:23.517Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:23.518Z",
+    "finished": "2026-09-07T08:52:24.452Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:26.953Z",
+    "finished": "2026-09-07T08:52:27.199Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:27.744Z",
+    "finished": "2026-09-07T08:52:27.983Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-normal-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r100-60-normal.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-normal-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r100-60-normal.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:28.029Z",
+    "finished": "2026-09-07T08:52:28.063Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-reversed --grid-nonce grid-run-01-ipad-large-grid-c180-100-r100-60-reversed-37",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-reversed",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c180-100-r100-60-reversed-37"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:28.183Z",
+    "finished": "2026-09-07T08:52:28.540Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:28.541Z",
+    "finished": "2026-09-07T08:52:29.495Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-reversed-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-reversed-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:31.997Z",
+    "finished": "2026-09-07T08:52:32.269Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-reversed-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-reversed-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:32.815Z",
+    "finished": "2026-09-07T08:52:33.063Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-reversed-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r100-60-reversed.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-reversed-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r100-60-reversed.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:33.108Z",
+    "finished": "2026-09-07T08:52:33.143Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-c180-100-r100-60-only-2-2 --grid-nonce grid-run-01-ipad-large-grid-c180-100-r100-60-only-2-2-38",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c180-100-r100-60-only-2-2",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-c180-100-r100-60-only-2-2-38"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:33.259Z",
+    "finished": "2026-09-07T08:52:33.612Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:33.613Z",
+    "finished": "2026-09-07T08:52:34.637Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-only-2-2-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-only-2-2-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:37.165Z",
+    "finished": "2026-09-07T08:52:37.434Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-only-2-2-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-only-2-2-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:37.982Z",
+    "finished": "2026-09-07T08:52:38.289Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-only-2-2-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r100-60-only-2-2.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-c180-100-r100-60-only-2-2-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-c180-100-r100-60-only-2-2.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:38.338Z",
+    "finished": "2026-09-07T08:52:38.386Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.grid --grid-case grid-control-padding-overlay --grid-nonce grid-run-01-ipad-large-grid-control-padding-overlay-39",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-control-padding-overlay",
+      "--grid-nonce",
+      "grid-run-01-ipad-large-grid-control-padding-overlay-39"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:38.462Z",
+    "finished": "2026-09-07T08:52:38.833Z"
+  },
+  {
+    "command": "xcrun simctl spawn 8F053C2C-958D-4CC5-AB38-E838CFAC9442 log show --style compact --last 5s --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--last",
+      "5s",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:38.835Z",
+    "finished": "2026-09-07T08:52:39.907Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-control-padding-overlay-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-control-padding-overlay-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:42.408Z",
+    "finished": "2026-09-07T08:52:42.685Z"
+  },
+  {
+    "command": "xcrun simctl io 8F053C2C-958D-4CC5-AB38-E838CFAC9442 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-control-padding-overlay-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-control-padding-overlay-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:43.233Z",
+    "finished": "2026-09-07T08:52:43.604Z"
+  },
+  {
+    "command": "sips -c 800 680 /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-control-padding-overlay-b.png --out /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-control-padding-overlay.png",
+    "args": [
+      "-c",
+      "800",
+      "680",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/full/grid-control-padding-overlay-b.png",
+      "--out",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/ipad/large/grid-control-padding-overlay.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:43.649Z",
+    "finished": "2026-09-07T08:52:43.682Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size",
+      "large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:43.815Z",
+    "finished": "2026-09-07T08:52:44.010Z"
+  },
+  {
+    "command": "xcrun simctl shutdown A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "args": [
+      "simctl",
+      "shutdown",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:44.010Z",
+    "finished": "2026-09-07T08:52:47.143Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size large",
+    "args": [
+      "simctl",
+      "ui",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "content_size",
+      "large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:47.143Z",
+    "finished": "2026-09-07T08:52:47.317Z"
+  },
+  {
+    "command": "xcrun simctl shutdown 8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+    "args": [
+      "simctl",
+      "shutdown",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:47.317Z",
+    "finished": "2026-09-07T08:52:50.611Z"
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:50.612Z",
+    "finished": "2026-09-07T08:52:50.781Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:50.781Z",
+    "finished": "2026-09-07T08:52:50.950Z"
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:50.950Z",
+    "finished": "2026-09-07T08:52:51.125Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T08:52:51.125Z",
+    "finished": "2026-09-07T08:52:51.274Z"
+  }
+]

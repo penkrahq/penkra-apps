@@ -1,0 +1,18 @@
+{
+  "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r100-60-reversed --grid-nonce grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-reversed-18",
+  "args": [
+    "simctl",
+    "launch",
+    "--terminate-running-process",
+    "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "com.penkra.canvas.qa.grid",
+    "--grid-case",
+    "grid-c100-180-r100-60-reversed",
+    "--grid-nonce",
+    "grid-run-01-iphone-accessibility-extra-extra-large-grid-c100-180-r100-60-reversed-18"
+  ],
+  "exitCode": 0,
+  "stdout": "com.penkra.canvas.qa.grid: 78525\n",
+  "stderr": "",
+  "pid": "78525"
+}

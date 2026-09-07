@@ -1,0 +1,12 @@
+{
+  "hashes": [
+    "bf1af99ed1533cce382299f45bb79e33d343c04d03c6bf2cf974a2517571de9b",
+    "bf1af99ed1533cce382299f45bb79e33d343c04d03c6bf2cf974a2517571de9b"
+  ],
+  "stable": true,
+  "delayMs": 500,
+  "paths": [
+    "captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-a.png",
+    "captures/iphone/accessibility-extra-extra-large/full/grid-c100-180-r60-100-reversed-b.png"
+  ]
+}

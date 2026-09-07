@@ -1,0 +1,1097 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project CanvasGridEvidence.xcodeproj -scheme CanvasGridEvidence -sdk iphonesimulator -configuration Debug -jobs 2 -derivedDataPath /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData build
+
+Build settings from command line:
+    SDKROOT = iphonesimulator26.2
+
+--- xcodebuild: WARNING: Using the first of multiple matching destinations:
+{ platform:iOS Simulator, id:dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder, name:Any iOS Simulator Device }
+{ platform:iOS Simulator, arch:arm64, id:F5E027EF-EF9B-4E6C-B01E-C6573FE448CC, OS:26.3.1, name:Penkra iPhone }
+{ platform:iOS Simulator, arch:arm64, id:989E6B50-7D4C-48A4-8DE9-E8E924E166F3, OS:26.3.1, name:Penut iPhone }
+{ platform:iOS Simulator, arch:arm64, id:941B94EF-AF48-4887-8D85-95F2D3CB9E8F, OS:26.3.1, name:iPad (A16) }
+{ platform:iOS Simulator, arch:arm64, id:B0904885-BD2F-4C9E-AEF5-CE5795A2E71F, OS:26.3.1, name:iPad Air 11-inch (M3) }
+{ platform:iOS Simulator, arch:arm64, id:B388EB87-FF6D-4893-80EC-5607B9FB8662, OS:26.3.1, name:iPad Air 13-inch (M3) }
+{ platform:iOS Simulator, arch:arm64, id:BBDD2C12-3882-4DB2-BFBF-8CD501B9834E, OS:26.3.1, name:iPad Pro 11-inch (M5) }
+{ platform:iOS Simulator, arch:arm64, id:12343694-4960-4AB6-AF3F-E4D9A460BC39, OS:26.3.1, name:iPad Pro 13-inch (M5) }
+{ platform:iOS Simulator, arch:arm64, id:7F68B850-B6B7-4C84-A92E-99F0FC1A0E33, OS:26.3.1, name:iPad Pro 13-inch (M5) (16GB) }
+{ platform:iOS Simulator, arch:arm64, id:8F053C2C-958D-4CC5-AB38-E838CFAC9442, OS:26.3.1, name:iPad mini (A17 Pro) }
+{ platform:iOS Simulator, arch:arm64, id:DD90ED0B-F4E9-4C73-9431-3853DFF83C23, OS:26.3.1, name:iPhone 16e }
+{ platform:iOS Simulator, arch:arm64, id:4E8B50E6-64F8-4186-B2B8-97D9B78AC34A, OS:26.3.1, name:iPhone 17 }
+{ platform:iOS Simulator, arch:arm64, id:64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA, OS:26.3.1, name:iPhone 17 Pro }
+{ platform:iOS Simulator, arch:arm64, id:A3D92728-7F7B-44D1-BE51-155B891905D9, OS:26.3.1, name:iPhone 17 Pro }
+{ platform:iOS Simulator, arch:arm64, id:D118D718-6386-4BCE-98A3-C301A431D694, OS:26.3.1, name:iPhone 17 Pro }
+{ platform:iOS Simulator, arch:arm64, id:D230EC2C-334E-4862-9030-A42521FCA854, OS:26.3.1, name:iPhone 17 Pro }
+{ platform:iOS Simulator, arch:arm64, id:E0593F27-7B04-4EC6-8BF7-FAC8FD164775, OS:26.3.1, name:iPhone 17 Pro }
+{ platform:iOS Simulator, arch:arm64, id:A6327714-722B-4E55-8CBF-77EB44563EB1, OS:26.3.1, name:iPhone 17 Pro Max }
+{ platform:iOS Simulator, arch:arm64, id:99267100-C607-4771-B9E6-B9EC036C5564, OS:26.3.1, name:iPhone Air }
+{ platform:macOS, arch:arm64, variant:Designed for [iPad,iPhone], id:00006001-000C28210E69401E, name:My Mac }
+{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device }
+{ platform:iOS, id:00008030-000829201A61802E, name:Emmanuel’s iPhone 11, error:Emmanuel’s iPhone 11 is not connected Xcode will continue when Emmanuel’s iPhone 11 is connected and unlocked. }
+{ platform:iOS, id:00008101-000A61D03E08001E, name:Emmanuel’s iPhone 12, error:Emmanuel’s iPhone 12 is not connected Xcode will continue when Emmanuel’s iPhone 12 is connected and unlocked. }
+{ platform:iOS, arch:arm64, id:00008110-0019746A3E51801E, name:Emmanuel’s iPhone 13  }
+Build Preparation
+Build task concurrency set to 2 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'CanvasGridEvidence' in project 'CanvasGridEvidence' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: ecdc134fa866e105f47d58e9d63503da
+Build description path: /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/XCBuildData/ecdc134fa866e105f47d58e9d63503da.xcbuilddata
+CreateBuildDirectory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    builtin-create-build-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache
+
+CreateBuildDirectory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    builtin-create-build-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex
+
+CreateBuildDirectory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    builtin-create-build-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence-2aabc57fee0aa0bf772634a6d240b11c-VFS-iphonesimulator/all-product-headers.yaml
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence-2aabc57fee0aa0bf772634a6d240b11c-VFS-iphonesimulator/all-product-headers.yaml
+
+CreateBuildDirectory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    builtin-create-build-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    builtin-create-build-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/CanvasGridEvidence.xcodeproj
+    builtin-create-build-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/empty-CanvasGridEvidence.plist (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/empty-CanvasGridEvidence.plist
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_const_extract_protocols.json (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_const_extract_protocols.json
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftConstValuesFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.LinkFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.LinkFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-OutputFileMap.json (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-OutputFileMap.json
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_const_extract_protocols.json (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_const_extract_protocols.json
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftConstValuesFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.LinkFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.LinkFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-OutputFileMap.json (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-OutputFileMap.json
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.hmap (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.hmap
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyStaticMetadataFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyMetadataFileList (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyMetadataFileList
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-non-framework-target-headers.hmap (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibPath-normal-x86_64.txt (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibPath-normal-x86_64.txt
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibPath-normal-arm64.txt (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibInstallName-normal-x86_64.txt (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibInstallName-normal-x86_64.txt
+
+WriteAuxiliaryFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibInstallName-normal-arm64.txt (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    write-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibInstallName-normal-arm64.txt
+
+MkDir /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /bin/mkdir -p /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app
+
+Ld /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/__preview.dylib normal x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -install_name @rpath/CanvasGridEvidence.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_dependency_info.dat -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/__preview.dylib
+
+Ld /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/__preview.dylib normal arm64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -install_name @rpath/CanvasGridEvidence.debug.dylib -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_dependency_info.dat -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/__preview.dylib
+
+ProcessInfoPlistFile /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Info.plist /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/empty-CanvasGridEvidence.plist (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-infoPlistUtility /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/empty-CanvasGridEvidence.plist -producttype com.apple.product-type.application -genpkginfo /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Info.plist
+
+CreateUniversalBinary /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/__preview.dylib normal arm64\ x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/__preview.dylib /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/__preview.dylib -output /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/__preview.dylib
+
+SwiftDriver CanvasGridEvidence normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name CanvasGridEvidence -Onone -enforce-exclusivity\=checked @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target x86_64-apple-ios16.0-simulator -g -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -sdk-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_const_extract_protocols.json -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources-normal/x86_64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/x86_64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-Swift.h -working-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver CanvasGridEvidence normal arm64 com.apple.xcode.tools.swift.compiler (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name CanvasGridEvidence -Onone -enforce-exclusivity\=checked @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios16.0-simulator -g -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -sdk-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_const_extract_protocols.json -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources-normal/arm64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/arm64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-Swift.h -working-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_AvailabilityInternal-5YHX2PF21SZOTZQJH00AS531.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ptrcheck-1VU2UMT89VDWTPJLJ8HVKRRBA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ptrcheck-EYH7ZL3KAV3MS3WCPXMXZR5YO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdarg-XNMIXCWMGHD6E01FLQN0OTL1.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_DarwinFoundation1-TX27CXRVCWEBJYZ878ITJLI.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdarg-DQX93ZE1ZEV850VP5JP077JSC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_AvailabilityInternal-55HN401UR96XX5NQYTNIT7GH.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ptrauth-D7FPXXCFAAEZWIL1YAOUNBTU3.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/SwiftShims-CMFC0Q8438ZAVWAQR7K344B07.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_limits-1Y019JNN9PZFTMPOQ1AGBKWYM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdbool-8R876TQQ2SCW7O4F1V0NI4C1Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stddef-6S7Y6NC92O1KSNKQO83F4JFT8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/SwiftShims-EYRGIN577XA4M5TARF5D2P1N5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_DarwinFoundation1-8DUDX8KCDNAJVFJYFL49EYOU4.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stddef-DPP18DDQSFJSJ7IAPR4DJ71JL.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_float-DEHYIMRW14NALJSTDDBYR5UXV.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_DarwinFoundation2-8F3FTVV2MV8VJV0A4AFFZBUJC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_DarwinFoundation2-CG8E6N6E4PNJ2FRRUDTXJ23ZW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_limits-EXF8PXF41YLCDJSLWCJP6GPGK.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_tgmath-WWY3S9JC81VQAEG1OSW8SL04.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_tgmath-2W0CBPHL2S2J0E75OQNJ9OKLR.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdint-EDNGJAHTXI6A66RVYH9T3ZHQS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdint-7XD5PFIZ9JQ5TT99HTFQF2H17.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdbool-BX8XSHO0467XCS92LKX13SZCS.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdatomic-EPZUXKAWPM5X1SI1AD3FYI94Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_DarwinFoundation3-C206GVOBG2C0386HTEJ9DWNGZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_stdatomic-CZKZA808XHHIIZX26NGLDM9HB.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_DarwinFoundation3-1CXVIF7XQM4GRX9JMK5KZ3UNG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_intrinsics-5UND682WV0EA1ORTTJ2DISD39.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_inttypes-33ENT818XLVLZJJACREAR3QVS.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_inttypes-54U2WRIZ10BX5OES40EJCJ2J8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Darwin-1TR7E83QILEZ8IERM91A3T37X.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Darwin-D3Q6L9A1VVAB93SPFLZFPBIHR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/simd-BG5RC0729J32X1M1433UOEZ5P.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/MachO-M6WUTSIKUGE8B80OIWXI4PBM.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ObjectiveC-8ABGWEALFD9AOIXHPOT8M4JWP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/MachO-B8LNWK35RMKQGWYUSFQRPWW4L.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/os_object-5M2TR50T18EGR6REU9ZUOHKKV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_SwiftConcurrencyShims-COV3KJ0DL4CFH85G2E11A8Q2P.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/os_workgroup-BAL1BE3RHZPYN1GFKCSZSNVIZ.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/sys_types-52V8WX33GFR2N0L0S2U932MGA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Spatial-2TXD8X959O05EAF86XLRF898W.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Dispatch-APP3R304NIXJ8R10FQ9WUMLP4.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_intrinsics-D4I8JEXAM46V4U8NVW12SBL1M.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreFoundation-3LQ6KJNYO456WWZUVN7QJQIEP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/XPC-6DHZBK4KZTP9HNUG1Y6NVDYP0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreGraphics-6A7701CW38GDZFJ0TESMMF0YI.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CFNetwork-5GTHZNMWFJ6S2GKG41G2GUUUM.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Security-61DYCGR3REWGSODSEAH5SJ1J0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreText-BZO4ENHCB4SL3UGAOJ213VK0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/os-61VK0629CVWABKV9BUDQ0UJYV.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ImageIO-8UEDZHHNL181RFIS7UTR0M1LB.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Foundation-5VD05IRYZU4FXMER8B9W67Y6X.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ptrauth-BCM8CKJSTX8QCIXYOVS4ZJ7UN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_Builtin_float-9YXCPDOIO3RAUPZ22DBBQEMBP.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/DeveloperToolsSupport-49AT4XQ6BTJ98VZ7AANBOCP7I.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ObjectiveC-73MEPABDSXUEXPP1PH0JSWES0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/_SwiftConcurrencyShims-9LIEP2IM13ABHPPSZVS1TXT5Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/os_object-3B1FCRQSVSLW048TDU7GM7CSF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/DeveloperToolsSupport-4GAXT9W8VL0DQ8T7A0NOJSP21.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UserNotifications-1C900EAS4XUAY3WPRN8B2FX8I.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Accessibility-F02GBOTFNT36RHZBWK2ZL13AC.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Symbols-AAN1IQTZUWYPEIBEOJN1AALRD.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/IOSurface-63QY24JYMMRK0RXFNUQOVU3QG.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreTransferable-CKSK6RA5IZ301E9WUZHPUS07H.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/FileProvider-D9GJV31KS5JAMG8HR7K1HIM2W.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/OSLog-8WODW4IMXEH7TKUSS3777BI47.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/os_workgroup-99SLV0C8X6CAVO9DUZC186TO0.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UIUtilities-2SVNT8NIGKZALPZFRRI6UF49T.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/DataDetection-1WODEY2WAOFQNGSJHOQLOGH1H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Dispatch-3Q8V05ZHAFI814IX65WUA1N3N.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/OpenGLES-9UXPUGFDZDTGK77FZO8A5XNHA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UniformTypeIdentifiers-9XVHEJZQBIXZF86Z6LGW89QIB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreFoundation-9WO6AJR8TY779LA8U8PR23BB3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/XPC-BSJPG07FF0TNY675A8YMLGMQA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreData-99N5HKYMIBV57F85VLSXMMNFA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/os-D2143SIE3RDMJD700VTXF8SC7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreGraphics-3RZMCYM0QPWKIO2LITSQIMHUK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CFNetwork-1B3WZJMGI21OILQIVAEZYXP5C.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Security-13OCKDRM3PK3VK793GBE2QY1I.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/simd-DMIH1BRJ18KD6MXB7LKA3134G.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreText-2ZJGHZQ02B23QK8QU2J4H9D92.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Foundation-8UK7VLZQH0RESKFFYWGKDC0TN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/ImageIO-31NESRTDWGJLPM2B3N8VUQ9RX.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Spatial-8YQ9M0VEWC5XYVDBN0N68EJPN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreData-B82QH86CXPV4O7L6XALU6PCBO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UserNotifications-240E67RYXBRSQJRFL8A5JAG26.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Symbols-25YPQV2AXKS7EQWM5YLY4Q3T0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UniformTypeIdentifiers-CCWYLCG80A38UXBO2RQVKSP15.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/OpenGLES-1AXN6MIYKRS6502BM5OXY7OSX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Accessibility-CVSXPTRVBH4W04B3HN23XZWWE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UIUtilities-9JYUO63Y11S02WCE82MDK0DX5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/DataDetection-ARAMQGJ0ILJT266H01JV9HW04.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/FileProvider-DQP0V304WE3LC69ED33MKBF5O.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/IOSurface-DCJOG8NYO3MUVHB3QK8HS2VDU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreTransferable-438A72NJ2JHNUKYXZ6WSP64YF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Metal-C4JSAQDDV7XKW3AWDLBHAO8BU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/OSLog-9I7U5K3JYTSH9DZMFTO7JERQM.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Metal-7Q9XEPTAGSA82ZFTR0ZEQSFZC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/sys_types-BYKDPBXHV09PGF3VN5L129W8C.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreVideo-C7TPWCUO0JZCH5EMTNKXXKNKC.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreVideo-ETUZFO18KBSOG55LZBSLLZ36N.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/QuartzCore-F210A7Y0YNY651VFR8ZOKMSW3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreImage-6XTSCMJUWIJXLKK0ASGR35X0B.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/QuartzCore-F585TCBZ4P4MBT0MQ2FT4RV6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/SwiftUICore-4BXSF9ERK3HT13PHUCFZ1U5RV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UIKit-3XII4P3BKFIHCQHFIVPPFFPEA.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/SwiftUICore-CJRCTC1H61XD5QSEH77LS2A5M.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/CoreImage-A5G7HXFZ520NAIZGHXHO2RUDF.pcm
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/UIKit-6ZHYI6XSN9PHMEWHG30624XL2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/SwiftUI-2KMZEN0VVCHW5557BZK40GY49.pcm
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ CanvasGridEvidence (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+EmitSwiftModule normal arm64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC100180R10060Normal.swift,\ IOSGridGridC100180R10060Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftExplicitDependencyGeneratePcm x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/SwiftUI-UX724B7HWA0AXPGNXC8OT77O.pcm
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for CanvasGridEvidence (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftDriver\ Compilation\ Requirements CanvasGridEvidence normal arm64 com.apple.xcode.tools.swift.compiler (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name CanvasGridEvidence -Onone -enforce-exclusivity\=checked @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios16.0-simulator -g -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -sdk-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_const_extract_protocols.json -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources-normal/arm64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/arm64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-Swift.h -working-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal x86_64 Emitting\ module\ for\ CanvasGridEvidence (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+EmitSwiftModule normal x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal x86_64 Emitting module for CanvasGridEvidence (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/arm64-apple-ios-simulator.swiftmodule /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftmodule (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftmodule /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+SwiftDriver\ Compilation\ Requirements CanvasGridEvidence normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name CanvasGridEvidence -Onone -enforce-exclusivity\=checked @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target x86_64-apple-ios16.0-simulator -g -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -sdk-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_const_extract_protocols.json -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources-normal/x86_64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/x86_64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-Swift.h -working-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn -experimental-emit-module-separately -disable-cmo
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/arm64-apple-ios-simulator.swiftdoc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftdoc (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftdoc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/arm64-apple-ios-simulator.abi.json /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.abi.json (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.abi.json /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftsourceinfo (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftsourceinfo /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftMergeGeneratedHeaders /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/CanvasGridEvidence-Swift.h /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-Swift.h /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-Swift.h (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-swiftHeaderTool -arch arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-Swift.h -arch x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-Swift.h -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/CanvasGridEvidence-Swift.h
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/x86_64-apple-ios-simulator.swiftmodule /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftmodule (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftmodule /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/x86_64-apple-ios-simulator.swiftmodule
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/x86_64-apple-ios-simulator.swiftdoc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftdoc (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftdoc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/x86_64-apple-ios-simulator.swiftdoc
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/x86_64-apple-ios-simulator.abi.json /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.abi.json (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.abi.json /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/x86_64-apple-ios-simulator.abi.json
+
+Copy /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftsourceinfo (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftsourceinfo /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC100180R10060Reversed.swift,\ IOSGridGridC100180R60100Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC180100R60100Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC100180R10060Reversed.swift, IOSGridGridC100180R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC180100R60100Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC100180R10060Normal.swift, IOSGridGridC100180R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridPaddingOverlayControl.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC180100R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ IOSGridPaddingOverlayControl.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridPaddingOverlayControl.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ FlowLayout.swift,\ GridFixtureHost.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/FlowLayout.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/FlowLayout.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:8:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r60-100-normal": return AnyView(IOSGridGridC100180R60100Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:9:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r60-100-reversed": return AnyView(IOSGridGridC100180R60100Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:10:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r60-100-only-2-2": return AnyView(IOSGridGridC100180R60100Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:11:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r100-60-normal": return AnyView(IOSGridGridC100180R10060Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:12:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r100-60-reversed": return AnyView(IOSGridGridC100180R10060Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:13:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r100-60-only-2-2": return AnyView(IOSGridGridC100180R10060Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:14:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r60-100-normal": return AnyView(IOSGridGridC180100R60100Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:15:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r60-100-reversed": return AnyView(IOSGridGridC180100R60100Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:16:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r60-100-only-2-2": return AnyView(IOSGridGridC180100R60100Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:17:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r100-60-normal": return AnyView(IOSGridGridC180100R10060Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:18:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r100-60-reversed": return AnyView(IOSGridGridC180100R10060Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:19:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r100-60-only-2-2": return AnyView(IOSGridGridC180100R10060Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:20:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-control-padding-overlay": return AnyView(IOSGridPaddingOverlayControl())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridPaddingOverlayControl.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC100180R10060Reversed.swift,\ IOSGridGridC100180R60100Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC180100R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC180100R10060Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC100180R10060Reversed.swift, IOSGridGridC100180R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC100180R60100Only22.swift,\ IOSGridGridC100180R60100Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling FlowLayout.swift, GridFixtureHost.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC180100R60100Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC180100R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC180100R10060Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC100180R60100Only22.swift, IOSGridGridC100180R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC180100R10060Normal.swift,\ IOSGridGridC180100R10060Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC180100R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC100180R60100Only22.swift,\ IOSGridGridC100180R60100Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC180100R10060Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal arm64 Compiling\ IOSGridGridC180100R60100Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal arm64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC180100R10060Normal.swift, IOSGridGridC180100R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ FlowLayout.swift,\ GridFixtureHost.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/FlowLayout.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/FlowLayout.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:8:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r60-100-normal": return AnyView(IOSGridGridC100180R60100Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:9:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r60-100-reversed": return AnyView(IOSGridGridC100180R60100Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:10:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r60-100-only-2-2": return AnyView(IOSGridGridC100180R60100Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R60100Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:11:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r100-60-normal": return AnyView(IOSGridGridC100180R10060Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:12:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r100-60-reversed": return AnyView(IOSGridGridC100180R10060Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:13:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c100-180-r100-60-only-2-2": return AnyView(IOSGridGridC100180R10060Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:14:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r60-100-normal": return AnyView(IOSGridGridC180100R60100Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:15:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r60-100-reversed": return AnyView(IOSGridGridC180100R60100Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:16:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r60-100-only-2-2": return AnyView(IOSGridGridC180100R60100Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:17:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r100-60-normal": return AnyView(IOSGridGridC180100R10060Normal())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:18:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r100-60-reversed": return AnyView(IOSGridGridC180100R10060Reversed())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Reversed.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:19:59: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-c180-100-r100-60-only-2-2": return AnyView(IOSGridGridC180100R10060Only22())
+                                                          ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:20:57: warning: call to main actor-isolated initializer 'init()' in a synchronous nonisolated context
+    case "grid-control-padding-overlay": return AnyView(IOSGridPaddingOverlayControl())
+                                                        ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift:4:10: note: calls to initializer 'init()' from outside of its actor context are implicitly asynchronous
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridPaddingOverlayControl.swift:4:10: note: main actor isolation inferred from conformance to protocol 'View'
+  public init() {}
+         ^
+/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/GridFixtureHost.swift:6:15: note: add '@MainActor' to make static method 'view(for:)' part of global actor 'MainActor'
+  static func view(for caseID: String) -> AnyView {
+              ^
+  @MainActor 
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC100180R60100Only22.swift, IOSGridGridC100180R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC180100R60100Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal arm64 Compiling IOSGridGridC180100R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC180100R60100Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftDriver\ Compilation CanvasGridEvidence normal arm64 com.apple.xcode.tools.swift.compiler (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name CanvasGridEvidence -Onone -enforce-exclusivity\=checked @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target arm64-apple-ios16.0-simulator -g -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -sdk-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_const_extract_protocols.json -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources-normal/arm64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/arm64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-Swift.h -working-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC180100R10060Normal.swift,\ IOSGridGridC180100R10060Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC100180R10060Normal.swift,\ IOSGridGridC100180R10060Only22.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Normal.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC100180R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal x86_64 Compiling FlowLayout.swift, GridFixtureHost.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftCompile normal x86_64 Compiling\ IOSGridGridC180100R60100Reversed.swift /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+SwiftCompile normal x86_64 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/swift/IOSGridGridC180100R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC180100R10060Normal.swift, IOSGridGridC180100R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC100180R10060Normal.swift, IOSGridGridC100180R10060Only22.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+Ld /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence.debug.dylib normal arm64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -filelist /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.LinkFileList -install_name @rpath/CanvasGridEvidence.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.swiftmodule @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence-linker-args.resp -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence.debug.dylib
+
+SwiftDriverJobDiscovery normal x86_64 Compiling IOSGridGridC180100R60100Reversed.swift (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+SwiftDriver\ Compilation CanvasGridEvidence normal x86_64 com.apple.xcode.tools.swift.compiler (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name CanvasGridEvidence -Onone -enforce-exclusivity\=checked @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -target x86_64-apple-ios16.0-simulator -g -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/SDKStatCaches.noindex/iphonesimulator26.2-23C53-dc75598d0054f22ec865fa860f139d727d00a8b37fbd7999ea79df8ebc024bf0.sdkstatcache -output-file-map /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -sdk-module-cache-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_const_extract_protocols.json -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-generated-files.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-own-target-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-all-target-headers.hmap -Xcc -iquote -Xcc /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-project-headers.hmap -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources-normal/x86_64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources/x86_64 -Xcc -I/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-Swift.h -working-directory /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn -experimental-emit-module-separately -disable-cmo
+
+Ld /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence.debug.dylib normal x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios16.0-simulator -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -filelist /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.LinkFileList -install_name @rpath/CanvasGridEvidence.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -dependency_info -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.swiftmodule @/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence-linker-args.resp -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence.debug.dylib
+
+CreateUniversalBinary /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence.debug.dylib normal arm64\ x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence.debug.dylib /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence.debug.dylib -output /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence.debug.dylib
+
+ConstructStubExecutorLinkFileList /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-ExecutorLinkFileList-normal-x86_64.txt (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    construct-stub-executor-link-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-ExecutorLinkFileList-normal-x86_64.txt
+note: Using stub executor library with Swift entry point. (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+ConstructStubExecutorLinkFileList /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-ExecutorLinkFileList-normal-arm64.txt (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    construct-stub-executor-link-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+
+Ld /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence normal x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target x86_64-apple-ios16.0-simulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibPath-normal-x86_64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibInstallName-normal-x86_64.txt -Xlinker -filelist -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-ExecutorLinkFileList-normal-x86_64.txt /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence.debug.dylib -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence
+
+Ld /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence normal arm64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios16.0-simulator -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk -O0 -L/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -F/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence-ExecutorLinkFileList-normal-arm64.txt /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence.debug.dylib -o /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence
+
+CreateUniversalBinary /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence normal arm64\ x86_64 (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo -create /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/Binary/CanvasGridEvidence /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/Binary/CanvasGridEvidence -output /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence
+
+CopySwiftLibs /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence.debug.dylib --scan-folder /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Frameworks --scan-folder /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/PlugIns --scan-folder /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/SystemExtensions --scan-folder /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Extensions --platform iphonesimulator --toolchain /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.QeN7Ic/Metal.xctoolchain --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+ExtractAppIntentsMetadata (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /var/run/com.apple.security.cryptexd/mnt/com.apple.MobileAsset.MetalToolchain-v17.3.7003.10.QeN7Ic/Metal.xctoolchain --module-name CanvasGridEvidence --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator26.2.sdk --xcode-version 17C52 --platform-family iOS --deployment-target 16.0 --bundle-identifier com.penkra.canvas.qa.grid --output /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app --target-triple arm64-apple-ios16.0-simulator --target-triple x86_64-apple-ios16.0-simulator --binary-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/CanvasGridEvidence --dependency-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence_dependency_info.dat --dependency-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence_dependency_info.dat --stringsdata-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --stringsdata-file /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftFileList --source-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftFileList --metadata-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyMetadataFileList --static-metadata-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyStaticMetadataFileList --swift-const-vals-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/arm64/CanvasGridEvidence.SwiftConstValuesFileList --swift-const-vals-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/Objects-normal/x86_64/CanvasGridEvidence.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-09-07 02:42:38.424 appintentsmetadataprocessor[67278:86178903] Starting appintentsmetadataprocessor export
+2026-09-07 02:42:38.426 appintentsmetadataprocessor[67278:86178903] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+AppIntentsSSUTraining (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Info.plist --temp-dir-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/ssu --bundle-id com.penkra.canvas.qa.grid --product-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app --extracted-metadata-path /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app/Metadata.appintents --metadata-file-list /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Intermediates.noindex/CanvasGridEvidence.build/Debug-iphonesimulator/CanvasGridEvidence.build/CanvasGridEvidence.DependencyMetadataFileList --archive-ssu-assets
+2026-09-07 02:42:38.452 appintentsnltrainingprocessor[67279:86178904] Parsing options for appintentsnltrainingprocessor
+2026-09-07 02:42:38.452 appintentsnltrainingprocessor[67279:86178904] No AppShortcuts found - Skipping.
+
+RegisterExecutionPolicyException /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-RegisterExecutionPolicyException /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app
+
+Validate /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    builtin-validationUtility /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app (in target 'CanvasGridEvidence' from project 'CanvasGridEvidence')
+    cd /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn
+    /usr/bin/touch -c /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-grid-build.XXXXXX.VpL6A3p4Tn/DerivedData/Build/Products/Debug-iphonesimulator/CanvasGridEvidence.app
+
+** BUILD SUCCEEDED **
+
