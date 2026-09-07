@@ -194,6 +194,7 @@ export function compareGridPixels(expected, actual, scale, edgeTolerance = 2) {
   if (actual.width !== expectedWidth || actual.height !== expectedHeight) return { status: "mismatch", reason: "capture dimensions do not equal the authored root at the declared scale", comparedChildren: 0, failures: [{ kind: "dimensions", expected: { width: expectedWidth, height: expectedHeight }, actual: { width: actual.width, height: actual.height } }] };
   const failures = [];
   const children = expected.children;
+  const sampleCounts = [];
   for (const child of children) {
     const bounds = {
       minX: Math.round(child.geometry.x * scale), minY: Math.round(child.geometry.y * scale),
@@ -206,11 +207,13 @@ export function compareGridPixels(expected, actual, scale, edgeTolerance = 2) {
     if (eroded.minX <= eroded.maxX && eroded.minY <= eroded.maxY) for (let y = eroded.minY; y <= eroded.maxY; y += 1) for (let x = eroded.minX; x <= eroded.maxX; x += 1) {
       if (pixelMatches(actual.pixels, (y * actual.width + x) * 4, color)) positiveInteriorSamples += 1;
     }
+    sampleCounts.push({ id: child.id, samples: positiveInteriorSamples });
     if (!actualBounds) failures.push({ id: child.id, kind: "zero-solid-color-samples", expected: bounds, color: child.paint.fill });
-    else if (!positiveInteriorSamples) failures.push({ id: child.id, kind: "no-positive-eroded-interior-sample", expected: bounds, actual: actualBounds, color: child.paint.fill });
+    else if (!Number.isFinite(positiveInteriorSamples) || positiveInteriorSamples <= 0) failures.push({ id: child.id, kind: "no-positive-eroded-interior-sample", expected: bounds, actual: actualBounds, color: child.paint.fill, samples: positiveInteriorSamples });
     else if (["minX", "minY", "maxX", "maxY"].some((key) => Math.abs(actualBounds[key] - bounds[key]) > edgeTolerance)) failures.push({ id: child.id, kind: "edge-displacement", expected: bounds, actual: actualBounds, color: child.paint.fill });
   }
-  return { status: failures.length ? "mismatch" : "pass", comparedChildren: children.length, edgeTolerancePhysicalPixels: edgeTolerance, registration: "none", clipping: "not-applied", failures };
+  const hasInvalidSampleCount = sampleCounts.some(({ samples }) => !Number.isFinite(samples) || samples <= 0);
+  return { status: failures.length || hasInvalidSampleCount ? "mismatch" : "pass", comparedChildren: children.length, sampleCounts, edgeTolerancePhysicalPixels: edgeTolerance, registration: "none", clipping: "not-applied", failures };
 }
 
 export function readyReceipt(caseID, nonce, logText) {
@@ -220,7 +223,7 @@ export function readyReceipt(caseID, nonce, logText) {
 }
 
 export function stableScreenshotHashes(hashes) {
-  return Array.isArray(hashes) && hashes.length >= 2 && hashes.every((hash) => typeof hash === "string" && /^[0-9a-f]{64}$/iu.test(hash)) && hashes.every((hash) => hash === hashes[0]);
+  return Array.isArray(hashes) && hashes.length >= 2 && hashes.every((hash) => typeof hash === "string" && /^[0-9a-f]{64}$/u.test(hash)) && hashes.every((hash) => hash === hashes[0]);
 }
 
 export function sourceHashReceipt(sources) {
