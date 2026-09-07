@@ -18,10 +18,11 @@ const document = { version: "2.17", module: "generic", axes: {}, variables: {}, 
     { id: "independent", type: "rectangle", x: 260, y: 20, width: 200, height: 80, cornerRadius: [0, 16, 32, 40], fill: "#0B4A6F" },
     { id: "normalized", type: "rectangle", x: 20, y: 130, width: 200, height: 80, cornerRadius: [80, 50, 30, 70], fill: "#0B4A6F" },
     { id: "stroke", type: "rectangle", x: 260, y: 130, width: 200, height: 80, cornerRadius: [12, 24, 36, 6], fill: "#D9EEF7", stroke: { fill: "#0B4A6F", width: 4 } },
+    { id: "opacity", type: "rectangle", x: 345, y: 70, width: 80, height: 90, cornerRadius: 18, fill: "#E13D73", opacity: 0.5 },
   ],
 }] };
 
-test("PDF rounded rectangles match Canvas coverage at 1x and 2x", { timeout: 60_000 }, async (context) => {
+test("PDF rounded rectangles and opacity match Canvas coverage at 1x and 2x", { timeout: 60_000 }, async (context) => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-pdf-rounded-"));
   try {
     const ir = buildExtractionIR(document, { format: "pdf", nodeId: "rounding" });
