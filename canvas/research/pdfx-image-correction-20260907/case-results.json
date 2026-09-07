@@ -1,0 +1,1595 @@
+{
+  "caseCount": 32,
+  "serializationVariantCount": 2,
+  "executedResultCount": 64,
+  "cases": [
+    {
+      "name": "valid-writer-baseline",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "0ed72039dfefa721ad79f599190034a5afbbf4e7ee02f6741b4afd275df09503",
+      "bytes": 4892,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "valid-writer-baseline",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "4837de9277f52fa8023be0e3a1a4a7d6e0bc118221cc4fb43b1d0f31bf9d8f4b",
+      "bytes": 4253,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "valid-alpha-writer-baseline",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "0ed72039dfefa721ad79f599190034a5afbbf4e7ee02f6741b4afd275df09503",
+      "bytes": 4892,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "valid-alpha-writer-baseline",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "4837de9277f52fa8023be0e3a1a4a7d6e0bc118221cc4fb43b1d0f31bf9d8f4b",
+      "bytes": 4253,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "valid-jpeg-image",
+      "serialization": "classic-xref",
+      "base": "jpeg",
+      "sha256": "f6e258adf2f40307cdd09b8777b7f4c9cc00ca7d5ee1f4c9174f5747753634ea",
+      "bytes": 1804,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "TRIM_OR_ART_REQUIRED",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "valid-jpeg-image",
+      "serialization": "object-streams",
+      "base": "jpeg",
+      "sha256": "9e2c7f40203b58eb9beed21f06bd4b7cf13b8979f7edf3a0e22605ae7c76958d",
+      "bytes": 1442,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "TRIM_OR_ART_REQUIRED",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "raw-valid-image",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "7fb042d9cecd01bc048c3481f276c2a3ced7a660d9427f0838f928bfd6062e2d",
+      "bytes": 4863,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "raw-valid-image",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "1fe845dcce637b3aad000b4031c38b8687606b99ba658a8a3aa9cac59f6a9cac",
+      "bytes": 4224,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "missing-bits-per-component",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "a1e6cbac33709fd3f4c671ffebfaffaadc6d8bb291277d5949e3c1d8ee1d1970",
+      "bytes": 4872,
+      "imageIssues": [
+        {
+          "code": "IMAGE_BITS_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/BitsPerComponent"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_BITS_INVALID"
+      ],
+      "expected": [
+        "IMAGE_BITS_INVALID"
+      ]
+    },
+    {
+      "name": "missing-bits-per-component",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "2a11bb4d9745d7a70063540e0d60f1e39d052ad1f8bfc390f0fcfc961f8156a8",
+      "bytes": 4233,
+      "imageIssues": [
+        {
+          "code": "IMAGE_BITS_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/BitsPerComponent"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_BITS_INVALID"
+      ],
+      "expected": [
+        "IMAGE_BITS_INVALID"
+      ]
+    },
+    {
+      "name": "unsupported-bits-per-component",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "6c8e5886054f7219b631ecffcec8e259e9b8cf082505bedfc7ba11c15dbd8835",
+      "bytes": 4892,
+      "imageIssues": [
+        {
+          "code": "IMAGE_BITS_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/BitsPerComponent"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_BITS_INVALID"
+      ],
+      "expected": [
+        "IMAGE_BITS_INVALID"
+      ]
+    },
+    {
+      "name": "unsupported-bits-per-component",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "6cf3fcd891fb7560ff4b94c8dfecc7aa24c5094687bb1f7b2e0c55652b2c839f",
+      "bytes": 4253,
+      "imageIssues": [
+        {
+          "code": "IMAGE_BITS_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/BitsPerComponent"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_BITS_INVALID"
+      ],
+      "expected": [
+        "IMAGE_BITS_INVALID"
+      ]
+    },
+    {
+      "name": "missing-color-space",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "dbbd229d39a25541619d93ffb6840a6680a962b4bb879c04028e257aa421ccda",
+      "bytes": 4869,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_INVALID",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_INVALID"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_INVALID"
+      ]
+    },
+    {
+      "name": "missing-color-space",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "1603bb1964ca72d53adfecfe48d812f0158ecc272e37c319d3bce75eca301ae0",
+      "bytes": 4230,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_INVALID",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_INVALID"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_INVALID"
+      ]
+    },
+    {
+      "name": "malformed-color-space-number",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "b28e5802f20691e5ead494065e4e09b6eabcbb5b5630aba66318834cc6d934d8",
+      "bytes": 4883,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_INVALID",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_INVALID"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_INVALID"
+      ]
+    },
+    {
+      "name": "malformed-color-space-number",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "7fdd02317f64fecb0bb6dee445c510e9ddb29c49c95d01c6d03d1347cba1ca96",
+      "bytes": 4244,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_INVALID",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_INVALID"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_INVALID"
+      ]
+    },
+    {
+      "name": "array-colorspace-outside-subset",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "2a2b6e785ee1694122d7cc9c38fec97f642458df28f17c8876b9d5e7dc6de6f7",
+      "bytes": 5097,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "array-colorspace-outside-subset",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "afb29066a7cd42be31f3c4def4b37270f654dcc00cb288f5106722c48cb46f49",
+      "bytes": 4441,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "named-colorspace-outside-subset",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "ba0755ddbd2c56ea331701b048b18be784980d69fd1979eb5560ae3f9e53b136",
+      "bytes": 4893,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "named-colorspace-outside-subset",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "9179e013cae894cb2eff6d56179eafdc72a18c514015167cc40d2b934b58c846",
+      "bytes": 4254,
+      "imageIssues": [
+        {
+          "code": "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET",
+          "clause": "6.4",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_COLOR_SPACE_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "imagemask-true-outside-subset",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "c195ec316544166faebf9934240418da2890e53de4d91430eb06b37fde1d2fb4",
+      "bytes": 4908,
+      "imageIssues": [
+        {
+          "code": "IMAGE_MASK_OUTSIDE_SUBSET",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ImageMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_MASK_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_MASK_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "imagemask-true-outside-subset",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "8f3409d31b85e203ac50386bf02afe49ec2cba41e231b12f0e53a00966d4de06",
+      "bytes": 4269,
+      "imageIssues": [
+        {
+          "code": "IMAGE_MASK_OUTSIDE_SUBSET",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ImageMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_MASK_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_MASK_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "imagemask-nonboolean-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "c6bf2c46c4ddcf06d53dadccba8420e8dd69697a45c0b822c0d627b442aa3341",
+      "bytes": 4909,
+      "imageIssues": [
+        {
+          "code": "IMAGE_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ImageMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "imagemask-nonboolean-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "bf4e464614a98e1e33a901c5babc3939af371880cc909c343c07050ff3b61702",
+      "bytes": 4270,
+      "imageIssues": [
+        {
+          "code": "IMAGE_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/ImageMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "missing-softmask-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "1ed2a0b4d6cedc47d2ae9460508b10f380395b94367bec8bf4e9d0da8e3b6368",
+      "bytes": 4905,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "missing-softmask-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "b60d6d0d40ae2fbb981d41f9f9971ff0fc4e1d3bad9f1f6f109e9eba4ab8b067",
+      "bytes": 4266,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "dangling-softmask-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "6b6677a928a95f074eb632ef999907cffc8245c28802d09a1a8acca85299b7fe",
+      "bytes": 4910,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "dangling-softmask-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "ca9aaf45cecd986a82385ed048ca1f2df5c6b1022223dfc35f8d1d563feceb74",
+      "bytes": 4271,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "nonstream-softmask-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "ff059eeb1b97fdbeed8db148edbd8627c8f44ce2c35ee332947c897daae402a0",
+      "bytes": 4921,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "nonstream-softmask-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "ad109ac37beca8a746a5788757b7358ac7b8c8dbb7dc7ea8d70a98ba8cf50e5d",
+      "bytes": 4282,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-subtype-softmask-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "b653372de9c38b9f0f20e854c35968f25cd7369bd75338ec9637fd61141a52df",
+      "bytes": 5008,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-subtype-softmask-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "24b56db82052619a811e48af80514683db77e7239899af1c396b5c5cf383f114",
+      "bytes": 4351,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-non-gray-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "fdd736833b0f3dd86606986df11a20f4861309462c5c976c50ceba0838e53292",
+      "bytes": 4891,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-non-gray-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "337f4e3f137ecfd125c00a1097ef3d6881a5faab94d71b2f15d42827ee2a60ff",
+      "bytes": 4252,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/ColorSpace"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-invalid-bits",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "e3cdcf9e3c0e6d5a001fda7ebe2aeeef06e555b0a735cdc1592a925938ba103c",
+      "bytes": 4892,
+      "imageIssues": [
+        {
+          "code": "IMAGE_BITS_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/BitsPerComponent"
+        },
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/BitsPerComponent"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_BITS_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID",
+        "IMAGE_BITS_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-invalid-bits",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "f22f70cdd6e62d6d64dd4e1c707fe7915c14f1c07f844987153896a956bcf8f8",
+      "bytes": 4253,
+      "imageIssues": [
+        {
+          "code": "IMAGE_BITS_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/BitsPerComponent"
+        },
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/BitsPerComponent"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_BITS_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID",
+        "IMAGE_BITS_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-invalid-dimensions",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "25ca15e7097918698845a700cb70ec5a17669acc4340178b64db080bceba9fb8",
+      "bytes": 4892,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DIMENSION_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/Width"
+        },
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DIMENSION_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID",
+        "IMAGE_DIMENSION_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-invalid-dimensions",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "547b0e6f0ec54e89054148789cc9b930ff5a73bb2b847e0a9a7bfcf2212147c5",
+      "bytes": 4253,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DIMENSION_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/Width"
+        },
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DIMENSION_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID",
+        "IMAGE_DIMENSION_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-nested-mask-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "21ea73c5228347b5796ed2255b556946e2b1d675d59c54f0a2975d9e7c70904a",
+      "bytes": 4904,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/Mask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-nested-mask-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "b02454ce3f3915249b5624038271aeb59d714c7d0f14d28d35bff59331d110b6",
+      "bytes": 4265,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/Mask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-nested-smask-invalid",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "13d6d71e73e7be96a6334dcbea56729865317007ea5ddd70c519722e691606ca",
+      "bytes": 4905,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-nested-smask-invalid",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "8b9f13680978658b762c55b276d18767e5c97024f1b809c33de000be28750a61",
+      "bytes": 4264,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-matte-outside-subset",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "ab84085f13558bcba24831e1f12f1d52c6309ecdf4ae75e65b3de414031a2648",
+      "bytes": 4905,
+      "imageIssues": [
+        {
+          "code": "IMAGE_MATTE_OUTSIDE_SUBSET",
+          "clause": "7.4",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/Matte"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_MATTE_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_MATTE_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "softmask-matte-outside-subset",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "b78033930301757db4974011960c7ff260284a51782f3e9329cf2ce215e39521",
+      "bytes": 4264,
+      "imageIssues": [
+        {
+          "code": "IMAGE_MATTE_OUTSIDE_SUBSET",
+          "clause": "7.4",
+          "object": "Page[0]/Resources/XObject/Image-9742682568/SMask/Matte"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_MATTE_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_MATTE_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "softmask-independent-dimensions",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "4053772cf209d5862c6f1d5d5fb37b83d363f949631374241b0e5f737be9c6b9",
+      "bytes": 5101,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "softmask-independent-dimensions",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "a3955480f7f088ebb0b08c75e2242ca3924a4bdee1d7cf5500391e552c47681a",
+      "bytes": 4445,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "shared-softmask-reuse",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "ee5ca516fe0fe7d87db6c9e3e33ee2e641b4119ca01803d45cf2155f4ca429b1",
+      "bytes": 4905,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "shared-softmask-reuse",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "574572f6a80242622ba7fbcfd8ff6246ef0b708c89709de732fd497870083071",
+      "bytes": 4266,
+      "imageIssues": [],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ],
+      "expected": []
+    },
+    {
+      "name": "softmask-cycle-self",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "5fb2eed23add50720e43b55ea26264a185c6d44cfe59176798a4a6b201cdd151",
+      "bytes": 5115,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-cycle-self",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "8e5b731b7985feb0b601c76c72afe36443bd1c9333b3379ab0c6f200a4ccf89c",
+      "bytes": 4459,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-cycle-two-node",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "225a982223236dc2e92cd4111a9e5e5ab2bfd51ba06833a1d2fe668b0eebe95c",
+      "bytes": 5324,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "softmask-cycle-two-node",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "fd71526e188143f4ef9b84fad0abc498d1b1749bf0f1b0812dc31fb1c6451cad",
+      "bytes": 4651,
+      "imageIssues": [
+        {
+          "code": "IMAGE_SOFT_MASK_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/SMask/SMask"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_SOFT_MASK_INVALID"
+      ],
+      "expected": [
+        "IMAGE_SOFT_MASK_INVALID"
+      ]
+    },
+    {
+      "name": "unknown-image-filter",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "622f8276f7f7371d63361d6e218cfc52e16014452b26e10cfea245f50ed204b6",
+      "bytes": 4894,
+      "imageIssues": [
+        {
+          "code": "IMAGE_FILTER_OUTSIDE_SUBSET",
+          "clause": "6.8",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/Filter"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_FILTER_OUTSIDE_SUBSET",
+        "STREAM_FILTER_FORBIDDEN"
+      ],
+      "expected": [
+        "IMAGE_FILTER_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "unknown-image-filter",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "870c6beadeddc25fa5b35bbc9d09007e41be7d7262486e66b535f1b80469cf67",
+      "bytes": 4255,
+      "imageIssues": [
+        {
+          "code": "IMAGE_FILTER_OUTSIDE_SUBSET",
+          "clause": "6.8",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/Filter"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_FILTER_OUTSIDE_SUBSET",
+        "STREAM_FILTER_FORBIDDEN"
+      ],
+      "expected": [
+        "IMAGE_FILTER_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "decode-parameters-outside-subset",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "dcd7f36a899a99dfe5281695688adad1e621d24c2de425a9fadf43bd468097b6",
+      "bytes": 4924,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET",
+          "clause": "6.8",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/DecodeParms"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "decode-parameters-outside-subset",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "8b650d82eba6f2f6a7483eb2cec1485488078d38ba4ed6e273c26cd097636668",
+      "bytes": 4285,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET",
+          "clause": "6.8",
+          "object": "Page[0]/Resources/XObject/Image-7098480789/DecodeParms"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET"
+      ],
+      "expected": [
+        "IMAGE_DECODE_PARAMS_OUTSIDE_SUBSET"
+      ]
+    },
+    {
+      "name": "truncated-raw-data",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "7f5cd4851f848b57f0ac289b953af8a41d872c45eb853165fe45e6df76bc148e",
+      "bytes": 4851,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DATA_LENGTH_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DATA_LENGTH_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DATA_LENGTH_INVALID"
+      ]
+    },
+    {
+      "name": "truncated-raw-data",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "259ca07b626e10c30e4599d1a6cfff02d08445069d7d4a71dea4876037f0b4ff",
+      "bytes": 4212,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DATA_LENGTH_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DATA_LENGTH_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DATA_LENGTH_INVALID"
+      ]
+    },
+    {
+      "name": "truncated-flate-data",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "72f8519e7de291fca6161e15169f5fbbffe68ae54e282e4c9905c9598b895645",
+      "bytes": 4880,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DATA_LENGTH_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DATA_LENGTH_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DATA_LENGTH_INVALID"
+      ]
+    },
+    {
+      "name": "truncated-flate-data",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "1b021973c6148a19bc82c4cf3bd1606fbf501ae7f5871d6b0d197a0aa3bb5c11",
+      "bytes": 4241,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DATA_LENGTH_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DATA_LENGTH_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DATA_LENGTH_INVALID"
+      ]
+    },
+    {
+      "name": "malformed-flate-data",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "53f854d6a6682029a8b27531401fb64d850912f688e9fedf73c52df58220c087",
+      "bytes": 4872,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DATA_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DATA_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DATA_INVALID"
+      ]
+    },
+    {
+      "name": "malformed-flate-data",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "edb588de004a49cf96d6001c54c8197aa34045b3f6404d7fb3bf784f0cf8d4c7",
+      "bytes": 4233,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DATA_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DATA_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DATA_INVALID"
+      ]
+    },
+    {
+      "name": "unsafe-declared-dimensions",
+      "serialization": "classic-xref",
+      "base": "png",
+      "sha256": "93e976c8dab3891d6ed8492a65b8828ea75044c1700d63ad4fb4f225cde2dc56",
+      "bytes": 4904,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DIMENSION_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DIMENSION_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DIMENSION_INVALID"
+      ]
+    },
+    {
+      "name": "unsafe-declared-dimensions",
+      "serialization": "object-streams",
+      "base": "png",
+      "sha256": "1a2a6dc57694fa742ed148777f081e3e77ae36e7d52ff179f8f950a598aaa21f",
+      "bytes": 4265,
+      "imageIssues": [
+        {
+          "code": "IMAGE_DIMENSION_INVALID",
+          "clause": "6.16",
+          "object": "Page[0]/Resources/XObject/Image-7098480789"
+        }
+      ],
+      "issueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "OUTPUT_INTENT_COUNT",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID",
+        "IMAGE_DIMENSION_INVALID"
+      ],
+      "expected": [
+        "IMAGE_DIMENSION_INVALID"
+      ]
+    }
+  ]
+}
