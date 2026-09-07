@@ -7,6 +7,7 @@ import { createLibraryRelease } from "./library-publication.mjs";
 // atomically; selected dependencies are content identities, never live heads.
 export async function prepareLibraryRelease(api, document, options) {
   const snapshot = structuredClone(document);
+  const { libraryId, releaseId, accountId, resolveRelease, readReleaseAsset } = options;
   const ownedAssets = new Map();
   const assets = (options.assets ?? []).map((asset) => {
     if (!(asset.bytes instanceof Uint8Array)) throw invalid(`Asset ${asset.path} requires its owned bytes.`);
@@ -16,10 +17,10 @@ export async function prepareLibraryRelease(api, document, options) {
     return { path: asset.path, sha256: createHash("sha256").update(bytes).digest("hex"), size: bytes.byteLength, ...(asset.mimeType === undefined ? {} : { mimeType: asset.mimeType }) };
   });
   const loaded = await loadCanvasImports(api, snapshot, {
-    rootDocumentId: options.libraryId,
-    accountId: options.accountId,
-    resolveRelease: options.resolveRelease,
-    readReleaseAsset: options.readReleaseAsset,
+    rootDocumentId: libraryId,
+    accountId,
+    resolveRelease,
+    readReleaseAsset,
   });
   const dependencies = [];
   for (const [alias, imported] of Object.entries(loaded.imports)) {
@@ -30,7 +31,7 @@ export async function prepareLibraryRelease(api, document, options) {
     snapshot.imports[alias] = { ...record, releaseId, contentHash };
   }
   return {
-    release: createLibraryRelease(snapshot, { libraryId: options.libraryId, releaseId: options.releaseId, dependencies, assets }),
+    release: createLibraryRelease(snapshot, { libraryId, releaseId, dependencies, assets }),
     assets: ownedAssets,
   };
 }

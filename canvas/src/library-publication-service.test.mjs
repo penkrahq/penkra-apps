@@ -6,6 +6,21 @@ import { loadCanvasImports } from "./canvas-imports.mjs";
 
 const document = (children = [], imports = {}) => ({ module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports, flows: [], children, library: { public: children.map(({ id }) => ({ kind: "component", id })) } });
 
+test("publication identity is captured before asynchronous dependency reads", async () => {
+  const dependency = createLibraryRelease(document([{ id: "card", type: "frame" }]), { libraryId: "base", releaseId: "one" });
+  let resume;
+  const wait = new Promise((resolve) => { resume = resolve; });
+  const options = { libraryId: "wrapper", releaseId: "one", resolveRelease: async () => { await wait; return dependency; } };
+  const source = document([{ id: "wrapper", type: "ref", ref: "base:card" }], { base: { documentId: "base", updatePolicy: "follow" } });
+  const pending = prepareLibraryRelease({}, source, options);
+  options.libraryId = "changed";
+  options.releaseId = "changed";
+  resume();
+  const prepared = await pending;
+  assert.equal(prepared.release.libraryId, "wrapper");
+  assert.equal(prepared.release.releaseId, "one");
+});
+
 test("publication preparation locks follow dependencies without mutating the author's document", async () => {
   const registry = createLibraryRegistry();
   const first = createLibraryRelease(document([{ id: "card", type: "frame", width: 100 }]), { libraryId: "base", releaseId: "one" });
