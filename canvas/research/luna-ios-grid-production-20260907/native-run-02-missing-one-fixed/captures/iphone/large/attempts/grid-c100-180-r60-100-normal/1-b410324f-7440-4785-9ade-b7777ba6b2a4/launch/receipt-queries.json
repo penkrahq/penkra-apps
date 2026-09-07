@@ -1,0 +1,35 @@
+[
+  {
+    "attempt": 1,
+    "startTimestamp": "2026-09-07T11:07:39.063Z",
+    "endTimestamp": "2026-09-07T11:07:46.429Z",
+    "result": {
+      "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --start @1788779259 --end @1788779267 --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\" OR eventMessage CONTAINS[c] \"LUNA_GRID_ROOT\"",
+      "args": [
+        "simctl",
+        "spawn",
+        "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "log",
+        "show",
+        "--style",
+        "compact",
+        "--start",
+        "@1788779259",
+        "--end",
+        "@1788779267",
+        "--predicate",
+        "eventMessage CONTAINS[c] \"LUNA_GRID_READY\" OR eventMessage CONTAINS[c] \"LUNA_GRID_ROOT\""
+      ],
+      "exitCode": 0,
+      "started": "2026-09-07T11:07:46.429Z",
+      "finished": "2026-09-07T11:07:48.057Z",
+      "signal": null,
+      "killed": false,
+      "timedOut": false,
+      "timeoutMs": 10000,
+      "stdout": "Timestamp               Ty Process[PID:TID]\n2026-09-07 05:07:46.653 Df CanvasGridEvidence[77047:52fd84a] (Foundation) LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163\n2026-09-07 05:07:46.654 Df CanvasGridEvidence[77047:52fd84a] (Foundation) LUNA_GRID_ROOT case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163 frame=31.000,251.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n",
+      "stderr": "getpwuid_r did not find a match for uid 501\n",
+      "error": null
+    }
+  }
+]

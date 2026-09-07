@@ -1,0 +1,7 @@
+
+--- receipt query 1 start=2026-09-07T11:07:39.063Z end=2026-09-07T11:07:46.429Z ---
+Timestamp               Ty Process[PID:TID]
+2026-09-07 05:07:46.653 Df CanvasGridEvidence[77047:52fd84a] (Foundation) LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163
+2026-09-07 05:07:46.654 Df CanvasGridEvidence[77047:52fd84a] (Foundation) LUNA_GRID_ROOT case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163 frame=31.000,251.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000
+
+getpwuid_r did not find a match for uid 501

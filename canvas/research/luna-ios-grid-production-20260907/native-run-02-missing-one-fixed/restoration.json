@@ -1,0 +1,138 @@
+{
+  "initialStates": {
+    "iphone": {
+      "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "key": "iphone",
+      "state": "Shutdown",
+      "contentSize": "unknown",
+      "contentSizeQuery": {
+        "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+        "args": [
+          "simctl",
+          "ui",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "content_size"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T11:07:26.970Z",
+        "finished": "2026-09-07T11:07:27.108Z",
+        "signal": null,
+        "killed": false,
+        "timedOut": false,
+        "timeoutMs": null,
+        "stdout": "unknown\n",
+        "stderr": "",
+        "error": null
+      }
+    }
+  },
+  "setup": {
+    "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "initialState": {
+      "id": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "key": "iphone",
+      "state": "Shutdown",
+      "contentSize": "unknown",
+      "contentSizeQuery": {
+        "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+        "args": [
+          "simctl",
+          "ui",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "content_size"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T11:07:26.970Z",
+        "finished": "2026-09-07T11:07:27.108Z",
+        "signal": null,
+        "killed": false,
+        "timedOut": false,
+        "timeoutMs": null,
+        "stdout": "unknown\n",
+        "stderr": "",
+        "error": null
+      }
+    },
+    "bootedByRunner": true,
+    "installed": true,
+    "installAttempted": false,
+    "observedContentSize": "large",
+    "installedBundle": {
+      "appContainer": "/Users/emmanuelgyekyeatta-penkra/Library/Developer/CoreSimulator/Devices/A3D92728-7F7B-44D1-BE51-155B891905D9/data/Containers/Bundle/Application/D6C5752D-BE2C-4D63-8849-ADDB4EFA9A97/CanvasGridEvidence.app",
+      "installedExecutablePath": "/Users/emmanuelgyekyeatta-penkra/Library/Developer/CoreSimulator/Devices/A3D92728-7F7B-44D1-BE51-155B891905D9/data/Containers/Bundle/Application/D6C5752D-BE2C-4D63-8849-ADDB4EFA9A97/CanvasGridEvidence.app/CanvasGridEvidence",
+      "installedSha256": "56a7893fdc96d9b7b69fa1f37c8fedacbe2477bac479b5ad6eba11a9fcc14065",
+      "expectedSha256": "56a7893fdc96d9b7b69fa1f37c8fedacbe2477bac479b5ad6eba11a9fcc14065",
+      "matches": true,
+      "command": {
+        "command": "xcrun simctl get_app_container A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid app",
+        "args": [
+          "simctl",
+          "get_app_container",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "com.penkra.canvas.qa.grid",
+          "app"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T11:07:38.217Z",
+        "finished": "2026-09-07T11:07:38.685Z",
+        "signal": null,
+        "killed": false,
+        "timedOut": false,
+        "timeoutMs": 30000,
+        "stdout": "/Users/emmanuelgyekyeatta-penkra/Library/Developer/CoreSimulator/Devices/A3D92728-7F7B-44D1-BE51-155B891905D9/data/Containers/Bundle/Application/D6C5752D-BE2C-4D63-8849-ADDB4EFA9A97/CanvasGridEvidence.app\n",
+        "stderr": "",
+        "error": null
+      }
+    }
+  },
+  "restoration": [
+    {
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "command": {
+        "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+        "args": [
+          "simctl",
+          "ui",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "content_size",
+          "large"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T11:07:52.242Z",
+        "finished": "2026-09-07T11:07:52.402Z",
+        "signal": null,
+        "killed": false,
+        "timedOut": false,
+        "timeoutMs": null,
+        "stdout": "",
+        "stderr": "",
+        "error": null
+      }
+    },
+    {
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "command": {
+        "command": "xcrun simctl shutdown A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "args": [
+          "simctl",
+          "shutdown",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T11:07:52.402Z",
+        "finished": "2026-09-07T11:07:55.586Z",
+        "signal": null,
+        "killed": false,
+        "timedOut": false,
+        "timeoutMs": null,
+        "stdout": "",
+        "stderr": "",
+        "error": null
+      }
+    }
+  ]
+}

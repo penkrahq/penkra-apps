@@ -1,0 +1,246 @@
+{
+  "package": "luna-ios-grid-production-20260907-missing-one",
+  "expectedIdentities": [
+    "grid-c100-180-r60-100-normal|A3D92728-7F7B-44D1-BE51-155B891905D9|large"
+  ],
+  "entries": [
+    {
+      "caseID": "grid-c100-180-r60-100-normal",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "nonce": "grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163",
+      "attemptId": "b410324f-7440-4785-9ade-b7777ba6b2a4",
+      "attemptNumber": 1,
+      "status": "pass",
+      "measurementStatus": "measured",
+      "readiness": {
+        "status": "ready",
+        "attempt": 1,
+        "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/launch/ready-log.txt",
+        "queryPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/launch/receipt-queries.json",
+        "launchStartTimestamp": "2026-09-07T11:07:39.063Z",
+        "rootGeometry": {
+          "caseID": "grid-c100-180-r60-100-normal",
+          "nonce": "grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163",
+          "root": {
+            "x": 31,
+            "y": 251,
+            "width": 340,
+            "height": 400
+          },
+          "window": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "screen": {
+            "x": 0,
+            "y": 0,
+            "width": 402,
+            "height": 874
+          },
+          "scale": 3
+        }
+      },
+      "stability": {
+        "hashes": [
+          "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+          "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+        ],
+        "stable": true,
+        "delayMs": 500,
+        "paths": [
+          "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-a.png",
+          "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-b.png"
+        ]
+      },
+      "fullFrameHashStability": {
+        "stable": true,
+        "captured": {
+          "a": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+          "b": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+        },
+        "beforeCrop": {
+          "a": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+          "b": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+        },
+        "afterCrop": {
+          "a": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+          "b": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+        }
+      },
+      "capturePath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/crop.png",
+      "referencePath": "../references/iphone-large/grid-c100-180-r60-100-normal.png",
+      "crop": {
+        "x": 93,
+        "y": 753,
+        "width": 1020,
+        "height": 1200
+      },
+      "comparison": {
+        "status": "pass",
+        "comparedChildren": 4,
+        "sampleCounts": [
+          {
+            "id": "cell-a",
+            "samples": 9976
+          },
+          {
+            "id": "cell-b",
+            "samples": 9976
+          },
+          {
+            "id": "cell-c",
+            "samples": 9976
+          },
+          {
+            "id": "cell-d",
+            "samples": 9976
+          }
+        ],
+        "edgeTolerancePhysicalPixels": 2,
+        "registration": "none",
+        "clipping": "not-applied",
+        "failures": []
+      },
+      "launch": {
+        "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-normal --grid-nonce grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163",
+        "args": [
+          "simctl",
+          "launch",
+          "--terminate-running-process",
+          "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "com.penkra.canvas.qa.grid",
+          "--grid-case",
+          "grid-c100-180-r60-100-normal",
+          "--grid-nonce",
+          "grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163"
+        ],
+        "exitCode": 0,
+        "started": "2026-09-07T11:07:39.063Z",
+        "finished": "2026-09-07T11:07:46.424Z",
+        "signal": null,
+        "killed": false,
+        "timedOut": false,
+        "timeoutMs": 120000,
+        "stdout": "com.penkra.canvas.qa.grid: 77047\n",
+        "stderr": "",
+        "error": null
+      },
+      "launchStartTimestamp": "2026-09-07T11:07:39.063Z",
+      "attempts": [
+        {
+          "caseID": "grid-c100-180-r60-100-normal",
+          "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+          "contentSize": "large",
+          "scale": 3,
+          "nonce": "grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163",
+          "attemptId": "b410324f-7440-4785-9ade-b7777ba6b2a4",
+          "attemptNumber": 1,
+          "status": "pass",
+          "measurementStatus": "measured",
+          "readiness": {
+            "status": "ready",
+            "attempt": 1,
+            "logPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/launch/ready-log.txt",
+            "queryPath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/launch/receipt-queries.json",
+            "launchStartTimestamp": "2026-09-07T11:07:39.063Z",
+            "rootGeometry": {
+              "caseID": "grid-c100-180-r60-100-normal",
+              "nonce": "grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163",
+              "root": {
+                "x": 31,
+                "y": 251,
+                "width": 340,
+                "height": 400
+              },
+              "window": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "screen": {
+                "x": 0,
+                "y": 0,
+                "width": 402,
+                "height": 874
+              },
+              "scale": 3
+            }
+          },
+          "stability": {
+            "hashes": [
+              "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+              "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+            ],
+            "stable": true,
+            "delayMs": 500,
+            "paths": [
+              "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-a.png",
+              "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-b.png"
+            ]
+          },
+          "fullFrameHashStability": {
+            "stable": true,
+            "captured": {
+              "a": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+              "b": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+            },
+            "beforeCrop": {
+              "a": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+              "b": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+            },
+            "afterCrop": {
+              "a": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc",
+              "b": "035ab14a2a090410d45beec88c2aa353953b005065a9b9ca2483aaad265d3bdc"
+            }
+          },
+          "capturePath": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/crop.png",
+          "referencePath": "../references/iphone-large/grid-c100-180-r60-100-normal.png",
+          "crop": {
+            "x": 93,
+            "y": 753,
+            "width": 1020,
+            "height": 1200
+          },
+          "comparison": {
+            "status": "pass",
+            "comparedChildren": 4,
+            "sampleCounts": [
+              {
+                "id": "cell-a",
+                "samples": 9976
+              },
+              {
+                "id": "cell-b",
+                "samples": 9976
+              },
+              {
+                "id": "cell-c",
+                "samples": 9976
+              },
+              {
+                "id": "cell-d",
+                "samples": 9976
+              }
+            ],
+            "edgeTolerancePhysicalPixels": 2,
+            "registration": "none",
+            "clipping": "not-applied",
+            "failures": []
+          }
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "entries": 1,
+    "measured": 1,
+    "pass": 1,
+    "fail": 0,
+    "unmeasured": 0
+  }
+}

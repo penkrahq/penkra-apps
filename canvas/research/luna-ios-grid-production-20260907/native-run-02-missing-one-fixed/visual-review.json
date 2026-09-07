@@ -1,0 +1,7 @@
+{
+  "method": "individual view_image inspection",
+  "caseID": "grid-c100-180-r60-100-normal",
+  "path": "captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/crop.png",
+  "observation": "Expected white root and four colored cells visibly present; no visual rejection.",
+  "status": "inspected"
+}

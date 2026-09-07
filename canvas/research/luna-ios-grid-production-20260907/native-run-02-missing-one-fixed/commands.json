@@ -1,0 +1,325 @@
+[
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:26.812Z",
+    "finished": "2026-09-07T11:07:26.970Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "{\n  \"devices\" : {\n    \"com.apple.CoreSimulator.SimRuntime.iOS-26-3\" : [\n      {\n        \"lastBootedAt\" : \"2026-09-07T10:59:10Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A3D92728-7F7B-44D1-BE51-155B891905D9\\/data\",\n        \"dataPathSize\" : 1995759616,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/A3D92728-7F7B-44D1-BE51-155B891905D9\",\n        \"udid\" : \"A3D92728-7F7B-44D1-BE51-155B891905D9\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 573440,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T11:32:41Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\\/data\",\n        \"dataPathSize\" : 674238464,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\",\n        \"udid\" : \"64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 155648,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T08:58:22Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/D230EC2C-334E-4862-9030-A42521FCA854\\/data\",\n        \"dataPathSize\" : 1877270528,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/D230EC2C-334E-4862-9030-A42521FCA854\",\n        \"udid\" : \"D230EC2C-334E-4862-9030-A42521FCA854\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 397312,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-17T06:59:44Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/E0593F27-7B04-4EC6-8BF7-FAC8FD164775\\/data\",\n        \"dataPathSize\" : 1154592768,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/E0593F27-7B04-4EC6-8BF7-FAC8FD164775\",\n        \"udid\" : \"E0593F27-7B04-4EC6-8BF7-FAC8FD164775\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 188416,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T10:03:13Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/D118D718-6386-4BCE-98A3-C301A431D694\\/data\",\n        \"dataPathSize\" : 4790390784,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/D118D718-6386-4BCE-98A3-C301A431D694\",\n        \"udid\" : \"D118D718-6386-4BCE-98A3-C301A431D694\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 675840,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-26T05:41:33Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\\/data\",\n        \"dataPathSize\" : 1973596160,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\",\n        \"udid\" : \"F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 299008,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Penkra iPhone\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-18T23:02:35Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/989E6B50-7D4C-48A4-8DE9-E8E924E166F3\\/data\",\n        \"dataPathSize\" : 2180259840,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/989E6B50-7D4C-48A4-8DE9-E8E924E166F3\",\n        \"udid\" : \"989E6B50-7D4C-48A4-8DE9-E8E924E166F3\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 311296,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Penut iPhone\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T10:08:30Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A6327714-722B-4E55-8CBF-77EB44563EB1\\/data\",\n        \"dataPathSize\" : 2392113152,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/A6327714-722B-4E55-8CBF-77EB44563EB1\",\n        \"udid\" : \"A6327714-722B-4E55-8CBF-77EB44563EB1\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 507904,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro Max\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T06:04:53Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/99267100-C607-4771-B9E6-B9EC036C5564\\/data\",\n        \"dataPathSize\" : 1384726528,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/99267100-C607-4771-B9E6-B9EC036C5564\",\n        \"udid\" : \"99267100-C607-4771-B9E6-B9EC036C5564\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 417792,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-Air\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone Air\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-07-05T23:58:14Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\\/data\",\n        \"dataPathSize\" : 1349844992,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\",\n        \"udid\" : \"4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 172032,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/DD90ED0B-F4E9-4C73-9431-3853DFF83C23\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/DD90ED0B-F4E9-4C73-9431-3853DFF83C23\",\n        \"udid\" : \"DD90ED0B-F4E9-4C73-9431-3853DFF83C23\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-16e\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 16e\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T09:19:33Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\\/data\",\n        \"dataPathSize\" : 1691680768,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\",\n        \"udid\" : \"7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 344064,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5) (16GB)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/12343694-4960-4AB6-AF3F-E4D9A460BC39\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/12343694-4960-4AB6-AF3F-E4D9A460BC39\",\n        \"udid\" : \"12343694-4960-4AB6-AF3F-E4D9A460BC39\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\",\n        \"udid\" : \"BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 11-inch (M5)\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-09-07T10:28:59Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/8F053C2C-958D-4CC5-AB38-E838CFAC9442\\/data\",\n        \"dataPathSize\" : 1714520064,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/8F053C2C-958D-4CC5-AB38-E838CFAC9442\",\n        \"udid\" : \"8F053C2C-958D-4CC5-AB38-E838CFAC9442\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 520192,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad mini (A17 Pro)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/941B94EF-AF48-4887-8D85-95F2D3CB9E8F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/941B94EF-AF48-4887-8D85-95F2D3CB9E8F\",\n        \"udid\" : \"941B94EF-AF48-4887-8D85-95F2D3CB9E8F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-A16\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad (A16)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B388EB87-FF6D-4893-80EC-5607B9FB8662\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/B388EB87-FF6D-4893-80EC-5607B9FB8662\",\n        \"udid\" : \"B388EB87-FF6D-4893-80EC-5607B9FB8662\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 13-inch (M3)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\",\n        \"udid\" : \"B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 11-inch (M3)\"\n      }\n    ]\n  }\n}\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:26.970Z",
+    "finished": "2026-09-07T11:07:27.108Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "unknown\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl boot A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "args": [
+      "simctl",
+      "boot",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:27.108Z",
+    "finished": "2026-09-07T11:07:28.681Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl bootstatus A3D92728-7F7B-44D1-BE51-155B891905D9 -b",
+    "args": [
+      "simctl",
+      "bootstatus",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "-b"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:28.681Z",
+    "finished": "2026-09-07T11:07:37.473Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": 60000,
+    "stdout": "Monitoring boot status for iPhone 17 Pro (A3D92728-7F7B-44D1-BE51-155B891905D9).\n[2026-09-07 11:07:30 +0000] Status=1, isTerminal=NO, Elapsed=00:02.\n\tWaiting on BackBoard\n\n[2026-09-07 11:07:35 +0000] Status=4, isTerminal=NO, Elapsed=00:07.\n\tWaiting on System App\n\n[2026-09-07 11:07:37 +0000] Status=4294967295, isTerminal=YES, Elapsed=00:09.\n\tFinished\n\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:37.473Z",
+    "finished": "2026-09-07T11:07:37.919Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "{\n  \"devices\" : {\n    \"com.apple.CoreSimulator.SimRuntime.iOS-26-3\" : [\n      {\n        \"lastBootedAt\" : \"2026-09-07T11:07:27Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A3D92728-7F7B-44D1-BE51-155B891905D9\\/data\",\n        \"dataPathSize\" : 1977184256,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/A3D92728-7F7B-44D1-BE51-155B891905D9\",\n        \"udid\" : \"A3D92728-7F7B-44D1-BE51-155B891905D9\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 573440,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Booted\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T11:32:41Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\\/data\",\n        \"dataPathSize\" : 674238464,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\",\n        \"udid\" : \"64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 155648,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T08:58:22Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/D230EC2C-334E-4862-9030-A42521FCA854\\/data\",\n        \"dataPathSize\" : 1877270528,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/D230EC2C-334E-4862-9030-A42521FCA854\",\n        \"udid\" : \"D230EC2C-334E-4862-9030-A42521FCA854\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 397312,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-17T06:59:44Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/E0593F27-7B04-4EC6-8BF7-FAC8FD164775\\/data\",\n        \"dataPathSize\" : 1154592768,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/E0593F27-7B04-4EC6-8BF7-FAC8FD164775\",\n        \"udid\" : \"E0593F27-7B04-4EC6-8BF7-FAC8FD164775\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 188416,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T10:03:13Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/D118D718-6386-4BCE-98A3-C301A431D694\\/data\",\n        \"dataPathSize\" : 4790390784,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/D118D718-6386-4BCE-98A3-C301A431D694\",\n        \"udid\" : \"D118D718-6386-4BCE-98A3-C301A431D694\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 675840,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-26T05:41:33Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\\/data\",\n        \"dataPathSize\" : 1973596160,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\",\n        \"udid\" : \"F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 299008,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Penkra iPhone\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-18T23:02:35Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/989E6B50-7D4C-48A4-8DE9-E8E924E166F3\\/data\",\n        \"dataPathSize\" : 2180259840,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/989E6B50-7D4C-48A4-8DE9-E8E924E166F3\",\n        \"udid\" : \"989E6B50-7D4C-48A4-8DE9-E8E924E166F3\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 311296,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Penut iPhone\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T10:08:30Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A6327714-722B-4E55-8CBF-77EB44563EB1\\/data\",\n        \"dataPathSize\" : 2392113152,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/A6327714-722B-4E55-8CBF-77EB44563EB1\",\n        \"udid\" : \"A6327714-722B-4E55-8CBF-77EB44563EB1\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 507904,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro Max\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T06:04:53Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/99267100-C607-4771-B9E6-B9EC036C5564\\/data\",\n        \"dataPathSize\" : 1384726528,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/99267100-C607-4771-B9E6-B9EC036C5564\",\n        \"udid\" : \"99267100-C607-4771-B9E6-B9EC036C5564\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 417792,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-Air\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone Air\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-07-05T23:58:14Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\\/data\",\n        \"dataPathSize\" : 1349844992,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\",\n        \"udid\" : \"4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 172032,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/DD90ED0B-F4E9-4C73-9431-3853DFF83C23\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/DD90ED0B-F4E9-4C73-9431-3853DFF83C23\",\n        \"udid\" : \"DD90ED0B-F4E9-4C73-9431-3853DFF83C23\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-16e\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 16e\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T09:19:33Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\\/data\",\n        \"dataPathSize\" : 1691680768,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\",\n        \"udid\" : \"7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 344064,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5) (16GB)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/12343694-4960-4AB6-AF3F-E4D9A460BC39\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/12343694-4960-4AB6-AF3F-E4D9A460BC39\",\n        \"udid\" : \"12343694-4960-4AB6-AF3F-E4D9A460BC39\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\",\n        \"udid\" : \"BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 11-inch (M5)\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-09-07T10:28:59Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/8F053C2C-958D-4CC5-AB38-E838CFAC9442\\/data\",\n        \"dataPathSize\" : 1714520064,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/8F053C2C-958D-4CC5-AB38-E838CFAC9442\",\n        \"udid\" : \"8F053C2C-958D-4CC5-AB38-E838CFAC9442\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 520192,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad mini (A17 Pro)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/941B94EF-AF48-4887-8D85-95F2D3CB9E8F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/941B94EF-AF48-4887-8D85-95F2D3CB9E8F\",\n        \"udid\" : \"941B94EF-AF48-4887-8D85-95F2D3CB9E8F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-A16\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad (A16)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B388EB87-FF6D-4893-80EC-5607B9FB8662\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/B388EB87-FF6D-4893-80EC-5607B9FB8662\",\n        \"udid\" : \"B388EB87-FF6D-4893-80EC-5607B9FB8662\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 13-inch (M3)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\",\n        \"udid\" : \"B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 11-inch (M3)\"\n      }\n    ]\n  }\n}\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:37.919Z",
+    "finished": "2026-09-07T11:07:38.217Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "large\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl get_app_container A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid app",
+    "args": [
+      "simctl",
+      "get_app_container",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "app"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:38.217Z",
+    "finished": "2026-09-07T11:07:38.685Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": 30000,
+    "stdout": "/Users/emmanuelgyekyeatta-penkra/Library/Developer/CoreSimulator/Devices/A3D92728-7F7B-44D1-BE51-155B891905D9/data/Containers/Bundle/Application/D6C5752D-BE2C-4D63-8849-ADDB4EFA9A97/CanvasGridEvidence.app\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size",
+      "large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:38.687Z",
+    "finished": "2026-09-07T11:07:39.062Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.grid --grid-case grid-c100-180-r60-100-normal --grid-nonce grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163",
+    "args": [
+      "simctl",
+      "launch",
+      "--terminate-running-process",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "com.penkra.canvas.qa.grid",
+      "--grid-case",
+      "grid-c100-180-r60-100-normal",
+      "--grid-nonce",
+      "grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:39.063Z",
+    "finished": "2026-09-07T11:07:46.424Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": 120000,
+    "stdout": "com.penkra.canvas.qa.grid: 77047\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl spawn A3D92728-7F7B-44D1-BE51-155B891905D9 log show --style compact --start @1788779259 --end @1788779267 --predicate eventMessage CONTAINS[c] \"LUNA_GRID_READY\" OR eventMessage CONTAINS[c] \"LUNA_GRID_ROOT\"",
+    "args": [
+      "simctl",
+      "spawn",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "log",
+      "show",
+      "--style",
+      "compact",
+      "--start",
+      "@1788779259",
+      "--end",
+      "@1788779267",
+      "--predicate",
+      "eventMessage CONTAINS[c] \"LUNA_GRID_READY\" OR eventMessage CONTAINS[c] \"LUNA_GRID_ROOT\""
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:46.429Z",
+    "finished": "2026-09-07T11:07:48.057Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": 10000,
+    "stdout": "Timestamp               Ty Process[PID:TID]\n2026-09-07 05:07:46.653 Df CanvasGridEvidence[77047:52fd84a] (Foundation) LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163\n2026-09-07 05:07:46.654 Df CanvasGridEvidence[77047:52fd84a] (Foundation) LUNA_GRID_ROOT case=grid-c100-180-r60-100-normal nonce=grid-run-02-missing-one-grid-c100-180-r60-100-normal-bfe0d7dc-8147-4b9b-a638-d2461eec7163 frame=31.000,251.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n",
+    "stderr": "getpwuid_r did not find a match for uid 501\n",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02-missing-one-fixed/captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-a.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02-missing-one-fixed/captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-a.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:50.561Z",
+    "finished": "2026-09-07T11:07:50.833Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "",
+    "stderr": "Wrote screenshot to: /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02-missing-one-fixed/captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-a.png\n",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl io A3D92728-7F7B-44D1-BE51-155B891905D9 screenshot --type=png /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02-missing-one-fixed/captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-b.png",
+    "args": [
+      "simctl",
+      "io",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "screenshot",
+      "--type=png",
+      "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02-missing-one-fixed/captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-b.png"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:51.448Z",
+    "finished": "2026-09-07T11:07:51.685Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "",
+    "stderr": "Wrote screenshot to: /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas/research/luna-ios-grid-production-20260907/native-run-02-missing-one-fixed/captures/iphone/large/attempts/grid-c100-180-r60-100-normal/1-b410324f-7440-4785-9ade-b7777ba6b2a4/full/grid-c100-180-r60-100-normal-b.png\n",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size",
+      "large"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:52.242Z",
+    "finished": "2026-09-07T11:07:52.402Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl shutdown A3D92728-7F7B-44D1-BE51-155B891905D9",
+    "args": [
+      "simctl",
+      "shutdown",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:52.402Z",
+    "finished": "2026-09-07T11:07:55.586Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl list devices -j",
+    "args": [
+      "simctl",
+      "list",
+      "devices",
+      "-j"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:55.586Z",
+    "finished": "2026-09-07T11:07:55.758Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "{\n  \"devices\" : {\n    \"com.apple.CoreSimulator.SimRuntime.iOS-26-3\" : [\n      {\n        \"lastBootedAt\" : \"2026-09-07T11:07:27Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A3D92728-7F7B-44D1-BE51-155B891905D9\\/data\",\n        \"dataPathSize\" : 1988493312,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/A3D92728-7F7B-44D1-BE51-155B891905D9\",\n        \"udid\" : \"A3D92728-7F7B-44D1-BE51-155B891905D9\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 573440,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T11:32:41Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\\/data\",\n        \"dataPathSize\" : 674238464,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\",\n        \"udid\" : \"64F1DD05-DCCC-4584-A6B3-21B44A4DC5BA\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 155648,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T08:58:22Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/D230EC2C-334E-4862-9030-A42521FCA854\\/data\",\n        \"dataPathSize\" : 1877270528,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/D230EC2C-334E-4862-9030-A42521FCA854\",\n        \"udid\" : \"D230EC2C-334E-4862-9030-A42521FCA854\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 397312,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-17T06:59:44Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/E0593F27-7B04-4EC6-8BF7-FAC8FD164775\\/data\",\n        \"dataPathSize\" : 1154592768,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/E0593F27-7B04-4EC6-8BF7-FAC8FD164775\",\n        \"udid\" : \"E0593F27-7B04-4EC6-8BF7-FAC8FD164775\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 188416,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T10:03:13Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/D118D718-6386-4BCE-98A3-C301A431D694\\/data\",\n        \"dataPathSize\" : 4790390784,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/D118D718-6386-4BCE-98A3-C301A431D694\",\n        \"udid\" : \"D118D718-6386-4BCE-98A3-C301A431D694\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 675840,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-26T05:41:33Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\\/data\",\n        \"dataPathSize\" : 1973596160,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\",\n        \"udid\" : \"F5E027EF-EF9B-4E6C-B01E-C6573FE448CC\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 299008,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Penkra iPhone\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-18T23:02:35Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/989E6B50-7D4C-48A4-8DE9-E8E924E166F3\\/data\",\n        \"dataPathSize\" : 2180259840,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/989E6B50-7D4C-48A4-8DE9-E8E924E166F3\",\n        \"udid\" : \"989E6B50-7D4C-48A4-8DE9-E8E924E166F3\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 311296,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"Penut iPhone\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T10:08:30Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/A6327714-722B-4E55-8CBF-77EB44563EB1\\/data\",\n        \"dataPathSize\" : 2392113152,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/A6327714-722B-4E55-8CBF-77EB44563EB1\",\n        \"udid\" : \"A6327714-722B-4E55-8CBF-77EB44563EB1\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 507904,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17 Pro Max\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-09T06:04:53Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/99267100-C607-4771-B9E6-B9EC036C5564\\/data\",\n        \"dataPathSize\" : 1384726528,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/99267100-C607-4771-B9E6-B9EC036C5564\",\n        \"udid\" : \"99267100-C607-4771-B9E6-B9EC036C5564\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 417792,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-Air\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone Air\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-07-05T23:58:14Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\\/data\",\n        \"dataPathSize\" : 1349844992,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\",\n        \"udid\" : \"4E8B50E6-64F8-4186-B2B8-97D9B78AC34A\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 172032,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-17\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 17\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/DD90ED0B-F4E9-4C73-9431-3853DFF83C23\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/DD90ED0B-F4E9-4C73-9431-3853DFF83C23\",\n        \"udid\" : \"DD90ED0B-F4E9-4C73-9431-3853DFF83C23\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPhone-16e\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPhone 16e\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-08-12T09:19:33Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\\/data\",\n        \"dataPathSize\" : 1691680768,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\",\n        \"udid\" : \"7F68B850-B6B7-4C84-A92E-99F0FC1A0E33\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 344064,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-16GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5) (16GB)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/12343694-4960-4AB6-AF3F-E4D9A460BC39\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/12343694-4960-4AB6-AF3F-E4D9A460BC39\",\n        \"udid\" : \"12343694-4960-4AB6-AF3F-E4D9A460BC39\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-13-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 13-inch (M5)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\",\n        \"udid\" : \"BBDD2C12-3882-4DB2-BFBF-8CD501B9834E\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M5-12GB\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Pro 11-inch (M5)\"\n      },\n      {\n        \"lastBootedAt\" : \"2026-09-07T10:28:59Z\",\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/8F053C2C-958D-4CC5-AB38-E838CFAC9442\\/data\",\n        \"dataPathSize\" : 1714520064,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/8F053C2C-958D-4CC5-AB38-E838CFAC9442\",\n        \"udid\" : \"8F053C2C-958D-4CC5-AB38-E838CFAC9442\",\n        \"isAvailable\" : true,\n        \"logPathSize\" : 520192,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-mini-A17-Pro\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad mini (A17 Pro)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/941B94EF-AF48-4887-8D85-95F2D3CB9E8F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/941B94EF-AF48-4887-8D85-95F2D3CB9E8F\",\n        \"udid\" : \"941B94EF-AF48-4887-8D85-95F2D3CB9E8F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-A16\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad (A16)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B388EB87-FF6D-4893-80EC-5607B9FB8662\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/B388EB87-FF6D-4893-80EC-5607B9FB8662\",\n        \"udid\" : \"B388EB87-FF6D-4893-80EC-5607B9FB8662\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-13-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 13-inch (M3)\"\n      },\n      {\n        \"dataPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Developer\\/CoreSimulator\\/Devices\\/B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\\/data\",\n        \"dataPathSize\" : 18337792,\n        \"logPath\" : \"\\/Users\\/emmanuelgyekyeatta-penkra\\/Library\\/Logs\\/CoreSimulator\\/B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\",\n        \"udid\" : \"B0904885-BD2F-4C9E-AEF5-CE5795A2E71F\",\n        \"isAvailable\" : true,\n        \"deviceTypeIdentifier\" : \"com.apple.CoreSimulator.SimDeviceType.iPad-Air-11-inch-M3\",\n        \"state\" : \"Shutdown\",\n        \"name\" : \"iPad Air 11-inch (M3)\"\n      }\n    ]\n  }\n}\n",
+    "stderr": "",
+    "error": null
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "args": [
+      "simctl",
+      "ui",
+      "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "content_size"
+    ],
+    "exitCode": 0,
+    "started": "2026-09-07T11:07:55.758Z",
+    "finished": "2026-09-07T11:07:55.909Z",
+    "signal": null,
+    "killed": false,
+    "timedOut": false,
+    "timeoutMs": null,
+    "stdout": "unknown\n",
+    "stderr": "",
+    "error": null
+  }
+]
