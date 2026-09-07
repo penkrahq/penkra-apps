@@ -105,7 +105,7 @@ test("migration preserves legacy boolean tokens and canonicalizes annotated node
     variables: { visible: { type: "boolean", value: true } },
     paragraphStyles: {}, imports: {}, flows: [],
     children: [{
-      id: "outer", type: "frame", width: "fill_container(220)", height: "fit_content(64)",
+      id: "outer", type: "frame", width: "fill_container(220)", height: "fit_content(64)", enabled: "$visible",
       minWidth: "fill_container(191.2)", children: [
         { id: "label", type: "text", content: "Label", width: "fill_container(191.2)", textAlignVertical: "middle", paragraphs: [{ from: 0, to: 5 }], marks: [] },
       ],
@@ -117,10 +117,12 @@ test("migration preserves legacy boolean tokens and canonicalizes annotated node
   assert.equal(result.document.children[0].width, "fill_container");
   assert.equal(result.document.children[0].height, "fit_content");
   assert.equal(result.document.children[0].minWidth, "fill_container");
+  assert.deepEqual(result.document.children[0].enabled, [{ value: "${visible}" }]);
   assert.equal(result.document.children[0].children[0].width, "fill_container");
   assert.equal(result.document.children[0].children[0].textAlignVertical, "center");
   assert.ok(result.notes.some((note) => note.includes("Canonicalized 4 legacy annotated sizing value(s)")));
   assert.ok(result.notes.some((note) => note.includes("legacy middle text alignment")));
+  assert.ok(result.notes.some((note) => note.includes("legacy scalar variable reference")));
   assert.deepEqual(source, before);
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });

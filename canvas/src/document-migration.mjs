@@ -54,6 +54,7 @@ export function migrateCanvasDocument(source) {
   repairLegacyParagraphs(document, notes);
   canonicalizeLegacyAnnotatedDimensions(document, notes);
   canonicalizeLegacyTextAlignment(document, notes);
+  wrapLegacyScalarVariableReferences(document, notes);
   if (Object.hasOwn(document, "version")) {
     delete document.version;
     notes.push("Dropped the obsolete OpenPencil format marker; Canvas has no Pencil file-compatibility contract.");
@@ -103,6 +104,28 @@ export function migrateCanvasDocument(source) {
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${bounded}`);
   }
   return { document, changes, notes };
+}
+
+function wrapLegacyScalarVariableReferences(document, notes) {
+  const scalarKeys = new Set([
+    "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "decorative",
+    "bleed", "safeMargin", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridColumn", "gridRow",
+    "clip", "fontSize", "lineHeight", "letterSpacing", "wordSpacing", "underline", "strikethrough", "weight",
+  ]);
+  let changes = 0;
+  const visit = (nodes) => {
+    for (const node of nodes ?? []) {
+      for (const key of scalarKeys) {
+        const value = node?.[key];
+        if (typeof value !== "string" || !/^\$\{(?:[A-Za-z][\w-]*:)?[A-Za-z][\w-]*(?:\.[\w-]+)*\}$/u.test(value)) continue;
+        node[key] = [{ value }];
+        changes += 1;
+      }
+      visit(node?.children);
+    }
+  };
+  visit(document.children);
+  if (changes) notes.push(`Wrapped ${changes} legacy scalar variable reference(s) as canonical cascades so their resolved types remain intact.`);
 }
 
 function collapseUniformLegacyAxes(document, notes) {
