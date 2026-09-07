@@ -218,5 +218,5 @@ test("ExtGState key boundary matrix has exact case membership", () => {
   assert.equal(unusedCases, 2);
   assert.equal(specificCases, 26);
   assert.equal(contextCases, 12);
-  assert.equal(unknownCases + valueCases + unusedCases + specificCases + contextCases + 2, 234);
+  assert.equal(unknownCases + valueCases + unusedCases + specificCases + contextCases + 3, 235);
 });
