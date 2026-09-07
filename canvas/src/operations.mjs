@@ -13,7 +13,7 @@ import {
 } from "./document-model.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
-import { loadCanvasImports } from "./canvas-imports.mjs";
+import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 
 const runtime = globalThis.penkra;
@@ -279,7 +279,7 @@ runtime.operations.handle("documents.export", async (input) => {
   try {
     const document = materialize(model);
     const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
-    const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
+    const imported = await loadRetainedCanvasImports(api, document, { documentId: input.documentId });
     const assets = new Map([...rootAssets, ...imported.assets]);
     const role = exportRoleForFormat(input.format);
     const frames = input.frames?.length
@@ -311,7 +311,7 @@ runtime.operations.handle("documents.extract", async (input) => {
   try {
     const document = materialize(model);
     const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
-    const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
+    const imported = await loadRetainedCanvasImports(api, document, { documentId: input.documentId });
     return await extractDocumentNodes(document, input, {
       assets: new Map([...rootAssets, ...imported.assets]),
       imports: imported.imports,
