@@ -3,7 +3,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { extractDocumentNode, extractDocumentNodes } from "../src/export-service.mjs";
 import {
-  MARKER, ROLELESS_SPECS, colorBounds, compareMarkerBounds, decodePng, inspectPdf, parseSvg, rolelessDocument, sha256,
+  MARKER, ROLELESS_SPECS, TRIANGLE, colorBounds, compareMarkerBounds, compareTriangleMeasurement, decodePng, inspectPdf, inspectPdfPages, parseSvg, rolelessDocument, sha256, triangleMeasurement,
 } from "./luna-extraction-artifact-fixtures.mjs";
 
 const formats = ["png", "svg", "pdf"];
@@ -16,23 +16,26 @@ function arg(name) {
 }
 
 function pngExpected(spec) { return { width: spec.width * 2, height: spec.height * 2, marker: { x: 20, y: 24, width: 40, height: 32 } }; }
+function triangleExpected(scale = 1) { return { x: TRIANGLE.x * scale, y: TRIANGLE.y * scale, width: TRIANGLE.width * scale, height: TRIANGLE.height * scale }; }
 
 async function inspectArtifact(path, format, spec, scale = 1) {
   if (format === "png") {
     const image = decodePng(await readFile(path));
     const expected = scale === 2 ? pngExpected(spec) : { width: spec.width, height: spec.height, marker: MARKER };
     const comparison = compareMarkerBounds(colorBounds(image), { ...expected.marker, samples: 1 });
-    if (image.width !== expected.width || image.height !== expected.height || !comparison.ok) throw new Error(`PNG measurement mismatch for ${spec.id}: ${JSON.stringify({ image: { width: image.width, height: image.height }, comparison })}`);
-    return { dimensions: { width: image.width, height: image.height }, marker: colorBounds(image), hash: sha256(await readFile(path)) };
+    const triangle = triangleMeasurement(image, triangleExpected(scale));
+    const triangleComparison = compareTriangleMeasurement(triangle, triangleExpected(scale));
+    if (image.width !== expected.width || image.height !== expected.height || !comparison.ok || !triangleComparison.ok) throw new Error(`PNG measurement mismatch for ${spec.id}: ${JSON.stringify({ image: { width: image.width, height: image.height }, comparison, triangle, triangleComparison })}`);
+    return { dimensions: { width: image.width, height: image.height }, marker: colorBounds(image), triangle, hash: sha256(await readFile(path)) };
   }
   if (format === "svg") {
     const svg = parseSvg(await readFile(path, "utf8"));
     if (JSON.stringify(svg.viewBox) !== JSON.stringify([0, 0, spec.width, spec.height]) || !svg.marker || !svg.triangle || svg.hasImage) throw new Error(`SVG semantic mismatch for ${spec.id}.`);
     return { viewBox: svg.viewBox, marker: svg.marker, triangle: svg.triangle, hash: sha256(await readFile(path)) };
   }
-  const pdf = await inspectPdf(path, { ...MARKER, samples: 1 });
-  if (pdf.pages !== 1 || JSON.stringify(pdf.pageSize) !== JSON.stringify({ width: spec.width, height: spec.height }) || !pdf.markerComparison?.ok || pdf.imageXObjectLines.length) throw new Error(`PDF measurement mismatch for ${spec.id}: ${JSON.stringify(pdf)}`);
-  return { pages: pdf.pages, pageSize: pdf.pageSize, rendered: pdf.rendered, marker: pdf.marker, imageXObjectLines: pdf.imageXObjectLines, hash: sha256(await readFile(path)) };
+  const pdf = await inspectPdf(path, { ...MARKER, samples: 1 }, 2, triangleExpected());
+  if (pdf.pages !== 1 || JSON.stringify(pdf.pageSize) !== JSON.stringify({ width: spec.width, height: spec.height }) || !pdf.markerComparison?.ok || !pdf.triangleComparison?.ok || pdf.imageXObjectLines.length) throw new Error(`PDF measurement mismatch for ${spec.id}: ${JSON.stringify(pdf)}`);
+  return { pages: pdf.pages, pageSize: pdf.pageSize, rendered: pdf.rendered, marker: pdf.marker, triangle: pdf.triangle, imageXObjectLines: pdf.imageXObjectLines, hash: sha256(await readFile(path)) };
 }
 
 async function main() {
@@ -75,6 +78,7 @@ async function main() {
     }
     const multiPath = join(temporary, "multi.pdf");
     const multiResult = await extractDocumentNodes(document, { node: multiSpecs.map((spec) => spec.id), format: "pdf", destination: multiPath }, assets);
+    const multiInspection = await inspectPdfPages(multiPath, multiSpecs.map(() => ({ marker: { ...MARKER, samples: 1 }, triangle: triangleExpected() })));
     const physicalPath = join(temporary, "physical.pdf");
     const physicalDocument = structuredClone(document);
     Object.assign(physicalDocument.children[0], { physical: { w: 210, h: 297, unit: "mm" }, bleed: 9 });
@@ -93,7 +97,7 @@ async function main() {
     const summary = {
       singleArtifacts: { requested: 36, passed },
       directoryArtifacts: { requested: 9, passed: directoryRecords.reduce((count, row) => count + row.artifacts.length, 0), records: directoryRecords },
-      multiPdf: { requested: 1, pages: multiResult.units, hash: sha256(await readFile(multiPath)) },
+      multiPdf: { requested: 1, pages: multiResult.units, pageMeasurements: multiInspection.renderedPages, hash: sha256(await readFile(multiPath)) },
       physicalPdf: { hash: sha256(await readFile(physicalPath)), measurement: await inspectPdf(physicalPath, { x: 19, y: 21, width: 20, height: 16, samples: 1 }) },
       rejected: { multiPngSvg: "CANVAS_EXTRACT_FORMAT_SINGLE_UNIT", pdfX4: x4Code },
     };

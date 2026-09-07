@@ -95,10 +95,42 @@ export function colorBounds(image, hex = MARKER.color) {
 }
 
 export function compareMarkerBounds(observed, expected, tolerance = 2) {
-  if (!observed || !expected || observed.samples === 0 || !Number.isFinite(tolerance) || tolerance < 0) return { ok: false, reason: "missing or zero-sample marker measurement" };
+  if (!observed || !expected || !Number.isFinite(observed.samples) || observed.samples <= 0 || !Number.isFinite(tolerance) || tolerance < 0) return { ok: false, reason: "missing, invalid or zero-sample marker measurement" };
   const fields = ["x", "y", "width", "height"];
   const deltas = Object.fromEntries(fields.map((field) => [field, Math.abs(observed[field] - expected[field])]));
   return { ok: fields.every((field) => Number.isFinite(observed[field]) && deltas[field] <= tolerance), deltas };
+}
+
+function triangleInterior(x, y, triangle) {
+  const centerX = x + 0.5; const centerY = y + 0.5;
+  const relativeY = centerY - triangle.y;
+  if (relativeY <= 1 || relativeY >= triangle.height - 1) return false;
+  const fraction = relativeY / triangle.height;
+  const left = triangle.x + triangle.width / 2 * fraction;
+  const right = triangle.x + triangle.width - triangle.width / 2 * fraction;
+  return centerX > left + 1 && centerX < right - 1;
+}
+
+export function triangleMeasurement(image, expected, hex = TRIANGLE.fill) {
+  const bounds = colorBounds(image, hex);
+  const color = hex.replace(/^#/, "").match(/../gu).map((part) => Number.parseInt(part, 16));
+  let samples = 0; let interiorSampleCount = 0;
+  for (let y = 0; y < image.height; y += 1) for (let x = 0; x < image.width; x += 1) {
+    const index = (y * image.width + x) * image.channels;
+    if (image.pixels[index] !== color[0] || image.pixels[index + 1] !== color[1] || image.pixels[index + 2] !== color[2] || (image.channels === 4 && image.pixels[index + 3] === 0)) continue;
+    samples += 1;
+    if (triangleInterior(x, y, expected)) interiorSampleCount += 1;
+  }
+  const area = expected.width * expected.height / 2;
+  const occupancy = bounds.samples > 0 ? bounds.samples / (bounds.width * bounds.height) : 0;
+  return { bounds, samples, interiorSampleCount, occupancy, expectedOccupancy: 0.5, expectedArea: area };
+}
+
+export function compareTriangleMeasurement(observed, expected, tolerance = 2) {
+  if (!observed || !observed.bounds || !Number.isFinite(observed.samples) || observed.samples <= 0 || !Number.isFinite(observed.interiorSampleCount) || observed.interiorSampleCount <= 0) return { ok: false, reason: "missing, invalid or zero-sample triangle measurement" };
+  const bounds = compareMarkerBounds({ ...observed.bounds, samples: observed.samples }, { ...expected, samples: 1 }, tolerance);
+  const occupancyDelta = Math.abs(observed.occupancy - 0.5);
+  return { ok: bounds.ok && occupancyDelta <= 0.15, bounds, occupancyDelta, occupancyTolerance: 0.15, interiorSampleCount: observed.interiorSampleCount };
 }
 
 export function parseSvg(svg) {
@@ -114,38 +146,58 @@ export function parseSvg(svg) {
   };
 }
 
-export async function runTool(command, args) {
-  const result = await execFileAsync(command, args, { maxBuffer: 4 * 1024 * 1024 });
+export async function runTool(command, args, timeoutMs = 30_000) {
+  const result = await execFileAsync(command, args, { maxBuffer: 4 * 1024 * 1024, timeout: timeoutMs, killSignal: "SIGKILL" });
   return result.stdout;
 }
 
-export async function inspectPdf(path, expectedMarker = null, tolerance = 2) {
+export async function inspectPdfPages(path, expectations = [], tolerance = 2) {
   const bytes = await readFile(path);
   const pdf = await PDFDocument.load(bytes);
   const pages = pdf.getPages();
-  const page = pages[0];
   const info = await runTool("pdfinfo", [path]);
   const sizeMatch = info.match(/^Page size:\s+([0-9.]+) x ([0-9.]+) pts/mu);
   const images = await runTool("pdfimages", ["-list", path]);
   const pageSize = sizeMatch ? { width: Number(sizeMatch[1]), height: Number(sizeMatch[2]) } : null;
-  let rendered = null;
-  let marker = null;
-  if (expectedMarker) {
-    const prefix = `${path}.render72`;
-    await runTool("pdftoppm", ["-r", "72", "-singlefile", "-png", path, prefix]);
-    rendered = decodePng(await readFile(`${prefix}.png`));
-    marker = colorBounds(rendered);
+  const renderedPages = [];
+  if (expectations.length) {
+    const prefix = `${path}.render72-pages`;
+    await runTool("pdftoppm", ["-r", "72", "-png", path, prefix]);
+    for (let index = 0; index < pages.length; index += 1) {
+      const rendered = decodePng(await readFile(`${prefix}-${index + 1}.png`));
+      const expected = expectations[index] ?? {};
+      const marker = expected.marker ? colorBounds(rendered) : null;
+      const triangle = expected.triangle ? triangleMeasurement(rendered, expected.triangle) : null;
+      renderedPages.push({ width: rendered.width, height: rendered.height, marker, markerComparison: marker && expected.marker ? compareMarkerBounds(marker, expected.marker, tolerance) : null, triangle, triangleComparison: triangle && expected.triangle ? compareTriangleMeasurement(triangle, expected.triangle, tolerance) : null });
+    }
   }
   return {
     pages: pages.length,
     pageSize,
-    pdfLibSize: page ? page.getSize() : null,
-    mediaBox: page ? page.getMediaBox() : null,
-    bleedBox: page ? page.getBleedBox() : null,
-    trimBox: page ? page.getTrimBox() : null,
+    pageSizes: pages.map((page) => page.getSize()),
+    mediaBoxes: pages.map((page) => page.getMediaBox()),
+    bleedBoxes: pages.map((page) => page.getBleedBox()),
+    trimBoxes: pages.map((page) => page.getTrimBox()),
     imageXObjectLines: images.split(/\r?\n/u).filter((line) => /^\s*\d+\s+\d+\s+\d+\s+image\s/u.test(line)),
-    rendered: rendered ? { width: rendered.width, height: rendered.height } : null,
-    marker,
-    markerComparison: marker && expectedMarker ? compareMarkerBounds(marker, expectedMarker, tolerance) : null,
+    renderedPages,
+  };
+}
+
+export async function inspectPdf(path, expectedMarker = null, tolerance = 2, expectedTriangle = null) {
+  const inspected = await inspectPdfPages(path, expectedMarker || expectedTriangle ? [{ marker: expectedMarker, triangle: expectedTriangle }] : [], tolerance);
+  const first = inspected.renderedPages[0] ?? {};
+  return {
+    pages: inspected.pages,
+    pageSize: inspected.pageSize,
+    pdfLibSize: inspected.pageSizes[0] ?? null,
+    mediaBox: inspected.mediaBoxes[0] ?? null,
+    bleedBox: inspected.bleedBoxes[0] ?? null,
+    trimBox: inspected.trimBoxes[0] ?? null,
+    imageXObjectLines: inspected.imageXObjectLines,
+    rendered: first.width === undefined ? null : { width: first.width, height: first.height },
+    marker: first.marker ?? null,
+    markerComparison: first.markerComparison ?? null,
+    triangle: first.triangle ?? null,
+    triangleComparison: first.triangleComparison ?? null,
   };
 }

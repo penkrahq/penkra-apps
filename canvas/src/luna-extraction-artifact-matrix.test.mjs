@@ -1,14 +1,15 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { PDFDocument } from "pdf-lib";
+import { openBrowser } from "../compatibility/browser-fixture.mjs";
 import { extractDocumentNode, extractDocumentNodes } from "./export-service.mjs";
 import {
-  MARKER, ROLELESS_SPECS, TRIANGLE, colorBounds, compareMarkerBounds, decodePng, inspectPdf, parseSvg,
-  physicalDocument, rolelessDocument, sha256,
+  MARKER, ROLELESS_SPECS, TRIANGLE, colorBounds, compareMarkerBounds, compareTriangleMeasurement, decodePng,
+  inspectPdf, inspectPdfPages, parseSvg, physicalDocument, rolelessDocument, runTool, sha256, triangleMeasurement,
 } from "../scripts/luna-extraction-artifact-fixtures.mjs";
 
 const ASSETS = { assets: new Map() };
@@ -17,6 +18,10 @@ const multiSpecs = [ROLELESS_SPECS[0], ROLELESS_SPECS[3], ROLELESS_SPECS[6]];
 
 function expectedPng(spec, scale) {
   return { width: spec.width * scale, height: spec.height * scale, marker: { x: MARKER.x * scale, y: MARKER.y * scale, width: MARKER.width * scale, height: MARKER.height * scale } };
+}
+
+function expectedTriangle(scale = 1) {
+  return { x: TRIANGLE.x * scale, y: TRIANGLE.y * scale, width: TRIANGLE.width * scale, height: TRIANGLE.height * scale };
 }
 
 function addFailure(failures, label, error) {
@@ -64,6 +69,8 @@ test("roleless extraction artifacts cover 12 translated roots in PNG/SVG/PDF", a
           assert.deepEqual([...image.pixels.subarray(0, image.channels).subarray(0, 3)], [255, 255, 255]);
           const comparison = compareMarkerBounds(colorBounds(image), { ...expected.marker, samples: 1 });
           assert.equal(comparison.ok, true, JSON.stringify(comparison));
+          const triangle = triangleMeasurement(image, expectedTriangle(2));
+          assert.equal(compareTriangleMeasurement(triangle, expectedTriangle(2)).ok, true, JSON.stringify(triangle));
         } else if (format === "svg") {
           const svg = parseSvg(await readFile(destination, "utf8"));
           assert.deepEqual(svg.viewBox, [0, 0, spec.width, spec.height]);
@@ -71,12 +78,13 @@ test("roleless extraction artifacts cover 12 translated roots in PNG/SVG/PDF", a
           assert.deepEqual(svg.triangle && { d: svg.triangle.d, transform: svg.triangle.transform }, { d: TRIANGLE.geometry, transform: `translate(${TRIANGLE.x} ${TRIANGLE.y}) scale(1 1) translate(0 0)` });
           assert.equal(svg.hasImage, false);
         } else {
-          const pdf = await inspectPdf(destination, { ...MARKER, samples: 1 });
+          const pdf = await inspectPdf(destination, { ...MARKER, samples: 1 }, 2, expectedTriangle());
           assert.equal(pdf.pages, 1);
           assert.deepEqual(pdf.pageSize, { width: spec.width, height: spec.height });
           assert.deepEqual(pdf.rendered, { width: spec.width, height: spec.height });
           assert.equal(pdf.imageXObjectLines.length, 0);
           assert.equal(pdf.markerComparison.ok, true, JSON.stringify(pdf.markerComparison));
+          assert.equal(pdf.triangleComparison.ok, true, JSON.stringify(pdf.triangleComparison));
         }
       });
     }
@@ -107,14 +115,15 @@ test("directory extraction publishes three named artifacts per format and exact-
           const expected = expectedPng(spec, 2);
           assert.deepEqual({ width: image.width, height: image.height }, { width: expected.width, height: expected.height });
           assert.equal(compareMarkerBounds(colorBounds(image), { ...expected.marker, samples: 1 }).ok, true);
+          assert.equal(compareTriangleMeasurement(triangleMeasurement(image, expectedTriangle(2)), expectedTriangle(2)).ok, true);
         } else if (format === "svg") {
           const svg = parseSvg(await readFile(path, "utf8"));
           assert.deepEqual(svg.viewBox, [0, 0, spec.width, spec.height]);
           assert.equal(svg.hasImage, false);
         } else {
-          const pdf = await inspectPdf(path, { ...MARKER, samples: 1 });
+          const pdf = await inspectPdf(path, { ...MARKER, samples: 1 }, 2, expectedTriangle());
           assert.equal(pdf.pages, 1); assert.deepEqual(pdf.pageSize, { width: spec.width, height: spec.height });
-          assert.equal(pdf.imageXObjectLines.length, 0); assert.equal(pdf.markerComparison.ok, true);
+          assert.equal(pdf.imageXObjectLines.length, 0); assert.equal(pdf.markerComparison.ok, true); assert.equal(pdf.triangleComparison.ok, true);
         }
       }
     }
@@ -129,6 +138,14 @@ test("directory extraction publishes three named artifacts per format and exact-
       const pages = (await PDFDocument.load(await readFile(pdfPath))).getPages();
       assert.equal(pages.length, 3);
       assert.deepEqual(pages.map((page) => page.getSize()), multiSpecs.map((spec) => ({ width: spec.width, height: spec.height })));
+      const rendered = await inspectPdfPages(pdfPath, multiSpecs.map(() => ({ marker: { ...MARKER, samples: 1 }, triangle: expectedTriangle() })));
+      assert.equal(rendered.pages, 3);
+      assert.deepEqual(rendered.pageSizes, multiSpecs.map((spec) => ({ width: spec.width, height: spec.height })));
+      assert.equal(rendered.renderedPages.length, 3);
+      for (const page of rendered.renderedPages) {
+        assert.equal(page.markerComparison.ok, true, JSON.stringify(page.markerComparison));
+        assert.equal(page.triangleComparison.ok, true, JSON.stringify(page.triangleComparison));
+      }
     }
     assert.equal(outcomes.filter((row) => row.status === "pass").length, 4);
     assert.equal(outcomes.filter((row) => row.status === "blocked").length, 2);
@@ -151,7 +168,13 @@ test("physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 
         height: Math.round(MARKER.height * trimHeight / ROLELESS_SPECS[0].height),
         samples: 1,
       };
-      const observed = await inspectPdf(physicalPath, expectedPhysicalMarker);
+      const expectedPhysicalTriangle = {
+        x: Math.round(9 + TRIANGLE.x * trimWidth / ROLELESS_SPECS[0].width),
+        y: Math.round(9 + TRIANGLE.y * trimHeight / ROLELESS_SPECS[0].height),
+        width: Math.round(TRIANGLE.width * trimWidth / ROLELESS_SPECS[0].width),
+        height: Math.round(TRIANGLE.height * trimHeight / ROLELESS_SPECS[0].height),
+      };
+      const observed = await inspectPdf(physicalPath, expectedPhysicalMarker, 2, expectedPhysicalTriangle);
       assert.equal(observed.pages, 1);
       assert.ok(Math.abs(observed.mediaBox.width - (trimWidth + 18)) < 0.001);
       assert.ok(Math.abs(observed.mediaBox.height - (trimHeight + 18)) < 0.001);
@@ -161,6 +184,7 @@ test("physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 
       assert.ok(Math.abs(observed.trimBox.width - trimWidth) < 0.001 && Math.abs(observed.trimBox.height - trimHeight) < 0.001);
       assert.deepEqual(observed.rendered, { width: Math.ceil(trimWidth + 18), height: Math.ceil(trimHeight + 18) });
       assert.equal(observed.markerComparison.ok, true, JSON.stringify(observed.markerComparison));
+      assert.equal(observed.triangleComparison.ok, true, JSON.stringify(observed.triangleComparison));
       assert.equal(observed.imageXObjectLines.length, 0);
     });
     const unverifiedPath = join(directory, "unverified.pdf");
@@ -175,7 +199,56 @@ test("marker comparator rejects null/zero samples and shifts beyond the two-pixe
   assert.equal(compareMarkerBounds({ ...expected, x: 12, samples: 1 }, expected, 2).ok, true);
   assert.equal(compareMarkerBounds({ ...expected, x: 13, samples: 1 }, expected, 2).ok, false);
   assert.equal(compareMarkerBounds({ x: null, y: null, width: null, height: null, samples: 0 }, expected, 2).ok, false);
+  assert.equal(compareMarkerBounds({ ...expected, samples: Number.NaN }, expected, 2).ok, false);
+  assert.equal(compareMarkerBounds({ ...expected, samples: -1 }, expected, 2).ok, false);
+  assert.equal(compareMarkerBounds({ ...expected, samples: undefined }, expected, 2).ok, false);
   assert.equal(compareMarkerBounds(undefined, expected, 2).ok, false);
+});
+
+test("omitting the triangle produces a failing independent visual measurement", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-roleless-extraction-missing-triangle-"));
+  try {
+    const document = rolelessDocument([ROLELESS_SPECS[0]]);
+    document.children[0].children = document.children[0].children.filter((node) => node.id.endsWith("-marker"));
+    const path = join(directory, "missing-triangle.png");
+    await extractDocumentNode(document, { nodeId: ROLELESS_SPECS[0].id, format: "png", scale: 2, destination: path }, ASSETS);
+    const image = decodePng(await readFile(path));
+    const measurement = triangleMeasurement(image, expectedTriangle(2));
+    assert.equal(measurement.samples, 0);
+    assert.equal(compareTriangleMeasurement(measurement, expectedTriangle(2)).ok, false);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test("SVG artifacts receive native browser render measurements through the existing vector harness", async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-roleless-extraction-svg-render-"));
+  let browser;
+  try {
+    browser = await openBrowser(join(directory, "chrome"), context.signal);
+    const document = rolelessDocument();
+    for (const spec of ROLELESS_SPECS) {
+      const path = join(directory, `${spec.id}.svg`);
+      await extractDocumentNode(document, { nodeId: spec.id, format: "svg", destination: path }, ASSETS);
+      const image = decodePng(await browser.screenshot(pathToFileURL(path).href, spec.width, spec.height, 1));
+      assert.deepEqual({ width: image.width, height: image.height }, { width: spec.width, height: spec.height });
+      assert.equal(compareMarkerBounds(colorBounds(image), { ...MARKER, samples: 1 }).ok, true);
+      assert.equal(compareTriangleMeasurement(triangleMeasurement(image, expectedTriangle()), expectedTriangle()).ok, true);
+    }
+    const manifest = JSON.parse(await readFile(new URL("../research/luna-extraction-artifact-matrix-20260907/corpus/manifest.json", import.meta.url), "utf8"));
+    for (const record of manifest.retained.filter((candidate) => candidate.format === "svg")) {
+      const spec = ROLELESS_SPECS.find((candidate) => candidate.id === record.id);
+      const retainedPath = fileURLToPath(new URL(`../research/luna-extraction-artifact-matrix-20260907/corpus/${record.path}`, import.meta.url));
+      const image = decodePng(await browser.screenshot(pathToFileURL(retainedPath).href, spec.width, spec.height, 1));
+      assert.equal(compareMarkerBounds(colorBounds(image), { ...MARKER, samples: 1 }).ok, true);
+      assert.equal(compareTriangleMeasurement(triangleMeasurement(image, expectedTriangle()), expectedTriangle()).ok, true);
+    }
+  } finally {
+    await browser?.close();
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("PDF inspection subprocesses enforce a finite timeout", async () => {
+  await assert.rejects(runTool(process.execPath, ["-e", "setTimeout(() => {}, 1000)"], 100), (error) => error?.killed === true && error?.signal === "SIGKILL");
 });
 
 test("retained representative corpus has verified hashes and regenerates current semantic measurements", async () => {
@@ -197,6 +270,27 @@ test("retained representative corpus has verified hashes and regenerates current
     for (const [index, record] of manifest.retained.entries()) {
       const spec = ROLELESS_SPECS.find((candidate) => candidate.id === record.id);
       assert.ok(spec, `retained fixture ${record.id} is present in the explicit identity matrix`);
+      const retainedBytes = await readFile(new URL(`../research/luna-extraction-artifact-matrix-20260907/corpus/${record.path}`, import.meta.url));
+      if (record.format === "png") {
+        const retainedImage = decodePng(retainedBytes);
+        const expected = expectedPng(spec, 2);
+        assert.deepEqual({ width: retainedImage.width, height: retainedImage.height }, { width: expected.width, height: expected.height });
+        assert.equal(compareMarkerBounds(colorBounds(retainedImage), { ...expected.marker, samples: 1 }).ok, true);
+        assert.equal(compareTriangleMeasurement(triangleMeasurement(retainedImage, expectedTriangle(2)), expectedTriangle(2)).ok, true);
+      } else if (record.format === "svg") {
+        const retainedSvg = parseSvg(retainedBytes.toString("utf8"));
+        assert.deepEqual(retainedSvg.viewBox, [0, 0, spec.width, spec.height]);
+        assert.equal(retainedSvg.hasImage, false);
+        assert.deepEqual(retainedSvg.triangle?.d, TRIANGLE.geometry);
+      } else {
+        const retainedPdf = join(regenerated, `retained-${index}.pdf`);
+        await writeFile(retainedPdf, retainedBytes);
+        const inspectedRetainedPdf = await inspectPdf(retainedPdf, { ...MARKER, samples: 1 }, 2, expectedTriangle());
+        assert.equal(inspectedRetainedPdf.pages, 1);
+        assert.equal(inspectedRetainedPdf.markerComparison.ok, true);
+        assert.equal(inspectedRetainedPdf.triangleComparison.ok, true);
+        assert.equal(inspectedRetainedPdf.imageXObjectLines.length, 0);
+      }
       const destination = join(regenerated, `${index}.${record.format}`);
       await extractDocumentNode(document, { nodeId: spec.id, format: record.format, ...(record.format === "png" ? { scale: 2 } : {}), destination }, ASSETS);
       if (record.format === "png") {
@@ -204,6 +298,7 @@ test("retained representative corpus has verified hashes and regenerates current
         const expected = expectedPng(spec, 2);
         assert.deepEqual({ width: image.width, height: image.height }, { width: expected.width, height: expected.height });
         assert.equal(compareMarkerBounds(colorBounds(image), { ...expected.marker, samples: 1 }).ok, true);
+        assert.equal(compareTriangleMeasurement(triangleMeasurement(image, expectedTriangle(2)), expectedTriangle(2)).ok, true);
       } else if (record.format === "svg") {
         const svg = parseSvg(await readFile(destination, "utf8"));
         assert.deepEqual(svg.viewBox, [0, 0, spec.width, spec.height]);
@@ -211,10 +306,10 @@ test("retained representative corpus has verified hashes and regenerates current
         assert.deepEqual(svg.triangle?.d, TRIANGLE.geometry);
         assert.equal(svg.hasImage, false);
       } else {
-        const pdf = await inspectPdf(destination, { ...MARKER, samples: 1 });
+        const pdf = await inspectPdf(destination, { ...MARKER, samples: 1 }, 2, expectedTriangle());
         assert.equal(pdf.pages, 1); assert.deepEqual(pdf.pageSize, { width: spec.width, height: spec.height });
         assert.deepEqual(pdf.rendered, { width: spec.width, height: spec.height });
-        assert.equal(pdf.markerComparison.ok, true); assert.equal(pdf.imageXObjectLines.length, 0);
+        assert.equal(pdf.markerComparison.ok, true); assert.equal(pdf.triangleComparison.ok, true); assert.equal(pdf.imageXObjectLines.length, 0);
       }
     }
     assert.equal(corpusRoot.endsWith("/corpus/"), true);
