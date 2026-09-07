@@ -3,6 +3,7 @@ import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNull, PDFNumb
 import { inspectPdfxMetadata } from "./pdfx-metadata.mjs";
 import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
 import { inspectPageImages } from "./pdfx-images.mjs";
+import { inspectPdfxSubsetPolicy } from "./pdfx-subset-policy.mjs";
 import { readPdfContent } from "./pdf-content.mjs";
 import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
@@ -87,6 +88,7 @@ async function inspectPdfx4(bytes) {
   let pdf;
   try { pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true }); }
   catch { add("PDF_PARSE_FAILED", "6.1", "file"); return result(); }
+  issues.push(...inspectPdfxSubsetPolicy(pdf).issues);
   const resolve = (value) => value instanceof PDFRef ? pdf.context.lookup(value) : value;
   const get = (dict, key) => dict instanceof PDFDict ? resolve(dict.get(PDFName.of(key))) : undefined;
   const name = (value) => value instanceof PDFName ? value.decodeText() : undefined;

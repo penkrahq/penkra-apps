@@ -2,6 +2,8 @@ import { PDFArray, PDFDict, PDFName, PDFRawStream, PDFRef } from "pdf-lib";
 
 const VIEWER_BOX_KEYS = Object.freeze(["ViewArea", "ViewClip", "PrintArea", "PrintClip"]);
 const SUBSET_CLAUSE = "6.24";
+const PERMISSIONS_CLAUSE = "6.15";
+const HALFTONE_CLAUSE = "6.13";
 const METADATA_CLAUSE = "6.10.6";
 const VIEWER_CLAUSE = "6.21";
 const GRAPH_CLAUSE = "6.1";
@@ -45,7 +47,7 @@ export function inspectPdfxSubsetPolicy(pdf) {
 
   // Canvas subset exclusions: Perms, optional-content dictionaries/keys,
   // halftones, and metadata streams other than the exact catalog packet.
-  if (has(catalog, "Perms")) issue("CANVAS_SUBSET_UNSUPPORTED", SUBSET_CLAUSE, "Catalog/Perms");
+  if (has(catalog, "Perms")) issue("CANVAS_SUBSET_UNSUPPORTED", PERMISSIONS_CLAUSE, "Catalog/Perms");
   const viewerPreferences = get(catalog, "ViewerPreferences", "Catalog");
   if (viewerPreferences instanceof PDFDict) {
     let pages;
@@ -76,9 +78,10 @@ export function inspectPdfxSubsetPolicy(pdf) {
     if (!(dict instanceof PDFDict)) return;
     const type = name(dict.get(PDFName.of("Type")), `${path}/Type`);
     const subtype = name(dict.get(PDFName.of("Subtype")), `${path}/Subtype`);
-    if (type === "OCG" || type === "OCMD" || has(dict, "OC") || has(dict, "HalftoneType")) {
+    if (type === "OCG" || type === "OCMD" || has(dict, "OC")) {
       issue("CANVAS_SUBSET_UNSUPPORTED", SUBSET_CLAUSE, path);
     }
+    if (has(dict, "HalftoneType")) issue("CANVAS_SUBSET_UNSUPPORTED", HALFTONE_CLAUSE, path);
     if (object instanceof PDFRawStream && (type === "Metadata" || subtype === "XML") && object !== catalogMetadata) {
       issue("CANVAS_SUBSET_UNSUPPORTED", METADATA_CLAUSE, path);
     }
