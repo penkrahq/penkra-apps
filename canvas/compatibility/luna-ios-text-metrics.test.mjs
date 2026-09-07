@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   compareBounds,
+  hashBytes,
   inkBands,
   isInkPixel,
   toPointBand,
@@ -51,4 +52,11 @@ test("one-pixel vertical shift remains visible without registration", () => {
   assert.equal(isInkPixel(reference, (1 * 3 + 1) * 4), true);
   assert.notDeepEqual(a.rowHistogram, b.rowHistogram);
   assert.deepEqual(compareBounds(a.bands[0].bounds, b.bands[0].bounds), { minX: 0, minY: 1, maxX: 0, maxY: 1 });
+});
+
+test("tampered PNG bytes are detected by SHA-256", async () => {
+  const original = new Uint8Array([0, 1, 2, 3, 4]);
+  const tampered = new Uint8Array(original);
+  tampered[2] ^= 1;
+  assert.notEqual(await hashBytes(original), await hashBytes(tampered));
 });
