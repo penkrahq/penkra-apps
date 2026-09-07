@@ -162,7 +162,8 @@ export function migrateM7AssignRoles(source, options = {}) {
   });
   let changes = 0;
   for (const node of document.children ?? []) {
-    if (node?.type !== "frame" || node.role !== undefined || componentTargets.has(node.id)) continue;
+    if (node?.type !== "frame" || node.role !== undefined || componentTargets.has(node.id)
+      || subtreeContainsId(node, componentTargets)) continue;
     const role = roleById[node.id] ?? defaultRole;
     if (document.module === "mobile" && !["ios", "android"].includes(role)) {
       throw migrationError("M7", `${node.id} needs role ios or android.`);
@@ -171,6 +172,13 @@ export function migrateM7AssignRoles(source, options = {}) {
     changes += 1;
   }
   return { document, changes, notes: changes ? [`Inferred export roles for ${changes} top-level frame(s) from document module \`${document.module}\`.`] : [] };
+}
+
+function subtreeContainsId(node, ids) {
+  for (const child of node?.children ?? []) {
+    if (ids.has(child?.id) || subtreeContainsId(child, ids)) return true;
+  }
+  return false;
 }
 
 export function migrateM8AddFlows(source) {

@@ -126,6 +126,19 @@ test("M2, M3, M7 and M8 establish root module, export roles and closed vocabular
   assert.deepEqual(result.document.flows, []);
 });
 
+test("M7 does not infer an export role for a component-library frame", () => {
+  const source = { module: "web", children: [
+    { id: "library", type: "frame", children: [
+      { id: "button", type: "frame", children: [] },
+      { id: "preview", type: "ref", ref: "button" },
+    ] },
+    { id: "route", type: "frame", children: [{ id: "use", type: "ref", ref: "button" }] },
+  ] };
+  const { document } = migrateM7AssignRoles(source);
+  assert.equal(document.children[0].role, undefined);
+  assert.equal(document.children[1].role, "route");
+});
+
 test("M6 partitions newline-terminated paragraphs and records the uniform named style", () => {
   const source = { children: [{
     id: "copy", type: "text", content: "First\nSecond", fontFamily: "Inter", fontSize: 20,
