@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, readdir, readFile as readBytes, stat, writeFile } from "node:fs/promises";
 import test from "node:test";
-import { PDFArray, PDFDict, PDFDocument, PDFName, PDFNull, PDFNumber, PDFRef, PDFString } from "pdf-lib";
+import { PDFArray, PDFDict, PDFDocument, PDFName, PDFNull, PDFNumber, PDFRef, PDFString, decodePDFRawStream } from "pdf-lib";
 import { exportPdf } from "./pdf.mjs";
 import { preflightPdfx4 } from "./pdfx-preflight.mjs";
 
@@ -75,12 +75,12 @@ async function stateFixture(definition) {
   const states = new Map();
   const makeState = (stateName, type = "ExtGState") => {
     const dictionary = pdf.context.obj({});
-    if (type !== undefined) set(dictionary, "Type", name(type));
+    if (type !== null) set(dictionary, "Type", name(type));
     const ref = pdf.context.register(dictionary);
     states.set(stateName, { dictionary, ref });
     return { dictionary, ref };
   };
-  const primary = makeState("State", definition.type === "omitted" ? undefined : definition.type === "wrong" ? "Font" : "ExtGState");
+  const primary = makeState("State", definition.type === "omitted" ? null : definition.type === "wrong" ? "Font" : "ExtGState");
   let entries = [["State", primary.ref]];
   let content = "/State gs";
   if (definition.topology === "switch-two-states-twice") {
@@ -192,11 +192,69 @@ async function prepare(definition) {
   return fixture;
 }
 
+function resourceState(pdf, page, resourceName = "State") {
+  const resolve = (value) => value instanceof PDFRef ? pdf.context.lookup(value) : value;
+  const resources = resolve(page.node.Resources());
+  const extGState = resources instanceof PDFDict ? resolve(resources.get(PDFName.of("ExtGState"))) : undefined;
+  assert.ok(extGState instanceof PDFDict, "serialized page has ExtGState resources");
+  const rawState = extGState.get(PDFName.of(resourceName));
+  assert.notEqual(rawState, undefined, `serialized page has /${resourceName} state resource`);
+  return { resolve, resources, extGState, rawState, state: resolve(rawState) };
+}
+
+function contentText(pdf, page) {
+  const resolve = (value) => value instanceof PDFRef ? pdf.context.lookup(value) : value;
+  const rawContents = page.node.Contents();
+  const contents = rawContents instanceof PDFArray ? rawContents.asArray() : [rawContents];
+  return contents.map(resolve).filter((stream) => stream?.contents).map((stream) => new TextDecoder().decode(decodePDFRawStream(stream).decode())).join("\n");
+}
+
+function assertSerializedTopology(pdf, definition) {
+  if (definition.source === "export") {
+    for (const page of pdf.getPages()) {
+      const { resolve } = resourceState(pdf, page, "GS-7098480789");
+      const resources = resolve(page.node.Resources());
+      const extGState = resources instanceof PDFDict ? resolve(resources.get(PDFName.of("ExtGState"))) : undefined;
+      if (!(extGState instanceof PDFDict)) continue;
+      for (const raw of extGState.values()) {
+        const dictionary = resolve(raw);
+        if (dictionary instanceof PDFDict) assert.equal(dictionary.get(PDFName.of("Type"))?.decodeText?.(), "ExtGState");
+      }
+    }
+    return;
+  }
+  const first = resourceState(pdf, pdf.getPages()[0]);
+  if (definition.topology === "dangling-state-resource") {
+    assert.ok(first.rawState instanceof PDFRef, "dangling state remains an indirect reference");
+    assert.equal(first.state, undefined, "dangling state must not resolve to a dictionary");
+    return;
+  }
+  assert.ok(first.state instanceof PDFDict, "serialized /State resolves to a dictionary");
+  const expectedType = definition.type ?? "present";
+  if (expectedType === "omitted") assert.equal(first.state.has(PDFName.of("Type")), false, `${definition.name} unexpectedly has /Type`);
+  else assert.equal(first.state.get(PDFName.of("Type"))?.decodeText?.(), expectedType === "wrong" ? "Font" : "ExtGState", `${definition.name} serialized /Type`);
+  if (definition.topology === "switch-two-states-twice") {
+    const other = resourceState(pdf, pdf.getPages()[0], "Other");
+    assert.ok(first.rawState instanceof PDFRef && other.rawState instanceof PDFRef, "two switched states remain indirect");
+    assert.notEqual(first.rawState.toString(), other.rawState.toString(), "two switched states must use distinct refs");
+    assert.notStrictEqual(first.state, other.state, "two switched states must use distinct dictionaries");
+    const text = contentText(pdf, pdf.getPages()[0]);
+    assert.equal((text.match(/\/State gs/gu) ?? []).length, 2, "both /State switches are serialized");
+    assert.equal((text.match(/\/Other gs/gu) ?? []).length, 2, "both /Other switches are serialized");
+  }
+  if (definition.topology === "shared-state-two-pages") {
+    const refs = pdf.getPages().map((page) => resourceState(pdf, page).rawState);
+    assert.ok(refs.every((value) => value instanceof PDFRef), "shared state refs remain indirect");
+    assert.equal(new Set(refs.map((value) => value.toString())).size, 1, "shared pages must point to one state ref");
+  }
+}
+
 async function runCase(definition, serialization) {
   const prepared = await prepare(definition);
   const bytes = await prepared.pdf.save({ useObjectStreams: serialization.useObjectStreams });
   const beforeHash = sha256(bytes);
-  await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  const loaded = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assertSerializedTopology(loaded, definition);
   const first = await preflightPdfx4(bytes);
   const second = await preflightPdfx4(bytes);
   assert.equal(sha256(bytes), beforeHash, `${definition.name}/${serialization.name} mutated input bytes`);
