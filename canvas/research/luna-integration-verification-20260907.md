@@ -209,3 +209,73 @@ wrapper mitigates the first two direct-API gaps on its tested route. No source/b
 made, no new compiler lease or native run was started, and no fix is inferred from these findings.
 The combined delivery batch remains integrated through `4c28c13`; these findings are blocking
 review evidence pending coordinator decision.
+
+## Zero-byte API integration and LS-001 reproduction
+
+The coordinator approved exactly `b1a373b`, `b753993`, `d518d16` in that order. None was an
+ancestor or patch-equivalent of the combined revision, and all three cherry-picks were clean:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `b1a373b` | `b5d29e9` |
+| `b753993` | `84192bf` |
+| `d518d16` | `edfd630` |
+
+The additional test-only LS-001 reproduction was committed as `dbe3431`.
+`CANVAS_ASSET_UPLOAD_RECEIPT_INVALID` from the earlier approved upload-receipt batch remains
+present. The only untracked path after integration is the preserved
+`canvas/compatibility/mobile-fixtures/swiftui/.build/` tree.
+
+The strict requested selection was run from `canvas` as:
+
+`node scripts/test.mjs src/canvas-api.test.mjs src/luna-asset-empty-read.test.mjs src/library-storage.test.mjs src/luna-library-storage-protocol.test.mjs`
+
+The first authoring attempt reported `SyntaxError: Identifier 'response' has already been
+declared` before loading the new test file: aggregate `38` pass, `1` fail, `0` cancelled, `0`
+skipped, exit `1`. The duplicate helper was removed and the identical command was rerun
+authoritatively. Log `/tmp/canvas-luna-zero-byte-focused-20260907.log`; exit `0`, `45` pass,
+`0` fail, `0` cancelled, `0` skipped; runner duration `403.309792 ms` (portable wrapper
+duration under `1 s`).
+
+The added test uses real `createCanvasApi(runtime)` and `createLibraryStorage(api)`. Its fake
+authenticated Account transport returns a `ready` receipt for an empty asset without persisting
+it, then returns `BLOB_NOT_FOUND` for the storage readback GET at offset `0`. Assertions prove
+one exact authenticated GET occurred, the write rejected with `BLOB_NOT_FOUND`, no release
+receipt was returned, no upload completion was attempted, and the zero-byte hash was not stored.
+
+## Pending PDF architectural-limit review (not integrated)
+
+The pending chain is `babfac5` (source), `be70e15` (22 boundary tests), `2f24268` (evidence),
+with each parent in that order and `babfac5^` matching the combined PDF preflight tree. No PDF
+commit was picked. Static review found these concrete scope issues:
+
+- The implementation covers maximum name bytes, content-stream string bytes, q/Q depth,
+  indirect-object count, signed integer range, and maximum real range. Adobe PDF Reference 1.6
+  Table C.1 also specifies minimum nonzero real magnitude, fractional precision, DeviceN
+  component count, and CID maximum; this package defines no checks for those four limits. The
+  `1e-50` test only asserts that it is not rejected, so it does not protect the missing minimum
+  real-limit behavior.
+- `inspectContentNumberSpellings` builds each token with
+  `String.fromCharCode(...bytes.subarray(start, end))`. An oversized numeric token can exceed the
+  engine's argument limit, raise `RangeError`, and be swallowed by the function's broad catch;
+  scanning then stops without a diagnostic for later tokens. The boundary suite has no long-token
+  regression for this fail-closed diagnostic gap.
+- The lexical and parsed content-limit checks are attached only to page `Contents` streams.
+  Form XObject content remains explicitly uncovered/unsupported in the existing preflight, so
+  this is not a complete architectural-limit traversal if that scope is ever expanded.
+
+The prior negative document matrix topology remains a separate chain:
+`349a6c9 -> edd28fb -> 8752b92 -> 2cbe2ed`; the root inventory pair `2696b42 -> 6a16ed5` is
+intermediate research relocation and is omitted from the minimal test/evidence sequence. The
+combined branch already contains a different serialized content/resource matrix and corpus
+(`dc11fc9`, `3db51b8`, `ee7e269`), so those commits are not silently treated as patch-equivalent
+to the pending document-negative package. Its final evidence reports 22 cases x 2 serializers
+(44 identities) and exactly 2 retained representative PDFs; no PDF/X gate or capability state
+changed. If later approved, the minimal independent sequences are the four-commit document
+matrix chain above and the three-commit architectural-limit chain above, in their stated orders.
+
+At the latest active-lane poll: Android `agent-29aae5111e4ecadf2d26b7f87bd3c53a` was
+`interrupted` with no queued turn; iOS `agent-3d52bc7b681407f1426ee32b870ffb40` was `working`
+with no queued turn; delivery `agent-eccc4d9408f68469415931f1120a09ca` was `working` with no
+queued turn; PDF `agent-93d30227119bd634b15b45d6b3d21f1f` was `working` with `2` queued turns.
+No Android native task was resumed. No Gradle, xcodebuild, or swiftc lease is held by this lane.
