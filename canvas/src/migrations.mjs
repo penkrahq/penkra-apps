@@ -33,11 +33,20 @@ export function migrateM4Descendants(source) {
   const parents = indexParents(document.children);
   let changes = 0;
   const notes = [];
-  walkNodes(document.children, (instance) => {
-    if (instance.type !== "ref") return;
+  const instances = [];
+  const collectInstances = (children, depth = 0) => {
+    for (const node of children ?? []) {
+      if (node?.type === "ref") instances.push({ instance: node, depth });
+      collectInstances(node?.children, depth + 1);
+    }
+  };
+  collectInstances(document.children);
+  instances.sort((left, right) => right.depth - left.depth);
+  for (const { instance } of instances) {
+    if (instance.type !== "ref") continue;
     const target = nodes.get(instance.ref);
     const nestedInRole = target ? hasRoleAncestor(instance.ref, nodes, parents) : false;
-    if (!isRecord(instance.descendants) && !nestedInRole) return;
+    if (!isRecord(instance.descendants) && !nestedInRole) continue;
     if (target) {
       replaceObject(instance, materializeLegacyInstance(instance, target, notes));
       notes.push(nestedInRole
@@ -51,7 +60,7 @@ export function migrateM4Descendants(source) {
       notes.push(`Dropped unresolved component target \`${missing}\` from ref \`${instance.id}\`; retained the instance box as an empty group.`);
     }
     changes += 1;
-  });
+  }
   return { document, changes, notes };
 }
 

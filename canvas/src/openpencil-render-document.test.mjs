@@ -156,6 +156,22 @@ test("M4 materializes descendant overrides without a manifest", () => {
   assert.equal(document.children[2].children[0].content, "Cloned");
 });
 
+test("M4 materializes the original nested ref graph once from deepest to shallowest", () => {
+  const source = { children: [
+    { id: "leaf", type: "frame", children: [{ id: "label", type: "text", content: "Default" }] },
+    { id: "component", type: "frame", children: [
+      { id: "nested", type: "ref", ref: "leaf", descendants: { label: { content: "Nested" } } },
+    ] },
+    { id: "outer", type: "ref", ref: "component", descendants: {} },
+  ] };
+  const { document, changes } = migrateM4Descendants(source);
+  assert.equal(changes, 2);
+  assert.equal(document.children[1].children[0].type, "frame");
+  assert.equal(document.children[2].children[0].type, "frame");
+  assert.equal(document.children[2].children[0].children[0].content, "Nested");
+  assert.equal(document.children[2].children[0].children[0].id, "outer/nested/label");
+});
+
 test("M4 remaps every materialized descendant id and its internal relationships", () => {
   const source = { children: [
     { id: "component", type: "frame", children: [
