@@ -19,13 +19,11 @@ export function inspectIndirectObjectCount(count, path, add) {
 export function inspectPdfNumber(value, path, add) {
   if (!(value instanceof PDFNumber)) return;
   const number = value.asNumber();
-  const spelling = typeof value.stringValue === "string" ? value.stringValue : value.toString();
-  if (/^[+-]?\d+$/u.test(spelling)) {
-    if (!Number.isFinite(number) || number < PDF_ARCHITECTURAL_LIMITS.integerMinimum || number > PDF_ARCHITECTURAL_LIMITS.integerMaximum) {
-      addLimit(add, path, "integer-range", spelling, `${PDF_ARCHITECTURAL_LIMITS.integerMinimum}..${PDF_ARCHITECTURAL_LIMITS.integerMaximum}`);
-    }
-  } else if (!Number.isFinite(number) || Math.abs(number) > PDF_ARCHITECTURAL_LIMITS.realMaximum) {
-    addLimit(add, path, "real-range", spelling, `±${PDF_ARCHITECTURAL_LIMITS.realMaximum}`);
+  // pdf-lib normalizes the lexical spelling of parsed PDFNumber values. A
+  // serialized 2147483648.0 can therefore reappear as stringValue
+  // "2147483648"; never infer integer-vs-real from that property.
+  if (!Number.isFinite(number) || Math.abs(number) > PDF_ARCHITECTURAL_LIMITS.realMaximum) {
+    addLimit(add, path, "object-real-range", number, `±${PDF_ARCHITECTURAL_LIMITS.realMaximum}`);
   }
 }
 
@@ -67,6 +65,11 @@ export function inspectPdfObjectLimits(raw, path, { resolve, add, seen = new Set
 export function inspectContentValueLimits(operations, path, add) {
   const visit = (value, valuePath) => {
     if (!value || typeof value !== "object") return;
+    if (value.kind === "name") {
+      const length = value.value?.length ?? 0;
+      if (length > PDF_ARCHITECTURAL_LIMITS.nameBytes) addLimit(add, valuePath, "content-name-bytes", length, PDF_ARCHITECTURAL_LIMITS.nameBytes);
+      return;
+    }
     if (value.kind === "string") {
       const length = value.value?.byteLength ?? 0;
       if (length > PDF_ARCHITECTURAL_LIMITS.contentStringBytes) addLimit(add, valuePath, "content-string-bytes", length, PDF_ARCHITECTURAL_LIMITS.contentStringBytes);
