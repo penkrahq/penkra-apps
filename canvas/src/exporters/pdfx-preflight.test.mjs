@@ -22,6 +22,23 @@ test("a clean generated-subset report cannot publish PDF/X while conformance cov
   });
 });
 
+test("preflight invokes the subset policy after parsing and preserves the closed baseline", async () => {
+  const printer = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
+  const bytes = await exportPdf({ outputs: [{ id: "frame", width: 200, height: 300, nodes: [] }] }, {
+    profile: "PDF/X-4", outputIntent: printer, sourceColorProfile: srgb,
+  });
+  const baseline = await preflightPdfx4(bytes);
+  assert.equal(baseline.status, "verified-canvas-writer-subset");
+  assert.equal(baseline.conformant, false);
+  const parsed = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  parsed.catalog.set(PDFName.of("Perms"), parsed.context.obj({}));
+  const report = await preflightPdfx4(await parsed.save());
+  assert.ok(report.issues.some(({ code, clause, object }) => code === "CANVAS_SUBSET_UNSUPPORTED" && clause === "6.15" && object === "Catalog/Perms"));
+  assert.equal(report.status, "invalid");
+  assert.equal(report.conformant, false);
+  assert.deepEqual(report.uncovered, baseline.uncovered);
+});
+
 test("PDF/X output profile inspection rejects the actual bundled monitor profile", () => {
   const report = inspectPdfxOutputProfile(srgb);
   assert.equal(report.deviceClass, "mntr");
