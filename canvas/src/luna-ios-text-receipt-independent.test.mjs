@@ -4,8 +4,13 @@ import { access, mkdir, mkdtemp, readFile, stat, writeFile, rm } from "node:fs/p
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import test from "node:test";
+import { pathToFileURL } from "node:url";
 
-const IOS_ROOT = "/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-ios/canvas";
+const LOCAL_CANVAS_ROOT = resolve(import.meta.dirname, "..");
+const HARNESS_SCRIPTS_ROOT = resolve(process.env.CANVAS_IOS_TEXT_RECEIPT_HARNESS_ROOT ?? join(LOCAL_CANVAS_ROOT, "scripts"));
+const HARNESS_CANVAS_ROOT = resolve(HARNESS_SCRIPTS_ROOT, "..");
+const harnessModule = (name) => pathToFileURL(join(HARNESS_SCRIPTS_ROOT, name)).href;
+const harnessCanvasModule = (name) => pathToFileURL(join(HARNESS_CANVAS_ROOT, name)).href;
 const RECEIPT = "LUNA_TEXT_READY case=case-01 nonce=n+1 regularPostScript=Inter-Regular boldPostScript=Inter-Bold\n"
   + "LUNA_TEXT_ROOT case=case-01 nonce=n+1 frame=0,0 340x180 window=0,0 340x180 screen=0,0 340x180 scale=1\n";
 
@@ -13,11 +18,11 @@ const {
   TEXT_RECEIPT_DEVICES,
   prepareTextReceiptEvidence,
   runTextReceiptCase,
-} = await import(`${IOS_ROOT}/scripts/luna-ios-text-receipt-20260907.mjs`);
-const { createCommandAdapter, runTextReceiptMatrix } = await import(`${IOS_ROOT}/scripts/luna-ios-text-receipt-20260907-runner.mjs`);
-const { measureCapture } = await import(`${IOS_ROOT}/scripts/luna-ios-text-verify.mjs`);
-const { encodeRgbaPng } = await import(`${IOS_ROOT}/scripts/luna-ios-grid-capture-utils-20260907.mjs`);
-const { getCanvasKit } = await import(`${IOS_ROOT}/vendor/open-pencil/engine.source.mjs`);
+} = await import(harnessModule("luna-ios-text-receipt-20260907.mjs"));
+const { createCommandAdapter, runTextReceiptMatrix } = await import(harnessModule("luna-ios-text-receipt-20260907-runner.mjs"));
+const { measureCapture } = await import(harnessModule("luna-ios-text-verify.mjs"));
+const { encodeRgbaPng } = await import(harnessModule("luna-ios-grid-capture-utils-20260907.mjs"));
+const { getCanvasKit } = await import(harnessCanvasModule("vendor/open-pencil/engine.source.mjs"));
 
 function sha256(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
 function tempRoot() { return mkdtemp(join(tmpdir(), "canvas-ios-receipt-independent-")); }
@@ -55,7 +60,7 @@ test("receipt source hashes match generated files and all project font paths exi
     const actualPath = (entryPath) => {
       if (entryPath === "project.yml") return join(prepared.root, entryPath);
       if (entryPath === "SimulatorHost/App.swift") return join(prepared.root, "swift", entryPath);
-      if (entryPath.startsWith("Fonts/")) return resolve(IOS_ROOT, "research", "luna-ios-text-receipt-20260907", fontByName.get(entryPath.slice("Fonts/".length)).sourcePath);
+      if (entryPath.startsWith("Fonts/")) return resolve(HARNESS_CANVAS_ROOT, "research", "luna-ios-text-receipt-20260907", fontByName.get(entryPath.slice("Fonts/".length)).sourcePath);
       const sourcePath = entryPath.startsWith("_canvas/") ? entryPath.slice("_canvas/".length) : entryPath;
       return join(prepared.root, "swift", "Sources", "CanvasTextReceipt", sourcePath);
     };
@@ -73,9 +78,9 @@ test("receipt source hashes match generated files and all project font paths exi
     assert.match(project, /- swift\/SimulatorHost\/App\.swift\n/u);
     const fontDirectory = project.match(/path: (\.\.\/[^\n]+\/Fonts)\n/u)?.[1];
     assert.ok(fontDirectory, "project must declare its exact font directory");
-    await access(resolve(IOS_ROOT, "research", "luna-ios-text-receipt-20260907", fontDirectory));
+    await access(resolve(HARNESS_CANVAS_ROOT, "research", "luna-ios-text-receipt-20260907", fontDirectory));
     for (const font of fontManifest.fonts) {
-      const path = resolve(IOS_ROOT, "research", "luna-ios-text-receipt-20260907", font.sourcePath);
+      const path = resolve(HARNESS_CANVAS_ROOT, "research", "luna-ios-text-receipt-20260907", font.sourcePath);
       const bytes = await readFile(path);
       assert.equal(bytes.byteLength, font.bytes, `font bytes for ${font.filename}`);
       assert.equal(sha256(bytes), font.sha256, `font hash for ${font.filename}`);
