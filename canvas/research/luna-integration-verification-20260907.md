@@ -767,3 +767,32 @@ result's release document, publication head, and assets map, a second read retur
 `frame`, `r1`, and zero assets. No isolation failure was reproduced. The head tests do not currently
 assert this mutation-then-reread contract; the observed isolation comes from detached publication
 metadata, fresh release JSON, and copied blob bytes. No speculative production fix was made.
+
+## PDF page-tree guard and name-subset follow-on
+
+The approved PDF commits applied cleanly after the publication-head batch and in exact order:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `d2003f8` | `5b7c78b` |
+| `fca4673` | `c89854f` |
+| `9303d7a` | `fcfce57` |
+| `f7fc9dd` | `940a8f2` |
+| `5416e1c` | `73983eb` |
+| `9ef9885` | `be26e5e` |
+
+The page-tree validator now runs immediately after PDF parsing and before recursive semantic PDF
+helpers; malformed page trees fail closed with `PDF_PAGE_TREE_INVALID`. The isolated timeout test
+terminates its deliberately nonterminating child within its parent bound. Invalid UTF-8 escaped
+names are classified `PDF_SERIALIZATION_OUTSIDE_SUBSET` with the writer-subset diagnostic, while
+valid UTF-8 names and existing raw-byte identity checks remain intact. `conformant: false` and the
+existing uncovered diagnostics are unchanged.
+
+After the complete batch, the full exporter/service selection ran once:
+
+`node scripts/test.mjs $(rg --files src/exporters -g "*.test.mjs" | sort) src/export-service.test.mjs`
+
+Log `/tmp/canvas-luna-pdf-full-exporter-service-be26e5e-20260907.log`; exit `0`, `764` passed,
+`0` failed, `0` cancelled, `0` skipped; runner duration `26177.901333 ms`, wrapper duration
+`26 s`. Envelope, historical preflight, page-tree, name-subset, limits, content, metadata, font,
+image, matrix, and service assertions all passed. No native action occurred.
