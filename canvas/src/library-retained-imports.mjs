@@ -56,9 +56,7 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
   for (const alias of retentionMap.keys()) if (typeof alias !== "string" || !Object.hasOwn(consumer.imports, alias)) throw integrity(`Retention has an unexpected alias ${String(alias)}.`);
   for (const alias of aliases) if (!retentionMap.has(alias)) throw integrity(`Retention for import ${alias} is missing.`);
 
-  const groups = new Map();
   const releaseHashes = new Map();
-  const assetRecords = new Map();
   const plans = [];
 
   for (const alias of aliases) {
@@ -73,7 +71,9 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
     if (root.libraryId !== normalized.documentId || root.releaseId !== normalized.releaseId || root.contentHash !== normalized.contentHash) {
       throw integrity(`Retention for ${alias} does not match its accepted release identity.`);
     }
-    validateRetentionAssets(retention.assets, assetRecords);
+    const groups = new Map();
+    const assetRecords = new Map();
+    validateRetentionAssets(retention.assets, assetRecords, { rejectDuplicates: true });
     const requested = validateRequestedItems(retention.requestedItems);
     const itemRecords = Array.isArray(retention.items) ? retention.items : null;
     if (!itemRecords?.length) throw integrity(`Retention for ${alias} has no items.`);
@@ -91,24 +91,25 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
     for (const request of requested) if (!retainedRootKeys.has(publicItemKey(request.kind, request.id))) {
       throw integrity(`Retention for ${alias} is missing accepted item ${request.kind}:${request.id}.`);
     }
-    plans.push({ alias, root, requested, rootGroup });
+    validateAssetUses(groups, assetRecords);
+    validateDependencyGraph(groups);
+    validateExternalClosure(groups);
+    plans.push({ alias, root, requested, rootGroup, groups, assetRecords });
   }
 
-  validateAssetUses(groups, assetRecords);
-  validateDependencyGraph(groups);
   const imports = Object.create(null);
   const assets = new Map();
   const releases = new Map();
   for (const plan of plans) {
-    const entry = materializeEntry(plan.rootGroup, plan.requested.map((item) => plan.rootGroup.items.get(publicItemKey(item.kind, item.id))), new Set());
+    const entry = materializeEntry(plan.rootGroup, plan.requested.map((item) => plan.rootGroup.items.get(publicItemKey(item.kind, item.id))), new Set(), plan.groups);
     imports[plan.alias] = entry;
-    collectAssets(plan.rootGroup, `imports/${plan.alias}`, new Set(), assets);
-    collectReleases(plan.rootGroup, groups, releases, new Set());
+    collectAssets(plan.rootGroup, `imports/${plan.alias}`, new Set(), assets, plan.groups, plan.assetRecords);
+    collectReleases(plan.rootGroup, plan.groups, releases, new Set());
   }
   validateCrossDocumentReferences(consumer, imports);
   return { imports, assets, releases: [...releases.values()].sort(compareIdentity) };
 
-  function materializeEntry(group, publicItems, active) {
+  function materializeEntry(group, publicItems, active, groups) {
     const key = identityKey(group.identity);
     if (active.has(key)) throw invalid("CANVAS_IMPORT_CYCLE");
     const nextActive = new Set(active).add(key);
@@ -116,7 +117,7 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
     for (const [alias, dependency] of group.dependencies) {
       const dependencyGroup = groups.get(identityKey(dependency));
       if (!dependencyGroup) throw integrity(`Dependency ${alias} is missing from retained closure.`);
-      nested[alias] = materializeEntry(dependencyGroup, [...dependencyGroup.items.values()], nextActive);
+      nested[alias] = materializeEntry(dependencyGroup, [...dependencyGroup.items.values()], nextActive, groups);
     }
     const document = materializeDocument(group);
     const publicManifest = [...new Map(publicItems.map((item) => [publicItemKey(item.kind, item.id), {
@@ -161,7 +162,7 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
     };
   }
 
-  function collectAssets(group, prefix, active, output) {
+  function collectAssets(group, prefix, active, output, groups, assetRecords) {
     const key = identityKey(group.identity);
     if (active.has(key)) throw invalid("CANVAS_IMPORT_CYCLE");
     const next = new Set(active).add(key);
@@ -177,7 +178,7 @@ export function buildRetainedCanvasImports(consumerDocument, retentionsByAlias) 
     for (const [alias, dependency] of group.dependencies) {
       const dependencyGroup = groups.get(identityKey(dependency));
       if (!dependencyGroup) throw integrity(`Dependency ${alias} is missing from retained closure.`);
-      collectAssets(dependencyGroup, `${prefix}/imports/${alias}`, next, output);
+      collectAssets(dependencyGroup, `${prefix}/imports/${alias}`, next, output, groups, assetRecords);
     }
   }
 }
