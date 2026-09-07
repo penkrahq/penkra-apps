@@ -3,10 +3,12 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { performance } from "node:perf_hooks";
 import { PDFDocument } from "pdf-lib";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-const implementationPath = process.env.PDF_ENVELOPE_SOURCE;
-if (!implementationPath) throw new Error("Set PDF_ENVELOPE_SOURCE to the root pdf-serialization-envelope.mjs checkout.");
-const { inspectCanvasPdfEnvelope } = await import(implementationPath);
+const implementationUrl = process.env.PDF_ENVELOPE_SOURCE
+  ? pathToFileURL(process.env.PDF_ENVELOPE_SOURCE).href
+  : new URL("./pdf-serialization-envelope.mjs", import.meta.url).href;
+const { inspectCanvasPdfEnvelope } = await import(implementationUrl);
 
 const latin1 = (value) => Buffer.from(value, "latin1");
 const asText = (bytes) => Buffer.from(bytes).toString("latin1");
@@ -63,8 +65,8 @@ test("actual pdf-lib classic output and retained candidate resaved classic are a
   generated.set(latin1("%PDF-1.6"), 0);
   assert.equal(inspectCanvasPdfEnvelope(generated).verified, true);
 
-  const candidatePath = process.env.PDF_ENVELOPE_CANDIDATE;
-  if (!candidatePath) return;
+  const candidatePath = process.env.PDF_ENVELOPE_CANDIDATE
+    ?? fileURLToPath(new URL("../../research/pdfx-image-correction-20260907/valid-writer-baseline-classic-xref.pdf", import.meta.url));
   const candidate = await PDFDocument.load(await readFile(candidatePath), { updateMetadata: false, throwOnInvalidObject: true });
   const resaved = await candidate.save({ useObjectStreams: false });
   resaved.set(latin1("%PDF-1.6"), 0);
@@ -83,14 +85,14 @@ test("valid classic xref line endings remain exact 20-byte records", () => {
   }
 });
 
-test("strings and binary streams shield fake delimiters while direct lengths control payload", () => {
+test("strings and binary streams shield fake delimiters while stream framing preserves optional-EOL placement", () => {
   assert.equal(report("(endobj startxref trailer %%EOF (nested))").verified, true);
   const payload = Buffer.from("endstream\nendobj\ntrailer\n\x00\xff", "latin1");
   const bytes = makePdf({ bodies: [catalog("/Contents 2 0 R"), streamBody(payload, payload.length)] });
   assert.equal(inspectCanvasPdfEnvelope(bytes).verified, true);
   reject(makePdf({ bodies: [catalog("/Contents 2 0 R"), streamBody(payload, payload.length - 1)] }), "expected-endstream");
   const oneByteOver = inspectCanvasPdfEnvelope(makePdf({ bodies: [catalog("/Contents 2 0 R"), streamBody(payload, payload.length + 1)] }));
-  assert.equal(oneByteOver.verified, true, "current helper accepts a length that consumes the separator EOL");
+  assert.equal(oneByteOver.verified, true, "the separator EOL may be the final declared stream-data byte");
   reject(makePdf({ bodies: [catalog("/Contents 2 0 R"), streamBody(payload, payload.length + 2)] }), "expected-endstream");
 });
 
