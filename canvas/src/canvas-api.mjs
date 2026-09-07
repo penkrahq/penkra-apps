@@ -145,7 +145,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     readAsset: async (id, asset) => {
       const chunks = [];
       let offset = 0;
-      while (offset < asset.size) {
+      while (offset < asset.size || chunks.length === 0) {
         const result = await request(
           `/${encodeURIComponent(id)}/blobs/${asset.sha256}?offset=${offset}`,
         );
@@ -153,7 +153,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         if (!bytes.byteLength && !result.complete) throw new Error(`Empty asset range for ${asset.path}.`);
         chunks.push(bytes);
         offset += bytes.byteLength;
-        if (result.complete) break;
+        if (result.complete || offset >= asset.size) break;
       }
       const output = new Uint8Array(offset);
       let cursor = 0;
