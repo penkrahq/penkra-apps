@@ -13,6 +13,17 @@ const output = resolve(argument.slice("--output=".length));
 await mkdir(dirname(output), { recursive: true });
 await mkdir(output);
 
+async function filesUnder(directory, relative = "") {
+  const entries = await readdir(join(directory, relative), { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const child = join(relative, entry.name);
+    if (entry.isDirectory()) files.push(...await filesUnder(directory, child));
+    else files.push(child);
+  }
+  return files;
+}
+
 const fixture = publicationFixture();
 fixture.registry.publish(fixture.releaseV1);
 const consumer = consumerDocument(fixture.v1Record);
@@ -29,17 +40,11 @@ try {
   await extractDocumentNode(consumer, { nodeId: "art", format: "svg", destination: svg, modes: { appearance: "light" } }, { assets: new Map(), imports: loaded.imports });
   await extractDocumentNode(consumer, { nodeId: "art", format: "pdf", destination: pdf, modes: { appearance: "light" } }, { assets: new Map(), imports: loaded.imports });
 
-  const htmlPage = (await readdir(html)).find((name) => name.endsWith(".html"));
-  const htmlAssets = (await readdir(join(html, "assets"))).filter((name) => name.endsWith(".png")).sort();
   const selected = [
     ["library.pptx", pptx],
-    ["library.html", join(html, htmlPage)],
-    ["styles.css", join(html, "styles.css")],
-    ["assets/raster-1.png", join(html, "assets", htmlAssets[0])],
-    ["assets/raster-2.png", join(html, "assets", htmlAssets[1])],
-    ["assets/raster-3.png", join(html, "assets", htmlAssets[2])],
     ["library.svg", svg],
     ["library.pdf", pdf],
+    ...await filesUnder(html).then((files) => files.map((relative) => [`html/${relative}`, join(html, relative)])),
   ];
   for (const [, source] of selected) {
     if (!source) throw new Error("Required retained artifact was not generated.");

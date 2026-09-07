@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
-import { pathToFileURL } from "node:url";
+import { dirname, join, relative, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import test from "node:test";
 import { PDFDocument } from "pdf-lib";
 import { openBrowser } from "../compatibility/browser-fixture.mjs";
@@ -18,10 +19,67 @@ import {
 import { colorBounds, decodePng, inspectPdf, parseSvg, runTool } from "../scripts/luna-extraction-artifact-fixtures.mjs";
 
 const ASSETS = { assets: new Map() };
+const RESEARCH_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../research/luna-library-artifact-integration-20260907");
+const CORRECTED_CORPUS = join(RESEARCH_ROOT, "corrected");
 
 function node(document, id) { return allNodes(document).find((candidate) => candidate.id === id); }
 function style(document, id) { return document.paragraphStyles[node(document, id).paragraphs[0].style]; }
 function importRecord(document, record) { document.imports.ui = record; return document; }
+
+function bounded(promise, label, timeoutMs = 20_000) {
+  let timer;
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`${label} timed out after ${timeoutMs}ms`)), timeoutMs); }),
+  ]).finally(() => clearTimeout(timer));
+}
+
+function crop(image, region) {
+  const pixels = Buffer.alloc(region.width * region.height * image.channels);
+  for (let y = 0; y < region.height; y += 1) {
+    const sourceStart = ((region.y + y) * image.width + region.x) * image.channels;
+    const destinationStart = y * region.width * image.channels;
+    image.pixels.copy(pixels, destinationStart, sourceStart, sourceStart + region.width * image.channels);
+  }
+  return { width: region.width, height: region.height, channels: image.channels, pixels };
+}
+
+function assertColorRegion(image, color, region, label) {
+  const observed = colorBounds(crop(image, region), color);
+  assert.ok(Number.isFinite(observed.samples) && observed.samples > 0, `${label}: expected finite positive samples`);
+  assert.ok(Number.isFinite(observed.x) && Number.isFinite(observed.y), `${label}: expected finite bounds`);
+  assert.ok(observed.x >= 0 && observed.y >= 0 && observed.x + observed.width <= region.width && observed.y + observed.height <= region.height, `${label}: color escaped expected region`);
+  return observed;
+}
+
+function localReferences(html) {
+  return [...html.matchAll(/\b(?:src|href)="([^"]+)"/gu)].map((match) => match[1]).filter((value) => !/^(?:[a-z][a-z0-9+.-]*:|#|\/)/iu.test(value));
+}
+
+async function validateRetainedCorpus(root, manifest, omitted = new Set()) {
+  assert.equal(manifest.artifactCount, manifest.artifacts.length);
+  const paths = new Set();
+  for (const artifact of manifest.artifacts) {
+    assert.equal(paths.has(artifact.path), false, `duplicate retained path ${artifact.path}`);
+    paths.add(artifact.path);
+    if (omitted.has(artifact.path)) throw new Error(`missing retained file ${artifact.path}`);
+    const bytes = await readFile(join(root, artifact.path));
+    assert.equal(bytes.length, artifact.bytes, artifact.path);
+    assert.equal(createHash("sha256").update(bytes).digest("hex"), artifact.sha256, artifact.path);
+  }
+  const htmlRecord = manifest.artifacts.find((artifact) => artifact.path.endsWith(".html"));
+  assert.ok(htmlRecord, "retained HTML artifact is missing");
+  const html = await readFile(join(root, htmlRecord.path), "utf8");
+  for (const resource of localReferences(html)) {
+    const resolvedPath = resolve(dirname(join(root, htmlRecord.path)), resource);
+    assert.ok(resolvedPath === root || resolvedPath.startsWith(`${root}/`), `HTML resource escapes corpus: ${resource}`);
+    const corpusRelative = relative(root, resolvedPath);
+    assert.equal(paths.has(corpusRelative), true, `HTML resource omitted from manifest: ${resource}`);
+    if (omitted.has(corpusRelative)) throw new Error(`missing retained file ${corpusRelative}`);
+    await readFile(resolvedPath);
+  }
+  return { htmlRecord, html, paths };
+}
 
 test("published release selection is an in-memory reader boundary and explicit v2 changes resolved artifacts", async () => {
   const fixture = publicationFixture();
@@ -118,7 +176,7 @@ test("published library content reaches PPTX/HTML and roleless SVG/PDF artifacts
     assert.match(pptxXml, /abcdef/iu);
     assert.doesNotMatch(pptxXml, /<p:pic>/u);
 
-    browser = await openBrowser(join(directory, "chrome"), context.signal);
+    browser = await bounded(openBrowser(join(directory, "chrome"), context.signal), "integration browser startup");
     const htmlName = (await readdir(htmlDirectory)).find((name) => name.endsWith(".html"));
     const htmlPath = join(htmlDirectory, htmlName);
     const html = await readFile(htmlPath, "utf8");
@@ -134,7 +192,7 @@ test("published library content reaches PPTX/HTML and roleless SVG/PDF artifacts
     assert.ok(assets.length >= 3);
     assert.equal(new Set(assets).size, assets.length);
     for (const asset of assets) assert.deepEqual((await readFile(join(assetsDirectory, asset))).subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-    const htmlImage = decodePng(await browser.screenshot(pathToFileURL(htmlPath).href, 420, 240, 1));
+    const htmlImage = decodePng(await bounded(browser.screenshot(pathToFileURL(htmlPath).href, 420, 240, 1), "integration HTML screenshot"));
     assert.ok(colorBounds(htmlImage, LIGHT_V1).samples > 0);
     assert.ok(colorBounds(htmlImage, DARK_V1).samples > 0);
     assert.ok(colorBounds(htmlImage, LOCAL_BODY).samples > 0);
@@ -147,23 +205,32 @@ test("published library content reaches PPTX/HTML and roleless SVG/PDF artifacts
     assert.match(svgText, /#123456/iu);
     assert.match(svgText, /#abcdef/iu);
     assert.match(svgText, /<rect\b/u);
-    const svgImage = decodePng(await browser.screenshot(pathToFileURL(svgPath).href, 420, 240, 1));
+    const svgImage = decodePng(await bounded(browser.screenshot(pathToFileURL(svgPath).href, 420, 240, 1), "integration SVG screenshot"));
     assert.ok(colorBounds(svgImage, LIGHT_V1).samples > 0);
     assert.ok(colorBounds(svgImage, DARK_V1).samples > 0);
 
-    const pdfPath = join(directory, "library.pdf");
-    await extractDocumentNode(consumer, { nodeId: "art", format: "pdf", destination: pdfPath, modes: { appearance: "light" } }, { ...ASSETS, imports: loaded.imports });
-    const pdf = await inspectPdf(pdfPath, { x: 0, y: 0, width: 1, height: 1, samples: 1 });
-    assert.equal(pdf.pages, 1);
-    assert.ok(pdf.marker.samples > 0);
-    assert.equal(pdf.imageXObjectLines.length, 0);
-    const pdfText = await runTool("pdftotext", [pdfPath, "-"]);
-    assert.match(pdfText, /Library card/u);
-    assert.match(await runTool("pdffonts", [pdfPath]), /Inter[\s\S]*\byes\b/u);
+    for (const mode of ["light", "dark"]) {
+      const pdfPath = join(directory, `library-${mode}.pdf`);
+      await extractDocumentNode(consumer, { nodeId: "art", format: "pdf", destination: pdfPath, modes: { appearance: mode } }, { ...ASSETS, imports: loaded.imports });
+      const pdf = await inspectPdf(pdfPath);
+      assert.equal(pdf.pages, 1);
+      assert.equal(pdf.imageXObjectLines.length, 0);
+      const pdfText = await runTool("pdftotext", [pdfPath, "-"]);
+      for (const expectedText of ["Qualified style", "Library card", "Local style"]) assert.match(pdfText, new RegExp(expectedText, "u"));
+      assert.match(await runTool("pdffonts", [pdfPath]), /Inter[\s\S]*\byes\b/u);
+      const renderPrefix = join(directory, `library-${mode}-render`);
+      await runTool("pdftoppm", ["-r", "72", "-png", pdfPath, renderPrefix]);
+      const rendered = decodePng(await readFile(`${renderPrefix}-1.png`));
+      assert.equal(rendered.width, 420);
+      assert.equal(rendered.height, 240);
+      assertColorRegion(rendered, mode === "light" ? LIGHT_V1 : DARK_V1, { x: 12, y: 12, width: 70, height: 40 }, `${mode} qualified variable`);
+      assertColorRegion(rendered, DARK_V1, { x: 170, y: 65, width: 140, height: 70 }, `${mode} source-local dark card`);
+      assertColorRegion(rendered, LOCAL_BODY, { x: 12, y: 150, width: 140, height: 30 }, `${mode} consumer-local text`);
+    }
     assert.equal((await readdir(directory)).some((name) => /staging|\.tmp/u.test(name)), false);
     assert.deepEqual(consumer, consumerBefore);
   } finally {
-    await browser?.close();
+    if (browser) await bounded(browser.close(), "integration browser close");
     await rm(directory, { recursive: true, force: true });
   }
 });
@@ -229,4 +296,60 @@ test("web raster assets use distinct ordinals for slash-qualified IDs that hyphe
     assert.match(html, /route-a\/b-c/u);
     assert.match(html, /route-a-b\/c/u);
   } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test("corrected retained corpus hashes every file, resolves every HTML resource, and passes semantic checks", { timeout: 60_000 }, async (context) => {
+  const manifest = JSON.parse(await readFile(join(CORRECTED_CORPUS, "manifest.json"), "utf8"));
+  const retained = await validateRetainedCorpus(CORRECTED_CORPUS, manifest);
+  await assert.rejects(validateRetainedCorpus(CORRECTED_CORPUS, manifest, new Set(["html/assets/raster-4.png"])), /missing retained file/u);
+
+  for (const artifact of manifest.artifacts.filter(({ path }) => path.endsWith(".png"))) {
+    assert.deepEqual((await readFile(join(CORRECTED_CORPUS, artifact.path))).subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+  }
+  const pptxPath = join(CORRECTED_CORPUS, "library.pptx");
+  const pptxXml = readXmlPart(readOoxmlPackage(await readFile(pptxPath)), "ppt/slides/slide1.xml");
+  for (const expectedText of ["Qualified style", "Library card"]) assert.match(pptxXml, new RegExp(expectedText, "u"));
+  assert.match(pptxXml, /123456/iu);
+  assert.match(pptxXml, /abcdef/iu);
+  assert.doesNotMatch(pptxXml, /<p:pic>/u);
+
+  const svgText = await readFile(join(CORRECTED_CORPUS, "library.svg"), "utf8");
+  const svg = parseSvg(svgText);
+  assert.deepEqual(svg.viewBox, [0, 0, 420, 240]);
+  assert.equal(svg.hasImage, true);
+  assert.match(svgText, /#123456/iu);
+  assert.match(svgText, /#abcdef/iu);
+  assert.match(svgText, /<rect\b/u);
+
+  const pdfPath = join(CORRECTED_CORPUS, "library.pdf");
+  const pdf = await inspectPdf(pdfPath);
+  assert.equal(pdf.pages, 1);
+  assert.equal(pdf.imageXObjectLines.length, 0);
+  const pdfText = await runTool("pdftotext", [pdfPath, "-"]);
+  for (const expectedText of ["Qualified style", "Library card", "Local style"]) assert.match(pdfText, new RegExp(expectedText, "u"));
+  assert.match(await runTool("pdffonts", [pdfPath]), /Inter[\s\S]*\byes\b/u);
+  const pdfTemp = await mkdtemp(join(tmpdir(), "canvas-library-retained-pdf-"));
+  try {
+    const renderPrefix = join(pdfTemp, "library");
+    await runTool("pdftoppm", ["-r", "72", "-png", pdfPath, renderPrefix]);
+    const rendered = decodePng(await readFile(`${renderPrefix}-1.png`));
+    assert.equal(rendered.width, 420);
+    assert.equal(rendered.height, 240);
+    assertColorRegion(rendered, LIGHT_V1, { x: 12, y: 12, width: 70, height: 40 }, "retained qualified variable");
+    assertColorRegion(rendered, DARK_V1, { x: 170, y: 65, width: 140, height: 70 }, "retained source-local dark card");
+    assertColorRegion(rendered, LOCAL_BODY, { x: 12, y: 150, width: 140, height: 30 }, "retained consumer-local text");
+  } finally { await rm(pdfTemp, { recursive: true, force: true }); }
+
+  const profile = await mkdtemp(join(tmpdir(), "canvas-library-retained-browser-"));
+  let browser;
+  try {
+    browser = await bounded(openBrowser(profile, context.signal), "retained browser startup");
+    const htmlImage = decodePng(await bounded(browser.screenshot(pathToFileURL(join(CORRECTED_CORPUS, retained.htmlRecord.path)).href, 420, 240, 1), "retained HTML screenshot"));
+    assertColorRegion(htmlImage, LIGHT_V1, { x: 12, y: 12, width: 70, height: 40 }, "retained HTML light variable");
+    assertColorRegion(htmlImage, DARK_V1, { x: 170, y: 65, width: 140, height: 70 }, "retained HTML dark component");
+    assertColorRegion(htmlImage, LOCAL_BODY, { x: 12, y: 150, width: 140, height: 30 }, "retained HTML local text");
+  } finally {
+    if (browser) await bounded(browser.close(), "retained browser close");
+    await rm(profile, { recursive: true, force: true });
+  }
 });
