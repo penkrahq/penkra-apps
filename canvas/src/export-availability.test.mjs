@@ -3,18 +3,16 @@ import test from "node:test";
 import { assertExportAvailable, assertReleaseExportCapabilities, RELEASE_EXPORT_FORMATS } from "./export-availability.mjs";
 import { assertAllCapabilityTables, unverifiedCapabilityEntries } from "./capability-tables.mjs";
 
-test("release admits measured deliverables without promoting mobile candidates", () => {
-  assert.deepEqual(RELEASE_EXPORT_FORMATS, ["pptx", "html"]);
+test("release admits every total deliverable table with explicit fallbacks", () => {
+  assert.deepEqual(RELEASE_EXPORT_FORMATS, ["pptx", "html", "swift", "kotlin"]);
   assert.equal(assertReleaseExportCapabilities(), true);
   for (const format of RELEASE_EXPORT_FORMATS) assert.doesNotThrow(() => assertExportAvailable(format));
-  for (const format of ["swift", "kotlin"]) {
-    assert.throws(() => assertExportAvailable(format), { code: "CANVAS_EXPORT_FORMAT_UNAVAILABLE", format });
-    assert.ok(unverifiedCapabilityEntries().some((entry) => entry.target === format));
-  }
-  assert.throws(() => assertAllCapabilityTables(), { code: "CANVAS_CAPABILITY_INCOMPLETE" });
+  assert.deepEqual(unverifiedCapabilityEntries(), []);
+  assert.equal(assertAllCapabilityTables(), true);
+  assert.throws(() => assertExportAvailable("pdf"), { code: "CANVAS_EXPORT_FORMAT_UNAVAILABLE", format: "pdf" });
 });
 
-test("public mobile export rejects before any account access or destination write", async () => {
+test("unknown public export formats reject before any account access or destination write", async () => {
   const handlers = new Map();
   let requests = 0;
   globalThis.penkra = {
@@ -23,9 +21,7 @@ test("public mobile export rejects before any account access or destination writ
   };
   try {
     await import(`./operations.mjs?availability=${Date.now()}`);
-    for (const format of ["swift", "kotlin"]) {
-      await assert.rejects(handlers.get("documents.export")({ format, documentId: "unread", destination: "/must-not-write" }), { code: "CANVAS_EXPORT_FORMAT_UNAVAILABLE", format });
-    }
+    await assert.rejects(handlers.get("documents.export")({ format: "pdf", documentId: "unread", destination: "/must-not-write" }), { code: "CANVAS_EXPORT_FORMAT_UNAVAILABLE", format: "pdf" });
     assert.equal(requests, 0);
     assert.equal(typeof handlers.get("documents.extract"), "function");
     assert.equal(typeof handlers.get("documents.create"), "function");

@@ -173,7 +173,7 @@ function measuredVectorRows(format) {
     `${format}: compatibility/vector-fidelity.test.mjs measures 20 path/polygon cases at 1x and 2x against Canvas: both fill rules, holes, crossings, cubic/quadratic curves, arcs, relative commands, open fills, offset viewBoxes and nonuniform scaling. Chromium SVG/HTML and Poppler PDF match 538716/2265890 interior pixels within two channel steps, excluding a two-physical-pixel antialiasing boundary. Artifacts: research/vector-fidelity-fixed-20260905. Paint, stroke, effects and other properties retain independent gates.`);
 }
 function mobileCandidateRows(platform, includesAlignItems) {
-  const evidence = `${platform} candidate emission requires per-property device and accessibility verification. Compilation and a generated source token are not fidelity evidence.`;
+  const fallback = `${platform} native candidate does not have a complete passing device/accessibility measurement. The exporter preserves fidelity with a rendered asset instead of claiming unverified native emission.`;
   return {
     ...Object.fromEntries([
       "nodes.ellipse", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ref", "nodes.text",
@@ -188,7 +188,7 @@ function mobileCandidateRows(platform, includesAlignItems) {
       ...(includesAlignItems ? ["properties.alignItems"] : []),
       "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.layoutPosition",
       "properties.lang", "root.lang",
-    ].filter((path) => !["SwiftUI", "Compose"].includes(platform) || !["properties.gridTemplateColumns", "properties.layout", "properties.layoutPosition"].includes(path)).map((path) => [path, unverified(evidence)])),
+    ].filter((path) => !["SwiftUI", "Compose"].includes(platform) || !["properties.gridTemplateColumns", "properties.layout", "properties.layoutPosition"].includes(path)).map((path) => [path, raster(fallback)])),
     ...nativeRows(["nodes.rectangle", "nodes.ellipse"], `${platform} native shape fixtures ran on the installed simulator/emulator. The 2026-09-05 shape-opacity screenshots verify 300x100 rectangles and true ellipses, opaque and translucent paint; earlier grid fixtures verify square circles and authored dimensions. See research/export-verification-2026-09-05.md. Other paint, layout, effect and accessibility property rows remain independently gated.`),
     ...nativeRows(["properties.fontWeight", "properties.text.run.weight"], `${platform} exact bundled Inter 400/500/600/700/800 faces match Canvas glyph interiors on iPhone 3x, iPad 2x and Android 420/320 dpi. Font identity checks reject incorrect family/weight/style bytes; Compose uses fractional base sizing and linear/subpixel text metrics. Retained native captures and former rounded/hinted negative controls run in compatibility/mobile-font-fidelity.test.mjs. Mixed-size runs, other typography properties and accessibility scaling remain separately gated.`),
     ...(platform === "Compose" ? nativeRows(["properties.fontSize"], "Five native Compose text nodes at 24, 28.25, 32, 40 and 48 sp match Canvas glyph interiors at Android 420 and 320 dpi (1576930 and 904895 checked pixels). The fractional base size survives without AbsoluteSizeSpan integer rounding. Retained captures and an iOS rounding negative control run in compatibility/mobile-font-size-fidelity.test.mjs. Differently sized runs within one text node remain separately gated by properties.text.run.fontSize.") : {}),

@@ -51,13 +51,13 @@ async function expectCode(action, code) {
 
 async function assertMissing(path) { await assert.rejects(readdir(path), { code: "ENOENT" }); }
 
-test("forty-set publication generates 80 distinct native/editable artifacts across PPTX and HTML", async (context) => {
+test("forty-set publication generates 160 distinct artifacts across all four deliverable formats", async (context) => {
   const root = await mkdtemp(join(tmpdir(), "canvas-four-format-batch-"));
   context.after(() => rm(root, { recursive: true, force: true }));
   const sets = setsForForty();
   const topLevel = [];
 
-  for (const { format, module, role } of formats.slice(0, 2)) {
+  for (const { format, module, role } of formats) {
     assert.equal(exportRoleForFormat(format), role);
     const document = deepFreeze(templateFor(module, role));
     const before = structuredClone(document);
@@ -75,6 +75,7 @@ test("forty-set publication generates 80 distinct native/editable artifacts acro
     topLevel.push(...expectedNames.map((name) => join(parent, name)));
     for (const destination of destinations) assert.ok((await readdir(parent)).includes(destination.split("/").at(-1)));
     const markerPositions = new Set();
+    const rasterPayloads = new Set();
 
     for (let index = 0; index < 40; index += 1) {
       const school = `School ${index + 1}`;
@@ -96,57 +97,29 @@ test("forty-set publication generates 80 distinct native/editable artifacts acro
         assert.doesNotMatch(html, /\$\{(?:schoolName|cardWidth)\}/u);
       } else if (format === "swift") {
         const swift = await readFile(join(destination, "Slide.swift"), "utf8");
-        assert.match(swift, new RegExp(`Text\\(\"${school}\"\\)`, "u"));
-        assert.match(swift, new RegExp(`\\.frame\\(width: ${width}, height: 50`, "u"));
-        assert.match(swift, /\.frame\(width: 20, height: 20/u);
+        const payload = swift.match(/CanvasRasterImage\(base64: "([A-Za-z0-9+/=]+)"\)/u);
+        assert.ok(payload, "Swift raster fallback payload");
+        rasterPayloads.add(payload[1]);
         assert.doesNotMatch(swift, /\$\{(?:schoolName|cardWidth)\}/u);
       } else {
         const kotlin = await readFile(join(destination, "Slide.kt"), "utf8");
-        assert.match(kotlin, new RegExp(`append\\(\"${school}\"\\)`, "u"));
-        assert.match(kotlin, new RegExp(`\\.size\\(${width}\\.dp, 50\\.dp\\)`, "u"));
-        assert.match(kotlin, /\.size\(20\.dp, 20\.dp\)/u);
+        const payload = kotlin.match(/Base64\.decode\("([A-Za-z0-9+/=]+)"/u);
+        assert.ok(payload, "Compose raster fallback payload");
+        rasterPayloads.add(payload[1]);
         assert.doesNotMatch(kotlin, /\$\{(?:schoolName|cardWidth)\}/u);
       }
     }
     if (format === "pptx") assert.equal(markerPositions.size, 40);
+    if (["swift", "kotlin"].includes(format)) assert.equal(rasterPayloads.size, 40, `${format} binding-specific raster payloads`);
     assert.equal(result.artifacts.length > 0, true);
   }
 
-  assert.equal(new Set(topLevel).size, 80);
-  for (const format of formats.slice(0, 2)) {
+  assert.equal(new Set(topLevel).size, 160);
+  for (const format of formats) {
     const parent = join(root, format.format);
     const siblings = await readdir(parent);
     assert.equal(siblings.some((name) => name.startsWith(".")), false, `${format.format} staging sibling`);
   }
-});
-
-async function assertMobileCapabilityGate(format, module, role, context) {
-  const root = await mkdtemp(join(tmpdir(), `canvas-${format}-gate-`));
-  context.after(() => rm(root, { recursive: true, force: true }));
-  const sets = setsForForty();
-  const parent = join(root, format);
-  const destinations = resolveExportDestinations(`${parent}/`, sets, format);
-  const error = await (async () => {
-    try {
-      await exportDocumentBatch(deepFreeze(templateFor(module, role)), sets.map((set, index) => ({
-        role, frames: ["slide"], destination: destinations[index], bindings: bindingsForExportSet(set),
-      })), { assets: new Map(), title: `Forty ${format} gate` });
-    } catch (caught) { return caught; }
-    return null;
-  })();
-  assert.ok(error, `${format} unexpectedly generated artifacts`);
-  assert.equal(error.code, "CANVAS_CAPABILITY_UNVERIFIED");
-  assert.match(error.message, /root\.axes/u);
-  assert.doesNotMatch(error.message, /properties\.layout/u);
-  await assertMissing(parent);
-}
-
-test("Swift forty-set exact template remains blocked by the observed capability gate", async (context) => {
-  await assertMobileCapabilityGate("swift", "mobile", "ios", context);
-});
-
-test("Kotlin forty-set exact template remains blocked by the observed capability gate", async (context) => {
-  await assertMobileCapabilityGate("kotlin", "mobile", "android", context);
 });
 
 test("each deliverable format rejects colliding destinations before missing-frame rendering", async (context) => {

@@ -53,16 +53,17 @@ test("only visually measured vector profiles have native verdicts", () => {
   }
 });
 
-test("aggregate capability gate keeps unmeasured mobile formats closed", () => {
+test("aggregate capability gate is total with unmeasured mobile rows rasterized", () => {
   const entries = unverifiedCapabilityEntries();
-  assert.ok(entries.some((entry) => entry.target === "swift"));
-  assert.ok(entries.some((entry) => entry.target === "kotlin"));
+  assert.deepEqual(entries, []);
   assert.equal(entries.some((entry) => entry.path === "profile"), false);
   assert.equal(entries.some((entry) => entry.path === "root.flows"), false);
   assert.equal(entries.some((entry) => entry.path === "relationships.flow"), false);
-  assert.throws(() => assertAllCapabilityTables(), (error) => (
-    error.code === "CANVAS_CAPABILITY_INCOMPLETE" && /swift:.*unverified=/u.test(error.message)
-  ));
+  assert.equal(assertAllCapabilityTables(), true);
+  for (const format of ["swift", "kotlin"]) {
+    assert.equal(capabilityTableFor(format).properties["nodes.text"].verdict, "raster");
+    assert.equal(capabilityTableFor(format).properties["root.axes"].verdict, "raster");
+  }
 });
 
 test("mobile shadow spread is an explicit raster limitation", () => {
