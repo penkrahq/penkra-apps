@@ -132,3 +132,91 @@ test("release inputs are snapshotted before asynchronous storage", async () => {
   resume();
   assert.deepEqual(await createLibraryStorage(state.api).readRelease("source", await pending), expected);
 });
+
+async function retainedState() {
+  const prepared = fixture();
+  const state = backend();
+  const store = createLibraryStorage(state.api);
+  const descriptor = await store.retainItems("consumer", prepared.release, requested, {
+    resolveRelease: async () => prepared.release,
+    readAsset: async () => prepared.assets.get("used.png"),
+  });
+  const envelope = JSON.parse(new TextDecoder().decode(state.projects.get("consumer").get(descriptor.sha256)));
+  return { prepared, state, store, descriptor, content: envelope.content };
+}
+
+async function uploadRetentionContent(state, content) {
+  const bytes = new TextEncoder().encode(JSON.stringify({ schema: "com.penkra.canvas.stored-library/1", kind: "retention", content }));
+  const sha256 = hash(bytes);
+  const descriptor = { path: `_canvas/library-content/${sha256}`, sha256, size: bytes.length, mimeType: "application/vnd.penkra.canvas.library+json" };
+  await state.api.uploadAsset("consumer", { ...descriptor, bytes });
+  return descriptor;
+}
+
+test("readRetention rejects malformed and minimally hashed envelopes at the storage boundary", async () => {
+  const state = backend();
+  const cases = [
+    ["empty content", {}],
+    ["exact empty identity repro", { root: {}, items: [{}], requestedItems: [{}], assets: [] }],
+    ["missing root", { items: [], requestedItems: [], assets: [] }],
+    ["empty requests", { root: { libraryId: "source", releaseId: "one", contentHash: "0".repeat(64) }, items: [], requestedItems: [], assets: [] }],
+    ["empty items", { root: { libraryId: "source", releaseId: "one", contentHash: "0".repeat(64) }, items: [], requestedItems: [{ kind: "component", id: "card" }], assets: [] }],
+  ];
+  for (const [name, content] of cases) {
+    const descriptor = await uploadRetentionContent(state, content);
+    await assert.rejects(createLibraryStorage(state.api).readRetention("consumer", descriptor), { code: "CANVAS_IMPORT_INTEGRITY" }, name);
+  }
+});
+
+test("readRetention validates item hashes, duplicate identities, conflicting releases, and duplicate assets", async () => {
+  const { state, content } = await retainedState();
+  const cases = [
+    ["tampered item hash", value => { value.items[0].item.contentHash = "0".repeat(64); }],
+    ["duplicate item", value => { value.items.push(structuredClone(value.items[0])); }],
+    ["conflicting release identity", value => { value.items.push({ ...structuredClone(value.items[0]), release: { ...value.items[0].release, contentHash: "f".repeat(64) } }); }],
+    ["duplicate asset", value => { value.assets.push(structuredClone(value.assets[0])); }],
+  ];
+  for (const [name, mutate] of cases) {
+    const candidate = structuredClone(content);
+    mutate(candidate);
+    const descriptor = await uploadRetentionContent(state, candidate);
+    await assert.rejects(createLibraryStorage(state.api).readRetention("consumer", descriptor), { code: "CANVAS_IMPORT_INTEGRITY" }, name);
+  }
+});
+
+test("readRetention rejects missing dependency and asset closure, while accepting private local closure", async () => {
+  const { state, content, descriptor: original } = await retainedState();
+  const missingDependency = structuredClone(content);
+  const item = missingDependency.items[0];
+  item.content.dependencies = [{ alias: "missing", libraryId: "missing", releaseId: "one", contentHash: "1".repeat(64) }];
+  item.item.contentHash = hashCanonical(item.content);
+  const dependencyDescriptor = await uploadRetentionContent(state, missingDependency);
+  await assert.rejects(createLibraryStorage(state.api).readRetention("consumer", dependencyDescriptor), { code: "CANVAS_IMPORT_INTEGRITY" });
+
+  const missingAsset = structuredClone(content);
+  missingAsset.assets = [];
+  const assetDescriptor = await uploadRetentionContent(state, missingAsset);
+  await assert.rejects(createLibraryStorage(state.api).readRetention("consumer", assetDescriptor), { code: "CANVAS_IMPORT_INTEGRITY" });
+
+  const valid = await createLibraryStorage(state.api).readRetention("consumer", original);
+  assert.equal(valid.items[0].content.resources.some(([key]) => key === "variable:ink"), true);
+  assert.equal(valid.items[0].content.resources.some(([key]) => key === "secret"), false);
+});
+
+test("readRetention restores detached bytes and does not authorize or reread the deleted source", async () => {
+  const { state, store, descriptor } = await retainedState();
+  state.projects.delete("source");
+  const first = await store.readRetention("consumer", descriptor);
+  first.assets[0].bytes[0] = 99;
+  const second = await store.readRetention("consumer", descriptor);
+  assert.deepEqual(second.assets[0].bytes, Uint8Array.of(1, 2, 3));
+  assert.equal(state.calls.filter(([op, project]) => op === "read" && project === "source").length, 0, "retained read revisited source");
+});
+
+function hashCanonical(value) { return hash(Buffer.from(canonical(value))); }
+function canonical(value) {
+  if (value === null || typeof value === "boolean" || typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+  return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonical(value[key])}`).join(",")}}`;
+}
