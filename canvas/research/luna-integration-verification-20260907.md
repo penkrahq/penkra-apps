@@ -516,3 +516,41 @@ Log `/tmp/canvas-luna-library-integrated-20260907.log`; exit `0`, `87` pass, `0`
 selection includes the malformed LS-002 retention-envelope rejection, authenticated LS-001
 unpersisted zero-byte read rejection, same-release alias isolation, nested dependency isolation,
 storage validation, materializer, protocol, and artifact assertions.
+
+## Corrected PDF architectural-limit integration
+
+The coordinator approved the corrected PDF-limit sequence. No PDF tests were run between these
+corrective commits:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `babfac5` | `a9ca58a` |
+| `be70e15` | `df322a4` |
+| `2f24268` | `94e8d04` |
+| `5160404` | `c1a0b4e` |
+| `d6a54b7` | `f1b47bb` |
+| `13f20d4` | `3f28fc1` |
+
+The first pick had the known import overlap with the approved subset-policy wiring. It was
+resolved narrowly by retaining both the `inspectPdfxSubsetPolicy` import/call and all PDF-limit
+imports/body checks; no ours/theirs wholesale resolution was used. The authorized uncovered
+diagnostic entry and regression were added in `dd555e9`:
+`Table C.1: original integer/real spelling of serialized object numbers before parser
+normalization`. The `conformant: false` result and closed gate are unchanged. Commit `8af191e`
+was not picked.
+
+After the complete six-commit sequence and `dd555e9`, the strict full PDF/service selection was
+run once from `canvas` with no cancellation:
+
+`node scripts/test.mjs src/exporters/exporters.test.mjs src/exporters/luna-pdfx-document-negative-matrix.test.mjs src/exporters/luna-pdfx-extgstate-context.test.mjs src/exporters/luna-pdfx-font-matrix.test.mjs src/exporters/luna-pdfx-graphics-state-matrix.test.mjs src/exporters/luna-pdfx-image-matrix.test.mjs src/exporters/luna-pdfx-metadata-serialized.test.mjs src/exporters/pdf-extraction.test.mjs src/exporters/pdf16-writer.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/exporters/pdfx-fonts.test.mjs src/exporters/pdfx-images.test.mjs src/exporters/pdfx-limits.test.mjs src/exporters/pdfx-metadata.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-serialized-corpus.test.mjs src/exporters/pdfx-subset-policy.test.mjs src/export-service.test.mjs`
+
+Log `/tmp/canvas-luna-pdf-full-service-20260907.log`; exit `1`, `711` pass, `1` fail,
+`0` cancelled, `0` skipped; runner duration `26550.880541 ms`, wrapper duration `26 s`. The
+single failure was `src/exporters/luna-pdfx-graphics-state-matrix.test.mjs:361`, default-mode
+retained-evidence verification. The new checker reports
+`OBJECT_GRAPH_INVALID` at
+`Catalog/Pages/Kids[0]/Resources/ExtGState/State`, while the retained expected non-graphics issue
+list does not contain it. This is retained-evidence/spec drift at the exact dangling resource
+path; no speculative checker or evidence fix was made. The full run did execute the new raw
+integer/real spelling, content-limit, object-limit, and subset-policy checks before this one
+assertion failed.
