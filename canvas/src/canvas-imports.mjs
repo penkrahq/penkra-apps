@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { assertPublicLibraryItem, releaseIdentity, validateLibraryRelease } from "./library-publication.mjs";
+import { assertPublicLibraryItem, PUBLIC_ITEM_KINDS, releaseIdentity, validateLibraryRelease } from "./library-publication.mjs";
 import { variableReferences } from "./variable-references.mjs";
 
 export async function loadCanvasImports(api, document, options = {}) {
@@ -113,8 +113,32 @@ export function validateCrossDocumentReferences(document, imports) {
 function requirePublic(imports, alias, kind, id, path) {
   const imported = imports[alias];
   if (!imported) throw importError(`${path} uses missing import ${alias}.`);
-  try { assertPublicLibraryItem(imported.release, kind, id); }
+  try {
+    if (imported.retained === true) assertRetainedPublicItem(imported.release, kind, id);
+    else assertPublicLibraryItem(imported.release, kind, id);
+  }
   catch (cause) { throw importError(`${path} cannot use ${alias}:${id}: ${cause.message}`, cause.code); }
+}
+
+function assertRetainedPublicItem(release, kind, id) {
+  if (!release || !Array.isArray(release.publicItems)
+    || release.publicItems.some((item) => !item || typeof item !== "object" || Array.isArray(item)
+      || !PUBLIC_ITEM_KINDS.includes(item.kind) || typeof item.id !== "string" || !item.id
+      || (item.contentHash !== undefined && !/^[a-f0-9]{64}$/u.test(item.contentHash))
+      || Object.keys(item).some((key) => !["kind", "id", "contentHash"].includes(key)))) {
+    throw importError("Retained import has an invalid public item manifest.", "CANVAS_IMPORT_INTEGRITY");
+  }
+  const seen = new Set();
+  for (const item of release.publicItems) {
+    const key = `${item.kind}:${item.id}`;
+    if (seen.has(key)) throw importError("Retained import has a duplicate public item.", "CANVAS_IMPORT_INTEGRITY");
+    seen.add(key);
+  }
+  if (!release.publicItems.some((item) => item.kind === kind && item.id === id)) {
+    const error = new Error(`${kind} ${id} is private or was removed from ${release.libraryId}@${release.releaseId}.`);
+    error.code = "CANVAS_LIBRARY_ITEM_PRIVATE";
+    throw error;
+  }
 }
 
 function verifyDependencyClosure(release, imports) {

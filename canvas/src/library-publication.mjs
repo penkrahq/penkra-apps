@@ -91,6 +91,28 @@ export function preparePublicLibraryItemContent(release, kind, id) {
   });
 }
 
+// Retained bundles contain only the accepted item's minimal closure, not a
+// publishable release document. Validate its content hash without routing it
+// through validateLibraryRelease, which intentionally requires the full
+// release schema and source document.
+export function validateRetainedLibraryItem(retained) {
+  if (!plainObject(retained) || !plainObject(retained.release) || !plainObject(retained.item) || !plainObject(retained.content)) {
+    throw retainedIntegrity("Retained library item is malformed.");
+  }
+  const { release, item, content } = retained;
+  if (typeof release.libraryId !== "string" || !release.libraryId
+    || typeof release.releaseId !== "string" || !release.releaseId
+    || !/^[a-f0-9]{64}$/u.test(release.contentHash ?? "")
+    || !PUBLIC_ITEM_KINDS.includes(item.kind) || typeof item.id !== "string" || !item.id
+    || !/^[a-f0-9]{64}$/u.test(item.contentHash ?? "")) {
+    throw retainedIntegrity("Retained library item identity is malformed.");
+  }
+  if (sha256(canonicalJson(content)) !== item.contentHash) {
+    throw retainedIntegrity(`Retained ${item.kind}:${item.id} content hash does not match its content.`);
+  }
+  return true;
+}
+
 export function compareLibraryReleases(accepted, available) {
   validateLibraryRelease(accepted);
   validateLibraryRelease(available);
@@ -258,3 +280,4 @@ function releaseIdentifier(value, name) { if (typeof value !== "string" || !valu
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
 function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function libraryError(message) { const error = new Error(message); error.code = "CANVAS_LIBRARY_INVALID"; return error; }
+function retainedIntegrity(message) { const error = new Error(message); error.code = "CANVAS_IMPORT_INTEGRITY"; return error; }
