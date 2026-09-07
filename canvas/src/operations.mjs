@@ -14,6 +14,7 @@ import {
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
 import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
+import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 import { publishCanvasLibrary } from "./library-publish-workflow.mjs";
 import { readPublishedCanvasLibrary } from "./library-publication-head.mjs";
 import { acceptCanvasLibrary } from "./library-accept-workflow.mjs";
@@ -181,13 +182,25 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         .filter((nodeId) => !inspectedIds.has(nodeId))
         .map((nodeId) => ({ nodeId, deleted: true })),
     ];
-    const screenshots = execution.screenshots.length === 0
-      ? []
-      : await (await import("./document-screenshot.mjs")).takeDocumentScreenshots(
-        execution.document,
-        execution.screenshots,
-        await readDocumentAssets(api, documentId, [...(assetDescriptors ??= await api.listAssets(documentId)), ...uploadedAssets]),
+    let screenshots = [];
+    if (execution.screenshots.length > 0) {
+      const rootAssets = await readDocumentAssets(
+        api,
+        documentId,
+        [...(assetDescriptors ??= await api.listAssets(documentId)), ...uploadedAssets],
       );
+      const imported = await loadRetainedCanvasImports(
+        api,
+        { ...execution.document, imports: execution.document.imports ?? {} },
+        { documentId },
+      );
+      const renderDocument = resolveCanvasDocument(execution.document, { imports: imported.imports }).document;
+      screenshots = await (await import("./document-screenshot.mjs")).takeDocumentScreenshots(
+        renderDocument,
+        execution.screenshots,
+        new Map([...rootAssets, ...imported.assets]),
+      );
+    }
     if (!changedByScript) {
       return operationResult({
         documentId,

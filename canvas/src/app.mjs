@@ -12,6 +12,8 @@ import {
 } from "./openpencil-engine.mjs";
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
+import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 import {
   isPencilAuthorableNode,
   parsePencilAuthoringValue,
@@ -91,6 +93,7 @@ const state = {
   error: null,
   document: null,
   assets: new Map(),
+  imports: Object.create(null),
   model: null,
   selectedId: null,
   expandedLayerIds: new Set(),
@@ -135,6 +138,7 @@ const state = {
   compatibilityNodeIds: new Set(),
   compatibilityDocument: null,
   materializedDocument: null,
+  renderableDocument: null,
   preparedRenderDocument: null,
   documentNodes: null,
   documentNodeById: null,
@@ -338,7 +342,6 @@ async function openDocument(documentId) {
       },
     );
     state.document = payload;
-    state.assets = new Map(assets);
     state.accessRemoved = false;
     state.model = performanceMonitor.measure(
       "document.restore-model",
@@ -354,6 +357,16 @@ async function openDocument(documentId) {
         stateBytes: payload.snapshot?.stateBytes ?? 0,
       },
     );
+    const retained = await performanceMonitor.measureAsync(
+      "document.retained-imports",
+      () => {
+        const source = materialize(state.model);
+        return loadRetainedCanvasImports(api, { ...source, imports: source.imports ?? {} }, { documentId });
+      },
+      { documentId },
+    );
+    state.imports = retained.imports;
+    state.assets = new Map([...assets, ...retained.assets]);
     invalidateDocumentProjection();
     const serverStateVector = performanceMonitor.measure(
       "document.state-vector",
@@ -490,6 +503,7 @@ function closeDocument() {
   if (state.model && state.updateListener) state.model.doc.off("update", state.updateListener);
   state.updateListener = null;
   state.assets = new Map();
+  state.imports = Object.create(null);
   state.persistence?.destroy();
   state.undo?.destroy();
   state.model?.doc.destroy();
@@ -518,6 +532,7 @@ function closeDocument() {
   state.compatibilityNodeIds = new Set();
   state.compatibilityDocument = null;
   state.materializedDocument = null;
+  state.renderableDocument = null;
   state.preparedRenderDocument = null;
   state.documentNodes = null;
   state.documentNodeById = null;
@@ -715,6 +730,7 @@ function renderSyncStatus() {
 
 function invalidateDocumentProjection() {
   state.materializedDocument = null;
+  state.renderableDocument = null;
   state.preparedRenderDocument = null;
   state.documentNodes = null;
   state.documentNodeById = null;
@@ -724,11 +740,22 @@ function currentPreparedRenderDocument() {
   if (!state.preparedRenderDocument) {
     state.preparedRenderDocument = performanceMonitor.measure(
       "document.prepare-render",
-      () => prepareOpenPencilRenderDocument(currentMaterializedDocument(), { assets: state.assets }),
+      () => prepareOpenPencilRenderDocument(currentRenderableDocument(), { assets: state.assets }),
       { documentId: state.document?.id, nodes: state.documentNodes?.length ?? 0 },
     );
   }
   return state.preparedRenderDocument;
+}
+
+function currentRenderableDocument() {
+  if (!state.renderableDocument) {
+    state.renderableDocument = performanceMonitor.measure(
+      "document.resolve-imports",
+      () => resolveCanvasDocument(currentMaterializedDocument(), { imports: state.imports }).document,
+      { documentId: state.document?.id },
+    );
+  }
+  return state.renderableDocument;
 }
 
 function currentMaterializedDocument() {
@@ -963,7 +990,7 @@ function mountEditorSurface() {
   const firstFrameStartedAt = performance.now();
   try {
     let surface;
-    surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentMaterializedDocument(), {
+    surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentRenderableDocument(), {
       visible: state.appTabActive,
       assets: state.assets,
       preparedDocument: currentPreparedRenderDocument(),
