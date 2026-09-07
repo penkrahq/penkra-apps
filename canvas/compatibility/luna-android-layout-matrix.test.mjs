@@ -25,9 +25,10 @@ test("Android layout package builds all twelve cases from resolved Canvas graph 
 
 test("Compose verification source retains the authorized grid lowering and absolute overlay lowering", () => {
   const grid = exportCompose(buildCase("10").ir).get("MobileFixture.kt");
-  assert.match(grid, /wrapContentSize\(androidx\.compose\.ui\.Alignment\.TopStart\)\.size\(96\.dp, 96\.dp\)/u);
+  assert.match(grid, /offset\(110\.dp, 0\.dp\)\.size\(96\.dp, 96\.dp\)/u);
   const ordinaryGrid = exportCompose(buildCase("09").ir).get("MobileFixture.kt");
-  assert.match(ordinaryGrid, /LazyVerticalGrid\(columns = GridCells\.Fixed\(2\), modifier = Modifier\.offset\(10\.dp, 50\.dp\)\.size\(320\.dp, 200\.dp\)/u);
+  assert.match(ordinaryGrid, /Box\(modifier = Modifier\.offset\(10\.dp, 50\.dp\)\.size\(320\.dp, 200\.dp\)/u);
+  assert.doesNotMatch(ordinaryGrid, /LazyVerticalGrid\(/u);
   const absolute = exportCompose(buildCase("12").ir).get("MobileFixture.kt");
   assert.match(absolute, /Row\(modifier = Modifier,/u);
   assert.match(absolute, /offset\(180\.dp, 70\.dp\)\.size\(40\.dp, 30\.dp\)/u);
