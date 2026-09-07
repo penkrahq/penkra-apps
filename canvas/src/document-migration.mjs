@@ -23,6 +23,7 @@ import {
 } from "./migrations.mjs";
 
 export function migrateCanvasDocument(source) {
+  const legacyThemeAxes = new Set(Object.keys(source?.themes ?? {}));
   const steps = [
     ["M1", (value) => migrateM1DelimitedVariables(value)],
     ["M2", (value) => migrateM2AssignModule(value)],
@@ -65,10 +66,18 @@ export function migrateCanvasDocument(source) {
     && document.axes.theme.modes?.every((mode) => ["light", "dark"].includes(mode.name))) {
     document.axes.appearance = document.axes.theme;
     delete document.axes.theme;
-    renameAppearanceConditions(document);
+    renameAxisSelections(document, "theme", "appearance");
     notes.push("Renamed the legacy light/dark theme axis to appearance, including mode selections and cascade conditions.");
   }
-  collapseUniformLegacyAxes(document, notes);
+  if (document.axes.mode && !document.axes.appearance
+    && document.axes.mode.modes?.every((mode) => ["light", "dark"].includes(mode.name))) {
+    document.axes.appearance = document.axes.mode;
+    delete document.axes.mode;
+    renameAxisSelections(document, "mode", "appearance");
+    notes.push("Renamed the legacy light/dark mode axis to appearance, including mode selections and cascade conditions.");
+  }
+  collapseUniformLegacyAxes(document, notes, legacyThemeAxes);
+  collapseLegacyVariantAxes(document, notes, legacyThemeAxes);
   if (!document.variables || typeof document.variables !== "object" || Array.isArray(document.variables)) document.variables = {};
   if (!document.paragraphStyles || typeof document.paragraphStyles !== "object" || Array.isArray(document.paragraphStyles)) document.paragraphStyles = {};
   if (document.imports === undefined) document.imports = {};
@@ -144,8 +153,8 @@ function wrapLegacyScalarVariableReferences(document, notes) {
   if (changes) notes.push(`Wrapped ${changes} legacy scalar variable reference(s) as canonical cascades so their resolved types remain intact.`);
 }
 
-function collapseUniformLegacyAxes(document, notes) {
-  const unsupported = Object.keys(document.axes ?? {}).filter((name) => name === "portal");
+function collapseUniformLegacyAxes(document, notes, legacyThemeAxes) {
+  const unsupported = Object.keys(document.axes ?? {}).filter((name) => name === "portal" && legacyThemeAxes.has(name));
   for (const axis of unsupported) {
     const selected = new Set();
     const collect = (nodes) => {
@@ -194,6 +203,35 @@ function collapseAxisConditions(value, axis, mode) {
     if (Object.keys(value.modes).length === 0) delete value.modes;
   }
   for (const child of Object.values(value)) collapseAxisConditions(child, axis, mode);
+}
+
+function collapseLegacyVariantAxes(document, notes, legacyThemeAxes) {
+  const axes = Object.keys(document.axes ?? {}).filter((name) => legacyThemeAxes.has(name) && !["appearance", "viewport"].includes(name));
+  for (const axis of axes) {
+    const defaultMode = document.axes[axis]?.modes?.[0]?.name;
+    if (typeof defaultMode !== "string" || !defaultMode) throw migrationError(`Legacy axis ${axis} has no selectable mode.`);
+    collapseAxisConditions(document.variables, axis, defaultMode);
+    collapseAxisConditions(document.paragraphStyles, axis, defaultMode);
+    let selectedNodes = 0;
+    const visit = (nodes, inheritedMode) => {
+      for (const node of nodes ?? []) {
+        const mode = typeof node?.modes?.[axis] === "string" ? node.modes[axis] : inheritedMode;
+        if (typeof node?.modes?.[axis] === "string") selectedNodes += 1;
+        for (const [key, value] of Object.entries(node ?? {})) {
+          if (key === "children" || key === "modes") continue;
+          collapseAxisConditions(value, axis, mode);
+        }
+        if (node.modes && Object.hasOwn(node.modes, axis)) {
+          delete node.modes[axis];
+          if (Object.keys(node.modes).length === 0) delete node.modes;
+        }
+        visit(node.children, mode);
+      }
+    };
+    visit(document.children, defaultMode);
+    delete document.axes[axis];
+    notes.push(`Materialized legacy component-variant axis \`${axis}\` into static values for ${selectedNodes} explicitly selected node(s).`);
+  }
 }
 
 function canonicalizeLegacyTextAlignment(document, notes) {
@@ -325,16 +363,16 @@ function paragraphPartition(content) {
   return ranges;
 }
 
-function renameAppearanceConditions(value) {
+function renameAxisSelections(value, from, to) {
   if (!value || typeof value !== "object") return;
   for (const key of ["modes", "when"]) {
     const record = value[key];
-    if (record && !Array.isArray(record) && typeof record === "object" && !record.op && Object.hasOwn(record, "theme")) {
-      record.appearance = record.theme;
-      delete record.theme;
+    if (record && !Array.isArray(record) && typeof record === "object" && !record.op && Object.hasOwn(record, from)) {
+      record[to] = record[from];
+      delete record[from];
     }
   }
-  for (const child of Object.values(value)) renameAppearanceConditions(child);
+  for (const child of Object.values(value)) renameAxisSelections(child, from, to);
 }
 
 export async function createCanvasMigrationCopy(api, documentId, payload, {

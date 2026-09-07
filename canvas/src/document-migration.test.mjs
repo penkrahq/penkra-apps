@@ -130,14 +130,14 @@ test("migration preserves legacy boolean tokens and canonicalizes annotated node
 test("migration collapses one uniformly selected withdrawn axis into static cascade values", () => {
   const source = {
     module: "generic",
-    axes: { portal: { modes: [{ name: "patient" }, { name: "admin" }] } },
+    themes: { portal: ["patient", "admin"] }, axes: {},
     variables: { ink: { tokenType: "color", cascade: [
       { value: "#111111" },
       { value: "#222222", when: { portal: "patient" } },
       { value: "#333333", when: { portal: "admin" } },
     ] } },
     paragraphStyles: {}, imports: {}, flows: [],
-    children: [{ id: "screen", type: "frame", modes: { portal: "admin" }, children: [] }],
+    children: [{ id: "screen", type: "frame", theme: { portal: "admin" }, children: [] }],
   };
   const result = migrateCanvasDocument(source);
   assert.deepEqual(result.document.axes, {});
@@ -147,16 +147,21 @@ test("migration collapses one uniformly selected withdrawn axis into static casc
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
-test("migration refuses to flatten a withdrawn axis when sibling selections differ", () => {
+test("migration materializes withdrawn component-variant axes per subtree when sibling selections differ", () => {
   const source = {
-    module: "generic", axes: { portal: { modes: [{ name: "patient" }, { name: "admin" }] } },
+    module: "generic", themes: { state: ["default", "active"] }, axes: {},
     variables: {}, paragraphStyles: {}, imports: {}, flows: [],
     children: [
-      { id: "patient", type: "frame", modes: { portal: "patient" }, children: [] },
-      { id: "admin", type: "frame", modes: { portal: "admin" }, children: [] },
+      { id: "default", type: "frame", theme: { state: "default" }, opacity: [{ value: 0.5 }, { value: 1, when: { state: "active" } }], children: [] },
+      { id: "active", type: "frame", theme: { state: "active" }, opacity: [{ value: 0.5 }, { value: 1, when: { state: "active" } }], children: [] },
     ],
   };
-  assert.throws(() => migrateCanvasDocument(source), /multiple active modes/u);
+  const result = migrateCanvasDocument(source);
+  assert.deepEqual(result.document.axes, {});
+  assert.deepEqual(result.document.children[0].opacity, [{ value: 0.5 }]);
+  assert.deepEqual(result.document.children[1].opacity, [{ value: 0.5 }, { value: 1 }]);
+  assert.ok(result.notes.some((note) => note.includes("component-variant axis `state`")));
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
 test("migration materializes refs whose legacy targets are nested in an export frame", () => {

@@ -31,17 +31,22 @@ export function migrateM4Descendants(source) {
   const document = structuredClone(source);
   const nodes = indexNodes(document.children);
   const parents = indexParents(document.children);
+  const legacyVariantAxes = new Set(Object.keys(document.themes ?? {}).filter((name) => !["theme", "mode"].includes(name)));
   let changes = 0;
   const notes = [];
   walkNodes(document.children, (instance) => {
     if (instance.type !== "ref") return;
     const target = nodes.get(instance.ref);
     const nestedInRole = target ? hasRoleAncestor(instance.ref, nodes, parents) : false;
-    if (!isRecord(instance.descendants) && !nestedInRole) return;
+    const selectsLegacyVariant = isRecord(instance.theme)
+      && Object.keys(instance.theme).some((name) => legacyVariantAxes.has(name));
+    if (!isRecord(instance.descendants) && !nestedInRole && !selectsLegacyVariant) return;
     if (target) {
       replaceObject(instance, materializeLegacyInstance(instance, target, notes));
       notes.push(nestedInRole
         ? `Approximated ref \`${instance.id}\` as a materialized clone because its legacy target was nested inside an export frame.`
+        : selectsLegacyVariant
+          ? `Approximated ref \`${instance.id}\` as a materialized clone so its selected legacy component variant remains visible.`
         : `Approximated ref \`${instance.id}\` as a materialized clone so its descendant overrides remain visible.`);
     } else {
       const missing = instance.ref;
