@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertCapabilityTotality, capabilityPathInventory, validateCanvasDocument } from "./canvas-schema.mjs";
+import { assertCapabilityTotality, capabilityPathInventory, validateCanvasDocument, validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 
 function document() { return { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", children: [{ id: "copy", type: "text", content: "Hi", paragraphs: [{ from: 0, to: 2 }], marks: [] }] }] }; }
 
@@ -23,6 +23,31 @@ test("published import identities and explicit public surfaces are structural do
   ]) {
     const invalid = structuredClone(source); change(invalid);
     assert.throws(() => validateCanvasDocument(invalid));
+  }
+});
+
+test("accepted retention descriptors are strict storage-owned import data", () => {
+  const source = document();
+  const sha256 = "a".repeat(64);
+  source.imports = { ui: {
+    documentId: "library", updatePolicy: "pinned", releaseId: "v1", contentHash: sha256,
+    retention: { path: `_canvas/library-content/${sha256}`, sha256, size: 0, mimeType: "application/json" },
+  } };
+  assert.equal(validateCanvasDocument(source).valid, true);
+  const cloned = validateLibraryStorageDescriptor(source.imports.ui.retention);
+  assert.deepEqual(cloned, source.imports.ui.retention);
+  assert.notEqual(cloned, source.imports.ui.retention);
+  for (const mutate of [
+    value => { value.size = -1; },
+    value => { value.size = 1.5; },
+    value => { value.path = "other"; },
+    value => { value.extra = true; },
+    value => { value.mimeType = 3; },
+    value => { value.sha256 = "b".repeat(64); },
+  ]) {
+    const invalid = structuredClone(source); mutate(invalid.imports.ui.retention);
+    assert.throws(() => validateCanvasDocument(invalid));
+    assert.throws(() => validateLibraryStorageDescriptor(invalid.imports.ui.retention), { code: "CANVAS_IMPORT_INTEGRITY" });
   }
 });
 

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
 
-import { loadCanvasImports } from "./canvas-imports.mjs";
+import { loadCanvasImports, normalizeImportRecord } from "./canvas-imports.mjs";
 import { createLibraryRegistry, createLibraryRelease } from "./library-publication.mjs";
 
 const emptyApi = {};
@@ -20,6 +20,25 @@ test("import aliases and document identities are validated before release reads"
     await assert.rejects(loadCanvasImports(emptyApi, source({ ui: { documentId: "library", updatePolicy: "follow", ...extra } }), options), { code: "CANVAS_IMPORT_INVALID" });
   }
   assert.equal(reads, 0);
+});
+
+test("normalizeImportRecord clones and validates an accepted retention descriptor", () => {
+  const sha256 = "a".repeat(64);
+  const record = { documentId: "library", updatePolicy: "pinned", releaseId: "v1", contentHash: sha256,
+    retention: { path: `_canvas/library-content/${sha256}`, sha256, size: 0, mimeType: "application/json" } };
+  const normalized = normalizeImportRecord(record);
+  assert.deepEqual(normalized, record);
+  assert.notEqual(normalized.retention, record.retention);
+  for (const mutate of [
+    value => { value.size = -1; },
+    value => { value.size = 1.2; },
+    value => { value.path = "wrong"; },
+    value => { value.extra = true; },
+    value => { value.mimeType = 4; },
+  ]) {
+    const invalid = structuredClone(record); mutate(invalid.retention);
+    assert.throws(() => normalizeImportRecord(invalid), { code: "CANVAS_IMPORT_INTEGRITY" });
+  }
 });
 function source(imports = {}, children = [], options = {}) {
   return { module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports, flows: [], children, ...options };
