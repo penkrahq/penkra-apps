@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { PDFArray, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNull, PDFNumber, PDFRawStream, PDFRef, PDFString, decodePDFRawStream } from "pdf-lib";
 import { inspectPdfxMetadata } from "./pdfx-metadata.mjs";
 import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
+import { inspectPageImages } from "./pdfx-images.mjs";
 import { readPdfContent } from "./pdf-content.mjs";
 import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
@@ -301,20 +302,7 @@ function inspectPageContent(page, path, context) {
   if (graphicsDepth !== 0) add("GRAPHICS_STATE_UNBALANCED", "6.1", path);
   if (inText) add("TEXT_OBJECT_UNCLOSED", "6.1", path);
   if (markedDepth !== 0) add("MARKED_CONTENT_UNCLOSED", "6.1", path);
-  const xobjects = get(resolve(page.node.Resources()), "XObject");
-  if (!(xobjects instanceof PDFDict)) return;
-  for (const [key, value] of xobjects.entries()) {
-    const object = resolve(value);
-    const objectPath = `${path}/Resources/XObject/${key.decodeText()}`;
-    if (!(object instanceof PDFRawStream)) { add("XOBJECT_UNRESOLVED", "6.3", objectPath); continue; }
-    if (name(get(object.dict, "Subtype")) === "Form") { add("FORM_XOBJECT_OUTSIDE_SUBSET", "6.1", objectPath); continue; }
-    if (name(get(object.dict, "Subtype")) !== "Image") { add("XOBJECT_SUBTYPE_UNSUPPORTED", "6.1", objectPath); continue; }
-    for (const dimension of ["Width", "Height"]) if (!(get(object.dict, dimension) instanceof PDFNumber) || !Number.isInteger(get(object.dict, dimension).asNumber()) || get(object.dict, dimension).asNumber() <= 0) add("IMAGE_DIMENSION_INVALID", "6.16", `${objectPath}/${dimension}`);
-    const bits = get(object.dict, "BitsPerComponent");
-    if (bits && (!(bits instanceof PDFNumber) || ![1, 2, 4, 8, 16].includes(bits.asNumber()))) add("IMAGE_BITS_INVALID", "6.16", `${objectPath}/BitsPerComponent`);
-    const colorSpace = name(get(object.dict, "ColorSpace"));
-    if (colorSpace && !["DeviceRGB", "DeviceGray"].includes(colorSpace)) add("IMAGE_COLOR_SPACE_OUTSIDE_SUBSET", "6.4", `${objectPath}/ColorSpace`);
-  }
+  inspectPageImages(page, path, { resolve, get, name, add });
 }
 
 function inspectNamedContentResource(operator, resourceName, resources, location, context) {
