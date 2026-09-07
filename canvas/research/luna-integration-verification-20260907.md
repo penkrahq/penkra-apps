@@ -701,3 +701,48 @@ Log `/tmp/canvas-luna-pdf-exporter-service-integrated-20260907.log`; exit `0`, `
 `26491.738625 ms`). Envelope preflight invocation, graphics projections, page-tree helper,
 negative matrix, limits, content, metadata, fonts, images, and service assertions all passed.
 No native action occurred.
+
+## Current public-operation integration baseline at `ae57f66`
+
+Before verification, combined was exactly `ae57f6663f0146f81965c6add8b5a4759d209a18` on
+`codex/canvas-local-integration-20260906`, with tracked files clean and only the preserved
+untracked `canvas/compatibility/mobile-fixtures/swiftui/.build/` directory present.
+
+The strict full JavaScript/Yjs source selection was run at that SHA:
+
+`node scripts/test.mjs src/*.test.mjs src/exporters/*.test.mjs collaboration/pen-yjs-model.test.mjs`
+
+Log `/tmp/canvas-luna-source-full-ae57f66-20260907.log`; exit `0`, `1245` passed, `0` failed,
+`0` cancelled, `0` skipped; runner duration `40499.179084 ms`.
+
+The compatibility selection was then run with the mobile export-compilation test explicitly
+excluded:
+
+`node scripts/test.mjs $(rg --files compatibility -g "*.test.mjs" -g "!mobile-export-compilation.test.mjs" | sort)`
+
+Log `/tmp/canvas-luna-compat-ae57f66-20260907.log`; exit `0`, `138` passed, `0` failed,
+`0` cancelled, `0` skipped; runner duration `31988.508375 ms`, wrapper duration `32 s`.
+The browser-fixture lifecycle coverage remained included; no native compilation was run.
+
+The development package build was run at the same SHA:
+
+`npm run build:dev`
+
+Log `/tmp/canvas-luna-build-dev-ae57f66-20260907.log`; exit `0`, wrapper duration `1 s`.
+The generated dist was validated in isolation with:
+
+`penkra app test --directory /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/combined/canvas/dist`
+
+The App test returned `ok: true` for `com.penkra.canvas` version `0.2.40`, with the declared
+document/sharing operations and a ready test tab; its temporary profile was removed. This was
+package validation only, not installed Dev1 acceptance and involved no user document mutation.
+
+The production build was run once as the fail-closed gate check:
+
+`npm run build`
+
+Log `/tmp/canvas-luna-build-production-ae57f66-20260907.log`; task exit `1`, wrapper duration
+`0 s`. It failed with `CANVAS_CAPABILITY_INCOMPLETE` because the capability tables reported
+`39` unverified Swift rows and `37` unverified Kotlin rows (`76` total); no missing, extra, or
+invalid rows were reported. This remains an expected closed gate and is not production readiness
+or a capability promotion.
