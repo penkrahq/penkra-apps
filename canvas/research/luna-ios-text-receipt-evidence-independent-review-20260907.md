@@ -63,18 +63,24 @@ roots.
   tolerance. This is sample-count/hash integrity only, not visual pass proof.
 - Structured restoration snapshots record both assigned devices as initially
   `Booted`, initially observed `large`, `bootedByRunner: false`, and one
-  successful content-size restoration operation each. The audit cannot
-  independently read current simulator state without prohibited native action.
+  successful content-size restoration operation each. The additional outer
+  lifecycle evidence reconciles this: `build/devices-before-install.json`
+  records both assigned devices `Shutdown`; `build/device-setup.log` records
+  boot completion, `large` readback, and installation with the recorded app
+  hash/size; the inner matrix then observed those already-booted devices;
+  `device-restoration.log` records the outer cleanup shutdowns; and
+  `build/devices-after-restore.json` records both `Shutdown` afterward.
+- The retained lifecycle artifacts therefore support the chronology and the
+  structured inner restoration claim. The root's later read-only `simctl`
+  observation is current-state evidence only and is not used as historical
+  proof.
 
-## Concrete limitation retained as evidence
+## Lifecycle interpretation
 
-`native-run-01/device-restoration.log` contains two `xcrun simctl shutdown`
-records, one for each device, while `native-run-01/restoration.json` and
-`run-receipt.json` say both devices were already booted and record no shutdown,
-only content-size restoration. This contradiction means the corpus supports
-the structured receipt claim that the observed setting was restored, but does
-not support an unqualified independent claim about final device power state.
-The historical log was not changed or deleted.
+The shutdown records are outer build/install cleanup, not an inner matrix
+contradiction. The pre-install and post-restore device snapshots, setup log,
+inner restoration receipt, and cleanup log are retained unchanged; this audit
+only verifies their consistency and provenance.
 
 ## Scope review
 
