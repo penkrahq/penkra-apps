@@ -1,0 +1,1 @@
+xcodebuild -project CanvasTextMetrics.xcodeproj -scheme CanvasTextMetrics -sdk iphonesimulator -configuration Debug -derivedDataPath /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-metrics-rS2bRD/DerivedData CODE_SIGNING_ALLOWED=NO build -jobs 2

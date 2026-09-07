@@ -1,0 +1,104 @@
+[
+  {
+    "command": "xcodegen generate --spec project.yml",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:03.961Z",
+    "finished": "2026-09-06T09:04:04.006Z"
+  },
+  {
+    "command": "xcodebuild -project CanvasTextMetrics.xcodeproj -scheme CanvasTextMetrics -sdk iphonesimulator -configuration Debug -derivedDataPath /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-metrics-rS2bRD/DerivedData CODE_SIGNING_ALLOWED=NO build -jobs 2",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:04.006Z",
+    "finished": "2026-09-06T09:04:17.259Z"
+  },
+  {
+    "command": "xcrun simctl install A3D92728-7F7B-44D1-BE51-155B891905D9 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-metrics-rS2bRD/DerivedData/Build/Products/Debug-iphonesimulator/CanvasTextMetrics.app",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:17.261Z",
+    "finished": "2026-09-06T09:04:17.882Z"
+  },
+  {
+    "command": "xcrun simctl install 8F053C2C-958D-4CC5-AB38-E838CFAC9442 /var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-luna-ios-text-metrics-rS2bRD/DerivedData/Build/Products/Debug-iphonesimulator/CanvasTextMetrics.app",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:17.882Z",
+    "finished": "2026-09-06T09:04:18.661Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:18.661Z",
+    "finished": "2026-09-06T09:04:18.924Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:18.924Z",
+    "finished": "2026-09-06T09:04:19.112Z"
+  },
+  {
+    "command": "xcrun simctl get_app_container A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.textmetrics data",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:19.112Z",
+    "finished": "2026-09-06T09:04:19.344Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.textmetrics --device-id A3D92728-7F7B-44D1-BE51-155B891905D9 --content-size large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:19.344Z",
+    "finished": "2026-09-06T09:04:19.655Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size accessibility-extra-extra-large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:19.909Z",
+    "finished": "2026-09-06T09:04:20.130Z"
+  },
+  {
+    "command": "xcrun simctl get_app_container A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.textmetrics data",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:20.130Z",
+    "finished": "2026-09-06T09:04:20.362Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process A3D92728-7F7B-44D1-BE51-155B891905D9 com.penkra.canvas.qa.textmetrics --device-id A3D92728-7F7B-44D1-BE51-155B891905D9 --content-size accessibility-extra-extra-large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:20.362Z",
+    "finished": "2026-09-06T09:04:20.883Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:21.135Z",
+    "finished": "2026-09-06T09:04:21.321Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:21.321Z",
+    "finished": "2026-09-06T09:04:21.480Z"
+  },
+  {
+    "command": "xcrun simctl get_app_container 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.textmetrics data",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:21.480Z",
+    "finished": "2026-09-06T09:04:21.666Z"
+  },
+  {
+    "command": "xcrun simctl launch --terminate-running-process 8F053C2C-958D-4CC5-AB38-E838CFAC9442 com.penkra.canvas.qa.textmetrics --device-id 8F053C2C-958D-4CC5-AB38-E838CFAC9442 --content-size large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:21.666Z",
+    "finished": "2026-09-06T09:04:22.002Z"
+  },
+  {
+    "command": "xcrun simctl ui A3D92728-7F7B-44D1-BE51-155B891905D9 content_size accessibility-extra-extra-large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:22.254Z",
+    "finished": "2026-09-06T09:04:22.428Z"
+  },
+  {
+    "command": "xcrun simctl ui 8F053C2C-958D-4CC5-AB38-E838CFAC9442 content_size large",
+    "exitCode": 0,
+    "started": "2026-09-06T09:04:22.428Z",
+    "finished": "2026-09-06T09:04:22.602Z"
+  }
+]

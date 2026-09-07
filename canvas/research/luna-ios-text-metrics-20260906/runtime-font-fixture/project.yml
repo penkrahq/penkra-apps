@@ -1,0 +1,29 @@
+name: CanvasTextMetrics
+options:
+  bundleIdPrefix: com.penkra.canvas.qa
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  CanvasTextMetrics:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - Sources/CanvasTextMetrics
+      - path: Resources/Fonts
+        buildPhase: resources
+    info:
+      path: Info.plist
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.penkra.canvas.qa.textmetrics
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+schemes:
+  CanvasTextMetrics:
+    build:
+      targets:
+        CanvasTextMetrics: all

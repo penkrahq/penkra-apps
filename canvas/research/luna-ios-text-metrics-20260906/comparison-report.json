@@ -1,0 +1,3785 @@
+{
+  "package": "luna-ios-text-metrics-20260906",
+  "states": [
+    {
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "status": "measured",
+      "confirmed": {
+        "pixelPairs": [
+          {
+            "caseId": "case-01",
+            "referenceInkBounds": {
+              "minX": 64,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 64,
+              "minY": 76,
+              "maxX": 459,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-02",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 460,
+              "maxY": 231
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 76,
+              "maxX": 460,
+              "maxY": 232
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 1
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  140,
+                  144
+                ],
+                [
+                  163,
+                  218
+                ],
+                [
+                  227,
+                  232
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  139,
+                  144
+                ],
+                [
+                  161,
+                  216
+                ],
+                [
+                  226,
+                  231
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-03",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 460,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 76,
+              "maxX": 460,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-04",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 460,
+              "maxY": 231
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 76,
+              "maxX": 460,
+              "maxY": 232
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 1
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  140,
+                  144
+                ],
+                [
+                  163,
+                  218
+                ],
+                [
+                  227,
+                  232
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  139,
+                  144
+                ],
+                [
+                  161,
+                  216
+                ],
+                [
+                  226,
+                  231
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-06",
+            "referenceInkBounds": {
+              "minX": 63,
+              "minY": 75,
+              "maxX": 475,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 63,
+              "minY": 76,
+              "maxX": 475,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  162,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  160,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-07",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 76,
+              "maxX": 459,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  140,
+                  144
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  139,
+                  144
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-08",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 76,
+              "maxX": 459,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-10",
+            "referenceInkBounds": {
+              "minX": 64,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 64,
+              "minY": 76,
+              "maxX": 459,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-11",
+            "referenceInkBounds": {
+              "minX": 65,
+              "minY": 75,
+              "maxX": 490,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 64,
+              "minY": 76,
+              "maxX": 489,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": -1,
+                "minY": 1,
+                "maxX": -1,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-12",
+            "referenceInkBounds": {
+              "minX": 64,
+              "minY": 75,
+              "maxX": 478,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 64,
+              "minY": 76,
+              "maxX": 477,
+              "maxY": 218
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": -1,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  76,
+                  130
+                ],
+                [
+                  163,
+                  218
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          }
+        ],
+        "nativeApi": {
+          "regular": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.53125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.48828125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 12.66796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.1015625,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 134.3671875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.3984375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.7109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.6953125,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 132.9140625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Regular",
+            "uiFontName": "Inter-Regular",
+            "xHeight": 13.1015625
+          },
+          "bold": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.75390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.44140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 139.875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.71484375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.12109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.71875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 15.12890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 136.8515625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Bold",
+            "uiFontName": "Inter-Bold",
+            "xHeight": 13.1015625
+          },
+          "scaledBodyRegular": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.53125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.48828125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 12.66796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.1015625,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 134.3671875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.3984375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.7109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.6953125,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 132.9140625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Regular",
+            "scalingAPI": "UIFontMetrics(forTextStyle: .body).scaledFont(for:)",
+            "sourcePointSize": 24,
+            "uiFontName": "Inter-Regular",
+            "xHeight": 13.1015625
+          },
+          "scaledBodyBold": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.75390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.44140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 139.875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.71484375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.12109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.71875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 15.12890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 136.8515625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Bold",
+            "scalingAPI": "UIFontMetrics(forTextStyle: .body).scaledFont(for:)",
+            "sourcePointSize": 24,
+            "uiFontName": "Inter-Bold",
+            "xHeight": 13.1015625
+          }
+        },
+        "canvasKit": {
+          "regularLines": [
+            {
+              "baseline": 23,
+              "top": -0.25,
+              "bottom": 28.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    23,
+                    17.53125,
+                    23,
+                    31.0078125,
+                    23,
+                    44.8359375,
+                    23,
+                    58.20703125,
+                    23,
+                    71.68359375,
+                    23,
+                    84.3515625,
+                    23,
+                    91.1015625,
+                    23,
+                    98.71875,
+                    23,
+                    112.171875,
+                    23,
+                    125.7421875,
+                    23,
+                    133.59375,
+                    23
+                  ]
+                }
+              ]
+            },
+            {
+              "baseline": 52,
+              "top": 28.75,
+              "bottom": 57.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    52,
+                    15.3984375,
+                    52,
+                    29.390625,
+                    52,
+                    43.1015625,
+                    52,
+                    57.4921875,
+                    52,
+                    71.671875,
+                    52,
+                    86.3671875,
+                    52,
+                    93.1171875,
+                    52,
+                    98.9296875,
+                    52,
+                    104.7421875,
+                    52,
+                    118.921875,
+                    52,
+                    132.9140625,
+                    52
+                  ]
+                }
+              ]
+            }
+          ],
+          "boldLines": [
+            {
+              "baseline": 23,
+              "top": -0.25,
+              "bottom": 28.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    23,
+                    17.75390625,
+                    23,
+                    31.6875,
+                    23,
+                    46.21875,
+                    23,
+                    60.375,
+                    23,
+                    74.30859375,
+                    23,
+                    87.75,
+                    23,
+                    93.43359375,
+                    23,
+                    101.98828125,
+                    23,
+                    115.8046875,
+                    23,
+                    130.06640625,
+                    23,
+                    138.85546875,
+                    23
+                  ]
+                }
+              ]
+            },
+            {
+              "baseline": 52,
+              "top": 28.75,
+              "bottom": 57.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    52,
+                    15.71484375,
+                    52,
+                    30.01171875,
+                    52,
+                    44.1328125,
+                    52,
+                    58.8515625,
+                    52,
+                    73.79296875,
+                    52,
+                    88.921875,
+                    52,
+                    94.60546875,
+                    52,
+                    101.109375,
+                    52,
+                    107.61328125,
+                    52,
+                    122.5546875,
+                    52,
+                    136.8515625,
+                    52
+                  ]
+                }
+              ]
+            }
+          ],
+          "fontHashes": {
+            "Inter|Regular": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+            "Inter|Bold": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e"
+          }
+        }
+      },
+      "unprovenCausalInference": "Pixel and API metric differences are recorded facts; this dataset does not establish a SwiftUI layout cause or justify an offset/scale fix."
+    },
+    {
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "status": "measured",
+      "confirmed": {
+        "pixelPairs": [
+          {
+            "caseId": "case-01",
+            "referenceInkBounds": {
+              "minX": 64,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 70,
+              "minY": 102,
+              "maxX": 846,
+              "maxY": 239
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 6,
+                "minY": 27,
+                "maxX": 387,
+                "maxY": 23
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-02",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 460,
+              "maxY": 231
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 102,
+              "maxX": 861,
+              "maxY": 274
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 27,
+                "maxX": 401,
+                "maxY": 43
+              },
+              "bandCount": -2,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ],
+                [
+                  262,
+                  274
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  139,
+                  144
+                ],
+                [
+                  161,
+                  216
+                ],
+                [
+                  226,
+                  231
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-03",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 460,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 102,
+              "maxX": 861,
+              "maxY": 239
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 27,
+                "maxX": 401,
+                "maxY": 23
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-04",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 460,
+              "maxY": 231
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 102,
+              "maxX": 861,
+              "maxY": 274
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 27,
+                "maxX": 401,
+                "maxY": 43
+              },
+              "bandCount": -2,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ],
+                [
+                  262,
+                  274
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  139,
+                  144
+                ],
+                [
+                  161,
+                  216
+                ],
+                [
+                  226,
+                  231
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-06",
+            "referenceInkBounds": {
+              "minX": 63,
+              "minY": 75,
+              "maxX": 475,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 68,
+              "minY": 102,
+              "maxX": 897,
+              "maxY": 238
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 5,
+                "minY": 27,
+                "maxX": 422,
+                "maxY": 22
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  238
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  160,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-07",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 102,
+              "maxX": 846,
+              "maxY": 274
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 27,
+                "maxX": 387,
+                "maxY": 58
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ],
+                [
+                  262,
+                  274
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  139,
+                  144
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-08",
+            "referenceInkBounds": {
+              "minX": 60,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 60,
+              "minY": 102,
+              "maxX": 846,
+              "maxY": 239
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 27,
+                "maxX": 387,
+                "maxY": 23
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-10",
+            "referenceInkBounds": {
+              "minX": 64,
+              "minY": 75,
+              "maxX": 459,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 70,
+              "minY": 102,
+              "maxX": 846,
+              "maxY": 239
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 6,
+                "minY": 27,
+                "maxX": 387,
+                "maxY": 23
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-11",
+            "referenceInkBounds": {
+              "minX": 65,
+              "minY": 75,
+              "maxX": 490,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 70,
+              "minY": 102,
+              "maxX": 864,
+              "maxY": 239
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 5,
+                "minY": 27,
+                "maxX": 374,
+                "maxY": 23
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-12",
+            "referenceInkBounds": {
+              "minX": 64,
+              "minY": 75,
+              "maxX": 478,
+              "maxY": 216
+            },
+            "nativeInkBounds": {
+              "minX": 70,
+              "minY": 102,
+              "maxX": 864,
+              "maxY": 239
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 6,
+                "minY": 27,
+                "maxX": 386,
+                "maxY": 23
+              },
+              "bandCount": -1,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  102,
+                  239
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  75,
+                  129
+                ],
+                [
+                  161,
+                  216
+                ]
+              ]
+            }
+          }
+        ],
+        "nativeApi": {
+          "regular": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.53125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.48828125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 12.66796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.1015625,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 134.3671875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.3984375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.7109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.6953125,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 132.9140625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Regular",
+            "uiFontName": "Inter-Regular",
+            "xHeight": 13.1015625
+          },
+          "bold": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.75390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.44140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 139.875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.71484375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.12109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.71875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 15.12890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 136.8515625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Bold",
+            "uiFontName": "Inter-Bold",
+            "xHeight": 13.1015625
+          },
+          "scaledBodyRegular": {
+            "ascender": 59.09375,
+            "capHeight": 44.3798828125,
+            "ctLineHeight": 73.8076171875,
+            "descender": -14.7138671875,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 44.55859375,
+                    "y": 0
+                  },
+                  {
+                    "x": 34.2529296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.0400390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 34.28271484375,
+                    "y": 0
+                  },
+                  {
+                    "x": 34.2529296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 32.19775390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 17.15625,
+                    "y": 0
+                  },
+                  {
+                    "x": 19.9560546875,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.5634765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 33.2998046875,
+                    "y": 0
+                  },
+                  {
+                    "x": 19.9560546875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 341.5166015625
+              },
+              {
+                "advances": [
+                  {
+                    "x": 39.1376953125,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.5634765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 34.8486328125,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.576171875,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.0400390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 37.3505859375,
+                    "y": 0
+                  },
+                  {
+                    "x": 17.15625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.7734375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.7734375,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.0400390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.5634765625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 337.8232421875
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 73.8076171875,
+            "pointSize": 61,
+            "postScriptName": "Inter-Regular",
+            "scalingAPI": "UIFontMetrics(forTextStyle: .body).scaledFont(for:)",
+            "sourcePointSize": 24,
+            "uiFontName": "Inter-Regular",
+            "xHeight": 33.2998046875
+          },
+          "scaledBodyBold": {
+            "ascender": 59.09375,
+            "capHeight": 44.3798828125,
+            "ctLineHeight": 73.8076171875,
+            "descender": -14.7138671875,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 45.12451171875,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.41455078125,
+                    "y": 0
+                  },
+                  {
+                    "x": 37.97607421875,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.576171875,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.41455078125,
+                    "y": 0
+                  },
+                  {
+                    "x": 34.16357421875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.44580078125,
+                    "y": 0
+                  },
+                  {
+                    "x": 22.3388671875,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.337890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.384765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 22.3388671875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 355.515625
+              },
+              {
+                "advances": [
+                  {
+                    "x": 39.94189453125,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.337890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 35.89111328125,
+                    "y": 0
+                  },
+                  {
+                    "x": 37.41015625,
+                    "y": 0
+                  },
+                  {
+                    "x": 37.97607421875,
+                    "y": 0
+                  },
+                  {
+                    "x": 38.45263671875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.44580078125,
+                    "y": 0
+                  },
+                  {
+                    "x": 16.53076171875,
+                    "y": 0
+                  },
+                  {
+                    "x": 16.53076171875,
+                    "y": 0
+                  },
+                  {
+                    "x": 37.97607421875,
+                    "y": 0
+                  },
+                  {
+                    "x": 36.337890625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 347.8310546875
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 73.8076171875,
+            "pointSize": 61,
+            "postScriptName": "Inter-Bold",
+            "scalingAPI": "UIFontMetrics(forTextStyle: .body).scaledFont(for:)",
+            "sourcePointSize": 24,
+            "uiFontName": "Inter-Bold",
+            "xHeight": 33.2998046875
+          }
+        },
+        "canvasKit": {
+          "regularLines": [
+            {
+              "baseline": 23,
+              "top": -0.25,
+              "bottom": 28.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    23,
+                    17.53125,
+                    23,
+                    31.0078125,
+                    23,
+                    44.8359375,
+                    23,
+                    58.20703125,
+                    23,
+                    71.68359375,
+                    23,
+                    84.3515625,
+                    23,
+                    91.1015625,
+                    23,
+                    98.71875,
+                    23,
+                    112.171875,
+                    23,
+                    125.7421875,
+                    23,
+                    133.59375,
+                    23
+                  ]
+                }
+              ]
+            },
+            {
+              "baseline": 52,
+              "top": 28.75,
+              "bottom": 57.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    52,
+                    15.3984375,
+                    52,
+                    29.390625,
+                    52,
+                    43.1015625,
+                    52,
+                    57.4921875,
+                    52,
+                    71.671875,
+                    52,
+                    86.3671875,
+                    52,
+                    93.1171875,
+                    52,
+                    98.9296875,
+                    52,
+                    104.7421875,
+                    52,
+                    118.921875,
+                    52,
+                    132.9140625,
+                    52
+                  ]
+                }
+              ]
+            }
+          ],
+          "boldLines": [
+            {
+              "baseline": 23,
+              "top": -0.25,
+              "bottom": 28.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    23,
+                    17.75390625,
+                    23,
+                    31.6875,
+                    23,
+                    46.21875,
+                    23,
+                    60.375,
+                    23,
+                    74.30859375,
+                    23,
+                    87.75,
+                    23,
+                    93.43359375,
+                    23,
+                    101.98828125,
+                    23,
+                    115.8046875,
+                    23,
+                    130.06640625,
+                    23,
+                    138.85546875,
+                    23
+                  ]
+                }
+              ]
+            },
+            {
+              "baseline": 52,
+              "top": 28.75,
+              "bottom": 57.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    52,
+                    15.71484375,
+                    52,
+                    30.01171875,
+                    52,
+                    44.1328125,
+                    52,
+                    58.8515625,
+                    52,
+                    73.79296875,
+                    52,
+                    88.921875,
+                    52,
+                    94.60546875,
+                    52,
+                    101.109375,
+                    52,
+                    107.61328125,
+                    52,
+                    122.5546875,
+                    52,
+                    136.8515625,
+                    52
+                  ]
+                }
+              ]
+            }
+          ],
+          "fontHashes": {
+            "Inter|Regular": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+            "Inter|Bold": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e"
+          }
+        }
+      },
+      "unprovenCausalInference": "Pixel and API metric differences are recorded facts; this dataset does not establish a SwiftUI layout cause or justify an offset/scale fix."
+    },
+    {
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "status": "measured",
+      "confirmed": {
+        "pixelPairs": [
+          {
+            "caseId": "case-01",
+            "referenceInkBounds": {
+              "minX": 42,
+              "minY": 50,
+              "maxX": 306,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 42,
+              "minY": 51,
+              "maxX": 305,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": -1,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-02",
+            "referenceInkBounds": {
+              "minX": 40,
+              "minY": 50,
+              "maxX": 307,
+              "maxY": 154
+            },
+            "nativeInkBounds": {
+              "minX": 40,
+              "minY": 51,
+              "maxX": 307,
+              "maxY": 155
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 1
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  93,
+                  96
+                ],
+                [
+                  109,
+                  146
+                ],
+                [
+                  151,
+                  155
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  92,
+                  96
+                ],
+                [
+                  107,
+                  144
+                ],
+                [
+                  150,
+                  154
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-03",
+            "referenceInkBounds": {
+              "minX": 40,
+              "minY": 50,
+              "maxX": 307,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 40,
+              "minY": 51,
+              "maxX": 307,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-04",
+            "referenceInkBounds": {
+              "minX": 40,
+              "minY": 50,
+              "maxX": 307,
+              "maxY": 154
+            },
+            "nativeInkBounds": {
+              "minX": 40,
+              "minY": 51,
+              "maxX": 307,
+              "maxY": 155
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 1
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  93,
+                  96
+                ],
+                [
+                  109,
+                  146
+                ],
+                [
+                  151,
+                  155
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  92,
+                  96
+                ],
+                [
+                  107,
+                  144
+                ],
+                [
+                  150,
+                  154
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-06",
+            "referenceInkBounds": {
+              "minX": 42,
+              "minY": 50,
+              "maxX": 316,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 42,
+              "minY": 51,
+              "maxX": 316,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": 0,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  106,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-07",
+            "referenceInkBounds": {
+              "minX": 40,
+              "minY": 50,
+              "maxX": 306,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 40,
+              "minY": 51,
+              "maxX": 305,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": -1,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  93,
+                  96
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  92,
+                  96
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-08",
+            "referenceInkBounds": {
+              "minX": 40,
+              "minY": 50,
+              "maxX": 306,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 40,
+              "minY": 51,
+              "maxX": 305,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": -1,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-10",
+            "referenceInkBounds": {
+              "minX": 42,
+              "minY": 50,
+              "maxX": 306,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 42,
+              "minY": 51,
+              "maxX": 305,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": -1,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-11",
+            "referenceInkBounds": {
+              "minX": 43,
+              "minY": 50,
+              "maxX": 327,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 42,
+              "minY": 51,
+              "maxX": 325,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": -1,
+                "minY": 1,
+                "maxX": -2,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          },
+          {
+            "caseId": "case-12",
+            "referenceInkBounds": {
+              "minX": 42,
+              "minY": 50,
+              "maxX": 319,
+              "maxY": 144
+            },
+            "nativeInkBounds": {
+              "minX": 42,
+              "minY": 51,
+              "maxX": 317,
+              "maxY": 146
+            },
+            "delta": {
+              "dimensions": {
+                "width": 0,
+                "height": 0
+              },
+              "inkBounds": {
+                "minX": 0,
+                "minY": 1,
+                "maxX": -2,
+                "maxY": 2
+              },
+              "bandCount": 0,
+              "rowHistogramEqual": false,
+              "bandRows": [
+                [
+                  51,
+                  87
+                ],
+                [
+                  109,
+                  146
+                ]
+              ],
+              "referenceBandRows": [
+                [
+                  50,
+                  86
+                ],
+                [
+                  107,
+                  144
+                ]
+              ]
+            }
+          }
+        ],
+        "nativeApi": {
+          "regular": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.53125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.48828125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 12.66796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.1015625,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 134.3671875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.3984375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.7109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.6953125,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 132.9140625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Regular",
+            "uiFontName": "Inter-Regular",
+            "xHeight": 13.1015625
+          },
+          "bold": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.75390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.44140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 139.875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.71484375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.12109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.71875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 15.12890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 136.8515625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Bold",
+            "uiFontName": "Inter-Bold",
+            "xHeight": 13.1015625
+          },
+          "scaledBodyRegular": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.53125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.48828125,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.4765625,
+                    "y": 0
+                  },
+                  {
+                    "x": 12.66796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.1015625,
+                    "y": 0
+                  },
+                  {
+                    "x": 7.8515625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 134.3671875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.3984375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.7109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.6953125,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.75,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.8125,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.1796875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.9921875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 132.9140625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Regular",
+            "scalingAPI": "UIFontMetrics(forTextStyle: .body).scaledFont(for:)",
+            "sourcePointSize": 24,
+            "uiFontName": "Inter-Regular",
+            "xHeight": 13.1015625
+          },
+          "scaledBodyBold": {
+            "ascender": 23.25,
+            "capHeight": 17.4609375,
+            "ctLineHeight": 29.0390625,
+            "descender": -5.7890625,
+            "glyphAdvances": [
+              {
+                "advances": [
+                  {
+                    "x": 17.75390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.93359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.44140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 13.921875,
+                    "y": 0
+                  },
+                  {
+                    "x": 8.7890625,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  73,
+                  507,
+                  773,
+                  978,
+                  507,
+                  871,
+                  1775,
+                  888,
+                  614,
+                  991,
+                  888
+                ],
+                "text": "Canvas text",
+                "totalAdvance": 139.875
+              },
+              {
+                "advances": [
+                  {
+                    "x": 15.71484375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.12109375,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.71875,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 15.12890625,
+                    "y": 0
+                  },
+                  {
+                    "x": 5.68359375,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 6.50390625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.94140625,
+                    "y": 0
+                  },
+                  {
+                    "x": 14.296875,
+                    "y": 0
+                  }
+                ],
+                "available": true,
+                "glyphs": [
+                  397,
+                  614,
+                  586,
+                  790,
+                  773,
+                  597,
+                  1775,
+                  736,
+                  689,
+                  773,
+                  614
+                ],
+                "text": "Second line",
+                "totalAdvance": 136.8515625
+              }
+            ],
+            "leading": 0,
+            "lineHeight": 29.0390625,
+            "pointSize": 24,
+            "postScriptName": "Inter-Bold",
+            "scalingAPI": "UIFontMetrics(forTextStyle: .body).scaledFont(for:)",
+            "sourcePointSize": 24,
+            "uiFontName": "Inter-Bold",
+            "xHeight": 13.1015625
+          }
+        },
+        "canvasKit": {
+          "regularLines": [
+            {
+              "baseline": 23,
+              "top": -0.25,
+              "bottom": 28.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    23,
+                    17.53125,
+                    23,
+                    31.0078125,
+                    23,
+                    44.8359375,
+                    23,
+                    58.20703125,
+                    23,
+                    71.68359375,
+                    23,
+                    84.3515625,
+                    23,
+                    91.1015625,
+                    23,
+                    98.71875,
+                    23,
+                    112.171875,
+                    23,
+                    125.7421875,
+                    23,
+                    133.59375,
+                    23
+                  ]
+                }
+              ]
+            },
+            {
+              "baseline": 52,
+              "top": 28.75,
+              "bottom": 57.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    52,
+                    15.3984375,
+                    52,
+                    29.390625,
+                    52,
+                    43.1015625,
+                    52,
+                    57.4921875,
+                    52,
+                    71.671875,
+                    52,
+                    86.3671875,
+                    52,
+                    93.1171875,
+                    52,
+                    98.9296875,
+                    52,
+                    104.7421875,
+                    52,
+                    118.921875,
+                    52,
+                    132.9140625,
+                    52
+                  ]
+                }
+              ]
+            }
+          ],
+          "boldLines": [
+            {
+              "baseline": 23,
+              "top": -0.25,
+              "bottom": 28.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    23,
+                    17.75390625,
+                    23,
+                    31.6875,
+                    23,
+                    46.21875,
+                    23,
+                    60.375,
+                    23,
+                    74.30859375,
+                    23,
+                    87.75,
+                    23,
+                    93.43359375,
+                    23,
+                    101.98828125,
+                    23,
+                    115.8046875,
+                    23,
+                    130.06640625,
+                    23,
+                    138.85546875,
+                    23
+                  ]
+                }
+              ]
+            },
+            {
+              "baseline": 52,
+              "top": 28.75,
+              "bottom": 57.7890625,
+              "runs": [
+                {
+                  "size": 24,
+                  "glyphCount": 11,
+                  "positionCount": 24,
+                  "positions": [
+                    0,
+                    52,
+                    15.71484375,
+                    52,
+                    30.01171875,
+                    52,
+                    44.1328125,
+                    52,
+                    58.8515625,
+                    52,
+                    73.79296875,
+                    52,
+                    88.921875,
+                    52,
+                    94.60546875,
+                    52,
+                    101.109375,
+                    52,
+                    107.61328125,
+                    52,
+                    122.5546875,
+                    52,
+                    136.8515625,
+                    52
+                  ]
+                }
+              ]
+            }
+          ],
+          "fontHashes": {
+            "Inter|Regular": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+            "Inter|Bold": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e"
+          }
+        }
+      },
+      "unprovenCausalInference": "Pixel and API metric differences are recorded facts; this dataset does not establish a SwiftUI layout cause or justify an offset/scale fix."
+    }
+  ]
+}
