@@ -1186,3 +1186,31 @@ regeneration, native build, device action, Dev app test, or capability change ra
 
 Final combined source/test/evidence integration HEAD is `5198d3c`; a separate evidence-only
 commit follows this section.
+
+## PDF lowercase name-escape postfix independent integration
+
+The approved independent postfix batch was cherry-picked in exact order after combined HEAD
+`3b3081cdd3e3a71548b7e7d470902061571156fc`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `39de2f881d554cacbd5465396a5d5ca162e1689e` | `a5d79531d8f97d446e13637a91ea1d273d60f846` |
+| `4207fdfd9f98b74e603d607106c1810a7ed8baec` | `981e958b1aeab3234592b40333b380aeefef525f` |
+
+Full-stat and diff inspection confirmed one new independent test file followed by one new
+research report. The test uses its default `import.meta.url` exporter-directory resolution;
+no environment override was supplied. No source, production, gate, capability, native, or
+protected files changed, and no historical pre-fix tests or patch-equivalent was picked.
+
+The requested device-free default-path selection ran once:
+
+`node scripts/test.mjs src/exporters/pdf-resource-name-postfix-independent.test.mjs src/exporters/pdf-resource-name.test.mjs src/exporters/pdf-resource-name-parser-boundary.test.mjs src/exporters/pdfx-preflight.test.mjs`
+
+Log: `/tmp/canvas-pdf-resource-name-postfix-focused-20260907.log`. Exit `0`; `67` passed,
+`0` failed, `0` cancelled, `0` skipped; Node-reported duration `960.940041 ms` (`/usr/bin/time`
+real `1.00 s`). The independent test verified all 56 lookup rows, 48 canonical resource-clean
+rows, exact paired/single lowercase guard behavior, and shielding of supported lowercase content
+and non-name bytes. No native/device action or artifact regeneration ran.
+
+Final combined source/test/evidence integration HEAD is
+`981e958b1aeab3234592b40333b380aeefef525f`; a separate evidence-only commit follows.
