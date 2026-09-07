@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 import { generatePptxCorpus, setsForForty, templateForDeckSlide } from "../scripts/luna-pptx-native-batch-generate.mjs";
-import { findMarkerBounds, inspectPdf, inspectPptx, sha256, validateMarkerMeasurement } from "../scripts/luna-pptx-native-batch-verify.mjs";
+import { findMarkerBounds, inspectPdf, inspectPptx, parsePdffonts, sha256, validateMarkerMeasurement } from "../scripts/luna-pptx-native-batch-verify.mjs";
 
 const evidenceRoot = new URL("../research/luna-pptx-native-batch-20260907/run-4uxvfr/", import.meta.url);
 const evidencePath = (relativePath) => new URL(relativePath, evidenceRoot);
@@ -47,22 +47,34 @@ test("portable native manifest retains all forty UI captures and actual native P
   assert.equal(manifest.ids.length, 40);
   assert.equal(new Set(manifest.ids).size, 40);
   assert.equal(manifest.ui.entries.length, 40);
+  assert.equal(manifest.ui.captureCount, manifest.ui.entries.length);
   assert.equal(manifest.ui.entries.filter((entry) => entry.screenshotExists).length, 40);
   assert.equal(manifest.ui.entries.filter((entry) => entry.visualInspected).length, 40);
+  assert.equal(manifest.ui.visualInspectedCount, manifest.ui.entries.filter((entry) => entry.visualInspected).length);
+  assert.equal(manifest.ui.retainedStateReceiptCount, manifest.ui.entries.filter((entry) => entry.stateReceiptRetained).length);
+  assert.equal(manifest.ui.bulkStateObservedCount, manifest.ui.entries.filter((entry) => entry.bulkStateObserved).length);
   assert.equal(manifest.pdf.length, 3);
   for (const entry of manifest.ui.entries) {
     assert.match(entry.screenshot, /^ui(?:-final)?\/school-\d{2}\.jpg$/u);
     assert.equal(entry.expectedSchool, `School ${entry.index}`);
     assert.equal(entry.repairOrFontWarning, false);
-    assert.equal(await readFile(evidencePath(entry.screenshot)).then(() => true), true);
+    const screenshotBytes = await readFile(evidencePath(entry.screenshot));
+    assert.equal(sha256(screenshotBytes), entry.screenshotSha256, entry.screenshot);
+    assert.equal(screenshotBytes.length > 0, true);
   }
   for (const entry of manifest.pdf) {
+    const pdfBytes = await readFile(evidencePath(entry.pdf));
+    const renderedBytes = await readFile(evidencePath(entry.rendered));
+    assert.equal(sha256(pdfBytes), entry.pdfSha256, entry.pdf);
+    assert.equal(sha256(renderedBytes), entry.renderedSha256, entry.rendered);
     const observed = await inspectPdf(fileURLToPath(evidencePath(entry.pdf)), fileURLToPath(evidencePath(entry.rendered)));
     assert.deepEqual(observed.pageSizePt, entry.observed.pageSizePt);
     assert.deepEqual(observed.renderSize, entry.observed.renderSize);
     assert.deepEqual(observed.marker, entry.observed.marker);
+    assert.equal(observed.pages, 1);
     assert.equal(observed.text, entry.expectedSchool);
     assert.equal(observed.embeddedInter, true);
+    assert.equal(observed.fonts.some((font) => /Inter/u.test(font.name) && font.embedded === "yes"), true);
     assert.deepEqual(observed.pageSizePt, { width: 792, height: 612 });
     assert.equal(entry.status, "mismatch");
     assert.equal(validateMarkerMeasurement(observed.marker, entry.expected.marker), false);
@@ -73,6 +85,26 @@ test("malformed, missing-entry, and displaced-marker checks remain explicit fail
   const missing = evidencePath("pptx/School 999.pptx");
   await assert.rejects(readFile(missing), { code: "ENOENT" });
   assert.throws(() => inspectPptx(Buffer.from("malformed"), "School 1"));
-  assert.equal(validateMarkerMeasurement({ x: 111, y: 0, width: 20, height: 20 }, { x: 110, y: 0, width: 20, height: 20 }), false);
+  const expected = { x: 110, y: 0, width: 20, height: 20 };
+  assert.equal(validateMarkerMeasurement({ x: 112, y: 2, width: 22, height: 18 }, expected), true);
+  assert.equal(validateMarkerMeasurement({ x: 113, y: 0, width: 20, height: 20 }, expected), false);
+  assert.equal(validateMarkerMeasurement(null, expected), false);
+  assert.equal(validateMarkerMeasurement({ x: 110, y: 0, width: 20, height: 20 }, expected, Number.NaN), false);
+  assert.equal(validateMarkerMeasurement({ x: 153, y: 117, width: 20, height: 19 }, expected), false);
+  const noEmbeddedInter = parsePdffonts("name type encoding emb sub uni object ID\nAAAAAB+Inter-Regular TrueType MacRoman no yes no 7 0");
+  assert.equal(noEmbeddedInter.some((font) => /Inter/u.test(font.name) && font.embedded === "yes"), false);
   assert.equal(findMarkerBounds({ width: 1, height: 1, pixels: Buffer.from([0, 0, 0]) }), null);
+});
+
+test("tampered retained bytes are rejected by manifest hashes", async () => {
+  const manifest = JSON.parse(await readFile(evidencePath("native-manifest.json"), "utf8"));
+  const screenshot = Buffer.from(await readFile(evidencePath(manifest.ui.entries[0].screenshot)));
+  const pdf = Buffer.from(await readFile(evidencePath(manifest.pdf[0].pdf)));
+  const rendered = Buffer.from(await readFile(evidencePath(manifest.pdf[0].rendered)));
+  screenshot[0] ^= 0xff;
+  pdf[0] ^= 0xff;
+  rendered[rendered.length - 1] ^= 0xff;
+  assert.notEqual(sha256(screenshot), manifest.ui.entries[0].screenshotSha256);
+  assert.notEqual(sha256(pdf), manifest.pdf[0].pdfSha256);
+  assert.notEqual(sha256(rendered), manifest.pdf[0].renderedSha256);
 });
