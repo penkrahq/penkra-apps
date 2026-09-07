@@ -51,6 +51,25 @@ test("accepted retention descriptors are strict storage-owned import data", () =
   }
 });
 
+test("retention requires an accepted identity while discovery follow may omit it", () => {
+  const source = document();
+  const contentHash = "a".repeat(64);
+  const retention = { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 0 };
+  source.imports = { ui: { documentId: "library", updatePolicy: "follow" } };
+  assert.equal(validateCanvasDocument(source).valid, true);
+  source.imports.ui = { documentId: "library", updatePolicy: "follow", releaseId: "r1", contentHash, retention };
+  assert.equal(validateCanvasDocument(source).valid, true);
+  for (const mutate of [
+    value => { delete value.releaseId; delete value.contentHash; },
+    value => { delete value.releaseId; },
+    value => { delete value.contentHash; },
+  ]) {
+    const invalid = structuredClone(source);
+    mutate(invalid.imports.ui);
+    assert.throws(() => validateCanvasDocument(invalid));
+  }
+});
+
 test("physical sizing, bleed and advisory guides belong to frames in any module", () => {
   for (const module of ["generic", "deck", "web", "mobile"]) {
     const source = document();

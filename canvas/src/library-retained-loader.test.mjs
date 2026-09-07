@@ -99,6 +99,35 @@ test("missing retention, malformed descriptor, follow without accepted IDs, and 
   assert.equal(state.calls.filter(([op]) => op === "resolve").length, 0);
 });
 
+test("loader requires accepted IDs for retained follow and pinned records, but preserves discovery follow without retention", async () => {
+  const { release, state, receipt } = await accepted();
+  for (const updatePolicy of ["follow", "pinned"]) {
+    for (const mutate of [
+      value => { delete value.releaseId; delete value.contentHash; },
+      value => { delete value.releaseId; },
+      value => { delete value.contentHash; },
+    ]) {
+      const invalid = consumer(release, receipt, updatePolicy);
+      mutate(invalid.imports.first);
+      await assert.rejects(
+        loadRetainedCanvasImports(state.api, invalid, { documentId: "consumer" }),
+        { code: "CANVAS_IMPORT_INTEGRITY" },
+      );
+    }
+  }
+  const discovery = consumer(release, receipt, "follow");
+  delete discovery.imports.first.retention;
+  delete discovery.imports.first.releaseId;
+  delete discovery.imports.first.contentHash;
+  await assert.rejects(
+    loadRetainedCanvasImports(state.api, discovery, { documentId: "consumer" }),
+    { code: "CANVAS_IMPORT_RETENTION_REQUIRED" },
+  );
+  const valid = consumer(release, receipt, "follow");
+  const loaded = await loadRetainedCanvasImports(state.api, valid, { documentId: "consumer" });
+  assert.ok(loaded.imports.first);
+});
+
 test("corrupt and truncated accepted descriptors fail at consumer storage, and consumer revocation denies reads", async () => {
   for (const alter of [receipt => ({ ...receipt, size: receipt.size + 1 }), receipt => ({ ...receipt, size: Math.max(0, receipt.size - 1) })]) {
     const { release, state, receipt } = await accepted();

@@ -40,6 +40,27 @@ test("normalizeImportRecord clones and validates an accepted retention descripto
     assert.throws(() => normalizeImportRecord(invalid), { code: "CANVAS_IMPORT_INTEGRITY" });
   }
 });
+
+test("normalizeImportRecord requires accepted IDs whenever retention is present", () => {
+  const contentHash = "a".repeat(64);
+  const retention = { path: `_canvas/library-content/${contentHash}`, sha256: contentHash, size: 0 };
+  assert.deepEqual(normalizeImportRecord({ documentId: "library", updatePolicy: "follow" }), {
+    documentId: "library", updatePolicy: "follow",
+  });
+  for (const updatePolicy of ["follow", "pinned"]) {
+    const valid = normalizeImportRecord({ documentId: "library", updatePolicy, releaseId: "r1", contentHash, retention });
+    assert.deepEqual(valid, { documentId: "library", updatePolicy, releaseId: "r1", contentHash, retention });
+    for (const mutate of [
+      value => { delete value.releaseId; delete value.contentHash; },
+      value => { delete value.releaseId; },
+      value => { delete value.contentHash; },
+    ]) {
+      const invalid = { documentId: "library", updatePolicy, releaseId: "r1", contentHash, retention: structuredClone(retention) };
+      mutate(invalid);
+      assert.throws(() => normalizeImportRecord(invalid), { code: "CANVAS_IMPORT_INTEGRITY" });
+    }
+  }
+});
 function source(imports = {}, children = [], options = {}) {
   return { module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports, flows: [], children, ...options };
 }
