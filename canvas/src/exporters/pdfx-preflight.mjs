@@ -5,6 +5,7 @@ import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
 import { inspectPageImages } from "./pdfx-images.mjs";
 import { inspectPdfxSubsetPolicy } from "./pdfx-subset-policy.mjs";
 import { PDF_ARCHITECTURAL_LIMITS, inspectContentNumberSpellings, inspectContentValueLimits, inspectIndirectObjectCount, inspectPdfObjectLimits } from "./pdfx-limits.mjs";
+import { inspectCanvasPdfEnvelope } from "./pdf-serialization-envelope.mjs";
 import { readPdfContent } from "./pdf-content.mjs";
 import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
@@ -70,14 +71,15 @@ export function inspectPdfxOutputProfile(input) {
 }
 
 export async function preflightPdfx4(bytes) {
-  try { return await inspectPdfx4(bytes); }
+  const envelope = inspectCanvasPdfEnvelope(bytes);
+  try { return await inspectPdfx4(bytes, envelope); }
   catch {
-    return { profile: "PDF/X-4", standard: "ISO 15930-7:2010", status: "invalid", conformant: false, issues: [{ code: "OBJECT_GRAPH_INVALID", clause: "6.1", object: "file" }], uncovered: [...PDFX_UNCOVERED] };
+    return { profile: "PDF/X-4", standard: "ISO 15930-7:2010", status: "invalid", conformant: false, issues: [...envelope.issues, { code: "OBJECT_GRAPH_INVALID", clause: "6.1", object: "file" }], uncovered: [...PDFX_UNCOVERED] };
   }
 }
 
-async function inspectPdfx4(bytes) {
-  const issues = [];
+async function inspectPdfx4(bytes, envelope = inspectCanvasPdfEnvelope(bytes)) {
+  const issues = [...envelope.issues];
   const add = (code, clause, object, detail) => issues.push({ code, clause, object, ...(detail ? { detail } : {}) });
   const result = () => ({
     profile: "PDF/X-4", standard: "ISO 15930-7:2010",
