@@ -1,0 +1,50 @@
+{
+  "caseCount": 34,
+  "serializationVariantCount": 2,
+  "generatedCaseCount": 68,
+  "retainedArtifactCount": 6,
+  "retainedArtifacts": [
+    {
+      "file": "valid-writer-xmp-classic-xref.pdf",
+      "name": "valid-writer-xmp",
+      "serialization": "classic-xref",
+      "sha256": "72296807e62bf5d096f417317446a5933e5a1b0c6e9f1399066ca53f42018018",
+      "bytes": 2659960
+    },
+    {
+      "file": "missing-metadata-classic-xref.pdf",
+      "name": "missing-metadata",
+      "serialization": "classic-xref",
+      "sha256": "c38eef4058f67f2111487e6eaf4574da2789a503bedca4c73a2e659b4a99a524",
+      "bytes": 2658738
+    },
+    {
+      "file": "malformed-xml-object-streams.pdf",
+      "name": "malformed-xml",
+      "serialization": "object-streams",
+      "sha256": "63b7fb2dc6a612bfffdbf3d613c8d518e2902dd7bc62bc78425852d04f5a01a3",
+      "bytes": 2658566
+    },
+    {
+      "file": "info-crosswalk-Title-classic-xref.pdf",
+      "name": "info-crosswalk-Title",
+      "serialization": "classic-xref",
+      "sha256": "baa0ac78fd9501190abc7ad39f84dd3f2a6385d44592cb0dd73c4c3c1ce87e85",
+      "bytes": 2659949
+    },
+    {
+      "file": "invalid-leap-date-object-streams.pdf",
+      "name": "invalid-leap-date",
+      "serialization": "object-streams",
+      "sha256": "506db64a5ebc40644a05a5fc194ece1374554fabccd3febbcc63a3eb24f898a2",
+      "bytes": 2659665
+    },
+    {
+      "file": "oversized-xmp-packet-classic-xref.pdf",
+      "name": "oversized-xmp-packet",
+      "serialization": "classic-xref",
+      "sha256": "84a8b80134334fef01b6b9a37084883eedb8402cffdc3840fae5cef83bc24c15",
+      "bytes": 3708539
+    }
+  ]
+}

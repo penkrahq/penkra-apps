@@ -1,0 +1,1335 @@
+{
+  "caseCount": 34,
+  "serializationVariantCount": 2,
+  "executedResultCount": 68,
+  "cases": [
+    {
+      "name": "valid-writer-xmp",
+      "serialization": "classic-xref",
+      "sha256": "72296807e62bf5d096f417317446a5933e5a1b0c6e9f1399066ca53f42018018",
+      "bytes": 2659960,
+      "metadataIssues": [],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "valid-writer-xmp",
+      "serialization": "object-streams",
+      "sha256": "ad0385af38fb32285c902b5685c38d4ed1df371437d9f95389cba4f6bb561cad",
+      "bytes": 2659665,
+      "metadataIssues": [],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-metadata",
+      "serialization": "classic-xref",
+      "sha256": "c38eef4058f67f2111487e6eaf4574da2789a503bedca4c73a2e659b4a99a524",
+      "bytes": 2658738,
+      "metadataIssues": [
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-metadata",
+      "serialization": "object-streams",
+      "sha256": "b91f12f9b16440e196eae5768b37e7cd47bb1c6bc49ce7a2697eb94cd0a6dcd6",
+      "bytes": 2658468,
+      "metadataIssues": [
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-metadata-type",
+      "serialization": "classic-xref",
+      "sha256": "c0c3dbe3714c9fb11afb246dfec923bdfc1aace76df93682a7a9790de7df9b56",
+      "bytes": 2659957,
+      "metadataIssues": [
+        {
+          "code": "XMP_STREAM_TYPE_INVALID",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_STREAM_TYPE_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-metadata-type",
+      "serialization": "object-streams",
+      "sha256": "8c654cd89356133dadb77d81a1c54918c2e6408400616c9a427786e5a2a743ff",
+      "bytes": 2659662,
+      "metadataIssues": [
+        {
+          "code": "XMP_STREAM_TYPE_INVALID",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_STREAM_TYPE_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-metadata-subtype",
+      "serialization": "classic-xref",
+      "sha256": "07089781d2dea769f8a7ee15f1e6944a73a18b560ea8243a2af7e1140df78a41",
+      "bytes": 2659963,
+      "metadataIssues": [
+        {
+          "code": "XMP_STREAM_TYPE_INVALID",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_STREAM_TYPE_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-metadata-subtype",
+      "serialization": "object-streams",
+      "sha256": "eb6309b59ea66092f5731df04c7caa1cd4e73d2cb88b733752ba747b42e2be4c",
+      "bytes": 2659668,
+      "metadataIssues": [
+        {
+          "code": "XMP_STREAM_TYPE_INVALID",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_STREAM_TYPE_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "metadata-nonstream",
+      "serialization": "classic-xref",
+      "sha256": "4dca65ffaa8347d1aaac67638b9972499c64d092bfdee2f44fceecf645199839",
+      "bytes": 2658763,
+      "metadataIssues": [
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "metadata-nonstream",
+      "serialization": "object-streams",
+      "sha256": "a50606d1b4014f3fe028922669b43acb7550a4349f7cda96a0984811403e9b8f",
+      "bytes": 2658481,
+      "metadataIssues": [
+        {
+          "code": "XMP_MISSING",
+          "object": "Catalog/Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "malformed-xml",
+      "serialization": "classic-xref",
+      "sha256": "d637a9a8eb51ff91dcee24e2827c948c25957c3d86cc3f6d335aa678544d4243",
+      "bytes": 2658861,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "malformed-xml",
+      "serialization": "object-streams",
+      "sha256": "63b7fb2dc6a612bfffdbf3d613c8d518e2902dd7bc62bc78425852d04f5a01a3",
+      "bytes": 2658566,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "invalid-utf8",
+      "serialization": "classic-xref",
+      "sha256": "119a7fbd806bf06cd933a68122bd1cf4dc032a4461074710305e2a590047f96b",
+      "bytes": 2659961,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "invalid-utf8",
+      "serialization": "object-streams",
+      "sha256": "0f32eedc21c77462f94f52a00be41c5daeb99870dd39efef3bcdac3087666e57",
+      "bytes": 2659666,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "duplicate-scalar-property",
+      "serialization": "classic-xref",
+      "sha256": "d02dbbc16834ab24bd98c43e8f704c801205c9480337ecb22f7481adb0425ae5",
+      "bytes": 2659995,
+      "metadataIssues": [
+        {
+          "code": "XMP_DUPLICATE_PROPERTY",
+          "object": "pdf:Producer"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_DUPLICATE_PROPERTY",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "duplicate-scalar-property",
+      "serialization": "object-streams",
+      "sha256": "e06afb18d03ebfdb31d8161734359f4d4694b57083ca27e8fc067ec785a346ba",
+      "bytes": 2659701,
+      "metadataIssues": [
+        {
+          "code": "XMP_DUPLICATE_PROPERTY",
+          "object": "pdf:Producer"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_DUPLICATE_PROPERTY",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "duplicate-title-x-default",
+      "serialization": "classic-xref",
+      "sha256": "489bc86de1d2ce8addc31268513e08ea93b18beb59d1bfd6d9be90a4cdf323e8",
+      "bytes": 2660044,
+      "metadataIssues": [
+        {
+          "code": "XMP_DUPLICATE_PROPERTY",
+          "object": "dc:title"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_DUPLICATE_PROPERTY",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "duplicate-title-x-default",
+      "serialization": "object-streams",
+      "sha256": "9de64514a2a9395833b91da2ee016a76f728a740c9aa80bdf265e3df42c7bec8",
+      "bytes": 2659750,
+      "metadataIssues": [
+        {
+          "code": "XMP_DUPLICATE_PROPERTY",
+          "object": "dc:title"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_DUPLICATE_PROPERTY",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-DocumentID",
+      "serialization": "classic-xref",
+      "sha256": "0df542f557b42deaf4141aa28514084bc0cc87094413815a97233a840c7f1868",
+      "bytes": 2659916,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmpMM:DocumentID"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-DocumentID",
+      "serialization": "object-streams",
+      "sha256": "4bcd637106771f17b5c5088cbe4f569091d3f5dc4236758d6f7099e75af41292",
+      "bytes": 2659621,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmpMM:DocumentID"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-VersionID",
+      "serialization": "classic-xref",
+      "sha256": "e0a865368f2f35c28911e771e79742787a2a9d3a1641d8db231eb815042c5e46",
+      "bytes": 2659940,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmpMM:VersionID"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-VersionID",
+      "serialization": "object-streams",
+      "sha256": "b2c83966c232841624e11086e69779d323924cabb17d53fc837ba2c3ac9ac978",
+      "bytes": 2659645,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmpMM:VersionID"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-RenditionClass",
+      "serialization": "classic-xref",
+      "sha256": "a74ab040382715c3b0aa48fc7fd6e7d656d8e3dda7b5fed942eacfc2814b0c46",
+      "bytes": 2659926,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmpMM:RenditionClass"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-RenditionClass",
+      "serialization": "object-streams",
+      "sha256": "388f12c79049426dc51c9f0106ceb6399880ce4b78d13cb82ac25375383f8339",
+      "bytes": 2659631,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmpMM:RenditionClass"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-CreateDate",
+      "serialization": "classic-xref",
+      "sha256": "2b4dd5280bd5fbec408e0bca7ed4e0a2982595bb5da3d1a07c1508bf53754df8",
+      "bytes": 2659922,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmp:CreateDate"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-CreateDate",
+      "serialization": "object-streams",
+      "sha256": "57b6e492a8b06cf3f72095da0f33fbff849436b8bad3fd237ddad015e7eb9dfd",
+      "bytes": 2659627,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmp:CreateDate"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-ModifyDate",
+      "serialization": "classic-xref",
+      "sha256": "a988d3aeee615d1cd1cf58fda88b97c0d8eef3e2903f7d0f87dd743f35efa514",
+      "bytes": 2659922,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmp:ModifyDate"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "ModDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-ModifyDate",
+      "serialization": "object-streams",
+      "sha256": "17ac6f8da48aaa848c6042c392c1b6c7b749527856cc4dcfefc379d57c3c6457",
+      "bytes": 2659627,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmp:ModifyDate"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "ModDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-MetadataDate",
+      "serialization": "classic-xref",
+      "sha256": "c9947125eaee70728714b507275ea0f370f399c8299632c6e37807b523cfdf63",
+      "bytes": 2659920,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmp:MetadataDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-MetadataDate",
+      "serialization": "object-streams",
+      "sha256": "6a26a20280d556769a85ce2c04efff7569bad4bc3f3185f6fd346958e134b3fb",
+      "bytes": 2659625,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "xmp:MetadataDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-title",
+      "serialization": "classic-xref",
+      "sha256": "db1edf944b4cb788ee0df0ab38b262018a1b76ef8e7d012c3c6a4dda50bd1968",
+      "bytes": 2659855,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "dc:title"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Title"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "missing-required-title",
+      "serialization": "object-streams",
+      "sha256": "2c8df5471a108cb65fe526e29d666b5b667f30f09f9763bb802e8d545db410b4",
+      "bytes": 2659561,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PROPERTY_MISSING",
+          "object": "dc:title"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Title"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PROPERTY_MISSING",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Title",
+      "serialization": "classic-xref",
+      "sha256": "baa0ac78fd9501190abc7ad39f84dd3f2a6385d44592cb0dd73c4c3c1ce87e85",
+      "bytes": 2659949,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Title"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Title",
+      "serialization": "object-streams",
+      "sha256": "3fc56be24afb49a901af4c013d4bc8d04d22d2518621e2caaff34f07f64177e7",
+      "bytes": 2659660,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Title"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Author",
+      "serialization": "classic-xref",
+      "sha256": "4eb85031a991cfccae9fcabb15e9aab2242e51867160bc263789b4fad77de5eb",
+      "bytes": 2659970,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Author"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Author",
+      "serialization": "object-streams",
+      "sha256": "d7ca51d0a1d20e12917b979051f44f08ff81c0b4d3a5a6556fffd11bcfb4ba82",
+      "bytes": 2659674,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Author"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Subject",
+      "serialization": "classic-xref",
+      "sha256": "a5cb7c39e029af5ace7e6ebe11a4f50a721a88894d6eb8c8b65df1f3996bb438",
+      "bytes": 2659956,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Subject"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Subject",
+      "serialization": "object-streams",
+      "sha256": "aca5432d9f88ae50ce0ca28a562762bbc8491e8eea11ebf10394875476ceba82",
+      "bytes": 2659664,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Subject"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Keywords",
+      "serialization": "classic-xref",
+      "sha256": "b75f9209b35eee97001cf827775787e287e2788f625b6d9723b730f52896cb70",
+      "bytes": 2659963,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Keywords"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Keywords",
+      "serialization": "object-streams",
+      "sha256": "894c4d173badc8f91075b068815a89949393c56bab88706862aab750227927ad",
+      "bytes": 2659667,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Keywords"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Creator",
+      "serialization": "classic-xref",
+      "sha256": "e17405d0c48c3e048254d80b307bc74a68e1c88e2215c65df8f48d65e8a7c2c5",
+      "bytes": 2659971,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Creator"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Creator",
+      "serialization": "object-streams",
+      "sha256": "a03ffda4f5e0515b4efc8e197d7d3b571170f47b78d1a323995ddd0af1ae31cf",
+      "bytes": 2659674,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Creator"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Producer",
+      "serialization": "classic-xref",
+      "sha256": "a8ecc165bd7af49f541ed54b12a332af2d0c786968a72a079fe10277d817ee6d",
+      "bytes": 2659959,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Producer"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Producer",
+      "serialization": "object-streams",
+      "sha256": "6f2e553e754ca88069b352c513b3314f29743b01c4bff8d8e897d418b785af3a",
+      "bytes": 2659665,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Producer"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-CreationDate",
+      "serialization": "classic-xref",
+      "sha256": "fd9243968e36910e433cd84f2b72b9163e5ce44895e3381192543ea7ab23e18c",
+      "bytes": 2659960,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-CreationDate",
+      "serialization": "object-streams",
+      "sha256": "5ce065aca5eb251d4479674429c6b0cf6f3f8af6c53f1f333cdf32b764edc1a8",
+      "bytes": 2659665,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-ModDate",
+      "serialization": "classic-xref",
+      "sha256": "66caf367d430049d275b26e9d1b7c36205c10ebb52608b6b4ede2dbf09003c37",
+      "bytes": 2659960,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "ModDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-ModDate",
+      "serialization": "object-streams",
+      "sha256": "e58286c457df5e2e17f2026269ab0a81b7ebd83d4efbabc61f78fa91fe4b54f9",
+      "bytes": 2659666,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "ModDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Trapped",
+      "serialization": "classic-xref",
+      "sha256": "439db777db5dae0d1c368e7b217752b91b3c9ba2b7c63c3763466615cd253238",
+      "bytes": 2659959,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Trapped"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-Trapped",
+      "serialization": "object-streams",
+      "sha256": "283b3f1700f078eca6a9428cfcd23c0efa036bece2e0aa8a43c101ad09ad5e72",
+      "bytes": 2659663,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "Trapped"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-GTS_PDFXVersion",
+      "serialization": "classic-xref",
+      "sha256": "228ce1ebca5c8a05dd80f8f4fa8d24199ec593b66cb8a5572cbd7a7308292442",
+      "bytes": 2659960,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "GTS_PDFXVersion"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "info-crosswalk-GTS_PDFXVersion",
+      "serialization": "object-streams",
+      "sha256": "97c3dbd7357187fbc04b63fca11a0d8f508666eea00ad62b104b8a1623e92593",
+      "bytes": 2659665,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "GTS_PDFXVersion"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "invalid-leap-date",
+      "serialization": "classic-xref",
+      "sha256": "834be646b9e4524220ea287f27735e561679b21b731b88fd72a373b25d7dadbe",
+      "bytes": 2659960,
+      "metadataIssues": [
+        {
+          "code": "XMP_DATE_INVALID_OR_UNSUPPORTED",
+          "object": "xmp:CreateDate"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_DATE_INVALID_OR_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "invalid-leap-date",
+      "serialization": "object-streams",
+      "sha256": "506db64a5ebc40644a05a5fc194ece1374554fabccd3febbcc63a3eb24f898a2",
+      "bytes": 2659665,
+      "metadataIssues": [
+        {
+          "code": "XMP_DATE_INVALID_OR_UNSUPPORTED",
+          "object": "xmp:CreateDate"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_DATE_INVALID_OR_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "offset-equivalent-timestamps",
+      "serialization": "classic-xref",
+      "sha256": "529485ae9f71632d30b5da5732bdf96ac02ac59acefb49e82a9b5ad8ab3c6acb",
+      "bytes": 2659965,
+      "metadataIssues": [],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "offset-equivalent-timestamps",
+      "serialization": "object-streams",
+      "sha256": "02edb20470cc1287a7b27dee94e92c91c52e453b6644c5f7ecea777a2703873e",
+      "bytes": 2659670,
+      "metadataIssues": [],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "nonmatching-timestamps",
+      "serialization": "classic-xref",
+      "sha256": "f7c2ac34501f8a1541766ddca5ebee097f40e72131719b123e23a0097dc855f1",
+      "bytes": 2659960,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "nonmatching-timestamps",
+      "serialization": "object-streams",
+      "sha256": "05ba6ea6f5cbd0ecde7d447fb7568e2db0da0cd558379b03bf90c9e1f8db0e4b",
+      "bytes": 2659665,
+      "metadataIssues": [
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "CreationDate"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "dtd-entity-declaration",
+      "serialization": "classic-xref",
+      "sha256": "75eeb9cb87d50d5518e70ed85d710357aae2d4d0497b002d3d33954cb3616633",
+      "bytes": 2660013,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "dtd-entity-declaration",
+      "serialization": "object-streams",
+      "sha256": "b1ccd5675aad9cfb3c8b5ee0e622b28f2dee341fac07bbc2faa87fe814b50b24",
+      "bytes": 2659719,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-namespace-familiar-prefix",
+      "serialization": "classic-xref",
+      "sha256": "aa6b34d758fd0e0836c52d6d186a19e5dc191ec8a24e20faf2edb298254fef43",
+      "bytes": 2659957,
+      "metadataIssues": [
+        {
+          "code": "XMP_PROPERTY_UNSUPPORTED",
+          "object": "pdfxid:GTS_PDFXVersion"
+        },
+        {
+          "code": "XMP_PDFX_IDENTIFICATION_INVALID",
+          "object": "pdfxid:GTS_PDFXVersion"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "GTS_PDFXVersion"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_PROPERTY_UNSUPPORTED",
+        "XMP_PDFX_IDENTIFICATION_INVALID",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "wrong-namespace-familiar-prefix",
+      "serialization": "object-streams",
+      "sha256": "8133f5a3d6a0d49d5c1a7cf99ed92a0bb90c96c92e997b8d89259ca8738738b4",
+      "bytes": 2659662,
+      "metadataIssues": [
+        {
+          "code": "XMP_PROPERTY_UNSUPPORTED",
+          "object": "pdfxid:GTS_PDFXVersion"
+        },
+        {
+          "code": "XMP_PDFX_IDENTIFICATION_INVALID",
+          "object": "pdfxid:GTS_PDFXVersion"
+        },
+        {
+          "code": "INFO_XMP_MISMATCH",
+          "object": "GTS_PDFXVersion"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_PROPERTY_UNSUPPORTED",
+        "XMP_PDFX_IDENTIFICATION_INVALID",
+        "INFO_XMP_MISMATCH",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "alternate-prefix-observation",
+      "serialization": "classic-xref",
+      "sha256": "4af8aefa1696d7c918531e8ab5141c0824de560b7caa4efb403d4e7162d17481",
+      "bytes": 2659952,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PREFIX",
+          "object": "pdfxid:GTS_PDFXVersion"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PREFIX",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "alternate-prefix-observation",
+      "serialization": "object-streams",
+      "sha256": "e238133b89b1296ffe7ee0b07b28dcda0e9cf140701add4d2c78390d4424da34",
+      "bytes": 2659657,
+      "metadataIssues": [
+        {
+          "code": "XMP_REQUIRED_PREFIX",
+          "object": "pdfxid:GTS_PDFXVersion"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_REQUIRED_PREFIX",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "oversized-xmp-packet",
+      "serialization": "classic-xref",
+      "sha256": "84a8b80134334fef01b6b9a37084883eedb8402cffdc3840fae5cef83bc24c15",
+      "bytes": 3708539,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "oversized-xmp-packet",
+      "serialization": "object-streams",
+      "sha256": "a80008b874bacca2319a6f8337d7a7123a2f822753b0203ae2db595d366e7f13",
+      "bytes": 3708245,
+      "metadataIssues": [
+        {
+          "code": "XMP_XML_INVALID",
+          "object": "Metadata"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "XMP_XML_INVALID",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "legacy-pdfx-conformance",
+      "serialization": "classic-xref",
+      "sha256": "f894d91a3860b3db9ae4bdb597d907364e95bf1f16f84a4e5a9c4eeb6a1dd6b8",
+      "bytes": 2659991,
+      "metadataIssues": [
+        {
+          "code": "LEGACY_PDFX_CONFORMANCE_FORBIDDEN",
+          "object": "GTS_PDFXConformance"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "LEGACY_PDFX_CONFORMANCE_FORBIDDEN",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    },
+    {
+      "name": "legacy-pdfx-conformance",
+      "serialization": "object-streams",
+      "sha256": "8b08b2c994d462ff32c85555f659e7b913d5d7fd79830f8634815912695a6511",
+      "bytes": 2659676,
+      "metadataIssues": [
+        {
+          "code": "LEGACY_PDFX_CONFORMANCE_FORBIDDEN",
+          "object": "GTS_PDFXConformance"
+        }
+      ],
+      "allIssueCodes": [
+        "PDF_VERSION_UNSUPPORTED",
+        "LEGACY_PDFX_CONFORMANCE_FORBIDDEN",
+        "TRAILER_ID_INVALID",
+        "DEFAULT_RGB_MISSING",
+        "TRANSPARENCY_GROUP_INVALID"
+      ]
+    }
+  ]
+}
