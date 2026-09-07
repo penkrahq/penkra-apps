@@ -15,8 +15,12 @@ a capability claim.
 - Approved boundary tests cherry-picked from `45d2727` as local
   `fc1f6b2c72d56ca9e13dcd6d597aa101f4d0a77c`
 - Independent probe: `canvas/src/library-accept-workflow-independent.test.mjs`
-- Narrow source correction: `canvas/src/library-accept-workflow.mjs` (local
-  source commit recorded at handoff)
+- Narrow source correction: `canvas/src/library-accept-workflow.mjs`, local
+  commit `53006c4537444e1c54dafb5e80b8688825d181ed`
+- No-op regression test: local commit
+  `0d9295f68dc112bf3769714d4c89f831cd0501ee`
+- Final evidence update: local commit
+  `0cffd4a2fce922bc4f667f5f5ed624f38cb0aea7`
 
 The requested prerequisites were not present in this worktree. The current
 `canvas/src/library-storage.mjs` `createLibraryStorage()` result exposes
@@ -117,7 +121,7 @@ node --test canvas/src/library-accept-workflow-independent.test.mjs
 ```
 
 Exit `0`; `7` passed, `0` failed, `0` cancelled, `0` skipped; duration
-`312.457458 ms`.
+`238.163417 ms`.
 
 The broader pure focus was:
 
@@ -126,7 +130,7 @@ node --test canvas/src/library-accept-workflow-independent.test.mjs canvas/src/l
 ```
 
 Exit `0`; `128` passed, `0` failed, `0` cancelled, `0` skipped; duration
-`406.105958 ms`.
+`389.602209 ms`.
 
 The initial missing-method result remains retained as branch-mismatch evidence
 only; it is superseded for acceptance conclusions by the post-prerequisite
