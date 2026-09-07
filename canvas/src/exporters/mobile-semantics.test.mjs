@@ -37,8 +37,8 @@ test("SwiftUI preserves root language, node/run precedence, heading levels, and 
   const swift = exportSwiftUI(ir("ios", document)).get("SemanticScreen.swift");
   assert.match(swift, /environment\(\\\.locale, Locale\(identifier: "en-Latn-US"\)\)/u);
   assert.match(swift, /accessibilityHeading\(\.h2\)/u);
-  assert.match(swift, /environment\(\\\.locale, Locale\(identifier: "de-DE"\)\)/u);
-  assert.match(swift, /append|Text\("Überschrift\\n日本語"\)|Text\("Überschrift"\)/u);
+  assert.match(swift, /languageIdentifier = "de-DE"/u);
+  assert.match(swift, /AttributedString\("Überschrift"\)/u);
   assert.match(swift, /日本語/u);
 });
 
@@ -51,8 +51,8 @@ test("SwiftUI gives an explicit run language precedence over the node language",
     }],
   });
   const swift = exportSwiftUI(ir("ios", document)).get("SemanticScreen.swift");
-  assert.match(swift, /environment\(\\\.locale, Locale\(identifier: "ja-JP"\)\)/u);
-  assert.doesNotMatch(swift, /environment\(\\\.locale, Locale\(identifier: "de-DE"\)\)/u);
+  assert.match(swift, /languageIdentifier = "ja-JP"/u);
+  assert.doesNotMatch(swift, /languageIdentifier = "de-DE"/u);
 });
 
 test("SwiftUI emits paragraph alignment when all paragraphs agree and preserves fixed text growth", () => {
@@ -77,13 +77,17 @@ test("SwiftUI rejects mixed paragraph alignments and unsupported landmark/link-n
   }
 });
 
-test("SwiftUI rejects mixed run languages instead of silently applying one locale to every run", () => {
+test("SwiftUI preserves mixed run languages with attributed Text values", () => {
   const document = sourceDocument("ios", { children: [{ id: "copy", type: "text", width: 200, height: 40, content: "Hello世界", marks: [{ type: "lang", from: 5, to: 7, value: "ja-JP" }] }] });
-  assert.throws(() => exportSwiftUI(ir("ios", document)), { code: "CANVAS_MOBILE_SEMANTICS_UNSUPPORTED" });
+  const swift = exportSwiftUI(ir("ios", document)).get("SemanticScreen.swift");
+  assert.match(swift, /Text\("Hello"\)/u);
+  assert.match(swift, /languageIdentifier = "ja-JP"/u);
+  assert.match(swift, /Text\(\{ var value = AttributedString\("世界"\)/u);
 });
 
 test("Compose preserves paragraph boundaries, per-paragraph alignment, headings, and unchanged plain text", () => {
   const document = sourceDocument("android", {
+    lang: "en-US",
     children: [{
       id: "copy", type: "text", width: 280, height: 100, content: "One\nDeux", fontSize: 20,
       paragraphs: [{ from: 0, to: 4, align: "start", headingLevel: 1 }, { from: 4, to: 8, align: "end" }],
@@ -97,18 +101,32 @@ test("Compose preserves paragraph boundaries, per-paragraph alignment, headings,
   assert.match(kotlin, /append\("One\\n"\)/u);
   assert.match(kotlin, /append\("Deux"\)/u);
   assert.match(kotlin, /append\("Plain"\)/u);
+  assert.match(kotlin, /localeList = androidx\.compose\.ui\.text\.intl\.LocaleList\(androidx\.compose\.ui\.text\.intl\.Locale\("en-US"\)\)/u);
   assert.doesNotMatch(kotlin, /contentDescription = "One|contentDescription = "Deux/u);
 });
 
-test("Compose rejects language, landmark, and link-name metadata instead of inventing fallbacks", () => {
-  for (const document of [
-    sourceDocument("android", { lang: "fr-FR" }),
-    sourceDocument("android", { children: [{ id: "copy", type: "text", content: "Bonjour", lang: "fr-FR" }] }),
-    sourceDocument("android", { screen: { landmark: "main" } }),
-    sourceDocument("android", { screen: { linkName: "Open" } }),
-  ]) {
-    assert.throws(() => exportCompose(ir("android", document)), { code: "CANVAS_MOBILE_SEMANTICS_UNSUPPORTED" });
-  }
+test("Compose lowers root, node, and run BCP-47 precedence through SpanStyle localeList", () => {
+  const document = sourceDocument("android", {
+    lang: "en-US",
+    children: [
+      { id: "node-language", type: "text", width: 100, height: 20, content: "Bonjour", lang: "fr-FR", paragraphs: [{ from: 0, to: 7 }], marks: [] },
+      { id: "run-language", type: "text", width: 100, height: 20, content: "Hello世界", lang: "de-DE", paragraphs: [{ from: 0, to: 7 }], marks: [{ type: "lang", from: 5, to: 7, value: "ja-JP" }] },
+    ],
+  });
+  const kotlin = exportCompose(ir("android", document)).get("SemanticScreen.kt");
+  assert.match(kotlin, /LocaleList\(androidx\.compose\.ui\.text\.intl\.Locale\("fr-FR"\)\)/u);
+  assert.match(kotlin, /LocaleList\(androidx\.compose\.ui\.text\.intl\.Locale\("de-DE"\)\)/u);
+  assert.match(kotlin, /LocaleList\(androidx\.compose\.ui\.text\.intl\.Locale\("ja-JP"\)\)/u);
+  assert.doesNotMatch(kotlin, /contentDescription = "Bonjour|contentDescription = "Hello/u);
+});
+
+test("mobile rich text preserves delimiter newlines when paragraph ranges exclude them", () => {
+  const document = sourceDocument("ios", { children: [{ id: "copy", type: "text", width: 200, height: 40, content: "One\nTwo", paragraphs: [{ from: 0, to: 3 }, { from: 4, to: 7 }], marks: [] }] });
+  const swift = exportSwiftUI(ir("ios", document)).get("SemanticScreen.swift");
+  assert.match(swift, /Text\("One"\)[\s\S]*Text\("\\n"\)[\s\S]*Text\("Two"\)/u);
+  const androidDocument = sourceDocument("android", { children: [{ id: "copy", type: "text", width: 200, height: 40, content: "One\nTwo", paragraphs: [{ from: 0, to: 3 }, { from: 4, to: 7 }], marks: [] }] });
+  const kotlin = exportCompose(ir("android", androidDocument)).get("SemanticScreen.kt");
+  assert.match(kotlin, /append\("One"\)[\s\S]*append\("\\n"\)[\s\S]*append\("Two"\)/u);
 });
 
 test("heading levels 1 through 6 map to SwiftUI's real accessibility heading API", () => {
