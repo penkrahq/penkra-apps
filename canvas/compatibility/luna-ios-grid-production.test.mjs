@@ -89,8 +89,12 @@ test("generated host has independent case/nonce identity and rejects unknown cas
   assert.deepEqual(launchArguments(GRID_MATRIX_CASE_IDS[0], "nonce-1"), ["--grid-case", GRID_MATRIX_CASE_IDS[0], "--grid-nonce", "nonce-1"]);
   assert.equal(readyReceipt(GRID_MATRIX_CASE_IDS[0], "nonce-1", `prefix LUNA_GRID_READY case=${GRID_MATRIX_CASE_IDS[0]} nonce=nonce-1\n`), true);
   assert.equal(readyReceipt(GRID_MATRIX_CASE_IDS[0], "nonce-2", `LUNA_GRID_READY case=${GRID_MATRIX_CASE_IDS[0]} nonce=nonce-1\n`), false);
-  assert.equal(stableScreenshotHashes(["a", "a"]), true);
-  assert.equal(stableScreenshotHashes(["a", "b"]), false);
+  assert.equal(readyReceipt(GRID_MATRIX_CASE_IDS[0], "nonce-1", `LUNA_GRID_READY case=wrong-case nonce=nonce-1\n`), false);
+  assert.equal(readyReceipt(GRID_MATRIX_CASE_IDS[0], "nonce-1", `prefix LUNA_GRID_READY case=${GRID_MATRIX_CASE_IDS[0]} nonce=nonce-1-partial`), false);
+  assert.equal(stableScreenshotHashes(["a".repeat(64), "a".repeat(64)]), true);
+  assert.equal(stableScreenshotHashes(["a", "a"]), false);
+  assert.equal(stableScreenshotHashes(["a".repeat(64), "b".repeat(64)]), false);
+  assert.equal(stableScreenshotHashes([undefined, "a".repeat(64)]), false);
 });
 
 test("committed source hashes and resolved geometry receipts are reproducible", async () => {
@@ -127,6 +131,8 @@ test("grid pixel comparison rejects zero samples and three-pixel shifts while ac
   const blankResult = compareGridPixels(expectedSynthetic, raster(20, 20), 1);
   assert.equal(blankResult.status, "mismatch");
   assert.equal(blankResult.failures[0].kind, "zero-solid-color-samples");
+  assert.equal(compareGridPixels({ root: { geometry: { w: 20, h: 20 } }, children: [] }, image, 1).reason, "zero-child-geometry");
+  assert.equal(compareGridPixels({ root: { geometry: { w: 20, h: 20 } }, children: [{ id: "bad", geometry: { x: 0, y: 0, w: 0, h: 1 }, paint: { fill: "#123456" } }] }, image, 1).reason, "nonfinite-or-nonpositive-child-geometry");
 });
 
 test("reference set contains all 13 cases for each assigned scale state", async () => {

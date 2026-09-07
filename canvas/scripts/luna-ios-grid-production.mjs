@@ -184,6 +184,11 @@ function colorBounds(image, color, tolerance = 2) {
 }
 
 export function compareGridPixels(expected, actual, scale, edgeTolerance = 2) {
+  if (!Number.isFinite(scale) || scale <= 0) return { status: "mismatch", reason: "nonfinite-or-nonpositive-scale", comparedChildren: 0, failures: [] };
+  if (!Array.isArray(expected?.children) || expected.children.length === 0) return { status: "mismatch", reason: "zero-child-geometry", comparedChildren: 0, failures: [] };
+  if (!Number.isFinite(expected?.root?.geometry?.w) || !Number.isFinite(expected?.root?.geometry?.h) || expected.root.geometry.w <= 0 || expected.root.geometry.h <= 0) return { status: "mismatch", reason: "nonfinite-or-nonpositive-root-geometry", comparedChildren: 0, failures: [] };
+  const invalidChild = expected.children.find(({ geometry }) => !geometry || [geometry.x, geometry.y, geometry.w, geometry.h].some((value) => !Number.isFinite(value)) || geometry.w <= 0 || geometry.h <= 0);
+  if (invalidChild) return { status: "mismatch", reason: "nonfinite-or-nonpositive-child-geometry", comparedChildren: 0, failures: [{ id: invalidChild.id }] };
   const expectedWidth = Math.round(expected.root.geometry.w * scale);
   const expectedHeight = Math.round(expected.root.geometry.h * scale);
   if (actual.width !== expectedWidth || actual.height !== expectedHeight) return { status: "mismatch", reason: "capture dimensions do not equal the authored root at the declared scale", comparedChildren: 0, failures: [{ kind: "dimensions", expected: { width: expectedWidth, height: expectedHeight }, actual: { width: actual.width, height: actual.height } }] };
@@ -215,7 +220,7 @@ export function readyReceipt(caseID, nonce, logText) {
 }
 
 export function stableScreenshotHashes(hashes) {
-  return Array.isArray(hashes) && hashes.length >= 2 && hashes.every((hash) => hash === hashes[0]);
+  return Array.isArray(hashes) && hashes.length >= 2 && hashes.every((hash) => typeof hash === "string" && /^[0-9a-f]{64}$/iu.test(hash)) && hashes.every((hash) => hash === hashes[0]);
 }
 
 export function sourceHashReceipt(sources) {
