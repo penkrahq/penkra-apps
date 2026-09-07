@@ -24,7 +24,7 @@ Focused command (exit 0):
 node --test src/export-service.test.mjs src/export-bundle.test.mjs src/export-publication-matrix.test.mjs src/canvas-imports.test.mjs src/canvas-resolver.test.mjs src/library-publication.test.mjs src/library-publication-service.test.mjs src/library-item-content.test.mjs src/luna-library-artifact-integration.test.mjs
 ```
 
-Totals: 65 passed, 0 failed, 0 cancelled, 0 skipped.
+Totals: 66 passed, 0 failed, 0 cancelled, 0 skipped.
 
 The new integration matrix recorded:
 
@@ -61,17 +61,34 @@ Opt-in command (exit 0):
 node scripts/luna-library-artifact-generate.mjs --output=/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-library-artifact-integration-20260907/corpus
 ```
 
-The generator retained 8 representative artifact files under `corpus/` and
-removed its temporary build directory in `finally`. The complete hash and
-byte manifest is [corpus/manifest.json](corpus/manifest.json). Retained
-artifacts are `library.pptx`, `library.html`, `styles.css`,
-`assets/raster-1.png`, `assets/raster-2.png`, `assets/raster-3.png`,
-`library.svg`, and `library.pdf`.
+Corrected rerun (exit 0):
+
+```text
+node scripts/luna-library-artifact-generate.mjs --output=/Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-delivery/canvas/research/luna-library-artifact-integration-20260907/corrected
+```
+
+The first generator run retained 8 representative artifact files under
+`corpus/` and removed its temporary build directory in `finally`. That
+directory is preserved as historical incomplete evidence: its HTML references
+four raster files while only three were retained.
+
+The corrected generator run retained every generated HTML resource with its
+original relative name under `corrected/html/`, including all four raster
+files and `export-report.json`, plus the PPTX, SVG, and PDF. It retained 10
+files total and removed its temporary build directory in `finally`. The
+complete corrected hash manifest is
+[corrected/manifest.json](corrected/manifest.json).
+
+The default integration test is read-only against `corrected/`: it validates
+every manifest hash and byte count, resolves every local HTML `src`/`href`,
+checks retained PPTX/SVG/PDF semantics, performs bounded browser and Poppler
+checks, and proves the omitted `html/assets/raster-4.png` fixture fails.
 
 Independent retained-file inspection found PPTX text/colors and no picture
 fallback, HTML original IDs plus four ordinal asset references, SVG viewBox
 `0 0 420 240` with native rectangles and embedded raster text, and a one-page
-PDF with extracted text, zero image XObjects, and embedded Inter.
+PDF with extracted text, zero image XObjects, embedded Inter, and bounded
+positive rendered samples for both library colors and the consumer-local color.
 
 No mobile compiler/device work, Canvas document mutation, host release, or
 durable-library persistence claim was made.

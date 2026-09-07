@@ -1,0 +1,265 @@
+{
+  "artifacts": [
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/styles.css",
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/library-route.html",
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/assets/raster-1.png",
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/assets/raster-2.png",
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/assets/raster-3.png",
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/assets/raster-4.png",
+    "/var/folders/vb/g066rwxj3mj405k01t_vjkf80000gn/T/canvas-library-artifact-retain-nveV95/html/export-report.json"
+  ],
+  "consequences": [
+    {
+      "node": "route-qualified-style",
+      "kind": "raster",
+      "why": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct."
+    },
+    {
+      "node": "route-card/card-label",
+      "kind": "raster",
+      "why": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct."
+    },
+    {
+      "node": "route-dark-card/card-label",
+      "kind": "raster",
+      "why": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct."
+    },
+    {
+      "node": "route-local-text",
+      "kind": "raster",
+      "why": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct."
+    }
+  ],
+  "lowered": [
+    {
+      "node": "slide-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "slide-dark-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "route-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "route-dark-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "art-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "art-dark-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "ios-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "ios-dark-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "android-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    },
+    {
+      "node": "android-dark-card",
+      "from": "ui:card",
+      "why": "Reference expanded into target-native nodes."
+    }
+  ],
+  "embeddedFonts": [],
+  "bundledFonts": [],
+  "rasterized": [
+    {
+      "id": "route-qualified-style",
+      "reason": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct.",
+      "outset": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "bounds": {
+        "x": 92,
+        "y": 12,
+        "w": 130,
+        "h": 30
+      },
+      "colorSpace": "sRGB",
+      "alpha": "unpremultiplied",
+      "ppi": 288,
+      "pixelWidth": 390,
+      "pixelHeight": 90,
+      "variants": [
+        {
+          "name": "1x",
+          "ppi": 96,
+          "scale": 1,
+          "pixelWidth": 130,
+          "pixelHeight": 30
+        },
+        {
+          "name": "2x",
+          "ppi": 192,
+          "scale": 2,
+          "pixelWidth": 260,
+          "pixelHeight": 60
+        },
+        {
+          "name": "3x",
+          "ppi": 288,
+          "scale": 3,
+          "pixelWidth": 390,
+          "pixelHeight": 90
+        }
+      ]
+    },
+    {
+      "id": "route-card/card-label",
+      "reason": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct.",
+      "outset": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "bounds": {
+        "x": 20,
+        "y": 73,
+        "w": 120,
+        "h": 32
+      },
+      "colorSpace": "sRGB",
+      "alpha": "unpremultiplied",
+      "ppi": 288,
+      "pixelWidth": 360,
+      "pixelHeight": 96,
+      "variants": [
+        {
+          "name": "1x",
+          "ppi": 96,
+          "scale": 1,
+          "pixelWidth": 120,
+          "pixelHeight": 32
+        },
+        {
+          "name": "2x",
+          "ppi": 192,
+          "scale": 2,
+          "pixelWidth": 240,
+          "pixelHeight": 64
+        },
+        {
+          "name": "3x",
+          "ppi": 288,
+          "scale": 3,
+          "pixelWidth": 360,
+          "pixelHeight": 96
+        }
+      ]
+    },
+    {
+      "id": "route-dark-card/card-label",
+      "reason": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct.",
+      "outset": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "bounds": {
+        "x": 178,
+        "y": 73,
+        "w": 120,
+        "h": 32
+      },
+      "colorSpace": "sRGB",
+      "alpha": "unpremultiplied",
+      "ppi": 288,
+      "pixelWidth": 360,
+      "pixelHeight": 96,
+      "variants": [
+        {
+          "name": "1x",
+          "ppi": 96,
+          "scale": 1,
+          "pixelWidth": 120,
+          "pixelHeight": 32
+        },
+        {
+          "name": "2x",
+          "ppi": 192,
+          "scale": 2,
+          "pixelWidth": 240,
+          "pixelHeight": 64
+        },
+        {
+          "name": "3x",
+          "ppi": 288,
+          "scale": 3,
+          "pixelWidth": 360,
+          "pixelHeight": 96
+        }
+      ]
+    },
+    {
+      "id": "route-local-text",
+      "reason": "properties.text.paragraph.style: The current HTML/CSS writer has no measured live emission for this construct.",
+      "outset": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "bounds": {
+        "x": 12,
+        "y": 150,
+        "w": 140,
+        "h": 30
+      },
+      "colorSpace": "sRGB",
+      "alpha": "unpremultiplied",
+      "ppi": 288,
+      "pixelWidth": 420,
+      "pixelHeight": 90,
+      "variants": [
+        {
+          "name": "1x",
+          "ppi": 96,
+          "scale": 1,
+          "pixelWidth": 140,
+          "pixelHeight": 30
+        },
+        {
+          "name": "2x",
+          "ppi": 192,
+          "scale": 2,
+          "pixelWidth": 280,
+          "pixelHeight": 60
+        },
+        {
+          "name": "3x",
+          "ppi": 288,
+          "scale": 3,
+          "pixelWidth": 420,
+          "pixelHeight": 90
+        }
+      ]
+    }
+  ]
+}
