@@ -51,6 +51,7 @@ export function migrateCanvasDocument(source) {
     changes[name] = result.changes;
     notes.push(...(result.notes ?? []));
   }
+  repairLegacyParagraphs(document, notes);
   if (Object.hasOwn(document, "version")) {
     delete document.version;
     notes.push("Dropped the obsolete OpenPencil format marker; Canvas has no Pencil file-compatibility contract.");
@@ -94,6 +95,100 @@ export function migrateCanvasDocument(source) {
     throw migrationError(`Migration cannot preserve this document as valid Canvas content: ${error.message}`);
   }
   return { document, changes, notes };
+}
+
+function repairLegacyParagraphs(document, notes) {
+  const visit = (nodes) => {
+    for (const node of nodes ?? []) {
+      if (node?.type === "text" && typeof node.content === "string" && !validParagraphPartition(node)) {
+        const original = Array.isArray(node.paragraphs) ? node.paragraphs : [];
+        node.paragraphs = paragraphPartition(node.content).map((range, index) => ({
+          ...range,
+          ...usableParagraphMetadata(document, selectParagraph(original, range, index)),
+        }));
+        notes.push(`Regenerated paragraph ranges from content for text node \`${node.id}\`; preserved usable paragraph metadata deterministically.`);
+      }
+      visit(node?.children);
+    }
+  };
+  visit(document.children);
+}
+
+function validParagraphPartition(node) {
+  const { content, paragraphs } = node;
+  if (!Array.isArray(paragraphs)) return false;
+  if (content.length === 0) return paragraphs.length === 0;
+  if (paragraphs.length === 0) return false;
+  let cursor = 0;
+  for (const paragraph of paragraphs) {
+    if (!paragraph || !Number.isInteger(paragraph.from) || !Number.isInteger(paragraph.to)
+      || paragraph.from !== cursor || paragraph.from < 0 || paragraph.from >= paragraph.to
+      || paragraph.to > content.length) return false;
+    if (paragraph.to < content.length && content[paragraph.to - 1] !== "\n") return false;
+    cursor = paragraph.to;
+  }
+  return cursor === content.length;
+}
+
+function selectParagraph(paragraphs, range, targetIndex) {
+  if (!paragraphs.length) return null;
+  const ranked = paragraphs.map((paragraph, index) => {
+    const interval = paragraphInterval(paragraph);
+    if (!interval) return { paragraph, index, overlap: 0, distance: Number.POSITIVE_INFINITY };
+    const overlap = Math.max(0, Math.min(interval.to, range.to) - Math.max(interval.from, range.from));
+    const distance = overlap > 0 ? 0 : interval.to < range.from ? range.from - interval.to : interval.from - range.to;
+    return { paragraph, index, overlap, distance };
+  });
+  ranked.sort((left, right) => {
+    if ((left.overlap > 0) !== (right.overlap > 0)) return left.overlap > 0 ? -1 : 1;
+    if (left.overlap !== right.overlap) return right.overlap - left.overlap;
+    if (left.distance !== right.distance) return left.distance - right.distance;
+    const leftIndexDistance = Math.abs(left.index - targetIndex);
+    const rightIndexDistance = Math.abs(right.index - targetIndex);
+    return leftIndexDistance - rightIndexDistance || left.index - right.index;
+  });
+  return ranked[0].paragraph;
+}
+
+function paragraphInterval(paragraph) {
+  if (!paragraph || typeof paragraph !== "object" || Array.isArray(paragraph)
+    || !Number.isInteger(paragraph.from) || !Number.isInteger(paragraph.to)) return null;
+  return paragraph.from <= paragraph.to
+    ? { from: paragraph.from, to: paragraph.to }
+    : { from: paragraph.to, to: paragraph.from };
+}
+
+function usableParagraphMetadata(document, paragraph) {
+  if (!paragraph || typeof paragraph !== "object" || Array.isArray(paragraph)) return {};
+  const metadata = {};
+  if (typeof paragraph.style === "string" && paragraph.style
+    && paragraphStyleExists(document, paragraph.style)) metadata.style = paragraph.style;
+  if (["start", "center", "end", "justify"].includes(paragraph.align)) metadata.align = paragraph.align;
+  if (paragraph.list && typeof paragraph.list === "object" && !Array.isArray(paragraph.list)) {
+    metadata.list = structuredClone(paragraph.list);
+  }
+  if (Number.isInteger(paragraph.headingLevel) && paragraph.headingLevel >= 1 && paragraph.headingLevel <= 6) {
+    metadata.headingLevel = paragraph.headingLevel;
+  }
+  return metadata;
+}
+
+function paragraphStyleExists(document, style) {
+  if (Object.hasOwn(document.paragraphStyles ?? {}, style)) return true;
+  const parts = style.split(":");
+  return parts.length === 2 && Boolean(parts[0]) && Boolean(parts[1]) && Object.hasOwn(document.imports ?? {}, parts[0]);
+}
+
+function paragraphPartition(content) {
+  const ranges = [];
+  let from = 0;
+  for (let index = 0; index < content.length; index += 1) {
+    if (content[index] !== "\n") continue;
+    ranges.push({ from, to: index + 1 });
+    from = index + 1;
+  }
+  if (from < content.length) ranges.push({ from, to: content.length });
+  return ranges;
 }
 
 function renameAppearanceConditions(value) {

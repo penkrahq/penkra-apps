@@ -5,6 +5,7 @@ import { join } from "node:path";
 import test from "node:test";
 
 import { createCanvasMigrationCopy, migrateCanvasDocument } from "./document-migration.mjs";
+import { validateCanvasDocument } from "./canvas-schema.mjs";
 import { createDocumentModel, encodeState } from "./document-model.mjs";
 
 test("the complete migration pipeline produces one schema-valid canonical document", () => {
@@ -31,6 +32,71 @@ test("the complete migration pipeline produces one schema-valid canonical docume
   assert.deepEqual(result.document.variables.ink, { tokenType: "color", cascade: [
     { value: "#fff" }, { value: "#000", when: { appearance: "dark" } },
   ] });
+});
+
+test("migration regenerates stale paragraph ranges from content and preserves usable metadata", () => {
+  const source = {
+    module: "generic", axes: {}, variables: {}, paragraphStyles: { body: { fontSize: 14 } }, imports: {}, flows: [],
+    children: [{ id: "text", type: "text", content: "First\nSecond\nThird", paragraphs: [
+      { from: -4, to: 6, style: "body", align: "center", list: { kind: "bullet" }, headingLevel: 2 },
+      { from: 6, to: 999, style: "missing", align: "invalid", headingLevel: 9 },
+    ], marks: [] }],
+  };
+  const before = structuredClone(source);
+  const first = migrateCanvasDocument(source);
+  const second = migrateCanvasDocument(source);
+  const node = first.document.children[0];
+  assert.deepEqual(node.paragraphs, [
+    { from: 0, to: 6, style: "body", align: "center", list: { kind: "bullet" }, headingLevel: 2 },
+    { from: 6, to: 13 },
+    { from: 13, to: 18 },
+  ]);
+  assert.equal(node.content, before.children[0].content);
+  assert.deepEqual(source, before);
+  assert.deepEqual(first.notes, second.notes);
+  assert.ok(first.notes.some((note) => note.includes("Regenerated paragraph ranges from content for text node `text`")));
+  assert.doesNotThrow(() => validateCanvasDocument(first.document));
+});
+
+test("migration repairs each stale paragraph shape, including empty content, with deterministic nearest metadata", () => {
+  const cases = [
+    {
+      content: "a\nb\nc",
+      paragraphs: [{ from: 0, to: 2, align: "end" }, { from: 2, to: 7, headingLevel: 3 }],
+      expected: [{ from: 0, to: 2, align: "end" }, { from: 2, to: 4, headingLevel: 3 }, { from: 4, to: 5, headingLevel: 3 }],
+    },
+    {
+      content: "a\nb\nc",
+      paragraphs: [{ from: 99, to: 120, align: "center" }],
+      expected: [{ from: 0, to: 2, align: "center" }, { from: 2, to: 4, align: "center" }, { from: 4, to: 5, align: "center" }],
+    },
+    { content: "", paragraphs: [{ from: 0, to: 1, align: "center" }], expected: [] },
+  ];
+  for (const { content, paragraphs, expected } of cases) {
+    const source = {
+      module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+      children: [{ id: `text-${paragraphs.length}`, type: "text", content, paragraphs, marks: [] }],
+    };
+    const result = migrateCanvasDocument(source);
+    const node = result.document.children[0];
+    assert.deepEqual(node.paragraphs, expected);
+    assert.doesNotThrow(() => validateCanvasDocument(result.document));
+    assert.equal(result.notes.filter((note) => note.includes("Regenerated paragraph ranges from content")).length, 1);
+  }
+});
+
+test("migration leaves already-valid paragraph ranges and metadata byte-for-byte unchanged", () => {
+  const source = {
+    module: "generic", axes: {}, variables: {}, paragraphStyles: { body: { fontSize: 14 } }, imports: {}, flows: [],
+    children: [{ id: "valid", type: "text", content: "One\nTwo", paragraphs: [
+      { from: 0, to: 4, style: "body", align: "justify", list: { kind: "ordered" }, headingLevel: 1 },
+      { from: 4, to: 7, style: "body", align: "end" },
+    ], marks: [] }],
+  };
+  const result = migrateCanvasDocument(source);
+  assert.deepEqual(result.document.children[0].paragraphs, source.children[0].paragraphs);
+  assert.equal(result.notes.some((note) => note.includes("text node `valid`")), false);
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
 test("copy migration verifies the copy before renaming the untouched original", async () => {
