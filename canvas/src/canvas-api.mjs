@@ -176,8 +176,7 @@ function snapshotUploadAsset(asset) {
 
 function uploadedAsset(blob, snapshot) {
   if (!blob || typeof blob !== "object" || Array.isArray(blob)
-    || blob.sha256 !== snapshot.sha256 || blob.size !== snapshot.bytes.byteLength
-    || (snapshot.mimeType !== undefined && blob.mimeType !== undefined && blob.mimeType !== snapshot.mimeType)) {
+    || blob.sha256 !== snapshot.sha256 || blob.size !== snapshot.bytes.byteLength) {
     throw uploadReceiptInvalid("Canvas asset upload returned invalid blob metadata.");
   }
   // The Account blob projection identifies content, while the Pencil-relative
