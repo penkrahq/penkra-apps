@@ -42,14 +42,17 @@ test("mobile layouts use independent row and column gap overrides", () => {
     children: [{ id: `${kind}-child`, type: "rectangle", width: 40, height: 30, fill: "#123456" }],
   })) }] };
   const make = (role) => { doc.children[0].role = role; return buildCapabilityVerificationIR(doc, { role, frames: ["screen"] }, capabilityPathInventory()); };
-  const swift = [...exportSwiftUI(make("ios")).values()].join("\n");
+  const swiftFiles = exportSwiftUI(make("ios"));
+  const swift = [...swiftFiles.values()].join("\n");
   assert.match(swift, /HStack\(alignment: \.top, spacing: 30\)/u);
   assert.match(swift, /VStack\(alignment: \.leading, spacing: 25\)/u);
-  assert.match(swift, /FlowLayout\(spacing: 30, rowSpacing: 25\)/u);
+  assert.match(swiftFiles.get("GapScreen.swift"), /ZStack\(alignment: \.topLeading\)/u);
   assert.doesNotMatch(swift, /LazyVGrid\(/u);
-  const kotlin = [...exportCompose(make("android")).values()].join("\n");
-  assert.match(kotlin, /horizontalArrangement = Arrangement\.spacedBy\(30\.dp\)/u);
-  assert.match(kotlin, /verticalArrangement = Arrangement\.spacedBy\(25\.dp\)/u);
+  const composeFiles = exportCompose(make("android"));
+  const kotlin = [...composeFiles.values()].join("\n");
+  assert.match(kotlin, /horizontalArrangement = Arrangement\.spacedBy\(30\.dp/u);
+  assert.match(kotlin, /verticalArrangement = Arrangement\.spacedBy\(25\.dp/u);
+  assert.doesNotMatch(composeFiles.get("GapScreen.kt"), /FlowRow\(/u);
 });
 
 const document = { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", name: "Title", width: 1280, height: 720, layout: "none", children: [{ id: "title", type: "text", x: 80, y: 60, width: 600, height: 80, content: "Editable title", fontFamily: "Inter", fontSize: 48, paragraphs: [{ from: 0, to: 14, headingLevel: 1 }], marks: [{ type: "weight", from: 0, to: 8, value: 700 }], description: "Deck title" }, { id: "box", type: "rectangle", x: 80, y: 180, width: 300, height: 120, fill: "#123456", effect: { type: "shadow", shadowType: "outer", color: "#00000055", offset: { x: 4, y: 6 }, blur: 12 } }] }] };
