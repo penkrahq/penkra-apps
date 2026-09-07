@@ -4,6 +4,7 @@ import { inspectPdfxMetadata } from "./pdfx-metadata.mjs";
 import { inspectPdfxFonts } from "./pdfx-fonts.mjs";
 import { inspectPageImages } from "./pdfx-images.mjs";
 import { inspectPdfxSubsetPolicy } from "./pdfx-subset-policy.mjs";
+import { PDF_ARCHITECTURAL_LIMITS, inspectContentNumberSpellings, inspectContentValueLimits, inspectIndirectObjectCount, inspectPdfObjectLimits } from "./pdfx-limits.mjs";
 import { readPdfContent } from "./pdf-content.mjs";
 import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
@@ -76,7 +77,7 @@ export async function preflightPdfx4(bytes) {
 
 async function inspectPdfx4(bytes) {
   const issues = [];
-  const add = (code, clause, object) => issues.push({ code, clause, object });
+  const add = (code, clause, object, detail) => issues.push({ code, clause, object, ...(detail ? { detail } : {}) });
   const result = () => ({
     profile: "PDF/X-4", standard: "ISO 15930-7:2010",
     status: issues.length ? "invalid" : "verified-canvas-writer-subset",
@@ -205,7 +206,16 @@ async function inspectPdfx4(bytes) {
     }
     for (const [key, value] of dict.entries()) visit(value, `${path}/${key.decodeText()}`);
   };
-  try { for (const [ref, object] of pdf.context.enumerateIndirectObjects()) visit(object, ref.toString()); }
+  try {
+    let indirectCount = 0;
+    const limitSeen = new Set();
+    for (const [ref, object] of pdf.context.enumerateIndirectObjects()) {
+      indirectCount += 1;
+      visit(object, ref.toString());
+      inspectPdfObjectLimits(object, ref.toString(), { resolve, add, seen: limitSeen });
+    }
+    inspectIndirectObjectCount(indirectCount, "file", add);
+  }
   catch { add("OBJECT_GRAPH_INVALID", "6.1", "file"); }
   const fontReport = inspectPdfxFonts(pdf);
   issues.push(...fontReport.issues);
@@ -248,7 +258,10 @@ function inspectPageContent(page, path, context) {
   for (const [index, stream] of streams.entries()) {
     if (!(stream instanceof PDFRawStream)) { add("CONTENT_STREAM_INVALID", "6.1", `${path}/Contents[${index}]`); continue; }
     try {
-      const operations = readPdfContent(decodePDFRawStream(stream).decode());
+      const contentBytes = decodePDFRawStream(stream).decode();
+      inspectContentNumberSpellings(contentBytes, `${path}/Contents[${index}]`, add);
+      const operations = readPdfContent(contentBytes);
+      inspectContentValueLimits(operations, `${path}/Contents[${index}]`, add);
       for (const operation of operations) {
         // pdf-lib emits [] 0 d when drawing Canvas's solid rectangle outlines.
         // Only this reset is established by our writer; other dash patterns
@@ -264,7 +277,12 @@ function inspectPageContent(page, path, context) {
         if (ALLOWED_CONTENT_OPERATORS.has(operation.operator) && !operandsValid) add("CONTENT_OPERANDS_INVALID", "6.1", `${path}/Contents[${index}]/${operation.operator}`);
         const location = `${path}/Contents[${index}]/${operation.operator}`;
         const op = operation.operator;
-        if (op === "q" && operandsValid) graphicsDepth += 1;
+        if (op === "q" && operandsValid) {
+          graphicsDepth += 1;
+          if (graphicsDepth === PDF_ARCHITECTURAL_LIMITS.qDepth + 1) {
+            add("PDF_ARCHITECTURAL_LIMIT", "6.25", location, { detail: "q/Q-nesting", actual: graphicsDepth, limit: PDF_ARCHITECTURAL_LIMITS.qDepth });
+          }
+        }
         if (op === "Q" && operandsValid) {
           if (graphicsDepth === 0) add("GRAPHICS_STATE_UNDERFLOW", "6.1", location);
           else graphicsDepth -= 1;
