@@ -189,19 +189,7 @@ async function inspectPdfx4(bytes) {
     if (name(get(dict, "Type")) === "Action") add("ACTION_FORBIDDEN", "6.18", path);
     if (name(get(dict, "Subtype")) === "PS" || name(get(dict, "Subtype2")) === "PS") add("POSTSCRIPT_FORBIDDEN", "6.14", path);
     if (get(dict, "PresSteps")) add("PRESENTATION_FORBIDDEN", "6.22", path);
-    if (name(get(dict, "Type")) === "ExtGState") {
-      for (const key of ["TR", "HT", "HTP", "BG", "BG2", "UCR", "UCR2"]) if (get(dict, key)) add("GRAPHICS_STATE_KEY_FORBIDDEN", "6.13", `${path}/${key}`);
-      if (get(dict, "TR2") && name(get(dict, "TR2")) !== "Default") add("TRANSFER_FUNCTION_FORBIDDEN", "6.13", path);
-      if (get(dict, "RI") && !["RelativeColorimetric", "AbsoluteColorimetric", "Perceptual", "Saturation"].includes(name(get(dict, "RI")))) add("RENDERING_INTENT_INVALID", "6.23", path);
-      for (const key of ["ca", "CA"]) {
-        const value = get(dict, key);
-        if (value !== undefined && (!(value instanceof PDFNumber) || value.asNumber() < 0 || value.asNumber() > 1)) add("TRANSPARENCY_ALPHA_INVALID", "6.20", `${path}/${key}`);
-      }
-      const blend = get(dict, "BM");
-      if (blend && !["Normal", "Compatible"].includes(name(blend))) add("BLEND_MODE_OUTSIDE_SUBSET", "6.20", `${path}/BM`);
-      const mask = get(dict, "SMask");
-      if (mask && name(mask) !== "None") add("SOFT_MASK_OUTSIDE_SUBSET", "6.20", `${path}/SMask`);
-    }
+    if (name(get(dict, "Type")) === "ExtGState") inspectExtGStateFields(dict, path, { get, name, add });
     if (get(dict, "OPI") || (name(get(dict, "Subtype")) === "Form" && get(dict, "Ref"))) add("EXTERNAL_RESOURCE_FORBIDDEN", "6.7", path);
     if (name(get(dict, "Type")) === "Font" && name(get(dict, "Subtype")) !== "Type0") {
       const descriptor = get(dict, "FontDescriptor");
@@ -317,7 +305,11 @@ function inspectNamedContentResource(operator, resourceName, resources, location
   if (value === undefined || value === null || value === PDFNull) { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
   if (operator === "gs") {
     if (!(value instanceof PDFDict)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
-    else if (get(value, "Type") !== undefined && name(get(value, "Type")) !== "ExtGState") add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+    else {
+      const type = get(value, "Type");
+      if (type !== undefined && name(type) !== "ExtGState") add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+      else if (type === undefined) inspectExtGStateFields(value, location, { get, name, add });
+    }
     return;
   }
   if (operator === "Do") {
@@ -331,6 +323,20 @@ function inspectNamedContentResource(operator, resourceName, resources, location
     return;
   }
   if (!(value instanceof PDFDict)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
+}
+
+function inspectExtGStateFields(dict, path, { get, name, add }) {
+  for (const key of ["TR", "HT", "HTP", "BG", "BG2", "UCR", "UCR2"]) if (get(dict, key)) add("GRAPHICS_STATE_KEY_FORBIDDEN", "6.13", `${path}/${key}`);
+  if (get(dict, "TR2") && name(get(dict, "TR2")) !== "Default") add("TRANSFER_FUNCTION_FORBIDDEN", "6.13", path);
+  if (get(dict, "RI") && !["RelativeColorimetric", "AbsoluteColorimetric", "Perceptual", "Saturation"].includes(name(get(dict, "RI")))) add("RENDERING_INTENT_INVALID", "6.23", path);
+  for (const key of ["ca", "CA"]) {
+    const value = get(dict, key);
+    if (value !== undefined && (!(value instanceof PDFNumber) || value.asNumber() < 0 || value.asNumber() > 1)) add("TRANSPARENCY_ALPHA_INVALID", "6.20", `${path}/${key}`);
+  }
+  const blend = get(dict, "BM");
+  if (blend && !["Normal", "Compatible"].includes(name(blend))) add("BLEND_MODE_OUTSIDE_SUBSET", "6.20", `${path}/BM`);
+  const mask = get(dict, "SMask");
+  if (mask && name(mask) !== "None") add("SOFT_MASK_OUTSIDE_SUBSET", "6.20", `${path}/SMask`);
 }
 
 function iccProfileFromColorSpace(value, resolve, name) {
