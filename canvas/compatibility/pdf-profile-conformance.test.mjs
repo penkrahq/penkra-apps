@@ -6,9 +6,11 @@ import { basename, join } from "node:path";
 import { promisify } from "node:util";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { PDFDocument } from "pdf-lib";
 
 import { buildExtractionIR } from "../src/exporter-ir.mjs";
 import { exportPdf } from "../src/exporters/pdf.mjs";
+import { preflightPdfx4 } from "../src/exporters/pdfx-preflight.mjs";
 
 const IMAGE = "penkra-verapdf:1.30.2";
 const execute = promisify(execFile);
@@ -69,19 +71,22 @@ test("PDF/UA-1 output passes pinned veraPDF 1.30.2", { timeout: 120_000 }, async
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test("unverified PDF/X-4 profile cannot be mislabeled", async () => {
+test("configured PDF/X-4 profile returns a writer-verified artifact without universal conformance", async () => {
   const ir = buildExtractionIR(fixture(), { format: "pdf", nodeId: "page" });
   const [outputIntent, sourceColorProfile, inter] = await Promise.all([
     readFile(new URL("../assets/color/GRACoL2013_CRPC6.icc", import.meta.url)),
     readFile(new URL("../assets/color/sRGB2014.icc", import.meta.url)),
     readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url)),
   ]);
-  await assert.rejects(exportPdf(ir, { profile: "PDF/X-4", outputIntent, sourceColorProfile, fonts: { "Inter:400": inter } }), (error) => {
-    assert.equal(error.code, "CANVAS_PDF_PROFILE_UNVERIFIED", JSON.stringify(error.preflight));
-    assert.equal(error.preflight.conformant, false);
-    assert.equal(error.preflight.canvasWriterSubset.verified, true);
-    return true;
-  });
+  const bytes = await exportPdf(ir, { profile: "PDF/X-4", outputIntent, sourceColorProfile, fonts: { "Inter:400": inter } });
+  assert.ok(bytes instanceof Uint8Array);
+  assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6");
+  const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
+  assert.equal(pdf.getPages().length, 1);
+  const report = await preflightPdfx4(bytes);
+  assert.deepEqual(report.issues, []);
+  assert.equal(report.canvasWriterSubset?.verified, true);
+  assert.equal(report.conformant, false);
   await assert.rejects(exportPdf(ir, { profile: "PDF/X-4" }), { code: "CANVAS_PDF_PROFILE_INVALID" });
 });
 
