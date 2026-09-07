@@ -6,7 +6,7 @@
     {
       "name": "ca-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "f1e6e1d88e3d7e62461d1ad2d007562f9a80278342f3879c5c527e207f5a8aa2",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -42,7 +42,7 @@
     {
       "name": "ca-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
+      "sha256": "23eb7bfdebf8de30fb3f6d4881af62b5eb59acec20903ebd11494d3bbda533e0",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -78,7 +78,7 @@
     {
       "name": "ca-zero",
       "serialization": "classic-xref",
-      "sha256": "88be84e09477cd53b559a686b464f8f327fff8f273f36b21ee9713e2f0a711f2",
+      "sha256": "4b97b4e302eeed6844fae1eff3878ef1497f91da73cfcd42cb5fea9f40aa0335",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -114,8 +114,8 @@
     {
       "name": "ca-zero",
       "serialization": "object-streams",
-      "sha256": "48a360f46d287234521e39fa10c4c062d732da6e7c1a4edfba9f53d98f7faa8f",
-      "bytes": 727,
+      "sha256": "97dc7e91c6500dde925ebfff9d6942cf76206b6ca098c9fd4e2a495f5916cb14",
+      "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -150,7 +150,7 @@
     {
       "name": "ca-half",
       "serialization": "classic-xref",
-      "sha256": "04714db4bf96cfbc3da487d6f3553765948e4dbca6bf53098e826f366a062d2e",
+      "sha256": "f1cf8a9059fe880195211969e291266badbbf938ce65c3395a1801d57566e295",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -186,7 +186,7 @@
     {
       "name": "ca-half",
       "serialization": "object-streams",
-      "sha256": "01725bddb18548140c779a02d0700811f5e2545c33d4333d9b136cf7bcb1350f",
+      "sha256": "39b3b63bb38d7a3dfaffd559f332c6e642d1beb1d52408222189e84fdbf21118",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -222,7 +222,7 @@
     {
       "name": "ca-one",
       "serialization": "classic-xref",
-      "sha256": "3a42da0d42958076f8fe393aed789446b8cd40989b97efa29867ed7887d1b0ce",
+      "sha256": "3fb3a691fa54410e4c5095f86e8186bc7bd62340a1a5907c974946844e7fccad",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -258,7 +258,7 @@
     {
       "name": "ca-one",
       "serialization": "object-streams",
-      "sha256": "f39292a4ff78cbfe5fc11c9873cac7cec87a852f8bc5e80c16c3a8182cfc8d39",
+      "sha256": "942b679e400b1fca5064265442a4a19376abf2b40a43cacbb614434c9ccd3cdc",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -294,7 +294,7 @@
     {
       "name": "ca-negative",
       "serialization": "classic-xref",
-      "sha256": "77bf335269d3909ba3030b32b4078f8990e8a746aa1d2ac0295cbd40ea9789e2",
+      "sha256": "ea97a7b0e4be20b8e936f5da3c770ca1a0b0c110ecb0e5308f492d70bd73e105",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -335,7 +335,7 @@
     {
       "name": "ca-negative",
       "serialization": "object-streams",
-      "sha256": "d787f4c8dce309c734fc33223c52831de91d3ddf8ddc6a1ead513ee04e98cea8",
+      "sha256": "5f627ea29030696d197b2ce5192594857cf3877c3699e8b3324e159cd30a610c",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -376,7 +376,7 @@
     {
       "name": "ca-above-one",
       "serialization": "classic-xref",
-      "sha256": "b1d90957b1f39a54e91119dd3d2104a36bd173685098ddf64c379a7c8f70a3da",
+      "sha256": "658bd15e3c195243efd271e66ed207baf7b48d324100fb2b1fa393b37e26d1d4",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -417,7 +417,7 @@
     {
       "name": "ca-above-one",
       "serialization": "object-streams",
-      "sha256": "bafdfae8ebbf400fc49b7ef0119074eab468a4b3d60d05c13207dd4c8706fb40",
+      "sha256": "fb4af03d536e3e6923ae0d075e91ee01ed584b27ab95f6fb5303bbe826b94656",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -458,7 +458,7 @@
     {
       "name": "ca-string",
       "serialization": "classic-xref",
-      "sha256": "173cbb672f2fa2e5c07852b3614576e613eee21bacffb37244a8847a2b3ddbbd",
+      "sha256": "d145527384885d2f91b630eb9b90b5d7d9ce8c3349d712190b6a2981f7a640a0",
       "bytes": 1138,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -499,7 +499,7 @@
     {
       "name": "ca-string",
       "serialization": "object-streams",
-      "sha256": "7a86e64c31c9d038c7943a18aede16f0a96fd0318e0384a8ed0659f4405ac5f7",
+      "sha256": "25a5cdedd2fc88674e48bd897a4daeae9ba9b69ae5004e673f2584e69c9a4af7",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -540,7 +540,7 @@
     {
       "name": "ca-name",
       "serialization": "classic-xref",
-      "sha256": "b11f0bf90f9b40332d7e4c31ec6104c80f2a4bc07152e7e539fb820b23b2d7c6",
+      "sha256": "ce089c0e3ec6b50b325f528edfbdc78bacdf667d12addc066b67a032269a4478",
       "bytes": 1138,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -581,7 +581,7 @@
     {
       "name": "ca-name",
       "serialization": "object-streams",
-      "sha256": "edea6ffa55fe56ac576c330cb4515d3018f49e5929238e33003c73a73523112a",
+      "sha256": "4153c0ad0a6a2d96324f0238a50b5bd9bc84e8ce39ddf26c370a3284eecaf399",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -622,7 +622,7 @@
     {
       "name": "ca-array-review",
       "serialization": "classic-xref",
-      "sha256": "86675e6739f3c5742e65526451de015ad93dce572e98b36bbce6e39ab80f8792",
+      "sha256": "327d03dbca6323e83d5c2740d12ef7c86c1b4519d790fe49668901bda9c01626",
       "bytes": 1140,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -663,7 +663,7 @@
     {
       "name": "ca-array-review",
       "serialization": "object-streams",
-      "sha256": "b40e61610cfe30d02f232386ca9eee86dc9e45157565e99a8339cb51cdbf061c",
+      "sha256": "43637f3f4d732444ae0473791d9d67b86c9fcdf6e9d8abceff514b5ef305a9dd",
       "bytes": 730,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -704,7 +704,7 @@
     {
       "name": "ca-null-review",
       "serialization": "classic-xref",
-      "sha256": "a2387fb6c02f512eed813e43c5196252a68d27aa949f807f26e369ed556b0fd5",
+      "sha256": "36280bd63262a3b64c47fcbd2d7c2b71d08e11ad492f7f5d28113de1e52adc31",
       "bytes": 1137,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -740,7 +740,7 @@
     {
       "name": "ca-null-review",
       "serialization": "object-streams",
-      "sha256": "ce5f6b6f14639d884ae86355d6a872ea04c896b28865d0d28bc5e7aa2207055f",
+      "sha256": "a52454135b7ca4da65a30618d1fd5a5e6891cab008ee50af37d4ed6c976721e8",
       "bytes": 729,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -776,7 +776,7 @@
     {
       "name": "CA-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "f1e6e1d88e3d7e62461d1ad2d007562f9a80278342f3879c5c527e207f5a8aa2",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -812,7 +812,7 @@
     {
       "name": "CA-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
+      "sha256": "23eb7bfdebf8de30fb3f6d4881af62b5eb59acec20903ebd11494d3bbda533e0",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -848,7 +848,7 @@
     {
       "name": "CA-zero",
       "serialization": "classic-xref",
-      "sha256": "c92f393ad63eb229faa86f1c039b75fd7bcba376f24c0453e507950b6e7c107b",
+      "sha256": "9bf3a876ba9743f5cb2e495c9d152723a0be8decb32cad892abefbaee3ce6438",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -884,7 +884,7 @@
     {
       "name": "CA-zero",
       "serialization": "object-streams",
-      "sha256": "d28d98756098ebaa660996d74450f268b6d5bd5710a3763a908e2c3c42231f4f",
+      "sha256": "776e1e3b5169bdb5da154730a78d8f38bac1c96b8f0da4727123142b9f355481",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -920,7 +920,7 @@
     {
       "name": "CA-half",
       "serialization": "classic-xref",
-      "sha256": "758b51f832362c03bd33dda5386e9a0d2c0e4268a0f5888503d79444db8353ca",
+      "sha256": "b35667311e1b12e94ee51a126a1b4cc1de59b5e849b9af08d38433a047d205ac",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -956,7 +956,7 @@
     {
       "name": "CA-half",
       "serialization": "object-streams",
-      "sha256": "dcf8a5b6c29328bcd6ab9b54619312e21b457fa8422dce43c3c965de48fcedec",
+      "sha256": "c107a8eab9d1de6615637ba1743a8400ed9e30f84f4d29aeb0921f871db4c26b",
       "bytes": 728,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -992,7 +992,7 @@
     {
       "name": "CA-one",
       "serialization": "classic-xref",
-      "sha256": "8d0cdb90a573e465f1bc6b89b3901bbff094d97f071645aa4e6e3140ae73363e",
+      "sha256": "43c54e2ebb751df5db44ad76cf1f0107f769fd4d0775e4dbbaadf2306224ef0e",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1028,7 +1028,7 @@
     {
       "name": "CA-one",
       "serialization": "object-streams",
-      "sha256": "d419fc2fb9a99dfb16097aa897f11d7e6c2fcec2c76ab687ce86f19681c3eb71",
+      "sha256": "3f5c6511d567c79b6ef61bf3cce80bc050f44cf5f7f48691297283816a5acbc8",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1064,7 +1064,7 @@
     {
       "name": "CA-negative",
       "serialization": "classic-xref",
-      "sha256": "531ff09ec8e0def1f496e1ba68eaa02177b86195b31754c15b718cad7b40f72a",
+      "sha256": "8b4b0b8b9e63ac38bf9f6d97a9dc282f91e0f9a0f00afc34e80a686bb385d1e5",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1105,7 +1105,7 @@
     {
       "name": "CA-negative",
       "serialization": "object-streams",
-      "sha256": "5a5e7a833f4777d7ed3402a0fb5ab05d9a1a2120467048ba4b45af1ea5e09d0f",
+      "sha256": "4cfe6d59b277602ff21b805bdd0066987a4047017768917d631817ae4788121f",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1146,7 +1146,7 @@
     {
       "name": "CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "52e74ec9a36d99f948cbab61466d01e8c71b5994c1b5f2c88a77c0704dde99f6",
+      "sha256": "795e9da3c4a74a406bacebd9c25215b1a202a7643285e218043ec2d41334683e",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1187,7 +1187,7 @@
     {
       "name": "CA-above-one",
       "serialization": "object-streams",
-      "sha256": "a01aad6c1676901e41ad2dc4200f43b66a6b03fb1e999237c6107d8f22497118",
+      "sha256": "b4636184d724673b6f9b18a3b34632f170ece17a1ebd13d01a751cbea07a226d",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1228,7 +1228,7 @@
     {
       "name": "CA-string",
       "serialization": "classic-xref",
-      "sha256": "b35af72ad967cb992f17a08a118a80999dd2568a213725091bdb36b8959958da",
+      "sha256": "b80adb45cf81b7c18956f9c0dbef8acb86bbf2c01fbdf1002164640cfe36a9e7",
       "bytes": 1138,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1269,7 +1269,7 @@
     {
       "name": "CA-string",
       "serialization": "object-streams",
-      "sha256": "d73d6517f01b82668a9765e58e3d22790b6df45e2e64a6138111762e65f74401",
+      "sha256": "766a7112913a6aaa5c96d38a3c2e3ffdc60b3d0f1db2b33b2506a166379dbe77",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1310,7 +1310,7 @@
     {
       "name": "CA-name",
       "serialization": "classic-xref",
-      "sha256": "6af55f47548655cb2c4735cc9393cd70718809735aa47f2cb173996b5824f70b",
+      "sha256": "23a307ac06774385e36d8ce8398f418d70ebe814b8c07c240892c38ed1a941e5",
       "bytes": 1138,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1351,7 +1351,7 @@
     {
       "name": "CA-name",
       "serialization": "object-streams",
-      "sha256": "46786697ac24177067ae64aa4aac735ce45ecf4cf4358bcd4b58532469b83385",
+      "sha256": "462663e37b0a0368e0665b779c1a970c68d5ea376bd950ad63d10b4f9d9a05f4",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1392,7 +1392,7 @@
     {
       "name": "CA-array-review",
       "serialization": "classic-xref",
-      "sha256": "d79c86778082647c5371fd0d19072a63697466a040106ac3c072e32c8e732631",
+      "sha256": "76d3d3fad2380d4fd54e55ef6f232efd887e73a6b7b2c08b77159519f7031b52",
       "bytes": 1140,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -1433,7 +1433,7 @@
     {
       "name": "CA-array-review",
       "serialization": "object-streams",
-      "sha256": "2ebc82251008e1c070f8b5d6c4ef69e3e5dad8a7e87b160fd5702ca38394a154",
+      "sha256": "6f76ba2cd702ac53fa6e34cf35fd75bfd5d2ad4a9414dea4777a1656ea755323",
       "bytes": 730,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -1474,7 +1474,7 @@
     {
       "name": "CA-null-review",
       "serialization": "classic-xref",
-      "sha256": "eb4931c1aeb656590f6aba03d5ed85e62bf56122b876e4060fda97401c04be0e",
+      "sha256": "652753f9d80c337248716b80fd1b153ff23d80b0beb29317fe02c9c116261155",
       "bytes": 1137,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -1510,7 +1510,7 @@
     {
       "name": "CA-null-review",
       "serialization": "object-streams",
-      "sha256": "6560dc6605d7789b7600f5b87d48287ebc4edffdf15bc0f01c0b32c9123813d2",
+      "sha256": "f310e7ba88fbf8796a03b010ce71e1c89e9f0170a9a078cff076a46b77ed4497",
       "bytes": 729,
       "classification": "coordinator-review",
       "intendedRule": "Null/namearray-like values require coordinator policy; preserve the observed checker result.",
@@ -1546,7 +1546,7 @@
     {
       "name": "BM-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "f1e6e1d88e3d7e62461d1ad2d007562f9a80278342f3879c5c527e207f5a8aa2",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1582,7 +1582,7 @@
     {
       "name": "BM-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
+      "sha256": "23eb7bfdebf8de30fb3f6d4881af62b5eb59acec20903ebd11494d3bbda533e0",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1618,7 +1618,7 @@
     {
       "name": "BM-Normal",
       "serialization": "classic-xref",
-      "sha256": "ddd31fc497e588d63b3aac13cc799fbbccaf17e8173fdc123cfa8b3fbb12a296",
+      "sha256": "cee1e40c0b658a3e25d28ae1e590b8ee39f6850104306e950bfd828cdc3ad24d",
       "bytes": 1140,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1654,8 +1654,8 @@
     {
       "name": "BM-Normal",
       "serialization": "object-streams",
-      "sha256": "bc482c9870bc9559258fe46665f85a1e0da94b39a2414e7623049817511a953d",
-      "bytes": 731,
+      "sha256": "6144386d458f95798bcc750e3bf4ca65cba7d6e696e588caf6eccbec4f163461",
+      "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
       "graphicsIssues": [],
@@ -1690,7 +1690,7 @@
     {
       "name": "BM-Compatible",
       "serialization": "classic-xref",
-      "sha256": "c3e5fd9abcd5912420a3b239b787d042a13af466656d372107f220aff2bb0c8a",
+      "sha256": "91a0ea2b63f0c59a6107fb907fd06d10a4b8c861ed145ec1168e77832e935b9e",
       "bytes": 1144,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1726,7 +1726,7 @@
     {
       "name": "BM-Compatible",
       "serialization": "object-streams",
-      "sha256": "ecc9ff86deb90fd3f662558bc7ee439435c7e037ef40a1965b00ad317bfaadae",
+      "sha256": "0fd9bc8967529843c4694e24e9b8f0cb6c1e3978a8f64c53f5720a396c735ca6",
       "bytes": 734,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1762,7 +1762,7 @@
     {
       "name": "BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "66531996ee783c271c87bb68462643f0f386ccd1bfec481f955f93b982ce72e2",
+      "sha256": "802f45eabce4f699e926b5443a827ca7ee0c37c1230e09e0784652a8771990fb",
       "bytes": 1142,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1803,7 +1803,7 @@
     {
       "name": "BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "c1c14e612eab2ffa463086c02d54e853b888c9d12d78e358a1c80c187b0367be",
+      "sha256": "d75327fb4b87e891e6dd50721bf6bee4d29e98601b37b96ff14d612e1afa9bcb",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1844,7 +1844,7 @@
     {
       "name": "BM-namearray-review",
       "serialization": "classic-xref",
-      "sha256": "6df7c061b7a5998486bd7a8bb65f915e9fab65e8684cd99d27bccb8f9958e787",
+      "sha256": "969335334cd2a45f68184e6576ff4783aeb3b020ec563c4ba18e85fe85b6348f",
       "bytes": 1146,
       "classification": "coordinator-review",
       "intendedRule": "Name-array blend semantics require coordinator policy; preserve the observed checker result.",
@@ -1885,7 +1885,7 @@
     {
       "name": "BM-namearray-review",
       "serialization": "object-streams",
-      "sha256": "54778a7932831792c4d9be9e532323167a77bcfff723c9465bb46c7fab77436c",
+      "sha256": "43d63ec9fa4740d274dd804906b2447b2c46e02efdd0d98be56f12cbeee07dda",
       "bytes": 736,
       "classification": "coordinator-review",
       "intendedRule": "Name-array blend semantics require coordinator policy; preserve the observed checker result.",
@@ -1926,7 +1926,7 @@
     {
       "name": "BM-number",
       "serialization": "classic-xref",
-      "sha256": "b3690078b5e6e31920f3350f0b7952944a2e0b9d86a1e84f01a28fd81168be04",
+      "sha256": "dd9220340f2bcbb21c253179dd30d2ee5c9f459ad828ec29719b1d34ba60efa6",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -1967,7 +1967,7 @@
     {
       "name": "BM-number",
       "serialization": "object-streams",
-      "sha256": "512b5e1f7e338df76d3e5f86de0c65ef0c2c0bbad9c2b4b39a49f9ca3a6b5bd6",
+      "sha256": "deb40b76498967bfe9e6d1a40548fc7c39282794cc9788b2aec2919b9d940a47",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2008,7 +2008,7 @@
     {
       "name": "SMask-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2044,7 +2044,7 @@
     {
       "name": "SMask-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2080,7 +2080,7 @@
     {
       "name": "SMask-None",
       "serialization": "classic-xref",
-      "sha256": "eb6315ffa60b2e1043ea0ba2c39a4c9aa629de53f2f8fe38522f38ad303c261e",
+      "sha256": "2cd67a1215b61950091186d4b3571afb8316dd0a752050ef58bc277f640d027c",
       "bytes": 1141,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2116,7 +2116,7 @@
     {
       "name": "SMask-None",
       "serialization": "object-streams",
-      "sha256": "cfe0f06028980d49059f0acd48524efcaad7d334782383a56017d8e40ed80aba",
+      "sha256": "951b03aa0ab0b69e1ecfcb83ae5d3be349f89a5ada9dcd0128d1b2b98e22c356",
       "bytes": 731,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2152,7 +2152,7 @@
     {
       "name": "SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "24fc3363396d17740a3e151ec333930235d880cef3f1e90eef55be1dfdd7e08e",
+      "sha256": "eb0987d1405b4f0b30d20bc2ff015a5cc9a17dd4ed8b773fee6a45c3f55c8e27",
       "bytes": 1153,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2193,7 +2193,7 @@
     {
       "name": "SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "3dd00b0bcddf6d310a8519b0f6a640339061fc380bae1f2aea15762b55af36eb",
+      "sha256": "9b260266ebcf14062c294701e03a2bfbcb05efa44d99e17be40db0be90b6fc23",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2234,7 +2234,7 @@
     {
       "name": "SMask-number",
       "serialization": "classic-xref",
-      "sha256": "8a8a507395e5b86593f29b28e61d8cb22a55db9d1c570f90e37c996954241e0f",
+      "sha256": "44ed48c0bacbb383f6a97a0164ff51444099cd7355bb6ee30c3b4403ce4f7bcf",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2275,7 +2275,7 @@
     {
       "name": "SMask-number",
       "serialization": "object-streams",
-      "sha256": "2dfa087af89bb214aace9c52c4efb78843ab43a7f4ffddef95908cc694639491",
+      "sha256": "1eb2e8eebbea58f74bd498e766a483e5b5f1bedf46bf49a79c9e1b002cb865fe",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2316,7 +2316,7 @@
     {
       "name": "RI-RelativeColorimetric",
       "serialization": "classic-xref",
-      "sha256": "ade51db7601664e08e4ac4b20453b2d48e67eca5b627feae96eb41e145aa4fe7",
+      "sha256": "1f7aaa7d356728829324fe0c3731e2053e1a82299741566080fb72fffcc2ac62",
       "bytes": 1154,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2352,7 +2352,7 @@
     {
       "name": "RI-RelativeColorimetric",
       "serialization": "object-streams",
-      "sha256": "df9d4fc6c1e7a5734ae0e477f79eab46a1e980ac6485be202c3db599c4e98521",
+      "sha256": "eaa1adc24d3e133d3545817af9b9b719de4684e9eae9d5143388125c64408a79",
       "bytes": 740,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2388,7 +2388,7 @@
     {
       "name": "RI-AbsoluteColorimetric",
       "serialization": "classic-xref",
-      "sha256": "4d55b089131121a390b19221c9b2ba27bb18274aedcac7fda8ad94e8ea5e24be",
+      "sha256": "1eb02dee117fcd89573e60fb681b52ac07931e69f61ed2460e0b124289fdcc0b",
       "bytes": 1154,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2424,7 +2424,7 @@
     {
       "name": "RI-AbsoluteColorimetric",
       "serialization": "object-streams",
-      "sha256": "0a5970f8a306a085e9d1bab7242aabbe07c9192273f9cfbdbf6eb2e71bfcb9cc",
+      "sha256": "d27fdd6cbae53dbdbb20b91127720207aa86128342b9b7c9d766b3810ba16466",
       "bytes": 742,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2460,7 +2460,7 @@
     {
       "name": "RI-Perceptual",
       "serialization": "classic-xref",
-      "sha256": "0e309828d4ba1fddcec26c0b1f5ae5a7075ab0757b54f6be90f287e69b2694c8",
+      "sha256": "fec45844544b8b5d32c6259f89797ad34969f8785081201f02e1a833ef651d1f",
       "bytes": 1144,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2496,7 +2496,7 @@
     {
       "name": "RI-Perceptual",
       "serialization": "object-streams",
-      "sha256": "6ef035c04e09f1bb2fa88bb22c2997f17eef5eaeca69c48f5aae4a8ddd12314c",
+      "sha256": "dd9590f48609dfb97ea33af2e9b517283fe2200e378b8258bf6dd01e29a3cfdd",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2532,7 +2532,7 @@
     {
       "name": "RI-Saturation",
       "serialization": "classic-xref",
-      "sha256": "d6c6c816694d1b2d580dca580ec7475af93097b4271d49a4d0ebccd18d580fcb",
+      "sha256": "82002b55f665bed74360abb3ad574b71459c58702137fa60a352931c21b39844",
       "bytes": 1144,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2568,7 +2568,7 @@
     {
       "name": "RI-Saturation",
       "serialization": "object-streams",
-      "sha256": "c1e86a5cf65f4e0ad25f5b568d3b9353797e807598e4262277f093a36ec851aa",
+      "sha256": "5aa463bf72d5139dac49b0168942634b6b571c4def7948914b1bd1e7b173295c",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2604,7 +2604,7 @@
     {
       "name": "RI-badname",
       "serialization": "classic-xref",
-      "sha256": "da008813c7de18372d8a89c5c7d70c2f56bae040c21426f0aa3ffe2e4da19ff8",
+      "sha256": "0cad9314ab11a4002b64006487ac1db0ca8e439027175337ac121dbfd194782f",
       "bytes": 1143,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2645,7 +2645,7 @@
     {
       "name": "RI-badname",
       "serialization": "object-streams",
-      "sha256": "739cab1a6a881c98e6e47da052b5e676a5f4464bdc0c100925819c018bc2272d",
+      "sha256": "233fbf4270e74e15e082b7cfe386968b8e881c471235c73e88421b19ecff1ddf",
       "bytes": 731,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2686,7 +2686,7 @@
     {
       "name": "RI-string",
       "serialization": "classic-xref",
-      "sha256": "3b1a4fc4bde98f56eceeabc9a6c3e8b314b93a5e3e48b815ce2768acda3791a4",
+      "sha256": "b6597a0a52e8fe2712dcefec47b8f59d2d6b75f7f1234826ab8d2f575fbaa0f5",
       "bytes": 1155,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2727,7 +2727,7 @@
     {
       "name": "RI-string",
       "serialization": "object-streams",
-      "sha256": "121d99ed1879e2606812fc736a9a91c6bec4762d54832a3af937ed76e6767cfe",
+      "sha256": "3d355730e70134de130308c2825a4cc4db03870a10cd1b630fc4ed0562971efe",
       "bytes": 742,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2768,7 +2768,7 @@
     {
       "name": "TR2-absent",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2804,7 +2804,7 @@
     {
       "name": "TR2-absent",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2840,7 +2840,7 @@
     {
       "name": "TR2-Default",
       "serialization": "classic-xref",
-      "sha256": "dabee01720e88f1002dfdc4020f9bc891e10950795e0089770743eecfafea601",
+      "sha256": "c346154722ff93d4db70fc8c2df3d91227ca1e22cade4e8ed220f08d9f1e9597",
       "bytes": 1142,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2876,7 +2876,7 @@
     {
       "name": "TR2-Default",
       "serialization": "object-streams",
-      "sha256": "2604bb6ed91d5bddc4486fe51d0a278c29054137e96fed79787179d3dbf6ea15",
+      "sha256": "7473f63638eac1d35e7807a74c6ed1e6448a9f16b9d9f05f5782bd66e014673d",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2912,7 +2912,7 @@
     {
       "name": "TR2-Identity",
       "serialization": "classic-xref",
-      "sha256": "90a8b408c17a1f114d379d8c7ea343a638cf256965db732a9bde236fde91d11b",
+      "sha256": "c3a0a28c4057b74f3ac607f051180993f386ff18cb37300838f8fde6f9daf5c3",
       "bytes": 1143,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2953,7 +2953,7 @@
     {
       "name": "TR2-Identity",
       "serialization": "object-streams",
-      "sha256": "74924c47b8599b895296381ef58e2c99a44a119d2f041429d48d687203b39261",
+      "sha256": "d86e9d9cbceec7793889d910c4bf556bf95236ba1b0406867467340573c3a3d8",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -2994,7 +2994,7 @@
     {
       "name": "TR2-number",
       "serialization": "classic-xref",
-      "sha256": "abcbf90bf90ec1f9bd4568906ed29630be458f5c037facf356aec514ea98f9e1",
+      "sha256": "6cf58320bdc542bb206d86f81c96b540971e5a4bead2c3548af21b50c6f77b0a",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3035,7 +3035,7 @@
     {
       "name": "TR2-number",
       "serialization": "object-streams",
-      "sha256": "8ed8cd7f89640aed230cc6491c6866f508d4a895ea6c3e32063c557d1249110d",
+      "sha256": "185a6bd7dd913b2f9da1f59b34a5e56a0e76a6e47a36ea735ad4a72302dd90d4",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3076,7 +3076,7 @@
     {
       "name": "TR-present",
       "serialization": "classic-xref",
-      "sha256": "6e82bd9c10b0a7d9cb5ea72648368a64193f133adca6f78fc973cad54f66291f",
+      "sha256": "173954d0f3bc9a1d8734e801bb97b8288337fdd02dc666daa8d9c0834560a8df",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3117,7 +3117,7 @@
     {
       "name": "TR-present",
       "serialization": "object-streams",
-      "sha256": "541707cc3f95924ff2c4ee16364bf1ed0614870c34adeebc1a2e09aa65e5dd79",
+      "sha256": "62cd24b8c5392c098fe3893398b3b72dc0a728dbc48c6c5bb5d7f62be540cf7e",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3158,7 +3158,7 @@
     {
       "name": "HT-present",
       "serialization": "classic-xref",
-      "sha256": "da5e4c41651880f9b17f4fb2477ae9eaaf0b690794e0417849b750227fbf9e82",
+      "sha256": "9d2d30144eadd65788ee0cac4fcde2035ce45abfce1b93820c6f2a6f9eca0875",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3199,7 +3199,7 @@
     {
       "name": "HT-present",
       "serialization": "object-streams",
-      "sha256": "aae420f98cf0b22bfe9b236d73a47f20b2355586742e0380aea2042208504a62",
+      "sha256": "5cce8c28f36efc0050cd09fd78b9a9fca2d96cb683a22f68f26fdc1c2d59fa7f",
       "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3240,7 +3240,7 @@
     {
       "name": "HTP-present",
       "serialization": "classic-xref",
-      "sha256": "e853342c406ff071309368cfe5e6e429533610ee80b847e4e3be4976616aae24",
+      "sha256": "bcfb3b062798bb2dc5b6006906cd5ce71a8c2de690e8d01e253117685b1f36bf",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3281,7 +3281,7 @@
     {
       "name": "HTP-present",
       "serialization": "object-streams",
-      "sha256": "6e89a758046807ad45976ebe333cff0c081ff0a2aa385bc54e0b70b64953a7bf",
+      "sha256": "45dfac96741bdce7cfb1a318738f8473bfc1a58e696dbe0f1c4d3bf58dfd4ec9",
       "bytes": 728,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3322,7 +3322,7 @@
     {
       "name": "BG-present",
       "serialization": "classic-xref",
-      "sha256": "2db97931faaa9148d5cb65cb88188638c42c292719c18593fec0786de487b14e",
+      "sha256": "3adac84a0c53aa3de850fef4f069820fa6896a2283ae65105b63e121af960311",
       "bytes": 1134,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3363,7 +3363,7 @@
     {
       "name": "BG-present",
       "serialization": "object-streams",
-      "sha256": "2517831e4049d1ef2893de9e6e635082a52aa76695ed59612adbd1df92521984",
+      "sha256": "9efcd6989c6ed7b1b5f73e7ab5bda9e22529c93bd2f668fb8cf71e0d5be2dc06",
       "bytes": 726,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3404,7 +3404,7 @@
     {
       "name": "BG2-present",
       "serialization": "classic-xref",
-      "sha256": "43615ea132cb1e5de48bc505cb3823b18f41a45838a04e91c7024222a05f7e01",
+      "sha256": "9f1789626985041ad9780fa228e8de68faf431fedb297d029a0f7b9ad0ff0399",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3445,7 +3445,7 @@
     {
       "name": "BG2-present",
       "serialization": "object-streams",
-      "sha256": "d02e30b76d1d4da9abd2fb342a9ebb912c10f99a032a6a2e12d9e21dfad7af04",
+      "sha256": "4bd94b744a556eeddde936cc82316bd4f11d9ad6d1f6f8bbd9516c30a4389136",
       "bytes": 727,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3486,7 +3486,7 @@
     {
       "name": "UCR-present",
       "serialization": "classic-xref",
-      "sha256": "7c842d21258bde549b413a2a414708366eaa539d8e447d1151a937118e9e837d",
+      "sha256": "a4bf71e29a2f7bce1def4357c916e07797104a5f02e2afb1f1687fc39c671263",
       "bytes": 1135,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3527,7 +3527,7 @@
     {
       "name": "UCR-present",
       "serialization": "object-streams",
-      "sha256": "12f7f081509ebe23b87ab627fab8773f0009ca6cc247509721e4281ccf71fdb8",
+      "sha256": "f57c9294958c716f5587529cacfcd5c6672645b3fe6fc707572d2fc9e740e293",
       "bytes": 728,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3568,7 +3568,7 @@
     {
       "name": "UCR2-present",
       "serialization": "classic-xref",
-      "sha256": "0af28b33a1a3e840cb8f5a06527e80b62e8630ec9717d175f2ee1be79fcd036a",
+      "sha256": "35380a9cb7f25d6bad1afdac4d95b2821a3d3a5873f4977330251530e8af3336",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3609,7 +3609,7 @@
     {
       "name": "UCR2-present",
       "serialization": "object-streams",
-      "sha256": "7c2aa612c065e15f2e4defc5ad1ba088f2802349de7e473a7c2abcdb8d659149",
+      "sha256": "d31cf159d9b90dc45c7ca74691be01b03ea63a1318bee0f868bf15a50edce5cb",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3650,7 +3650,7 @@
     {
       "name": "valid-type-extgstate",
       "serialization": "classic-xref",
-      "sha256": "3008a0f3e95c3758170ea59f9b1c475957cff2dd87f96f84ede7297b376b368e",
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3686,7 +3686,7 @@
     {
       "name": "valid-type-extgstate",
       "serialization": "object-streams",
-      "sha256": "9cba830634fa09b51a534c3200a5534456132dcc3f63ae764541029660eb153e",
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3722,8 +3722,8 @@
     {
       "name": "omitted-type-extgstate-observation",
       "serialization": "classic-xref",
-      "sha256": "b11ace1f080f0f2b27bf8b1955ad06d81507184a7ac2db121bd52e640932facc",
-      "bytes": 1111,
+      "sha256": "559eb4088fc98f4f1afbb2158adbb645f42ea4f4a137d0036a8d2046224e8cfc",
+      "bytes": 1128,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary without Type should be measured separately from the existing Type-present whole-document check.",
       "graphicsIssues": [],
@@ -3758,8 +3758,8 @@
     {
       "name": "omitted-type-extgstate-observation",
       "serialization": "object-streams",
-      "sha256": "e80300be7fd802ece94ff72bc9c4fb8a1a4534065946c8810102ab834061c3dd",
-      "bytes": 718,
+      "sha256": "ef1aee3df75c9f497f99e91d8ac3d5cf5bf605a35f1a1fb92ed74184257e6427",
+      "bytes": 723,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary without Type should be measured separately from the existing Type-present whole-document check.",
       "graphicsIssues": [],
@@ -3794,7 +3794,7 @@
     {
       "name": "wrong-type-extgstate-observation",
       "serialization": "classic-xref",
-      "sha256": "d2f5f5bd200076ad930e5ee3762ee66d4ba644c18955085d522bc1717162c25b",
+      "sha256": "6afaa18040fd01933c34837ea1d1ea7a727f82a10ba16f55c6ab98c5eafbb04e",
       "bytes": 1123,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary with a non-ExtGState Type is an observed resource-context case; do not infer policy beyond the existing checker result.",
@@ -3839,7 +3839,7 @@
     {
       "name": "wrong-type-extgstate-observation",
       "serialization": "object-streams",
-      "sha256": "f4d75d3582bc2689e72bd67d04c8c17ceded629b0265ff5e40f7f5273888fc27",
+      "sha256": "1299c0aed9ed00e6d865068f16d61d1a6c5c567a4e22a69d038d80b2d4a1f043",
       "bytes": 723,
       "classification": "coordinator-review",
       "intendedRule": "A gs-used dictionary with a non-ExtGState Type is an observed resource-context case; do not infer policy beyond the existing checker result.",
@@ -3884,7 +3884,7 @@
     {
       "name": "valid-indirect-resource",
       "serialization": "classic-xref",
-      "sha256": "cab705b513c4264b43c159053434120c614da8ab6a7f0f412d703c439f5053cb",
+      "sha256": "86d1e47982fc53f30d07a917d8595a2a343918b3b0844d1612c6c921b936a968",
       "bytes": 1170,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3920,7 +3920,7 @@
     {
       "name": "valid-indirect-resource",
       "serialization": "object-streams",
-      "sha256": "b6553e750d41b7ab3abfc7a29a77aba663fff977fa765e157fa843a3cb58f12b",
+      "sha256": "10b168018700cc363668c81d0c00090e3b97f7d1aa3d93055f9dce7ec9e98a50",
       "bytes": 731,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3956,7 +3956,7 @@
     {
       "name": "valid-inherited-resource",
       "serialization": "classic-xref",
-      "sha256": "2a6b96a4b6fa445f25a2c8e0d71cff5a448731f0f8c4eb4a06082706b0615cb3",
+      "sha256": "f3e3b82ed755437f57d76d480f8bd0bcc857d866f11c6938b75774cd8f8b9184",
       "bytes": 1128,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -3992,7 +3992,7 @@
     {
       "name": "valid-inherited-resource",
       "serialization": "object-streams",
-      "sha256": "c358d1225c1731df3cf18dcc876c239152521cd74ccb6d846e164887c60b1ef4",
+      "sha256": "955be11f8ea1968236093dbcf34979a8ca070b022ff74cb05d1f318318384d7a",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4028,7 +4028,7 @@
     {
       "name": "valid-inherited-indirect-resource",
       "serialization": "classic-xref",
-      "sha256": "5d8f5f2da0dc9f394d234b7996ebe26c2db96d6dfec7c57ff6f8d5627203b94a",
+      "sha256": "3670afc277a37aabdb08374911045fec65414dd86ff6bb13637eb66787b68f4d",
       "bytes": 1170,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4064,7 +4064,7 @@
     {
       "name": "valid-inherited-indirect-resource",
       "serialization": "object-streams",
-      "sha256": "e31768d9de5d36a3fcbf24864ffedb68d5cfad481fadbb06f3db4c5bf83e0c44",
+      "sha256": "7f7097702ca57999d642b4082379a50fc955ab5e296b1510b4cc0522af29c649",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4100,7 +4100,7 @@
     {
       "name": "shared-state-two-pages",
       "serialization": "classic-xref",
-      "sha256": "20ffaf53ab327f30d5ddd1a1168cd9a0e953ab1d31a46f47122baf3c31ade923",
+      "sha256": "976445ebf89e36ccc3cad1c69cb923238aa9190459dbf36b29c2c79dcbbb8fb5",
       "bytes": 1466,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4144,7 +4144,7 @@
     {
       "name": "shared-state-two-pages",
       "serialization": "object-streams",
-      "sha256": "9fcb54c3e40bd2a925ec6b6652736874f6e96e77d82ea3f0032bca6b0ca306ac",
+      "sha256": "f17353ca11ced99a27992e1544fa36a206841329baa7942abcd21922e342dc71",
       "bytes": 835,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4188,7 +4188,7 @@
     {
       "name": "switch-two-states-twice",
       "serialization": "classic-xref",
-      "sha256": "53835c1aa10885d65a6eef0a2b9cd5c883420a51a3cec7dbf96656d69f59be70",
+      "sha256": "0d277084bf2cd9ca73b7e46cea004e6cf23e68cccc9aab82ceca0818ad788215",
       "bytes": 1252,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4224,7 +4224,7 @@
     {
       "name": "switch-two-states-twice",
       "serialization": "object-streams",
-      "sha256": "18293c1e36fb6347d6a59c600848513c0f0dad458ee298288892602ced64d380",
+      "sha256": "bdea384f042accc0d5a1330eda16810efd6c45aa7302f74e4daa51563a35490f",
       "bytes": 754,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4260,7 +4260,7 @@
     {
       "name": "dangling-state-resource",
       "serialization": "classic-xref",
-      "sha256": "0c617a4fe4effb7fe29a6c7f23c9bf82dece651ebdcf8569543c5ef0e12c93f5",
+      "sha256": "53d7d486b8cd17a110fb8b4cbb1c4738fbb9a3d1ad4f1a624af88c3b397963ed",
       "bytes": 1133,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4301,7 +4301,7 @@
     {
       "name": "dangling-state-resource",
       "serialization": "object-streams",
-      "sha256": "acae8dac3df0cc35c3878a01726a4cb82b78ccad01f4997c8c492d5f97216c7a",
+      "sha256": "d8693de556d847e27e82e9530ee74837e799edd6fdffbc50d0904fcee839106a",
       "bytes": 723,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4342,7 +4342,7 @@
     {
       "name": "context-type-ca-negative",
       "serialization": "classic-xref",
-      "sha256": "77bf335269d3909ba3030b32b4078f8990e8a746aa1d2ac0295cbd40ea9789e2",
+      "sha256": "a1430df9851ce6ac5a99fcab5550571d30ff217c463f30dfc41de04319eb9c16",
       "bytes": 1137,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4383,7 +4383,7 @@
     {
       "name": "context-type-ca-negative",
       "serialization": "object-streams",
-      "sha256": "d787f4c8dce309c734fc33223c52831de91d3ddf8ddc6a1ead513ee04e98cea8",
+      "sha256": "d651e530d122ff7455337d2514b89ed44922b4d5f21e4f72e968a726386e1468",
       "bytes": 730,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4424,11 +4424,16 @@
     {
       "name": "context-omitted-ca-negative",
       "serialization": "classic-xref",
-      "sha256": "b9a97b8806038d7aef5650f4221f00faf8f7066f8be061e8f0c08e15edfa51f1",
-      "bytes": 1120,
+      "sha256": "a1430df9851ce6ac5a99fcab5550571d30ff217c463f30dfc41de04319eb9c16",
+      "bytes": 1137,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4460,11 +4465,16 @@
     {
       "name": "context-omitted-ca-negative",
       "serialization": "object-streams",
-      "sha256": "6def2e37ebf8816252f55948e236fe1d0ae386d0c7e06fabd8b7bb34e40e13b4",
-      "bytes": 725,
+      "sha256": "d651e530d122ff7455337d2514b89ed44922b4d5f21e4f72e968a726386e1468",
+      "bytes": 730,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/ca"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4496,7 +4506,7 @@
     {
       "name": "context-wrong-ca-negative",
       "serialization": "classic-xref",
-      "sha256": "49d6a0fa7d64f2338a830134db1a670661c8da395874087c7cc9d05b497cf6b4",
+      "sha256": "bba42b8e40990b5ec1249cf68a5c5eff12ea5eddbf7cee390f2ce6b9e930f5b9",
       "bytes": 1132,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is wrong; observe without blessing acceptance.",
@@ -4541,7 +4551,7 @@
     {
       "name": "context-wrong-ca-negative",
       "serialization": "object-streams",
-      "sha256": "b00d22ac613b3bedeca98923c785033104250339ad0418dfdc99c45ba200fc21",
+      "sha256": "4e7d7321470bafdaf5f4764854edefd519a4ad35314e30955a39aa3843f4d0fd",
       "bytes": 730,
       "classification": "coordinator-review",
       "intendedRule": "The same negative ca field is measured when Type is wrong; observe without blessing acceptance.",
@@ -4586,7 +4596,7 @@
     {
       "name": "context-type-CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "52e74ec9a36d99f948cbab61466d01e8c71b5994c1b5f2c88a77c0704dde99f6",
+      "sha256": "0d71ab43bb99839f2822451734b823d62eaa09d8fe77bc54e7bd3071e041075b",
       "bytes": 1136,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4627,7 +4637,7 @@
     {
       "name": "context-type-CA-above-one",
       "serialization": "object-streams",
-      "sha256": "a01aad6c1676901e41ad2dc4200f43b66a6b03fb1e999237c6107d8f22497118",
+      "sha256": "9a4d2c2da879f3d982b3709c8c52c221401a1d1831062ed449257069613dd2d6",
       "bytes": 729,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4668,11 +4678,16 @@
     {
       "name": "context-omitted-CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "97edb8760e0655da2ba1290ebbc5ffe5305b847f2cd3c34fc39bb6137429b52c",
-      "bytes": 1119,
+      "sha256": "0d71ab43bb99839f2822451734b823d62eaa09d8fe77bc54e7bd3071e041075b",
+      "bytes": 1136,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4704,11 +4719,16 @@
     {
       "name": "context-omitted-CA-above-one",
       "serialization": "object-streams",
-      "sha256": "344495a2bb22683f5dcad3c913c738405524df00eca496aa26be89e7fff77157",
-      "bytes": 723,
+      "sha256": "9a4d2c2da879f3d982b3709c8c52c221401a1d1831062ed449257069613dd2d6",
+      "bytes": 729,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "TRANSPARENCY_ALPHA_INVALID",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/CA"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4740,7 +4760,7 @@
     {
       "name": "context-wrong-CA-above-one",
       "serialization": "classic-xref",
-      "sha256": "18c587b88d84178fc6b503d58c6cee06ce58912c62a3183c7b26586045518b9f",
+      "sha256": "d2ffec69c30e95608198d36f168a104e2cefa3024baa325a2ed94e2f84201bca",
       "bytes": 1131,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is wrong; observe without blessing acceptance.",
@@ -4785,7 +4805,7 @@
     {
       "name": "context-wrong-CA-above-one",
       "serialization": "object-streams",
-      "sha256": "03c6d8bb1cd8bdc05cd18eaaf5b9f2076473589473abde56265f10d6f0056aab",
+      "sha256": "dcd49cb407608b34b11557d114895fea009ccc11ff79b6069047a954c1d8f422",
       "bytes": 729,
       "classification": "coordinator-review",
       "intendedRule": "The same negative CA field is measured when Type is wrong; observe without blessing acceptance.",
@@ -4830,7 +4850,7 @@
     {
       "name": "context-type-BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "66531996ee783c271c87bb68462643f0f386ccd1bfec481f955f93b982ce72e2",
+      "sha256": "013e323c400092bd9d7317b91b2c77f43bfe17ca13cad5bc8e9b48c145082519",
       "bytes": 1142,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4871,7 +4891,7 @@
     {
       "name": "context-type-BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "c1c14e612eab2ffa463086c02d54e853b888c9d12d78e358a1c80c187b0367be",
+      "sha256": "d75327fb4b87e891e6dd50721bf6bee4d29e98601b37b96ff14d612e1afa9bcb",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -4912,11 +4932,16 @@
     {
       "name": "context-omitted-BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "47f56a6483f01bb58777017066d3a64e3774261a2865b643b120045c4f534eb9",
-      "bytes": 1125,
+      "sha256": "013e323c400092bd9d7317b91b2c77f43bfe17ca13cad5bc8e9b48c145082519",
+      "bytes": 1142,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4948,11 +4973,16 @@
     {
       "name": "context-omitted-BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "4909dcefc8057ba4855e3f2280d59240f986ece74d63278fa9353b563a6c8984",
-      "bytes": 728,
+      "sha256": "d75327fb4b87e891e6dd50721bf6bee4d29e98601b37b96ff14d612e1afa9bcb",
+      "bytes": 732,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "BLEND_MODE_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/BM"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -4984,7 +5014,7 @@
     {
       "name": "context-wrong-BM-Multiply",
       "serialization": "classic-xref",
-      "sha256": "6de0f38918d21be8681e7a1c11003499ce44fb2793b321858e5de05a9158d761",
+      "sha256": "0b9fc23a3f8fd6ed70493d27f751e0223bb038d971f6629aa6a0ee4caba4e0f6",
       "bytes": 1137,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is wrong; observe without blessing acceptance.",
@@ -5029,7 +5059,7 @@
     {
       "name": "context-wrong-BM-Multiply",
       "serialization": "object-streams",
-      "sha256": "9bc8d6ebe2777828a042fb8f112c5f9f8fb9328e87e8d070fee9831e4da085a3",
+      "sha256": "d21983a90e1514ef270433dc9cdacc5bc8456deaaeff6f890078133ed44c892f",
       "bytes": 732,
       "classification": "coordinator-review",
       "intendedRule": "The same Multiply blend is measured when Type is wrong; observe without blessing acceptance.",
@@ -5074,7 +5104,7 @@
     {
       "name": "context-type-SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "24fc3363396d17740a3e151ec333930235d880cef3f1e90eef55be1dfdd7e08e",
+      "sha256": "eb0987d1405b4f0b30d20bc2ff015a5cc9a17dd4ed8b773fee6a45c3f55c8e27",
       "bytes": 1153,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5115,7 +5145,7 @@
     {
       "name": "context-type-SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "3dd00b0bcddf6d310a8519b0f6a640339061fc380bae1f2aea15762b55af36eb",
+      "sha256": "9b260266ebcf14062c294701e03a2bfbcb05efa44d99e17be40db0be90b6fc23",
       "bytes": 732,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5156,11 +5186,16 @@
     {
       "name": "context-omitted-SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "eba971ec1350b2a3bac1d5ed02d87cfb1a31acf4d0a768bf5098c250534a5a2c",
-      "bytes": 1136,
+      "sha256": "eb0987d1405b4f0b30d20bc2ff015a5cc9a17dd4ed8b773fee6a45c3f55c8e27",
+      "bytes": 1153,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -5192,11 +5227,16 @@
     {
       "name": "context-omitted-SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "7cbef515e38773b36a8ac4b09b2a61ecd9c39bb045872ae6b59d3b1860f53377",
-      "bytes": 728,
+      "sha256": "9b260266ebcf14062c294701e03a2bfbcb05efa44d99e17be40db0be90b6fc23",
+      "bytes": 732,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is omitted; observe without blessing acceptance.",
-      "graphicsIssues": [],
+      "graphicsIssues": [
+        {
+          "code": "SOFT_MASK_OUTSIDE_SUBSET",
+          "object": "1 0 R/Kids[0]/Resources/ExtGState/State/SMask"
+        }
+      ],
       "nonGraphicsIssues": [
         {
           "code": "PDF_VERSION_UNSUPPORTED",
@@ -5228,7 +5268,7 @@
     {
       "name": "context-wrong-SMask-dictionary",
       "serialization": "classic-xref",
-      "sha256": "79554beb614224b90bb8b7aacc69c323d87488c989086ed41f52948c3a23da34",
+      "sha256": "3b388779c7ad876a288abc038190c003d1d309fea4d3336b92362cb08375a769",
       "bytes": 1148,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is wrong; observe without blessing acceptance.",
@@ -5273,7 +5313,7 @@
     {
       "name": "context-wrong-SMask-dictionary",
       "serialization": "object-streams",
-      "sha256": "9e701682157b87d53439d5436a013a0c1267a7ea4aa43d1b92ae3797c71c89d2",
+      "sha256": "7bbcee337812876daebd7478dbd6ea76ae16668f4bc2e53148a999d25376b78e",
       "bytes": 732,
       "classification": "coordinator-review",
       "intendedRule": "The same dictionary SMask is measured when Type is wrong; observe without blessing acceptance.",
@@ -5318,7 +5358,7 @@
     {
       "name": "export-transparency-alpha-0",
       "serialization": "classic-xref",
-      "sha256": "319a52d51aae60d053dc3cabc7b101277da87edee4b5a587db06a4bfe2de1a3b",
+      "sha256": "fbbc498615e661b7703d086c4c2273b26297bae5ca1f1131a132a8563c816f93",
       "bytes": 1341,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5354,7 +5394,7 @@
     {
       "name": "export-transparency-alpha-0",
       "serialization": "object-streams",
-      "sha256": "24f8a0d3bd2843c55a995d728320aef2f784894e96345aacf2d9d5de5967383c",
+      "sha256": "efab7609ca3ade2fcfb112892b1f744254562e3df877e8da95a4dbfd4a05c1ad",
       "bytes": 882,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5390,7 +5430,7 @@
     {
       "name": "export-transparency-alpha-half",
       "serialization": "classic-xref",
-      "sha256": "947f2ccd93452291cb60b6a4c76138bafb01c3383abca55c628b4b9f06586cca",
+      "sha256": "6e43dec20ca0b73f10457fcf130255517a9a573cdc47fb067a81dfd6b1ee3392",
       "bytes": 1345,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5426,7 +5466,7 @@
     {
       "name": "export-transparency-alpha-half",
       "serialization": "object-streams",
-      "sha256": "a54962b05c8f8715dc11a8ca2153bded6e6e81b458719d1d5a6fa21de6580413",
+      "sha256": "fb4046b53c2d7b4fb54aa573cf1fb6e3f3d31930bd824ab3c8c6cf68f845aad5",
       "bytes": 884,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5462,7 +5502,7 @@
     {
       "name": "export-transparency-alpha-one",
       "serialization": "classic-xref",
-      "sha256": "8ae21e2f37741045c6afbdc56faf4c2aaedee989eedadf4b421a4c95abb930eb",
+      "sha256": "a0caf54ab1d5a70530031fda8c48728614a6ce3d687a724014752c0058a95416",
       "bytes": 1344,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5498,7 +5538,7 @@
     {
       "name": "export-transparency-alpha-one",
       "serialization": "object-streams",
-      "sha256": "7eebae0f0253de5ba15b789e538c3b175dfdb9980974dcb69b2ac18ab389db94",
+      "sha256": "500fd72e45466007679ffefd3d71e4ab6edfda17e383e00a81cfcda3d10aa201",
       "bytes": 884,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5534,7 +5574,7 @@
     {
       "name": "export-transparency-stroke-half",
       "serialization": "classic-xref",
-      "sha256": "089c4b8016108beccf416ee026478b85cae6fe3caac767d46ffa85b0fe4e8ec7",
+      "sha256": "6dc4c10a87881bc3317fc5576c8a3c4313b952fc1a49045efb1ebb97d502e002",
       "bytes": 1350,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",
@@ -5570,7 +5610,7 @@
     {
       "name": "export-transparency-stroke-half",
       "serialization": "object-streams",
-      "sha256": "6c84954cfa8c1b7ff466b942d6a7a038cc868445ca7d02fb827aafa2ea387bc6",
+      "sha256": "2b1836a5b02094eef262537f361080457358249119d829d78afd72619c90ff16",
       "bytes": 889,
       "classification": "observed-fixed",
       "intendedRule": "Existing Type-present checker behavior is asserted exactly.",

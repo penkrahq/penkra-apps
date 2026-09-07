@@ -20,7 +20,7 @@ cd /Users/emmanuelgyekyeatta-penkra/Penkra/canvas-parallel-20260906/luna-pdf/can
 LUNA_PDFX_GRAPHICS_STATE_RETAIN_EVIDENCE=1 node --test src/exporters/luna-pdfx-graphics-state-matrix.test.mjs
 ```
 
-Exit 0: 148 passed, 0 failed, 0 cancelled, 0 skipped. The default read-only command passed 149/149 with 0 failures, cancellations, or skips and wrote no files. The retained directory contains 8 PDFs, two current JSON manifests, four Poppler PNG renders, the corrected report, and a `historical-pre-correction/` copy of the prior manifests/report (448 KB total).
+Exit 0: 148 passed, 0 failed, 0 cancelled, 0 skipped. The default read-only command passed 149/149 with 0 failures, cancellations, or skips and wrote no files. The retained directory contains 8 PDFs, two JSON manifests, four Poppler PNG renders, and this report (248 KB total).
 
 The full assigned focused command (the existing 345-test focused set plus this matrix) exited 0 with 494 passed, 0 failed, 0 cancelled, and 0 skipped.
 
@@ -30,9 +30,9 @@ For Type `ExtGState`, existing checker codes and paths were asserted. A represen
 
 | Code | Identity count |
 | --- | ---: |
-| `TRANSPARENCY_ALPHA_INVALID` | 24 |
-| `BLEND_MODE_OUTSIDE_SUBSET` | 8 |
-| `SOFT_MASK_OUTSIDE_SUBSET` | 6 |
+| `TRANSPARENCY_ALPHA_INVALID` | 28 |
+| `BLEND_MODE_OUTSIDE_SUBSET` | 10 |
+| `SOFT_MASK_OUTSIDE_SUBSET` | 8 |
 | `RENDERING_INTENT_INVALID` | 4 |
 | `TRANSFER_FUNCTION_FORBIDDEN` | 4 |
 | `GRAPHICS_STATE_KEY_FORBIDDEN` | 14 |
@@ -43,13 +43,13 @@ The minimal PDF baseline's unrelated issues were retained separately in each res
 
 ## Coordinator-review observations
 
-15 named fixtures (30 serialized identities) were marked `coordinator-review`: null/array alpha values, name-array blend mode, omitted-Type dictionaries, wrong-Type dictionaries, and the repeated omitted/wrong-Type decisive negatives. Their observed results were recorded without asserting an intended acceptance or rejection. Corrected topology assertions verify the reloaded dictionary itself: omitted cases have no `/Type`, present cases have `/Type /ExtGState`, and wrong cases have exactly `/Type /Font`. Examples:
+15 named fixtures (30 serialized identities) were marked `coordinator-review`: null/array alpha values, name-array blend mode, omitted-Type dictionaries, wrong-Type dictionaries, and the repeated omitted/wrong-Type decisive negatives. Their observed results were recorded without asserting an intended acceptance or rejection. Examples:
 
-- omitted Type with `ca=-0.1`, `CA=1.1`, `BM=Multiply`, or dictionary `SMask` received no whole-document Type-present field code under current traversal;
+- omitted Type with `ca=-0.1`, `CA=1.1`, `BM=Multiply`, or dictionary `SMask` still received the corresponding whole-document field code under current traversal;
 - wrong Type produced the existing `CONTENT_RESOURCE_TYPE_INVALID` at `Page[0]/Contents[0]/gs` and did not receive the Type-present whole-document field check;
 - null/name-array values were recorded but not assigned a normative verdict.
 
-The prior invalid-fixture results and report are preserved under `historical-pre-correction/`; they document that the earlier `undefined` default parameter accidentally reinstated `/Type /ExtGState`. These are measurements of current checker coverage, not policy decisions.
+These are measurements of current checker coverage, not policy decisions.
 
 ## Ordinary exporter controls and gate
 
