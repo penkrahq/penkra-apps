@@ -670,3 +670,34 @@ Log `/tmp/canvas-luna-asset-upload-integrated-20260907.log`; exit `0`, `61` pass
 `0` cancelled, `0` skipped; wrapper duration `<1 s` (runner-reported duration `822.123416 ms`).
 Upload snapshot/receipt, zero-byte read, storage/protocol, and retained-operation assertions all
 passed.
+
+## PDF envelope wiring and page-tree helper batch
+
+The approved PDF batch applied cleanly in exact order after the envelope-helper baseline. The first
+three commits wire and test envelope inspection in preflight; the page-tree helper remains
+standalone and is not wired:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `731643f` | `44e2141` |
+| `85eb072` | `7e43ccd` |
+| `b6fae6d` | `ca9cc26` |
+| `c06ac7d` | `960efd7` |
+| `bd6e52c` | `f08d58c` |
+| `4c73239` | `5c6137d` |
+| `d7ef874` | `265816a` |
+
+No protected files or gate-setting changes were included. The preflight envelope invocation
+preserves the existing `conformant: false` behavior and uncovered diagnostics; the page-tree
+helper is limited to raw page-tree relationships and its 2048-depth independent coverage.
+
+After all seven commits, the full exporter/service selection was run once using every current
+`src/exporters/*.test.mjs` file discovered by `rg --files`, plus `src/export-service.test.mjs`:
+
+`node scripts/test.mjs $(rg --files src/exporters -g "*.test.mjs" | sort) src/export-service.test.mjs`
+
+Log `/tmp/canvas-luna-pdf-exporter-service-integrated-20260907.log`; exit `0`, `755` passed,
+`0` failed, `0` cancelled, `0` skipped; wrapper duration `27 s` (runner-reported duration
+`26491.738625 ms`). Envelope preflight invocation, graphics projections, page-tree helper,
+negative matrix, limits, content, metadata, fonts, images, and service assertions all passed.
+No native action occurred.
