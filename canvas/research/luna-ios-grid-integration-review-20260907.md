@@ -216,3 +216,60 @@ excluded.
 Combined remains at `2ca6cd9b108eb849c1e799135c9567d9e88be3bd` with only the
 pre-existing untracked Swift `.build/` directory. No source, native, device,
 capability, or historical-capture mutation occurred in this attempt.
+
+## Recovery and approved-batch result
+
+The bounded recovery authorization was applied only to the concrete missing
+prerequisites. The complete worker-to-combined mapping is:
+
+| worker revision | combined revision | scope |
+| --- | --- | --- |
+| `70af354c2b1e020571086e58b6826dff2d61d7f3` | `ed967902324e616cb4ac46120a8dd9c38a52d061` | named iOS grid harness add |
+| `6ef72af1717e61aa7999a4f962f53cb8114602d6` | `26689d3a743791bca240f46381e209fe59bb64df` | named iOS grid research fixture/source/reference adds |
+| `91c8e3305e563a88bd2dc43889ddec66decccb1c` | `65db6d17c0fead97312efc963a199724e5474c56` | named harness readiness/geometry correction |
+| `95d8dc8fcc311ace847a1bed69d6440301fbbbc8` | `3442feddb23fd04f289289fb7637c3acae988040` | receipt/hash/comparator harness tests |
+| `998313dedffe1ba7e563154f0fd434dc70a1b87d` | `f30cfef9bec9a651d75c688efe83c6f46dab1f19` | bounded capture runner |
+| `04216b2494eb6de90b0ab46d269c6431aedb1a6a` | `7b013ead85248077269162b00e311cea3c780d74` | receipt-driven root crop/source updates |
+| `7132c435a23865fc2abee7922a4a0a73ca8030df` | `d83147ee393c34f392800ddf4ab2496f9999e994` | crop/full-frame hash validation |
+| `0f6a71c1626e1073732a1f7b2471d96fcd45c5f1` | `3a64ed34d090934ca425b51358c7506285a35f63` | root receipt predicate |
+| `14a8ef33becd8d3ec04be06207cd5bbfc5b3b8c0` | `c5ed367dcc66d6b5c59cea4a819101f0439b8542` | run02 retained evidence |
+| `6acfe9c6e7ed24adeb91a7e0a3d605f0841f32b2` | `f5eae4063b749503ef6cfff66b5893c811e70c18` | missing-five runner/test |
+| `9200e7ee61c1ed773814c24a48b004ddbf986878` | `ffe7fd155f5ed31217a9380c065c6312f55914b5` | missing-five retained evidence |
+| `39bdc42040bf0ba936771522b8f0e230290aa09e` | `4e44f7af806183a014ea3cb7beb9f125993fd678` | required preserved run01 raw-PNG fixture plus related iOS evidence |
+
+`39bdc42` was included only after the integrated capture test was inspected
+and proved to read
+`native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-b.png`.
+Its complete diff is research evidence under the named iOS grid artifact
+root; it contains no production/exporter/vendor/manifest/protected changes.
+The omitted offline diagnostic commits and missing-one revisions remain
+unpicked.
+
+Post-integration device-free command:
+
+```text
+node --test canvas/compatibility/luna-ios-grid-production.test.mjs canvas/compatibility/luna-ios-grid-capture-20260907.test.mjs canvas/compatibility/luna-ios-grid-missing-five-capture.test.mjs canvas/src/exporters/exporters.test.mjs
+```
+
+Result: exit 0, 46 passed, 0 failed, 0 cancelled, 0 skipped, duration
+`1321.499792 ms`. The 46 consists of 7 capture/hash/source tests, 5
+missing-five tests, 6 iOS production harness tests, and 28 exporter tests.
+
+Post-test structured verification at combined `ffe7fd155f5ed31217a9380c065c6312f55914b5`:
+
+- Run02: 39 entries, 34 `pass`, 5 `unmeasured`; 106 compared children,
+  800,252 samples, 0 comparator failures.
+- Missing-five: 5 entries, 4 `pass`, 1 `unmeasured`; 13 compared children,
+  129,688 samples, 0 comparator failures; five unique overlay identities,
+  all five originally unmeasured.
+- Binary executable rehash equals the recorded
+  `56a7893fdc96d9b7b69fa1f37c8fedacbe2477bac479b5ad6eba11a9fcc14065`.
+- Source manifest has 15 files, source SHA
+  `cd9f240225dde9741775febc2cd3d8f4796be683baa895619b4f385580c43b11`, and
+  15/15 file hash/byte matches. `project.yml` is 576 bytes with SHA
+  `ab2e5b7bb2704b3557601351e5417fb83ecf6af3182f5b8a456c7eeff24d0b96`.
+
+The final combined worktree has no tracked or staged changes; only the
+pre-existing untracked Swift `.build/` directory remains. No native/device
+action, capability promotion, production gate change, or historical capture
+rewrite occurred.
