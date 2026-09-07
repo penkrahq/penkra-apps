@@ -1,0 +1,951 @@
+{
+  "package": "luna-ios-text-receipt-references-20260907",
+  "sourceFixture": "../fixture.json",
+  "sourceIR": "../ir.json",
+  "historicalNativeCapturesUsed": false,
+  "renderer": "src/document-screenshot.mjs takeDocumentScreenshots",
+  "prohibitedTransforms": [
+    "sips",
+    "color registration",
+    "rescale",
+    "tolerance adjustment"
+  ],
+  "entries": [
+    {
+      "identity": "case-01|iphone|large",
+      "caseId": "case-01",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-01.png",
+      "sha256": "4432f81f339385ed3a73d4fc6bb57f46bf8c3bf5847e1b48b4d103e2d695f46c",
+      "bytes": 23215,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 14068,
+      "pixelSha256": "98b4efb6a82fe92792a635a8015238ff1f082e212b677f37efedab351a366156",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-02|iphone|large",
+      "caseId": "case-02",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-02.png",
+      "sha256": "7484646d8184389221e442d4573cf7900ccecc2cfe1a64823faab57c85df7032",
+      "bytes": 23353,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 18868,
+      "pixelSha256": "1cc223c02050b3639888ebc2a428b1381145a48672ed33e1ad2ede1e34105ec7",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-03|iphone|large",
+      "caseId": "case-03",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-03.png",
+      "sha256": "c95c43dcb37bb638a587ed25ed059d0bd8ea12692f8cfe51a26f84a753c6264b",
+      "bytes": 22678,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 17037,
+      "pixelSha256": "966105894e1c1851c17f0204d24a8352db18ad5ee7af9824c907b9dabf4e249c",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-04|iphone|large",
+      "caseId": "case-04",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-04.png",
+      "sha256": "1f9391ffd9e73249328350752f1173f4151ea6a181276ad54538c5922b8e5c8e",
+      "bytes": 22817,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 21837,
+      "pixelSha256": "034a73d23723e9a72b17f3db9634e5254b976fe79a2bc1608cae4233e6451149",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-06|iphone|large",
+      "caseId": "case-06",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-06.png",
+      "sha256": "817855f12a958283b24d82a1d0b5d71cf70cd104de8bbafff471986722c0f731",
+      "bytes": 23373,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 19845,
+      "pixelSha256": "fa7810f5c8bf5f7688e3761272c0bd76b268853fec40d0f649b64f44d3edebd2",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-07|iphone|large",
+      "caseId": "case-07",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-07.png",
+      "sha256": "0ceca11cb52013058f9da487a16f7a947750a81dc818438af55b610749e9f7ac",
+      "bytes": 23278,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 15592,
+      "pixelSha256": "f0da53e5e4089f1ec3895b2f9a4929108e867cb5a1d560e00723030f470168ec",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-08|iphone|large",
+      "caseId": "case-08",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-08.png",
+      "sha256": "7c2c41d7466ba112c30cb3bef570e74a9101c818d4b7c67f391470729957bd4e",
+      "bytes": 22945,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 15033,
+      "pixelSha256": "4b80f9617d8e2ed9eb609802cd5e5ae9fe54d2042053f0b7ba1ee3b717125904",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-10|iphone|large",
+      "caseId": "case-10",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-10.png",
+      "sha256": "0a764dfe44d171fc1bfff7a11b4157a585bd6ac8076ca47e78885a7be24d3993",
+      "bytes": 23057,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 14068,
+      "pixelSha256": "d020ac255201013da83bf0fbd1af8fc3fcc4e64516b51ce65c4e9bab5a28e9dd",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-11|iphone|large",
+      "caseId": "case-11",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-11.png",
+      "sha256": "62d3d9a62eea5037752a4e2f35672f55035af567a2996459efbc369976cc4b7e",
+      "bytes": 23260,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 13963,
+      "pixelSha256": "1eb736c8a5fb2bb4b65befe45f59fc7222ba8eda3efc388661433982cc4e0fa8",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-12|iphone|large",
+      "caseId": "case-12",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "large",
+      "scale": 3,
+      "path": "iphone-large/case-12.png",
+      "sha256": "6ca5378d7722d543273b5670f7a2cd7adad524d689864784d288bf6ec4fdf3d2",
+      "bytes": 23208,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 13981,
+      "pixelSha256": "690ad56864a4bc0c9721a58a0fc9681764754cade384aa715471701d92fcf146",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-01|iphone|accessibility-extra-extra-large",
+      "caseId": "case-01",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-01.png",
+      "sha256": "4432f81f339385ed3a73d4fc6bb57f46bf8c3bf5847e1b48b4d103e2d695f46c",
+      "bytes": 23215,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 14068,
+      "pixelSha256": "98b4efb6a82fe92792a635a8015238ff1f082e212b677f37efedab351a366156",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-02|iphone|accessibility-extra-extra-large",
+      "caseId": "case-02",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-02.png",
+      "sha256": "7484646d8184389221e442d4573cf7900ccecc2cfe1a64823faab57c85df7032",
+      "bytes": 23353,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 18868,
+      "pixelSha256": "1cc223c02050b3639888ebc2a428b1381145a48672ed33e1ad2ede1e34105ec7",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-03|iphone|accessibility-extra-extra-large",
+      "caseId": "case-03",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-03.png",
+      "sha256": "c95c43dcb37bb638a587ed25ed059d0bd8ea12692f8cfe51a26f84a753c6264b",
+      "bytes": 22678,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 17037,
+      "pixelSha256": "966105894e1c1851c17f0204d24a8352db18ad5ee7af9824c907b9dabf4e249c",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-04|iphone|accessibility-extra-extra-large",
+      "caseId": "case-04",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-04.png",
+      "sha256": "1f9391ffd9e73249328350752f1173f4151ea6a181276ad54538c5922b8e5c8e",
+      "bytes": 22817,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 21837,
+      "pixelSha256": "034a73d23723e9a72b17f3db9634e5254b976fe79a2bc1608cae4233e6451149",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-06|iphone|accessibility-extra-extra-large",
+      "caseId": "case-06",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-06.png",
+      "sha256": "817855f12a958283b24d82a1d0b5d71cf70cd104de8bbafff471986722c0f731",
+      "bytes": 23373,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 19845,
+      "pixelSha256": "fa7810f5c8bf5f7688e3761272c0bd76b268853fec40d0f649b64f44d3edebd2",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-07|iphone|accessibility-extra-extra-large",
+      "caseId": "case-07",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-07.png",
+      "sha256": "0ceca11cb52013058f9da487a16f7a947750a81dc818438af55b610749e9f7ac",
+      "bytes": 23278,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 15592,
+      "pixelSha256": "f0da53e5e4089f1ec3895b2f9a4929108e867cb5a1d560e00723030f470168ec",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-08|iphone|accessibility-extra-extra-large",
+      "caseId": "case-08",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-08.png",
+      "sha256": "7c2c41d7466ba112c30cb3bef570e74a9101c818d4b7c67f391470729957bd4e",
+      "bytes": 22945,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 15033,
+      "pixelSha256": "4b80f9617d8e2ed9eb609802cd5e5ae9fe54d2042053f0b7ba1ee3b717125904",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-10|iphone|accessibility-extra-extra-large",
+      "caseId": "case-10",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-10.png",
+      "sha256": "0a764dfe44d171fc1bfff7a11b4157a585bd6ac8076ca47e78885a7be24d3993",
+      "bytes": 23057,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 14068,
+      "pixelSha256": "d020ac255201013da83bf0fbd1af8fc3fcc4e64516b51ce65c4e9bab5a28e9dd",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-11|iphone|accessibility-extra-extra-large",
+      "caseId": "case-11",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-11.png",
+      "sha256": "62d3d9a62eea5037752a4e2f35672f55035af567a2996459efbc369976cc4b7e",
+      "bytes": 23260,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 13963,
+      "pixelSha256": "1eb736c8a5fb2bb4b65befe45f59fc7222ba8eda3efc388661433982cc4e0fa8",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-12|iphone|accessibility-extra-extra-large",
+      "caseId": "case-12",
+      "deviceKey": "iphone",
+      "deviceId": "A3D92728-7F7B-44D1-BE51-155B891905D9",
+      "contentSize": "accessibility-extra-extra-large",
+      "scale": 3,
+      "path": "iphone-accessibility-extra-extra-large/case-12.png",
+      "sha256": "6ca5378d7722d543273b5670f7a2cd7adad524d689864784d288bf6ec4fdf3d2",
+      "bytes": 23208,
+      "width": 1020,
+      "height": 540,
+      "alphaPixels": 550800,
+      "nonWhitePixels": 13981,
+      "pixelSha256": "690ad56864a4bc0c9721a58a0fc9681764754cade384aa715471701d92fcf146",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-01|ipad|large",
+      "caseId": "case-01",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-01.png",
+      "sha256": "9e9ebd8dd1af71865af9045b9b9645999a43f92b6868f307243222b53b8c346d",
+      "bytes": 15879,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 6746,
+      "pixelSha256": "23e63075ff2a706b311c10b349552ac99ab8ebf4b5ea35e4a1ed122a419adbfc",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-02|ipad|large",
+      "caseId": "case-02",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-02.png",
+      "sha256": "5146be3ed1afef16b327df5f72f774478d500d2b7018afa90fbc5484c22524b3",
+      "bytes": 15986,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 9416,
+      "pixelSha256": "b2363efcc192f01ad96dc58633a5ea0c31831f400ab5ba7770083768ff237dec",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-03|ipad|large",
+      "caseId": "case-03",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-03.png",
+      "sha256": "1834f84985ac9bdcd7724685020c55083509b68f20edfbc3cb6230ab70f1194d",
+      "bytes": 15911,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 8003,
+      "pixelSha256": "9c86bf9d742e79d9a9c13f3ccd21c794fde58d8d990c71ad68d047f784434d7a",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-04|ipad|large",
+      "caseId": "case-04",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-04.png",
+      "sha256": "4369852d0340fc4fed950bb6962d3e05daa5e7b4263f08e79a93f3dc509ee830",
+      "bytes": 16019,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 10673,
+      "pixelSha256": "e201eca217a2284baf15ce7a8354f643a76d0af0da2da50bdab44632bdbec1a4",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-06|ipad|large",
+      "caseId": "case-06",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-06.png",
+      "sha256": "0c1eb7458143603707cb9139325e2289ad1c0e48a1b824f01abf3c620b3739dc",
+      "bytes": 16119,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 9319,
+      "pixelSha256": "408cd11c75b29f81b4da3c260732ad014e960b8a1192c61056209d3dbb1db528",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-07|ipad|large",
+      "caseId": "case-07",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-07.png",
+      "sha256": "c80e7060ccbc88ad924c390e739ce5255450fa2374771854cde80835b0c1640b",
+      "bytes": 15936,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 7591,
+      "pixelSha256": "8bb8afc94ad2c25364338cc9d61ffd5d7e36c4850dde69078d5ad0670ccc7795",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-08|ipad|large",
+      "caseId": "case-08",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-08.png",
+      "sha256": "1a30203a5d95926d454311a5b60dea3b5ddab33d11e33165aebbb85646c1f119",
+      "bytes": 15872,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 7149,
+      "pixelSha256": "410eba2768ae7ca019c4d4a86ec95f6ce6a9d2ea6e879cea581d918a79e5512a",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-10|ipad|large",
+      "caseId": "case-10",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-10.png",
+      "sha256": "ab07f210321c9c5929eae75b049687ced20aab6ae74c486d33262da9ebdb8739",
+      "bytes": 15961,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 6746,
+      "pixelSha256": "10b1790d89198494f5c90441cdb6c5ae7e0d7c19372eb1cabdc8b87baf681268",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-11|ipad|large",
+      "caseId": "case-11",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-11.png",
+      "sha256": "a81e31e5c817803bfdea0d7fcb1f582c520c4ff445b728992e931597158d1568",
+      "bytes": 15904,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 6746,
+      "pixelSha256": "50f67e4b5cbf16dbffc3a3220d958bc9954d615f5947bdff951971b079396c04",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    },
+    {
+      "identity": "case-12|ipad|large",
+      "caseId": "case-12",
+      "deviceKey": "ipad",
+      "deviceId": "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+      "contentSize": "large",
+      "scale": 2,
+      "path": "ipad-large/case-12.png",
+      "sha256": "31308a1af128757218038123b1dcdb59a35134c9238631eb6e3cba41fdbb4553",
+      "bytes": 15890,
+      "width": 680,
+      "height": 360,
+      "alphaPixels": 244800,
+      "nonWhitePixels": 6746,
+      "pixelSha256": "7b722c94822ceecb991f673ce9d28bcc18f5731a45f2a352ec8893cdf9360170",
+      "fixtureSha256": "6d7545ebe0dd9430d5a040b847daf6c889de587422e5b641fd8aea269391435b",
+      "sourceIRSha256": "ae994aa724c000fc1e39389e22f9c2286bc80fa5cc7199354ffa8dcf5f8de7e7",
+      "fontHashes": {
+        "Inter:400": {
+          "sha256": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50",
+          "bytes": 342408,
+          "filename": "a414b48aa577ef2c62ebb135341ddeef33ee26a4f5dc9f787f93c1aab08ebb50.ttf"
+        },
+        "Inter:700": {
+          "sha256": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e",
+          "bytes": 344072,
+          "filename": "fbe825cbfc749317f57a1433d3905aa9d3f388732fd29b8e8a36f34845e3bc3e.ttf"
+        }
+      },
+      "command": "node scripts/luna-ios-text-receipt-references-20260907.mjs"
+    }
+  ],
+  "counts": {
+    "entries": 30,
+    "devices": 2,
+    "states": 3,
+    "cases": 10
+  }
+}
