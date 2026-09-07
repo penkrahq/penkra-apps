@@ -13,7 +13,7 @@ export async function prepareRetainedLibraryRelease(api, document, options = {})
   const libraryId = identifier(options.libraryId, "libraryId");
   const releaseId = identifier(options.releaseId, "releaseId");
   const ownedAssets = snapshotAssets(options.assets ?? []);
-  const aliases = Object.keys(snapshot.imports ?? {});
+  const aliases = Object.keys(snapshot.imports ?? {}).sort(compareAliases);
 
   if (aliases.length === 0) {
     // Treat an omitted imports member as the canonical empty record while
@@ -76,6 +76,7 @@ export async function prepareRetainedLibraryRelease(api, document, options = {})
 
 function createResult(snapshot, libraryId, releaseId, ownedAssets, dependencies, retentions) {
   const semanticDocument = structuredClone(snapshot);
+  if (semanticDocument.imports === undefined) semanticDocument.imports = {};
   if (semanticDocument.library?.publication !== undefined) delete semanticDocument.library.publication;
   const descriptors = ownedAssets.map(({ bytes, ...asset }) => ({ ...asset, sha256: hash(bytes), size: bytes.byteLength }));
   const release = createLibraryRelease(semanticDocument, { libraryId, releaseId, dependencies, assets: descriptors });
@@ -111,6 +112,7 @@ function identifier(value, name) {
 }
 
 function hash(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
+function compareAliases(left, right) { return left < right ? -1 : left > right ? 1 : 0; }
 function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function invalid(message) { return Object.assign(new Error(message), { code: "CANVAS_LIBRARY_INVALID" }); }
 function importError(message, code = "CANVAS_IMPORT_INTEGRITY") { return Object.assign(new Error(message), { code }); }
