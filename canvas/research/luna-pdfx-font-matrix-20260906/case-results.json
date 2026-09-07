@@ -1,0 +1,1193 @@
+{
+  "caseCount": 39,
+  "serializationVariantCount": 2,
+  "executedResultCount": 76,
+  "cases": [
+    {
+      "name": "baseline-identity-h-cidfonttype2",
+      "serialization": "classic-xref",
+      "sha256": "3f96ee303ecd81b546a73b60f3cb2cfd9e6774edbd929f4dd1d03a56e3dba5e9",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "baseline-identity-h-cidfonttype2",
+      "serialization": "object-streams",
+      "sha256": "ee47447654b9cbcc3e24a78eb25c23ce95b6b68985c2752ad966ff8454a939cd",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "raw-fontfile2-stream",
+      "serialization": "classic-xref",
+      "sha256": "2f090dcc2b76a8aff368c7e869d47b3648907e8110391bb615863f440601c933",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "raw-fontfile2-stream",
+      "serialization": "object-streams",
+      "sha256": "bb0c0ac3f1750c845962cd7e3a0b3e641804678047f339fbeee1099b03885540",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "flate-fontfile2-stream",
+      "serialization": "classic-xref",
+      "sha256": "402fb8e3877cfa0d8e06def88c420b44af72a158e3021efc9640bf00b41cf5fb",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "flate-fontfile2-stream",
+      "serialization": "object-streams",
+      "sha256": "5366c601520488616902d3a3c7eb6c8ba222651785fc7a5a4865781a4fb3c0d3",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "direct-fontdescriptor",
+      "serialization": "classic-xref",
+      "sha256": "6e3229e18b9537b996edf733d1cd8036e1a9eb83e0cee403f4c6d99ca0528a13",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "direct-fontdescriptor",
+      "serialization": "object-streams",
+      "sha256": "f2be50fba6e271051c9896c9cac3e4a934dd2fca66b800bac372f36341f10601",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "inherited-page-font-resources",
+      "serialization": "classic-xref",
+      "sha256": "9643beac3900a26622513b8af096646600d7d29bba2acd2b36b414332397703d",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "inherited-page-font-resources",
+      "serialization": "object-streams",
+      "sha256": "ec413ed4601d7fa586b21c664831cc1d7f213488e440f4849f8f3695f6271f53",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 14
+    },
+    {
+      "name": "missing-fontfile2",
+      "serialization": "classic-xref",
+      "sha256": "bbb67706e30429a67dabf5939c0ab6335cd9694b16e66d49aa78ce561c679140",
+      "issueCodes": [
+        "FONT_NOT_EMBEDDED",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "missing-fontfile2",
+      "serialization": "object-streams",
+      "sha256": "6b2c90603e494a7c4d47691e960f2c660e6aefa6c306f98de2f34d06a04d60de",
+      "issueCodes": [
+        "FONT_NOT_EMBEDDED",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "nonstream-fontfile2",
+      "serialization": "classic-xref",
+      "sha256": "5a6d78d498f9455c3858c5c5f2c66635cf45f6c28a2b77a9f1ed316fd8aedb6e",
+      "issueCodes": [
+        "FONT_NOT_EMBEDDED",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "nonstream-fontfile2",
+      "serialization": "object-streams",
+      "sha256": "ead930209a3f11ab8d7fd55be6ce4157793b08ab5185624f9a45862bfa6af6cb",
+      "issueCodes": [
+        "FONT_NOT_EMBEDDED",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_NOT_EMBEDDED",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "truncated-font-program",
+      "serialization": "classic-xref",
+      "sha256": "c77df031d83f086c2c2b5983415cb798be8943eba4fcd064f4b8ac52a0f5eb43",
+      "issueCodes": [
+        "FONT_PROGRAM_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_PROGRAM_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "truncated-font-program",
+      "serialization": "object-streams",
+      "sha256": "c8cf6df9812295b4cddff528a5415faca8d9f5a11a3e49ec53c25239871a208b",
+      "issueCodes": [
+        "FONT_PROGRAM_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_PROGRAM_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "random-font-program",
+      "serialization": "classic-xref",
+      "sha256": "3ca3d94425f1e6af45132fce558227e9c2b5dbc7eead5ca261c215f749813d1e",
+      "issueCodes": [
+        "FONT_PROGRAM_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_PROGRAM_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "random-font-program",
+      "serialization": "object-streams",
+      "sha256": "1735fdf59678139460ac310f8bef63539cc57c52ba6f462ce1f968c1e113f21a",
+      "issueCodes": [
+        "FONT_PROGRAM_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_PROGRAM_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "unsupported-font-encoding",
+      "serialization": "classic-xref",
+      "sha256": "e5cde21ffcec91e36917818ac059241e8b2e4397cbda05b73369d1328f6ff7a3",
+      "issueCodes": [
+        "FONT_ENCODING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_ENCODING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "unsupported-font-encoding",
+      "serialization": "object-streams",
+      "sha256": "0c5c3e2db312f4711f5acbc0900676b9523f526f5fef7afa53ae520bf3f2dbf6",
+      "issueCodes": [
+        "FONT_ENCODING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_ENCODING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "wrong-cid-subtype",
+      "serialization": "classic-xref",
+      "sha256": "879f5b7447f4451bb34d4cb612a5d6284bd49302de885a6ee7edbd8fde07f5bf",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "wrong-cid-subtype",
+      "serialization": "object-streams",
+      "sha256": "eef0da424c001051806b2a2451702cfdbe6db834710eac60471e4dab211984d3",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "nonidentity-cidtogidmap",
+      "serialization": "classic-xref",
+      "sha256": "a5e8d8469878324d8ca694bd85cedfdda12d2c6386bbba1ca0c196fb654fbcf8",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "nonidentity-cidtogidmap",
+      "serialization": "object-streams",
+      "sha256": "535b5e33c604b5736c1232185644a48629bdbade4144ca183c7b305912be5db7",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "missing-descendantfonts",
+      "serialization": "classic-xref",
+      "sha256": "78e7eb87eaec8e18cc6c4f351e301ef58c1b0ddd843bc0aa24c9199c8ec4ee4c",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "missing-descendantfonts",
+      "serialization": "object-streams",
+      "sha256": "405de038358c0a794006aeb58172b552cc8cedaca95337b0a5181ceb984e7c67",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "empty-descendantfonts",
+      "serialization": "classic-xref",
+      "sha256": "d6abf7440c10aed33ea012e8f9de04b9ea3a3aa95a6f26906a2209200e85ec54",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "empty-descendantfonts",
+      "serialization": "object-streams",
+      "sha256": "f777732e35644e07dc58df5b41d8b895223c60324d977b1502b53e44ce9db5ba",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "multiple-descendantfonts",
+      "serialization": "classic-xref",
+      "sha256": "e6b7b130cd9295c59c81329ea52628b54544b3d8296a3d263e9269bbc77d4896",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "multiple-descendantfonts",
+      "serialization": "object-streams",
+      "sha256": "53336fb7241d929f7261daa6902f7b5662e7bcdd2919a8012f594f36e49fba31",
+      "issueCodes": [
+        "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CID_MAPPING_OUTSIDE_SUBSET",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-absent-correct-dw",
+      "serialization": "classic-xref",
+      "sha256": "4578afa47fffffcae3f7bf04ef184789f2e5a0cbd946e831bb5545d30f117169",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-absent-correct-dw",
+      "serialization": "object-streams",
+      "sha256": "732beac0883ec6b0e072024fac5631a09ef426ec43293f2ed60abaf9993511bc",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-absent-wrong-dw",
+      "serialization": "classic-xref",
+      "sha256": "650831f9dcf9f15b76e2c950f585183a3534b0d0dbb739bd86728bc48c6ce445",
+      "issueCodes": [
+        "FONT_WIDTH_MISMATCH"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_MISMATCH",
+          "object": "Page[0]/Font/Inter-Regular-7098480789/CID[73]"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-absent-wrong-dw",
+      "serialization": "object-streams",
+      "sha256": "8070105310ef414ae99025912ce9c0959a23f36de0e8f1eac9f7f858665b4e84",
+      "issueCodes": [
+        "FONT_WIDTH_MISMATCH"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_MISMATCH",
+          "object": "Page[0]/Font/Inter-Regular-7098480789/CID[73]"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-valid-range-form",
+      "serialization": "classic-xref",
+      "sha256": "dde427135fba9c25b0698e61b66b338a56f96797c335d61a43849286cdbd93f9",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-valid-range-form",
+      "serialization": "object-streams",
+      "sha256": "7c2d78f84cbef9f1658c689780d900042ca2e9f894876c7026e444150e99af4b",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-valid-array-form",
+      "serialization": "classic-xref",
+      "sha256": "f7548cb8681e148f41bebdf73987075646ef1bdb78e1bd63e775eb85b199fb72",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-valid-array-form",
+      "serialization": "object-streams",
+      "sha256": "ecd8b265258dfc31282604afc1e57e9fc09a1e8cbb10a69c5cf6b734ca5d9a86",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "w-duplicate-cid-entries",
+      "serialization": "classic-xref",
+      "sha256": "504af73943e5793fdf2096ce0595bc1b8d513cbe59dd35e5cac72360ac72d582",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-duplicate-cid-entries",
+      "serialization": "object-streams",
+      "sha256": "6a9fc9276001bb5d78f3326746b451faf17511c23447fb07f5bb323a41c20b8d",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-descending-range",
+      "serialization": "classic-xref",
+      "sha256": "c3edf40eb9857565d58f178acad0d7b698fb334a32ff860ed839b553071dd212",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-descending-range",
+      "serialization": "object-streams",
+      "sha256": "325f21aed7ba4645c5be18fc508c30668bab46acbf9c4e56f0fd52f42552f6eb",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-negative-cid",
+      "serialization": "classic-xref",
+      "sha256": "2b30287db7d0296d66e422d62183d6121a1116913ef24c048bd1862bcd4f08cf",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-negative-cid",
+      "serialization": "object-streams",
+      "sha256": "795405f4d043ba868d9eab85c498f5a91ac90ad2c36e7447b3698b05e8e29462",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-cid-65536",
+      "serialization": "classic-xref",
+      "sha256": "7dc351478b8f8a129dbbb74b493ff6da10a871c52c0173888c4955ff1ad0d19d",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-cid-65536",
+      "serialization": "object-streams",
+      "sha256": "baf07c4692817317b8e36ff03e327f4e0b8d85d18e8fde6474afb79b8266a14a",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-missing-range-width",
+      "serialization": "classic-xref",
+      "sha256": "bf6e8f4dde448987bce871eb32d4633aad13b68258a3bb6a03994640d7356060",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-missing-range-width",
+      "serialization": "object-streams",
+      "sha256": "97986c9002faefb42bfccf1646a5bef8aafc108d5fda66fd3100d06da02a2ba9",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-nonnumeric-width",
+      "serialization": "classic-xref",
+      "sha256": "d3c73661d79dd4f5acd976346460b2f83b1ba17fea76939b650190cf735b1a8a",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-nonnumeric-width",
+      "serialization": "object-streams",
+      "sha256": "9ee95049575d3aa16e06fb184677f75820d89251d3d588b4f77fe434580974e5",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-nonarray",
+      "serialization": "classic-xref",
+      "sha256": "410d2e0ed09c10ae96edaf1bb197bc938405fe1cd97e89e31bf96e770aa62285",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "w-nonarray",
+      "serialization": "object-streams",
+      "sha256": "52a36c4a06d41a8c4232984b971e9385eac203ce70a7824f7f05b2c2e5213035",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "dw-wrong-type",
+      "serialization": "classic-xref",
+      "sha256": "ff5a26b6e2fe3e9674f32eec08516ef74392aec9a5521a85d468bd6cfec4990d",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "dw-wrong-type",
+      "serialization": "object-streams",
+      "sha256": "ed16582b2a158ddc2cf0741625fd240da0966b78b2b88a9a463ffe40920bbd07",
+      "issueCodes": [
+        "FONT_WIDTH_TABLE_INVALID",
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_WIDTH_TABLE_INVALID",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        },
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 0,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "tj-valid-used-glyph",
+      "serialization": "classic-xref",
+      "sha256": "9a5d95e32d5d0e8078d7bc4358d365b2fea9856b060ed8643cda6d487d0aaf15",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-valid-used-glyph",
+      "serialization": "object-streams",
+      "sha256": "3573dfbdd09583d59375d95351b9c9f12c83d22a60939f07927135c7e54bb913",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-valid-tj-array",
+      "serialization": "classic-xref",
+      "sha256": "c198fbd9024e83ff985dcf398d67a8f5cc70c2f9b418a8a0d3f3236d37c10bd3",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-valid-tj-array",
+      "serialization": "object-streams",
+      "sha256": "263ad27aaeeb48d4325286a5fa869169675fa65069dee15da66ef0ba42211dee",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-cid-zero",
+      "serialization": "classic-xref",
+      "sha256": "67fc3b90bebca48e4581be414c5fc25d134a1a633dffea1323f02639b1d3e6a3",
+      "issueCodes": [
+        "FONT_NOTDEF_USED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_NOTDEF_USED",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-cid-zero",
+      "serialization": "object-streams",
+      "sha256": "f65124fc5d403afea7c11330ce8b0f5a565c59928c4fa747ea48c12a71707abb",
+      "issueCodes": [
+        "FONT_NOTDEF_USED"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_NOTDEF_USED",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-out-of-range-cid",
+      "serialization": "classic-xref",
+      "sha256": "7dbd713275cadcfb4e7c2898e5c3e7f646159b103f8058fb449d9ea771c9b8da",
+      "issueCodes": [
+        "FONT_GLYPH_MISSING"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_GLYPH_MISSING",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-out-of-range-cid",
+      "serialization": "object-streams",
+      "sha256": "25f3df345320adebd67db5b0b19e54eaee44d2bb2523e800dcb810a7a519e4cb",
+      "issueCodes": [
+        "FONT_GLYPH_MISSING"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_GLYPH_MISSING",
+          "object": "Page[0]/Font/Inter-Regular-7098480789"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "tj-odd-code-bytes",
+      "serialization": "classic-xref",
+      "sha256": "4480f61eb2bdb412567af600992fd3291093027ad6720420382832b37b7ad35a",
+      "issueCodes": [
+        "FONT_CODE_LENGTH_INVALID"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CODE_LENGTH_INVALID",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "tj-odd-code-bytes",
+      "serialization": "object-streams",
+      "sha256": "aac867fd26dfec08a1a9ecc8b1ef96c48449b3f01b0809c863fe9ac48b5b22ee",
+      "issueCodes": [
+        "FONT_CODE_LENGTH_INVALID"
+      ],
+      "issueObjects": [
+        {
+          "code": "FONT_CODE_LENGTH_INVALID",
+          "object": "Page[0]"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "tj-number-only-array",
+      "serialization": "classic-xref",
+      "sha256": "39bd605e196f89fa51b8043e8809401e737d15a6297bdf647c1d8445ad58a182",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "tj-number-only-array",
+      "serialization": "object-streams",
+      "sha256": "bce2b0b1b9d6481c734f887f8f7be3d16fcd8e937f7ca34d0d5d270931b0608e",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 0
+    },
+    {
+      "name": "two-font-switches",
+      "serialization": "classic-xref",
+      "sha256": "0ae459b8e6a68d0c25027c05587a769204ca10723a2d0d8e9f5ca62ccf7e3f92",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 2
+    },
+    {
+      "name": "two-font-switches",
+      "serialization": "object-streams",
+      "sha256": "b11b30ab280c01e15cdecc00ac6f886cb00d5dda97cfff039b481915da0050fc",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 2
+    },
+    {
+      "name": "q-q-restores-prior-font",
+      "serialization": "classic-xref",
+      "sha256": "b91a6b220320451e6e93e6999a5787215d3b625ca38be0e8c8d06919df98c25a",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 2
+    },
+    {
+      "name": "q-q-restores-prior-font",
+      "serialization": "object-streams",
+      "sha256": "f8cf968ddb1f814e97502df520327329c6cd497063727e3099fb91d31b6a71ea",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 2
+    },
+    {
+      "name": "active-font-across-content-streams",
+      "serialization": "classic-xref",
+      "sha256": "8e5045d862328d31da69546d76f5e5b50240d50b1f0d77fb49e3ae239f662c89",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "active-font-across-content-streams",
+      "serialization": "object-streams",
+      "sha256": "d8c7ac1883442d4c3567e6f001f3d417bd77433ac4c532bf8525fdbb1cec07c5",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "page-local-font-state-no-leak",
+      "serialization": "classic-xref",
+      "sha256": "93be78421e84282e5017c8b1e3bc93d49e580e647f03d81dca232fe73c91a191",
+      "issueCodes": [
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[1]"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "page-local-font-state-no-leak",
+      "serialization": "object-streams",
+      "sha256": "f1f243b6c764e7aa23bd8323dace59ad58506c6509254ce183bf3502857eda0c",
+      "issueCodes": [
+        "TEXT_FONT_UNRESOLVED"
+      ],
+      "issueObjects": [
+        {
+          "code": "TEXT_FONT_UNRESOLVED",
+          "object": "Page[1]"
+        }
+      ],
+      "checkedFonts": 1,
+      "checkedGlyphs": 1
+    },
+    {
+      "name": "same-font-reused-across-pages",
+      "serialization": "classic-xref",
+      "sha256": "250d3d129c5b7247554121b9c42c5b2870334c5b7302fd16771fc8fa8e896c2e",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 2
+    },
+    {
+      "name": "same-font-reused-across-pages",
+      "serialization": "object-streams",
+      "sha256": "76c15218d073e8a93e217bafd8eace672bddf03be18f779194b25c9bf1b7e0b1",
+      "issueCodes": [],
+      "issueObjects": [],
+      "checkedFonts": 1,
+      "checkedGlyphs": 2
+    }
+  ]
+}
