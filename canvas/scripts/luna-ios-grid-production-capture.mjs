@@ -18,7 +18,7 @@ import {
   sourceHashReceipt,
   stableScreenshotHashes,
 } from "./luna-ios-grid-production.mjs";
-import { cropPngBytes, cropRectFromRootReceipt } from "./luna-ios-grid-capture-utils-20260907.mjs";
+import { cropPngBytes, cropRectFromRootReceipt, validateFullFrameHashes } from "./luna-ios-grid-capture-utils-20260907.mjs";
 
 const runFile = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
@@ -128,6 +128,7 @@ async function captureCaseAttempt(device, contentSize, caseID, scale, expected, 
   const stability = { hashes, stable: stableScreenshotHashes(hashes), delayMs: 500, paths: [relativeEvidence(fullA), relativeEvidence(fullB)] };
   await writeEvidence(join(launchDir, "stability.json"), stability);
   if (!stability.stable) return { caseID, deviceId: device.id, contentSize, scale, nonce, attemptId, attemptNumber, launchArguments: args, pid, status: "unmeasured", reason: "consecutive screenshot SHA-256 hashes were not identical valid hashes", readiness, stability, referencePath: relativeEvidence(referencePath) };
+  const capturedHashes = { a: first.sha256, b: second.sha256 };
   const fullBeforeCrop = { a: sha256(await readFile(fullA)), b: sha256(await readFile(fullB)) };
   let crop;
   let cropBytes;
@@ -140,7 +141,12 @@ async function captureCaseAttempt(device, contentSize, caseID, scale, expected, 
   const capturePath = join(attemptDir, "crop.png");
   await writeFile(capturePath, cropBytes.bytes, { flag: "wx" });
   const fullAfterCrop = { a: sha256(await readFile(fullA)), b: sha256(await readFile(fullB)) };
-  const fullFrameHashStability = { beforeCrop: fullBeforeCrop, afterCrop: fullAfterCrop, stable: JSON.stringify(fullBeforeCrop) === JSON.stringify(fullAfterCrop) };
+  let fullFrameHashStability;
+  try {
+    fullFrameHashStability = validateFullFrameHashes({ captured: capturedHashes, beforeCrop: fullBeforeCrop, afterCrop: fullAfterCrop });
+  } catch (error) {
+    fullFrameHashStability = { captured: capturedHashes, beforeCrop: fullBeforeCrop, afterCrop: fullAfterCrop, stable: false, reason: error.message };
+  }
   await writeEvidence(join(launchDir, "full-frame-hash-stability.json"), fullFrameHashStability);
   if (!fullFrameHashStability.stable) return { caseID, deviceId: device.id, contentSize, scale, nonce, attemptId, attemptNumber, launchArguments: args, pid, status: "unmeasured", reason: "full screenshot bytes changed between pre-crop and post-crop rehash", readiness, stability, fullFrameHashStability, fullCapturePaths: stability.paths, crop, capturePath: relativeEvidence(capturePath), referencePath: relativeEvidence(referencePath) };
   const native = await decodePng(capturePath);

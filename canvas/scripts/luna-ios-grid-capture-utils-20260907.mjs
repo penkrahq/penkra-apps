@@ -6,18 +6,40 @@ function positiveInteger(value, label) {
   assert.ok(Number.isInteger(value) && value > 0, `${label} must be a positive integer`);
 }
 
+function nonnegativeInteger(value, label) {
+  assert.ok(Number.isInteger(value) && value >= 0, `${label} must be a nonnegative integer`);
+}
+
 function finiteNumber(value, label) {
   assert.ok(Number.isFinite(value), `${label} must be finite`);
 }
 
 export function validateCropRect(rect, image) {
   assert.ok(rect && image, "crop rectangle and image are required");
-  for (const key of ["x", "y", "width", "height"]) positiveInteger(rect[key], `crop ${key}`);
+  for (const key of ["x", "y"]) nonnegativeInteger(rect[key], `crop ${key}`);
+  for (const key of ["width", "height"]) positiveInteger(rect[key], `crop ${key}`);
   positiveInteger(image.width, "image width");
   positiveInteger(image.height, "image height");
   assert.ok(rect.x + rect.width <= image.width, "crop exceeds image width");
   assert.ok(rect.y + rect.height <= image.height, "crop exceeds image height");
   return rect;
+}
+
+function validSha256(value, label) {
+  assert.match(String(value), /^[0-9a-f]{64}$/u, `${label} must be a lowercase SHA-256 hex string`);
+}
+
+export function validateFullFrameHashes({ captured, beforeCrop, afterCrop }) {
+  for (const [label, pair] of [["captured", captured], ["beforeCrop", beforeCrop], ["afterCrop", afterCrop]]) {
+    assert.ok(pair && typeof pair === "object", `${label} hashes are required`);
+    validSha256(pair.a, `${label}.a`);
+    validSha256(pair.b, `${label}.b`);
+  }
+  assert.equal(beforeCrop.a, captured.a, "full frame A changed before crop");
+  assert.equal(beforeCrop.b, captured.b, "full frame B changed before crop");
+  assert.equal(afterCrop.a, captured.a, "full frame A changed after crop");
+  assert.equal(afterCrop.b, captured.b, "full frame B changed after crop");
+  return { stable: true, captured, beforeCrop, afterCrop };
 }
 
 export function cropRectFromRootReceipt(receipt, image, expectedRoot = { width: 340, height: 400 }) {

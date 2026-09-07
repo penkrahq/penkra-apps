@@ -10,6 +10,7 @@ import {
   decodePngBytes,
   encodeRgbaPng,
   validateCropRect,
+  validateFullFrameHashes,
 } from "../scripts/luna-ios-grid-capture-utils-20260907.mjs";
 import { buildGridSources, rootGeometryReceipt } from "../scripts/luna-ios-grid-production.mjs";
 
@@ -58,6 +59,32 @@ test("PNG crop rejects malformed, noninteger, nonfinite, and out-of-bounds recta
   await assert.rejects(() => cropPngBytes(encoded, { x: 0, y: 0, width: 6, height: 2 }, canvasKit), /crop/u);
 });
 
+test("PNG crop accepts a valid zero-origin rectangle and receipt", async () => {
+  const canvasKit = await getCanvasKit();
+  const source = rgbaImage(4, 3);
+  const encoded = encodeRgbaPng(source, canvasKit);
+  const crop = await cropPngBytes(encoded, { x: 0, y: 0, width: 2, height: 2 }, canvasKit);
+  assert.deepEqual([...crop.pixels], [...source.pixels.slice(0, 8), ...source.pixels.slice(16, 24)]);
+  assert.deepEqual(cropRectFromRootReceipt({ root: { x: 0, y: 0, width: 2, height: 2 }, screen: { x: 0, y: 0, width: 4, height: 3 }, scale: 1 }, { width: 4, height: 3 }, { width: 2, height: 2 }), { x: 0, y: 0, width: 2, height: 2 });
+});
+
+test("full-frame hash validator requires captured, pre-crop, and post-crop hashes to all match", () => {
+  const stable = { a: "a".repeat(64), b: "b".repeat(64) };
+  assert.deepEqual(validateFullFrameHashes({ captured: stable, beforeCrop: { ...stable }, afterCrop: { ...stable } }).stable, true);
+  assert.throws(() => validateFullFrameHashes({ captured: stable, beforeCrop: { a: "c".repeat(64), b: stable.b }, afterCrop: { ...stable } }), /changed before crop/u);
+  assert.throws(() => validateFullFrameHashes({ captured: stable, beforeCrop: { ...stable }, afterCrop: { a: stable.a, b: "d".repeat(64) } }), /changed after crop/u);
+  assert.throws(() => validateFullFrameHashes({ captured: { a: undefined, b: stable.b }, beforeCrop: { ...stable }, afterCrop: { ...stable } }), /lowercase SHA-256/u);
+});
+
+test("CanvasKit crops the preserved run-01 raw fullB with the authored color intact", async () => {
+  const canvasKit = await getCanvasKit();
+  const rawPath = new URL("../research/luna-ios-grid-production-20260907/native-run-01-corrected/captures/iphone/large/full/grid-c100-180-r60-100-normal-b.png", import.meta.url);
+  const raw = await readFile(rawPath);
+  const crop = await cropPngBytes(raw, { x: 195, y: 966, width: 120, height: 90 }, canvasKit);
+  const decoded = decodePngBytes(crop.bytes, canvasKit);
+  assert.deepEqual([...decoded.pixels.slice((44 * decoded.width + 59) * 4, (44 * decoded.width + 60) * 4)], [18, 52, 86, 255]);
+});
+
 test("root receipt is exact case/nonce evidence and supplies physical crop origin", () => {
   const log = "prefix LUNA_GRID_READY case=grid-c100-180-r60-100-normal nonce=nonce-1\n";
   const line = "LUNA_GRID_ROOT case=grid-c100-180-r60-100-normal nonce=nonce-1 frame=21.000,42.000 340.000x400.000 window=0.000,0.000 402.000x874.000 screen=0.000,0.000 402.000x874.000 scale=3.000\n";
@@ -74,6 +101,7 @@ test("capture runner uses receipt-driven byte crop and unique run-02 evidence", 
   assert.match(runner, /cropRectFromRootReceipt\(readiness\.rootGeometry/u);
   assert.match(runner, /fullBeforeCrop/u);
   assert.match(runner, /fullAfterCrop/u);
+  assert.match(runner, /validateFullFrameHashes\(\{ captured: capturedHashes, beforeCrop: fullBeforeCrop, afterCrop: fullAfterCrop \}\)/u);
   assert.match(runner, /randomUUID/u);
   assert.match(runner, /native-run-02/u);
   const { sources } = buildGridSources();
