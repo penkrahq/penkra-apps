@@ -241,7 +241,7 @@ function validateImports(imports, errors) {
         || !["follow", "pinned"].includes(record.updatePolicy) || record.pin !== undefined || record.version !== undefined
         || ((record.updatePolicy === "pinned" || record.releaseId !== undefined || record.contentHash !== undefined || record.retention !== undefined) && !identity)
         || (record.retention !== undefined && !validStorageDescriptor(record.retention))) errors.push(`Import ${alias} must select a valid published release identity without legacy pin fields.`);
-    } else if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || record.releaseId !== undefined || record.contentHash !== undefined || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)) || (record.retention !== undefined && !validStorageDescriptor(record.retention)))
+    } else if (!plainObject(record) || typeof record.documentId !== "string" || !record.documentId || record.releaseId !== undefined || record.contentHash !== undefined || record.retention !== undefined || (record.pin !== undefined && !["exact", "live"].includes(record.pin)) || (record.pin === "exact" && !Number.isInteger(record.version)))
       errors.push(`Import ${alias} must declare documentId and a valid live or exact pin.`);
   }
 }
