@@ -459,12 +459,12 @@
             "type": "object",
             "properties": {
               "releaseId": { "type": "string", "format": "uuid" },
-              "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+              "contentHash": { "type": "string", "minLength": 64, "maxLength": 64 },
               "storage": {
                 "type": "object",
                 "properties": {
                   "path": { "type": "string", "minLength": 1 },
-                  "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+                  "sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
                   "size": { "type": "integer", "minimum": 0 },
                   "mimeType": { "type": "string" }
                 },
@@ -488,6 +488,15 @@
         "required": ["documentId", "published", "operationId", "sequence", "publication", "snapshot"],
         "additionalProperties": false
       },
+      "examples": [
+        {
+          "name": "Publish a Canvas card library",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
+            "publicItems": [{ "kind": "component", "id": "card" }]
+          }
+        }
+      ],
       "handler": "libraries.publish"
     },
     {
@@ -509,7 +518,7 @@
             "type": "object",
             "properties": {
               "releaseId": { "type": "string", "format": "uuid" },
-              "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+              "contentHash": { "type": "string", "minLength": 64, "maxLength": 64 }
             },
             "required": ["releaseId", "contentHash"],
             "additionalProperties": false
@@ -521,7 +530,7 @@
               "properties": {
                 "kind": { "enum": ["component", "paragraphStyle", "variable"] },
                 "id": { "type": "string", "minLength": 1 },
-                "contentHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+                "contentHash": { "type": "string", "minLength": 64, "maxLength": 64 }
               },
               "required": ["kind", "id", "contentHash"],
               "additionalProperties": false
@@ -531,6 +540,14 @@
         "required": ["documentId", "publication", "items"],
         "additionalProperties": false
       },
+      "examples": [
+        {
+          "name": "Inspect the published Canvas library surface",
+          "input": {
+            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9"
+          }
+        }
+      ],
       "handler": "libraries.inspect"
     },
     {
