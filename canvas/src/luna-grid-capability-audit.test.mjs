@@ -1,19 +1,15 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { fileURLToPath } from "node:url";
-import { dirname, join, resolve } from "node:path";
 
-import { validateCanvasDocument } from "./canvas-schema.mjs";
+import { buildCapabilityVerificationIR } from "./exporter-ir.mjs";
+import { capabilityPathInventory, validateCanvasDocument } from "./canvas-schema.mjs";
+import { exportCompose, exportSwiftUI } from "./exporters/mobile.mjs";
 
-const canvasRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const combinedCanvasRoot = resolve(process.env.CANVAS_GRID_COMBINED_CANVAS_ROOT ?? canvasRoot);
-
-function baseDocument(gridTemplateColumns) {
+function baseDocument(gridTemplateColumns, role = "ios") {
   return {
     version: "2.17", module: "mobile", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
     children: [{
-      id: "screen", type: "frame", role: "ios", width: 320, height: 240, layout: "none", children: [{
+      id: "screen", type: "frame", role, width: 320, height: 240, layout: "none", children: [{
         id: "grid", type: "frame", width: 320, height: 240, layout: "grid", gridTemplateColumns,
         gridTemplateRows: [60, 100], columnGap: 10, rowGap: 15, padding: [11, 12, 13, 14], children: [
           { id: "first", type: "rectangle", width: 40, height: 30, gridColumn: 1, gridRow: 1, fill: "#123456" },
@@ -39,10 +35,32 @@ test("schema-valid gridTemplateColumns are explicitly separated from unresolved 
   }
 });
 
-test("current mobile writers preserve resolved grid geometry and source order", async () => {
-  const source = await readFile(join(combinedCanvasRoot, "src/exporters/mobile.mjs"), "utf8");
-  assert.doesNotMatch(source, /gridTemplateColumns/u, "mobile writers must not reinterpret authored tracks");
-  assert.match(source, /Canvas has already resolved track sizes, cell placement, gaps and padding/u);
-  assert.match(source, /descendants\.map\(\(child\) => composeNode\(child, children, options, depth \+ 1, "none"\)\)/u);
-  assert.match(source, /ZStack\(alignment: \.topLeading\)/u);
+test("numeric grid IR emits resolved child geometry in Swift and Compose source order", () => {
+  const expected = [
+    { id: "first", x: 14, y: 11, width: 40, height: 30, swiftCenter: "34, y: 26", compose: "offset(14.dp, 11.dp).size(40.dp, 30.dp)" },
+    { id: "second", x: 124, y: 86, width: 40, height: 30, swiftCenter: "144, y: 101", compose: "offset(124.dp, 86.dp).size(40.dp, 30.dp)" },
+    { id: "overlay", x: 7, y: 9, width: 20, height: 10, swiftCenter: "17, y: 14", compose: "offset(7.dp, 9.dp).size(20.dp, 10.dp)" },
+  ];
+  for (const role of ["ios", "android"]) {
+    const document = baseDocument([100, 180], role);
+    const ir = buildCapabilityVerificationIR(document, { role, frames: ["screen"] }, capabilityPathInventory());
+    const output = ir.outputs[0];
+    for (const item of expected) {
+      const node = output.nodes.find(({ id }) => id === item.id);
+      assert.deepEqual({ x: node.geometry.localX, y: node.geometry.localY, width: node.geometry.w, height: node.geometry.h }, { x: item.x, y: item.y, width: item.width, height: item.height }, `${role}/${item.id}`);
+    }
+    const source = role === "ios" ? exportSwiftUI(ir).get("Screen.swift") : exportCompose(ir).get("Screen.kt");
+    assert.ok(source, `${role} generated source missing`);
+    for (const item of expected) {
+      if (role === "ios") {
+        assert.match(source, new RegExp(`\\.frame\\(width: ${item.width}, height: ${item.height}[^\\n]*\\)\\.position\\(x: ${item.swiftCenter}\\)`), `${role}/${item.id}`);
+      } else {
+        assert.ok(source.includes(item.compose), `${role}/${item.id}`);
+      }
+    }
+    const positions = expected.map(({ swiftCenter, compose }) => role === "ios" ? source.indexOf(`position(x: ${swiftCenter})`) : source.indexOf(compose));
+    assert.ok(positions.every((position) => position >= 0));
+    assert.ok(positions[0] < positions[1] && positions[1] < positions[2], `${role} paint order`);
+    if (role === "android") assert.doesNotMatch(source, /LazyVerticalGrid\(/u);
+  }
 });
