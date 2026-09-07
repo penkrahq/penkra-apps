@@ -32,6 +32,7 @@ export const CANVAS_SCHEMA = deepFreeze({
     storageDescriptor: { type: "object", required: ["path", "sha256", "size"], additional: false, fields: {
       path: { type: "string" }, sha256: { type: "string" }, size: { type: "number" }, mimeType: { type: "string" },
     } },
+    gridTrack: { type: "grid-track" },
     library: { type: "object", required: ["public"], additional: false, fields: {
       public: { type: "array", items: { ref: "publicItem" } }, publication: { ref: "libraryPublication" },
     } },
@@ -90,7 +91,7 @@ export const CANVAS_SCHEMA = deepFreeze({
       layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"], {
         layout: { type: "enum", values: ["none", "horizontal", "vertical", "grid"] }, gap: { type: "canvas-value" }, rowGap: { type: "canvas-value" }, columnGap: { type: "canvas-value" },
         wrap: { type: "boolean" }, minWidth: { type: "dimension" }, maxWidth: { type: "dimension" }, minHeight: { type: "dimension" }, maxHeight: { type: "dimension" },
-        gridTemplateColumns: { type: "array", items: { type: "dimension" } }, gridTemplateRows: { type: "array", items: { type: "dimension" } },
+        gridTemplateColumns: { type: "array", items: { ref: "gridTrack" } }, gridTemplateRows: { type: "array", items: { ref: "gridTrack" } },
         gridColumn: { type: "integer" }, gridRow: { type: "integer" }, layoutPosition: { type: "enum", values: ["absolute", "relative"] }, clip: { type: "boolean" },
       }),
       paint: fields(["fill", "stroke", "effect", "blendMode", "cornerRadius"], {
@@ -579,6 +580,12 @@ function validateGeneratedShape(value, schema, path, errors) {
   if (schema?.type === "boolean") { if (typeof value !== "boolean") errors.push(`${path} must be a boolean.`); return; }
   if (schema?.type === "number-or-string") { if (!((typeof value === "number" && Number.isFinite(value)) || typeof value === "string")) errors.push(`${path} must be a finite number or string.`); return; }
   if (schema?.type === "dimension") { if (!((typeof value === "number" && Number.isFinite(value)) || ["fill_container", "fit_content"].includes(value))) errors.push(`${path} must be a finite number, fill_container or fit_content.`); return; }
+  if (schema?.type === "grid-track") {
+    const validNumber = typeof value === "number" && Number.isFinite(value) && value >= 0;
+    const validFr = typeof value === "string" && /^(\d+(?:\.\d+)?)fr$/u.test(value) && Number.isFinite(Number(value.slice(0, -2))) && Number(value.slice(0, -2)) >= 0;
+    if (!(validNumber || value === "auto" || validFr)) errors.push(`${path} must be a non-negative finite number, auto, or a non-negative fr track.`);
+    return;
+  }
   if (schema?.type === "enum") { if (!schema.values.includes(value)) errors.push(`${path} must be one of ${schema.values.join(", ")}.`); return; }
   if (schema?.type === "array") {
     if (!Array.isArray(value)) { errors.push(`${path} must be an array.`); return; }
