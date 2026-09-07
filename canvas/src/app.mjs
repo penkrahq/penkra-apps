@@ -751,7 +751,15 @@ function currentRenderableDocument() {
   if (!state.renderableDocument) {
     state.renderableDocument = performanceMonitor.measure(
       "document.resolve-imports",
-      () => resolveCanvasDocument(currentMaterializedDocument(), { imports: state.imports }).document,
+      () => {
+        const source = currentMaterializedDocument();
+        try { return resolveCanvasDocument(source, { imports: state.imports }).document; }
+        catch (error) {
+          const requested = Object.keys(source.imports ?? {}).join(",") || "none";
+          const loaded = Object.keys(state.imports ?? {}).join(",") || "none";
+          throw new Error(`${error.message} Requested imports: ${requested}. Loaded imports: ${loaded}.`, { cause: error });
+        }
+      },
       { documentId: state.document?.id },
     );
   }
