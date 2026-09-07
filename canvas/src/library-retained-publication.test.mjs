@@ -85,16 +85,27 @@ async function retainedSimple() {
 }
 
 test("no imports returns a semantic release without any API calls", async () => {
-  const state = { api: {
-    uploadAsset: async () => assert.fail("no upload expected"),
-    readAsset: async () => assert.fail("no read expected"),
-  }, calls: 0 };
-  const document = canvasDocument({ children: [{ id: "card", type: "frame" }] });
+  const state = memoryAccount();
+  const ownBytes = Uint8Array.of(4, 5, 6);
+  const document = canvasDocument({ children: [{ id: "card", type: "frame", fill: { type: "image", url: "card.png" } }] });
   delete document.imports;
-  const result = await prepareRetainedLibraryRelease(state.api, document, { libraryId: "consumer", releaseId: "r1" });
+  const result = await prepareRetainedLibraryRelease(state.api, document, { libraryId: "consumer", releaseId: "r1", assets: [{ path: "card.png", bytes: ownBytes }] });
   assert.equal(result.release.libraryId, "consumer");
+  assert.deepEqual(result.release.document.imports, {});
   assert.deepEqual(result.retentions, []);
-  assert.equal(result.assets.size, 0);
+  assert.deepEqual(result.assets.get("card.png"), ownBytes);
+  assert.deepEqual(state.calls, []);
+  const storage = createLibraryStorage(state.api);
+  const receipt = await storage.writeRelease("consumer", result);
+  const roundTrip = await storage.readRelease("consumer", receipt);
+  assert.deepEqual(roundTrip.release.document.imports, {});
+  assert.deepEqual(roundTrip.assets.get("card.png"), ownBytes);
+
+  for (const imports of [null, []]) {
+    const malformed = canvasDocument({ children: [{ id: "card", type: "frame" }] });
+    malformed.imports = imports;
+    await assert.rejects(prepareRetainedLibraryRelease(state.api, malformed, { libraryId: "consumer", releaseId: "malformed" }), { code: "CANVAS_IMPORT_INTEGRITY" });
+  }
 });
 
 test("one retained variable, component, and paragraph style become one direct dependency", async () => {
@@ -112,6 +123,18 @@ test("one retained variable, component, and paragraph style become one direct de
   assert.deepEqual(result.retentions[0].retention.root, identity(source));
   assert.deepEqual(result.release.document.imports.ui, importRecord(source, undefined));
   assert.equal(state.calls.every(({ documentId }) => documentId === "consumer"), true);
+});
+
+test("retention output is alias-sorted without mutating caller import order", async () => {
+  const { state, source, retention } = await retainedSimple();
+  const document = canvasDocument({
+    imports: { zeta: importRecord(source, retention), alpha: importRecord(source, retention) },
+    children: [{ id: "screen", type: "frame", children: [{ id: "z", type: "ref", ref: "zeta:card" }, { id: "a", type: "ref", ref: "alpha:card" }] }],
+  });
+  const callerOrder = Object.keys(document.imports);
+  const result = await prepareRetainedLibraryRelease(state.api, document, { libraryId: "consumer", releaseId: "r1" });
+  assert.deepEqual(result.retentions.map(({ alias }) => alias), ["alpha", "zeta"]);
+  assert.deepEqual(Object.keys(document.imports), callerOrder);
 });
 
 test("two-level retained assets keep colliding names namespaced and dependencies direct", async () => {
