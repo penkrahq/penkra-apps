@@ -17,9 +17,16 @@ export const ANDROID_STATES = Object.freeze([
 ]);
 export const TEXT_CASES = Object.freeze([
   { id: "uniform-single-run", label: "uniform single-run text", classification: "typography", content: "Canvas fixed text", fontSize: 24, width: 300, height: 64, marks: [] },
-  { id: "mixed-size-rich-runs", label: "mixed-size rich runs", classification: "typography", content: "Small BIG", fontSize: 24, width: 300, height: 64, marks: [{ type: "fontSize", from: 6, to: 9, value: 36 }, { type: "weight", from: 6, to: 9, value: 700 }] },
-  { id: "decorations", label: "decorations", classification: "decorations", content: "Decorated text", fontSize: 24, width: 300, height: 64, marks: [{ type: "underline", from: 0, to: 14, value: true }, { type: "strikethrough", from: 0, to: 14, value: true }] },
-  { id: "wrapping", label: "bounded wrapping", classification: "line-wrapping", content: "Canvas fixed text wraps at an authored width", fontSize: 24, width: 160, height: 120, marks: [] },
+  { id: "top-level-style-spacing", label: "top-level style and fractional spacing", classification: "typography", content: "Italic spaced text", fontSize: 24, fontStyle: "italic", letterSpacing: -0.25, width: 300, height: 64, marks: [] },
+  { id: "top-level-decorations", label: "top-level decorations", classification: "decorations", content: "Decorated text", fontSize: 24, underline: true, strikethrough: true, width: 300, height: 64, marks: [] },
+  { id: "rich-run-fill-family", label: "rich-run fill and family", classification: "rich-run", content: "Regular Accent", fontSize: 24, width: 300, height: 64, marks: [{ type: "fill", from: 8, to: 14, value: "#CC5500" }, { type: "fontFamily", from: 8, to: 14, value: "Inter" }] },
+  { id: "rich-run-size", label: "mixed-size rich runs", classification: "rich-run", content: "Small BIG", fontSize: 24, width: 300, height: 64, marks: [{ type: "fontSize", from: 6, to: 9, value: 36 }, { type: "weight", from: 6, to: 9, value: 700 }] },
+  { id: "rich-run-italic-spacing", label: "rich-run italic and fractional spacing", classification: "rich-run", content: "Base Tilt", fontSize: 24, width: 300, height: 64, marks: [{ type: "italic", from: 5, to: 9, value: true }, { type: "letterSpacing", from: 5, to: 9, value: 0.375 }] },
+  { id: "rich-run-decorations", label: "rich-run decorations", classification: "decorations", content: "Under Strike", fontSize: 24, width: 300, height: 64, marks: [{ type: "underline", from: 0, to: 5, value: true }, { type: "strikethrough", from: 6, to: 12, value: true }] },
+  { id: "marks-and-paragraphs", label: "marks and paragraphs", classification: "semantics", content: "Heading\nBody", fontSize: 24, width: 300, height: 90, marks: [{ type: "weight", from: 0, to: 7, value: 700 }], paragraphs: [{ from: 0, to: 8, headingLevel: 1 }, { from: 8, to: 12 }] },
+  { id: "text-growth-auto", label: "text growth auto", classification: "text-growth", content: "Auto growth text", fontSize: 24, width: 300, height: 64, textGrowth: "auto", marks: [] },
+  { id: "text-growth-fixed-width", label: "text growth fixed width", classification: "line-wrapping", content: "Fixed width text wraps at authored width", fontSize: 24, width: 160, height: 120, textGrowth: "fixed-width", marks: [] },
+  { id: "text-growth-fixed-width-height", label: "text growth fixed width height", classification: "line-wrapping", content: "Fixed width and height text", fontSize: 24, width: 160, height: 80, textGrowth: "fixed-width-height", marks: [] },
 ]);
 
 export const CANDIDATE_PATHS = Object.freeze([
@@ -29,6 +36,8 @@ export const CANDIDATE_PATHS = Object.freeze([
   "properties.letterSpacing", "properties.marks", "properties.paragraphs", "properties.strikethrough", "properties.underline",
   "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize", "properties.text.run.italic",
   "properties.text.run.letterSpacing", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.weight",
+  "properties.text.paragraph.headingLevel",
+  "properties.textGrowth",
 ]);
 
 export const IOS_BUNDLE_ID = "com.penkra.canvas.qa.fixedtext";
@@ -44,6 +53,27 @@ function sourceName(value) {
 }
 function color(hex) { const value = hex.replace(/^#/u, ""); return [0, 2, 4].map((i) => Number.parseInt(value.slice(i, i + 2), 16) / 255); }
 
+export function classifyFixedTextCase(caseId) {
+  const item = TEXT_CASES.find(({ id }) => id === caseId);
+  assert.ok(item, `unknown fixed text case ${caseId}`);
+  return item.classification;
+}
+
+export function compareFixedTextPixels(reference, actual, boundary = 2, tolerance = 2) {
+  if (!reference || !actual || reference.width !== actual.width || reference.height !== actual.height) return { status: "mismatch", comparedPixels: 0, mismatchedPixels: 0, reason: "capture dimensions differ from reference" };
+  let comparedPixels = 0; let mismatchedPixels = 0;
+  for (let y = boundary; y < reference.height - boundary; y += 1) for (let x = boundary; x < reference.width - boundary; x += 1) {
+    const offset = (y * reference.width + x) * 4;
+    // Transparent/background pixels do not prove text fidelity; authored
+    // solid color pixels are the bounded positive samples used by the other
+    // mobile comparators in this repository.
+    if (reference.pixels[offset + 3] < 250 || reference.pixels[offset] > 245 && reference.pixels[offset + 1] > 245 && reference.pixels[offset + 2] > 245) continue;
+    comparedPixels += 1;
+    if ([0, 1, 2, 3].some((channel) => Math.abs(reference.pixels[offset + channel] - actual.pixels[offset + channel]) > tolerance)) mismatchedPixels += 1;
+  }
+  return { status: mismatchedPixels ? "fail" : "pass", comparedPixels, mismatchedPixels, boundaryExclusionPhysicalPixels: boundary, channelTolerance: tolerance };
+}
+
 export function buildFixedTextDocument(role) {
   assert.ok(["ios", "android"].includes(role));
   return {
@@ -53,7 +83,12 @@ export function buildFixedTextDocument(role) {
       layout: "none", fill: "#FFFFFF", children: [{
         id: `${item.id}-text`, type: "text", x: 20, y: 24, width: item.width, height: item.height, content: item.content,
         fontFamily: "Inter", fontSize: item.fontSize, fontWeight: 400, fill: index % 2 ? "#CC5500" : "#123456", marks: item.marks,
-        paragraphs: [{ from: 0, to: item.content.length }],
+        paragraphs: item.paragraphs ?? [{ from: 0, to: item.content.length }],
+        ...(item.fontStyle ? { fontStyle: item.fontStyle } : {}),
+        ...(item.letterSpacing !== undefined ? { letterSpacing: item.letterSpacing } : {}),
+        ...(item.underline !== undefined ? { underline: item.underline } : {}),
+        ...(item.strikethrough !== undefined ? { strikethrough: item.strikethrough } : {}),
+        ...(item.textGrowth ? { textGrowth: item.textGrowth } : {}),
       }],
     })),
   };
@@ -76,7 +111,7 @@ function buildSwiftHost(ir) {
 }
 
 function buildComposeHost() {
-  return `package com.penkra.canvas.fixture\n\nimport android.os.Bundle\nimport android.util.Log\nimport androidx.activity.ComponentActivity\nimport androidx.activity.compose.setContent\nimport androidx.compose.foundation.layout.Box\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.layout.onGloballyPositioned\nimport androidx.compose.ui.unit.IntSize\nimport generated.canvas.*\n\nclass MainActivity : ComponentActivity() {\n  override fun onCreate(state: Bundle?) {\n    super.onCreate(state)\n    val caseID = intent.getStringExtra("canvasCase") ?: "uniform-single-run"\n    val nonce = intent.getStringExtra("canvasNonce") ?: "missing"\n    setContent { Box(modifier = Modifier.onGloballyPositioned { coordinates ->\n      val size: IntSize = coordinates.size\n      Log.i("CanvasFixedText", "LUNA_FIXED_TEXT_READY case=$caseID nonce=$nonce width=${'$'}{size.width} height=${'$'}{size.height}")\n    }) { FixedTextSelection.view(caseID) } }\n  }\n}\n\nobject FixedTextSelection {\n  @androidx.compose.runtime.Composable fun view(id: String) {\n    when (id) {\n${TEXT_CASES.map((item) => `      "${item.id}" -> ${sourceName(`Fixed Text ${item.label}`)}()`).join("\n")}\n      else -> error("Unknown fixed text case: ${'$'}id")\n    }\n  }\n}\n`;
+  return `package com.penkra.canvas.fixture\n\nimport android.os.Bundle\nimport android.util.Log\nimport androidx.activity.ComponentActivity\nimport androidx.activity.compose.setContent\nimport androidx.compose.foundation.layout.Box\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.layout.onGloballyPositioned\nimport androidx.compose.ui.layout.positionInWindow\nimport androidx.compose.ui.unit.IntSize\nimport generated.canvas.*\n\nclass MainActivity : ComponentActivity() {\n  override fun onCreate(state: Bundle?) {\n    super.onCreate(state)\n    val caseID = intent.getStringExtra("canvasCase") ?: "uniform-single-run"\n    val nonce = intent.getStringExtra("canvasNonce") ?: "missing"\n    setContent { Box(modifier = Modifier.onGloballyPositioned { coordinates ->\n      val size: IntSize = coordinates.size\n      val origin = coordinates.positionInWindow()\n      val density = resources.displayMetrics.density\n      Log.i("CanvasFixedText", "LUNA_FIXED_TEXT_READY case=$caseID nonce=$nonce")\n      Log.i("CanvasFixedText", "LUNA_FIXED_TEXT_ROOT case=$caseID nonce=$nonce x=${'$'}{origin.x} y=${'$'}{origin.y} width=${'$'}{size.width} height=${'$'}{size.height} scale=${'$'}density")\n    }) { FixedTextSelection.view(caseID) } }\n  }\n}\n\nobject FixedTextSelection {\n  @androidx.compose.runtime.Composable fun view(id: String) {\n    when (id) {\n${TEXT_CASES.map((item) => `      "${item.id}" -> ${sourceName(`Fixed Text ${item.label}`)}()`).join("\n")}\n      else -> error("Unknown fixed text case: ${'$'}id")\n    }\n  }\n}\n`;
 }
 
 function buildIosProjectYaml() {

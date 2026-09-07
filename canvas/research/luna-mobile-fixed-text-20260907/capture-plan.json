@@ -3,15 +3,29 @@
   "nativeRun": false,
   "caseIds": [
     "uniform-single-run",
-    "mixed-size-rich-runs",
-    "decorations",
-    "wrapping"
+    "top-level-style-spacing",
+    "top-level-decorations",
+    "rich-run-fill-family",
+    "rich-run-size",
+    "rich-run-italic-spacing",
+    "rich-run-decorations",
+    "marks-and-paragraphs",
+    "text-growth-auto",
+    "text-growth-fixed-width",
+    "text-growth-fixed-width-height"
   ],
   "classifications": {
     "uniform-single-run": "typography",
-    "mixed-size-rich-runs": "typography",
-    "decorations": "decorations",
-    "wrapping": "line-wrapping"
+    "top-level-style-spacing": "typography",
+    "top-level-decorations": "decorations",
+    "rich-run-fill-family": "rich-run",
+    "rich-run-size": "rich-run",
+    "rich-run-italic-spacing": "rich-run",
+    "rich-run-decorations": "decorations",
+    "marks-and-paragraphs": "semantics",
+    "text-growth-auto": "text-growth",
+    "text-growth-fixed-width": "line-wrapping",
+    "text-growth-fixed-width-height": "line-wrapping"
   },
   "ios": {
     "bundleId": "com.penkra.canvas.qa.fixedtext",
@@ -34,7 +48,7 @@
         ]
       }
     ],
-    "entries": 12,
+    "entries": 33,
     "build": "xcodegen generate --spec project.yml && xcodebuild -project CanvasFixedTextEvidence.xcodeproj -scheme CanvasFixedTextEvidence -sdk iphonesimulator -configuration Debug -jobs 2",
     "launch": "xcrun simctl launch --terminate-running-process <UDID> com.penkra.canvas.qa.fixedtext --canvas-case <CASE_ID> --canvas-nonce <NONCE>",
     "readiness": "exact LUNA_FIXED_TEXT_READY and LUNA_FIXED_TEXT_ROOT case+nonce receipts",
@@ -53,7 +67,7 @@
       "density-320-font-1",
       "density-320-font-2"
     ],
-    "entries": 16,
+    "entries": 44,
     "build": "./gradlew --no-daemon --max-workers 2 :app:assembleDebug",
     "launch": "adb -s emulator-5554 shell am start -n com.penkra.canvas.fixture/.MainActivity --es canvasCase <CASE_ID> --es canvasNonce <NONCE>",
     "settings": "adb -s emulator-5554 shell wm density <320|420>; adb -s emulator-5554 shell settings put system font_scale <1|2>",

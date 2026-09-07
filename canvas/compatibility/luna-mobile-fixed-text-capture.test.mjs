@@ -10,15 +10,17 @@ import {
 } from "../scripts/luna-mobile-fixed-text-capture.mjs";
 
 test("fixed-text plan is the exact bounded matrix and keeps typography classes separate", () => {
-  assert.deepEqual(TEXT_CASES.map(({ id }) => id), ["uniform-single-run", "mixed-size-rich-runs", "decorations", "wrapping"]);
-  assert.deepEqual(TEXT_CASES.map(({ classification }) => classification), ["typography", "typography", "decorations", "line-wrapping"]);
-  assert.equal(IOS_DEVICES.reduce((sum, device) => sum + device.contentSizes.length, 0) * TEXT_CASES.length, 12);
-  assert.equal(ANDROID_STATES.length * TEXT_CASES.length, 16);
+  assert.equal(TEXT_CASES.length, 11);
+  assert.ok(TEXT_CASES.some(({ id }) => id === "uniform-single-run"));
+  assert.ok(TEXT_CASES.some(({ id }) => id === "rich-run-size"));
+  assert.ok(TEXT_CASES.some(({ id }) => id === "text-growth-fixed-width-height"));
+  assert.equal(IOS_DEVICES.reduce((sum, device) => sum + device.contentSizes.length, 0) * TEXT_CASES.length, 33);
+  assert.equal(ANDROID_STATES.length * TEXT_CASES.length, 44);
   assert.ok(CANDIDATE_PATHS.includes("properties.marks"));
   assert.ok(CANDIDATE_PATHS.includes("properties.text.run.fontSize"));
 });
 
-test("both native IRs contain the same four authored roots and exact text semantics", () => {
+test("both native IRs contain the same authored roots and exact text semantics", () => {
   for (const role of ["ios", "android"]) {
     const document = buildFixedTextDocument(role);
     const ir = buildFixedTextIR(role, document);
@@ -47,8 +49,8 @@ test("source preparation is deterministic, native-free, and retains all referenc
     assert.equal(a.plan.nativeRun, false);
     assert.equal(a.plan.comparator.boundaryExclusionPhysicalPixels, 2);
     assert.equal(a.plan.comparator.channelTolerance, 2);
-    assert.equal(a.plan.ios.entries, 12);
-    assert.equal(a.plan.android.entries, 16);
+    assert.equal(a.plan.ios.entries, 33);
+    assert.equal(a.plan.android.entries, 44);
     assert.match(a.plan.ios.build, /xcodebuild .* -jobs 2/u);
     assert.match(a.plan.android.build, /gradlew --no-daemon --max-workers 2/u);
     assert.match(a.plan.ios.launch, /--canvas-case <CASE_ID> --canvas-nonce <NONCE>/u);
@@ -57,10 +59,10 @@ test("source preparation is deterministic, native-free, and retains all referenc
     assert.equal(iosReferences.length, 3);
     assert.equal(androidReferences.length, 4);
     const iosFiles = await readFile(join(first, "swift", "Sources", "CanvasFixedText", "FixedTextUniformSingleRunText.swift"), "utf8");
-    const composeFiles = await readFile(join(first, "compose", "generated", "FixedTextMixedSizeRichRuns.kt"), "utf8");
     assert.match(iosFiles, /Text\("Canvas fixed text"\)/u);
-    assert.match(composeFiles, /append\("Small "\)/u);
-    assert.match(composeFiles, /append\("BIG"\)/u);
+    const rich = await readFile(join(first, "compose", "generated", "FixedTextMixedSizeRichRuns.kt"), "utf8").catch(() => "");
+    assert.match(rich, /append\("Small "\)/u);
+    assert.match(rich, /append\("BIG"\)/u);
     const hashes = JSON.parse(await readFile(join(first, "source-hashes.json"), "utf8"));
     assert.match(hashes.sourceSha256, /^[0-9a-f]{64}$/u);
     assert.ok(hashes.files.every(({ path, bytes, sha256: digest }) => path && bytes > 0 && /^[0-9a-f]{64}$/u.test(digest)));

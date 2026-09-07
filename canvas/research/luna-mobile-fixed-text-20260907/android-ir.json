@@ -146,13 +146,13 @@
     {
       "kind": "android",
       "index": 1,
-      "id": "fixed-text-mixed-size-rich-runs",
-      "name": "Fixed Text mixed-size rich runs",
+      "id": "fixed-text-top-level-style-spacing",
+      "name": "Fixed Text top-level style and fractional spacing",
       "width": 340,
       "height": 180,
       "unit": "px",
       "root": {
-        "id": "fixed-text-mixed-size-rich-runs",
+        "id": "fixed-text-top-level-style-spacing",
         "type": "frame",
         "export": "default",
         "geometry": {
@@ -204,9 +204,9 @@
       },
       "nodes": [
         {
-          "id": "mixed-size-rich-runs-text",
+          "id": "top-level-style-spacing-text",
           "type": "text",
-          "parent": "fixed-text-mixed-size-rich-runs",
+          "parent": "fixed-text-top-level-style-spacing",
           "z": 0,
           "geometry": {
             "x": 20,
@@ -226,32 +226,24 @@
             "blendMode": "normal"
           },
           "semantics": {
-            "content": "Small BIG",
+            "content": "Italic spaced text",
             "runs": [
               {
                 "from": 0,
-                "to": 6,
+                "to": 18,
                 "fontFamily": "Inter",
                 "fontSize": 24,
                 "fontWeight": 400,
+                "fontStyle": "italic",
+                "letterSpacing": -0.25,
                 "fill": "#CC5500",
-                "language": "en"
-              },
-              {
-                "from": 6,
-                "to": 9,
-                "fontFamily": "Inter",
-                "fontSize": 36,
-                "fontWeight": 400,
-                "fill": "#CC5500",
-                "weight": 700,
                 "language": "en"
               }
             ],
             "paragraphs": [
               {
                 "from": 0,
-                "to": 9
+                "to": 18
               }
             ],
             "language": "en",
@@ -277,9 +269,13 @@
               "properties.text.run.fontFamily",
               "properties.text.run.fontSize",
               "properties.text.run.weight",
+              "properties.text.run.italic",
+              "properties.text.run.letterSpacing",
               "properties.fontFamily",
               "properties.fontSize",
               "properties.fontWeight",
+              "properties.fontStyle",
+              "properties.letterSpacing",
               "properties.paragraphs",
               "properties.marks"
             ],
@@ -294,13 +290,13 @@
     {
       "kind": "android",
       "index": 2,
-      "id": "fixed-text-decorations",
-      "name": "Fixed Text decorations",
+      "id": "fixed-text-top-level-decorations",
+      "name": "Fixed Text top-level decorations",
       "width": 340,
       "height": 180,
       "unit": "px",
       "root": {
-        "id": "fixed-text-decorations",
+        "id": "fixed-text-top-level-decorations",
         "type": "frame",
         "export": "default",
         "geometry": {
@@ -352,9 +348,9 @@
       },
       "nodes": [
         {
-          "id": "decorations-text",
+          "id": "top-level-decorations-text",
           "type": "text",
-          "parent": "fixed-text-decorations",
+          "parent": "fixed-text-top-level-decorations",
           "z": 0,
           "geometry": {
             "x": 20,
@@ -417,13 +413,15 @@
               "properties.text.run.fontFamily",
               "properties.text.run.fontSize",
               "properties.text.run.weight",
+              "properties.text.run.underline",
+              "properties.text.run.strikethrough",
               "properties.fontFamily",
               "properties.fontSize",
               "properties.fontWeight",
+              "properties.underline",
+              "properties.strikethrough",
               "properties.paragraphs",
-              "properties.marks",
-              "properties.text.run.underline",
-              "properties.text.run.strikethrough"
+              "properties.marks"
             ],
             "ignored": []
           },
@@ -436,13 +434,13 @@
     {
       "kind": "android",
       "index": 3,
-      "id": "fixed-text-wrapping",
-      "name": "Fixed Text bounded wrapping",
+      "id": "fixed-text-rich-run-fill-family",
+      "name": "Fixed Text rich-run fill and family",
       "width": 340,
       "height": 180,
       "unit": "px",
       "root": {
-        "id": "fixed-text-wrapping",
+        "id": "fixed-text-rich-run-fill-family",
         "type": "frame",
         "export": "default",
         "geometry": {
@@ -494,9 +492,918 @@
       },
       "nodes": [
         {
-          "id": "wrapping-text",
+          "id": "rich-run-fill-family-text",
           "type": "text",
-          "parent": "fixed-text-wrapping",
+          "parent": "fixed-text-rich-run-fill-family",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 300,
+            "h": 64,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Regular Accent",
+            "runs": [
+              {
+                "from": 0,
+                "to": 8,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "language": "en"
+              },
+              {
+                "from": 8,
+                "to": 14,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 14
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 64
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.paragraphs",
+              "properties.marks"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 4,
+      "id": "fixed-text-rich-run-size",
+      "name": "Fixed Text mixed-size rich runs",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-rich-run-size",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "rich-run-size-text",
+          "type": "text",
+          "parent": "fixed-text-rich-run-size",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 300,
+            "h": 64,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Small BIG",
+            "runs": [
+              {
+                "from": 0,
+                "to": 6,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "language": "en"
+              },
+              {
+                "from": 6,
+                "to": 9,
+                "fontFamily": "Inter",
+                "fontSize": 36,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "weight": 700,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 9
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 64
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.paragraphs",
+              "properties.marks"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 5,
+      "id": "fixed-text-rich-run-italic-spacing",
+      "name": "Fixed Text rich-run italic and fractional spacing",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-rich-run-italic-spacing",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "rich-run-italic-spacing-text",
+          "type": "text",
+          "parent": "fixed-text-rich-run-italic-spacing",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 300,
+            "h": 64,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Base Tilt",
+            "runs": [
+              {
+                "from": 0,
+                "to": 5,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "language": "en"
+              },
+              {
+                "from": 5,
+                "to": 9,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "italic": true,
+                "letterSpacing": 0.375,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 9
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 64
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.italic",
+              "properties.text.run.letterSpacing"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 6,
+      "id": "fixed-text-rich-run-decorations",
+      "name": "Fixed Text rich-run decorations",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-rich-run-decorations",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "rich-run-decorations-text",
+          "type": "text",
+          "parent": "fixed-text-rich-run-decorations",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 300,
+            "h": 64,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Under Strike",
+            "runs": [
+              {
+                "from": 0,
+                "to": 5,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "underline": true,
+                "language": "en"
+              },
+              {
+                "from": 5,
+                "to": 6,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "language": "en"
+              },
+              {
+                "from": 6,
+                "to": 12,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "strikethrough": true,
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 12
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 64
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.run.underline",
+              "properties.text.run.strikethrough"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 7,
+      "id": "fixed-text-marks-and-paragraphs",
+      "name": "Fixed Text marks and paragraphs",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-marks-and-paragraphs",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "marks-and-paragraphs-text",
+          "type": "text",
+          "parent": "fixed-text-marks-and-paragraphs",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 300,
+            "h": 90,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#CC5500",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Heading\nBody",
+            "runs": [
+              {
+                "from": 0,
+                "to": 7,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "weight": 700,
+                "language": "en"
+              },
+              {
+                "from": 7,
+                "to": 8,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "language": "en"
+              },
+              {
+                "from": 8,
+                "to": 12,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#CC5500",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 8,
+                "headingLevel": 1
+              },
+              {
+                "from": 8,
+                "to": 12
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "width": 300,
+            "height": 90
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.paragraphs",
+              "properties.marks",
+              "properties.text.paragraph.headingLevel"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 8,
+      "id": "fixed-text-text-growth-auto",
+      "name": "Fixed Text text growth auto",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-text-growth-auto",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "text-growth-auto-text",
+          "type": "text",
+          "parent": "fixed-text-text-growth-auto",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 300,
+            "h": 64,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Auto growth text",
+            "runs": [
+              {
+                "from": 0,
+                "to": 16,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 16
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "textGrowth": "auto",
+            "width": 300,
+            "height": 64
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.textGrowth",
+              "properties.paragraphs",
+              "properties.marks"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 9,
+      "id": "fixed-text-text-growth-fixed-width",
+      "name": "Fixed Text text growth fixed width",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-text-growth-fixed-width",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "text-growth-fixed-width-text",
+          "type": "text",
+          "parent": "fixed-text-text-growth-fixed-width",
           "z": 0,
           "geometry": {
             "x": 20,
@@ -516,11 +1423,11 @@
             "blendMode": "normal"
           },
           "semantics": {
-            "content": "Canvas fixed text wraps at an authored width",
+            "content": "Fixed width text wraps at authored width",
             "runs": [
               {
                 "from": 0,
-                "to": 44,
+                "to": 40,
                 "fontFamily": "Inter",
                 "fontSize": 24,
                 "fontWeight": 400,
@@ -531,7 +1438,7 @@
             "paragraphs": [
               {
                 "from": 0,
-                "to": 44
+                "to": 40
               }
             ],
             "language": "en",
@@ -541,6 +1448,7 @@
             "linkName": null
           },
           "layout": {
+            "textGrowth": "fixed-width",
             "width": 160,
             "height": 120
           },
@@ -560,6 +1468,147 @@
               "properties.fontFamily",
               "properties.fontSize",
               "properties.fontWeight",
+              "properties.textGrowth",
+              "properties.paragraphs",
+              "properties.marks"
+            ],
+            "ignored": []
+          },
+          "provenance": null,
+          "clip": null,
+          "isolation": null
+        }
+      ]
+    },
+    {
+      "kind": "android",
+      "index": 10,
+      "id": "fixed-text-text-growth-fixed-width-height",
+      "name": "Fixed Text text growth fixed width height",
+      "width": 340,
+      "height": 180,
+      "unit": "px",
+      "root": {
+        "id": "fixed-text-text-growth-fixed-width-height",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 340,
+          "h": 180,
+          "rotation": 0
+        },
+        "paint": {
+          "fill": "#FFFFFF",
+          "stroke": null,
+          "effect": null,
+          "cornerRadius": null,
+          "opacity": 1,
+          "blendMode": "normal"
+        },
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none",
+          "width": 340,
+          "height": 180
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native",
+          "paths": [
+            "roles.android",
+            "root.module",
+            "root.lang",
+            "root.axes",
+            "root.variables",
+            "root.paragraphStyles",
+            "root.imports",
+            "root.children",
+            "nodes.frame",
+            "properties.fill",
+            "properties.fill.solid",
+            "properties.layout"
+          ],
+          "ignored": []
+        }
+      },
+      "nodes": [
+        {
+          "id": "text-growth-fixed-width-height-text",
+          "type": "text",
+          "parent": "fixed-text-text-growth-fixed-width-height",
+          "z": 0,
+          "geometry": {
+            "x": 20,
+            "y": 24,
+            "localX": 20,
+            "localY": 24,
+            "w": 160,
+            "h": 80,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": "#123456",
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "content": "Fixed width and height text",
+            "runs": [
+              {
+                "from": 0,
+                "to": 27,
+                "fontFamily": "Inter",
+                "fontSize": 24,
+                "fontWeight": 400,
+                "fill": "#123456",
+                "language": "en"
+              }
+            ],
+            "paragraphs": [
+              {
+                "from": 0,
+                "to": 27
+              }
+            ],
+            "language": "en",
+            "description": null,
+            "decorative": false,
+            "landmark": null,
+            "linkName": null
+          },
+          "layout": {
+            "textGrowth": "fixed-width-height",
+            "width": 160,
+            "height": 80
+          },
+          "variants": {},
+          "export": "default",
+          "capability": {
+            "verdict": "native",
+            "paths": [
+              "nodes.text",
+              "properties.fill",
+              "properties.fill.solid",
+              "properties.content",
+              "properties.text.run.fill",
+              "properties.text.run.fontFamily",
+              "properties.text.run.fontSize",
+              "properties.text.run.weight",
+              "properties.fontFamily",
+              "properties.fontSize",
+              "properties.fontWeight",
+              "properties.textGrowth",
               "properties.paragraphs",
               "properties.marks"
             ],

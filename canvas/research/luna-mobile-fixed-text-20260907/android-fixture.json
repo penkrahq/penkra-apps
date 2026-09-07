@@ -43,7 +43,126 @@
       ]
     },
     {
-      "id": "fixed-text-mixed-size-rich-runs",
+      "id": "fixed-text-top-level-style-spacing",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text top-level style and fractional spacing",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "top-level-style-spacing-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 300,
+          "height": 64,
+          "content": "Italic spaced text",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#CC5500",
+          "marks": [],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 18
+            }
+          ],
+          "fontStyle": "italic",
+          "letterSpacing": -0.25
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-top-level-decorations",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text top-level decorations",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "top-level-decorations-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 300,
+          "height": 64,
+          "content": "Decorated text",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#123456",
+          "marks": [],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 14
+            }
+          ],
+          "underline": true,
+          "strikethrough": true
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-rich-run-fill-family",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text rich-run fill and family",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "rich-run-fill-family-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 300,
+          "height": 64,
+          "content": "Regular Accent",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#CC5500",
+          "marks": [
+            {
+              "type": "fill",
+              "from": 8,
+              "to": 14,
+              "value": "#CC5500"
+            },
+            {
+              "type": "fontFamily",
+              "from": 8,
+              "to": 14,
+              "value": "Inter"
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 14
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-rich-run-size",
       "type": "frame",
       "role": "android",
       "name": "Fixed Text mixed-size rich runs",
@@ -55,7 +174,7 @@
       "fill": "#FFFFFF",
       "children": [
         {
-          "id": "mixed-size-rich-runs-text",
+          "id": "rich-run-size-text",
           "type": "text",
           "x": 20,
           "y": 24,
@@ -65,7 +184,7 @@
           "fontFamily": "Inter",
           "fontSize": 24,
           "fontWeight": 400,
-          "fill": "#CC5500",
+          "fill": "#123456",
           "marks": [
             {
               "type": "fontSize",
@@ -90,10 +209,10 @@
       ]
     },
     {
-      "id": "fixed-text-decorations",
+      "id": "fixed-text-rich-run-italic-spacing",
       "type": "frame",
       "role": "android",
-      "name": "Fixed Text decorations",
+      "name": "Fixed Text rich-run italic and fractional spacing",
       "x": 0,
       "y": 0,
       "width": 340,
@@ -102,13 +221,60 @@
       "fill": "#FFFFFF",
       "children": [
         {
-          "id": "decorations-text",
+          "id": "rich-run-italic-spacing-text",
           "type": "text",
           "x": 20,
           "y": 24,
           "width": 300,
           "height": 64,
-          "content": "Decorated text",
+          "content": "Base Tilt",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#CC5500",
+          "marks": [
+            {
+              "type": "italic",
+              "from": 5,
+              "to": 9,
+              "value": true
+            },
+            {
+              "type": "letterSpacing",
+              "from": 5,
+              "to": 9,
+              "value": 0.375
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-rich-run-decorations",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text rich-run decorations",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "rich-run-decorations-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 300,
+          "height": 64,
+          "content": "Under Strike",
           "fontFamily": "Inter",
           "fontSize": 24,
           "fontWeight": 400,
@@ -117,30 +283,30 @@
             {
               "type": "underline",
               "from": 0,
-              "to": 14,
+              "to": 5,
               "value": true
             },
             {
               "type": "strikethrough",
-              "from": 0,
-              "to": 14,
+              "from": 6,
+              "to": 12,
               "value": true
             }
           ],
           "paragraphs": [
             {
               "from": 0,
-              "to": 14
+              "to": 12
             }
           ]
         }
       ]
     },
     {
-      "id": "fixed-text-wrapping",
+      "id": "fixed-text-marks-and-paragraphs",
       "type": "frame",
       "role": "android",
-      "name": "Fixed Text bounded wrapping",
+      "name": "Fixed Text marks and paragraphs",
       "x": 0,
       "y": 0,
       "width": 340,
@@ -149,13 +315,94 @@
       "fill": "#FFFFFF",
       "children": [
         {
-          "id": "wrapping-text",
+          "id": "marks-and-paragraphs-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 300,
+          "height": 90,
+          "content": "Heading\nBody",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#CC5500",
+          "marks": [
+            {
+              "type": "weight",
+              "from": 0,
+              "to": 7,
+              "value": 700
+            }
+          ],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 8,
+              "headingLevel": 1
+            },
+            {
+              "from": 8,
+              "to": 12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-text-growth-auto",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text text growth auto",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "text-growth-auto-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 300,
+          "height": 64,
+          "content": "Auto growth text",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#123456",
+          "marks": [],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 16
+            }
+          ],
+          "textGrowth": "auto"
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-text-growth-fixed-width",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text text growth fixed width",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "text-growth-fixed-width-text",
           "type": "text",
           "x": 20,
           "y": 24,
           "width": 160,
           "height": 120,
-          "content": "Canvas fixed text wraps at an authored width",
+          "content": "Fixed width text wraps at authored width",
           "fontFamily": "Inter",
           "fontSize": 24,
           "fontWeight": 400,
@@ -164,9 +411,45 @@
           "paragraphs": [
             {
               "from": 0,
-              "to": 44
+              "to": 40
             }
-          ]
+          ],
+          "textGrowth": "fixed-width"
+        }
+      ]
+    },
+    {
+      "id": "fixed-text-text-growth-fixed-width-height",
+      "type": "frame",
+      "role": "android",
+      "name": "Fixed Text text growth fixed width height",
+      "x": 0,
+      "y": 0,
+      "width": 340,
+      "height": 180,
+      "layout": "none",
+      "fill": "#FFFFFF",
+      "children": [
+        {
+          "id": "text-growth-fixed-width-height-text",
+          "type": "text",
+          "x": 20,
+          "y": 24,
+          "width": 160,
+          "height": 80,
+          "content": "Fixed width and height text",
+          "fontFamily": "Inter",
+          "fontSize": 24,
+          "fontWeight": 400,
+          "fill": "#123456",
+          "marks": [],
+          "paragraphs": [
+            {
+              "from": 0,
+              "to": 27
+            }
+          ],
+          "textGrowth": "fixed-width-height"
         }
       ]
     }

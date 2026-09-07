@@ -2,13 +2,20 @@ import SwiftUI
 import UIKit
 
 enum FixedTextSelection {
-  static let known: Set<String> = ["fixed-text-uniform-single-run", "fixed-text-mixed-size-rich-runs", "fixed-text-decorations", "fixed-text-wrapping"]
+  static let known: Set<String> = ["fixed-text-uniform-single-run", "fixed-text-top-level-style-spacing", "fixed-text-top-level-decorations", "fixed-text-rich-run-fill-family", "fixed-text-rich-run-size", "fixed-text-rich-run-italic-spacing", "fixed-text-rich-run-decorations", "fixed-text-marks-and-paragraphs", "fixed-text-text-growth-auto", "fixed-text-text-growth-fixed-width", "fixed-text-text-growth-fixed-width-height"]
   static func view(for id: String) -> AnyView {
     switch id {
     case "fixed-text-uniform-single-run": return AnyView(FixedTextUniformSingleRunText())
-    case "fixed-text-mixed-size-rich-runs": return AnyView(FixedTextMixedSizeRichRuns())
-    case "fixed-text-decorations": return AnyView(FixedTextDecorations())
-    case "fixed-text-wrapping": return AnyView(FixedTextBoundedWrapping())
+    case "fixed-text-top-level-style-spacing": return AnyView(FixedTextTopLevelStyleAndFractionalSpacing())
+    case "fixed-text-top-level-decorations": return AnyView(FixedTextTopLevelDecorations())
+    case "fixed-text-rich-run-fill-family": return AnyView(FixedTextRichRunFillAndFamily())
+    case "fixed-text-rich-run-size": return AnyView(FixedTextMixedSizeRichRuns())
+    case "fixed-text-rich-run-italic-spacing": return AnyView(FixedTextRichRunItalicAndFractionalSpacing())
+    case "fixed-text-rich-run-decorations": return AnyView(FixedTextRichRunDecorations())
+    case "fixed-text-marks-and-paragraphs": return AnyView(FixedTextMarksAndParagraphs())
+    case "fixed-text-text-growth-auto": return AnyView(FixedTextTextGrowthAuto())
+    case "fixed-text-text-growth-fixed-width": return AnyView(FixedTextTextGrowthFixedWidth())
+    case "fixed-text-text-growth-fixed-width-height": return AnyView(FixedTextTextGrowthFixedWidthHeight())
     default: preconditionFailure("Unknown fixed text case: \(id)")
     }
   }
