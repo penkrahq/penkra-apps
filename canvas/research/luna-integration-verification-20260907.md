@@ -1062,3 +1062,34 @@ writer alpha remains valid under the new allowlist, and that the existing baseli
 asserted. The conformance result remains `false` with the pre-existing uncovered/gate behavior;
 this batch does not promote capability or alter the gate. No full `npm test`, native build,
 device action, or capture ran.
+
+## iOS text receipt evidence verifier integration
+
+The approved verifier batch was cherry-picked in exact order after combined HEAD
+`8ada1065cf1470540ab8052368fde0157d13702f`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `7ae9846bdaeb23972170fb23361fdc76e892441e` | `213b02420723be7b08d61ce67de68b6678a41a4f` |
+| `562f2b78a4e29a5548ea8a65cf0830e2e634a594` | `3e90092c37b5c3432900fc840c48b9a00fe01546` |
+| `ea7161643718b74e347e889bdb633ecdc44aca56` | `427b4062d17f7e14e33dbda8911316bdf7eb9fa5` |
+| `c8863ca1ad779c8b058b96b34166e780678f695d` | `5815da03a41548f888fefa715ea4852d117271c2` |
+| `f2a4a293b8830287731042b354daf2ee3cfbcd82` | `966b73222df4039be4b4cee6d5d30a530a40dbc6` |
+| `8a963a57e4f3935c87c1d7a3eab783d9d22446ff` | `c180d90eb961a104b0e271ce6bbdc951ff047fff` |
+
+Scope was limited to the new evidence verifier, its independent review evidence, lifecycle
+reconciliation/clarification, and portability corrections. No production, native, capability,
+gate, protected, or reference-generation changes were included.
+
+The strict file-only validation ran once with no environment overrides:
+
+`node scripts/test.mjs src/luna-ios-text-receipt-evidence-independent.test.mjs src/luna-ios-text-receipt-independent.test.mjs compatibility/luna-ios-text-receipt-20260907.test.mjs compatibility/luna-ios-text-receipt-references-20260907.test.mjs src/exporters/*.test.mjs`
+
+Log: `/tmp/canvas-ios-text-receipt-evidence-focused-20260907.log`. Exit `0`; `1,173` passed,
+`0` failed, `0` cancelled, `0` skipped; wrapper duration `30,062 ms` (Node-reported duration
+`30,007.214542 ms`). Tests read the ordinary combined-worktree evidence and harness paths; no
+environment overrides, native command, device action, or reference regeneration was used.
+The retained raw run-01 corpus remains unchanged at `30/30` mismatches.
+
+Final combined HEAD is `c180d90eb961a104b0e271ce6bbdc951ff047fff`; `git diff --check` passes and
+the only untracked path remains the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/`.
