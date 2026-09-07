@@ -839,3 +839,53 @@ This covers optional retention transport, snapshotting, malformed transport reje
 stored-root validation before asset reads, retained materializer isolation/closure, loader
 identity and source-fallback behavior, and the real asset protocol. The separately unapproved
 `5ec6b01` acceptance remains out of combined.
+
+## iOS missing-one closure
+
+The approved missing-one source/evidence sequence was integrated cleanly after the prior iOS
+closure:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `c1ee11970ff3decac44542af9a842b26f7193ecf` | `e94682c` |
+| `a3a9b53b52865f24990ff4393dd84cf9aae9bd4a` | `b8ffa7f` |
+| `db558ab5221a96244b70bd35c5cae28eaf7cde54` | `5e46a0a` |
+| `bca1cc918f7d57c7ec1d4dba6bc0b3b2edcfeacd` | `02bcf90` |
+| `bc3b9e9924c6948edd5822fa804fdbe864188995` | `9750c68` |
+
+All five diffs were limited to the named missing-one harness/scripts or iOS research evidence;
+no production, exporter, vendor, manifest, protected, native, or capability files were changed.
+
+The device-free verification command was:
+
+`node --test canvas/compatibility/luna-ios-grid-production.test.mjs canvas/compatibility/luna-ios-grid-capture-20260907.test.mjs canvas/compatibility/luna-ios-grid-missing-five-capture.test.mjs canvas/compatibility/luna-ios-grid-missing-one-capture.test.mjs`
+
+Exit `0`; `26` passed, `0` failed, `0` cancelled, `0` skipped; duration `516.48575 ms`.
+
+Independent structured verification at combined `9750c6869b5762e43800fa88edc79e44838b6f58`:
+
+- Original run02 remains 39 entries: 34 `pass`, 5 `unmeasured`; 106 compared children,
+  800,252 positive samples, 0 comparator failures.
+- Original missing-five remains 5 entries: 4 `pass`, 1 `unmeasured`; 13 compared children,
+  129,688 positive samples, 0 comparator failures.
+- Historical missing-one `db558ab` remains one `unmeasured` entry and is not overwritten.
+- Fixed missing-one is one measured `pass`, launch exit 0, one launch/first pair, root
+  `{x:31,y:251,width:340,height:400}`, crop `{x:93,y:753,width:1020,height:1200}`, registration
+  `none`, stable full-frame hashes with captured==before-crop==after-crop, and four children at
+  9,976 positive samples each (39,904 total).
+- The latest identity union has 39 unique identities and 39 latest passes: 34 retained from
+  run02, 4 from missing-five, and 1 from fixed missing-one. Earlier statuses remain preserved
+  in their original evidence directories.
+- The executable rehash equals
+  `56a7893fdc96d9b7b69fa1f37c8fedacbe2477bac479b5ad6eba11a9fcc14065`; the fixed capture
+  preflight records the same expected/host SHA. The source SHA is
+  `cd9f240225dde9741775febc2cd3d8f4796be683baa895619b4f385580c43b11`; all 15 declared source
+  file hashes and byte counts match the retained source files.
+
+The `bca1cc9` test exercises the exported `runPostlaunchAttempt` helper with an injected
+postlaunch callback failure and verifies serialized phase/error/receipt/temp-attempt behavior.
+That helper test does not execute the complete production runner catch path or prove every
+postlaunch failure branch; this remains a bounded test-coverage limitation, not a measured
+capture failure.
+
+No native/device action, rebuild, capability promotion, or historical evidence rewrite occurred.
