@@ -245,11 +245,13 @@ function composeContainer(node, descendants, children, options, depth, root = fa
   if (solid(node.paint.fill)) modifier += `.background(${composeColor(solid(node.paint.fill))}${node.paint.cornerRadius != null ? `, ${composeRoundedShape(node)}` : ""})`;
   if (node.clip) modifier += node.paint.cornerRadius != null ? `.canvasClipShape(${composeRoundedShape(node)})` : ".canvasClipToBounds()";
   const insets = mobilePadding(node);
-  if (insets) modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
+  if (insets && node.layout.layout !== "grid") modifier += `.padding(start = ${n(insets[3])}.dp, top = ${n(insets[0])}.dp, end = ${n(insets[1])}.dp, bottom = ${n(insets[2])}.dp)`;
   if (node.layout.layout === "grid") {
-    const columns = Math.max(1, node.layout.gridTemplateColumns?.length ?? 1);
-    const grid = `${indent}LazyVerticalGrid(columns = GridCells.Fixed(${columns}), modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${flowDescendants.map((child) => `${indent}  item {\n${composeNode(child, children, options, depth + 2, "grid")}\n${indent}  }`).join("\n")}\n${indent}}`;
-    return overlays.length ? withOverlays(grid) : grid;
+    // Canvas has already resolved track sizes, cell placement, gaps and padding.
+    // Reflowing through equal native cells discards that geometry and source
+    // order is not necessarily cell order. Keep all children in paint order.
+    const positioned = descendants.map((child) => composeNode(child, children, options, depth + 1, "none")).filter(Boolean).join("\n");
+    return `${indent}Box(modifier = ${modifier}) {\n${positioned}\n${indent}}`;
   }
   if (node.layout.wrap) return withOverlays(`${indent}FlowRow(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = Arrangement.spacedBy(${column}.dp), verticalArrangement = Arrangement.spacedBy(${row}.dp)) {\n${content}\n${indent}}`);
   if (node.layout.layout === "horizontal") return withOverlays(`${indent}Row(modifier = ${overlays.length ? "Modifier" : modifier}, horizontalArrangement = ${horizontalArrangement}, verticalAlignment = androidx.compose.ui.Alignment.${node.layout.alignItems === "end" ? "Bottom" : node.layout.alignItems === "center" ? "CenterVertically" : "Top"}) {\n${content}\n${indent}}`);
