@@ -1155,3 +1155,34 @@ active before or after the run.
 Final combined HEAD before evidence recording is
 `d4d68b5667d7261819c9799fedfb829bed3cba42`. `git diff --check` passes; the only untracked path
 remains the preserved `canvas/compatibility/mobile-fixtures/swiftui/.build/`.
+
+## PDF lowercase name-escape boundary integration
+
+The approved narrow PDF batch was cherry-picked in exact order after combined HEAD
+`94a05c9b18aab8d1d57cb91f0c5fff44ec5a498c`:
+
+| Worker commit | Combined commit |
+| --- | --- |
+| `f9255ef73af844519a5a495a89237f52352792db` | `f6fe970` |
+| `e75e67ba0b5ef21ad068954aa18a0f491fab6885` | `f11f907` |
+| `01c20830a3da3e103b665912e65ca9dc40c9a796` | `5198d3c` |
+
+Full-stat and diff inspection showed the reviewed one-line envelope guard, five-test boundary
+coverage plus one existing expectation update, and one new research report. No protected,
+production-outside-the-envelope, capability, gate, native, or vendor paths changed. The
+lowercase pdf-lib escape limitation remains classified as `OUTSIDE_SUBSET`; the conformance
+result remains `false` and no gate was unlocked. No independent bug-reproduction commits were
+picked.
+
+The strict focused selection ran after all three commits:
+
+`node scripts/test.mjs src/exporters/pdf-serialization-envelope.test.mjs src/exporters/pdf-resource-name-parser-boundary.test.mjs src/exporters/pdf-resource-name.test.mjs src/exporters/pdfx-preflight.test.mjs src/exporters/pdfx-fonts.test.mjs src/exporters/pdfx-content-matrix.test.mjs src/exporters/pdfx-serialization-boundary.test.mjs src/export-service.test.mjs`
+
+Log: `/tmp/canvas-pdf-lowercase-name-boundary-focused-20260907.log`. Exit `0`; `107` passed,
+`0` failed, `0` cancelled, `0` skipped; Node-reported duration `5,015.319583 ms` (`/usr/bin/time`
+real `5.06 s`). The canonical candidate remains zero-issue at the envelope boundary while a
+lowercase escaped raw name is rejected with the reviewed outside-subset diagnostic. No reference
+regeneration, native build, device action, Dev app test, or capability change ran.
+
+Final combined source/test/evidence integration HEAD is `5198d3c`; a separate evidence-only
+commit follows this section.
