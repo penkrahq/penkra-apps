@@ -69,6 +69,24 @@ test("Get exposes host-computed source bounds and problems without allowing muta
   assert.deepEqual(result.touchedNodeIds, []);
 });
 
+test("materialized Get is shallow by default and expands children only with explicit depth", async () => {
+  const document = {
+    version: "2.17",
+    children: [{ id: "route", type: "frame", children: [{ id: "section", type: "frame", children: [{ id: "label", type: "text", content: "Hi" }] }] }],
+  };
+  const result = await executeCanvasScript(document, `return {
+    shallow: Get("#route")[0],
+    one: Get("#route", undefined, { depth: 1 })[0].node,
+    all: Get("#route", undefined, { depth: "all" })[0].node
+  };`);
+  assert.equal(result.result.shallow.childCount, 1);
+  assert.equal(result.result.shallow.node.children, undefined);
+  assert.equal(result.result.one.children[0].id, "section");
+  assert.equal(result.result.one.children[0].children, undefined);
+  assert.equal(result.result.all.children[0].children[0].id, "label");
+  await assert.rejects(executeCanvasScript(document, 'return Get("#route", undefined, { depth: 101 });'), /Get depth/u);
+});
+
 test("execute scripts cannot reach host services", async () => {
   const result = await executeCanvasScript(
     { version: "2.15", children: [] },
@@ -258,7 +276,7 @@ test("Update validates a replacement child tree before applying it", async () =>
         { id: "new-shape", type: "rectangle", width: 20, height: 20 }
       ]
     });
-    return Get("#container")[0].node.children.map((child) => child.id);`,
+    return Get("#container", undefined, { depth: 1 })[0].node.children.map((child) => child.id);`,
   );
 
   assert.deepEqual(result.result, ["new-label", "new-shape"]);

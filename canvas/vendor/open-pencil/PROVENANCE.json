@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "sourceEngineSha256": "2a218ac2d18f32d34b6dc81a0871c09893660d3cf813d9019974fe0877bfd4b1",
+  "sourceEngineSha256": "623cb50fbc8428911b72c6d459c5b273ca843852a6c2a245ab781f20b5c7cb0f",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -35,6 +35,7 @@
     "Register document-declared font resources in the shared CanvasKit and browser font providers.",
     "Expose the renderer and descendant visual-bounds primitives required for Pencil-compatible headless screenshots.",
     "Resolve slash-separated component descendant overrides through exact cloned-component identity chains and regenerate overridden semantic icons.",
+    "Clear inherited fill-variable bindings when an instance descendant supplies an explicit fill override so the override remains authoritative.",
     "Invalidate overridden text metrics before intrinsic layout and coordinate one exact-font layout before revealing the layered canvas.",
     "Measure auto-width Pencil text intrinsically after fonts resolve so parent constraints cannot turn instance text overrides into wrapped multi-line text.",
     "Grow an instance with omitted width around descendant auto-width text overrides while preserving explicit instance and fixed-width text sizing.",

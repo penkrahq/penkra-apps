@@ -1,4 +1,12 @@
 import { validateRichText } from "./rich-text.mjs";
+import { canonicalDescendantOverrides } from "./component-descendants.mjs";
+
+const DESCENDANT_OVERRIDE_PROPERTIES = new Set([
+  "name", "x", "y", "width", "height", "rotation", "enabled", "fill",
+  "content", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight",
+  "letterSpacing", "textAlign", "textAlignVertical", "textGrowth",
+  "library", "icon", "weight", "children",
+]);
 
 export const CANVAS_MODULES = Object.freeze(["generic", "deck", "web", "mobile"]);
 export const CANVAS_ROLES = Object.freeze({ deck: ["slide"], web: ["route"], mobile: ["ios", "android"] });
@@ -169,9 +177,77 @@ export function validateCanvasDocument(document, options = {}) {
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
   validateRefs(nodes, parents, errors);
+  validateDescendantOverrides(document, nodes, errors);
   validateComponentSemantics(document, nodes, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
+}
+
+export function assertValidDescendantOverrides(document) {
+  const errors = [];
+  const nodes = new Map();
+  walk(document?.children, null, (node) => {
+    if (typeof node?.id === "string") nodes.set(node.id, node);
+  });
+  validateDescendantOverrides(document, nodes, errors);
+  if (errors.length) {
+    const error = new Error(errors.join("\n"));
+    error.code = "CANVAS_DESCENDANT_OVERRIDE_INVALID";
+    error.errors = errors;
+    throw error;
+  }
+}
+
+function validateDescendantOverrides(document, nodes, errors) {
+  for (const instance of nodes.values()) {
+    if (instance.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) continue;
+    if (instance.descendants === undefined) continue;
+    if (!plainObject(instance.descendants)) {
+      errors.push(`${instance.id}.descendants must be an object.`);
+      continue;
+    }
+    const canonical = canonicalDescendantOverrides(document, instance, { strict: true });
+    errors.push(...canonical.errors);
+    const component = nodes.get(instance.ref);
+    for (const [path, override] of Object.entries(canonical.overrides)) {
+      const target = component && nodeAtPath(component, path);
+      if (!plainObject(override)) {
+        errors.push(`${instance.id}.descendants.${path} must be an object.`);
+        continue;
+      }
+      for (const property of Object.keys(override)) {
+        if (!DESCENDANT_OVERRIDE_PROPERTIES.has(property)) {
+          errors.push(`${instance.id}.descendants.${path}.${property} is not a supported descendant override.`);
+        } else if (target && !descendantPropertySupported(target.type, property)) {
+          errors.push(`${instance.id}.descendants.${path}.${property} does not apply to ${target.type} descendants.`);
+        }
+      }
+      if (target) validateGeneratedNode({ ...structuredClone(target), ...structuredClone(override), id: target.id, type: target.type }, errors);
+      if (override.children !== undefined && !["frame", "group"].includes(target?.type)) {
+        errors.push(`${instance.id}.descendants.${path}.children may only replace children of a frame or group.`);
+      }
+    }
+  }
+}
+
+function descendantPropertySupported(type, property) {
+  if (["name", "x", "y", "width", "height", "rotation", "enabled"].includes(property)) return true;
+  if (property === "fill") return ["frame", "rectangle", "ellipse", "polygon", "path", "text", "icon", "ref"].includes(type);
+  if (property === "children") return ["frame", "group"].includes(type);
+  if (["library", "icon", "weight"].includes(property)) return type === "icon";
+  return type === "text" && [
+    "content", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight",
+    "letterSpacing", "textAlign", "textAlignVertical", "textGrowth",
+  ].includes(property);
+}
+
+function nodeAtPath(component, path) {
+  let current = component;
+  for (const id of path.split("/")) {
+    current = (current.children ?? []).find((node) => node?.id === id);
+    if (!current) return null;
+  }
+  return current;
 }
 
 function validateFrameGeometry(node, errors) {

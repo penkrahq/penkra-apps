@@ -90174,8 +90174,10 @@ function findCloneByComponentPath(graph, instanceId, path) {
 function applyOverrideProps(target, overrideData, ctx) {
   const previousIntrinsicHeight = target.height;
   let textMetricsChanged = false;
-  if (overrideData.fill !== undefined)
+  if (overrideData.fill !== undefined) {
+    clearOverrideBindings(target, "fills");
     target.fills = convertFill(overrideData.fill, ctx, target);
+  }
   if (overrideData.content !== undefined) {
     target.text = overrideData.content;
     textMetricsChanged = true;
@@ -90242,6 +90244,13 @@ function applyOverrideProps(target, overrideData, ctx) {
   }
   const intrinsic = textMetricsChanged && target.type === "TEXT" && target.textAutoResize === "WIDTH_AND_HEIGHT";
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight };
+}
+function clearOverrideBindings(target, prefix) {
+  for (const key of Object.keys(target.boundVariables ?? {})) {
+    if (key === prefix || key.startsWith(`${prefix}[`) || key.startsWith(`${prefix}.`)) {
+      delete target.boundVariables[key];
+    }
+  }
 }
 function setInstanceAxisToHug(instance2, axis) {
   const vertical = instance2.layoutMode === "VERTICAL";

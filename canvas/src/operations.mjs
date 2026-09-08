@@ -20,6 +20,9 @@ import { readPublishedCanvasLibrary } from "./library-publication-head.mjs";
 import { acceptCanvasLibrary } from "./library-accept-workflow.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 import { assertExportAvailable } from "./export-availability.mjs";
+import { assertValidDescendantOverrides } from "./canvas-schema.mjs";
+
+const EXECUTION_INSPECTION_LIMIT = 50;
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -132,7 +135,9 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
       throw error;
     }
+    assertValidDescendantOverrides(execution.document);
     const structuralModel = createDocumentModel(execution.document);
+    const currentNodeIds = new Set(listNodes(structuralModel).map(({ node }) => node.id));
     structuralModel.doc.destroy();
     const changedByScript = execution.changed;
     let uploadedAssets = [];
@@ -151,6 +156,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       uploadedAssets = materialized.uploaded;
     }
     let existingInspection = [];
+    let inspectionTotal = 0;
     let issues = beforeInspection.issues ?? [];
     if (changedByScript || touchedNodeIds.length > 0) {
       const inspect = inspectDocument ?? (await import("./document-inspection.mjs")).inspectDocument;
@@ -159,10 +165,11 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         const inspected = inspect(
           execution.document,
           listNodes(validationModel),
-          1_000,
+          EXECUTION_INSPECTION_LIMIT,
           new Set(touchedNodeIds),
         );
         existingInspection = inspected.items;
+        inspectionTotal = inspected.total;
         issues = inspected.issues;
       } finally {
         validationModel.doc.destroy();
@@ -175,13 +182,18 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
       throw error;
     }
-    const inspectedIds = new Set(existingInspection.map((item) => item.id));
     const inspection = [
       ...existingInspection,
       ...touchedNodeIds
-        .filter((nodeId) => !inspectedIds.has(nodeId))
+        .filter((nodeId) => !currentNodeIds.has(nodeId))
         .map((nodeId) => ({ nodeId, deleted: true })),
-    ];
+    ].slice(0, EXECUTION_INSPECTION_LIMIT);
+    const deletedTotal = touchedNodeIds.filter((nodeId) => !currentNodeIds.has(nodeId)).length;
+    const inspectionSummary = {
+      total: inspectionTotal + deletedTotal,
+      returned: inspection.length,
+      truncated: inspectionTotal + deletedTotal > inspection.length,
+    };
     let screenshots = [];
     if (execution.screenshots.length > 0) {
       const rootAssets = await readDocumentAssets(
@@ -211,6 +223,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         result: execution.result,
         touchedNodeIds,
         inspection,
+        inspectionSummary,
         issues,
       }, screenshots);
     }
@@ -251,6 +264,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       result: execution.result,
       touchedNodeIds,
       inspection,
+      inspectionSummary,
       issues,
     }, screenshots);
   } finally {

@@ -313,6 +313,65 @@ test("invalid execute output fails before any shared update or snapshot write", 
   assert.equal(requests.some((request) => request.method === "POST"), false);
 });
 
+test("invalid descendant overrides fail before commit with a stable code", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const source = {
+    version: "2.17",
+    module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "component", type: "frame", reusable: true, children: [{ id: "bar", type: "rectangle", width: 10, height: 3 }] },
+      { id: "instance", type: "ref", ref: "component" },
+    ],
+  };
+  globalThis.penkra = {
+    account: readableDocumentAccount(source, requests),
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?descendant-invalid-test=${Date.now()}`);
+  await assert.rejects(
+    handlers.get("documents.execute")({
+      documentId: "document-1",
+      code: 'Update("#instance", { descendants: { missing: { fill: "#000000" } } });',
+    }),
+    { code: "CANVAS_DESCENDANT_OVERRIDE_INVALID" },
+  );
+  assert.equal(requests.some((request) => request.method === "POST"), false);
+});
+
+test("large mutations retain touched IDs but bound detailed inspection with a summary", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const source = {
+    version: "2.17",
+    module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [{ id: "root", type: "frame", width: 100, height: 100, children: [] }],
+  };
+  const base = readableDocumentAccount(source, requests);
+  globalThis.penkra = {
+    account: {
+      ...base,
+      async request(request) {
+        if ((request.method ?? "GET") === "GET") return base.request(request);
+        requests.push(request);
+        if (request.path === "/projects/document-1/updates") return response(200, { sequence: 8 });
+        if (request.path === "/projects/document-1/snapshots") return response(200, { throughSequence: 8 });
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?inspection-limit-test=${Date.now()}`);
+  const children = Array.from({ length: 60 }, (_, index) => ({ id: `copy-${index}`, type: "rectangle", width: 1, height: 1 }));
+  const result = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: `Insert("#root", ${JSON.stringify({ id: "copy", type: "frame", children })});`,
+  });
+  assert.equal(result.touchedNodeIds.length, 62);
+  assert.equal(result.inspection.length, 50);
+  assert.deepEqual(result.inspectionSummary, { total: 62, returned: 50, truncated: true });
+});
+
 test("execute uploads a direct image before committing its durable asset path", async () => {
   const handlers = new Map();
   const requests = [];

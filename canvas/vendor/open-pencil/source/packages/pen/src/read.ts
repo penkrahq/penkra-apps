@@ -561,7 +561,10 @@ function applyOverrideProps(
 ): { width: boolean; height: boolean } {
   const previousIntrinsicHeight = target.height
   let textMetricsChanged = false
-  if (overrideData.fill !== undefined) target.fills = convertFill(overrideData.fill, ctx, target)
+  if (overrideData.fill !== undefined) {
+    clearOverrideBindings(target, 'fills')
+    target.fills = convertFill(overrideData.fill, ctx, target)
+  }
   if (overrideData.content !== undefined) {
     target.text = overrideData.content
     textMetricsChanged = true
@@ -633,6 +636,14 @@ function applyOverrideProps(
   const intrinsic =
     textMetricsChanged && target.type === 'TEXT' && target.textAutoResize === 'WIDTH_AND_HEIGHT'
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight }
+}
+
+function clearOverrideBindings(target: SceneNode, prefix: string): void {
+  for (const key of Object.keys(target.boundVariables ?? {})) {
+    if (key === prefix || key.startsWith(`${prefix}[`) || key.startsWith(`${prefix}.`)) {
+      delete target.boundVariables[key]
+    }
+  }
 }
 
 function setInstanceAxisToHug(instance: SceneNode, axis: 'width' | 'height'): void {

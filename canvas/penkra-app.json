@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.66",
+  "version": "0.2.67",
   "compatibility": {
     "penkra": ">=0.11.15"
   },
@@ -222,7 +222,17 @@
               "type": "object",
               "additionalProperties": true
             },
-            "maxItems": 10000
+            "maxItems": 50
+          },
+          "inspectionSummary": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "minimum": 0 },
+              "returned": { "type": "integer", "minimum": 0, "maximum": 50 },
+              "truncated": { "type": "boolean" }
+            },
+            "required": ["total", "returned", "truncated"],
+            "additionalProperties": false
           },
           "issues": {
             "type": "array",
@@ -257,6 +267,7 @@
           "result",
           "touchedNodeIds",
           "inspection",
+          "inspectionSummary",
           "issues",
           "screenshots"
         ],

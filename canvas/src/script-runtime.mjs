@@ -146,11 +146,27 @@ function __requireOne(target) {
   return entries[0];
 }
 
-function __context(entry) {
+function __nodeAtDepth(node, depth) {
+  const clone = __clone(node);
+  if (depth === "all") return clone;
+  const trim = (current, remaining) => {
+    if (!Array.isArray(current.children)) return;
+    if (remaining === 0) {
+      delete current.children;
+      return;
+    }
+    for (const child of current.children) trim(child, remaining - 1);
+  };
+  trim(clone, depth);
+  return clone;
+}
+
+function __context(entry, depth = "all") {
   const inspected = __inspection[entry.node.id] || {};
   return Object.freeze({
-    node: __readonly(__clone(entry.node)),
-    parent: entry.parent ? __readonly(__clone(entry.parent)) : null,
+    node: __readonly(__nodeAtDepth(entry.node, depth)),
+    parent: entry.parent ? __readonly(__nodeAtDepth(entry.parent, 0)) : null,
+    childCount: Array.isArray(entry.node.children) ? entry.node.children.length : 0,
     index: entry.index,
     path: entry.path.join("/"),
     bounds: inspected.bounds === undefined ? null : __readonly(__clone(inspected.bounds)),
@@ -211,6 +227,10 @@ globalThis.Get = function Get(selector = "*", visitor, options = {}) {
     }
     return count;
   }
+  const depth = options.depth === undefined ? 0 : options.depth;
+  if (!(depth === "all" || (Number.isInteger(depth) && depth >= 0 && depth <= 100))) {
+    throw new RangeError("Get depth must be an integer from 0 through 100, or all.");
+  }
   const limit = options.limit === undefined ? 1000 : Number(options.limit);
   if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
     throw new RangeError("Get limit must be an integer from 1 through 1000.");
@@ -221,7 +241,7 @@ globalThis.Get = function Get(selector = "*", visitor, options = {}) {
     if (contexts.length === limit) {
       throw new Error("Get matched more than " + limit + " nodes; use visitor form for traversal or narrow the selector.");
     }
-    contexts.push(__context(entry));
+    contexts.push(__context(entry, depth));
   }
   return contexts;
 };

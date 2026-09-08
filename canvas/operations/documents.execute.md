@@ -333,8 +333,11 @@ from the same library. Do not replace ordinary interface icons with generated ra
 ## Reusable components and instances
 
 A reusable component is a frame with `reusable: true`. An instance is a `ref` node whose `ref`
-points to that frame ID. Put per-instance changes in the ref's `descendants` object, keyed by a
-source descendant ID or slash-separated descendant path.
+points to that frame ID. Put per-instance changes in the ref's `descendants` object. A key may be
+one unique source descendant ID or its exact slash-separated path relative to the component root.
+Do not include the component root ID in that path. Canvas canonicalizes a bare ID to the same
+relative path before rendering; an unknown path, duplicate equivalent key, unsupported property,
+or invalid value fails the execution before it commits.
 
 ```js
 Insert(null, {
@@ -367,14 +370,26 @@ Insert("#instance-container", {
   type: "ref",
   ref: "labeled-component",
   descendants: {
-    "component-label": { content: "Updated label" }
+    "component-label": { content: "Updated label", fill: "#EEF2FF" }
   }
 });
 ```
 
+Descendant overrides support the properties the renderer can apply to an instance clone:
+`name`, `x`, `y`, `width`, `height`, `rotation`, `enabled`, and `fill`; text descendants additionally
+support `content`, `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `letterSpacing`,
+`textAlign`, `textAlignVertical`, and `textGrowth`; icon descendants additionally support `library`,
+`icon`, and `weight`. A frame or group may also replace `children`. This
+surface is not text-only: for example, `{ "tab/active-rule": { fill: "#4F46E5" } }` changes a
+rectangle inside the instance, and `{ "tab": { fill: "#EEF2FF" } }` changes its source frame.
+Properties outside this list are rejected rather than stored without a rendered effect.
+
 The selector walker traverses source `children`; it does not expand an instance into synthetic
 children. Therefore `Get` cannot select a rendered instance descendant. Update the ref's
-`descendants`, or edit the reusable source when every instance should change.
+`descendants`, or edit the reusable source when every instance should change. `Get("*")` reports
+authored source paths from the document root, so a component child may appear as
+`component-id/row/label`; the corresponding descendant override key is `row/label` because it is
+relative to that component and deliberately omits `component-id`.
 
 ## What this operation leaves alone
 
@@ -402,12 +417,16 @@ Selectors are strings. Pass `{ limit: number }` to bound how many matches come b
 when you know the node, a type or name when you are surveying. Operations that require one target
 reject zero or multiple matches rather than guessing.
 
-Without a visitor, `Get` returns immutable contexts. Each contains a cloned `node`, cloned `parent`
-or `null`, sibling `index`, slash-separated `path`, resolved `bounds`, and reported `problems`.
-With a visitor, Canvas invokes it once per match and returns the match count.
+Without a visitor, `Get` returns immutable contexts. Each contains a shallow cloned `node`, shallow
+cloned `parent` or `null`, `childCount`, sibling `index`, slash-separated `path`, resolved `bounds`,
+and reported `problems`. This shallow default prevents an exact route/frame lookup from accidentally
+returning its complete subtree. Pass `{ depth: 1 }` (through `100`) to include that many child
+levels, or `{ depth: "all" }` only when the complete subtree is deliberately required. With a
+visitor, Canvas invokes it once per match with the complete source node and returns the match count;
+return or print only the fields needed by the caller.
 
 ```js
-const [frame] = Get("#selected-frame");
+const [frame] = Get("#selected-frame", undefined, { depth: 1 });
 Print({ node: frame.node, bounds: frame.bounds, problems: frame.problems });
 return frame.path;
 ```
@@ -516,8 +535,9 @@ Use the structured result as evidence for what happened:
   `null` for a read-only execution;
 - `touchedNodeIds` lists nodes directly affected by mutation calls;
 - `prints` contains values sent through `Print`, while `result` contains the script's returned value;
-- `inspection` reports post-execution bounds and problems for touched nodes, including deletion
-  markers; the contexts returned by `Get` during the script use pre-execution inspection;
+- `inspection` reports post-execution bounds and problems for at most 50 touched nodes, including
+  deletion markers; `inspectionSummary` reports the total, returned count, and whether details were
+  truncated; the contexts returned by `Get` during the script use pre-execution inspection;
 - `issues` reports problems found while validating or rendering the resulting document;
 - `screenshots` describes the rendered PNG returned as image content.
 

@@ -53,8 +53,11 @@ export function resolveCanvasNodeSelection({ document, graph, selectedId }) {
   const sourceNodeId = descendantIds.at(-1) ?? instanceId;
   const sourceNode = sourceNodes.get(sourceNodeId) ?? null;
   const instanceNode = sourceNodes.get(instanceId) ?? null;
-  const override = descendantPath && isPlainObject(instanceNode?.descendants?.[descendantPath])
-    ? instanceNode.descendants[descendantPath]
+  const canonicalOverrides = instanceNode
+    ? canonicalDescendantOverrides(document, instanceNode).overrides
+    : {};
+  const override = descendantPath && isPlainObject(canonicalOverrides[descendantPath])
+    ? canonicalOverrides[descendantPath]
     : null;
   const effectiveNode = sourceNode
     ? { ...structuredClone(sourceNode), ...structuredClone(override ?? {}) }
@@ -128,3 +131,4 @@ export async function copyTextToClipboard(text, {
   }
   throw new Error("Clipboard writing is unavailable in this Canvas frame.");
 }
+import { canonicalDescendantOverrides } from "./component-descendants.mjs";

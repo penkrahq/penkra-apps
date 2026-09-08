@@ -8,6 +8,7 @@ import {
 } from "./pencil-shader-runtime.mjs";
 import { normalizePencilMeshGradient } from "./pencil-mesh-gradient.mjs";
 import { normalizeStrokeDash } from "./stroke-dash.mjs";
+import { canonicalDescendantOverrides } from "./component-descendants.mjs";
 
 const NUMERIC_PROPERTIES = new Set([
   "x",
@@ -259,7 +260,7 @@ export function lowerCanvasModelForOpenPencil(source) {
         ? structuredClone(supplied[name])
         : structuredClone(Object.hasOwn(declaration, "default") ? declaration.default : null);
     }
-    const descendants = { ...(instance.descendants ?? {}) };
+    const descendants = canonicalDescendantOverrides(document, instance).overrides;
     const visit = (node, path = []) => {
       for (const [property, binding] of Object.entries(node.bind ?? {})) {
         if (typeof binding !== "string" || !binding.startsWith("$props.")) continue;
