@@ -4,6 +4,12 @@ export function canonicalDescendantOverrides(document, instance, { strict = fals
   const component = nodes.get(instance.ref);
   if (!component) return { overrides: structuredClone(instance.descendants), errors: [] };
 
+  return canonicalDescendantOverridesForComponent(instance, component, { strict });
+}
+
+export function canonicalDescendantOverridesForComponent(instance, component, { strict = false } = {}) {
+  if (!plainObject(instance?.descendants)) return { overrides: {}, errors: [] };
+
   const paths = new Map();
   collectPaths(component.children ?? [], [], paths);
   const output = {};

@@ -57,6 +57,56 @@ test("component expansion preserves instance placement, sizing, opacity and imag
   assert.deepEqual([two.x, two.y, two.width, two.height, two.opacity], [0, 0, 300, 70, 1]);
   assert.deepEqual([component.x, component.y, component.opacity], [1000, 2000, 1]);
 });
+
+test("component expansion applies local and imported descendant overrides before export", () => {
+  const component = {
+    id: "component", type: "frame", fill: "#eeeeee", children: [
+      { id: "tab", type: "frame", fill: "#dddddd", children: [
+        { id: "label", type: "text", content: "Default", fill: "#111111", paragraphs: [{ from: 0, to: 7 }] },
+        { id: "rule", type: "rectangle", width: 80, height: 3, fill: "#222222" },
+      ] },
+    ],
+  };
+  const local = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [component, {
+      id: "local", type: "ref", ref: "component", descendants: {
+        label: { content: "Active", fill: "#ffffff" },
+        tab: { fill: "#16181a" },
+        rule: { fill: "#4f46e5" },
+      },
+    }],
+  };
+  const imported = {
+    axes: {}, variables: { accent: { tokenType: "color", cascade: [{ value: "#ff0000" }] } },
+    paragraphStyles: {}, children: [component],
+  };
+  const consumer = {
+    axes: {}, variables: { accent: { tokenType: "color", cascade: [{ value: "#22c55e" }] } },
+    paragraphStyles: {}, children: [{
+      id: "imported", type: "ref", ref: "ui:component", descendants: {
+        "tab/label": { content: "Library" },
+        "tab/rule": { fill: "${accent}" },
+      },
+    }],
+  };
+
+  const localResult = resolveCanvasDocument(local).document.children[1];
+  assert.equal(localResult.children[0].fill, "#16181a");
+  assert.equal(localResult.children[0].children[0].content, "Active");
+  assert.equal(localResult.children[0].children[0].fill, "#ffffff");
+  assert.equal(localResult.children[0].children[1].fill, "#4f46e5");
+
+  const importedResult = resolveCanvasDocument(consumer, {
+    imports: { ui: { document: imported, imports: {} } },
+  }).document.children[0];
+  assert.equal(importedResult.children[0].children[0].content, "Library");
+  assert.equal(importedResult.children[0].children[1].fill, "#22c55e");
+
+  local.children[1].descendants = { missing: { fill: "#000000" } };
+  assert.throws(() => resolveCanvasDocument(local), {
+    code: "CANVAS_DESCENDANT_OVERRIDE_INVALID",
+  });
+});
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 test("dotted aliases retain numeric types and rich-text ranges follow interpolation", () => {

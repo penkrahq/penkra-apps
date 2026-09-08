@@ -61,6 +61,22 @@ test("invalid paths and unsupported descendant properties fail with a stable pre
   }
 });
 
+test("qualified component descendant overrides validate against retained import content", () => {
+  const source = documentWith(undefined);
+  source.children[1] = {
+    id: "instance", type: "ref", ref: "ui:tabs", descendants: {
+      underline: { fill: "#16181a" },
+    },
+  };
+  const imported = { document: { children: [source.children[0]] } };
+  assert.doesNotThrow(() => assertValidDescendantOverrides(source, { imports: { ui: imported } }));
+  source.children[1].descendants = { missing: { fill: "#16181a" } };
+  assert.throws(
+    () => assertValidDescendantOverrides(source, { imports: { ui: imported } }),
+    { code: "CANVAS_DESCENDANT_OVERRIDE_INVALID" },
+  );
+});
+
 function descendantsOf(graph, id) {
   const node = graph.getNode(id);
   return node ? [node, ...node.childIds.flatMap((childId) => descendantsOf(graph, childId))] : [];

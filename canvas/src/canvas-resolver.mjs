@@ -1,5 +1,6 @@
 import { interpolateRichText } from "./rich-text.mjs";
 import { resolveVariableReferences } from "./variable-references.mjs";
+import { canonicalDescendantOverridesForComponent } from "./component-descendants.mjs";
 
 export function resolveCanvasDocument(document, options = {}) {
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
@@ -164,7 +165,20 @@ function resolveRef(instance, context) {
   const cycleKey = `${owner === context.owner ? "local" : instance.ref}:${target.id}`;
   if (context.resolving.includes(cycleKey)) throw new Error(`Ref cycle: ${[...context.resolving, cycleKey].join(" -> ")}.`);
   const props = resolveProps(target.properties ?? {}, instance.props ?? {});
-  const resolved = resolveNode(target, { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] });
+  const targetContext = { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] };
+  const resolved = resolveNode(target, targetContext);
+  const descendantOverrides = canonicalDescendantOverridesForComponent(instance, target, { strict: true });
+  if (descendantOverrides.errors.length) {
+    const error = new Error(descendantOverrides.errors.join("\n"));
+    error.code = "CANVAS_DESCENDANT_OVERRIDE_INVALID";
+    throw error;
+  }
+  applyResolvedDescendantOverrides(
+    resolved,
+    target,
+    descendantOverrides.overrides,
+    { ...instanceContext, props, componentRoot: false, resolving: targetContext.resolving },
+  );
   context.lowered.push({ node: instance.id, from: instance.ref, why: "Reference expanded into target-native nodes." });
   const output = prefixResolvedNode(resolved, instance.id, target.id, props);
   // A component definition's canvas position is not the instance position.
@@ -176,6 +190,28 @@ function resolveRef(instance, context) {
     if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues);
   }
   return output;
+}
+
+function applyResolvedDescendantOverrides(resolvedRoot, sourceRoot, overrides, context) {
+  for (const [path, override] of Object.entries(overrides)) {
+    const ids = path.split("/");
+    let resolved = resolvedRoot;
+    let source = sourceRoot;
+    for (const id of ids) {
+      resolved = (resolved.children ?? []).find((candidate) => candidate.id === id);
+      source = (source.children ?? []).find((candidate) => candidate.id === id);
+      if (!resolved || !source) break;
+    }
+    if (!resolved || !source) continue;
+    for (const [property, raw] of Object.entries(override)) {
+      if (property === "children") {
+        resolved.children = raw.map((child) => resolveNode(child, context)).filter(Boolean);
+        continue;
+      }
+      const value = resolveValue(resolveCascade(raw, context), context.variableValues);
+      resolved[property] = source.type === "text" && property === "content" ? String(value ?? "") : value;
+    }
+  }
 }
 
 function resolveProps(declarations, supplied) {

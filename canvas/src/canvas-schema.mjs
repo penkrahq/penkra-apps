@@ -1,5 +1,8 @@
 import { validateRichText } from "./rich-text.mjs";
-import { canonicalDescendantOverrides } from "./component-descendants.mjs";
+import {
+  canonicalDescendantOverrides,
+  canonicalDescendantOverridesForComponent,
+} from "./component-descendants.mjs";
 
 const DESCENDANT_OVERRIDE_PROPERTIES = new Set([
   "name", "x", "y", "width", "height", "rotation", "enabled", "fill",
@@ -183,13 +186,13 @@ export function validateCanvasDocument(document, options = {}) {
   return invalid(errors, options);
 }
 
-export function assertValidDescendantOverrides(document) {
+export function assertValidDescendantOverrides(document, options = {}) {
   const errors = [];
   const nodes = new Map();
   walk(document?.children, null, (node) => {
     if (typeof node?.id === "string") nodes.set(node.id, node);
   });
-  validateDescendantOverrides(document, nodes, errors);
+  validateDescendantOverrides(document, nodes, errors, options.imports);
   if (errors.length) {
     const error = new Error(errors.join("\n"));
     error.code = "CANVAS_DESCENDANT_OVERRIDE_INVALID";
@@ -198,17 +201,24 @@ export function assertValidDescendantOverrides(document) {
   }
 }
 
-function validateDescendantOverrides(document, nodes, errors) {
+function validateDescendantOverrides(document, nodes, errors, imports) {
   for (const instance of nodes.values()) {
-    if (instance.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) continue;
+    if (instance.type !== "ref" || typeof instance.ref !== "string") continue;
     if (instance.descendants === undefined) continue;
     if (!plainObject(instance.descendants)) {
       errors.push(`${instance.id}.descendants must be an object.`);
       continue;
     }
-    const canonical = canonicalDescendantOverrides(document, instance, { strict: true });
+    const component = descendantComponent(instance.ref, nodes, imports);
+    if (!component) {
+      if (instance.ref.includes(":") && imports === undefined) continue;
+      errors.push(`${instance.id}.descendants cannot be validated because component ${instance.ref} was not found.`);
+      continue;
+    }
+    const canonical = instance.ref.includes(":")
+      ? canonicalDescendantOverridesForComponent(instance, component, { strict: true })
+      : canonicalDescendantOverrides(document, instance, { strict: true });
     errors.push(...canonical.errors);
-    const component = nodes.get(instance.ref);
     for (const [path, override] of Object.entries(canonical.overrides)) {
       const target = component && nodeAtPath(component, path);
       if (!plainObject(override)) {
@@ -228,6 +238,20 @@ function validateDescendantOverrides(document, nodes, errors) {
       }
     }
   }
+}
+
+function descendantComponent(reference, nodes, imports) {
+  const separator = reference.indexOf(":");
+  if (separator < 0) return nodes.get(reference);
+  const alias = reference.slice(0, separator);
+  const id = reference.slice(separator + 1);
+  const document = imports?.[alias]?.document ?? imports?.[alias];
+  if (!document) return null;
+  let found = null;
+  walk(document.children ?? [], null, (node) => {
+    if (node.id === id) found = node;
+  });
+  return found;
 }
 
 function descendantPropertySupported(type, property) {

@@ -135,7 +135,15 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
       throw error;
     }
-    assertValidDescendantOverrides(execution.document);
+    let retainedImports;
+    if (hasQualifiedDescendantOverrides(execution.document)) {
+      retainedImports = await loadRetainedCanvasImports(
+        api,
+        { ...execution.document, imports: execution.document.imports ?? {} },
+        { documentId },
+      );
+    }
+    assertValidDescendantOverrides(execution.document, { imports: retainedImports?.imports });
     const structuralModel = createDocumentModel(execution.document);
     const currentNodeIds = new Set(listNodes(structuralModel).map(({ node }) => node.id));
     structuralModel.doc.destroy();
@@ -201,7 +209,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         documentId,
         [...(assetDescriptors ??= await api.listAssets(documentId)), ...uploadedAssets],
       );
-      const imported = await loadRetainedCanvasImports(
+      const imported = retainedImports ?? await loadRetainedCanvasImports(
         api,
         { ...execution.document, imports: execution.document.imports ?? {} },
         { documentId },
@@ -271,6 +279,23 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     model?.doc.destroy();
   }
 });
+
+function hasQualifiedDescendantOverrides(document) {
+  return listSourceNodes(document?.children).some(
+    (node) => node?.type === "ref"
+      && typeof node.ref === "string"
+      && node.ref.includes(":")
+      && node.descendants !== undefined,
+  );
+}
+
+function listSourceNodes(nodes = [], output = []) {
+  for (const node of nodes ?? []) {
+    output.push(node);
+    listSourceNodes(node?.children, output);
+  }
+  return output;
+}
 
 runtime.operations.handle("documents.undo", async ({ documentId, operationId }) => {
   const payload = await api.getDocument(documentId);
