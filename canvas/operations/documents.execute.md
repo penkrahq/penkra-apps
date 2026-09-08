@@ -375,11 +375,12 @@ Insert("#instance-container", {
 });
 ```
 
-Descendant overrides support the properties the renderer can apply to an instance clone:
-`name`, `x`, `y`, `width`, `height`, `rotation`, `enabled`, and `fill`; text descendants additionally
-support `content`, `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `letterSpacing`,
-`textAlign`, `textAlignVertical`, and `textGrowth`; icon descendants additionally support `library`,
-`icon`, and `weight`. A frame or group may also replace `children`. This
+Every descendant type supports `name`, `x`, `y`, `width`, `height`, `rotation`, and `enabled`.
+`fill` is supported only on paintable `frame`, `rectangle`, `ellipse`, `polygon`, `path`, `text`,
+`icon`, and `ref` descendants. Text descendants additionally support `content`, `fontFamily`,
+`fontSize`, `fontWeight`, `fontStyle`, `lineHeight`, `letterSpacing`, `textAlign`,
+`textAlignVertical`, and `textGrowth`; icon descendants additionally support `library`, `icon`, and
+`weight`. A frame or group may also replace `children`. This
 surface is not text-only: for example, `{ "tab/active-rule": { fill: "#4F46E5" } }` changes a
 rectangle inside the instance, and `{ "tab": { fill: "#EEF2FF" } }` changes its source frame.
 Properties outside this list are rejected rather than stored without a rendered effect.
