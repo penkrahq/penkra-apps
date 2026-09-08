@@ -1,8 +1,10 @@
 import { interpolateRichText } from "./rich-text.mjs";
 import { resolveVariableReferences } from "./variable-references.mjs";
 import { canonicalDescendantOverridesForComponent } from "./component-descendants.mjs";
+import { normalizeCanvasDocumentAliases } from "./canvas-normalization.mjs";
 
 export function resolveCanvasDocument(document, options = {}) {
+  document = normalizeCanvasDocumentAliases(document);
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
   const variableValues = resolveVariables(document.variables ?? {}, modes, options.bindings ?? {}, options.imports ?? {});
   const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, { modes, props: {} }), variableValues)]));
@@ -12,7 +14,7 @@ export function resolveCanvasDocument(document, options = {}) {
   const lowered = [];
   const resolving = [];
   const styleRegistry = { styles: paragraphStyles, nextId: 0 };
-  const baseContext = { owner: document, rootOwner: document, styleRegistry, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving };
+  const baseContext = { owner: document, rootOwner: document, styleRegistry, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving, normalizedOwners: new WeakMap() };
   const children = document.children.map((node) => resolveNode(node, baseContext)).filter(Boolean);
   const flows = (document.flows ?? []).map(remapResolvedFlowSource);
   return { document: { ...document, paragraphStyles, children, flows }, modes, consequences, lowered };
@@ -115,7 +117,7 @@ function resolveParagraphStyle(name, context) {
     const imported = Object.hasOwn(context.imports, alias) ? context.imports[alias] : undefined;
     if (!imported) throw new Error(`Import ${alias} is missing or unreadable.`);
     if (imported.release && !imported.release.publicItems.some((item) => item.kind === "paragraphStyle" && item.id === id)) throw new Error(`Paragraph style ${name} is not published.`);
-    owner = imported.document ?? imported;
+    owner = normalizedImportedOwner(imported, context);
     modes = { ...context.modes };
     for (const [axisName, axis] of Object.entries(owner.axes ?? {})) {
       if (!axis.modes.some((mode) => mode.name === modes[axisName])) modes[axisName] = axis.modes[0]?.name;
@@ -146,7 +148,7 @@ function resolveRef(instance, context) {
   if (qualified.length > 1) {
     const alias = qualified.shift(); const imported = context.imports[alias];
     if (!imported) throw new Error(`Import ${alias} is missing or unreadable.`);
-    owner = imported.document ?? imported;
+    owner = normalizedImportedOwner(imported, context);
     localNodes = indexNodes(owner.children);
     target = localNodes.get(qualified.join(":"));
     const modes = { ...context.modes };
@@ -190,6 +192,17 @@ function resolveRef(instance, context) {
     if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues);
   }
   return output;
+}
+
+function normalizedImportedOwner(imported, context) {
+  const source = imported.document ?? imported;
+  if (!source || typeof source !== "object") return source;
+  let normalized = context.normalizedOwners.get(source);
+  if (!normalized) {
+    normalized = normalizeCanvasDocumentAliases(source);
+    context.normalizedOwners.set(source, normalized);
+  }
+  return normalized;
 }
 
 function applyResolvedDescendantOverrides(resolvedRoot, sourceRoot, overrides, context) {

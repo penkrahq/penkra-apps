@@ -107,6 +107,27 @@ test("component expansion applies local and imported descendant overrides before
     code: "CANVAS_DESCENDANT_OVERRIDE_INVALID",
   });
 });
+
+test("component expansion canonicalizes legacy alignment aliases before applying overrides", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [{
+      id: "component", type: "frame", children: [{
+        id: "label", type: "text", content: "Old", textAlign: "left",
+        textAlignVertical: "middle", paragraphs: [{ from: 0, to: 3, align: "right" }],
+      }],
+    }, {
+      id: "instance", type: "ref", ref: "component",
+      descendants: { label: { content: "New" } },
+    }],
+  };
+
+  const instance = resolveCanvasDocument(source).document.children[1];
+  assert.equal(instance.children[0].content, "New");
+  assert.equal(instance.children[0].textAlign, "start");
+  assert.equal(instance.children[0].textAlignVertical, "center");
+  assert.equal(instance.children[0].paragraphs[0].align, "end");
+  assert.equal(source.children[0].children[0].textAlign, "left");
+});
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 test("dotted aliases retain numeric types and rich-text ranges follow interpolation", () => {

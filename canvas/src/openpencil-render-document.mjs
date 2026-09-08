@@ -9,6 +9,7 @@ import {
 import { normalizePencilMeshGradient } from "./pencil-mesh-gradient.mjs";
 import { normalizeStrokeDash } from "./stroke-dash.mjs";
 import { canonicalDescendantOverrides } from "./component-descendants.mjs";
+import { normalizeCanvasAliasesInPlace } from "./canvas-normalization.mjs";
 
 const NUMERIC_PROPERTIES = new Set([
   "x",
@@ -66,6 +67,14 @@ const VARIABLE_PROPERTIES = new Set([
   "stroke",
   "colors",
 ]);
+const SUPPORTED_ICON_LIBRARIES = [
+  "lucide",
+  "feather",
+  "phosphor",
+  "Material Symbols Outlined",
+  "Material Symbols Rounded",
+  "Material Symbols Sharp",
+];
 
 export function prepareOpenPencilRenderDocument(source, options = {}) {
   const document = lowerCanvasModelForOpenPencil(source);
@@ -223,6 +232,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
 
 export function lowerCanvasModelForOpenPencil(source) {
   const document = structuredClone(source);
+  normalizeCanvasAliasesInPlace(document);
   if (isRecord(document.axes)) {
     document.themes = Object.fromEntries(Object.entries(document.axes).map(([axis, definition]) => [
       axis,
@@ -309,10 +319,7 @@ function compileDescendantIcons(nodes, issues) {
           override.__canvasIcon = definition;
           override.__canvasIconFill = structuredClone(override.fill ?? source.fill ?? "#000000");
         }
-        else issues.push(iconIssue(
-          node.id,
-          `${effective.library ?? "Unknown"} icon ${effective.icon ?? "(unnamed)"} is not supported.`,
-        ));
+        else issues.push(iconDefinitionIssue(node.id, effective));
       }
     }
     for (const child of node?.children ?? []) apply(child);
@@ -597,10 +604,7 @@ function isOpenPencilStroke(value) {
 function compileIcon(node, issues, nodeId) {
   const definition = pencilIconDefinition(node.library, node.icon, node.weight);
   if (!definition) {
-    issues.push(iconIssue(
-      nodeId,
-      `${node.library ?? "Unknown"} icon ${node.icon ?? "(unnamed)"} is not supported.`,
-    ));
+    issues.push(iconDefinitionIssue(nodeId, node));
     return;
   }
   node.__canvasIcon = definition;
@@ -679,10 +683,26 @@ function variableIssue(nodeId, reference, message) {
   };
 }
 
-function iconIssue(nodeId, message) {
+function iconDefinitionIssue(nodeId, node) {
+  if (typeof node.library !== "string" || node.library.length === 0) {
+    return iconIssue(
+      nodeId,
+      `Icon node ${nodeId} has no library. Set library to one of ${SUPPORTED_ICON_LIBRARIES.join(", ")}.`,
+      "CANVAS_ICON_LIBRARY_REQUIRED",
+    );
+  }
+  return iconIssue(
+    nodeId,
+    `${node.library} icon ${node.icon ?? "(unnamed)"} is not supported.`,
+    "CANVAS_ICON_UNSUPPORTED",
+  );
+}
+
+function iconIssue(nodeId, message, code) {
   return {
     nodeId,
     kind: "icon",
+    code,
     message: `${message} The original icon is preserved in the Canvas document.`,
   };
 }

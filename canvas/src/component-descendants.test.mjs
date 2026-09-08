@@ -77,6 +77,29 @@ test("qualified component descendant overrides validate against retained import 
   );
 });
 
+test("legacy text alignment aliases do not prevent descendant validation", () => {
+  const source = documentWith({ label: { content: "Changed" } });
+  const label = source.children[0].children[0].children[0];
+  label.textAlign = "left";
+  label.textAlignVertical = "middle";
+  label.paragraphs[0].align = "right";
+
+  assert.doesNotThrow(() => assertValidDescendantOverrides(source));
+  assert.equal(label.textAlign, "left", "validation does not mutate the stored projection");
+});
+
+test("descendant validation checks the override without revalidating unrelated stored fields", () => {
+  const source = documentWith({ label: { content: "Changed" } });
+  const label = source.children[0].children[0].children[0];
+  label.textGrowth = "older-unknown-value";
+  assert.doesNotThrow(() => assertValidDescendantOverrides(source));
+
+  source.children[1].descendants = { label: { textGrowth: "older-unknown-value" } };
+  assert.throws(() => assertValidDescendantOverrides(source), {
+    code: "CANVAS_DESCENDANT_OVERRIDE_INVALID",
+  });
+});
+
 function descendantsOf(graph, id) {
   const node = graph.getNode(id);
   return node ? [node, ...node.childIds.flatMap((childId) => descendantsOf(graph, childId))] : [];

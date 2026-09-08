@@ -3,6 +3,7 @@ import {
   canonicalDescendantOverrides,
   canonicalDescendantOverridesForComponent,
 } from "./component-descendants.mjs";
+import { normalizeCanvasDocumentAliases } from "./canvas-normalization.mjs";
 
 const DESCENDANT_OVERRIDE_PROPERTIES = new Set([
   "name", "x", "y", "width", "height", "rotation", "enabled", "fill",
@@ -187,6 +188,7 @@ export function validateCanvasDocument(document, options = {}) {
 }
 
 export function assertValidDescendantOverrides(document, options = {}) {
+  document = normalizeCanvasDocumentAliases(document);
   const errors = [];
   const nodes = new Map();
   walk(document?.children, null, (node) => {
@@ -230,14 +232,27 @@ function validateDescendantOverrides(document, nodes, errors, imports) {
           errors.push(`${instance.id}.descendants.${path}.${property} is not a supported descendant override.`);
         } else if (target && !descendantPropertySupported(target.type, property)) {
           errors.push(`${instance.id}.descendants.${path}.${property} does not apply to ${target.type} descendants.`);
+        } else if (target) {
+          validateDescendantOverrideValue(
+            override[property],
+            property,
+            `${instance.id}.descendants.${path}.${property}`,
+            errors,
+          );
         }
       }
-      if (target) validateGeneratedNode({ ...structuredClone(target), ...structuredClone(override), id: target.id, type: target.type }, errors);
       if (override.children !== undefined && !["frame", "group"].includes(target?.type)) {
         errors.push(`${instance.id}.descendants.${path}.children may only replace children of a frame or group.`);
       }
     }
   }
+}
+
+function validateDescendantOverrideValue(value, property, path, errors) {
+  const definition = Object.assign({}, ...Object.values(CANVAS_SCHEMA.node.groups))[property];
+  if (!definition) return;
+  if (isCascadeValue(value) && !["array", "record", "object"].includes(definition.type) && !definition.ref) return;
+  validateGeneratedShape(value, definition, path, errors);
 }
 
 function descendantComponent(reference, nodes, imports) {

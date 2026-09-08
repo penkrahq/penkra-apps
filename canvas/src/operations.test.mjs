@@ -339,6 +339,58 @@ test("invalid descendant overrides fail before commit with a stable code", async
   assert.equal(requests.some((request) => request.method === "POST"), false);
 });
 
+test("execute reads and commits legacy text directions through their canonical aliases", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const source = {
+    version: "2.17",
+    module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      {
+        id: "component", type: "frame", reusable: true, children: [{
+          id: "label", type: "text", content: "Old", textAlign: "left",
+          textAlignVertical: "middle", paragraphs: [{ from: 0, to: 3, align: "right" }],
+        }],
+      },
+      { id: "instance", type: "ref", ref: "component" },
+    ],
+  };
+  const base = readableDocumentAccount(source, requests);
+  globalThis.penkra = {
+    account: {
+      ...base,
+      async request(request) {
+        if ((request.method ?? "GET") === "GET") return base.request(request);
+        requests.push(request);
+        if (request.path === "/projects/document-1/updates") return response(200, { sequence: 8 });
+        if (request.path === "/projects/document-1/snapshots") return response(200, { throughSequence: 8 });
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?alignment-alias-test=${Date.now()}`);
+
+  const read = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: 'return { horizontal: Get("#label")[0].node.textAlign, vertical: Get("#label")[0].node.textAlignVertical };',
+  });
+  assert.deepEqual(read.result, { horizontal: "start", vertical: "center" });
+
+  const changed = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: 'Update("#instance", { descendants: { label: { content: "New" } } }); Insert(null, { id: "new-text", type: "text", content: "New", textAlign: "right" });',
+  });
+  assert.equal(changed.changed, true);
+  assert.equal(changed.sequence, 8);
+  const snapshot = requests.find((request) => request.path === "/projects/document-1/snapshots");
+  const projection = decodeJson(snapshot.body).projection;
+  assert.equal(projection.children[0].children[0].textAlign, "start");
+  assert.equal(projection.children[0].children[0].textAlignVertical, "center");
+  assert.equal(projection.children.at(-1).textAlign, "end");
+  assert.equal(source.children[0].children[0].textAlign, "left");
+});
+
 test("large mutations retain touched IDs but bound detailed inspection with a summary", async () => {
   const handlers = new Map();
   const requests = [];

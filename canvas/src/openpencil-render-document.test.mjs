@@ -51,6 +51,15 @@ test("interpolates multiple delimited variables while leaving currency literal",
   assert.deepEqual(result.issues, []);
 });
 
+test("an icon without its required library reports a typed actionable issue", () => {
+  const result = prepareOpenPencilRenderDocument({
+    children: [{ id: "spinner", type: "icon", icon: "loader-circle" }],
+  });
+  assert.equal(result.issues[0].nodeId, "spinner");
+  assert.equal(result.issues[0].kind, "icon");
+  assert.equal(result.issues[0].code, "CANVAS_ICON_LIBRARY_REQUIRED");
+});
+
 test("M1 migrates only whole legacy references on variable-able fields", () => {
   const source = {
     children: [{

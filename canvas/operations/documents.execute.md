@@ -418,6 +418,10 @@ Selectors are strings. Pass `{ limit: number }` to bound how many matches come b
 when you know the node, a type or name when you are surveying. Operations that require one target
 reject zero or multiple matches rather than guessing.
 
+`Get` selects authored source nodes only. A selector such as `Get("#instance *")` does not descend
+into a rendered component instance; inspect the reusable source and address later instance changes
+through the ref's `descendants` object.
+
 Without a visitor, `Get` returns immutable contexts. Each contains a shallow cloned `node`, shallow
 cloned `parent` or `null`, `childCount`, sibling `index`, slash-separated `path`, resolved `bounds`,
 and reported `problems`. This shallow default prevents an exact route/frame lookup from accidentally

@@ -21,6 +21,7 @@ import { acceptCanvasLibrary } from "./library-accept-workflow.mjs";
 import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExportDestinations } from "./export-delivery.mjs";
 import { assertExportAvailable } from "./export-availability.mjs";
 import { assertValidDescendantOverrides } from "./canvas-schema.mjs";
+import { normalizeCanvasAliasesInPlace } from "./canvas-normalization.mjs";
 
 const EXECUTION_INSPECTION_LIMIT = 50;
 
@@ -104,6 +105,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
   let model = projected ? null : restoreDocumentModel(payload);
   try {
     const before = model ? materialize(model) : structuredClone(payload.snapshot.source);
+    normalizeCanvasAliasesInPlace(before);
     const needsInitialInspection = scriptNeedsInspection(code);
     const inspectDocument = needsInitialInspection
       ? (await import("./document-inspection.mjs")).inspectDocument
@@ -124,6 +126,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         ]),
       ),
     );
+    normalizeCanvasAliasesInPlace(execution.document);
     // Build once in isolation before touching the working clone. This enforces
     // the complete normalized-tree contract without relying on Yjs to roll a
     // partially applied transaction back after a validation error.
