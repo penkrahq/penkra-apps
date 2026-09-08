@@ -1,8 +1,9 @@
 ---
 name: canvas-mobile
 description: Working with mobile app designs in Canvas — iOS and Android screens, semantic structure, and exporting SwiftUI or Jetpack Compose source. Load this when a Canvas document has module "mobile", or before creating one.
-display-name: Canvas mobile designs
-short-description: iOS and Android screens and SwiftUI/Compose export in Canvas.
+metadata:
+  display-name: Canvas mobile designs
+  short-description: iOS and Android screens and SwiftUI/Compose export in Canvas.
 ---
 
 # Canvas mobile designs
@@ -96,10 +97,10 @@ Beyond those:
 
 ## Exporting
 
-`documents.export` with `role: "ios"` or `role: "android"` writes a **directory**:
+`documents.export` with `format: "swift"` or `format: "kotlin"` writes a **directory**:
 
 ```json
-{ "documentId": "…", "role": "ios", "frames": ["screen", "settings"],
+{ "documentId": "…", "format": "swift", "frames": ["screen", "settings"],
   "destination": "/Users/you/Desktop/AppScreens" }
 ```
 
@@ -110,5 +111,5 @@ elsewhere, because a rasterised node is source code a developer cannot edit.
 Every frame must carry the requested role or export fails with `CANVAS_EXPORT_ROLE`. The destination
 must not already exist.
 
-For a single screen as a picture — a mockup for a chat or a spec — use `documents.export-image`
+For a single screen as a picture — a mockup for a chat or a spec — use `documents.extract`
 instead.

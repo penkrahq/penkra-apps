@@ -1,8 +1,9 @@
 ---
 name: canvas-web
 description: Working with web designs in Canvas — routes, responsive layout, and exporting HTML and CSS. Load this when a Canvas document has module "web", or before creating one.
-display-name: Canvas web designs
-short-description: Routes, responsive layout, and HTML/CSS export in Canvas.
+metadata:
+  display-name: Canvas web designs
+  short-description: Routes, responsive layout, and HTML/CSS export in Canvas.
 ---
 
 # Canvas web designs
@@ -10,8 +11,8 @@ short-description: Routes, responsive layout, and HTML/CSS export in Canvas.
 A Canvas document whose `module` is `"web"` produces HTML and CSS. The module is chosen at
 `documents.create` and cannot be changed afterwards.
 
-Web differs from deck and print in one way that changes how you build: the export is **semantic**.
-Deck and print flatten a design to a fixed surface, so only appearance survives. Web reads your
+Web differs from a fixed-layout deck or extracted PDF in one way that changes how you build: the
+export is **semantic**. Fixed-layout artifacts preserve a composed surface. Web reads your
 structure and emits corresponding markup, so the hierarchy you build becomes the hierarchy the
 browser gets. Sloppy structure that looks fine in a screenshot exports as sloppy markup.
 
@@ -31,7 +32,7 @@ frames in a web document have no role.
 | `size` | none |
 | `physical` | none |
 
-Unlike deck and print, a route has no physical size. Its dimensions are a working viewport, not a
+Unlike a slide or physical PDF frame, a route has no physical size. Its dimensions are a working viewport, not a
 fixed output surface, so 720 × 480 is a starting canvas you should resize to whatever you are
 designing for.
 
@@ -99,10 +100,10 @@ available. Build with `fill_container`, `fit_content`, `gap`, and `padding`.
 
 ## Exporting
 
-`documents.export` with `role: "route"` writes a **directory**, not a file:
+`documents.export` with `format: "html"` writes a **directory**, not a file:
 
 ```json
-{ "documentId": "…", "role": "route", "frames": ["home", "pricing"],
+{ "documentId": "…", "format": "html", "frames": ["home", "pricing"],
   "destination": "/Users/you/Desktop/site" }
 ```
 

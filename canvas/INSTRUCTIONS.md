@@ -22,29 +22,30 @@ codebase, or image-generation workflow when the requested result belongs primari
 
 ## What a Canvas document is
 
-Two properties shape everything else, and both are decided before any design work begins.
+Two properties shape everything else: the document's module and the roles on its export frames.
 
-A document has a **module** — `deck`, `print`, `web`, or `mobile` — chosen at creation and **fixed
-for the life of the document**. The module decides what the design can become: a presentation, a
-PDF, a website, or mobile source. It cannot be changed later and a document cannot hold two, so it
-is chosen from the artifact the user wants at the end.
+A document has a **module** — `generic`, `deck`, `web`, or `mobile`. Choose `generic` for freeform
+work and artifacts extracted directly as PNG, SVG, or PDF. Choose a deliverable module when the
+result is a PowerPoint presentation, website, or mobile source. A generic document may use
+`SetModule` once while it has no role-bearing frames; a deliverable module does not change later.
 
-Each module carries its own working knowledge, and there is a Skill for each: `canvas-deck`,
-`canvas-print`, `canvas-web`, and `canvas-mobile`. Read the one matching the document's module
-before designing. It describes what that target can express, what it cannot, and what will therefore
-be flattened to an image on the way out — which is far cheaper to know before the work than after.
+Deck, web, and mobile work each has a Skill: `canvas-deck`, `canvas-web`, and `canvas-mobile`.
+Read the one matching the deliverable module before designing. Generic work uses
+`documents.extract`, whose operation manual describes PNG, SVG, multi-page PDF, physical sizing,
+bleed, and the optional PDF/X-4 profile.
 
-Within a document, a frame carrying a **role** is an export unit: one slide, one page, one route,
-one screen. Roles arrive stamped from module presets and are never typed by hand. Most frames have
-no role at all — layouts, cards, groups, and reusable components are ordinary frames, and anything
-sitting outside a role frame is scratch space that no export will ever collect.
+Within a document, a frame carrying a **role** is a deliverable export unit: one slide, one route,
+or one iOS or Android screen. The valid roles are `slide`, `route`, `ios`, and `android`. Creation
+presets stamp the starter role; additional export frames must carry the matching exact value. Most
+frames have no role at all. Any node can still be extracted directly; a frame becomes a PDF page by
+declaring `physical`, not by carrying a page role.
 
 ## What agents can do
 
 Agents can find and open existing designs, create new documents, inspect their structure, make
 precise edits, and export the result. A Canvas document can contain:
 
-- role-bearing frames for slides, pages, routes, and screens;
+- role-bearing frames for slides, routes, and mobile screens, plus roleless physical frames for PDF pages;
 - nested layouts, groups, text, shapes, paths, icons, and images;
 - solid colors, gradients, strokes, opacity, blur, and shadows;
 - reusable components and instances with per-instance overrides;

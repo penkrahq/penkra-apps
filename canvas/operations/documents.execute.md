@@ -11,8 +11,9 @@ result can be reviewed and, while it remains the document head, undone as one un
 
 ## Start from the document's module
 
-Every Canvas document has a `module`, fixed when the document was created, and it decides what the
-document is for and what it eventually exports to. The rest of this file is the same for all four;
+Every Canvas document has a `module`, and it decides what the document is for and which deliverable
+exports apply. A generic document may set a deliverable module once while it has no role-bearing
+frames. The rest of this file is the same for all four;
 what differs per module is which frames are export units, what sizing they need, and what structure
 survives the export.
 
@@ -21,8 +22,8 @@ substantial work:
 
 | Module | Skill | Produces |
 | --- | --- | --- |
+| `generic` | use `documents.extract` help | PNG, SVG, or PDF |
 | `deck` | `canvas-deck` | A `.pptx` presentation |
-| `print` | `canvas-print` | A PDF |
 | `web` | `canvas-web` | HTML and CSS |
 | `mobile` | `canvas-mobile` | SwiftUI or Jetpack Compose source |
 
@@ -91,14 +92,14 @@ stored with the document. A script node depends on an existing `scriptUri` resou
 this operation cannot create that external resource, so preserve existing script nodes rather than
 inventing new ones.
 
-Use top-level frames for slides, screens, pages, and reusable component definitions. A new document
+Use top-level frames for slides, routes, screens, physical PDF pages, and reusable component definitions. A new document
 already contains the `starterFrameId` returned by `documents.create`; update or replace that frame
 for the first design instead of leaving it underneath another frame.
 
 ## Frames that export
 
-Some top-level frames carry a `role`, and that role is what makes a frame an export unit — a slide,
-a page, a route, a screen. `documents.create` stamps the role on the starter frame from the module's
+Some top-level frames carry a `role`, and that role is what makes a frame a deliverable export unit —
+a slide, route, or mobile screen. `documents.create` stamps the role on the starter frame from the module's
 preset. A frame you add yourself has no role unless you set one, and `documents.export` rejects a
 frame whose role does not match the export it was asked for.
 
@@ -107,7 +108,10 @@ not export units. Two rules apply to the ones that do:
 
 - A role-bearing frame is a top-level sibling. It must never contain another role-bearing frame.
 - A reusable component must not live inside a role-bearing frame. Keep components at the document
-  root and place `ref` instances into slides, pages, routes, and screens.
+  root and place `ref` instances into slides, routes, and screens.
+
+A roleless frame may declare `physical` and extract as a PDF page. That physical-page behavior is
+independent of modules and deliverable roles.
 
 The valid roles, the sizing each one needs, and how to add another are module-specific. They are in
 the module's Skill.

@@ -15,7 +15,7 @@ needs no role, and loses nothing.
 ```
 documents.export
   --document-id <id>
-  --format pptx | pdf | html | swift | kotlin
+  --format pptx | html | swift | kotlin
   --destination <path>
   [--frames <nodeId>...]     default: every role-bearing frame, in document order
   [--modes '{"appearance":"dark"}']

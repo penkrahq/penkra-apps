@@ -31,5 +31,5 @@ An Account-backed mobile QA document was exported through the installed 0.2.65 A
 - The 15 existing Canvas documents were migrated in place through the internal stored-projection migration path; no public migration command was added.
 - Mobile capability verdicts are conservative. Measured native behavior is retained where demonstrated; failed or unmeasured candidate behavior uses deterministic raster fallback rather than blocking production export or claiming native fidelity.
 - PDF/X-4 remains a roleless PDF extraction profile with bounded preflight checks. This release does not claim universal third-party certification.
-- Stale `print`/`page` wording remains in protected prose that this implementation was explicitly instructed not to edit; runtime schemas and operations use the current module/role/format model.
+- Active App instructions, operation manuals, architecture prose, and Skills use the current module/role/format model; superseded terminology remains only where historical research or legacy-migration fixtures intentionally describe old input.
 - Penkra's semantic snapshot of a non-foreground Canvas tab remains a host-side visibility issue and is not a Canvas export or release blocker.

@@ -20,12 +20,16 @@ workflow guidance but are not the sole source of required behavior.
 
 ## Documents
 
-A document has one immutable module:
+A document has one module:
 
+- `generic` for freeform designs and direct PNG, SVG, or PDF extraction;
 - `deck` for slide presentations;
-- `print` for physical pages;
 - `web` for responsive routes;
 - `mobile` for iOS and Android screens.
+
+A generic document may set one deliverable module while it has no role-bearing frames. Deck, web,
+and mobile modules do not change afterward. Physical pages are ordinary frames with declared
+`physical` dimensions; they are not a module or role.
 
 Top-level role-bearing frames are export units. Roles are valid only on frames and are specific to
 their module. Reusable component definitions remain top-level peers rather than children of export
@@ -42,12 +46,15 @@ The layout model exposes horizontal, vertical, free-positioned, wrapping, min/ma
 grid layout through the owned OpenPencil/Yoga boundary. Independent row and column gaps, explicit
 tracks, and placement are part of the typed model.
 
-Axes are the shared conditional mechanism for themes, component states and variants, and responsive
-modes. Static targets resolve them at export; responsive targets retain the applicable behavior.
+Axes are the shared conditional mechanism for document-wide appearance and viewport modes. Static
+targets resolve them at export; responsive targets retain the applicable behavior. Component
+variants are component properties: siblings may select different values on the same frame.
 
-Components use typed properties, conditions, lexical nested scopes, cross-document imports, instance
-paths, and recursively pinned dependencies. Descendant remapping is deterministic and validated;
-imports must not flatten first-class component or variable semantics heuristically.
+Components use typed properties, conditions, lexical nested scopes, cross-document imports, and
+instance paths. Libraries publish an explicit item surface and immutable release content. Imports
+either follow the latest published release or retain an exact release identity and content hash;
+their dependency and asset closure remains available without the source document. Descendant
+remapping is deterministic and validated.
 
 ## Text and collaboration
 
@@ -87,10 +94,9 @@ Document collection state subscribes before its initial list load and reconciles
 post-handshake list, covering create/trash races. Sharing and lifecycle operations remain explicit
 rather than side effects of opening or editing.
 
-Migration is a deliberate one-document-at-a-time clean cut, never an open-path side effect. It reads
-the source once, applies best-effort transforms, creates and verifies a copy, copies assets, writes a
-human-readable Markdown loss report, then renames the untouched original as superseded. Migration
-drops the obsolete Pencil format marker; the canonical Canvas schema has no file-format version.
+Migration is an internal stored-projection concern, not a public App operation or an open-path side
+effect. Canonical migrations operate on Canvas/Yjs state and do not restore Pencil compatibility.
+The current Account document set has already been migrated and verified.
 
 ## Export
 
@@ -99,19 +105,21 @@ geometry, paint, text runs and paragraphs, semantics, active capability paths, c
 raster scope.
 
 Capabilities use a closed `native` / `raster` / `ignore` verdict plus explicit verification status.
-An unverified active path blocks production export. Rasterization must have a declared scope, effect
-outset, physical size, and target PPI; Canvas does not crop, guess resolution, or silently downscale.
+An unverified active path blocks production export unless the format table gives it an explicit,
+measured raster fallback. Rasterization has a declared scope, effect outset, authored bounds, and
+format-specific sampling scale; Canvas does not crop or silently downscale.
 CanvasKit effect outsets use the renderer's sigma=`radius/2` convention and Skia's three-sigma kernel
-support. Raster policies are explicit per role. Print PDF page boxes derive only from declared trim,
-bleed, and fold geometry; physical size is never inferred from pixels.
+support. Raster policies are explicit per format. PDF page boxes use declared physical and bleed
+geometry when present; otherwise ordinary extraction derives page size from the node's pixels at
+72 dpi. Folds and safe margins remain advisory and emit nothing.
 
 Implemented targets are:
 
 - editable PPTX for deck frames;
-- physical PDF profiles for print frames;
+- roleless, multi-node PDF extraction, including the optional bounded PDF/X-4 profile;
 - semantic responsive HTML/CSS for web routes;
 - SwiftUI and Jetpack Compose source for mobile screens;
-- PNG and SVG subtree export.
+- PNG and SVG subtree extraction.
 
 Export consequences enumerate every semantic or editability loss without requiring the artifact to
 be opened. Artifact-specific conformance and fidelity evidence lives in the implementation ledger
@@ -127,10 +135,9 @@ resource use are validated at their owning boundary. Unsupported behavior fails 
 declaration is not evidence of a runtime capability; native controller behavior is verified on each
 advertised platform.
 
-Production document migration, App publication, and destructive lifecycle actions remain separately
-authorized effects. All fifteen current Canvas documents are in the deliberate migration scope, but
-each is migrated separately: create and verify a best-effort copy, write its prose report, then leave
-the original untouched apart from renaming it as superseded. QA documents go to recoverable Trash.
+App publication and destructive lifecycle actions remain separately authorized effects. QA
+documents go to recoverable Trash. Internal migrations are verified against stored projections
+before publication rather than exposed as a user-facing command.
 
 ## Evidence
 

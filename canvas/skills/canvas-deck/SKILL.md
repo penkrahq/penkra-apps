@@ -1,8 +1,9 @@
 ---
 name: canvas-deck
 description: Working with presentation decks in Canvas — adding and editing slides, keeping frames exportable, and producing a .pptx. Load this when a Canvas document has module "deck", or before creating one.
-display-name: Canvas decks
-short-description: Slides, slide frames, and .pptx export in Canvas.
+metadata:
+  display-name: Canvas decks
+  short-description: Slides, slide frames, and .pptx export in Canvas.
 ---
 
 # Canvas decks
@@ -85,11 +86,11 @@ compose freely.
 
 ## Exporting
 
-`documents.export` with `role: "slide"` writes a `.pptx` to an absolute file path. Pass the slide
+`documents.export` with `format: "pptx"` writes a `.pptx` to an absolute file path. Pass the slide
 frame IDs explicitly and in the order they should appear:
 
 ```json
-{ "documentId": "…", "role": "slide", "frames": ["slide-1", "slide-2"],
+{ "documentId": "…", "format": "pptx", "frames": ["slide-1", "slide-2"],
   "destination": "/Users/you/Desktop/deck.pptx" }
 ```
 
@@ -100,4 +101,4 @@ without its role.
 The destination must not already exist. Export never overwrites.
 
 For a single slide as an image — pasting one into a chat or a document — use
-`documents.export-image` instead, which takes exactly one subtree and writes a PNG or SVG.
+`documents.extract` instead, which takes any subtree and writes a PNG or SVG.
