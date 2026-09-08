@@ -36,9 +36,11 @@ function assertScreenNames(outputs) {
 }
 
 function ensureComposeImports(source) {
-  return source
-    .replace("import androidx.compose.ui.draw.alpha\n", "import androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.draw.drawWithCache\n")
-    .replace("import androidx.compose.ui.graphics.Color\n", "import androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.drawscope.rotate\nimport androidx.compose.ui.graphics.drawscope.scale\nimport androidx.compose.ui.graphics.drawscope.withTransform\n");
+  let output = source.replace("import androidx.compose.ui.draw.alpha\n", "import androidx.compose.ui.draw.alpha\nimport androidx.compose.ui.draw.drawWithCache\n");
+  if (/\.(?:horizontal|vertical)Scroll\(/u.test(output)) {
+    output = output.replace("import androidx.compose.foundation.background\n", "import androidx.compose.foundation.background\nimport androidx.compose.foundation.horizontalScroll\nimport androidx.compose.foundation.rememberScrollState\nimport androidx.compose.foundation.verticalScroll\n");
+  }
+  return output.replace("import androidx.compose.ui.graphics.Color\n", "import androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.graphics.drawscope.rotate\nimport androidx.compose.ui.graphics.drawscope.scale\nimport androidx.compose.ui.graphics.drawscope.withTransform\n");
 }
 
 function swiftScreen(output, options, ir) {
@@ -189,9 +191,18 @@ function swiftContainer(node, descendants, children, options, depth, root = fals
     ? `.clipShape(${swiftPath({ ...node, vector: roundedRectangleVector(node) })})`
     : ".clipped()";
   const paint = `${background}${clip}.compositingGroup().opacity(${n(node.paint.opacity ?? 1)})`;
+  const contentFrame = node.scroll ? `.frame(width: ${n(node.scroll.contentWidth)}, height: ${n(node.scroll.contentHeight)}, alignment: .topLeading)` : "";
+  const stack = `${indent}${open} {\n${inner}\n${indent}}${contentFrame}`;
+  const body = node.scroll ? `${indent}ScrollView(${swiftScrollAxis(node.scroll.mode)}, showsIndicators: true) {\n${stack}\n${indent}}` : stack;
   const geometry = root ? `${rootFrame}${paint}` : swiftGeometry(node, parentLayout, paint);
   const childSemantics = !root && descendants.length ? ".accessibilityElement(children: .contain)" : "";
-  return `${indent}${open} {\n${inner}\n${indent}}${padding}${geometry}${childSemantics}${access}`;
+  return `${body}${padding}${geometry}${childSemantics}${access}`;
+}
+
+function swiftScrollAxis(mode) {
+  if (mode === "scroll-x") return ".horizontal";
+  if (mode === "scroll-y") return ".vertical";
+  return "[.horizontal, .vertical]";
 }
 
 function swiftText(node, options) {
@@ -389,6 +400,9 @@ function composeContainer(node, descendants, children, options, depth, root = fa
     modifier += isGradientFill(node.paint.fill) ? "" : `.background(${composeColor(solid(node.paint.fill))}${shape})`;
   }
   if (node.clip) modifier += node.paint.cornerRadius != null ? `.canvasClipShape(${composeRoundedShape(node)})` : ".canvasClipToBounds()";
+  if (node.scroll?.mode === "scroll-x") modifier += ".horizontalScroll(rememberScrollState())";
+  else if (node.scroll?.mode === "scroll-y") modifier += ".verticalScroll(rememberScrollState())";
+  else if (node.scroll?.mode === "scroll-both") modifier += ".horizontalScroll(rememberScrollState()).verticalScroll(rememberScrollState())";
   const insets = mobilePadding(node);
   // Resolved child offsets include padding; do not apply it again in the
   // fixed-position wrapped lowering.

@@ -122,7 +122,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       Object.fromEntries(
         beforeInspection.items.map((item) => [
           item.id,
-          { bounds: item.bounds, problems: item.problems },
+          { bounds: item.bounds, problems: item.problems, overflow: item.overflow },
         ]),
       ),
     );

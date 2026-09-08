@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.70",
+  "version": "0.2.71",
   "compatibility": {
     "penkra": ">=0.11.15"
   },
@@ -414,6 +414,7 @@
           "node": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Exact nodes in artifact order. Several nodes can share one PDF file." },
           "format": { "enum": ["png", "svg", "pdf"] },
           "profile": { "enum": ["PDF/X-4"], "description": "PDF-only print profile using the bundled output condition; serialized output must pass the Canvas writer preflight." },
+          "scrollContent": { "enum": ["viewport", "full"], "description": "Static extraction of scroll-x, scroll-y or scroll-both frames: viewport (default) clips at the authored viewport; full expands content bounds. Full is rejected for a physical PDF subtree containing a scroll container." },
           "scale": { "type": "number", "exclusiveMinimum": 0, "maximum": 8 },
           "destination": { "type": "string", "minLength": 1, "description": "Absolute path. A trailing / creates a new directory containing <nodeId>.<format> per node; otherwise use this exact filename. Existing destinations and filename collisions are errors." },
           "modes": { "type": "object", "additionalProperties": { "type": "string" } }

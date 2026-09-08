@@ -185,6 +185,34 @@ test("web source retains semantic constructs and accessibility", () => {
   assert.match(files.get("styles.css"), /prefers-color-scheme/u); assert.match(files.get("styles.css"), /min-width: 900px/u); assert.doesNotMatch(files.get("styles.css"), /:hover/u); assert.match(files.get("title.html"), /canvas-grid/u); assert.match(files.get("title.html"), /grid-template-columns:1fr 2fr/u); assert.match(files.get("title.html"), /<h1/u); assert.match(files.get("title.html"), /aria-label="Deck title"/u);
 });
 
+test("web overflow maps each scroll direction to independent CSS overflow axes", () => {
+  const route = { module: "web", children: [{ id: "screen", type: "frame", role: "route", name: "Overflow", width: 120, height: 80, layout: "none", overflow: "scroll-y", children: [
+    { id: "content", type: "rectangle", width: 120, height: 240, fill: "#123456" },
+  ] }] };
+  const html = exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("overflow.html");
+  assert.match(html, /overflow-x:hidden;overflow-y:auto/u);
+  route.children[0].overflow = "scroll-x";
+  assert.match(exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("overflow.html"), /overflow-x:auto;overflow-y:hidden/u);
+  route.children[0].overflow = "scroll-both";
+  assert.match(exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("overflow.html"), /overflow:auto/u);
+  route.children[0].overflow = "clip";
+  assert.match(exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("overflow.html"), /overflow:hidden/u);
+  route.children[0].overflow = "visible";
+  assert.match(exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("overflow.html"), /overflow:visible/u);
+});
+
+test("mobile overflow emits native scrolling wrappers while retaining the viewport frame", () => {
+  const make = (role, overflow) => buildExporterIR({ module: "mobile", children: [{ id: "screen", type: "frame", role, name: "Overflow", width: 120, height: 80, layout: "none", overflow, children: [
+    { id: "content", type: "rectangle", width: 240, height: 180, fill: "#123456" },
+  ] }] }, { role, frames: ["screen"] });
+  const swift = exportSwiftUI(make("ios", "scroll-both")).get("Overflow.swift");
+  assert.match(swift, /ScrollView\(\[\.horizontal, \.vertical\], showsIndicators: true\)/u);
+  assert.match(swift, /\.frame\(width: 240, height: 180, alignment: \.topLeading\)/u);
+  const kotlin = exportCompose(make("android", "scroll-both")).get("Overflow.kt");
+  assert.match(kotlin, /\.horizontalScroll\(rememberScrollState\(\)\)\.verticalScroll\(rememberScrollState\(\)\)/u);
+  assert.match(kotlin, /Modifier\.size\(120\.dp, 80\.dp\)/u);
+});
+
 test("mobile grid candidate emits source for device verification", () => {
   const route = structuredClone(document); route.module = "mobile"; route.children[0].role = "ios";
   route.children[0].children[1] = { ...route.children[0].children[1], type: "frame", effect: undefined, layout: "grid", gridTemplateColumns: ["1fr", "2fr"], children: [] };

@@ -16,6 +16,7 @@ documents.extract
   --destination <path>
   [--scale <n>]              png only, default 1
   [--modes '{"appearance":"dark"}']
+  [--scroll-content viewport | full]  default viewport
 ```
 
 ## How many files you get
@@ -41,6 +42,18 @@ one valid file.
   axis; a request that would downscale fails rather than silently shrinking.
 - **svg** — vector. Paths stay paths, text stays text.
 - **pdf** — vector, text preserved, fonts embedded.
+
+## Scroll containers
+
+Frames may declare `overflow: scroll-x`, `scroll-y`, or `scroll-both`. Static extraction uses the
+authored viewport by default: overflowing content is clipped at the frame bounds. Pass
+`--scroll-content full` to expand those containers and derive the artifact bounds from all of their
+descendants. This option never changes the source document.
+
+`full` works for PNG, SVG, and nonphysical PDF extraction, including multi-node PDF and directory
+destinations. A physical PDF has a fixed page size, so `full` fails with
+`CANVAS_EXTRACT_SCROLL_PHYSICAL` when the selected subtree contains a scroll container. A plain
+`overflow: clip` frame remains clipped; interactive/editor screenshots continue to show the viewport.
 
 ## Physical size
 
@@ -85,3 +98,5 @@ Two files for light and dark is two calls. One file claiming to be both is not a
 | `CANVAS_EXTRACT_FORMAT_SINGLE_UNIT` | Several nodes named, file destination, format holds one unit. |
 | `CANVAS_EXTRACT_SCALE_UNSUPPORTED` | `--scale` given for a vector format. |
 | `CANVAS_EXTRACT_DIMENSION_LIMIT` | Requested raster exceeds 8192px on an axis. |
+| `CANVAS_EXTRACT_SCROLL_CONTENT` | `scrollContent` is not `viewport` or `full`. |
+| `CANVAS_EXTRACT_SCROLL_PHYSICAL` | `full` would expand a scroll container inside a physical PDF subtree. |

@@ -189,6 +189,19 @@ test("raster image wrappers do not reapply baked opacity, rotation or paint", ()
   assert.ok(Math.abs(rotated.geometry.h - 100) < 0.001);
 });
 
+test("overflow survives into the live exporter IR with the authored viewport and content extent", () => {
+  for (const [role, module] of [["route", "web"], ["ios", "mobile"], ["android", "mobile"]]) {
+    const source = { module, children: [{ id: "screen", type: "frame", role, width: 120, height: 80, layout: "none", overflow: "scroll-both", children: [
+      { id: "content", type: "rectangle", x: 30, y: 20, width: 240, height: 180, fill: "#123456" },
+    ] }] };
+    const output = buildExporterIR(source, { role, frames: ["screen"] }).outputs[0];
+    assert.equal(output.root.layout.overflow, "scroll-both");
+    assert.deepEqual(output.root.scroll, { mode: "scroll-both", contentWidth: 270, contentHeight: 200 });
+    assert.equal(output.root.clip, true);
+    assert.deepEqual(output.nodes[0].geometry, { x: 30, y: 20, localX: 30, localY: 20, w: 240, h: 180, rotation: 0 });
+  }
+});
+
 test("isolated compositing contexts bound raster scope and carry computed outsets", () => {
   const document = { version: "2.17", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", width: 1280, height: 720, children: [{ id: "outer", type: "frame", width: 500, height: 400, children: [{ id: "isolated", type: "frame", width: 300, height: 250, opacity: 0.8, children: [{ id: "blur", type: "rectangle", width: 100, height: 80, effect: { type: "background_blur", radius: 8 } }, { id: "mesh", type: "rectangle", y: 100, width: 100, height: 80, fill: { type: "mesh_gradient" } }] }] }] }] };
   document.children[0].physical = { w: 13.333, h: 7.5, unit: "in" };

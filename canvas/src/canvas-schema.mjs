@@ -100,11 +100,12 @@ export const CANVAS_SCHEMA = deepFreeze({
         properties: { type: "record", values: { ref: "property" } }, bind: { type: "record", values: { type: "string" } },
         visible: { type: "object" }, varies: { type: "array", items: { type: "string" } }, modes: { type: "record", values: { type: "string" } }, notesFor: { type: "string" },
       }),
-      layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"], {
+      layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip", "overflow"], {
         layout: { type: "enum", values: ["none", "horizontal", "vertical", "grid"] }, gap: { type: "canvas-value" }, rowGap: { type: "canvas-value" }, columnGap: { type: "canvas-value" },
         wrap: { type: "boolean" }, minWidth: { type: "dimension" }, maxWidth: { type: "dimension" }, minHeight: { type: "dimension" }, maxHeight: { type: "dimension" },
         gridTemplateColumns: { type: "array", items: { ref: "gridTrack" } }, gridTemplateRows: { type: "array", items: { ref: "gridTrack" } },
         gridColumn: { type: "integer" }, gridRow: { type: "integer" }, layoutPosition: { type: "enum", values: ["absolute", "relative"] }, clip: { type: "boolean" },
+        overflow: { type: "enum", values: ["visible", "clip", "scroll-x", "scroll-y", "scroll-both"] },
       }),
       paint: fields(["fill", "stroke", "effect", "blendMode", "cornerRadius"], {
         blendMode: { type: "string" },
@@ -164,6 +165,7 @@ export function validateCanvasDocument(document, options = {}) {
     if (node.role !== undefined && node.type !== "frame") errors.push(`${node.id}.role may only appear on a frame.`);
     else if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
     validateFrameGeometry(node, errors);
+    if (node.overflow !== undefined && node.type !== "frame") errors.push(`${node.id}.overflow may only appear on a frame.`);
     if (node.type === "text") errors.push(...validateRichText(node));
     if (["path", "polygon"].includes(node.type)) {
       if (typeof node.geometry !== "string" || !node.geometry.trim()) errors.push(`${node.id}.geometry must be a non-empty SVG path string.`);

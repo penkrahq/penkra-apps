@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { lowerCanvasModelForOpenPencil, prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { lowerCanvasModelForOpenPencil, prepareOpenPencilRenderDocument, resolveCanvasOverflow } from "./openpencil-render-document.mjs";
 import {
   migrateM1DelimitedVariables,
   migrateM2AssignModule,
@@ -32,6 +32,23 @@ test("Canvas stroke width and dash lower into renderer fields without mutating t
   assert.equal(result.document.children[0].stroke.cap, "round");
   assert.equal(source.children[0].stroke.thickness, undefined);
   assert.equal(source.children[0].stroke.dashPattern, undefined);
+});
+
+test("scroll containers lower to the renderer clipping primitive without mutating authored overflow", () => {
+  const source = {
+    children: [
+      { id: "vertical", type: "frame", overflow: "scroll-y", clip: false, children: [] },
+      { id: "legacy", type: "frame", clip: true, children: [] },
+      { id: "visible", type: "frame", overflow: "visible", clip: true, children: [] },
+    ],
+  };
+  const lowered = lowerCanvasModelForOpenPencil(source);
+  assert.equal(lowered.children[0].clip, true);
+  assert.equal(lowered.children[1].clip, true);
+  assert.equal(lowered.children[2].clip, false);
+  assert.equal(resolveCanvasOverflow(source.children[0]), "scroll-y");
+  assert.equal(source.children[0].clip, false);
+  assert.equal(source.children[2].clip, true);
 });
 
 test("interpolates multiple delimited variables while leaving currency literal", () => {

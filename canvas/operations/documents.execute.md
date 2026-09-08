@@ -62,6 +62,7 @@ Common properties include:
 | `opacity` | Opacity from `0` to `1` |
 | `enabled` | Whether the node is visible and active |
 | `clip` | Whether a frame clips content outside its bounds |
+| `overflow` | Frame viewport behavior: `visible`, `clip`, `scroll-x`, `scroll-y`, or `scroll-both` |
 | `flipX`, `flipY` | Horizontal or vertical reflection |
 | `theme` | Existing theme override retained with the node |
 
@@ -136,6 +137,11 @@ In an auto-layout frame, ordinary child `x` and `y` values do not control placem
 `layoutPosition: "absolute"` only when a child deliberately leaves layout flow, such as a badge or
 decorative overlay. These values are not CSS: percentages, viewport units, `calc()`, margins,
 wrapping, and baseline alignment are unavailable.
+
+Set `overflow` on a frame to mark a scrolling region. `scroll-x`, `scroll-y`, and `scroll-both`
+clip the authored viewport and expose measured content and overflow dimensions through `Get`.
+Web and mobile exports preserve the direction; static extraction uses the viewport unless its
+explicit `scrollContent` option is `full`.
 
 ```js
 Insert("#container", {
@@ -424,7 +430,8 @@ through the ref's `descendants` object.
 
 Without a visitor, `Get` returns immutable contexts. Each contains a shallow cloned `node`, shallow
 cloned `parent` or `null`, `childCount`, sibling `index`, slash-separated `path`, resolved `bounds`,
-and reported `problems`. This shallow default prevents an exact route/frame lookup from accidentally
+and reported `problems`. Scroll frames additionally expose `overflow` with its mode, measured content
+dimensions, and overflow on each axis. This shallow default prevents an exact route/frame lookup from accidentally
 returning its complete subtree. Pass `{ depth: 1 }` (through `100`) to include that many child
 levels, or `{ depth: "all" }` only when the complete subtree is deliberately required. With a
 visitor, Canvas invokes it once per match with the complete source node and returns the match count;

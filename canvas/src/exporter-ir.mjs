@@ -85,6 +85,8 @@ function buildExporterIRBase(document, request) {
         paint: { fill: frame.fill ?? null, stroke: frame.stroke ?? null, effect: frame.effect ?? null, cornerRadius: frame.cornerRadius ?? null, opacity: graphNode.opacity, blendMode: frame.blendMode ?? "normal" },
         semantics: { description: frame.description ?? null, decorative: frame.decorative === true, landmark: frame.landmark ?? null, linkName: frame.linkName ?? null },
         layout: semanticLayout(frame),
+        ...(effectiveOverflow(frame) !== "visible" ? { clip: true } : {}),
+        ...(scrollMetadata(frame, graph, frameId) ? { scroll: scrollMetadata(frame, graph, frameId) } : {}),
         variants: semanticVariants(authoredById.get(frameId) ?? frame),
         capability: rootCapability,
       },
@@ -322,11 +324,12 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
         paint: { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
         semantics: source.type === "text" ? { content: source.content ?? "", textAlign: source.textAlign, textAlignVertical: source.textAlignVertical, runs: richTextRuns(source, paragraphStyles, documentLanguage), paragraphs: (source.paragraphs?.length ? source.paragraphs : (source.content ? [{ from: 0, to: source.content.length, ...(source.headingLevel ? { headingLevel: source.headingLevel } : {}) }] : [])).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined, effectiveAlign: paragraph.align ?? (paragraph.style ? paragraphStyles[paragraph.style]?.align : undefined) ?? source.textAlign })), language: source.lang ?? source.language ?? documentLanguage, description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null } : { description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null },
         layout: semanticLayout(source),
+        ...(scrollMetadata(source, graph, node.id) ? { scroll: scrollMetadata(source, graph, node.id) } : {}),
         ...(textLayout ? { textLayout } : {}),
         ...(source.type === "path" || source.type === "polygon" ? { vector: vectorForNode(source) } : {}),
         variants: semanticVariants(authoredSource),
         export: source.export ?? "default", capability: entry,
-        provenance: source.provenance ?? null, clip: source.clip === true ? node.id : null, isolation: needsIsolation(source) ? node.id : null,
+        provenance: source.provenance ?? null, clip: effectiveOverflow(source) !== "visible" ? node.id : null, isolation: needsIsolation(source) ? node.id : null,
       });
       if (entry.verdict === "raster") return;
     }
@@ -444,7 +447,7 @@ function applyRasterScopes(nodes, rasters) {
 
 function capabilityPaths(node, projection) {
   const paths = new Set([`nodes.${node.type}`]);
-  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "cornerRadius", "blendMode", "decorative", "bleed", "safeMargin", "folds"]) {
+  for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "overflow", "cornerRadius", "blendMode", "decorative", "bleed", "safeMargin", "folds"]) {
     if (node[key] !== undefined) paths.add(`properties.${key}`);
   }
   if (node.description !== undefined) paths.add("properties.accessibility.description");
@@ -498,7 +501,7 @@ function capabilityPaths(node, projection) {
     }
   }
   if (node.type === "path" || node.type === "polygon") for (const key of ["geometry", "viewBox", "fillRule"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
-  if (projection === "semantic") for (const key of ["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
+  if (projection === "semantic") for (const key of ["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "overflow"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
   return [...paths];
 }
 
@@ -566,7 +569,30 @@ function textBase(node) {
   else if (node.language !== undefined) base.language = node.language;
   return base;
 }
-function semanticLayout(node) { return Object.fromEntries(["textGrowth", "layout", "gap", "rowGap", "columnGap", "padding", "alignItems", "justifyContent", "layoutPosition", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "width", "height"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]])); }
-function needsIsolation(node) { return Number(node.opacity ?? 1) < 1 || ![undefined, "normal", "pass_through"].includes(node.blendMode) || node.clip === true; }
+function semanticLayout(node) { return Object.fromEntries(["textGrowth", "layout", "gap", "rowGap", "columnGap", "padding", "alignItems", "justifyContent", "layoutPosition", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "width", "height", "overflow"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]])); }
+function effectiveOverflow(node) { return node.overflow ?? (node.clip === true ? "clip" : "visible"); }
+function scrollMetadata(node, graph, nodeId) {
+  const mode = effectiveOverflow(node);
+  if (!mode.startsWith("scroll-")) return null;
+  const childIds = descendantIds(graph, graph.getNode(nodeId)?.childIds ?? []);
+  const bounds = childIds.length
+    ? computeDescendantVisualBounds(childIds, (id) => graph.getNode(id) ?? undefined, (id) => graph.getAbsolutePosition(id))
+    : null;
+  const width = Number(node.width ?? graph.getNode(nodeId)?.width ?? 0);
+  const height = Number(node.height ?? graph.getNode(nodeId)?.height ?? 0);
+  const origin = graph.getAbsolutePosition(nodeId);
+  const contentWidth = bounds ? Math.max(origin.x + width, bounds.maxX) - Math.min(origin.x, bounds.minX) : width;
+  const contentHeight = bounds ? Math.max(origin.y + height, bounds.maxY) - Math.min(origin.y, bounds.minY) : height;
+  return { mode, contentWidth, contentHeight };
+}
+function descendantIds(graph, roots, result = []) {
+  for (const id of roots) {
+    result.push(id);
+    const childIds = graph.getNode(id)?.childIds ?? [];
+    descendantIds(graph, childIds, result);
+  }
+  return result;
+}
+function needsIsolation(node) { return Number(node.opacity ?? 1) < 1 || ![undefined, "normal", "pass_through"].includes(node.blendMode) || effectiveOverflow(node) !== "visible"; }
 function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
 function exportError(code, message) { const error = new Error(message); error.code = code; return error; }

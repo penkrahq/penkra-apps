@@ -17,7 +17,7 @@ import { exportWeb } from "./exporters/web.mjs";
 import { exportCompose, exportSwiftUI } from "./exporters/mobile.mjs";
 import { exportSvg } from "./exporters/svg.mjs";
 import { measureDocumentText, takeDocumentScreenshots } from "./document-screenshot.mjs";
-import { resolveCanvasDocument } from "./canvas-resolver.mjs";
+import { prepareScrollContentDocument } from "./scroll-content.mjs";
 
 export async function exportDocument(document, request, options = {}) {
   await preflightExportDestinations([request.destination]);
@@ -106,6 +106,11 @@ export async function publishPreparedDocumentExports(prepared) {
 
 function validateExtractionRequest(request) {
   if (!["png", "svg", "pdf"].includes(request.format)) throw new Error("Extraction format must be png, svg or pdf.");
+  if (request.scrollContent !== undefined && !["viewport", "full"].includes(request.scrollContent)) {
+    const error = new Error("scrollContent must be viewport or full.");
+    error.code = "CANVAS_EXTRACT_SCROLL_CONTENT";
+    throw error;
+  }
   if (request.profile !== undefined && (request.format !== "pdf" || request.profile !== "PDF/X-4")) {
     const error = new Error("The extraction profile must be PDF/X-4 and is only valid for PDF.");
     error.code = "CANVAS_PDF_PROFILE_UNKNOWN";
@@ -173,12 +178,27 @@ async function renderExtractionNode(document, request, options) {
     return { bytes: artifact, report: { format: "pdf", consequences: ir.consequences } };
   }
   if (request.format === "png") {
-    const renderDocument = resolveCanvasDocument(document, { modes: request.modes, imports: options.imports }).document;
+    const renderDocument = prepareScrollContentDocument(document, {
+      nodeId: request.nodeId,
+      format: request.format,
+      mode: request.scrollContent,
+      modes: request.modes,
+      bindings: request.bindings,
+      imports: options.imports,
+    });
     const [image] = await takeDocumentScreenshots(renderDocument, [{ nodeIds: [request.nodeId] }], options.assets, { scale: request.scale ?? 1, maxDimension: 8192, failOnDownscale: true });
     return { bytes: Buffer.from(image.data, "base64"), report: { width: image.width, height: image.height, format: "png" } };
   }
   if (request.format === "svg") {
-    const svgIr = buildExtractionIR(document, { nodeId: request.nodeId, modes: request.modes, imports: options.imports, scale: request.scale });
+    const prepared = prepareScrollContentDocument(document, {
+      nodeId: request.nodeId,
+      format: request.format,
+      mode: request.scrollContent,
+      modes: request.modes,
+      bindings: request.bindings,
+      imports: options.imports,
+    });
+    const svgIr = buildExtractionIR(prepared, { nodeId: request.nodeId, modes: request.modes, imports: options.imports, scale: request.scale });
     const rasterHrefs = new Map();
     for (const raster of svgIr.rasters) {
       const image = await takeDocumentScreenshots(
@@ -198,7 +218,14 @@ async function renderExtractionNode(document, request, options) {
 }
 
 async function buildPdfExtractionIR(document, request, options) {
-  const resolved = resolveCanvasDocument(document, { modes: request.modes, imports: options.imports }).document;
+  const resolved = prepareScrollContentDocument(document, {
+    nodeId: request.nodeId,
+    format: "pdf",
+    mode: request.scrollContent,
+    modes: request.modes,
+    bindings: request.bindings,
+    imports: options.imports,
+  });
   const textIds = [];
   const visit = (node, selected = false) => {
     selected ||= node.id === request.nodeId;
@@ -207,7 +234,7 @@ async function buildPdfExtractionIR(document, request, options) {
   };
   for (const node of resolved.children ?? []) visit(node);
   const preparedText = textIds.length ? await measureDocumentText(resolved, textIds, options.assets) : undefined;
-  return buildExtractionIR(document, { ...request, imports: options.imports, preparedText });
+  return buildExtractionIR(resolved, { ...request, imports: options.imports, preparedText });
 }
 
 async function renderPdfExtraction(ir, request, options) {

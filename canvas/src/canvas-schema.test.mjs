@@ -187,7 +187,7 @@ test("canonical schema enforces role, notes, node modes and flow relationships",
 });
 
 test("capability totality is generated from the canonical inventory", () => {
-  assert.equal(capabilityPathInventory().length, 142);
+  assert.equal(capabilityPathInventory().length, 143);
   assert.equal(capabilityPathInventory().includes("roles.page"), false);
   const properties = Object.fromEntries(capabilityPathInventory().map((path) => [path, { verdict: "native" }]));
   assert.equal(assertCapabilityTotality({ properties }), true);
@@ -198,10 +198,27 @@ test("capability totality is generated from the canonical inventory", () => {
   assert.ok(capabilityPathInventory().includes("properties.fill.image"));
   assert.ok(capabilityPathInventory().includes("root.lang"));
   assert.ok(capabilityPathInventory().includes("properties.layout"));
+  assert.ok(capabilityPathInventory().includes("properties.overflow"));
   assert.ok(capabilityPathInventory().includes("roles.slide"));
   assert.ok(capabilityPathInventory().includes("nodes.frame"));
   assert.ok(capabilityPathInventory().includes("relationships.ref"));
   assert.equal(capabilityPathInventory().includes("image"), false);
+});
+
+test("scroll overflow is a frame-only closed enum and legacy clip remains valid", () => {
+  const value = document();
+  for (const overflow of ["visible", "clip", "scroll-x", "scroll-y", "scroll-both"]) {
+    value.children[0].overflow = overflow;
+    assert.equal(validateCanvasDocument(value).valid, true, overflow);
+  }
+  value.children[0].overflow = "diagonal";
+  assert.throws(() => validateCanvasDocument(value), /overflow must be one of visible, clip, scroll-x, scroll-y, scroll-both/u);
+  delete value.children[0].overflow;
+  value.children[0].clip = true;
+  assert.equal(validateCanvasDocument(value).valid, true);
+  value.children[0].clip = undefined;
+  value.children[0].children = [{ id: "shape", type: "rectangle", overflow: "scroll-y", width: 10, height: 10 }];
+  assert.throws(() => validateCanvasDocument(value), /shape\.overflow may only appear on a frame/u);
 });
 
 test("validation rejects mutual component recursion before resolver expansion", () => {

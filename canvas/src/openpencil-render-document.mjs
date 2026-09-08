@@ -258,6 +258,7 @@ export function lowerCanvasModelForOpenPencil(source) {
       node.theme = structuredClone(node.modes);
       delete node.modes;
     }
+    if (node?.type === "frame") node.clip = resolveCanvasOverflow(node) !== "visible";
   });
   walkCanvasNodes(document.children, (instance) => {
     if (instance?.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) return;
@@ -285,6 +286,11 @@ export function lowerCanvasModelForOpenPencil(source) {
     if (Object.keys(descendants).length > 0) instance.descendants = descendants;
   });
   return document;
+}
+
+/** Resolve the authored overflow mode, retaining clip as the legacy shorthand. */
+export function resolveCanvasOverflow(node) {
+  return node?.overflow ?? (node?.clip === true ? "clip" : "visible");
 }
 
 function walkCanvasNodes(children, visit) {

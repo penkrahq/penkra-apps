@@ -45,7 +45,14 @@ const document = {
       marks: [],
       paragraphs: [{ from: 0, to: 20, headingLevel: 1 }],
       description: "Primary page heading",
-    }],
+    }, ...[
+      ["scroll-x", "scroll-x"],
+      ["scroll-y", "scroll-y"],
+      ["scroll-both", "scroll-both"],
+    ].map(([id, overflow]) => ({
+      id, type: "frame", width: 120, height: 80, layout: "none", overflow,
+      children: [{ id: `${id}-content`, type: "rectangle", x: 30, y: 20, width: 200, height: 140, fill: "#2563eb" }],
+    }))],
   }],
 };
 
@@ -115,6 +122,19 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
   await page.send("CSS.forcePseudoState", { nodeId, forcedPseudoClasses: ["hover"] });
   assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('route')).gap"), "24px");
   assert.equal(await evaluate(page, "document.documentElement.lang"), "en-GB");
+
+  assert.deepEqual(await evaluate(page, `(() => {
+    const read = id => { const element = document.getElementById(id); const style = getComputedStyle(element); return {
+      overflowX: style.overflowX, overflowY: style.overflowY,
+      clientWidth: element.clientWidth, clientHeight: element.clientHeight,
+      scrollWidth: element.scrollWidth, scrollHeight: element.scrollHeight,
+    }; };
+    return [read("scroll-x"), read("scroll-y"), read("scroll-both")];
+  })()`), [
+    { overflowX: "auto", overflowY: "hidden", clientWidth: 120, clientHeight: 80, scrollWidth: 230, scrollHeight: 160 },
+    { overflowX: "hidden", overflowY: "auto", clientWidth: 120, clientHeight: 80, scrollWidth: 230, scrollHeight: 160 },
+    { overflowX: "auto", overflowY: "auto", clientWidth: 120, clientHeight: 80, scrollWidth: 230, scrollHeight: 160 },
+  ]);
 });
 
 async function devtoolsUrl(child) {

@@ -65,6 +65,9 @@ function nodeStyle(node, parent) {
   const parentFlows = parent && ["grid", "horizontal", "vertical"].includes(parent.layout.layout);
   const style = [];
   if (!parentFlows) style.push("position:absolute", `left:${node.geometry.localX ?? node.geometry.x}px`, `top:${node.geometry.localY ?? node.geometry.y}px`);
+  // Absolutely positioned descendants must use the scroll frame as their
+  // containing block even when that frame itself is a grid/flex child.
+  if (node.layout.overflow && node.layout.overflow !== "visible" && parentFlows) style.push("position:relative");
   style.push(`width:${node.geometry.w}px`, `height:${node.geometry.h}px`);
   const fill = solid(node.paint.fill);
   if (fill && !node.vector) style.push(`background:${fill}`);
@@ -81,6 +84,12 @@ function nodeStyle(node, parent) {
   if (node.layout.gridTemplateRows) style.push(`grid-template-rows:${tracks(node.layout.gridTemplateRows)}`);
   if (node.layout.gridColumn) style.push(`grid-column:${node.layout.gridColumn}`);
   if (node.layout.gridRow) style.push(`grid-row:${node.layout.gridRow}`);
+  const overflow = node.layout.overflow;
+  if (overflow === "visible") style.push("overflow:visible");
+  else if (overflow === "clip") style.push("overflow:hidden");
+  else if (overflow === "scroll-x") style.push("overflow-x:auto", "overflow-y:hidden");
+  else if (overflow === "scroll-y") style.push("overflow-x:hidden", "overflow-y:auto");
+  else if (overflow === "scroll-both") style.push("overflow:auto");
   if (node.geometry.rotation) style.push(`transform:rotate(${node.geometry.rotation}deg)`);
   return style.join(";");
 }

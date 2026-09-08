@@ -22,6 +22,18 @@ test("inspection context is requested only when scripts mention inspection field
   assert.equal(scriptNeedsInspection("Print(1);"), false);
   assert.equal(scriptNeedsInspection('return Get("#a")[0].bounds;'), true);
   assert.equal(scriptNeedsInspection('return Get("#a")[0]["problems"];'), true);
+  assert.equal(scriptNeedsInspection('return Get("#a")[0].overflow;'), true);
+});
+
+test("Get exposes immutable scroll inspection metrics", async () => {
+  const result = await executeCanvasScript(
+    { version: "2.15", children: [{ id: "scroll", type: "frame", overflow: "scroll-y", children: [] }] },
+    `const context = Get("#scroll")[0];
+     try { context.overflow.overflowY = 0; } catch {}
+     return context.overflow;`,
+    { scroll: { overflow: { mode: "scroll-y", contentWidth: 120, contentHeight: 420, overflowX: 0, overflowY: 320 } } },
+  );
+  assert.deepEqual(result.result, { mode: "scroll-y", contentWidth: 120, contentHeight: 420, overflowX: 0, overflowY: 320 });
 });
 
 test("execute scripts edit only their private JSON document", async () => {

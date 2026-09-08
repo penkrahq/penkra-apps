@@ -39,7 +39,7 @@ export async function executeCanvasScript(document, code, inspection = {}) {
 }
 
 export function scriptNeedsInspection(code) {
-  return typeof code === "string" && /\b(?:bounds|problems)\b/u.test(code);
+  return typeof code === "string" && /\b(?:bounds|problems|overflow)\b/u.test(code);
 }
 
 function assertByteLimit(value, limit, label) {
@@ -171,6 +171,7 @@ function __context(entry, depth = "all") {
     path: entry.path.join("/"),
     bounds: inspected.bounds === undefined ? null : __readonly(__clone(inspected.bounds)),
     problems: __readonly(__clone(inspected.problems || [])),
+    overflow: inspected.overflow === undefined ? null : __readonly(__clone(inspected.overflow)),
   });
 }
 

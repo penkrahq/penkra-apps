@@ -1,11 +1,14 @@
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
-import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { prepareOpenPencilRenderDocument, resolveCanvasOverflow } from "./openpencil-render-document.mjs";
 import { designValidationIssues } from "./document-review.mjs";
+import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";
 
 export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) {
   const limit = Math.min(1_000, Math.max(1, Number(requestedLimit) || 500));
   const prepared = prepareOpenPencilRenderDocument(document);
   const graph = createOpenPencilGraph(document, new Map(), prepared);
+  const hasScrollContainers = nodes.some(({ node }) => node.type === "frame" && resolveCanvasOverflow(node).startsWith("scroll-"));
+  const contentGraph = hasScrollContainers ? createUnclippedGraph(document) : graph;
   const reviewIssues = [...prepared.issues, ...designValidationIssues(document)];
   const issuesByNode = new Map();
   for (const issue of reviewIssues) {
@@ -44,6 +47,7 @@ export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) 
         Object.entries(node).filter(([key]) => !["id", "type", "children"].includes(key)),
       ),
       bounds: boundsById.get(node.id),
+      ...(node.type === "frame" ? scrollInspection(node, contentGraph, boundsById.get(node.id)) : {}),
       problems: [
         ...(issuesByNode.get(node.id) ?? []).map((issue) => structuredClone(issue)),
         ...clippingProblems(node.id, nodeById, parentById, boundsById),
@@ -52,6 +56,43 @@ export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) 
     truncated: selectedNodes.length > limit,
     total: selectedNodes.length,
     issues: reviewIssues,
+  };
+}
+
+function createUnclippedGraph(document) {
+  const source = structuredClone(document);
+  walk(source.children, (node) => {
+    if (node.type === "frame" && resolveCanvasOverflow(node).startsWith("scroll-")) {
+      node.overflow = "visible";
+      node.clip = false;
+    }
+  });
+  const prepared = prepareOpenPencilRenderDocument(source);
+  return createOpenPencilGraph(source, new Map(), prepared);
+}
+
+function scrollInspection(node, graph, viewport) {
+  const mode = resolveCanvasOverflow(node);
+  if (!mode.startsWith("scroll-") || !viewport || !graph.getNode(node.id)) return {};
+  const childIds = graph.getNode(node.id).childIds ?? [];
+  const contentBounds = computeDescendantVisualBounds(
+    childIds,
+    (id) => graph.getNode(id),
+    (id) => graph.getAbsolutePosition(id),
+  );
+  if (!contentBounds || ![contentBounds.minX, contentBounds.minY, contentBounds.maxX, contentBounds.maxY].every(Number.isFinite)) return {};
+  const right = viewport.x + viewport.width;
+  const bottom = viewport.y + viewport.height;
+  const contentWidth = Math.max(right, contentBounds.maxX) - Math.min(viewport.x, contentBounds.minX);
+  const contentHeight = Math.max(bottom, contentBounds.maxY) - Math.min(viewport.y, contentBounds.minY);
+  return {
+    overflow: {
+      mode,
+      contentWidth,
+      contentHeight,
+      overflowX: Math.max(0, viewport.x - contentBounds.minX) + Math.max(0, contentBounds.maxX - right),
+      overflowY: Math.max(0, viewport.y - contentBounds.minY) + Math.max(0, contentBounds.maxY - bottom),
+    },
   };
 }
 
@@ -95,4 +136,11 @@ function contains(outer, inner) {
     && inner.y >= outer.y
     && inner.x + inner.width <= outer.x + outer.width
     && inner.y + inner.height <= outer.y + outer.height;
+}
+
+function walk(children, visit) {
+  for (const node of children ?? []) {
+    visit(node);
+    walk(node.children, visit);
+  }
 }

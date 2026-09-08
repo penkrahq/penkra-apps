@@ -66,6 +66,23 @@ test("aggregate capability gate is total with unmeasured mobile rows rasterized"
   }
 });
 
+test("scroll containers are live only in interactive deliverables and static elsewhere", () => {
+  for (const format of ["html", "swift", "kotlin"]) {
+    const entry = capabilityTableFor(format).properties["properties.overflow"];
+    assert.equal(entry.verdict, "native", format);
+    assert.ok(entry.evidence, format);
+  }
+  for (const [format, table] of [
+    ["pptx", capabilityTableFor("pptx")],
+    ["pdf", extractionEmissionSupport("pdf")],
+    ["svg", extractionEmissionSupport("svg")],
+  ]) {
+    const entry = table.properties["properties.overflow"];
+    assert.equal(entry.verdict, "raster", format);
+    assert.match(entry.reason, /static|scrolling viewport|clipped viewport/iu, format);
+  }
+});
+
 test("mobile shadow spread is an explicit raster limitation", () => {
   for (const format of ["swift", "kotlin"]) {
     const entry = capabilityTableFor(format).properties["properties.effect.shadow.spread"];
