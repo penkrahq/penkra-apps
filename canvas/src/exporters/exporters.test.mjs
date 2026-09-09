@@ -213,6 +213,19 @@ test("web layout emits asymmetric padding inside the authored border box", () =>
   assert.doesNotMatch(html, /class="node raster"/u);
 });
 
+test("web stroke alignment rasterizes only its affected subtree", () => {
+  const route = { module: "web", children: [{ id: "screen", type: "frame", role: "route", name: "Stroke alignment", width: 240, height: 120, children: [
+    { id: "outside", type: "rectangle", width: 80, height: 40, fill: "#ffffff", stroke: { fill: "#123456", thickness: 8, align: "outside" } },
+    { id: "native-sibling", type: "rectangle", x: 100, width: 80, height: 40, fill: "#abcdef" },
+  ] }] };
+  const ir = buildExporterIR(route, { role: "route", frames: ["screen"] });
+  assert.deepEqual(ir.rasters.map(({ id }) => id), ["outside"]);
+  const html = exportWeb(ir, { rasterHref: (id) => `assets/${id}.png` }).get("stroke-alignment.html");
+  assert.match(html, /<img id="outside" class="node raster"/u);
+  assert.match(html, /<div id="native-sibling" class="node rectangle"/u);
+  assert.doesNotMatch(html, /outline:/u);
+});
+
 test("mobile overflow emits native scrolling wrappers while retaining the viewport frame", () => {
   const make = (role, overflow) => buildExporterIR({ module: "mobile", children: [{ id: "screen", type: "frame", role, name: "Overflow", width: 120, height: 80, layout: "none", overflow, children: [
     { id: "content", type: "rectangle", width: 240, height: 180, fill: "#123456" },
