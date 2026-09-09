@@ -18,6 +18,11 @@ Compose text remains rasterized because retained native-device measurements foun
 CanvasKit-versus-platform shaping, baseline, and ink differences. The author can also force a
 normally native node to pixels with `export: "image"`; there is no override from raster to native.
 
+Mobile shape gradients and solid vector strokes remain native where the retained device matrix
+measured them. Gradient-filled paths/polygons and gradient strokes are value-sensitive raster
+combinations: they are intercepted in the IR before either mobile writer, preventing Compose from
+emitting transparent paths or SwiftUI from entering its unsupported transformed-radial path.
+
 PDF is a roleless extraction format and therefore has no role capability table. Its node primitives
 default to native emission, with only value-specific/static-medium lowerings applied by the
 extraction pipeline. PDF/X-4 is a flag on PDF extraction, not a module or role. The profile gate runs

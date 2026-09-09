@@ -6,7 +6,7 @@ Baseline `509edd8`; scope: PPTX, standalone SVG, ordinary PDF/PNG extraction, an
 
 - PPTX: 115 native, 12 raster, 16 ignore, 0 unverified.
 - SVG: 128 native, 5 raster, 10 ignore, 0 unverified.
-- PDF is DEC3's roleless N-node extraction artifact. It is not a module target and therefore has no role/capability table. Its lowering registry contains only three concrete raster boundaries: executable shader paint, backdrop blur, and a live scrolling viewport. All resolved node primitives otherwise pass directly to the PDF writer.
+- PDF is DEC3's roleless N-node extraction artifact. It is not a module target and therefore has no role/capability table. Its static lowering registry contains executable shader paint, backdrop blur, and a live scrolling viewport. The IR additionally applies value-sensitive bounded lowerings for conic/mesh gradients, gradient-stop alpha, and tiled/repeated image paint. All other resolved node primitives pass directly to the PDF writer.
 - PNG is a rendered-subtree artifact; native/editable capability verdicts are meaningless. Its contract is exact requested scale, subtree bounds, transparency, and artifact count.
 
 `mergeCapabilityRows` rejects every duplicate membership, including same-verdict shadowing. The duplicate structural `properties.style` and SVG `properties.stroke.width` memberships were removed.
@@ -17,9 +17,9 @@ PPTX promotions: `nodes.icon`, `properties.icon`, `properties.library`, `propert
 
 SVG promotions: native icons, image paint, linear/radial and transformed gradients, blur/shadow/spread filters, blend, inherited clipping, flips, stroke cap/join/dash, links, overflow clipping, ARIA landmark/link/heading semantics, paragraph alignment/style/list, line height, alignment and text growth. Ordered multi-paints emit ordered SVG geometry. Object-bounding-box image patterns use normalized image coordinates. Radial transforms scale and rotate about the authored asymmetric center.
 
-PDF extraction adds source PNG/JPEG XObjects with fit/fill geometry, center-relative rotation/flips, native icon paths, PDF stroke dash/cap/join operators, and renderer-shaped text placement. PDF remains roleless: neither document module nor frame role affects node selection, artifact count, geometry or lowering.
+PDF extraction adds source PNG/JPEG XObjects with fit/fill/stretch geometry, native clipping for ellipse/path/polygon/rounded masks, preserved mask strokes, center-relative rotation/flips, native icon paths, PDF stroke dash/cap/join operators, nonuniform rotated radial shadings, standard blend states, and renderer-shaped text placement. Rich text preserves safe links as annotations, per-run language markers, underline/strikethrough, and list markers. Unsafe links fail with a typed error. PDF remains roleless: neither document module nor frame role affects node selection, artifact count, geometry or lowering.
 
-`compatibility/docformat-native-features.test.mjs` inspects serialized SVG/OOXML/PDF objects and renders them with installed Chrome, LibreOffice and Poppler. It covers nonzero-position ellipse image paint, asymmetric radial transforms, ordered multi-paint, PPTX mask fallback, valid DrawingML crop/contain markup, native icon geometry, transformed PDF paths and source-image XObjects. `src/pencil-icon-provider.test.mjs` verifies exporter vector geometry for lucide, Feather, all three Material Symbols families, and Phosphor. The existing 20-case vector matrix renders paths/polygons at 1x and 2x in Chrome and Poppler and forbids image fallback.
+`compatibility/docformat-native-features.test.mjs` inspects serialized SVG/OOXML/PDF objects and renders them with installed Chrome, LibreOffice and Poppler. It covers nonzero-position masked image paint, asymmetric radial transforms, ordered multi-paint, PPTX mask fallback, DrawingML crop/contain/stretch behavior, native icon geometry, transformed PDF paths, clipping/strokes, text semantics, and source-image XObjects. `src/pencil-icon-provider.test.mjs` verifies exporter vector geometry for lucide, Feather, all three Material Symbols families, and Phosphor. The existing 20-case vector matrix renders paths/polygons at 1x and 2x in Chrome and Poppler and forbids image fallback.
 
 ## Retained format limits and non-emitting concepts
 
@@ -27,7 +27,7 @@ PPTX raster: blend/compositing isolation, arbitrary clipping, backdrop blur, sha
 
 SVG raster: backdrop blur, angular gradient, mesh gradient, executable shader, and inside/outside stroke alignment in the portable SVG 1.1 profile. SVG ignores prototype flows, speaker notes, and PDF-only/authoring guides.
 
-PDF's three raster lowerings are listed above. Prototype-flow and document-role concepts never enter roleless extraction; they are not PDF rows and are not silently classified as node capabilities.
+PDF's static and value-sensitive raster lowerings are listed above. Prototype-flow and document-role concepts never enter roleless extraction; they are not PDF rows and are not silently classified as node capabilities. Ordinary PDF can contain safe link annotations; the narrower PDF/X-4 writer subset rejects annotations and therefore fails closed if linked text is present.
 
 ## Extraction and forced raster
 
