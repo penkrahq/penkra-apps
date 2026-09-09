@@ -29,18 +29,18 @@ export async function exportDocument(document, request, options = {}) {
 export async function prepareDocumentExport(document, request, options = {}) {
   const ir = buildExporterIR(document, request);
   const rasterById = new Map(ir.rasters.map((raster) => [raster.id, raster]));
-  const screenshot = async (nodeId) => {
-    const raster = rasterById.get(nodeId);
+  const screenshotFor = async (renderDocument, raster) => {
     const variant = raster?.variants?.at(-1);
-    if (!variant) throw new Error(`Raster policy is missing for ${nodeId}.`);
-    const image = (await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [nodeId], bounds: raster.renderBounds }], options.assets, { scale: variant.scale, maxDimension: 8192, failOnDownscale: true }))[0];
+    if (!variant) throw new Error(`Raster policy is missing for ${raster?.id ?? "unknown node"}.`);
+    const image = (await takeDocumentScreenshots(renderDocument, [{ nodeIds: [raster.id], bounds: raster.renderBounds }], options.assets, { scale: variant.scale, maxDimension: 8192, failOnDownscale: true }))[0];
     if (image.width !== variant.pixelWidth || image.height !== variant.pixelHeight) {
-      const error = new Error(`Raster ${nodeId} rendered ${image.width}×${image.height}, expected ${variant.pixelWidth}×${variant.pixelHeight}.`);
+      const error = new Error(`Raster ${raster.id} rendered ${image.width}×${image.height}, expected ${variant.pixelWidth}×${variant.pixelHeight}.`);
       error.code = "CANVAS_RASTER_DIMENSION_MISMATCH";
       throw error;
     }
     return image;
   };
+  const screenshot = async (nodeId) => screenshotFor(ir.renderDocument, rasterById.get(nodeId));
   let artifact;
   if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), imageData: (url) => embeddedImageHref(url, options.assets), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "route") {
@@ -60,10 +60,14 @@ export async function prepareDocumentExport(document, request, options = {}) {
   else if (request.role === "ios" || request.role === "android") {
     const rasters = new Map();
     for (const raster of ir.rasters) rasters.set(raster.id, (await screenshot(raster.id)).data);
+    for (const mobileVariant of ir.mobileVariants ?? []) for (const raster of mobileVariant.rasters ?? []) {
+      rasters.set(`${mobileVariant.rasterVariant}\u0000${raster.id}`, (await screenshotFor(mobileVariant.renderDocument, raster)).data);
+    }
     const fonts = { ...await readBundledPdfFonts(), "Inter:800": await readBundledFontResource("Inter-ExtraBold.ttf") };
+    const rasterData = (id, variant) => rasters.get(variant ? `${variant}\u0000${id}` : id);
     artifact = request.role === "ios"
-      ? exportSwiftUI(ir, { fonts, rasterData: (id) => rasters.get(id) })
-      : exportCompose(ir, { fonts, rasterData: (id) => rasters.get(id) });
+      ? exportSwiftUI(ir, { fonts, rasterData })
+      : exportCompose(ir, { fonts, rasterData });
     if ([...artifact.keys()].some((path) => path.endsWith(".ttf"))) artifact.set("licenses/Inter-OFL.txt", await readBundledFontResource("Inter-OFL.txt"));
   }
   else throw new Error(`Unsupported role ${request.role}.`);

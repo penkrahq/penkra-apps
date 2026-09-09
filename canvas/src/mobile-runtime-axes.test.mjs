@@ -85,10 +85,14 @@ test("mobile runtime combinations are bounded", () => {
   assert.throws(() => buildExporterIR({ module: "mobile", axes, children: [] }, { role: "ios", frames: [] }), { code: "CANVAS_MOBILE_AXIS_COMBINATIONS" });
 });
 
-test("runtime raster changes fail instead of reusing base rasterData bytes", () => {
+test("runtime raster changes receive distinct mode-specific rasterData keys", () => {
   const document = documentFor();
   document.children[0].children = [{ id: "image", type: "rectangle", width: 100, height: 50, export: "image", fill: [
     { value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } },
   ] }];
-  assert.throws(() => buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, inventory), { code: "CANVAS_MOBILE_RASTER_VARIANT_UNSAFE" });
+  const ir = buildCapabilityVerificationIR(document, { role: "ios", frames: ["screen"] }, inventory);
+  const keys = [];
+  exportSwiftUI(ir, { rasterData(id, variant) { keys.push(`${variant}:${id}`); return Buffer.from(`${variant}:${id}`).toString("base64"); } });
+  assert.equal(new Set(keys).size, 4);
+  assert.equal(keys.every((key) => key.endsWith(":image")), true);
 });

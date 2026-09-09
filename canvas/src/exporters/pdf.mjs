@@ -87,7 +87,8 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   const y = pageGeometry.bleed + pageGeometry.trimHeight - (node.geometry.y + node.geometry.h) * sy;
   const width = node.geometry.w * sx;
   const height = node.geometry.h * sy;
-  const blend = pdfBlendName(node.paint.blendMode);
+  const activeFill = (Array.isArray(node.paint.fill) ? node.paint.fill : [node.paint.fill]).find((paint) => paint?.enabled !== false);
+  const blend = pdfBlendName(activeFill?.blendMode ?? node.paint.blendMode);
   if (blend) page.pushOperators(pushGraphicsState(), setGraphicsState(page.node.newExtGState("GS", pdf.context.obj({ Type: "ExtGState", BM: PDFName.of(blend) }))));
   const rotation = Number(node.geometry.rotation ?? 0); const flipX = node.geometry.flipX === true; const flipY = node.geometry.flipY === true;
   const transformed = rotation !== 0 || flipX || flipY;

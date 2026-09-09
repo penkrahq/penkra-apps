@@ -10,7 +10,6 @@ import { pencilIconVectorDefinition } from "./pencil-icon-provider.mjs";
 
 const CAPABILITY_VERIFICATION = Symbol("canvas-capability-verification");
 const MOBILE_VARIANT_BUILD = Symbol("canvas-mobile-variant-build");
-const MOBILE_RASTER_SIGNATURES = Symbol("canvas-mobile-raster-signatures");
 const MEASURED_PDF_TEXT_PATHS = new Set(["properties.textAlign", "properties.textAlignVertical", "properties.textGrowth", "properties.lineHeight", "properties.letterSpacing", "properties.text.run.letterSpacing", "properties.text.paragraph.align"]);
 
 export function buildCapabilityVerificationIR(document, request, assumedNativePaths) {
@@ -34,10 +33,16 @@ export function buildExporterIR(document, request) {
       modes: { ...modes },
       [MOBILE_VARIANT_BUILD]: true,
     });
-    return { modes: variant.modes, outputs: variant.outputs, renderDocument: variant.renderDocument, rasters: variant.rasters, [MOBILE_RASTER_SIGNATURES]: variant[MOBILE_RASTER_SIGNATURES] };
+    const rasterVariant = mobileRasterVariantKey(variant.modes);
+    return {
+      modes: variant.modes,
+      outputs: variant.outputs.map((output) => ({ ...output, nodes: output.nodes.map((node) => ({ ...node, rasterVariant })) })),
+      renderDocument: variant.renderDocument,
+      rasters: variant.rasters,
+      rasterVariant,
+    };
   });
-  assertMobileRasterSafety(base, mobileVariants);
-  return { ...base, mobileVariants: mobileVariants.map(({ [MOBILE_RASTER_SIGNATURES]: _signatures, ...variant }) => variant) };
+  return { ...base, mobileVariants };
 }
 
 function buildExporterIRBase(document, request) {
@@ -153,7 +158,6 @@ function buildExporterIRBase(document, request) {
     lowered: resolved.lowered,
     colorSpace: "sRGB",
   };
-  Object.defineProperty(result, MOBILE_RASTER_SIGNATURES, { value: rasterSignatures(rasters, evaluatedNodes, initialRoots) });
   return result;
 }
 
@@ -232,40 +236,8 @@ function mobileModeCombinations(runtime) {
 
 function mobileAxisMetadataError(message) { return exportError("CANVAS_MOBILE_AXIS_METADATA", message); }
 
-function rasterSignatures(rasters, evaluatedNodes, initialRoots) {
-  const all = new Map([...initialRoots, ...evaluatedNodes].map((node) => [node.id, node]));
-  const under = (node, scopeId) => {
-    if (node.id === scopeId) return true;
-    let parent = node.parent;
-    while (parent) {
-      if (parent === scopeId) return true;
-      parent = all.get(parent)?.parent;
-    }
-    return false;
-  };
-  return rasters.map((raster) => canonicalJson({
-    raster,
-    sources: [...all.values()].filter((node) => under(node, raster.id)).map((node) => node),
-  }));
-}
-
-function canonicalJson(value) {
-  const normalize = (item) => {
-    if (Array.isArray(item)) return item.map(normalize);
-    if (!item || typeof item !== "object") return item;
-    return Object.fromEntries(Object.keys(item).sort().map((key) => [key, normalize(item[key])]));
-  };
-  return JSON.stringify(normalize(value));
-}
-
-function assertMobileRasterSafety(base, variants) {
-  const expected = base[MOBILE_RASTER_SIGNATURES] ?? [];
-  for (const variant of variants) {
-    const actual = variant[MOBILE_RASTER_SIGNATURES] ?? [];
-    if (actual.length !== expected.length || actual.some((signature, index) => signature !== expected[index])) {
-      throw exportError("CANVAS_MOBILE_RASTER_VARIANT_UNSAFE", "A runtime mobile variant changes raster content, scope, or bounds; rasterData(id) cannot distinguish the mode-specific image.");
-    }
-  }
+function mobileRasterVariantKey(modes) {
+  return Object.entries(modes).sort(([left], [right]) => left.localeCompare(right)).map(([axis, mode]) => `${axis}=${mode}`).join(";");
 }
 
 export function buildExtractionIR(document, request) {

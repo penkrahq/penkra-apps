@@ -51,22 +51,23 @@ function swiftScreen(output, options, ir) {
 
 function swiftRuntimeBody(output, options, ir) {
   const runtime = mobileRuntimeForOutput(ir, output);
-  const render = (candidate, depth) => {
+  const render = (candidate, depth, rasterVariant = null) => {
     const children = groupChildren(candidate.nodes);
     const root = candidate.root ?? rootNode(candidate);
     const language = candidate.lang ? swiftLanguageModifier(candidate.lang) : "";
-    return `${swiftContainer(root, orderedChildren(root, children), children, options, depth, true)}\n${"  ".repeat(depth)}.accessibilityElement(children: .contain)${swiftAccessibility(root)}${language}`;
+    return `${swiftContainer(root, orderedChildren(root, children), children, { ...options, rasterVariant }, depth, true)}\n${"  ".repeat(depth)}.accessibilityElement(children: .contain)${swiftAccessibility(root)}${language}`;
   };
   if (!runtime) return { body: render(output, 2), appearance: false };
   const branches = runtime.variants.map((variant) => variant.output);
   const expressions = branches.map((candidate, index) => ({
     candidate,
+    rasterVariant: runtime.combinations[index].rasterVariant,
     condition: swiftRuntimeCondition(runtime, runtime.combinations[index].modes),
   }));
   const chain = expressions.map((entry, index) => {
     const prefix = index === 0 ? "if" : index === expressions.length - 1 && !entry.condition ? "else" : "else if";
     const condition = entry.condition;
-    return `${"  ".repeat(3)}${prefix}${prefix === "else" ? "" : condition ? ` ${condition}` : " true"} {\n${render(entry.candidate, 4)}\n${"  ".repeat(3)}}`;
+    return `${"  ".repeat(3)}${prefix}${prefix === "else" ? "" : condition ? ` ${condition}` : " true"} {\n${render(entry.candidate, 4, entry.rasterVariant)}\n${"  ".repeat(3)}}`;
   }).join("\n");
   const body = runtime.viewport
     ? `    GeometryReader { proxy in\n${chain}\n    }`
@@ -79,6 +80,7 @@ function mobileRuntimeForOutput(ir, output) {
   if (!axes.length || !Array.isArray(ir.mobileVariants) || !ir.mobileVariants.length) return null;
   const combinations = ir.mobileVariants.map((variant) => ({
     modes: variant.modes,
+    rasterVariant: variant.rasterVariant,
     output: variant.outputs.find((candidate) => candidate.id === output.id) ?? variant.outputs[output.index],
   }));
   const modeFor = (axis, name) => (ir.axes[axis]?.modes ?? []).find((mode) => mode.name === name) ?? {};
@@ -113,7 +115,7 @@ function swiftNode(node, children, options, depth, parentLayout) {
   const position = swiftGeometry(node, parentLayout);
   const access = swiftAccessibility(node);
   if (node.capability.verdict === "raster") {
-    const data = options.rasterData?.(node.id);
+    const data = options.rasterData?.(node.id, options.rasterVariant ?? null);
     if (!data) throw new Error(`SwiftUI rasterizer is required for ${node.id}.`);
     const rasterAccess = node.type === "text" && !node.semantics.decorative && !node.semantics.description
       ? `${access}.accessibilityLabel(${JSON.stringify(node.semantics.content)})`
@@ -337,16 +339,16 @@ function composeScreen(output, options, ir) {
 
 function composeRuntimeBody(output, options, ir) {
   const runtime = mobileRuntimeForOutput(ir, output);
-  const render = (candidate, depth) => {
+  const render = (candidate, depth, rasterVariant = null) => {
     const children = groupChildren(candidate.nodes);
     const root = candidate.root ?? rootNode(candidate);
-    return composeContainer(root, orderedChildren(root, children), children, options, depth, true);
+    return composeContainer(root, orderedChildren(root, children), children, { ...options, rasterVariant }, depth, true);
   };
   if (!runtime) return render(output, 1);
   const branches = runtime.variants.map((variant, index) => {
     const condition = composeRuntimeCondition(runtime, runtime.combinations[index].modes);
     const prefix = index === 0 ? "if" : index === runtime.variants.length - 1 && !condition ? "else" : "else if";
-    return `${"  ".repeat(2)}${prefix}${prefix === "else" ? "" : condition ? ` (${condition})` : " (true)"} {\n${render(variant.output, 3)}\n${"  ".repeat(2)}}`;
+    return `${"  ".repeat(2)}${prefix}${prefix === "else" ? "" : condition ? ` (${condition})` : " (true)"} {\n${render(variant.output, 3, variant.rasterVariant)}\n${"  ".repeat(2)}}`;
   }).join("\n");
   const dark = runtime.appearance ? "  val canvasDark = androidx.compose.foundation.isSystemInDarkTheme()\n" : "";
   if (!runtime.viewport) return `${dark}${branches.trimStart()}`;
@@ -372,7 +374,7 @@ function composeNode(node, children, options, depth, parentLayout) {
   const indent = "  ".repeat(depth);
   const modifier = composeModifier(node, parentLayout);
   if (node.capability.verdict === "raster") {
-    const data = options.rasterData?.(node.id);
+    const data = options.rasterData?.(node.id, options.rasterVariant ?? null);
     if (!data) throw new Error(`Compose rasterizer is required for ${node.id}.`);
     const name = `bytes${identifier(node.id)}`;
     const rasterModifier = node.type === "text" && !node.semantics.decorative && !node.semantics.description

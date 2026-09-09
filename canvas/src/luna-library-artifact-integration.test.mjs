@@ -197,7 +197,7 @@ test("published library content reaches PPTX/HTML and roleless SVG/PDF artifacts
     await extractDocumentNode(consumer, { nodeId: "art", format: "svg", destination: svgPath, modes: { appearance: "light" } }, { ...ASSETS, imports: loaded.imports });
     const svgText = await readFile(svgPath, "utf8");
     const svg = parseSvg(svgText);
-    assert.equal(svg.hasImage, true);
+    assert.equal(svg.hasImage, false);
     assert.match(svgText, /#123456/iu);
     assert.match(svgText, /#abcdef/iu);
     assert.match(svgText, /<rect\b/u);

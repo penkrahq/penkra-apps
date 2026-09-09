@@ -23,7 +23,9 @@ function svgNode(node, options, clipId) {
   const role = node.semantics.landmark ?? (heading ? "heading" : null);
   const access = node.semantics.decorative ? ` aria-hidden="true"` : `${node.semantics.description || node.semantics.linkName ? ` aria-label="${esc(node.semantics.linkName ?? node.semantics.description)}"` : ""}${role ? ` role="${esc(role)}"` : ""}${heading ? ` aria-level="${heading}"` : ""}`;
   const clip = clipId ? ` clip-path="url(#clip-${escId(clipId)})"` : "";
-  const blend = node.paint.blendMode && !["normal", "pass_through"].includes(node.paint.blendMode) ? ` style="mix-blend-mode:${esc(node.paint.blendMode)}"` : "";
+  const activeFill = (Array.isArray(node.paint.fill) ? node.paint.fill : [node.paint.fill]).find((paint) => paint?.enabled !== false);
+  const blendMode = activeFill?.blendMode ?? node.paint.blendMode;
+  const blend = blendMode && !["normal", "pass_through"].includes(blendMode) ? ` style="mix-blend-mode:${esc(blendMode)}"` : "";
   const filter = hasFilter(node) ? ` filter="url(#filter-${escId(node.id)})"` : "";
   const presentation = `${transform}${clip}${blend}${filter}${access}`;
   const opacity = Number(node.paint.opacity ?? 1);

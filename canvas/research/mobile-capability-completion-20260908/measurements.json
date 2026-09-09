@@ -2,11 +2,11 @@
   "fixture": "mobile-capability-completion",
   "sourceDate": "2026-09-08",
   "sourceHashes": {
-    "emitter": "e4a1284ba9023bb1be8de5a6ac4b39b70e814658b875d73cb0b6648bb27313ad",
-    "ir": "118cd8695952c7f8dfe2e9a4bcf5eb679a6744c9ea90e35db1ead71fe610eb54",
+    "emitter": "3967a7aae141406bcdd82b5164996e85e303896a6686ac2b5f101120ebe36d2e",
+    "ir": "c1c6e9450544d69577387e2ee6e13a909a2979b8a9149ea2b7fa2411e176b8a1",
     "generator": "5ba91ff0f92a8179ecd52be0dbc93faf40e2d14fe2420f9c6751497799b6c7ff",
     "fixture": "4241c8661baaeb1bb03ea5188ec2bdd6c4c11be68139e1ebf9a58f257d12a7a3",
-    "retainedIr": "1ef3dee73312c95a18c38f5ab49f3543e264e3f3b3c0b3978c2c25740951fdc6",
+    "retainedIr": "9ff200695db2819ceee58dcc47481b084ee9e977159043056842b2775ca7432f",
     "swiftFixture": "ad2723e1cef4e0b839d111c7b73b579a3c2833429587bc207f13bf5757a94e6b",
     "composeFixture": "ea1b0c85f40535a228cfa7f0521433ac3d747b048fab7eeb6ce3a6632a0b638d"
   },

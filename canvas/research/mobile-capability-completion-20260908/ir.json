@@ -1379,7 +1379,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-line",
@@ -1439,7 +1440,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-line-horizontal",
@@ -1492,7 +1494,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-line-vertical",
@@ -1545,7 +1548,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-transform",
@@ -1624,7 +1628,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-angular",
@@ -1692,7 +1697,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-radial",
@@ -1761,7 +1767,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-clip",
@@ -1811,7 +1818,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-overflow",
@@ -1857,7 +1865,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-justify",
@@ -1911,7 +1920,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-justify-a",
@@ -1957,7 +1967,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-justify-b",
@@ -2003,7 +2014,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-constraints",
@@ -2053,7 +2065,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-constrained",
@@ -2107,7 +2120,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-runtime",
@@ -2176,7 +2190,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               }
             ]
           }
@@ -2456,7 +2471,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=light;viewport=phone"
       },
       {
         "modes": {
@@ -2592,7 +2608,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-line",
@@ -2652,7 +2669,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-line-horizontal",
@@ -2705,7 +2723,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-line-vertical",
@@ -2758,7 +2777,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-transform",
@@ -2837,7 +2857,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-angular",
@@ -2905,7 +2926,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-radial",
@@ -2974,7 +2996,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-clip",
@@ -3024,7 +3047,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-overflow",
@@ -3070,7 +3094,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-justify",
@@ -3124,7 +3149,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-justify-a",
@@ -3170,7 +3196,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-justify-b",
@@ -3216,7 +3243,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-constraints",
@@ -3266,7 +3294,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-constrained",
@@ -3320,7 +3349,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-runtime",
@@ -3389,7 +3419,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               }
             ]
           }
@@ -3669,7 +3700,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=light;viewport=wide"
       },
       {
         "modes": {
@@ -3805,7 +3837,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-line",
@@ -3865,7 +3898,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-line-horizontal",
@@ -3918,7 +3952,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-line-vertical",
@@ -3971,7 +4006,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-transform",
@@ -4050,7 +4086,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-angular",
@@ -4118,7 +4155,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-radial",
@@ -4187,7 +4225,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-clip",
@@ -4237,7 +4276,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-overflow",
@@ -4283,7 +4323,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-justify",
@@ -4337,7 +4378,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-justify-a",
@@ -4383,7 +4425,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-justify-b",
@@ -4429,7 +4472,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-constraints",
@@ -4479,7 +4523,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-constrained",
@@ -4533,7 +4578,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-runtime",
@@ -4602,7 +4648,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               }
             ]
           }
@@ -4882,7 +4929,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=dark;viewport=phone"
       },
       {
         "modes": {
@@ -5018,7 +5066,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-line",
@@ -5078,7 +5127,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-line-horizontal",
@@ -5131,7 +5181,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-line-vertical",
@@ -5184,7 +5235,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-transform",
@@ -5263,7 +5315,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-angular",
@@ -5331,7 +5384,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-radial",
@@ -5400,7 +5454,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-clip",
@@ -5450,7 +5505,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-overflow",
@@ -5496,7 +5552,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-justify",
@@ -5550,7 +5607,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-justify-a",
@@ -5596,7 +5654,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-justify-b",
@@ -5642,7 +5701,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-constraints",
@@ -5692,7 +5752,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-constrained",
@@ -5746,7 +5807,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-runtime",
@@ -5815,7 +5877,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               }
             ]
           }
@@ -6095,7 +6158,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=dark;viewport=wide"
       }
     ]
   },
@@ -7479,7 +7543,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-line",
@@ -7539,7 +7604,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-line-horizontal",
@@ -7592,7 +7658,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-line-vertical",
@@ -7645,7 +7712,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-transform",
@@ -7724,7 +7792,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-angular",
@@ -7792,7 +7861,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-radial",
@@ -7861,7 +7931,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-clip",
@@ -7911,7 +7982,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-overflow",
@@ -7957,7 +8029,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-justify",
@@ -8011,7 +8084,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-justify-a",
@@ -8057,7 +8131,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-justify-b",
@@ -8103,7 +8178,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-constraints",
@@ -8153,7 +8229,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-constrained",
@@ -8207,7 +8284,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               },
               {
                 "id": "completion-runtime",
@@ -8276,7 +8354,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=phone"
               }
             ]
           }
@@ -8556,7 +8635,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=light;viewport=phone"
       },
       {
         "modes": {
@@ -8692,7 +8772,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-line",
@@ -8752,7 +8833,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-line-horizontal",
@@ -8805,7 +8887,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-line-vertical",
@@ -8858,7 +8941,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-transform",
@@ -8937,7 +9021,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-angular",
@@ -9005,7 +9090,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-radial",
@@ -9074,7 +9160,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-clip",
@@ -9124,7 +9211,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-overflow",
@@ -9170,7 +9258,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-justify",
@@ -9224,7 +9313,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-justify-a",
@@ -9270,7 +9360,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-justify-b",
@@ -9316,7 +9407,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-constraints",
@@ -9366,7 +9458,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-constrained",
@@ -9420,7 +9513,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               },
               {
                 "id": "completion-runtime",
@@ -9489,7 +9583,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=light;viewport=wide"
               }
             ]
           }
@@ -9769,7 +9864,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=light;viewport=wide"
       },
       {
         "modes": {
@@ -9905,7 +10001,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-line",
@@ -9965,7 +10062,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-line-horizontal",
@@ -10018,7 +10116,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-line-vertical",
@@ -10071,7 +10170,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-transform",
@@ -10150,7 +10250,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-angular",
@@ -10218,7 +10319,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-radial",
@@ -10287,7 +10389,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-clip",
@@ -10337,7 +10440,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-overflow",
@@ -10383,7 +10487,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-justify",
@@ -10437,7 +10542,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-justify-a",
@@ -10483,7 +10589,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-justify-b",
@@ -10529,7 +10636,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-constraints",
@@ -10579,7 +10687,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-constrained",
@@ -10633,7 +10742,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               },
               {
                 "id": "completion-runtime",
@@ -10702,7 +10812,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=phone"
               }
             ]
           }
@@ -10982,7 +11093,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=dark;viewport=phone"
       },
       {
         "modes": {
@@ -11118,7 +11230,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-line",
@@ -11178,7 +11291,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-line-horizontal",
@@ -11231,7 +11345,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-line-vertical",
@@ -11284,7 +11399,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-transform",
@@ -11363,7 +11479,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-angular",
@@ -11431,7 +11548,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-radial",
@@ -11500,7 +11618,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-clip",
@@ -11550,7 +11669,8 @@
                 },
                 "provenance": null,
                 "clip": "completion-clip",
-                "isolation": "completion-clip"
+                "isolation": "completion-clip",
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-overflow",
@@ -11596,7 +11716,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-justify",
@@ -11650,7 +11771,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-justify-a",
@@ -11696,7 +11818,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-justify-b",
@@ -11742,7 +11865,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-constraints",
@@ -11792,7 +11916,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-constrained",
@@ -11846,7 +11971,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               },
               {
                 "id": "completion-runtime",
@@ -11915,7 +12041,8 @@
                 },
                 "provenance": null,
                 "clip": null,
-                "isolation": null
+                "isolation": null,
+                "rasterVariant": "appearance=dark;viewport=wide"
               }
             ]
           }
@@ -12195,7 +12322,8 @@
             }
           ]
         },
-        "rasters": []
+        "rasters": [],
+        "rasterVariant": "appearance=dark;viewport=wide"
       }
     ]
   }
