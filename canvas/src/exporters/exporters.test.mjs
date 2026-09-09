@@ -201,6 +201,18 @@ test("web overflow maps each scroll direction to independent CSS overflow axes",
   assert.match(exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("overflow.html"), /overflow:visible/u);
 });
 
+test("web layout emits asymmetric padding inside the authored border box", () => {
+  const route = { module: "web", children: [{
+    id: "screen", type: "frame", role: "route", name: "Padding", width: 320, height: 200,
+    layout: "horizontal", padding: [10, 20, 30, 40], children: [
+      { id: "child", type: "rectangle", width: 80, height: 40, fill: "#2563eb" },
+    ],
+  }] };
+  const html = exportWeb(buildExporterIR(route, { role: "route", frames: ["screen"] })).get("padding.html");
+  assert.match(html, /padding:10px 20px 30px 40px/u);
+  assert.doesNotMatch(html, /class="node raster"/u);
+});
+
 test("mobile overflow emits native scrolling wrappers while retaining the viewport frame", () => {
   const make = (role, overflow) => buildExporterIR({ module: "mobile", children: [{ id: "screen", type: "frame", role, name: "Overflow", width: 120, height: 80, layout: "none", overflow, children: [
     { id: "content", type: "rectangle", width: 240, height: 180, fill: "#123456" },

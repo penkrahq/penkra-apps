@@ -26,3 +26,21 @@ test("legacy physical-direction text aliases normalize throughout authored and o
   assert.equal(normalized.children[1].descendants.label.textAlign, "end");
   assert.equal(source.children[0].children[0].textAlign, "left");
 });
+
+test("legacy frame clip input normalizes to the canonical overflow vocabulary", () => {
+  const source = {
+    children: [
+      { id: "clipped", type: "frame", clip: true, children: [] },
+      { id: "unclipped", type: "frame", clip: false, children: [] },
+      { id: "explicit", type: "frame", clip: true, overflow: "scroll-y", children: [] },
+      { id: "shape", type: "rectangle", clip: true },
+    ],
+  };
+
+  const normalized = normalizeCanvasDocumentAliases(source);
+  assert.deepEqual(normalized.children[0], { id: "clipped", type: "frame", overflow: "clip", children: [] });
+  assert.deepEqual(normalized.children[1], { id: "unclipped", type: "frame", children: [] });
+  assert.deepEqual(normalized.children[2], { id: "explicit", type: "frame", overflow: "scroll-y", children: [] });
+  assert.equal(normalized.children[3].clip, true);
+  assert.equal(source.children[0].clip, true);
+});

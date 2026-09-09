@@ -347,7 +347,7 @@ test("execute reads and commits legacy text directions through their canonical a
     module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
     children: [
       {
-        id: "component", type: "frame", reusable: true, children: [{
+        id: "component", type: "frame", reusable: true, clip: true, children: [{
           id: "label", type: "text", content: "Old", textAlign: "left",
           textAlignVertical: "middle", paragraphs: [{ from: 0, to: 3, align: "right" }],
         }],
@@ -373,9 +373,9 @@ test("execute reads and commits legacy text directions through their canonical a
 
   const read = await handlers.get("documents.execute")({
     documentId: "document-1",
-    code: 'return { horizontal: Get("#label")[0].node.textAlign, vertical: Get("#label")[0].node.textAlignVertical };',
+    code: 'return { horizontal: Get("#label")[0].node.textAlign, vertical: Get("#label")[0].node.textAlignVertical, overflow: Get("#component", null, { depth: 0 })[0].node.overflow, clip: Get("#component")[0].node.clip ?? null };',
   });
-  assert.deepEqual(read.result, { horizontal: "start", vertical: "center" });
+  assert.deepEqual(read.result, { horizontal: "start", vertical: "center", overflow: "clip", clip: null });
 
   const changed = await handlers.get("documents.execute")({
     documentId: "document-1",

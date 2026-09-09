@@ -213,7 +213,7 @@ function __assertParent(parent) {
 
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
   __assertSelector(selector);
-  if (visitor !== undefined) {
+  if (visitor !== undefined && visitor !== null) {
     if (typeof visitor !== "function") throw new TypeError("Get visitor must be a function.");
     const limit = options.limit === undefined ? Infinity : Number(options.limit);
     if (!(limit === Infinity || (Number.isInteger(limit) && limit >= 1))) {

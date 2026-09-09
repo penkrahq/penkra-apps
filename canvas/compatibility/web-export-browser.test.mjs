@@ -32,6 +32,7 @@ const document = {
     height: 720,
     layout: "grid",
     gridTemplateColumns: ["1fr", "2fr"],
+    padding: [10, 20, 30, 40],
     gap: [{ value: 8 }, { value: 24, when: { viewport: "wide" } }],
     fill: [{ value: "#ffffff" }, { value: "#111111", when: { appearance: "dark" } }],
     children: [{
@@ -106,6 +107,7 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     const expectedGap = width >= 900 ? "24px" : "8px";
     assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('route')).gap"), expectedGap);
     assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('route')).gridTemplateColumns.split(' ').length"), 2);
+    assert.deepEqual(await evaluate(page, `(() => { const style = getComputedStyle(document.getElementById("route")); return [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft]; })()`), ["10px", "20px", "30px", "40px"]);
     const tree = await page.send("Accessibility.getFullAXTree");
     const heading = tree.nodes.find((node) => node.role?.value === "heading");
     assert.equal(heading?.name?.value, "Primary page heading");

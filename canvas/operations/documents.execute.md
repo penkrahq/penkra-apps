@@ -61,7 +61,7 @@ Common properties include:
 | `rotation` | Rotation in degrees |
 | `opacity` | Opacity from `0` to `1` |
 | `enabled` | Whether the node is visible and active |
-| `clip` | Whether a frame clips content outside its bounds |
+| `clip` | Legacy frame input; `true` is normalized on read to `overflow: "clip"`, and `false` is omitted |
 | `overflow` | Frame viewport behavior: `visible`, `clip`, `scroll-x`, `scroll-y`, or `scroll-both` |
 | `flipX`, `flipY` | Horizontal or vertical reflection |
 | `theme` | Existing theme override retained with the node |
@@ -411,7 +411,8 @@ and replace a node rather than rebuilding its parent.
 
 ## Selecting and inspecting
 
-`Get(selector, visitor?, options?)` reads source nodes. Valid selectors are:
+`Get(selector, visitor?, options?)` reads source nodes. Pass either `undefined` or `null` to omit
+the visitor while supplying options. Valid selectors are:
 
 - `#node-id` or an unprefixed exact node ID;
 - `type:frame` for an exact type;
@@ -434,8 +435,9 @@ and reported `problems`. Scroll frames additionally expose `overflow` with its m
 dimensions, and overflow on each axis. This shallow default prevents an exact route/frame lookup from accidentally
 returning its complete subtree. Pass `{ depth: 1 }` (through `100`) to include that many child
 levels, or `{ depth: "all" }` only when the complete subtree is deliberately required. With a
-visitor, Canvas invokes it once per match with the complete source node and returns the match count;
-return or print only the fields needed by the caller.
+visitor, Canvas invokes it once per match with the same context object described above, whose
+`node` is the complete source node rather than a shallow clone, and returns the match count. Return
+or print only the fields needed by the caller.
 
 ```js
 const [frame] = Get("#selected-frame", undefined, { depth: 1 });

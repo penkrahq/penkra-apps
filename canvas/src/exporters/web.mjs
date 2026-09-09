@@ -80,6 +80,7 @@ function nodeStyle(node, parent) {
   if (node.layout.gap !== undefined) style.push(`gap:${node.layout.gap}px`);
   if (node.layout.rowGap !== undefined) style.push(`row-gap:${node.layout.rowGap}px`);
   if (node.layout.columnGap !== undefined) style.push(`column-gap:${node.layout.columnGap}px`);
+  if (node.layout.padding !== undefined) style.push(`padding:${cssPadding(node.layout.padding)}`);
   if (node.layout.gridTemplateColumns) style.push(`grid-template-columns:${tracks(node.layout.gridTemplateColumns)}`);
   if (node.layout.gridTemplateRows) style.push(`grid-template-rows:${tracks(node.layout.gridTemplateRows)}`);
   if (node.layout.gridColumn) style.push(`grid-column:${node.layout.gridColumn}`);
@@ -95,6 +96,10 @@ function nodeStyle(node, parent) {
 }
 function solid(fill) { return typeof fill === "string" ? fill : fill?.color ?? null; }
 function tracks(value) { return (Array.isArray(value) ? value : [value]).map((track) => typeof track === "number" ? `${track}px` : track).join(" "); }
+function cssPadding(value) {
+  const values = (Array.isArray(value) ? value : [value]).map((part) => `${Number(part)}px`);
+  return values.join(" ");
+}
 function cssProperty(property, value) {
   const names = { fill: "background", gap: "gap", rowGap: "row-gap", columnGap: "column-gap", width: "width", height: "height", opacity: "opacity" };
   const name = names[property];

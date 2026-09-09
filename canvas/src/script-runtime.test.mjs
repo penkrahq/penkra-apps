@@ -96,6 +96,8 @@ test("materialized Get is shallow by default and expands children only with expl
   assert.equal(result.result.one.children[0].id, "section");
   assert.equal(result.result.one.children[0].children, undefined);
   assert.equal(result.result.all.children[0].children[0].id, "label");
+  const withNullPlaceholder = await executeCanvasScript(document, 'return Get("#route", null, { depth: 1 })[0].node;');
+  assert.equal(withNullPlaceholder.result.children[0].id, "section");
   await assert.rejects(executeCanvasScript(document, 'return Get("#route", undefined, { depth: 101 });'), /Get depth/u);
 });
 
