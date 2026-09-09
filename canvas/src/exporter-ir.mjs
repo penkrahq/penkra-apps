@@ -63,9 +63,13 @@ function buildExporterIRBase(document, request) {
       error.code = "CANVAS_PHYSICAL_SIZE_UNDECLARED";
       throw error;
     }
+    const framePaths = capabilityPaths(frame, projection);
+    const authoredFrame = authoredById.get(frameId) ?? frame;
+    if (authoredFrame.modes !== undefined) framePaths.push("properties.modes");
+    if (authoredFrame.varies !== undefined) framePaths.push("properties.varies");
     const rootCapability = frame.export === "image"
       ? { verdict: "raster", reason: "Author requested image export.", paths: ["properties.export"] }
-      : evaluateCapabilities([...documentPaths, ...capabilityPaths(frame, projection)], capability.properties, verification);
+      : valueSensitiveMobileCapability(frame, format) ?? evaluateCapabilities([...documentPaths, ...framePaths], capability.properties, verification);
     return {
       kind: request.role,
       index,
@@ -326,6 +330,8 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
       const world = getAbsolutePositionFull(node, graph);
       const absolute = { x: world.centerX - node.width / 2, y: world.centerY - node.height / 2 };
       const paths = capabilityPaths(source, projection);
+      if (authoredSource.modes !== undefined) paths.push("properties.modes");
+      if (authoredSource.varies !== undefined) paths.push("properties.varies");
       if (projection === "semantic" && source.linkName !== undefined && !(source.marks ?? []).some((mark) => mark.type === "link" && mark.from < mark.to)) {
         throw exportError("CANVAS_LINK_NAME_WITHOUT_LINK", `Text node ${source.id} declares linkName without a linked text range.`);
       }
@@ -333,7 +339,7 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
       const icon = source.type === "icon" ? pencilIconVectorDefinition(source.library, source.icon, source.weight) : null;
       let entry = source.export === "image"
         ? { verdict: "raster", reason: "Author requested image export.", paths: ["properties.export"] }
-        : evaluateCapabilities(textLayout ? paths.filter((path) => !MEASURED_PDF_TEXT_PATHS.has(path)) : paths, capability.properties, verification, capability.defaultVerdict);
+        : valueSensitiveMobileCapability(source, format) ?? evaluateCapabilities(textLayout ? paths.filter((path) => !MEASURED_PDF_TEXT_PATHS.has(path)) : paths, capability.properties, verification, capability.defaultVerdict);
       if (format === "pptx" && entry.verdict === "native" && imagePaint(source.fill) && !["rectangle", "frame"].includes(source.type)) {
         entry = { verdict: "raster", reason: "PresentationML rectangular blipFill cannot preserve this node's authored image mask; the bounded node is rendered with its mask and stroke.", paths };
       }
@@ -538,6 +544,26 @@ function capabilityPaths(node, projection) {
   if (node.type === "icon") for (const key of ["icon", "library", "weight"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
   if (projection === "semantic") for (const key of ["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "overflow"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
   return [...paths];
+}
+
+function valueSensitiveMobileCapability(node, format) {
+  if (!["swift", "kotlin"].includes(format)) return null;
+  const isGradient = (paint) => paint?.type === "gradient";
+  if (["path", "polygon"].includes(node.type) && (Array.isArray(node.fill) ? node.fill : [node.fill]).some(isGradient)) {
+    return {
+      verdict: "raster",
+      reason: `${format === "swift" ? "SwiftUI" : "Compose"} vector-path gradient fills are outside the measured native rectangle/ellipse gradient profile; raster fallback prevents a transparent or transform-incomplete vector result.`,
+      paths: capabilityPaths(node, "semantic"),
+    };
+  }
+  if (isGradient(node.stroke?.fill)) {
+    return {
+      verdict: "raster",
+      reason: `${format === "swift" ? "SwiftUI" : "Compose"} gradient strokes require a path mask combined with cap, join, dash and inside/outside clipping; the measured native stroke profile is solid-color only, so this combination is rasterized as one compositing scope.`,
+      paths: capabilityPaths(node, "semantic"),
+    };
+  }
+  return null;
 }
 
 function evaluateCapabilities(paths, table, verification = null, defaultVerdict = null) {

@@ -1,10 +1,28 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
 
 const root = new URL("../research/mobile-capability-completion-20260908/", import.meta.url);
+
+test("retained captures are receipt-bound to the exact fixture, IR, generated sources, and binaries", async () => {
+  const receipt = JSON.parse(await readFile(new URL("measurements.json", root), "utf8"));
+  const sha = async (url) => createHash("sha256").update(await readFile(url)).digest("hex");
+  for (const [key, relative] of Object.entries({
+    emitter: "../../src/exporters/mobile.mjs", ir: "../../src/exporter-ir.mjs", generator: "../../scripts/generate-mobile-qa-fixtures.mjs",
+    fixture: "fixture.json", retainedIr: "ir.json",
+    swiftFixture: "../../compatibility/mobile-fixtures/swiftui/Sources/CanvasSwiftUIFixture/MobileFixture.swift",
+    composeFixture: "../../compatibility/mobile-fixtures/compose/app/src/main/java/generated/canvas/MobileFixture.kt",
+  })) assert.equal(await sha(new URL(relative, root)), receipt.sourceHashes[key], key);
+  for (const [file, expected] of [...Object.entries(receipt.ios.captures), ...Object.entries(receipt.android.captures)]) assert.equal(await sha(new URL(file, root)), expected, file);
+  const retained = JSON.parse(await readFile(new URL("ir.json", root), "utf8"));
+  for (const platform of ["ios", "android"]) {
+    assert.ok(retained[platform].outputs[0].nodes.some(({ id, capability }) => id === "completion-radial" && capability.paths.includes("properties.fill.gradient.radial.transformed")));
+    assert.ok(retained[platform].outputs[0].root.capability.paths.includes("root.axes"));
+  }
+});
 
 test("stable phone captures measure native line, transform, gradients, clipping, and layout families", async () => {
   const ck = await getCanvasKit();
@@ -35,6 +53,10 @@ test("stable phone captures measure native line, transform, gradients, clipping,
     assert.ok(linear.blue.count > 10_000 && linear.red.count > 8_000);
     assert.ok(linear.blue.x + 150 < linear.red.x, `${fixture.file}: flipX`);
     assert.ok(linear.blue.y + 25 < linear.red.y, `${fixture.file}: rotation`);
+    const strokeColor = fixture.file.startsWith("ios") ? [16, 32, 48] : [17, 33, 49];
+    const gradientStroke = colorBounds(pixels, image.width(), strokeColor, fixture.linearBounds);
+    assert.ok(gradientStroke.width > 170 * fixture.scale && gradientStroke.height > 70 * fixture.scale, `${fixture.file}: four-point inside stroke bounds/color`);
+    assert.ok(colorCount(pixels, image.width(), strokeColor, fixture.linearBounds) > 3_000, `${fixture.file}: stroke width`);
 
     const angular = colorCentroids(pixels, image.width(), { minX: 20, maxX: 750, minY: 550, maxY: 1150 });
     assert.ok(angular.red.count > 5_000 && angular.green.count > 5_000 && angular.blue.count > 10_000);
@@ -102,4 +124,10 @@ function colorBounds(pixels, width, color, bounds) {
     minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
   }
   return { width: maxX - minX + 1, height: maxY - minY + 1 };
+}
+
+function colorCount(pixels, width, color, bounds) {
+  let count = 0;
+  for (let y = bounds.minY; y < bounds.maxY; y += 1) for (let x = bounds.minX; x < bounds.maxX; x += 1) if (matches(pixels, y * width + x, color)) count += 1;
+  return count;
 }

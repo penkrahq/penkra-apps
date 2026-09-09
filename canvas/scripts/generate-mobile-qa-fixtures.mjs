@@ -189,6 +189,14 @@ if (process.argv.includes("--vectors")) Object.assign(source, mobileVectorFixtur
 if (process.argv.includes("--surfaces")) Object.assign(source, mobileSurfaceFixture());
 if (process.argv.includes("--paints")) Object.assign(source, mobilePaintFixture());
 await mkdir(swiftDir, { recursive: true }); await mkdir(composeDir, { recursive: true });
-for (const [name, contents] of exportSwiftUI(buildCapabilityVerificationIR(source, { role: "ios", frames: ["mobile-fixture"] }, capabilityPathInventory()))) await writeFile(resolve(swiftDir, name.replace(/^_canvas\//u, "")), contents);
+const iosIR = buildCapabilityVerificationIR(source, { role: "ios", frames: ["mobile-fixture"] }, capabilityPathInventory());
+for (const [name, contents] of exportSwiftUI(iosIR)) await writeFile(resolve(swiftDir, name.replace(/^_canvas\//u, "")), contents);
 const android = structuredClone(source); android.children[0].role = "android";
-for (const [name, contents] of exportCompose(buildCapabilityVerificationIR(android, { role: "android", frames: ["mobile-fixture"] }, capabilityPathInventory()))) await writeFile(resolve(composeDir, name.replace(/^_canvas\//u, "")), contents);
+const androidIR = buildCapabilityVerificationIR(android, { role: "android", frames: ["mobile-fixture"] }, capabilityPathInventory());
+for (const [name, contents] of exportCompose(androidIR)) await writeFile(resolve(composeDir, name.replace(/^_canvas\//u, "")), contents);
+if (process.argv.includes("--completion")) {
+  const evidence = resolve(root, "research/mobile-capability-completion-20260908");
+  await mkdir(evidence, { recursive: true });
+  await writeFile(resolve(evidence, "fixture.json"), `${JSON.stringify({ ios: source, android }, null, 2)}\n`);
+  await writeFile(resolve(evidence, "ir.json"), `${JSON.stringify({ ios: iosIR, android: androidIR }, null, 2)}\n`);
+}
