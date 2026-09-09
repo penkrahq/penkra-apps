@@ -132,7 +132,13 @@ function bulletOptions(list) {
 }
 
 function textRunOptions(run) {
-  return { fontFace: run.fontFamily, fontSize: run.fontSize ? run.fontSize * 0.75 : undefined, bold: Number(run.weight ?? run.fontWeight) >= 600, italic: run.italic ?? run.fontStyle === "italic", underline: run.underline ? { style: "sng" } : undefined, strike: Boolean(run.strikethrough), color: colorHex(run.fill), charSpacing: run.letterSpacing ? run.letterSpacing * 0.75 : undefined, hyperlink: run.link ? { url: run.link } : undefined, lang: run.language };
+  return { fontFace: run.fontFamily, fontSize: run.fontSize ? run.fontSize * 0.75 : undefined, bold: Number(run.weight ?? run.fontWeight) >= 600, italic: run.italic ?? run.fontStyle === "italic", underline: run.underline ? { style: "sng" } : undefined, strike: Boolean(run.strikethrough), color: colorHex(run.fill), charSpacing: run.letterSpacing ? run.letterSpacing * 0.75 : undefined, hyperlink: run.link ? { url: safeHref(run.link) } : undefined, lang: run.language };
+}
+function safeHref(value) {
+  const href = String(value).trim();
+  const allowed = /^(?:https?:\/\/|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/iu.test(href) || (!/^[a-z][a-z0-9+.-]*:/iu.test(href) && !href.startsWith("//"));
+  if (!href || !allowed || /[\u0000-\u001f\u007f]/u.test(href)) throw Object.assign(new Error("Unsafe rich-text link URL."), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  return href;
 }
 function verticalAlign(value) { return value === "center" ? "mid" : value === "bottom" || value === "end" ? "bottom" : "top"; }
 function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).find((item) => item?.type === "image"); }
