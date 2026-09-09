@@ -9,6 +9,9 @@ export function migrateM2AssignModule(source, options = {}) {
   const document = structuredClone(source);
   if (document.module !== undefined) return { document, changes: 0 };
   const module = options.module ?? inferLegacyModule(document);
+  // `print` is migration input only. Pre-revision documents may infer that
+  // historical module here; the later document migration converts it to
+  // `generic` and removes legacy `page` roles before current schema validation.
   if (!new Set(["deck", "print", "web", "mobile"]).has(module)) {
     throw migrationError("M2", `Cannot assign module ${String(module)}.`);
   }
