@@ -192,7 +192,7 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
       opacity: [read("opacity-paint").backgroundColor, getComputedStyle(document.querySelector("#single-paragraph span")).color],
       paragraph: read("single-paragraph").textAlign,
       landmark: [document.querySelector("nav#landmark") !== null, document.querySelector("nav#landmark").getAttribute("aria-label")],
-      lists: [document.querySelectorAll("#rich ul li").length, document.querySelectorAll("#rich ol li").length, getComputedStyle(document.querySelector("#rich ol li")).paddingInlineStart],
+      lists: [document.querySelectorAll("#rich > ul > li").length, document.querySelectorAll("#rich > ul > li > ol > li").length, document.querySelector("#rich > ul > li > ol > li") !== null],
     };
   })()`), {
     layout: ["center", "flex-end", "240px", "360px", "100px", "180px"],
@@ -200,12 +200,14 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     gradients: [true, true, true], image: ["contain", true],
     effects: ["rgba(0, 0, 0, 0.5) 3px 4px 5px 6px", "blur(2px)", "blur(7px)", "multiply"],
     clip: ["hidden", "hidden"], flip: "matrix(-0.965926, -0.258819, 0.258819, -0.965926, 0, 0)",
-    text: ["end", "flex-end", "24px", "6px", "112px"], vectors: [true, "round", "5 3", true, "image.svg", true], zeroLines: ["1px", "1px"],
-    opacity: ["color(srgb 1 0 0 / 0.25)", "color(srgb 0.0705882 0.203922 0.337255 / 0.5)"], paragraph: "center", landmark: [true, "Secondary navigation"], lists: [1, 1, "24px"],
+    text: ["end", "flex-end", "24px", "6px", "80px"], vectors: [true, "round", "5 3", true, "image.svg", true], zeroLines: ["1px", "1px"],
+    opacity: ["color(srgb 1 0 0 / 0.25)", "color(srgb 0.0705882 0.203922 0.337255 / 0.5)"], paragraph: "center", landmark: [true, "Secondary navigation"], lists: [1, 1, true],
   });
   const completeTree = await page.send("Accessibility.getFullAXTree");
+  const axById = new Map(completeTree.nodes.map((node) => [node.nodeId, node]));
   assert.equal(completeTree.nodes.find((node) => node.role?.value === "link")?.name?.value, "Details destination");
   assert.ok(completeTree.nodes.some((node) => node.role?.value === "navigation" && node.name?.value === "Secondary navigation"));
+  assert.ok(completeTree.nodes.some((node) => node.role?.value === "list" && axById.get(node.parentId)?.role?.value === "listitem"));
   assert.ok(completeTree.nodes.some((node) => node.role?.value === "heading" && node.name?.value === "Node heading" && node.properties?.some((property) => property.name === "level" && property.value?.value === 2)));
 });
 

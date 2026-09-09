@@ -45,6 +45,7 @@ function buildExporterIRBase(document, request) {
   const capability = capabilityTableFor(format);
   if (!capability) throw exportError("CANVAS_EXPORT_ROLE", `No exporter exists for role ${request.role}.`);
   const projection = request.projection ?? (["route", "ios", "android"].includes(request.role) ? "semantic" : "resolved");
+  if (request.role === "route" && projection === "semantic") assertWebVariantCoverage(document);
   const resolved = resolveCanvasDocument(document, { modes: request.modes, bindings: request.bindings, imports: request.imports });
   const graph = createOpenPencilGraph(resolved.document);
   const sourceById = indexNodes(resolved.document.children);
@@ -149,6 +150,24 @@ function buildExporterIRBase(document, request) {
   };
   Object.defineProperty(result, MOBILE_RASTER_SIGNATURES, { value: rasterSignatures(rasters, evaluatedNodes, initialRoots) });
   return result;
+}
+
+const WEB_RUNTIME_VARIANT_PROPERTIES = new Set([
+  "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "visible",
+  "fill", "stroke", "effect", "blendMode", "cornerRadius", "layout", "gap", "rowGap", "columnGap", "padding",
+  "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns",
+  "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip", "overflow", "fontFamily", "fontSize",
+  "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical",
+  "textGrowth", "underline", "strikethrough",
+]);
+function assertWebVariantCoverage(document) {
+  const unsupported = [];
+  const visit = (nodes) => { for (const node of nodes ?? []) {
+    for (const [property, value] of Object.entries(node)) if (isCascade(value) && !WEB_RUNTIME_VARIANT_PROPERTIES.has(property)) unsupported.push(`${node.id}.${property}`);
+    visit(node.children);
+  } };
+  visit(document.children);
+  if (unsupported.length) throw exportError("CANVAS_CAPABILITY_UNVERIFIED", `Web runtime variants are not implemented for: ${unsupported.join(", ")}.`);
 }
 
 function mobileRuntimeAxes(axes) {

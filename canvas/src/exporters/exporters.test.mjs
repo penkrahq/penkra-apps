@@ -230,7 +230,9 @@ test("web rejects active rich-text URLs and link names without a link range", ()
   const source = (link, linkName = "Destination") => ({ module: "web", children: [{ id: "screen", type: "frame", role: "route", name: "Links", width: 200, height: 100, children: [
     { id: "copy", type: "text", width: 180, height: 40, content: "Open", linkName, marks: link ? [{ type: "link", from: 0, to: 4, value: link }] : [], paragraphs: [{ from: 0, to: 4 }] },
   ] }] });
-  assert.throws(() => exportWeb(buildExporterIR(source("javascript:alert(1)"), { role: "route", frames: ["screen"] })), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  for (const unsafe of ["javascript:alert(1)", "data:text/html,active", "ftp://example.com/file", "//example.com/protocol-relative"]) {
+    assert.throws(() => exportWeb(buildExporterIR(source(unsafe), { role: "route", frames: ["screen"] })), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  }
   assert.throws(() => buildExporterIR(source(null), { role: "route", frames: ["screen"] }), { code: "CANVAS_LINK_NAME_WITHOUT_LINK" });
   const html = exportWeb(buildExporterIR(source("/safe/path"), { role: "route", frames: ["screen"] })).get("links.html");
   assert.match(html, /href="\/safe\/path" aria-label="Destination"/u);
@@ -238,9 +240,9 @@ test("web rejects active rich-text URLs and link names without a link range", ()
 
 test("web rejects cascaded properties without a runtime CSS lowering", () => {
   const source = { module: "web", axes: { viewport: { modes: [{ name: "small", minWidth: 0 }, { name: "wide", minWidth: 800 }] } }, children: [{ id: "screen", type: "frame", role: "route", name: "Unsupported variant", width: 200, height: 100, children: [
-    { id: "box", type: "rectangle", width: 80, height: 40, stroke: [{ value: { fill: "#000", thickness: 1 } }, { value: { fill: "#000", thickness: 3 }, when: { viewport: "wide" } }] },
+    { id: "copy", type: "text", width: 80, height: 40, content: [{ value: "Small" }, { value: "Wide", when: { viewport: "wide" } }], paragraphs: [{ from: 0, to: 5 }] },
   ] }] };
-  assert.throws(() => exportWeb(buildExporterIR(source, { role: "route", frames: ["screen"] })), { code: "CANVAS_WEB_VARIANT_UNSUPPORTED" });
+  assert.throws(() => buildExporterIR(source, { role: "route", frames: ["screen"] }), { code: "CANVAS_CAPABILITY_UNVERIFIED" });
 });
 
 test("mobile overflow emits native scrolling wrappers while retaining the viewport frame", () => {

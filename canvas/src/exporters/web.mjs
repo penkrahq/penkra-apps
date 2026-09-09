@@ -50,7 +50,8 @@ function vector(node, parent, options) {
   const stroke = node.paint.stroke ?? {};
   const paints = svgPaints(node.paint.fill, node, options);
   const paths = paints.layers.map((paint) => `<path d="${esc(node.vector.d)}" fill="${paint.value}" fill-opacity="${paint.opacity}" fill-rule="${node.vector.fillRule}" stroke="none"/>`).join("");
-  return `<svg id="${esc(node.id)}" class="node ${esc(node.type)}" viewBox="${node.vector.viewBox.join(" ")}" preserveAspectRatio="none" style="${esc(style(node, parent, options))}"${semantics(node, true)}><defs>${paints.defs}</defs>${paths}<path d="${esc(node.vector.d)}" fill="none" stroke="${esc(solid(stroke.fill ?? stroke.color) ?? "none")}" ${strokeAttrs(stroke)} vector-effect="non-scaling-stroke"/></svg>`;
+  const outline = node.paint.stroke ? `<path d="${esc(node.vector.d)}" fill="none" stroke="${esc(solid(stroke.fill ?? stroke.color) ?? "none")}" ${strokeAttrs(stroke)} vector-effect="non-scaling-stroke"/>` : "";
+  return `<svg id="${esc(node.id)}" class="node ${esc(node.type)}" viewBox="${node.vector.viewBox.join(" ")}" preserveAspectRatio="none" style="${esc(style(node, parent, options))}"${semantics(node, true)}><defs>${paints.defs}</defs>${paths}${outline}</svg>`;
 }
 
 function strokeAttrs(stroke) {
@@ -75,13 +76,30 @@ function textContent(node) {
   let content = "";
   for (let index = 0; index < paragraphs.length;) {
     if (!paragraphs[index].list) { content += paragraph(paragraphs[index++]); continue; }
-    const orderedList = ["number", "ordered"].includes(paragraphs[index].list.kind); const tag = orderedList ? "ol" : "ul"; const items = [];
-    while (index < paragraphs.length && paragraphs[index].list && ["number", "ordered"].includes(paragraphs[index].list.kind) === orderedList) {
-      const item = paragraphs[index++]; const level = Number(item.list.level ?? 0); const css = [paragraphCss(item), `padding-inline-start:${level * 24}px`].filter(Boolean).join(";"); items.push(`<li data-level="${level}" style="${esc(css)}">${body(item)}</li>`);
-    }
-    content += `<${tag}>${items.join("")}</${tag}>`;
+    const listed = [];
+    while (index < paragraphs.length && paragraphs[index].list) listed.push(paragraphs[index++]);
+    content += nestedLists(listed, body);
   }
   return { tag: "div", content };
+}
+
+function nestedLists(paragraphs, body) {
+  const entries = paragraphs.map((item) => ({ item, level: Math.max(0, Number(item.list.level ?? 0)), ordered: ["number", "ordered"].includes(item.list.kind) }));
+  const render = (start, level) => {
+    let index = start; let html = "";
+    while (index < entries.length && entries[index].level === level) {
+      const ordered = entries[index].ordered; const tag = ordered ? "ol" : "ul"; html += `<${tag}>`;
+      while (index < entries.length && entries[index].level === level && entries[index].ordered === ordered) {
+        const entry = entries[index++]; html += `<li data-level="${entry.level}"${paragraphCss(entry.item) ? ` style="${esc(paragraphCss(entry.item))}"` : ""}>${body(entry.item)}`;
+        while (index < entries.length && entries[index].level > level) { const child = render(index, entries[index].level); html += child.html; index = child.index; }
+        html += `</li>`;
+      }
+      html += `</${tag}>`;
+      if (index >= entries.length || entries[index].level < level) break;
+    }
+    return { html, index };
+  };
+  return render(0, entries[0]?.level ?? 0).html;
 }
 
 function paragraphCss(item) {
@@ -228,18 +246,28 @@ function allVariants(ir, options) {
   return [...single, ...conjunctive].join("\n");
 }
 function variantCss(property, value, node, options) {
-  const lengths = { gap: "gap", rowGap: "row-gap", columnGap: "column-gap", width: "width", height: "height", minWidth: "min-width", maxWidth: "max-width", minHeight: "min-height", maxHeight: "max-height", fontSize: "font-size", letterSpacing: "letter-spacing", wordSpacing: "word-spacing" };
+  const lengths = { x: "left", y: "top", gap: "gap", rowGap: "row-gap", columnGap: "column-gap", width: "width", height: "height", minWidth: "min-width", maxWidth: "max-width", minHeight: "min-height", maxHeight: "max-height", fontSize: "font-size", letterSpacing: "letter-spacing", wordSpacing: "word-spacing" };
   if (lengths[property]) return `${lengths[property]}:${dimension(value)}!important`;
   if (property === "fill") { const paint = background(value, node, options); return paint.image ? `background-image:${paint.image}!important;${paint.extra.join(";")}` : `background:${paint.color}!important`; }
-  const direct = { opacity: "opacity", justifyContent: "justify-content", alignItems: "align-items", textAlign: "text-align", fontFamily: "font-family", fontWeight: "font-weight", overflow: "overflow" };
-  if (direct[property]) return `${direct[property]}:${["justifyContent", "alignItems"].includes(property) ? alignment(value) : value}!important`;
+  const direct = { opacity: "opacity", justifyContent: "justify-content", alignItems: "align-items", textAlign: "text-align", fontFamily: "font-family", fontWeight: "font-weight", gridColumn: "grid-column", gridRow: "grid-row", blendMode: "mix-blend-mode" };
+  if (direct[property]) return `${direct[property]}:${["justifyContent", "alignItems"].includes(property) ? alignment(value) : property === "blendMode" ? blend(value) : value}!important`;
   if (property === "padding") return `padding:${padding(value)}!important`;
+  if (property === "gridTemplateColumns" || property === "gridTemplateRows") return `${property === "gridTemplateColumns" ? "grid-template-columns" : "grid-template-rows"}:${tracks(value)}!important`;
   if (property === "cornerRadius") return `border-radius:${padding(value)}!important`;
   if (property === "lineHeight") return `line-height:${length(value)}!important`;
   if (property === "fontStyle") return `font-style:${value}!important`;
   if (property === "rotation") return `transform:rotate(${Number(value)}deg)!important`;
   if (property === "flipX" || property === "flipY") return `transform:${property === "flipX" ? "scaleX" : "scaleY"}(${value ? -1 : 1})!important`;
   if (property === "wrap") return `flex-wrap:${value ? "wrap" : "nowrap"}!important`;
+  if (property === "enabled" || property === "visible") return `display:${value ? "revert" : "none"}!important`;
+  if (property === "clip") return `overflow:${value ? "hidden" : "visible"}!important`;
+  if (property === "overflow") { const css = { visible: "visible", clip: "hidden", "scroll-x": "auto hidden", "scroll-y": "hidden auto", "scroll-both": "auto" }[value]; return `overflow:${css}!important`; }
+  if (property === "underline" || property === "strikethrough") return `text-decoration-line:${value ? property === "underline" ? "underline" : "line-through" : "none"}!important`;
+  if (property === "textAlignVertical") return `display:flex!important;flex-direction:column!important;justify-content:${value === "center" ? "center" : value === "bottom" ? "flex-end" : "flex-start"}!important`;
+  if (property === "textGrowth") return value === "auto" ? "width:max-content!important;height:max-content!important" : value === "fixed-width" ? "height:max-content!important" : `width:${node.geometry.w}px!important;height:${node.geometry.h}px!important`;
+  if (property === "layoutPosition") return `position:${value === "absolute" ? "absolute" : "relative"}!important`;
+  if (property === "stroke") return boxStroke(value).map((item) => `${item}!important`).join(";");
+  if (property === "effect") { const effects = (Array.isArray(value) ? value : [value]).filter(Boolean); const result = []; const shadows = effects.filter((item) => item.type === "shadow").map(shadow); if (shadows.length) result.push(`box-shadow:${shadows.join(",")}!important`); const blur = effects.find((item) => item.type === "blur"); if (blur) result.push(`filter:blur(${Number(blur.radius ?? blur.blur ?? 0)}px)!important`); const backdrop = effects.find((item) => ["background_blur", "backgroundBlur"].includes(item.type)); if (backdrop) result.push(`backdrop-filter:blur(${Number(backdrop.radius ?? backdrop.blur ?? 0)}px)!important`); return result.join(";"); }
   if (property === "layout") return `display:${value === "grid" ? "grid" : ["horizontal", "vertical"].includes(value) ? "flex" : "block"}!important${["horizontal", "vertical"].includes(value) ? `;flex-direction:${value === "horizontal" ? "row" : "column"}!important` : ""}`;
   throw Object.assign(new Error(`Web runtime variants do not support ${property}.`), { code: "CANVAS_WEB_VARIANT_UNSUPPORTED" });
 }
@@ -263,4 +291,9 @@ function esc(value) { return String(value).replace(/[&<>"']/gu, (char) => ({ "&"
 function cssString(value) { return String(value).replace(/["\\\n\r\f]/gu, (char) => `\\${char.codePointAt(0).toString(16)} `); }
 function cssEscape(value) { return String(value).replace(/[^A-Za-z0-9_-]/gu, (char) => `\\${char.codePointAt(0).toString(16)} `); }
 function normalizeMedia(value) { const text = String(value).trim(); return text.startsWith("(") ? text : `(${text})`; }
-function safeHref(value) { const href = String(value).trim(); if (/^(?:javascript|vbscript|data):/iu.test(href) || /[\u0000-\u001f\u007f]/u.test(href)) throw Object.assign(new Error("Unsafe rich-text link URL."), { code: "CANVAS_WEB_UNSAFE_LINK" }); return href; }
+function safeHref(value) {
+  const href = String(value).trim();
+  const allowed = /^(?:https?:\/\/|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/iu.test(href) || (!/^[a-z][a-z0-9+.-]*:/iu.test(href) && !href.startsWith("//"));
+  if (!href || !allowed || /[\u0000-\u001f\u007f]/u.test(href)) throw Object.assign(new Error("Unsafe rich-text link URL."), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  return href;
+}
