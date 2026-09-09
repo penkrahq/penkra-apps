@@ -212,7 +212,7 @@ function mobileRepresentationLimits(platform) {
     "nodes.text": raster(textEngine),
     ...Object.fromEntries([
       "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight", "properties.letterSpacing", "properties.lineHeight",
-      "properties.marks", "properties.paragraphs", "properties.strikethrough", "properties.text.run.fill", "properties.text.run.fontFamily",
+      "properties.marks", "properties.paragraphs", "properties.style", "properties.strikethrough", "properties.text.run.fill", "properties.text.run.fontFamily",
       "properties.text.run.fontSize", "properties.text.run.italic", "properties.text.run.letterSpacing", "properties.text.run.strikethrough",
       "properties.text.run.underline", "properties.text.run.weight", "properties.textGrowth", "properties.underline", "properties.textAlign", "properties.textAlignVertical",
       "properties.text.paragraph.align", "properties.text.paragraph.style",

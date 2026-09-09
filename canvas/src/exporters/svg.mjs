@@ -57,7 +57,7 @@ function svgText(node, presentation, opacity) {
   const body = paragraphs.map((paragraph, index) => {
     const metric = metrics[index]; const align = paragraph.effectiveAlign ?? paragraph.align ?? node.semantics.textAlign ?? "start"; const anchor = align === "center" ? "middle" : ["end", "right"].includes(align) ? "end" : "start"; const cursorX = anchor === "middle" ? x + w / 2 : anchor === "end" ? x + w : x;
     const prefix = paragraph.list ? `${paragraph.list.kind === "number" ? `${Number(paragraph.list.start ?? 1) + index}.` : paragraph.list.character ?? "•"} ` : "";
-    const runs = node.semantics.runs.flatMap((run) => { const from = Math.max(run.from, paragraph.from); const to = Math.min(run.to, paragraph.to); if (to <= from) return []; const span = `<tspan${textRunAttributes(run)}>${esc(node.semantics.content.slice(from, to).replace(/\r?\n$/u, ""))}</tspan>`; return [run.link ? `<a href="${esc(run.link)}">${span}</a>` : span]; }).join("");
+    const runs = node.semantics.runs.flatMap((run) => { const from = Math.max(run.from, paragraph.from); const to = Math.min(run.to, paragraph.to); if (to <= from) return []; const span = `<tspan${textRunAttributes(run)}>${esc(node.semantics.content.slice(from, to).replace(/\r?\n$/u, ""))}</tspan>`; return [run.link ? `<a href="${esc(safeHref(run.link))}">${span}</a>` : span]; }).join("");
     cursorY += metric.fontSize; const result = `<tspan x="${cursorX}" y="${cursorY}" text-anchor="${anchor}">${esc(prefix)}${runs}</tspan>`; cursorY += metric.lineHeight - metric.fontSize; return result;
   }).join("");
   return `<text id="${esc(node.id)}" opacity="${opacity}"${presentation}>${body}</text>`;
@@ -86,4 +86,10 @@ function hasFilter(node) { return (Array.isArray(node.paint.effect) ? node.paint
 function strokeAttributes(stroke) { if (!stroke) return ""; const cap = stroke.cap && stroke.cap !== "arrow" ? ` stroke-linecap="${stroke.cap === "square" ? "square" : stroke.cap === "round" ? "round" : "butt"}"` : ""; const join = stroke.join ? ` stroke-linejoin="${stroke.join}"` : ""; const dash = stroke.dashPattern ?? stroke.dash; return `${cap}${join}${Array.isArray(dash) && dash.length ? ` stroke-dasharray="${dash.map(Number).join(" ")}"` : ""}`; }
 function color(value) { return typeof value === "string" ? value : value?.color; }
 function esc(value) { return String(value).replace(/[&<>"']/gu, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]); }
+function safeHref(value) {
+  const href = String(value).trim();
+  const allowed = /^(?:https?:\/\/|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/iu.test(href) || (!/^[a-z][a-z0-9+.-]*:/iu.test(href) && !href.startsWith("//"));
+  if (!href || !allowed || /[\u0000-\u001f\u007f]/u.test(href)) throw Object.assign(new Error("Unsafe rich-text link URL."), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  return href;
+}
 function escId(value) { return String(value).replace(/[^A-Za-z0-9_.-]/gu, "-"); }
