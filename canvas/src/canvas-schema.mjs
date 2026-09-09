@@ -165,6 +165,7 @@ export function validateCanvasDocument(document, options = {}) {
     if (node.role !== undefined && node.type !== "frame") errors.push(`${node.id}.role may only appear on a frame.`);
     else if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
     validateFrameGeometry(node, errors);
+    if (node.clip !== undefined && node.type !== "frame") errors.push(`${node.id}.clip may only appear on a frame.`);
     if (node.overflow !== undefined && node.type !== "frame") errors.push(`${node.id}.overflow may only appear on a frame.`);
     if (node.type === "text") errors.push(...validateRichText(node));
     if (["path", "polygon"].includes(node.type)) {

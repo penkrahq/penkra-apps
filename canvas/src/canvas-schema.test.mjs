@@ -150,6 +150,15 @@ test("node export override accepts default/image and rejects the withdrawn live 
   assert.throws(() => validateCanvasDocument(source));
 });
 
+test("legacy clip and canonical overflow are frame-only viewport properties", () => {
+  const source = document();
+  source.children.push({ id: "shape", type: "rectangle", width: 20, height: 20, clip: true });
+  assert.throws(() => validateCanvasDocument(source), /shape\.clip may only appear on a frame/u);
+  source.children[1].clip = undefined;
+  source.children[1].overflow = "scroll-y";
+  assert.throws(() => validateCanvasDocument(source), /shape\.overflow may only appear on a frame/u);
+});
+
 test("canonical schema validates roots, rich text, roles, refs and flows", () => {
   assert.equal(validateCanvasDocument(document()).valid, true);
   const bad = document(); bad.children[0].children[0].marks = [{ type: "fill", from: 0, to: 4, value: "red" }];
