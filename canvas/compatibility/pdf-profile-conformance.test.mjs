@@ -71,7 +71,7 @@ test("PDF/UA-1 output passes pinned veraPDF 1.30.2", { timeout: 120_000 }, async
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test("configured PDF/X-4 profile returns a writer-verified artifact without universal conformance", async () => {
+test("configured PDF/X-4 profile returns a conformant closed-writer artifact", async () => {
   const ir = buildExtractionIR(fixture(), { format: "pdf", nodeId: "page" });
   const [outputIntent, sourceColorProfile, inter] = await Promise.all([
     readFile(new URL("../assets/color/GRACoL2013_CRPC6.icc", import.meta.url)),
@@ -86,7 +86,7 @@ test("configured PDF/X-4 profile returns a writer-verified artifact without univ
   const report = await preflightPdfx4(bytes);
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset?.verified, true);
-  assert.equal(report.conformant, false);
+  assert.equal(report.conformant, true);
   await assert.rejects(exportPdf(ir, { profile: "PDF/X-4" }), { code: "CANVAS_PDF_PROFILE_INVALID" });
 });
 

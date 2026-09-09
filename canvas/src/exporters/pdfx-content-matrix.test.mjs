@@ -129,11 +129,11 @@ test("literal and hex strings, escaped names, comments, and whitespace remain le
   }
 });
 
-test("TL, T*, and d retain their special outside-subset machine distinction", async () => {
-  for (const [content, accepted] of [["BT 24 TL T* ET", true], ["[] 0 d", true], ["BT /bad TL ET", false], ["BT 1 T* ET", false], ["[] 1 d", false], ["[1] 0 d", false]]) {
+test("TL, T*, and native dash operands retain exact validation", async () => {
+  for (const [content, accepted] of [["BT 24 TL T* ET", true], ["[] 0 d", true], ["BT /bad TL ET", false], ["BT 1 T* ET", false], ["[] 1 d", true], ["[1] 0 d", true], ["[-1] 0 d", false]]) {
     const report = await reportFor(content);
-    assert.equal(contentIssues(report).includes("CONTENT_OPERATOR_OUTSIDE_SUBSET"), !accepted, content);
-    assert.equal(contentIssues(report).includes("CONTENT_OPERANDS_INVALID"), false, content);
+    assert.equal(contentIssues(report).includes("CONTENT_OPERATOR_OUTSIDE_SUBSET"), !accepted && !content.includes(" d"), content);
+    assert.equal(contentIssues(report).includes("CONTENT_OPERANDS_INVALID"), !accepted && content.includes(" d"), content);
   }
 });
 

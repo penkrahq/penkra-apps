@@ -204,7 +204,7 @@ test("physical roleless PDF preserves mm trim/media/bleed boxes and the PDF/X-4 
       const report = await preflightPdfx4(bytes);
       assert.deepEqual(report.issues, []);
       assert.equal(report.canvasWriterSubset?.verified, true);
-      assert.equal(report.conformant, false);
+      assert.equal(report.conformant, true);
     });
     const invalidProfilePath = join(directory, "invalid-profile.pdf");
     await expectCode(outcomes, failures, "physical/invalid-profile", invalidProfilePath, "CANVAS_PDF_PROFILE_UNKNOWN", () => extractDocumentNode(rolelessDocument([ROLELESS_SPECS[0]]), { nodeId: ROLELESS_SPECS[0].id, format: "pdf", profile: "PDF/X-3", destination: invalidProfilePath }, ASSETS));

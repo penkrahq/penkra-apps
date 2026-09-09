@@ -41,7 +41,7 @@ export async function exportPdf(ir, options = {}) {
       await drawNode(pdf, page, background, output, fonts, options, { bleed, trimWidth, trimHeight });
       tagging?.end(page, tag);
     }
-    for (const node of output.nodes) {
+    for (const sourceNode of output.nodes) for (const node of pdfPaintLayers(sourceNode)) {
       if (node.capability.verdict === "ignore") continue;
       if (node.capability.verdict === "native" && node.type !== "text" && !color(node.paint.fill) && !color(node.paint.stroke?.fill ?? node.paint.stroke?.color) && !imageFill(node.paint.fill) && !gradientFill(node.paint.fill)) continue;
       const tag = tagging?.begin(page, node);
@@ -112,6 +112,11 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
     else if (sourceRatio > boxRatio) { drawWidth = height * sourceRatio; drawX -= (drawWidth - width) / 2; } else { drawHeight = width / sourceRatio; drawY -= (drawHeight - height) / 2; }
     page.drawImage(embedded, { x: drawX, y: drawY, width: drawWidth, height: drawHeight, opacity: Number(node.paint.opacity ?? 1) }); return;
   }
+  const gradient = gradientFill(node.paint.fill);
+  if (gradient) {
+    drawGradient(pdf, page, node, gradient, { x, y, width, height });
+    return;
+  }
   if (node.type === "text") {
     if (node.textLayout) drawShapedText(pdf, page, node, { x, y, width, height, sx, sy }, fonts);
     else drawText(page, node, { x, y, width, height, textScale: sy }, fonts);
@@ -165,6 +170,38 @@ function pdfStrokeOptions(stroke, scaleFactor) {
     ...(stroke.cap ? { borderLineCap: { round: LineCapStyle.Round, square: LineCapStyle.Projecting, butt: LineCapStyle.Butt }[stroke.cap] ?? LineCapStyle.Butt } : {}),
   };
 }
+
+function pdfPaintLayers(node) {
+  const paints = Array.isArray(node.paint.fill) ? node.paint.fill.filter((paint) => paint?.enabled !== false) : [];
+  if (paints.length <= 1) return [node];
+  return paints.map((fill, index) => ({ ...node, id: `${node.id}:paint:${index}`, paint: { ...node.paint, fill, stroke: index === paints.length - 1 ? node.paint.stroke : null }, semantics: index === 0 ? node.semantics : { ...node.semantics, decorative: true, description: null } }));
+}
+
+function drawGradient(pdf, page, node, gradient, box) {
+  const stops = [...(gradient.colors ?? [])].sort((a, b) => Number(a.position) - Number(b.position));
+  if (stops.length < 2) throw profileError(`PDF gradient ${node.id} needs at least two stops.`);
+  if (!["linear", "radial"].includes(gradient.gradientType ?? "linear")) throw profileError(`PDF gradient ${node.id} uses an unsupported shading family.`);
+  const functions = stops.slice(0, -1).map((stop, index) => pdf.context.register(pdf.context.obj({
+    FunctionType: 2, Domain: [0, 1], C0: rgbArray(stop.color), C1: rgbArray(stops[index + 1].color), N: 1,
+  })));
+  const fn = functions.length === 1 ? functions[0] : pdf.context.register(pdf.context.obj({
+    FunctionType: 3, Domain: [0, 1], Functions: functions,
+    Bounds: stops.slice(1, -1).map((stop) => Number(stop.position)), Encode: functions.flatMap(() => [0, 1]),
+  }));
+  const center = gradient.center ?? { x: .5, y: .5 }; const size = gradient.size ?? { width: 1, height: 1 };
+  const angle = Number(gradient.rotation ?? 0) * Math.PI / 180; const cx = box.x + Number(center.x) * box.width; const cy = box.y + (1 - Number(center.y)) * box.height;
+  const radiusX = box.width * Number(size.width) / 2; const radiusY = box.height * Number(size.height) / 2;
+  const radial = (gradient.gradientType ?? "linear") === "radial";
+  const coords = radial ? [cx, cy, 0, cx, cy, Math.max(radiusX, radiusY)] : [cx - Math.cos(angle) * radiusX, cy + Math.sin(angle) * radiusY, cx + Math.cos(angle) * radiusX, cy - Math.sin(angle) * radiusY];
+  const shading = pdf.context.obj({ ShadingType: radial ? 3 : 2, ColorSpace: "DeviceRGB", Coords: coords, Function: fn, Extend: [true, true] });
+  const resources = page.node.Resources(); let shadings = resources.lookupMaybe(PDFName.of("Shading"), PDFDict); if (!shadings) { shadings = pdf.context.obj({}); resources.set(PDFName.of("Shading"), shadings); }
+  const name = PDFName.of(`Sh${shadings.keys().length + 1}`); shadings.set(name, shading);
+  const operators = [pushGraphicsState(), rectangle(box.x, box.y, box.width, box.height), clip(), endPath(), PDFOperator.of("sh", [name])];
+  const alpha = Number(node.paint.opacity ?? 1); if (alpha !== 1) operators.splice(1, 0, setGraphicsState(page.node.newExtGState("GS", pdf.context.obj({ Type: "ExtGState", ca: alpha, CA: alpha }))));
+  operators.push(popGraphicsState()); page.pushOperators(...operators);
+}
+
+function rgbArray(value) { const { r, g, b } = colorChannels(value); return [r, g, b]; }
 
 function drawShapedText(pdf, page, node, box, fonts) {
   const byteToCharacter = new Map();
@@ -261,6 +298,7 @@ function selectFont(fonts, run) {
   return fonts.get(`${family}:${weight >= 700 ? 700 : weight >= 600 ? 600 : weight >= 500 ? 500 : 400}`) ?? fonts.get(`${family}:400`);
 }
 function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).find((item) => item?.type === "image" || typeof item?.url === "string"); }
+function gradientFill(fill) { return (Array.isArray(fill) ? fill : [fill]).find((item) => item?.enabled !== false && item?.type === "gradient"); }
 function color(value) { return typeof value === "string" ? value : value?.color; }
 function colorChannels(value) {
   if (value === "transparent") return { r: 0, g: 0, b: 0, a: 0 };

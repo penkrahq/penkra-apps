@@ -17,21 +17,24 @@ import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profi
 // It is not a validator for arbitrary third-party PDFs.
 export const PDFX_UNCOVERED = Object.freeze([]);
 
-const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "m", "l", "c", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
+const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "J", "j", "d", "m", "l", "c", "re", "W", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "sh", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
 
 // PDF Reference 1.6, chapters 4, 5 and 10: an allowed operator name is
 // insufficient evidence without the corresponding operand types and arity.
 function validContentOperands({ operator, operands }) {
   const numeric = (value) => value?.kind === "number" && Number.isFinite(value.value);
   const numbers = (count) => operands.length === count && operands.every(numeric);
-  if (["q", "Q", "h", "n", "f", "f*", "S", "B", "B*", "BT", "ET", "EMC"].includes(operator)) return operands.length === 0;
+  if (["q", "Q", "W", "h", "n", "f", "f*", "S", "B", "B*", "BT", "ET", "EMC"].includes(operator)) return operands.length === 0;
   if (["cm", "c", "Tm"].includes(operator)) return numbers(6);
   if (["m", "l"].includes(operator)) return numbers(2);
+  if (operator === "re") return numbers(4);
+  if (["J", "j"].includes(operator)) return numbers(1) && Number.isInteger(operands[0].value) && operands[0].value >= 0 && operands[0].value <= 2;
+  if (operator === "d") return operands.length === 2 && operands[0].kind === "array" && operands[0].value.every((item) => numeric(item) && item.value >= 0) && numeric(operands[1]);
   if (operator === "w") return numbers(1) && operands[0].value >= 0;
   if (["rg", "RG"].includes(operator)) return numbers(3);
   if (["g", "G"].includes(operator)) return numbers(1);
   if (["k", "K"].includes(operator)) return numbers(4);
-  if (["gs", "Do", "BMC"].includes(operator)) return operands.length === 1 && operands[0].kind === "name";
+  if (["gs", "sh", "Do", "BMC"].includes(operator)) return operands.length === 1 && operands[0].kind === "name";
   if (operator === "Tf") return operands.length === 2 && operands[0].kind === "name" && numeric(operands[1]);
   if (operator === "Tj") return operands.length === 1 && operands[0].kind === "string";
   if (operator === "TJ") return operands.length === 1 && operands[0].kind === "array" && operands[0].value.every((item) => item.kind === "string" || numeric(item));
@@ -301,7 +304,7 @@ function inspectPageContent(page, path, context) {
           if (markedDepth === 0) add("MARKED_CONTENT_UNDERFLOW", "6.1", location);
           else markedDepth -= 1;
         }
-        if (operandsValid && ["gs", "Do", "Tf"].includes(op)) inspectNamedContentResource(op, operation.operands[0].value, resources, location, { resolve, get, name, add });
+        if (operandsValid && ["gs", "sh", "Do", "Tf"].includes(op)) inspectNamedContentResource(op, operation.operands[0].value, resources, location, { resolve, get, name, add });
         if (op === "BDC" && operandsValid && operation.operands[1]?.kind === "name") inspectNamedContentResource("BDC", operation.operands[1].value, resources, location, { resolve, get, name, add });
       }
     } catch { add("CONTENT_SYNTAX_INVALID_OR_UNSUPPORTED", "6.1", `${path}/Contents[${index}]`); }
@@ -314,7 +317,7 @@ function inspectPageContent(page, path, context) {
 
 function inspectNamedContentResource(operator, resourceName, resources, location, context) {
   const { resolve, get, name, add } = context;
-  const categories = { gs: "ExtGState", Do: "XObject", Tf: "Font", BDC: "Properties" };
+  const categories = { gs: "ExtGState", sh: "Shading", Do: "XObject", Tf: "Font", BDC: "Properties" };
   const category = get(resources, categories[operator]);
   const raw = lookupPdfResourceName(category, resourceName);
   if (raw === undefined) { add("CONTENT_RESOURCE_UNRESOLVED", "6.3", location); return; }
@@ -335,6 +338,10 @@ function inspectNamedContentResource(operator, resourceName, resources, location
     if (!(value instanceof PDFRawStream)) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
     else if (name(get(value.dict, "Subtype")) === "Form") add("FORM_XOBJECT_OUTSIDE_SUBSET", "6.1", location);
     else if (name(get(value.dict, "Subtype")) !== "Image") add("CONTENT_RESOURCE_SUBTYPE_INVALID", "6.1", location);
+    return;
+  }
+  if (operator === "sh") {
+    if (!(value instanceof PDFDict) || ![2, 3].includes(get(value, "ShadingType")?.asNumber?.())) add("CONTENT_RESOURCE_TYPE_INVALID", "6.3", location);
     return;
   }
   if (operator === "Tf") {

@@ -99,8 +99,8 @@ test("a configured candidate with one lowered resource key is rejected before pu
   assert.equal(inspectCanvasPdfEnvelope(canonical).verified, true);
   const canonicalReport = await preflightPdfx4(canonical);
   assert.deepEqual(canonicalReport.issues, []);
-  assert.equal(canonicalReport.status, "verified-canvas-writer-subset");
-  assert.equal(canonicalReport.conformant, false);
+  assert.equal(canonicalReport.status, "conformant");
+  assert.equal(canonicalReport.conformant, true);
   const canonicalText = Buffer.from(canonical).toString("latin1");
   const occurrences = canonicalText.match(/\/A#234a/g) ?? [];
   assert.equal(occurrences.length, 2);

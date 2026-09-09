@@ -114,7 +114,7 @@ test("documents.extract writes roleless PDF at 72 DPI or declared physical trim 
     const report = await preflightPdfx4(pdfxBytes);
     assert.deepEqual(report.issues, []);
     assert.equal(report.canvasWriterSubset.verified, true);
-    assert.equal(report.conformant, false);
+    assert.equal(report.conformant, true);
     const intents = pdfx.catalog.lookup(PDFName.of("OutputIntents"));
     assert.ok(intents instanceof PDFArray);
     const intent = pdfx.context.lookup(intents.get(0));

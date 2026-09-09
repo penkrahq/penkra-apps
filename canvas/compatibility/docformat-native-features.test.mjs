@@ -64,6 +64,8 @@ test("standalone SVG emits and Chromium renders native icon, gradient, filter, c
 test("PDF keeps icons native, embeds source images, and Poppler renders transformed geometry", { timeout: 30_000 }, async (context) => {
   const document = structuredClone(generic); Object.assign(document.children[0].children[0], { width: 100, height: 50, rotation: 25, flipX: true });
   document.children[0].children.push({ id: "source-image", type: "rectangle", x: 125, y: 80, width: 30, height: 30, fill: { type: "image", mode: "fit", url: "pixel.png" } });
+  document.children[0].children.push({ id: "pdf-gradient", type: "rectangle", x: 115, y: 15, width: 50, height: 35, fill: { type: "gradient", gradientType: "radial", center: { x: .3, y: .6 }, size: { width: .8, height: 1.2 }, colors: [{ color: "#000000", position: 0 }, { color: "#ffffff", position: 1 }] } });
+  document.children[0].children.push({ id: "pdf-multi", type: "rectangle", x: 5, y: 105, width: 25, height: 25, fill: ["#ff0000", "#00000080"] });
   const ir = buildExtractionIR(document, { format: "pdf", nodeId: "art" });
   assert.equal(ir.rasters.length, 0);
   const directory = await mkdtemp(join(tmpdir(), "canvas-pdf-icon-"));
@@ -72,6 +74,7 @@ test("PDF keeps icons native, embeds source images, and Poppler renders transfor
     const pdf = join(directory, "icon.pdf"); await writeFile(pdf, await exportPdf(ir, { imageData: () => imageBytes }));
     const parsed = await PDFDocument.load(await readFile(pdf));
     assert.ok(parsed.context.enumerateIndirectObjects().some(([, value]) => value?.dict?.get(PDFName.of("Subtype"))?.toString() === "/Image"));
+    assert.ok(parsed.getPages()[0].node.Resources().get(PDFName.of("Shading")));
     await execute("pdftoppm", ["-r", "192", "-singlefile", "-png", pdf, join(directory, "icon")], { timeout: 20_000, signal: context.signal });
     const { image, count } = darkPixels(await readFile(join(directory, "icon.png"))); assert.deepEqual([image.width, image.height], [480, 374]); assert.ok(count > 150, `dark pixels: ${count}`);
   } finally { await rm(directory, { recursive: true, force: true }); }

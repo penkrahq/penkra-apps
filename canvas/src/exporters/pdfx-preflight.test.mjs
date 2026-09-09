@@ -126,12 +126,12 @@ test("negative serialized fixtures exercise boxes, actions, font embedding and s
   for (const [expected, change] of cases) assert.ok(codes(await preflightPdfx4(await fixture(change))).includes(expected), expected);
 });
 
-test("content subset permits the emitted solid dash reset but rejects other dash operands", async () => {
-  for (const [content, accepted] of [["[] 0 d", true], ["[2 3] 0 d", false], ["[] 1 d", false], ["0 d", false], ["[] /zero d", false]]) {
+test("content subset validates native dash arrays and phases", async () => {
+  for (const [content, accepted] of [["[] 0 d", true], ["[2 3] 0 d", true], ["[] 1 d", true], ["[-1] 0 d", false], ["0 d", false], ["[] /zero d", false]]) {
     const bytes = await fixture((pdf, page) => {
       page.node.set(PDFName.of("Contents"), pdf.context.register(pdf.context.flateStream(Buffer.from(content))));
     });
-    assert.equal(codes(await preflightPdfx4(bytes)).includes("CONTENT_OPERATOR_OUTSIDE_SUBSET"), !accepted, content);
+    assert.equal(codes(await preflightPdfx4(bytes)).includes("CONTENT_OPERANDS_INVALID"), !accepted, content);
   }
 });
 
