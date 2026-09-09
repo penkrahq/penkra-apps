@@ -55,7 +55,7 @@ test("only visually measured vector profiles have native verdicts", () => {
   }
 });
 
-test("aggregate capability gate is total with unmeasured mobile rows rasterized", () => {
+test("aggregate capability gate is total with measured runtime axes and exact text fallback", () => {
   const entries = unverifiedCapabilityEntries();
   assert.deepEqual(entries, []);
   assert.equal(entries.some((entry) => entry.path === "profile"), false);
@@ -64,7 +64,7 @@ test("aggregate capability gate is total with unmeasured mobile rows rasterized"
   assert.equal(assertAllCapabilityTables(), true);
   for (const format of ["swift", "kotlin"]) {
     assert.equal(capabilityTableFor(format).properties["nodes.text"].verdict, "raster");
-    assert.equal(capabilityTableFor(format).properties["root.axes"].verdict, "raster");
+    assert.equal(capabilityTableFor(format).properties["root.axes"].verdict, "native");
   }
 });
 

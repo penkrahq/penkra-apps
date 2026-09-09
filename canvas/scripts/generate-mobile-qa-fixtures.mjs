@@ -117,6 +117,36 @@ if (process.argv.includes("--stroke-compositing")) {
     stroke: { fill: "#F4A261", width: 8, align, join: "round" },
   }));
 }
+if (process.argv.includes("--completion")) {
+  source.axes = {
+    appearance: { modes: [{ name: "light" }, { name: "dark", media: "(prefers-color-scheme: dark)" }] },
+    viewport: { modes: [{ name: "phone", minWidth: 0 }, { name: "wide", minWidth: 450 }] },
+  };
+  source.children[0].padding = [80, 20, 20, 20];
+  source.children[0].gap = 18;
+  source.children[0].fill = [{ value: "#F6F2EA" }, { value: "#DCEAF7", when: { appearance: "dark" } }];
+  source.children[0].children = [
+    { id: "completion-lines", type: "frame", width: 300, height: 48, layout: "none", children: [
+      { id: "completion-line", type: "line", width: 300, height: 48, stroke: { fill: "#123456", width: 6, cap: "round", join: "bevel", dash: [12, 8] } },
+      { id: "completion-line-horizontal", type: "line", y: 22, width: 300, height: 0, stroke: { fill: "#E76F51", width: 4, cap: "square" } },
+      { id: "completion-line-vertical", type: "line", x: 150, width: 0, height: 48, stroke: { fill: "#2A9D8F", width: 4, cap: "butt" } },
+    ] },
+    { id: "completion-transform", type: "rectangle", width: 180, height: 76, fill: { type: "gradient", gradientType: "linear", center: { x: 0.5, y: 0.5 }, size: { width: 1, height: 1 }, rotation: 0, colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }] }, rotation: 18, flipX: true, stroke: { fill: "#102030", width: 4, align: "inside" } },
+    { id: "completion-angular", type: "ellipse", width: 180, height: 110, fill: { type: "gradient", gradientType: "angular", center: { x: 0.4, y: 0.6 }, rotation: 35, colors: [{ color: "#ff0000", position: 0 }, { color: "#00ff00", position: 0.5 }, { color: "#0000ff", position: 1 }] } },
+    { id: "completion-radial", type: "rectangle", width: 180, height: 90, fill: { type: "gradient", gradientType: "radial", center: { x: 0.3, y: 0.65 }, size: { width: 0.7, height: 1.25 }, rotation: 24, colors: [{ color: "#ffffff", position: 0 }, { color: "#6A4C93", position: 1 }] } },
+    { id: "completion-clip", type: "frame", width: 300, height: 130, layout: "none", overflow: "clip", fill: "#0B4A6F", children: [
+      { id: "completion-overflow", type: "rectangle", x: 240, y: 25, width: 100, height: 70, fill: "#F4A261" },
+    ] },
+    { id: "completion-justify", type: "frame", width: 300, height: 70, layout: "horizontal", justifyContent: "end", alignItems: "end", columnGap: 10, fill: "#264653", children: [
+      { id: "completion-justify-a", type: "rectangle", width: 40, height: 30, fill: "#E9C46A" },
+      { id: "completion-justify-b", type: "rectangle", width: 50, height: 20, fill: "#2A9D8F" },
+    ] },
+    { id: "completion-constraints", type: "frame", width: 300, height: 60, layout: "horizontal", alignItems: "start", fill: "#264653", children: [
+      { id: "completion-constrained", type: "rectangle", width: 20, minWidth: 80, maxWidth: 90, height: 100, minHeight: 30, maxHeight: 40, fill: "#E76F51" },
+    ] },
+    { id: "completion-runtime", type: "rectangle", width: [{ value: 60 }, { value: 140, when: { viewport: "wide" } }], height: 24, fill: [{ value: "#E9C46A" }, { value: "#6A4C93", when: { appearance: "dark" } }] },
+  ];
+}
 if (process.argv.includes("--opacity")) {
   source.children[0].children = [
     { id: "opaque", type: "rectangle", width: 300, height: 100, fill: "#0B4A6F" },

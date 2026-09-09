@@ -82,7 +82,7 @@ test("mobile capability detection keeps empty axes and singular paint out of agg
     source.children[0].fill = "#ffffff";
     source.axes = { appearance: { modes: [{ name: "light" }, { name: "dark", media: "prefers-color-scheme: dark" }] } };
     ir = buildExporterIR(source, { role, frames: ["screen"] });
-    assert.deepEqual(ir.rasters.map(({ id }) => id), ["screen"]);
+    assert.deepEqual(ir.rasters.map(({ id }) => id), ["label"]);
   }
 });
 

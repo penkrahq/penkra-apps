@@ -54,7 +54,8 @@ const EMISSION_SUPPORT = Object.freeze({
     { "relationships.import": native("Imports resolve into generated SwiftUI source and are recorded as lowered.") },
     { "relationships.notesFor": ignore("Speaker-note relationships have no meaning in SwiftUI source.") },
     { "relationships.ref": native("Refs resolve into generated SwiftUI constructs and are recorded as lowered.") },
-    rasterRows(["nodes.icon", "nodes.line", "properties.fill.image", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.angular", "properties.effect", "properties.effect.shadow", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.rotation", "properties.flipX", "properties.flipY", "properties.stroke", "properties.stroke.width", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.stroke.fill", "properties.justifyContent", "properties.minWidth", "properties.maxWidth", "properties.minHeight", "properties.maxHeight", "properties.textAlign", "properties.textAlignVertical", "properties.lineHeight", "properties.wordSpacing", "properties.text.run.wordSpacing", "properties.text.run.language", "properties.text.run.link", "properties.text.paragraph.align", "properties.text.paragraph.style", "properties.text.paragraph.list", "properties.icon", "properties.library", "properties.weight"], "The current SwiftUI writer has no measured live emission for this construct."),
+    mobileCompletedRows("SwiftUI"),
+    mobileRepresentationLimits("SwiftUI"),
     { "properties.fill.gradient.mesh": raster("SwiftUI target emits a rendered asset for mesh geometry.") },
     { "properties.fill.shader": raster("SwiftUI target does not ship a shader runtime.") },
     { "properties.effect.background_blur": raster("Canvas backdrop semantics are emitted as an isolated asset.") },
@@ -71,7 +72,8 @@ const EMISSION_SUPPORT = Object.freeze({
     { "relationships.import": native("Imports resolve into generated Compose source and are recorded as lowered.") },
     { "relationships.notesFor": ignore("Speaker-note relationships have no meaning in Compose source.") },
     { "relationships.ref": native("Refs resolve into generated Compose constructs and are recorded as lowered.") },
-    rasterRows(["nodes.icon", "nodes.line", "properties.fill.image", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.angular", "properties.effect", "properties.effect.shadow", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.rotation", "properties.flipX", "properties.flipY", "properties.stroke", "properties.stroke.width", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.stroke.fill", "properties.justifyContent", "properties.alignItems", "properties.minWidth", "properties.maxWidth", "properties.minHeight", "properties.maxHeight", "properties.textAlign", "properties.textAlignVertical", "properties.lineHeight", "properties.wordSpacing", "properties.text.run.wordSpacing", "properties.text.run.language", "properties.text.run.link", "properties.text.paragraph.align", "properties.text.paragraph.style", "properties.text.paragraph.list", "properties.icon", "properties.library", "properties.weight"], "The current Compose writer has no measured live emission for this construct."),
+    mobileCompletedRows("Compose"),
+    mobileRepresentationLimits("Compose"),
     { "properties.fill.gradient.mesh": raster("Compose target emits a rendered asset for mesh geometry.") },
     { "properties.fill.shader": raster("Compose target does not ship a shader runtime.") },
     { "properties.effect.background_blur": raster("Canvas backdrop semantics are emitted as an isolated asset.") },
@@ -181,32 +183,59 @@ function measuredVectorRows(format) {
     `${format}: compatibility/vector-fidelity.test.mjs measures 20 path/polygon cases at 1x and 2x against Canvas: both fill rules, holes, crossings, cubic/quadratic curves, arcs, relative commands, open fills, offset viewBoxes and nonuniform scaling. Chromium SVG/HTML and Poppler PDF match 538716/2265890 interior pixels within two channel steps, excluding a two-physical-pixel antialiasing boundary. Artifacts: research/vector-fidelity-fixed-20260905. Paint, stroke, effects and other properties retain independent gates.`);
 }
 function mobileCandidateRows(platform, includesAlignItems) {
-  const fallback = `${platform} native candidate does not have a complete passing device/accessibility measurement. The exporter preserves fidelity with a rendered asset instead of claiming unverified native emission.`;
   return {
-    ...Object.fromEntries([
-      "nodes.ellipse", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ref", "nodes.text",
-      "properties.accessibility.description", "properties.content", "properties.cornerRadius", "properties.decorative",
-      "properties.fill", "properties.fill.solid", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight",
-      "properties.gap", "properties.gridTemplateColumns", "properties.headingLevel", "properties.layout", "properties.letterSpacing",
-      "properties.marks", "properties.modes", "properties.opacity", "properties.paragraphs", "properties.rowGap", "properties.strikethrough",
-      "properties.style",
-      "properties.text.paragraph.headingLevel", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize",
-      "properties.text.run.italic", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.weight",
-      "properties.text.run.letterSpacing",
-      "properties.textGrowth", "properties.underline", "properties.varies", "properties.wrap", "root.axes",
-      ...(includesAlignItems ? ["properties.alignItems"] : []),
-      "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.layoutPosition",
-      "properties.lang", "root.lang",
-    ].filter((path) => !["SwiftUI", "Compose"].includes(platform) || !["properties.gridTemplateColumns", "properties.layout", "properties.layoutPosition"].includes(path)).map((path) => [path, raster(fallback)])),
     ...nativeRows(["nodes.rectangle", "nodes.ellipse"], `${platform} native shape fixtures ran on the installed simulator/emulator. The 2026-09-05 shape-opacity screenshots verify 300x100 rectangles and true ellipses, opaque and translucent paint; earlier grid fixtures verify square circles and authored dimensions. See research/export-verification-2026-09-05.md. Other paint, layout, effect and accessibility property rows remain independently gated.`),
-    ...nativeRows(["properties.fontWeight", "properties.text.run.weight"], `${platform} exact bundled Inter 400/500/600/700/800 faces match Canvas glyph interiors on iPhone 3x, iPad 2x and Android 420/320 dpi. Font identity checks reject incorrect family/weight/style bytes; Compose uses fractional base sizing and linear/subpixel text metrics. Retained native captures and former rounded/hinted negative controls run in compatibility/mobile-font-fidelity.test.mjs. Mixed-size runs, other typography properties and accessibility scaling remain separately gated.`),
-    ...(platform === "Compose" ? nativeRows(["properties.fontSize"], "Five native Compose text nodes at 24, 28.25, 32, 40 and 48 sp match Canvas glyph interiors at Android 420 and 320 dpi (1576930 and 904895 checked pixels). The fractional base size survives without AbsoluteSizeSpan integer rounding. Retained captures and an iOS rounding negative control run in compatibility/mobile-font-size-fidelity.test.mjs. Differently sized runs within one text node remain separately gated by properties.text.run.fontSize.") : {}),
     ...nativeRows(["properties.gap", "properties.rowGap", "properties.columnGap"], `${platform} independent-gap fixture ran on the installed simulator/emulator. Fourteen measured rectangles verify horizontal and vertical stacks, wrapping rows and a two-column grid, including row/column overrides of gap, within two physical pixels at 3x and 2.625x density. See scripts/verify-mobile-gaps.mjs and research/mobile-qa/*-independent-gaps.png. Grid sizing, alignment and other layout properties retain separate gates.`),
     ...nativeRows(["nodes.frame", "nodes.group", "nodes.ref", "properties.opacity"], `${platform} six-case surface fixture verifies opaque and half-opacity frames, groups and component references with overlapping child paint. Actual iPhone 3x, iPad 2x and Android 420/320 dpi screenshots match Canvas within two channel steps outside two-pixel boundaries. This exposed and repaired dropped instance placement and legacy-only reference root paint inheritance. See scripts/verify-mobile-vectors.mjs --surfaces and research/mobile-qa/*surfaces-fixed*.png. Layout, effects, clipping and text remain independently gated.`),
     "properties.fill.solid": native(`${platform} six-case solid-color matrix verifies shorthand/full hex alpha, numeric rgba, independent paint opacity, multiplied color/paint alpha and transparent paint on iPhone 3x, iPad 2x and Android 420/320 dpi. Every uniform interior matches Canvas within two channel steps; retained native captures and the former Canvas opacity defect are checked by compatibility/mobile-paint-fidelity.test.mjs. The parent fill row remains gated for aggregate paint handling.`),
     "properties.cornerRadius": native(`${platform} rectangle and container backgrounds retain scalar and independent TL/TR/BR/BL radii, omitted array entries and proportional overlap normalization. Eight native-device regions match Skia round-rectangle coverage within two physical boundary pixels at 3x/2.625x density. See scripts/verify-mobile-corners.mjs, src/rounded-rectangle.test.mjs and research/mobile-qa/*-independent-corners.png.`),
     ...nativeRows(["properties.accessibility.description", "properties.decorative"], `${platform} native accessibility tests verify root/text/shape/group descriptions, independent visible child labels, and removal of direct/decorative-group descendant labels while preserving paint. iPhone accessibility XXL, iPad large and Android font scales 1.0/2.0 passed; see research/mobile-qa/*nested-accessibility*. These rows do not claim heading levels, language, speech quality or typography fidelity.`),
-    ...(platform === "Compose" ? nativeRows(["properties.headingLevel", "properties.text.paragraph.headingLevel"], "The retained Android API 36 accessibility tree reports the authored heading trait, including the nested semantic fixture. See research/mobile-qa/android-accessibility-420-font1.json, research/mobile-qa/android-nested-accessibility-font1.json, and compatibility/mobile-fixtures/compose/app/src/androidTest/java/com/penkra/canvas/fixture/AccessibilityExportTest.java. Typography fidelity remains independently raster-gated.") : {}),
+  };
+}
+
+function mobileCompletedRows(platform) {
+  return {
+    ...nativeRows(["nodes.line"], `${platform} completion captures measure diagonal, zero-height horizontal and zero-width vertical native lines; the diagonal has 16 stable dash components. Stroke cap/dash geometry is measured in research/mobile-capability-completion-20260908/*phone-light* and the multi-segment join controls remain in research/mobile-qa/*vector-strokes.png.`),
+    ...nativeRows(["properties.stroke", "properties.stroke.width", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.stroke.fill"], `${platform} retained vector-strokes, vector-dashes, dash-edge-cases, stroke-alignment and stroke-compositing captures measure solid width/color, butt/round/square caps, miter/round/bevel joins on multi-segment paths, normalized dash arrays and center/inside/outside clipping. The completion capture additionally measures an inside stroke over a transformed gradient.`),
+    ...nativeRows(["properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.angular", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed"], `${platform} stable completion captures measure stop-color regions for linear, sweep/angular and nonuniform rotated radial gradients. Centroids verify the authored linear flip/rotation and angular center/rotation; radial corner/background samples verify the authored off-center 0.3/0.65, 0.7x1.25 scale and 24-degree transform. See compatibility/mobile-capability-completion-evidence.test.mjs.`),
+    ...nativeRows(["properties.rotation", "properties.flipX", "properties.flipY"], `${platform} stable completion captures measure a flipped 18-degree native gradient rectangle: the blue centroid is left of and above the red centroid, while its four-pixel inside stroke provides the transformed bounds control.`),
+    ...nativeRows(["properties.clip"], `${platform} completion captures measure the overflow child at exactly 60/300 of the clipped frame width; retained rounded-clipping fixtures cover independent corner radii.`),
+    ...nativeRows(["properties.alignItems", "properties.justifyContent", "properties.minWidth", "properties.maxWidth", "properties.minHeight", "properties.maxHeight"], `${platform} completion captures measure end/end linear placement and an 80x40 resolved child authored as 20x100 with minWidth 80, maxWidth 90, minHeight 30 and maxHeight 40. SwiftUI uses the resolver's fixed positions for non-start justification; Compose's native arrangement produces the same bounds.`),
+    ...nativeRows(["properties.wrap"], `${platform} independent-gap capture measures wrapped line breaks plus row/column gaps; the retained flow-paint wrap controls cover start/center/end cross-axis positions.`),
+    ...nativeRows(["properties.modes", "properties.varies", "root.axes"], `${platform} completion runtime was captured in light/dark phone and light wide states. Exact root/probe colors verify appearance selection and the probe changes from 60 to 140 authored points at the 450-point viewport threshold; consecutive representative captures are hash-stable.`),
+  };
+}
+
+function mobileRepresentationLimits(platform) {
+  const textEngine = `${platform} native text shaping does not reproduce CanvasKit line boxes and glyph rasterization exactly. Retained unregistered measurements show equal authored frame dimensions but persistent engine-originated baseline/ink deltas (including the iOS 1–2 physical-pixel y delta); the exporter therefore keeps the visual text node as one rendered asset instead of hiding the mismatch with translation or tolerance inflation.`;
+  return {
+    "nodes.text": raster(textEngine),
+    ...Object.fromEntries([
+      "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight", "properties.letterSpacing", "properties.lineHeight",
+      "properties.marks", "properties.paragraphs", "properties.strikethrough", "properties.text.run.fill", "properties.text.run.fontFamily",
+      "properties.text.run.fontSize", "properties.text.run.italic", "properties.text.run.letterSpacing", "properties.text.run.strikethrough",
+      "properties.text.run.underline", "properties.text.run.weight", "properties.textGrowth", "properties.underline", "properties.textAlign", "properties.textAlignVertical",
+      "properties.text.paragraph.align", "properties.text.paragraph.style",
+    ].map((path) => [path, raster(`${textEngine} This row changes glyph selection, ink, baseline, wrapping, or intrinsic text bounds and is therefore included in that exact text raster scope.`)])),
+    "properties.wordSpacing": raster(`${platform} exposes no portable exact word-advance control matching CanvasKit; distributing additional advance across Unicode word boundaries is shaping-engine dependent.`),
+    "properties.text.run.wordSpacing": raster(`${platform} exposes no portable per-run exact word-advance control matching CanvasKit, especially across bidi and script boundaries.`),
+    "properties.text.run.link": raster(`${platform} link widgets introduce platform navigation, hit-testing and styling semantics that do not preserve Canvas's inert authored run exactly; the text remains visually rasterized and its spoken content is retained.`),
+    "properties.text.paragraph.list": raster(`${platform} has no native rich-text paragraph-list primitive that preserves Canvas marker geometry, indentation, numbering and accessibility without synthesizing different text content.`),
+    "properties.text.run.language": raster(`${platform} cannot retain per-run spoken-language ranges after the visually exact text node is emitted as one image; applying one image-level locale would collapse mixed-language content.`),
+    "properties.lang": raster(`${platform} cannot attach an exact BCP-47 speech-language range to the visually rasterized text node without collapsing its authored run boundaries.`),
+    "root.lang": raster(`${platform} locale environments influence formatting but do not provide document-language metadata for every rasterized descendant equivalent to Canvas's root language contract.`),
+    "properties.headingLevel": raster(`${platform} cannot preserve Canvas's numbered heading hierarchy on every rasterized node: SwiftUI exposes one heading level per accessibility element and Compose exposes only an unnumbered heading boolean.`),
+    "properties.text.paragraph.headingLevel": raster(`${platform} cannot preserve distinct numbered heading levels for multiple paragraphs represented by one raster image accessibility element.`),
+    "nodes.icon": raster(`${platform} system-symbol catalogs do not contain stable one-to-one identities for Canvas's versioned Lucide, Phosphor and Material icon paths; a rendered asset preserves the selected library glyph exactly.`),
+    "properties.icon": raster(`${platform} cannot map every Canvas icon identifier to a stable native symbol without changing its path geometry.`),
+    "properties.library": raster(`${platform} native symbol libraries are not equivalent to Canvas's version-pinned icon libraries; the library choice is preserved in the rendered icon asset.`),
+    "properties.weight": raster(`${platform} icon weights are library-specific path variants rather than a portable native stroke-weight parameter.`),
+    "properties.fill": raster(`${platform} has no single native shape-fill primitive for Canvas's ordered multi-paint stack with independent enablement, alpha and blend isolation; the stack is composited as one exact asset.`),
+    "properties.fill.image": raster(`${platform} native image views do not by themselves preserve the complete Canvas image-paint contract (crop transform, repeat, per-paint alpha/blend and shape masking) as one editable fill.`),
+    "properties.effect": raster(`${platform} effect primitives use platform-specific kernels and compositing bounds that do not reproduce CanvasKit's ordered effect stack exactly.`),
+    "properties.effect.shadow": raster(`${platform} native shadows use platform-specific blur kernels and clipping, so Canvas shadow radius/offset/color cannot be promised pixel-equivalent.`),
+    "properties.effect.blur": raster(`${platform} native blur uses a platform-specific kernel and edge treatment that differs from CanvasKit's foreground blur.`),
+    "properties.blendMode": raster(`${platform} blend modifiers isolate and composite subtrees differently from Canvas's paint/node backdrop scopes; the owning backdrop scope is rasterized to preserve the authored result.`),
   };
 }
 function swiftGridProductionRows() {

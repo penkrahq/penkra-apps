@@ -22,6 +22,15 @@ const document = {
         marks: [{ type: "fontSize", from: 3, to: 6, value: 18.5 }], description: "Screen title" },
       { id: "card", type: "rectangle", x: 24, y: 112, width: 342, height: 160,
         fill: "#123456", description: "Information card" },
+      { id: "line", type: "line", x: 30, y: 300, width: 120, height: 40,
+        stroke: { fill: "#123456", width: 5, cap: "round", join: "bevel", dash: [8, 4] } },
+      { id: "turned", type: "rectangle", x: 180, y: 300, width: 90, height: 60,
+        fill: "#abcdef", rotation: 25, flipX: true, stroke: { fill: "#102030", width: 4, align: "inside" } },
+      { id: "angular", type: "ellipse", x: 30, y: 390, width: 120, height: 90,
+        fill: { type: "gradient", gradientType: "angular", center: { x: 0.4, y: 0.6 }, rotation: 35,
+          colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }] } },
+      { id: "clip", type: "frame", x: 180, y: 390, width: 100, height: 80, overflow: "clip", fill: "#ffffff",
+        children: [{ id: "overflow", type: "rectangle", x: 60, y: 10, width: 70, height: 40, fill: "#654321" }] },
     ],
   }],
 };
@@ -30,6 +39,8 @@ const candidatePaths = [
   "properties.accessibility.description", "properties.fill", "properties.fill.solid",
   "properties.content", "properties.fontSize", "properties.marks", "properties.paragraphs",
   "properties.text.paragraph.headingLevel", "properties.text.run.fontSize",
+  "nodes.line", "properties.stroke", "properties.stroke.fill", "properties.stroke.width", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.stroke.align",
+  "properties.rotation", "properties.flipX", "properties.fill.gradient.angular", "properties.clip", "properties.overflow",
 ];
 
 test("SwiftUI exporter output compiles in the pinned fixture", { timeout: 240_000 }, async (context) => {

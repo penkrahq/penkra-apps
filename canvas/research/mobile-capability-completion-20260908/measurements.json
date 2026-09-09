@@ -1,0 +1,39 @@
+{
+  "fixture": "mobile-capability-completion",
+  "sourceDate": "2026-09-08",
+  "sourceHashes": {
+    "emitter": "e4a1284ba9023bb1be8de5a6ac4b39b70e814658b875d73cb0b6648bb27313ad",
+    "ir": "941981d0cb2593a9039b55096053b4fb15c4b4c9eff491a87b2aa25e5c239699",
+    "swiftFixture": "ad2723e1cef4e0b839d111c7b73b579a3c2833429587bc207f13bf5757a94e6b",
+    "composeFixture": "ea1b0c85f40535a228cfa7f0521433ac3d747b048fab7eeb6ce3a6632a0b638d"
+  },
+  "measuredFamilies": ["zero-dimension-and-diagonal-lines", "stroke-cap-join-dash-align-fill-width", "linear-angular-transformed-radial-gradients", "rotation-and-flips", "clipping", "align-and-justify", "min-max-constraints", "appearance-and-viewport-runtime-axes"],
+  "ios": {
+    "devices": [
+      { "name": "iPhone 17 Pro", "id": "A3D92728-7F7B-44D1-BE51-155B891905D9", "runtime": "iOS 26.3", "scale": 3, "states": ["light-phone", "dark-phone"] },
+      { "name": "iPad (A16)", "id": "941B94EF-AF48-4887-8D85-95F2D3CB9E8F", "runtime": "iOS 26.3", "scale": 2, "states": ["light-wide"] }
+    ],
+    "executableSha256": "534a8f4724fb5521533db51153e233b4426bf5354a3ccd1da9ac6cb08a8ebb4a",
+    "captures": {
+      "ios-iphone-light-3x.png": "52b88f1ccb0f5c4925ea82974b87f554732cdb12149b5a8f0fda7e337573d621",
+      "ios-iphone-dark-3x.png": "9b532d2a939cd7a491e219cbd5a512d863a918a0f901d5f4e199324659c5d238",
+      "ios-ipad-wide-2x.png": "46e3bfa80a9d80ca1271ad0986fffd921d3c9967132cea0bf86834d211401471"
+    },
+    "stability": "two consecutive screenshots per retained state had identical SHA-256 values",
+    "hostOffsetFinding": "Authored 300-point regions measure exactly 900 pixels at 3x and 600 pixels at 2x. Earlier apparent y-offset/dimension evidence measured antialiased edge colors and a fixed 393x852 host view centered in the simulator proposal; no emitter translation or enlarged tolerance is used."
+  },
+  "android": {
+    "device": "temporary Pixel 8 AVD emulator-5580",
+    "runtime": "API 36",
+    "states": [{ "density": 420, "fontScale": 1, "appearance": "light" }, { "density": 420, "fontScale": 1, "appearance": "dark" }, { "density": 320, "fontScale": 1, "appearance": "light-wide" }],
+    "apkSha256": "cb8a76af9e05c8d347df2764053fad09e162ee2bb911d656df6f47c3afa3361b",
+    "captures": {
+      "android-phone-light-420dpi.png": "8cb3f69b15a0da9623c71f3ea805b8d2e9ad88ffecf1a81468dbae62847f5141",
+      "android-phone-dark-420dpi.png": "dbeb15ef9b53f6a28f7c174b1cb199fa9b2ac6981f1a9d59f062202828bd021f",
+      "android-wide-light-320dpi.png": "1357058d6235777d57f3075f0c7711dd890adcf83b59c8177525348adbdaf5a5"
+    },
+    "stability": "two consecutive screenshots per retained state had identical SHA-256 values",
+    "restoration": { "temporaryAvdDensity": 420, "temporaryAvdFontScale": 1, "physicalDeviceB2e60074Density": 600, "physicalDeviceB2e60074FontScale": 1 }
+  },
+  "assertions": { "tests": 2, "phonePlatformObservations": 2, "runtimeStateObservations": 6, "stableRepresentativeCaptures": 6 }
+}
