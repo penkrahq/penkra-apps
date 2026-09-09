@@ -35,7 +35,9 @@ test("standalone SVG emits and Chromium renders native icon, gradient, filter, c
     { id: "gradient", type: "rectangle", x: 100, y: 10, width: 100, height: 50, flipX: true, fill: { type: "gradient", gradientType: "linear", rotation: 25, center: { x: .4, y: .5 }, size: { width: .7, height: 1 }, colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }] }, effect: { type: "blur", blur: 2 } },
     { id: "line", type: "line", x: 20, y: 120, width: 130, height: 0, stroke: { fill: "#008000", width: 5, cap: "round", join: "bevel", dash: [8, 4] } },
     { id: "link", type: "text", x: 115, y: 75, width: 60, height: 30, content: "Link", fontSize: 18, marks: [{ type: "link", from: 0, to: 4, value: "https://example.test/" }], paragraphs: [{ from: 0, to: 4, headingLevel: 2 }], landmark: "region", linkName: "Example" },
-    { id: "image-fill", type: "rectangle", x: 145, y: 105, width: 25, height: 25, fill: { type: "image", mode: "fill", url: "pixel.png" } },
+    { id: "image-fill", type: "ellipse", x: 145, y: 105, width: 25, height: 25, fill: { type: "image", mode: "fill", url: "pixel.png" } },
+    { id: "radial", type: "rectangle", x: 5, y: 5, width: 20, height: 20, fill: { type: "gradient", gradientType: "radial", center: { x: .25, y: .7 }, size: { width: .6, height: 1.3 }, rotation: 31, colors: [{ color: "#000000", position: 0 }, { color: "#ffffff", position: 1 }] } },
+    { id: "multi", type: "rectangle", x: 5, y: 35, width: 20, height: 20, fill: ["#ff0000", "#00000080"] },
     { id: "aligned-list", type: "text", x: 60, y: 70, width: 70, height: 45, content: "Item", fontSize: 12, lineHeight: 18, textAlign: "center", textAlignVertical: "bottom", textGrowth: "fixed-width-height", paragraphs: [{ from: 0, to: 4, align: "center", list: { kind: "bullet" } }], marks: [] },
   );
   const ir = buildExtractionIR(document, { format: "svg", nodeId: "art" });
@@ -46,6 +48,9 @@ test("standalone SVG emits and Chromium renders native icon, gradient, filter, c
   assert.match(svg, /scale\(-1 1\)/u); assert.match(svg, /stroke-dasharray="8 4"/u); assert.match(svg, /<a href="https:\/\/example\.test\/"/u);
   assert.match(svg, /role="region"/u); assert.match(svg, /aria-level="2"/u); assert.doesNotMatch(svg, /<image\b[^>]*id=/u);
   assert.match(svg, /<pattern id="fill-image-fill"[\s\S]*?<image href="data:image\/png;base64,/u);
+  assert.match(svg, /<pattern id="fill-image-fill"[^>]*>[\s\S]*?<image[^>]*width="1" height="1"/u);
+  assert.match(svg, /gradientTransform="translate\(0\.25 0\.7\) rotate\(31\) scale\(0\.6 1\.3\) translate\(-0\.25 -0\.7\)"/u);
+  assert.match(svg, /id="multi-paint-0"/u); assert.match(svg, /id="multi-paint-1"/u);
   assert.match(svg, /id="aligned-list"[\s\S]*?x="95" y="109" text-anchor="middle">• /u);
   const directory = await mkdtemp(join(tmpdir(), "canvas-svg-native-")); let browser;
   try {
@@ -76,13 +81,15 @@ test("PPTX icons and promoted DrawingML features survive LibreOffice rendering",
   const document = { ...structuredClone(generic), module: "deck" }; const frame = document.children[0]; frame.role = "slide"; frame.physical = { w: 1.875, h: 1.458333, unit: "in" };
   frame.children.push({ id: "stroke", type: "rectangle", x: 115, y: 25, width: 45, height: 45, fill: "#ff0000", stroke: { fill: "#0000ff", width: 3, cap: "round", join: "bevel", dash: [3, 2] }, effect: { type: "blur", blur: 1 } });
   frame.children.push({ id: "native-image", type: "rectangle", x: 120, y: 85, width: 30, height: 30, fill: { type: "image", mode: "fill", url: "pixel" } });
+  frame.children.push({ id: "masked-image", type: "ellipse", x: 145, y: 85, width: 20, height: 20, fill: { type: "image", mode: "fit", url: "pixel" }, stroke: { fill: "#000000", width: 2 } });
+  frame.children.push({ id: "multi-paint", type: "rectangle", x: 145, y: 110, width: 20, height: 20, fill: ["#ff0000", "#00000080"] });
   frame.children.push({ id: "gradient", type: "rectangle", x: 10, y: 115, width: 60, height: 20, fill: { type: "gradient", gradientType: "radial", center: { x: .35, y: .6 }, size: { width: .7, height: .8 }, colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }] } });
   frame.children.push({ id: "aligned", type: "text", x: 75, y: 105, width: 65, height: 30, content: "Aligned", fontFamily: "Inter", fontSize: 12, lineHeight: 16, textAlign: "center", textAlignVertical: "bottom", paragraphs: [{ from: 0, to: 7, align: "center" }], marks: [] });
-  const ir = buildExporterIR(document, { role: "slide", frames: ["art"] }); assert.equal(ir.rasters.length, 0);
+  const ir = buildExporterIR(document, { role: "slide", frames: ["art"] }); assert.deepEqual(ir.rasters.map((item) => item.id), ["masked-image"]);
   const imageData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/lQw3WQAAAABJRU5ErkJggg==";
   const regular = await readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
-  const bytes = await exportPptx(ir, { imageData: () => imageData, fonts: [{ typeface: "Inter", faces: { regular } }] }); const xml = readXmlPart(readOoxmlPackage(bytes), "ppt/slides/slide1.xml");
-  assert.match(xml, /name="native-icon"[\s\S]*?<a:custGeom>/u); assert.equal((xml.match(/<p:pic>/gu) ?? []).length, 1); assert.match(xml, /<a:blur\b/u); assert.match(xml, /<a:custDash>/u); assert.match(xml, /<a:bevel\/>/u);
+  const bytes = await exportPptx(ir, { imageData: () => imageData, rasterize: async () => ({ data: imageData }), fonts: [{ typeface: "Inter", faces: { regular } }] }); const xml = readXmlPart(readOoxmlPackage(bytes), "ppt/slides/slide1.xml");
+  assert.match(xml, /name="native-icon"[\s\S]*?<a:custGeom>/u); assert.equal((xml.match(/<p:pic>/gu) ?? []).length, 2); assert.match(xml, /<a:srcRect/u); assert.match(xml, /name="multi-paint:paint:0"/u); assert.match(xml, /name="multi-paint:paint:1"/u); assert.match(xml, /<a:blur\b/u); assert.match(xml, /<a:custDash>/u); assert.match(xml, /<a:bevel\/>/u);
   assert.match(xml, /<a:fillToRect l="0" t="(?:19999|20000)" r="30000" b="0"\/>/u); assert.match(xml, /anchor="b"/u); assert.match(xml, /algn="ctr"/u); assert.match(xml, /<a:lnSpc><a:spcPts val="1200"\/>/u);
   const directory = await mkdtemp(join(tmpdir(), "canvas-pptx-native-"));
   try {
