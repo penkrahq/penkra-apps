@@ -36,7 +36,7 @@ function html(node, children, parent, options) {
 function icon(node, parent, options) {
   const def = pencilIconVectorDefinition(node.icon?.library, node.icon?.name, node.icon?.weight);
   if (!def?.geometry) throw new Error(`Web vector icon definition is unavailable for ${node.icon?.library ?? "unknown"}/${node.icon?.name ?? "unknown"}.`);
-  const paints = svgPaints(node.paint.fill, node, options);
+  const paints = svgPaints(node.paint.fill ?? "#000000", node, options);
   const paths = (def.layers ?? [{ geometry: def.geometry, opacity: 1 }]).flatMap((layer) => paints.layers.map((paint) => `<path d="${esc(layer.geometry)}" ${def.paint === "stroke" ? `fill="none" stroke="${paint.value}" stroke-width="${def.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"` : `fill="${paint.value}"`} opacity="${Number(layer.opacity ?? 1) * paint.opacity}"/>`)).join("");
   return `<svg id="${esc(node.id)}" class="node icon" viewBox="${def.viewBox.join(" ")}" preserveAspectRatio="xMidYMid meet" style="${esc(style(node, parent, options))}"${semantics(node, true)}><defs>${paints.defs}</defs>${paths}</svg>`;
 }
