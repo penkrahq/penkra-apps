@@ -47,11 +47,18 @@ everything written.
 Every export returns verdicts drawn from the capability table for the target format:
 
 - `native` — the target expresses this directly.
-- `lower` — expressed by a different construct that looks the same.
-- `raster` — flattened to an image, with a `consequences` entry saying what was lost.
+- `raster` — the target cannot represent the construct faithfully, so it is flattened to an image,
+  with a `consequences` entry saying what was lost. An author may also force this outcome on one
+  node with `export: "image"` when a predictable picture is preferable to native approximation.
+- `ignore` — the construct has no meaning in that deliverable and is intentionally omitted.
 
-A verdict is only `native` where a measured test says so. Anything unmeasured is `raster`, which is
-the honest answer rather than the flattering one.
+`lowered` is a separate report list, not a fourth verdict. It records source constructs resolved
+into different target constructs before emission, such as component instances expanded into their
+resolved visual nodes.
+
+A verdict is only `native` where a measured test says so. An unmeasured capability is
+`unverified`, has no verdict, and blocks a production build; it is not mislabeled as a target
+limitation. There is no author override from `raster` to `native`.
 
 ## Modes
 
