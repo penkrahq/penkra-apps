@@ -221,7 +221,8 @@ test("registered export and extract handlers load accepted consumer receipts wit
   const htmlSource = await readFile(join(directory, "site", "scene.html"), "utf8");
   assert.match(htmlSource, /Library card/u);
   assert.match(htmlSource, /#eeeeee/iu);
-  assert.ok(html.artifacts.some((path) => path.endsWith("assets/raster-1.png")));
+  assert.equal(html.rasterized.length, 0);
+  assert.doesNotMatch(htmlSource, /class="node raster"/u);
   assert.equal(scenario.transport.sourceRequests, 0);
   assert.ok(scenario.transport.calls.some(({ path }) => path === "/projects/consumer/blobs"));
 });

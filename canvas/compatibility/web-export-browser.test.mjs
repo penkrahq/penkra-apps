@@ -46,7 +46,26 @@ const document = {
       marks: [],
       paragraphs: [{ from: 0, to: 20, headingLevel: 1 }],
       description: "Primary page heading",
-    }, ...[
+    }, {
+      id: "layout-matrix", type: "frame", width: 300, height: 140, layout: "horizontal", justifyContent: "center", alignItems: "end",
+      minWidth: 240, maxWidth: 360, minHeight: 100, maxHeight: 180,
+      children: [
+        { id: "flow-child", type: "rectangle", width: 30, height: 20, fill: "#123456" },
+        { id: "absolute-child", type: "rectangle", x: 17, y: 19, width: 20, height: 20, layoutPosition: "absolute", fill: "#654321" },
+      ],
+    },
+    { id: "linear", type: "rectangle", width: 100, height: 70, fill: { type: "gradient", gradientType: "linear", center: { x: .3, y: .7 }, size: { width: .6, height: .8 }, rotation: 25, colors: [{ color: "#ff0000", position: 0 }, { color: "#0000ff", position: 1 }] } },
+    { id: "radial", type: "ellipse", width: 100, height: 70, fill: { type: "gradient", gradientType: "radial", center: { x: .25, y: .6 }, size: { width: .5, height: .8 }, rotation: 35, colors: [{ color: "#ffffff", position: 0 }, { color: "#000000", position: 1 }] } },
+    { id: "angular", type: "rectangle", width: 100, height: 70, fill: { type: "gradient", gradientType: "angular", rotation: 40, colors: [{ color: "#00ff00", position: 0 }, { color: "#0000ff", position: 1 }] } },
+    { id: "image", type: "rectangle", width: 80, height: 60, fill: { type: "image", mode: "fit", url: "image.svg" } },
+    { id: "effects", type: "rectangle", width: 90, height: 50, fill: "#777777", blendMode: "multiply", effect: [{ type: "shadow", offset: { x: 3, y: 4 }, blur: 5, spread: 6, color: "#00000080" }, { type: "blur", radius: 2 }, { type: "background_blur", radius: 7 }] },
+    { id: "clipped", type: "frame", width: 50, height: 40, clip: true, children: [{ id: "clipped-child", type: "rectangle", width: 100, height: 80, fill: "#00ff00" }] },
+    { id: "flipped", type: "rectangle", width: 40, height: 30, flipX: true, flipY: true, rotation: 15, fill: "#abcabc" },
+    { id: "icon", type: "icon", library: "lucide", icon: "camera", weight: 400, width: 24, height: 24, fill: "#334455", description: "Camera symbol" },
+    { id: "line", type: "line", width: 80, height: 30, stroke: { fill: "#112233", thickness: 4, cap: "round", join: "bevel", dash: [5, 3] }, description: "Trend line" },
+    { id: "rich", type: "text", width: 220, height: 90, content: "AlphaBeta", textAlign: "end", textAlignVertical: "bottom", lineHeight: 1.5, wordSpacing: 6, textGrowth: "fixed-width", linkName: "Details destination", marks: [{ type: "link", from: 0, to: 5, value: "#details" }], paragraphs: [{ from: 0, to: 5, list: { kind: "bullet", level: 0 }, align: "center" }, { from: 5, to: 9, list: { kind: "number", level: 1 } }] },
+    { id: "node-heading", type: "text", width: 160, height: 40, content: "Node heading", headingLevel: 2 },
+    ...[
       ["scroll-x", "scroll-x"],
       ["scroll-y", "scroll-y"],
       ["scroll-both", "scroll-both"],
@@ -62,6 +81,7 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
   const profile = join(directory, "chrome-profile");
   const files = exportWeb(buildExporterIR(document, { role: "route", frames: ["route"] }));
   for (const [name, contents] of files) await writeFile(join(directory, name), contents);
+  await writeFile(join(directory, "image.svg"), `<svg xmlns="http://www.w3.org/2000/svg" width="2" height="2"><rect width="2" height="2" fill="red"/></svg>`);
 
   const chrome = spawn(chromePath, [
     "--headless=new",
@@ -137,6 +157,33 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     { overflowX: "hidden", overflowY: "auto", clientWidth: 120, clientHeight: 80, scrollWidth: 230, scrollHeight: 160 },
     { overflowX: "auto", overflowY: "auto", clientWidth: 120, clientHeight: 80, scrollWidth: 230, scrollHeight: 160 },
   ]);
+
+  assert.deepEqual(await evaluate(page, `(() => {
+    const read = id => getComputedStyle(document.getElementById(id));
+    const layout = read("layout-matrix"); const absolute = document.getElementById("absolute-child"); const host = document.getElementById("layout-matrix").getBoundingClientRect(); const child = absolute.getBoundingClientRect();
+    return {
+      layout: [layout.justifyContent, layout.alignItems, layout.minWidth, layout.maxWidth, layout.minHeight, layout.maxHeight],
+      absolute: [Math.round(child.left - host.left), Math.round(child.top - host.top), absolute.style.position],
+      gradients: [read("linear").backgroundImage.startsWith('url("data:image/svg+xml'), read("radial").backgroundImage.startsWith('url("data:image/svg+xml'), read("angular").backgroundImage.startsWith("conic-gradient")],
+      image: [read("image").backgroundSize, read("image").backgroundImage.includes("image.svg")],
+      effects: [read("effects").boxShadow, read("effects").filter, read("effects").backdropFilter, read("effects").mixBlendMode],
+      clip: [read("clipped").overflowX, read("clipped").overflowY],
+      flip: read("flipped").transform,
+      text: [read("rich").textAlign, read("rich").justifyContent, read("rich").lineHeight, read("rich").wordSpacing, read("rich").height],
+      vectors: [document.querySelector("#icon path") !== null, document.querySelector("#line line").getAttribute("stroke-linecap"), document.querySelector("#line line").getAttribute("stroke-dasharray")],
+      lists: [document.querySelectorAll("#rich ul li").length, document.querySelectorAll("#rich ol li").length],
+    };
+  })()`), {
+    layout: ["center", "flex-end", "240px", "360px", "100px", "180px"],
+    absolute: [17, 19, "absolute"],
+    gradients: [true, true, true], image: ["contain", true],
+    effects: ["rgba(0, 0, 0, 0.5) 3px 4px 5px 6px", "blur(2px)", "blur(7px)", "multiply"],
+    clip: ["hidden", "hidden"], flip: "matrix(-0.965926, -0.258819, 0.258819, -0.965926, 0, 0)",
+    text: ["end", "flex-end", "24px", "6px", "112px"], vectors: [true, "round", "5 3"], lists: [1, 1],
+  });
+  const completeTree = await page.send("Accessibility.getFullAXTree");
+  assert.equal(completeTree.nodes.find((node) => node.role?.value === "link")?.name?.value, "Details destination");
+  assert.ok(completeTree.nodes.some((node) => node.role?.value === "heading" && node.name?.value === "Node heading" && node.properties?.some((property) => property.name === "level" && property.value?.value === 2)));
 });
 
 async function devtoolsUrl(child) {

@@ -40,6 +40,24 @@ test("documents.extract requires one exact node", async () => {
   await assert.rejects(() => extractDocumentNode(document, { format: "png", destination: "/tmp/ambiguous.png" }), /nodeId/u);
 });
 
+test("web export bundles authored image assets and keeps the image as semantic CSS paint", async (context) => {
+  const directory = await mkdtemp(join(tmpdir(), "canvas-web-image-"));
+  context.after(() => rm(directory, { recursive: true, force: true }));
+  const destination = join(directory, "site");
+  const bytes = Uint8Array.of(137, 80, 78, 71, 13, 10, 26, 10);
+  const source = { version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{
+    id: "route", type: "frame", role: "route", name: "Image route", width: 200, height: 120, children: [
+      { id: "hero", type: "rectangle", width: 80, height: 60, fill: { type: "image", mode: "fit", url: "images/hero.png" } },
+    ],
+  }] };
+  const result = await exportDocumentBatch(source, [{ role: "route", frames: ["route"], destination }], { assets: new Map([["images/hero.png", bytes]]) });
+  assert.equal(result.rasterized.length, 0);
+  assert.deepEqual(new Uint8Array(await readFile(join(destination, "assets/image-1.png"))), bytes);
+  const html = await readFile(join(destination, "image-route.html"), "utf8");
+  assert.match(html, /background-image:url\(&quot;assets\/image-1\.png&quot;\)/u);
+  assert.doesNotMatch(html, /class="node raster"/u);
+});
+
 test("extraction rejects occupied destinations before resolving or rendering nodes", async (context) => {
   const directory = await mkdtemp(join(tmpdir(), "canvas-extract-preflight-"));
   context.after(() => rm(directory, { recursive: true, force: true }));

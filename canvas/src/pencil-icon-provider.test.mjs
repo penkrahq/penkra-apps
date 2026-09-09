@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { pencilIconDefinition } from "./pencil-icon-provider.mjs";
+import { pencilIconDefinition, pencilIconVectorDefinition } from "./pencil-icon-provider.mjs";
 
 test("every Pencil 2.17 icon library resolves through a catalog provider", () => {
   const cases = [
@@ -53,4 +53,17 @@ test("Material Symbols canonical ligature names resolve through Iconify catalog 
   assert.equal(outlined.fontFamily, "Material Symbols Outlined");
   assert.equal(rounded.content, "chat_bubble");
   assert.equal(rounded.fontFamily, "Material Symbols Rounded");
+});
+
+test("every supported icon library exposes self-contained vector geometry for web export", () => {
+  for (const [library, name, weight] of [
+    ["lucide", "camera", 400], ["feather", "camera", 400],
+    ["Material Symbols Outlined", "auto_awesome", 400], ["Material Symbols Rounded", "chat_bubble", 700],
+    ["Material Symbols Sharp", "home", 400], ["phosphor", "push-pin", 700],
+  ]) {
+    const definition = pencilIconVectorDefinition(library, name, weight);
+    assert.ok(definition?.geometry, `${library}:${name}:${weight}`);
+    assert.equal(definition.paint === "fill" || definition.paint === "stroke", true);
+    assert.equal(definition.viewBox.length, 4);
+  }
 });

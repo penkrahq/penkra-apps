@@ -110,3 +110,17 @@ test("mobile landmark and link-purpose fields are intentional semantic omissions
     }
   }
 });
+
+test("HTML fallback inventory contains only objective platform limits and meaningless static-route fields", () => {
+  const properties = capabilityTableFor("html").properties;
+  assert.deepEqual(Object.entries(properties).filter(([, entry]) => entry.verdict === "raster").map(([path]) => path), [
+    "properties.fill.gradient.mesh", "properties.fill.shader", "properties.stroke.align",
+  ]);
+  assert.deepEqual(Object.entries(properties).filter(([, entry]) => entry.verdict === "ignore").map(([path]) => path), [
+    "properties.bleed", "properties.flow.advance", "properties.flow.hover", "properties.flow.keypress", "properties.flow.tap",
+    "properties.folds", "properties.safeMargin", "relationships.flow", "relationships.notesFor", "roles.android", "roles.ios", "roles.slide", "root.flows",
+  ]);
+  for (const [path, entry] of Object.entries(properties).filter(([, value]) => ["raster", "ignore"].includes(value.verdict))) {
+    assert.doesNotMatch(entry.reason, /current (?:HTML|writer)|no measured|unverified/iu, path);
+  }
+});

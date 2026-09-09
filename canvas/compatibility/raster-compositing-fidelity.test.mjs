@@ -51,7 +51,7 @@ test("raster wrappers preserve baked transforms/alpha and capture blend backdrop
         }
         for (const format of ["svg", "html", "pdf"]) {
           const ir = format === "html" ? buildExporterIR(document, { role: "route", frames: ["root"] }) : buildExtractionIR(document, { nodeId: "root", format, scale });
-          assert.deepEqual(ir.rasters.map(raster => raster.id), [blend ? "root" : "foreground"]);
+          assert.deepEqual(ir.rasters.map(raster => raster.id), blend && format === "html" ? [] : [blend ? "root" : "foreground"]);
           const images = new Map();
           for (const raster of ir.rasters) images.set(raster.id, (await capture(raster.id)).data);
           const rasterHref = id => `data:image/png;base64,${images.get(id)}`;

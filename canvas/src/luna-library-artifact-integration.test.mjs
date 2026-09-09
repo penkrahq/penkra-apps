@@ -186,11 +186,8 @@ test("published library content reaches PPTX/HTML and roleless SVG/PDF artifacts
     assert.match(`${html}\n${css}`, /#abcdef/iu);
     assert.doesNotMatch(`${html}\n${css}`, /ui:/u);
     assert.match(html, /route-card\/card-rectangle/u);
-    const assetsDirectory = join(htmlDirectory, "assets");
-    const assets = (await readdir(assetsDirectory)).filter((name) => name.startsWith("raster-") && name.endsWith(".png"));
-    assert.ok(assets.length >= 3);
-    assert.equal(new Set(assets).size, assets.length);
-    for (const asset of assets) assert.deepEqual((await readFile(join(assetsDirectory, asset))).subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+    assert.equal(htmlPublication.rasterized.length, 0);
+    assert.doesNotMatch(html, /class="node raster"/u);
     const htmlImage = decodePng(await bounded(browser.screenshot(pathToFileURL(htmlPath).href, 420, 240, 1), "integration HTML screenshot"));
     assert.ok(colorBounds(htmlImage, LIGHT_V1).samples > 0);
     assert.ok(colorBounds(htmlImage, DARK_V1).samples > 0);
@@ -256,7 +253,7 @@ test("library artifact collision preflight is atomic and mobile fallbacks publis
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
-test("web raster assets use distinct ordinals for slash-qualified IDs that hyphen replacement would collide", async () => {
+test("web semantic nodes retain distinct slash-qualified IDs that hyphen replacement would collide", async () => {
   const fixture = publicationFixture();
   const source = structuredClone(fixture.sourceV1);
   source.children.push(
@@ -282,19 +279,9 @@ test("web raster assets use distinct ordinals for slash-qualified IDs that hyphe
     assert.equal(await readFile(sentinel, "utf8"), "preserve me");
     const htmlName = (await readdir(destination)).find((name) => name.endsWith(".html"));
     const html = await readFile(join(destination, htmlName), "utf8");
-    const first = html.match(/id="route-a\/b-c"[^>]*src="([^"]+)"/u)?.[1];
-    const second = html.match(/id="route-a-b\/c"[^>]*src="([^"]+)"/u)?.[1];
-    assert.ok(first);
-    assert.ok(second);
-    assert.notEqual(first, second);
-    assert.match(first, /^assets\/raster-\d+\.png$/u);
-    assert.match(second, /^assets\/raster-\d+\.png$/u);
-    for (const asset of new Set([first, second])) {
-      const bytes = await readFile(join(destination, asset));
-      assert.deepEqual(bytes.subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
-    }
-    assert.match(html, /route-a\/b-c/u);
-    assert.match(html, /route-a-b\/c/u);
+    assert.match(html, /<p id="route-a\/b-c"[^>]*>[^<]*<span[^>]*>First/u);
+    assert.match(html, /<p id="route-a-b\/c"[^>]*>[^<]*<span[^>]*>Second/u);
+    assert.doesNotMatch(html, /class="node raster"/u);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
