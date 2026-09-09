@@ -1,119 +1,25 @@
-# Canvas capability entries still unverified
+# Canvas capability verification status
 
-Generated from `canvas/src/capability-tables.mjs` after local artifact measurements. These entries block the production build. A stated native/raster/ignore verdict is not inferred for any item below.
+Generated from `src/capability-tables.mjs` after the 2026-09-09 exporter completion work.
 
-Total: **104** across 3 targets/profile gates. The 36 flow paths are absent from this worklist: on
-2026-09-04 the product decision set all six flow paths to `ignore` for all six static export targets.
+Total build-blocking unverified entries: **0**.
 
-## ios (52)
+| Format | Native | Raster | Ignore | Unverified |
+| --- | ---: | ---: | ---: | ---: |
+| PPTX | 115 | 12 | 16 | 0 |
+| HTML | 127 | 3 | 13 | 0 |
+| Swift | 79 | 49 | 15 | 0 |
+| Kotlin | 79 | 49 | 15 | 0 |
+| SVG extraction | 128 | 5 | 10 | 0 |
 
-- `nodes.ellipse` — verdict: `null`, status: `unverified`
-- `nodes.frame` — verdict: `null`, status: `unverified`
-- `nodes.group` — verdict: `null`, status: `unverified`
-- `nodes.rectangle` — verdict: `null`, status: `unverified`
-- `nodes.ref` — verdict: `null`, status: `unverified`
-- `nodes.text` — verdict: `null`, status: `unverified`
-- `properties.accessibility.description` — verdict: `null`, status: `unverified`
-- `properties.accessibility.landmark` — verdict: `null`, status: `unverified`
-- `properties.accessibility.linkName` — verdict: `null`, status: `unverified`
-- `properties.alignItems` — verdict: `null`, status: `unverified`
-- `properties.content` — verdict: `null`, status: `unverified`
-- `properties.cornerRadius` — verdict: `null`, status: `unverified`
-- `properties.decorative` — verdict: `null`, status: `unverified`
-- `properties.effect.shadow.spread` — verdict: `null`, status: `unverified`
-- `properties.fill` — verdict: `null`, status: `unverified`
-- `properties.fill.gradient.linear.transformed` — verdict: `null`, status: `unverified`
-- `properties.fill.gradient.radial.transformed` — verdict: `null`, status: `unverified`
-- `properties.fill.solid` — verdict: `null`, status: `unverified`
-- `properties.fontFamily` — verdict: `null`, status: `unverified`
-- `properties.fontSize` — verdict: `null`, status: `unverified`
-- `properties.fontStyle` — verdict: `null`, status: `unverified`
-- `properties.fontWeight` — verdict: `null`, status: `unverified`
-- `properties.gap` — verdict: `null`, status: `unverified`
-- `properties.gridTemplateColumns` — verdict: `null`, status: `unverified`
-- `properties.headingLevel` — verdict: `null`, status: `unverified`
-- `properties.icon` — verdict: `null`, status: `unverified`
-- `properties.lang` — verdict: `null`, status: `unverified`
-- `properties.layout` — verdict: `null`, status: `unverified`
-- `properties.layoutPosition` — verdict: `null`, status: `unverified`
-- `properties.letterSpacing` — verdict: `null`, status: `unverified`
-- `properties.library` — verdict: `null`, status: `unverified`
-- `properties.marks` — verdict: `null`, status: `unverified`
-- `properties.modes` — verdict: `null`, status: `unverified`
-- `properties.opacity` — verdict: `null`, status: `unverified`
-- `properties.paragraphs` — verdict: `null`, status: `unverified`
-- `properties.rowGap` — verdict: `null`, status: `unverified`
-- `properties.strikethrough` — verdict: `null`, status: `unverified`
-- `properties.text.paragraph.headingLevel` — verdict: `null`, status: `unverified`
-- `properties.text.run.fill` — verdict: `null`, status: `unverified`
-- `properties.text.run.fontFamily` — verdict: `null`, status: `unverified`
-- `properties.text.run.fontSize` — verdict: `null`, status: `unverified`
-- `properties.text.run.italic` — verdict: `null`, status: `unverified`
-- `properties.text.run.strikethrough` — verdict: `null`, status: `unverified`
-- `properties.text.run.underline` — verdict: `null`, status: `unverified`
-- `properties.text.run.weight` — verdict: `null`, status: `unverified`
-- `properties.textGrowth` — verdict: `null`, status: `unverified`
-- `properties.underline` — verdict: `null`, status: `unverified`
-- `properties.varies` — verdict: `null`, status: `unverified`
-- `properties.weight` — verdict: `null`, status: `unverified`
-- `properties.wrap` — verdict: `null`, status: `unverified`
-- `root.axes` — verdict: `null`, status: `unverified`
-- `root.lang` — verdict: `null`, status: `unverified`
+The remaining `raster` entries are closed verdicts, not unfinished verification. Each names a
+concrete target-representation limit or a measured fidelity mismatch. In particular, SwiftUI and
+Compose text remains rasterized because retained native-device measurements found persistent
+CanvasKit-versus-platform shaping, baseline, and ink differences. The author can also force a
+normally native node to pixels with `export: "image"`; there is no override from raster to native.
 
-## android (51)
-
-- `nodes.ellipse` — verdict: `null`, status: `unverified`
-- `nodes.frame` — verdict: `null`, status: `unverified`
-- `nodes.group` — verdict: `null`, status: `unverified`
-- `nodes.rectangle` — verdict: `null`, status: `unverified`
-- `nodes.ref` — verdict: `null`, status: `unverified`
-- `nodes.text` — verdict: `null`, status: `unverified`
-- `properties.accessibility.description` — verdict: `null`, status: `unverified`
-- `properties.accessibility.landmark` — verdict: `null`, status: `unverified`
-- `properties.accessibility.linkName` — verdict: `null`, status: `unverified`
-- `properties.content` — verdict: `null`, status: `unverified`
-- `properties.cornerRadius` — verdict: `null`, status: `unverified`
-- `properties.decorative` — verdict: `null`, status: `unverified`
-- `properties.effect.shadow.spread` — verdict: `null`, status: `unverified`
-- `properties.fill` — verdict: `null`, status: `unverified`
-- `properties.fill.gradient.linear.transformed` — verdict: `null`, status: `unverified`
-- `properties.fill.gradient.radial.transformed` — verdict: `null`, status: `unverified`
-- `properties.fill.solid` — verdict: `null`, status: `unverified`
-- `properties.fontFamily` — verdict: `null`, status: `unverified`
-- `properties.fontSize` — verdict: `null`, status: `unverified`
-- `properties.fontStyle` — verdict: `null`, status: `unverified`
-- `properties.fontWeight` — verdict: `null`, status: `unverified`
-- `properties.gap` — verdict: `null`, status: `unverified`
-- `properties.gridTemplateColumns` — verdict: `null`, status: `unverified`
-- `properties.headingLevel` — verdict: `null`, status: `unverified`
-- `properties.icon` — verdict: `null`, status: `unverified`
-- `properties.lang` — verdict: `null`, status: `unverified`
-- `properties.layout` — verdict: `null`, status: `unverified`
-- `properties.layoutPosition` — verdict: `null`, status: `unverified`
-- `properties.letterSpacing` — verdict: `null`, status: `unverified`
-- `properties.library` — verdict: `null`, status: `unverified`
-- `properties.marks` — verdict: `null`, status: `unverified`
-- `properties.modes` — verdict: `null`, status: `unverified`
-- `properties.opacity` — verdict: `null`, status: `unverified`
-- `properties.paragraphs` — verdict: `null`, status: `unverified`
-- `properties.rowGap` — verdict: `null`, status: `unverified`
-- `properties.strikethrough` — verdict: `null`, status: `unverified`
-- `properties.text.paragraph.headingLevel` — verdict: `null`, status: `unverified`
-- `properties.text.run.fill` — verdict: `null`, status: `unverified`
-- `properties.text.run.fontFamily` — verdict: `null`, status: `unverified`
-- `properties.text.run.fontSize` — verdict: `null`, status: `unverified`
-- `properties.text.run.italic` — verdict: `null`, status: `unverified`
-- `properties.text.run.strikethrough` — verdict: `null`, status: `unverified`
-- `properties.text.run.underline` — verdict: `null`, status: `unverified`
-- `properties.text.run.weight` — verdict: `null`, status: `unverified`
-- `properties.textGrowth` — verdict: `null`, status: `unverified`
-- `properties.underline` — verdict: `null`, status: `unverified`
-- `properties.varies` — verdict: `null`, status: `unverified`
-- `properties.weight` — verdict: `null`, status: `unverified`
-- `properties.wrap` — verdict: `null`, status: `unverified`
-- `root.axes` — verdict: `null`, status: `unverified`
-- `root.lang` — verdict: `null`, status: `unverified`
-
-## page:PDF/X-4 (1)
-
-- `profile` — verdict: `null`, status: `unverified`
+PDF is a roleless extraction format and therefore has no role capability table. Its node primitives
+default to native emission, with only value-specific/static-medium lowerings applied by the
+extraction pipeline. PDF/X-4 is a flag on PDF extraction, not a module or role. The profile gate runs
+the closed Canvas-writer-subset preflight and rejects the artifact before publication if any required
+profile condition fails.

@@ -5,6 +5,12 @@
 
 Date: 2026-09-04
 
+> **Current-status note (2026-09-09):** The fail-closed counts below are historical evidence from
+> the dated run, not the present capability state. The completion pass now has zero unverified
+> deliverable rows; see `research/unverified-capabilities.md`. Mobile rows are closed from retained
+> simulator/emulator evidence or concrete representation limits, and PDF/X-4 is the gated
+> roleless-extraction profile rather than a module capability row.
+
 ## Code-review correction pass
 
 Protected on branch `codex/canvas-architecture-rev4`:
