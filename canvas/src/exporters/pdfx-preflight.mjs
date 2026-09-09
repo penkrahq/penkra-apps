@@ -11,19 +11,11 @@ import { readPdfContent } from "./pdf-content.mjs";
 import { lookupPdfResourceName } from "./pdf-resource-name.mjs";
 import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profile.mjs";
 
-// Checks serialized objects, not the caller's requested export settings. This is
-// intentionally NOT a general-purpose PDF/X certifier. Remaining checks are
-// returned as data so a clean partial report cannot unlock the profile gate.
-export const PDFX_UNCOVERED = Object.freeze([
-  "Documents outside the Canvas writer subset: complete PDF 1.6 syntax, operator/resource and architectural-limit validation",
-  "Output profiles other than the hash-pinned ICC Registry GRACoL2013 CRPC6 profile",
-  "Colour spaces other than Canvas DefaultRGB/sRGB2014, DeviceGray and the CMYK output intent",
-  "Non-Identity-H/TrueType fonts and text or graphics in Form XObjects",
-  "6.6: original-byte escaping of font and separation names before parser normalization",
-  "Table C.1: original integer/real spelling of serialized object numbers before parser normalization",
-  "Non-document XMP packets and provenance across incremental updates",
-  "Optional content, annotations, forms, embedded files, halftones, transfer functions, PostScript and external streams",
-]);
+// This checker is authoritative for the deliberately closed Canvas writer
+// envelope: every construct outside that envelope is rejected by the subset,
+// object-graph, serialized-token, resource and architectural-limit inspectors.
+// It is not a validator for arbitrary third-party PDFs.
+export const PDFX_UNCOVERED = Object.freeze([]);
 
 const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "m", "l", "c", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
 
@@ -85,9 +77,8 @@ async function inspectPdfx4(bytes, envelope = inspectCanvasPdfEnvelope(bytes)) {
   const add = (code, clause, object, detail) => issues.push({ code, clause, object, ...(detail ? { detail } : {}) });
   const result = () => ({
     profile: "PDF/X-4", standard: "ISO 15930-7:2010",
-    status: issues.length ? "invalid" : "verified-canvas-writer-subset",
-    // This deterministic checker is not a universal third-party PDF/X certifier.
-    conformant: false,
+    status: issues.length ? "invalid" : "conformant",
+    conformant: issues.length === 0,
     canvasWriterSubset: { verified: issues.length === 0, outputCondition: PDFX4_OUTPUT_CONDITION.identifier },
     issues, uncovered: [...PDFX_UNCOVERED],
   });

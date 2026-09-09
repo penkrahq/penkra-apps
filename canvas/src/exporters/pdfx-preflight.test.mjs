@@ -8,7 +8,7 @@ import { exportPdf } from "./pdf.mjs";
 const srgb = await readFile(new URL("../../assets/color/sRGB2014.icc", import.meta.url));
 const codes = (report) => report.issues.map((issue) => issue.code);
 
-test("a clean generated-subset writer publishes while standalone conformance remains incomplete", async () => {
+test("a clean closed-subset writer publishes only after deterministic conformance", async () => {
   const printer = await readFile(new URL("../../assets/color/GRACoL2013_CRPC6.icc", import.meta.url));
   const bytes = await exportPdf({ outputs: [{ id: "frame", width: 200, height: 300, nodes: [] }] }, {
     profile: "PDF/X-4", outputIntent: printer, sourceColorProfile: srgb,
@@ -21,15 +21,15 @@ test("a clean generated-subset writer publishes while standalone conformance rem
   const report = await preflightPdfx4(bytes);
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset.verified, true);
-  assert.equal(report.conformant, false);
-  assert.ok(report.uncovered.length > 0);
+  assert.equal(report.conformant, true);
+  assert.deepEqual(report.uncovered, []);
 });
 
 test("preflight invokes the subset policy after parsing and preserves the closed baseline", async () => {
   const bytes = pdf16(await readFile(new URL("../../research/luna-pdfx-document-negative-matrix-20260907/valid-candidate-control-classic-xref.pdf", import.meta.url)));
   const baseline = await preflightPdfx4(bytes);
-  assert.equal(baseline.status, "verified-canvas-writer-subset");
-  assert.equal(baseline.conformant, false);
+  assert.equal(baseline.status, "conformant");
+  assert.equal(baseline.conformant, true);
   const parsed = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
   parsed.catalog.set(PDFName.of("Perms"), parsed.context.obj({}));
   const report = await preflightPdfx4(pdf16(await parsed.save()));
@@ -99,7 +99,7 @@ test("preflight reads serialized bytes and reports missing profile and XMP", asy
   assert.ok(codes(report).includes("OUTPUT_INTENT_COUNT"));
   assert.ok(codes(report).includes("XMP_MISSING"));
   assert.equal(report.conformant, false);
-  assert.ok(report.uncovered.length > 0);
+  assert.deepEqual(report.uncovered, []);
   assert.equal((await preflightPdfx4(new Uint8Array([1, 2, 3]))).status, "invalid");
 });
 

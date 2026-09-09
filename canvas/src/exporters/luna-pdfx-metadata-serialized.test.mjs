@@ -195,7 +195,7 @@ test("fully configured PDF/X export returns metadata-wired writer bytes", async 
   const report = await preflightPdfx4(bytes);
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset.verified, true);
-  assert.equal(report.conformant, false);
+  assert.equal(report.conformant, true);
 });
 
 test("serialized metadata validation isolates parser state", async () => {

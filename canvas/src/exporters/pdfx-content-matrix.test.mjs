@@ -252,5 +252,5 @@ test("configured PDF/X exporter returns a writer-verified PDF with zero content 
   assert.deepEqual(report.issues.filter((issue) => contentCodes.has(issue.code)), []);
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset.verified, true);
-  assert.equal(report.conformant, false);
+  assert.equal(report.conformant, true);
 });

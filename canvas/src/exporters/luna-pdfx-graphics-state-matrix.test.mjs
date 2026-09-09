@@ -354,7 +354,7 @@ test("configured PDF/X transparency export returns a writer-verified PDF while a
   PROFILE_GATE_RESULT = { code: "returned", conformant: report.conformant, issues: report.issues };
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset.verified, true);
-  assert.equal(report.conformant, false);
+  assert.equal(report.conformant, true);
   assert.ok((await extractExtGStateShapes(bytes)).length >= 1);
 });
 

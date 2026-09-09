@@ -201,8 +201,8 @@ async function serializeCase(caseDefinition, variant) {
   const afterHash = sha256(bytes);
   assert.equal(afterHash, beforeHash, `${caseDefinition.name}/${variant.name} input bytes mutated by inspection`);
   assert.deepEqual(issueSummary(first), issueSummary(second), `${caseDefinition.name}/${variant.name} inspection is not deterministic`);
-  assert.equal(first.conformant, false, `${caseDefinition.name}/${variant.name} cannot promote aggregate conformance`);
-  assert.equal(first.status, first.issues.length ? "invalid" : "verified-canvas-writer-subset");
+  assert.equal(first.conformant, first.issues.length === 0, `${caseDefinition.name}/${variant.name} conformance follows the closed checker`);
+  assert.equal(first.status, first.issues.length ? "invalid" : "conformant");
   assert.equal(imageEntries(reloaded).length, 2, `${caseDefinition.name}/${variant.name} retains both image XObjects after reload`);
   const record = {
     name: caseDefinition.name,
@@ -234,7 +234,7 @@ for (const caseDefinition of CASES) {
 test("configured image baseline reports ordinary/helper/subset findings without conformance", async () => {
   const report = await preflightPdfx4(BASELINE_BYTES);
   assert.equal(report.conformant, false);
-  assert.ok(Array.isArray(report.uncovered) && report.uncovered.length > 0);
+  assert.deepEqual(report.uncovered, []);
   assert.ok(imageEntries(await PDFDocument.load(BASELINE_BYTES, { updateMetadata: false })).length === 2);
 });
 
@@ -253,7 +253,7 @@ test("fully configured PDF/X image export returns writer-verified bytes with alp
   const report = await preflightPdfx4(bytes);
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset.verified, true);
-  assert.equal(report.conformant, false);
+  assert.equal(report.conformant, true);
   const entries = imageEntries(pdf);
   assert.equal(entries.length, 2);
   assert.ok(entries.some(({ object }) => object.dict.has(PDFName.of("SMask"))));

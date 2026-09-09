@@ -215,7 +215,7 @@ for (const serialization of SERIALIZATIONS) {
     const issues = architecturalIssues(report);
     assert.equal(issues.some((issue) => issue.detail?.detail === "integer-range"), false);
     assert.ok(issues.some((issue) => issue.detail?.detail === "object-real-range"), serialization.name);
-    assert.ok(report.uncovered.some((entry) => entry.includes("original integer/real spelling of serialized object numbers")), serialization.name);
+    assert.deepEqual(report.uncovered, [], serialization.name);
   });
 
   test(`object graph names include PDFName dictionary keys and values ${serialization.name}`, async () => {

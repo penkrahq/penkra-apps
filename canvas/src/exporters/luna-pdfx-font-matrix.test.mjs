@@ -452,7 +452,7 @@ test("aggregate configured PDF/X export returns a writer-verified embedded-font 
   const report = await preflightPdfx4(bytes);
   assert.deepEqual(report.issues, []);
   assert.equal(report.canvasWriterSubset.verified, true);
-  assert.equal(report.conformant, false);
+  assert.equal(report.conformant, true);
   assert.ok(pageFonts(pdf).entries.length >= 1);
   assert.ok(pageFont(pdf).program);
 });

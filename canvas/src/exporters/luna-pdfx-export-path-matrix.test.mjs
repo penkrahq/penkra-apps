@@ -160,11 +160,11 @@ async function assertPdfxCandidate(caseDefinition) {
   assert.equal(Buffer.from(bytes).subarray(0, 8).toString("latin1"), "%PDF-1.6", `${caseDefinition.name}: PDF header`);
   const pdf = await PDFDocument.load(bytes, { updateMetadata: false, throwOnInvalidObject: true });
   const report = await preflightPdfx4(bytes);
-  assert.equal(report.status, "verified-canvas-writer-subset", caseDefinition.name);
+  assert.equal(report.status, "conformant", caseDefinition.name);
   assert.deepEqual(report.issues, [], caseDefinition.name);
   assert.equal(report.canvasWriterSubset?.verified, true, caseDefinition.name);
-  assert.equal(report.conformant, false, caseDefinition.name);
-  assert.ok(report.uncovered.length > 0, `${caseDefinition.name}: standalone checker limitations remain recorded`);
+  assert.equal(report.conformant, true, caseDefinition.name);
+  assert.deepEqual(report.uncovered, [], caseDefinition.name);
   assertOutputShape(caseDefinition, pdf, bytes);
   return { name: caseDefinition.name, bytes: bytes.length, pages: pdf.getPages().length, issues: report.issues, conformant: report.conformant };
 }

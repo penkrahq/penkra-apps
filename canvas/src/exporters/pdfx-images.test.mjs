@@ -254,7 +254,7 @@ test("image correction matrix has complete identities and retains the baseline g
   assert.equal(RESULTS.length, CASES.length * SERIALIZATION_VARIANTS.length);
   const baseline = await preflightPdfx4(PNG_BASELINE_BYTES);
   assert.equal(baseline.conformant, false);
-  assert.ok(baseline.uncovered.length > 0);
+  assert.deepEqual(baseline.uncovered, []);
 });
 
 async function snapshot() {
