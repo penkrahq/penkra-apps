@@ -42,7 +42,7 @@ export async function prepareDocumentExport(document, request, options = {}) {
     return image;
   };
   let artifact;
-  if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
+  if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), imageData: (url) => embeddedImageHref(url, options.assets), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "route") {
     const hrefs = new Map(ir.rasters.map((raster, index) => [raster.id, `assets/raster-${index + 1}.png`]));
     const imageHrefs = new Map();
@@ -235,10 +235,30 @@ async function renderExtractionNode(document, request, options) {
     }
     const svg = exportSvg(svgIr, svgIr.outputs[0], {
       rasterHref: (id) => rasterHrefs.get(id),
+      imageHref: (url) => embeddedImageHref(url, options.assets),
     });
     return { bytes: svg, report: { format: "svg", consequences: svgIr.consequences } };
   }
   throw new Error(`Extraction format must be png, svg or pdf.`);
+}
+
+function embeddedImageHref(url, assets) {
+  if (typeof url === "string" && url.startsWith("data:image/")) return url;
+  const asset = assets instanceof Map ? assets.get(url) : undefined;
+  const bytes = asset?.bytes ?? asset;
+  if (!(bytes instanceof Uint8Array) && !Buffer.isBuffer(bytes)) return null;
+  const buffer = Buffer.from(bytes);
+  const mime = buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+    ? "image/png"
+    : buffer[0] === 0xff && buffer[1] === 0xd8 ? "image/jpeg" : null;
+  return mime ? `data:${mime};base64,${buffer.toString("base64")}` : null;
+}
+
+function embeddedImageBytes(url, assets) {
+  if (typeof url === "string" && url.startsWith("data:image/")) return Buffer.from(url.slice(url.indexOf(",") + 1), "base64");
+  const asset = assets instanceof Map ? assets.get(url) : undefined;
+  const bytes = asset?.bytes ?? asset;
+  return bytes instanceof Uint8Array || Buffer.isBuffer(bytes) ? Buffer.from(bytes) : null;
 }
 
 async function buildPdfExtractionIR(document, request, options) {
@@ -268,6 +288,7 @@ async function renderPdfExtraction(ir, request, options) {
     outputIntent: pdfx ? await readBundledPdfxProfile() : await readBundledSrgbProfile(),
     sourceColorProfile: pdfx ? await readBundledSrgbProfile() : undefined,
     fonts: await readBundledPdfFonts(),
+    imageData: (url) => embeddedImageBytes(url, options.assets),
     rasterizeNode: async (id) => {
       const [image] = await takeDocumentScreenshots(ir.renderDocument, [{ nodeIds: [id] }], options.assets, { scale: 1, maxDimension: 8192, failOnDownscale: true });
       return Buffer.from(image.data, "base64");

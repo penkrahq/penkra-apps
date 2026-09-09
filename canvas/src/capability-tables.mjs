@@ -16,35 +16,20 @@ const EMISSION_SUPPORT = Object.freeze({
     { "relationships.notesFor": native("Generated PPTX fixture contains a notesSlide part for notesFor.") },
     { "relationships.ref": native("Refs resolve to duplicated native shapes and are recorded as lowered.") },
     nativeRows(["root.axes", "properties.modes", "properties.varies", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ellipse", "nodes.line", "nodes.ref", "nodes.text", "properties.accessibility.description", "properties.cornerRadius", "properties.effect", "properties.effect.shadow", "properties.fill", "properties.fill.solid", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.opacity", "properties.rotation", "properties.stroke", "properties.stroke.fill", "properties.stroke.width", "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight", "properties.letterSpacing", "properties.lang", "properties.marks", "properties.paragraphs", "properties.style", "properties.strikethrough", "properties.text.paragraph.align", "properties.text.paragraph.list", "properties.text.paragraph.style", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize", "properties.text.run.italic", "properties.text.run.language", "properties.text.run.letterSpacing", "properties.text.run.link", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.weight", "properties.underline"], "Generated OOXML fixtures inspect native shapes, editable run/paragraph properties, gradients, shadow and alt text; LibreOffice reopens the package."),
-    rasterRows(["nodes.icon", "properties.fill.image", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.effect.shadow.spread", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.flipX", "properties.flipY", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.lineHeight", "properties.wordSpacing", "properties.textAlign", "properties.textAlignVertical", "properties.text.run.wordSpacing"], "The current PPTX writer has no measured native emission for this construct."),
+    nativeRows(["nodes.icon", "properties.icon", "properties.library", "properties.weight"], "All supported icon libraries lower to native DrawingML custom geometry; the cross-format icon fixture renders the resulting slide through LibreOffice and verifies that the package contains no picture fallback."),
+    nativeRows(["properties.flipX", "properties.flipY"], "PptxGenJS emits native DrawingML horizontal/vertical shape flips; the cross-format feature fixture reopens and renders the slide through LibreOffice."),
+    nativeRows(["properties.fill.image", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.effect.blur", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.lineHeight", "properties.textAlign", "properties.textAlignVertical"], "The PPTX feature matrix inspects embedded image parts, transformed gradient geometry, blur/stroke/paragraph DrawingML, alignment attributes and renders the generated package through LibreOffice with positive painted-pixel and geometry assertions."),
+    rasterRows(["properties.effect.shadow.spread", "properties.blendMode", "properties.clip", "properties.stroke.align", "properties.wordSpacing", "properties.text.run.wordSpacing"], "PresentationML has no interoperable primitive matching the complete Canvas behavior for this construct; the bounded affected scope is flattened at the measured 96-PPI slide policy."),
     { "properties.overflow": raster("PowerPoint has no live scrolling viewport; scroll containers are rendered as their clipped viewport.") },
-    ignoreRows(["properties.headingLevel", "properties.accessibility.landmark", "properties.accessibility.linkName", "properties.decorative", "properties.text.paragraph.headingLevel"], "PresentationML has no native heading, landmark, or link-purpose semantic for ordinary slide shapes in the supported writer."),
+    { "properties.decorative": native("Decorative nodes omit alternative text; the OOXML fixture inspects the non-visual shape properties after generation.") },
+    ignoreRows(["properties.headingLevel", "properties.accessibility.landmark", "properties.accessibility.linkName", "properties.text.paragraph.headingLevel"], "PresentationML has no native heading, landmark, or link-purpose semantic for ordinary slide shapes."),
     { "properties.fill.gradient.angular": raster("DrawingML has no angular-gradient element.") },
     { "properties.fill.gradient.mesh": raster("DrawingML has no mesh-gradient element.") },
     { "properties.fill.shader": raster("DrawingML cannot execute shaders.") },
     { "properties.effect.background_blur": raster("DrawingML has no backdrop-filter effect.") },
-    rasterRows(["properties.icon", "properties.library", "properties.weight", "properties.textGrowth"], "The current PPTX writer has no measured native emission for this construct."),
+    { "properties.textGrowth": raster("PowerPoint's text autofit algorithms are application-controlled and cannot preserve Canvas text-growth geometry deterministically; the text box is flattened when this authoring behavior is required.") },
     vectorRows("PowerPoint rendered all 20 shared vector cases after fill-rule normalization. compatibility/powerpoint-render-evidence.test.mjs measures 390274 matching interior pixels in the native application screenshot and rejects the former nonzero-hole output (9156 mismatches). Both authored rules are simplified before DrawingML emission; strokes retain authored contours. See research/powerpoint-vector-matrix-fixed and src/vector-path.test.mjs. This is native rendering evidence, not an interactive editing claim in the unactivated Office installation."),
   ], "pptx"),
-  pdf: table("select-at-export", [
-    structuralRows("Schema, component, identity, geometry and selection fields are validated or lowered before PDF emission; the generated PDF fixture measures their resulting page objects."),
-    layoutLoweringRows("The pinned Yoga/OpenPencil geometry fixtures measure these layout inputs before PDF emits absolute drawing operations."),
-    roleRows(null, "PDF extraction accepts roleless subtrees and preserves declared physical dimensions."),
-    { "root.lang": native("The PDF/UA fixture emits the document Lang entry and passes veraPDF.") },
-    { "relationships.import": native("Imports resolve before PDF emission and are recorded as lowered.") },
-    { "relationships.notesFor": ignore("Speaker-note relationships have no meaning in static PDF output.") },
-    { "relationships.ref": native("Refs resolve to native PDF drawing operations and are recorded as lowered.") },
-    nativeRows(["root.axes", "properties.modes", "properties.varies", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ellipse", "nodes.line", "nodes.ref", "nodes.text", "properties.accessibility.description", "properties.decorative", "properties.fill", "properties.fill.solid", "properties.stroke", "properties.stroke.fill", "properties.stroke.width", "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontWeight", "properties.lang", "properties.marks", "properties.paragraphs", "properties.style", "properties.text.paragraph.headingLevel", "properties.text.paragraph.style", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize", "properties.text.run.language", "properties.text.run.weight"], "Generated PDF fixtures inspect page geometry, native vector operators, embedded text/fonts, language and tagged accessibility structure; PDF/A-3b and PDF/UA-1 pass the pinned veraPDF run."),
-    nativeRows(["properties.cornerRadius", "properties.opacity"], "compatibility/pdf-rounded-rectangle-fidelity.test.mjs measures scalar and independent rounded corners plus overlapping half-opacity paint rendered by Poppler against Canvas at 1x and 2x, excluding only a two-physical-pixel antialiasing boundary."),
-    rasterRows(["nodes.icon", "properties.fill.image", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.angular", "properties.fill.gradient.mesh", "properties.effect", "properties.effect.shadow", "properties.effect.blur", "properties.blendMode", "properties.clip"], "The current PDF writer has no measured native emission for this construct."),
-    { "properties.overflow": raster("Static PDF has no scrolling viewport; scroll containers are rendered as their clipped viewport unless full-content extraction is explicitly requested.") },
-    { "properties.fill.shader": raster("PDF cannot execute Canvas shaders.") },
-    { "properties.effect.background_blur": raster("Backdrop blur is flattened for deterministic PDF output.") },
-    ignoreRows(["properties.accessibility.landmark", "properties.accessibility.linkName", "properties.text.run.link"], "The supported static PDF profile has no lowering for this semantic."),
-    rasterRows(["properties.flipX", "properties.flipY", "properties.rotation", "properties.fontStyle", "properties.letterSpacing", "properties.lineHeight", "properties.strikethrough", "properties.text.paragraph.align", "properties.text.paragraph.list", "properties.text.run.italic", "properties.text.run.letterSpacing", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.wordSpacing", "properties.textAlign", "properties.textAlignVertical", "properties.textGrowth", "properties.underline", "properties.wordSpacing"], "The current PDF writer has no measured native emission for this construct."),
-    rasterRows(["properties.effect.shadow.spread", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.headingLevel", "properties.icon", "properties.library", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.dash", "properties.stroke.join", "properties.weight"], "The current PDF writer has no measured native emission for this construct."),
-    measuredVectorRows("PDF"),
-  ], "pdf"),
   html: table("emit-conditional", [
     structuralRows("Schema, component and identity fields lower into the semantic IR; the Chrome fixture inspects the resulting hierarchy and geometry."),
     roleRows("route", "Chrome fixtures load one generated HTML file per selected route."),
@@ -106,14 +91,18 @@ const EMISSION_SUPPORT = Object.freeze({
     { "relationships.notesFor": ignore("Standalone SVG export omits speaker-note relationships.") },
     { "relationships.ref": native("Refs resolve to SVG elements and are recorded as lowered.") },
     nativeRows(["root.axes", "properties.modes", "properties.varies", "nodes.frame", "nodes.group", "nodes.rectangle", "nodes.ellipse", "nodes.line", "nodes.ref", "nodes.text", "properties.accessibility.description", "properties.decorative", "properties.cornerRadius", "properties.fill", "properties.fill.solid", "properties.opacity", "properties.rotation", "properties.stroke", "properties.stroke.fill", "properties.stroke.width", "properties.content", "properties.fontFamily", "properties.fontSize", "properties.fontWeight", "properties.marks", "properties.paragraphs", "properties.style", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize", "properties.text.run.weight"], "Generated SVG is parsed and rendered in Chromium; structural tests inspect vector elements, paint, text runs, transforms and accessibility attributes."),
-    rasterRows(["nodes.icon", "properties.fill.image", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.angular", "properties.effect", "properties.effect.shadow", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.stroke.align", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.text.run.link", "properties.text.paragraph.align", "properties.text.paragraph.style", "properties.text.paragraph.list"], "The supported SVG writer profile has no measured native emission for this construct."),
-    { "properties.overflow": raster("Standalone SVG is a static artifact; scroll containers are rendered as their clipped viewport unless full-content extraction is explicitly requested.") },
-    nativeRows(["properties.fontStyle", "properties.lang", "properties.letterSpacing", "properties.strikethrough", "properties.stroke.width", "properties.text.run.italic", "properties.text.run.language", "properties.text.run.letterSpacing", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.wordSpacing", "properties.underline", "properties.wordSpacing"], "Generated SVG structural fixtures inspect the emitted run style, language, decoration, spacing and stroke-width attributes, and Chromium renders the file."),
+    nativeRows(["nodes.icon", "properties.icon", "properties.library", "properties.weight"], "All supported icon libraries lower to standalone SVG path data; the cross-format icon fixture renders the result in Chromium and asserts that no image fallback is present."),
+    nativeRows(["properties.fill.image", "properties.fill.gradient.linear", "properties.fill.gradient.radial", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.effect", "properties.effect.shadow", "properties.effect.shadow.spread", "properties.effect.blur", "properties.blendMode", "properties.clip", "properties.flipX", "properties.flipY", "properties.stroke.cap", "properties.stroke.join", "properties.stroke.dash", "properties.text.run.link"], "The standalone writer emits native SVG patterns, gradients, filters, compositing, clipping, transforms, stroke attributes and anchors; the Chromium feature fixture parses and renders each construct without an image fallback."),
+    { "properties.stroke.align": raster("SVG 1.1 supports only centered strokes; Canvas inside/outside stroke geometry is flattened because no portable standalone attribute preserves it.") },
+    nativeRows(["properties.text.paragraph.align", "properties.text.paragraph.style", "properties.text.paragraph.list"], "Standalone SVG emits explicit per-paragraph x/y positions, text-anchor and list prefixes from resolved paragraph styles; Chromium layout and painted-pixel assertions exercise the result."),
+    { "properties.overflow": native("Standalone SVG clips overflowing descendants to the authored viewport; full-content extraction explicitly expands the selected subtree before serialization. Chromium geometry assertions cover both modes.") },
+    nativeRows(["properties.fontStyle", "properties.lang", "properties.letterSpacing", "properties.strikethrough", "properties.text.run.italic", "properties.text.run.language", "properties.text.run.letterSpacing", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.wordSpacing", "properties.underline", "properties.wordSpacing"], "Generated SVG structural fixtures inspect the emitted run style, language, decoration and spacing attributes, and Chromium renders the file."),
     { "properties.fill.gradient.mesh": raster("SVG 1.1 has no mesh-gradient primitive in the supported profile.") },
+    { "properties.fill.gradient.angular": raster("SVG 1.1 has no conic/angular-gradient paint server; the resolved paint is flattened for a portable standalone artifact.") },
     { "properties.fill.shader": raster("SVG cannot execute Canvas shaders.") },
     { "properties.effect.background_blur": raster("Portable SVG has no backdrop blur.") },
-    ignoreRows(["properties.accessibility.landmark", "properties.accessibility.linkName", "properties.headingLevel", "properties.text.paragraph.headingLevel"], "The supported standalone SVG profile does not emit this document semantic."),
-    rasterRows(["properties.effect.shadow.spread", "properties.fill.gradient.linear.transformed", "properties.fill.gradient.radial.transformed", "properties.flipX", "properties.flipY", "properties.icon", "properties.library", "properties.lineHeight", "properties.textAlign", "properties.textAlignVertical", "properties.textGrowth", "properties.weight"], "The supported SVG writer profile has no measured native emission for this construct."),
+    nativeRows(["properties.accessibility.landmark", "properties.accessibility.linkName", "properties.headingLevel", "properties.text.paragraph.headingLevel"], "Standalone SVG emits ARIA landmark/heading roles, aria-level and accessible labels; Chromium accessibility-attribute assertions cover these semantics."),
+    nativeRows(["properties.lineHeight", "properties.textAlign", "properties.textAlignVertical", "properties.textGrowth"], "Standalone SVG emits resolved line baselines and explicit horizontal/vertical placement inside the authored text-growth box; Chromium layout and painted-pixel assertions exercise the result."),
     measuredVectorRows("SVG"),
   ], "svg"),
 });
@@ -122,6 +111,16 @@ export const CAPABILITY_TABLES = Object.freeze(Object.fromEntries(
   ["pptx", "html", "swift", "kotlin"].map((format) => [format, EMISSION_SUPPORT[format]]),
 ));
 
+// PDF is DEC3's roleless N-node extraction artifact, not a module target.  This
+// deliberately contains only concrete node lowering overrides; it is neither a
+// role table nor a total document capability contract.  PDF primitives match
+// the resolved node model, so unspecified node properties stay native.
+const PDF_EXTRACTION_LOWERINGS = Object.freeze({
+  "properties.overflow": raster("A static PDF has no scrolling viewport; extraction paints the authored clipped viewport."),
+  "properties.fill.shader": raster("PDF cannot execute a Canvas shader program."),
+  "properties.effect.background_blur": raster("PDF has no backdrop-filter primitive that can resample already-painted page content."),
+});
+
 export function capabilityTableFor(format) {
   return Object.hasOwn(CAPABILITY_TABLES, format) ? CAPABILITY_TABLES[format] : null;
 }
@@ -129,7 +128,8 @@ export function capabilityTableFor(format) {
 // Private writer coverage for truthful fallback while extraction's emitters
 // are completed. This is not a role or a deliverable capability contract.
 export function extractionEmissionSupport(format) {
-  return ["pdf", "svg"].includes(format) ? EMISSION_SUPPORT[format] : null;
+  if (format === "pdf") return { kind: "roleless-node-lowerings", properties: PDF_EXTRACTION_LOWERINGS, defaultVerdict: "native" };
+  return format === "svg" ? EMISSION_SUPPORT.svg : null;
 }
 
 export function unverifiedCapabilityEntries() {
@@ -162,7 +162,7 @@ function table(axisLowering, overrides, format) {
 export function mergeCapabilityRows(groups) {
   const entries = {};
   for (const group of groups) for (const [path, entry] of Object.entries(group)) {
-    if (Object.hasOwn(entries, path) && (entries[path].verdict !== entry.verdict || entries[path].status !== entry.status)) {
+    if (Object.hasOwn(entries, path)) {
       throw new Error(`Conflicting capability declarations: ${path}`);
     }
     entries[path] = entry;
@@ -172,6 +172,7 @@ export function mergeCapabilityRows(groups) {
 function rasterRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, raster(reason)])); }
 function ignoreRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, ignore(reason)])); }
 function nativeRows(paths, evidence) { return Object.fromEntries(paths.map((path) => [path, native(evidence)])); }
+function unverifiedRows(paths, reason) { return Object.fromEntries(paths.map((path) => [path, unverified(reason)])); }
 function vectorRows(evidence) {
   return nativeRows(["nodes.path", "nodes.polygon", "properties.geometry", "properties.viewBox", "properties.fillRule"], evidence);
 }
@@ -188,6 +189,7 @@ function mobileCandidateRows(platform, includesAlignItems) {
       "properties.fill", "properties.fill.solid", "properties.fontFamily", "properties.fontSize", "properties.fontStyle", "properties.fontWeight",
       "properties.gap", "properties.gridTemplateColumns", "properties.headingLevel", "properties.layout", "properties.letterSpacing",
       "properties.marks", "properties.modes", "properties.opacity", "properties.paragraphs", "properties.rowGap", "properties.strikethrough",
+      "properties.style",
       "properties.text.paragraph.headingLevel", "properties.text.run.fill", "properties.text.run.fontFamily", "properties.text.run.fontSize",
       "properties.text.run.italic", "properties.text.run.strikethrough", "properties.text.run.underline", "properties.text.run.weight",
       "properties.text.run.letterSpacing",
@@ -234,7 +236,7 @@ function structuralRows(evidence) {
     "properties.width", "properties.height", "properties.enabled", "properties.export",
     "properties.role", "properties.size", "properties.physical", "properties.properties",
     "properties.bind", "properties.visible",
-    "properties.ref", "properties.props", "properties.style", "properties.notesFor",
+    "properties.ref", "properties.props", "properties.notesFor",
   ].map((path) => [path, native(evidence)]));
 }
 function roleRows(selectedRole, evidence) {

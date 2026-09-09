@@ -25,7 +25,7 @@ test("text semantics retain alignment precedence without inventing unspecified d
   assert.equal(unset.paragraphs[0].effectiveAlign, undefined);
 });
 
-test("measured PDF text preserves author image overrides and unrelated raster requirements", async () => {
+test("roleless PDF text preserves author image overrides without a role capability gate", async () => {
   const source = { version: "2.17", module: "generic", children: [{ id: "text", type: "text", width: 100, height: 40, content: "Text", fontFamily: "Inter", textAlign: "center", textGrowth: "fixed-width-height" }] };
   const preparedText = await measureDocumentText(source, ["text"]);
   const request = { nodeId: "text", format: "pdf", preparedText };
@@ -34,8 +34,8 @@ test("measured PDF text preserves author image overrides and unrelated raster re
   assert.deepEqual(buildExtractionIR(source, request).rasters.map((item) => item.id), ["text"]);
   source.children[0].export = "default";
   source.children[0].effect = { type: "blur", radius: 8 };
-  assert.deepEqual(buildExtractionIR(source, request).rasters.map((item) => item.id), ["text"]);
-  assert.deepEqual(buildExtractionIR(source, { ...request, format: "svg" }).rasters.map((item) => item.id), ["text"]);
+  assert.equal(buildExtractionIR(source, request).outputs[0].nodes[0].capability.verdict, "native");
+  assert.equal(buildExtractionIR(source, { ...request, format: "svg" }).rasters.length, 0);
 });
 
 test("root image override rasterizes the complete frame and default never forces native", () => {
@@ -50,7 +50,7 @@ test("root image override rasterizes the complete frame and default never forces
   assert.equal(buildExporterIR(source, request).rasters.length, 0);
   source.children[0].effect = { type: "blur", radius: 8 };
   ir = buildExporterIR(source, request);
-  assert.deepEqual(ir.rasters.map((raster) => raster.id), ["slide"]);
+  assert.equal(ir.rasters.length, 0);
 });
 
 test("mobile shadow spread rasterizes instead of blocking on an unverified nested row", () => {
@@ -86,7 +86,7 @@ test("mobile capability detection keeps empty axes and singular paint out of agg
   }
 });
 
-test("native candidate verification does not bypass production raster verdicts", () => {
+test("promoted native capabilities do not require public force-native overrides", () => {
   const source = { module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "slide", type: "frame", role: "slide", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, effect: { type: "blur", radius: 8 }, children: [] },
   ] };
@@ -94,13 +94,13 @@ test("native candidate verification does not bypass production raster verdicts",
   const candidate = buildCapabilityVerificationIR(source, request, ["properties.effect.blur"]);
   assert.equal(candidate.rasters.length, 0);
   for (const extra of [{}, { assumedNativePaths: ["properties.effect.blur"] }, { verification: ["properties.effect.blur"] }]) {
-    assert.deepEqual(buildExporterIR(source, { ...request, ...extra }).rasters.map((item) => item.id), ["slide"]);
+    assert.equal(buildExporterIR(source, { ...request, ...extra }).rasters.length, 0);
   }
 });
 
 test("unsupported root paint rasterizes the complete output subtree", () => {
   const source = { version: "2.17", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
-    { id: "slide", type: "frame", role: "slide", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, effect: { type: "blur", radius: 8 }, children: [
+    { id: "slide", type: "frame", role: "slide", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, effect: { type: "backgroundBlur", radius: 8 }, children: [
       { id: "child", type: "rectangle", x: 10, y: 10, width: 100, height: 50, fill: "#123456" },
     ] },
   ] };

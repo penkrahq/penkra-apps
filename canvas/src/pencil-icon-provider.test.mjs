@@ -26,6 +26,18 @@ test("every Pencil 2.17 icon library resolves through a catalog provider", () =>
   }
 });
 
+test("all six libraries expose exporter-native vector geometry", () => {
+  for (const [library, name] of [
+    ["lucide", "arrow-left"], ["feather", "arrow-left"],
+    ["Material Symbols Outlined", "arrow-back"], ["Material Symbols Rounded", "arrow-back"],
+    ["Material Symbols Sharp", "arrow-back"], ["phosphor", "push-pin-fill"],
+  ]) {
+    const definition = pencilIconVectorDefinition(library, name, 400);
+    assert.ok(definition?.geometry, `${library}:${name}`);
+    assert.equal(definition.paint === "font", false, `${library}:${name}`);
+  }
+});
+
 test("provider lookup is exact and never substitutes an unknown icon", () => {
   assert.equal(pencilIconDefinition("lucide", "not-a-real-icon"), null);
   assert.equal(pencilIconDefinition("not-a-library", "arrow-left"), null);

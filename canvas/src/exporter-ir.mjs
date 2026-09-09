@@ -5,6 +5,7 @@ import { computeDescendantVisualBounds, getAbsolutePositionFull } from "../vendo
 import { flattenMarks } from "./rich-text.mjs";
 import { rasterPolicyFor } from "./raster-policy.mjs";
 import { vectorForNode } from "./vector-path.mjs";
+import { pencilIconVectorDefinition } from "./pencil-icon-provider.mjs";
 
 const CAPABILITY_VERIFICATION = Symbol("canvas-capability-verification");
 const MOBILE_VARIANT_BUILD = Symbol("canvas-mobile-variant-build");
@@ -90,7 +91,7 @@ function buildExporterIRBase(document, request) {
         variants: semanticVariants(authoredById.get(frameId) ?? frame),
         capability: rootCapability,
       },
-      nodes: rootCapability.verdict === "raster" ? [] : collectOutputNodes(graph, sourceById, authoredById, { ...graphNode, ...graph.getAbsolutePosition(frameId) }, capability, frameId, projection, resolved.document.paragraphStyles ?? {}, resolved.document.lang ?? null, verification),
+      nodes: rootCapability.verdict === "raster" ? [] : collectOutputNodes(graph, sourceById, authoredById, { ...graphNode, ...graph.getAbsolutePosition(frameId) }, capability, frameId, projection, resolved.document.paragraphStyles ?? {}, resolved.document.lang ?? null, verification, false, null, format),
     };
   });
   const initialRoots = outputs.map((output) => ({ ...output.root }));
@@ -266,7 +267,7 @@ export function buildExtractionIR(document, request) {
   // and overflow. Overflow remains paint outside trim, available to the bleed.
   if (format === "pdf" && source.physical) bounds = { minX: origin.x, minY: origin.y, maxX: origin.x + graphNode.width, maxY: origin.y + graphNode.height };
   const syntheticRoot = { ...graphNode, x: origin.x, y: origin.y };
-  const nodes = collectOutputNodes(graph, sourceById, sourceById, syntheticRoot, capability, request.nodeId, "resolved", resolved.document.paragraphStyles ?? {}, resolved.document.lang ?? null, request[CAPABILITY_VERIFICATION] ?? null, true, format === "pdf" ? request.preparedText?.textLayouts : null);
+  const nodes = collectOutputNodes(graph, sourceById, sourceById, syntheticRoot, capability, request.nodeId, "resolved", resolved.document.paragraphStyles ?? {}, resolved.document.lang ?? null, request[CAPABILITY_VERIFICATION] ?? null, true, format === "pdf" ? request.preparedText?.textLayouts : null, format);
   const offsetX = bounds.minX - origin.x;
   const offsetY = bounds.minY - origin.y;
   for (const node of nodes) {
@@ -296,7 +297,7 @@ export function buildExtractionIR(document, request) {
   return { format, renderDocument: resolved.document, projection: "resolved", lang: document.lang ?? null, axes: structuredClone(document.axes ?? {}), modes: resolved.modes, outputs: [output], notes: [], flows: [], rasters, consequences, lowered: resolved.lowered, colorSpace: "sRGB" };
 }
 
-function collectOutputNodes(graph, sources, authored, root, capability, rootId, projection, paragraphStyles, documentLanguage, verification, includeRoot = false, textLayouts = null) {
+function collectOutputNodes(graph, sources, authored, root, capability, rootId, projection, paragraphStyles, documentLanguage, verification, includeRoot = false, textLayouts = null, format = null) {
   const result = [];
   const visit = (node, parent = null, z = 0) => {
     const source = sources.get(node.id) ?? {};
@@ -307,9 +308,13 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
       const absolute = { x: world.centerX - node.width / 2, y: world.centerY - node.height / 2 };
       const paths = capabilityPaths(source, projection);
       const textLayout = source.type === "text" ? textLayouts?.get(node.id) : null;
-      const entry = source.export === "image"
+      const icon = source.type === "icon" ? pencilIconVectorDefinition(source.library, source.icon, source.weight) : null;
+      let entry = source.export === "image"
         ? { verdict: "raster", reason: "Author requested image export.", paths: ["properties.export"] }
-        : evaluateCapabilities(textLayout ? paths.filter((path) => !MEASURED_PDF_TEXT_PATHS.has(path)) : paths, capability.properties, verification);
+        : evaluateCapabilities(textLayout ? paths.filter((path) => !MEASURED_PDF_TEXT_PATHS.has(path)) : paths, capability.properties, verification, capability.defaultVerdict);
+      if (format === "pptx" && entry.verdict === "native" && imagePaint(source.fill) && !["rectangle", "frame"].includes(source.type)) {
+        entry = { verdict: "raster", reason: "PresentationML rectangular blipFill cannot preserve this node's authored image mask; the bounded node is rendered with its mask and stroke.", paths };
+      }
       result.push({
         id: node.id, type: source.type ?? node.type.toLowerCase(), parent: node.id === rootId ? null : parent, z,
         geometry: {
@@ -323,12 +328,14 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
           ...(source.flipX === true ? { flipX: true } : {}),
           ...(source.flipY === true ? { flipY: true } : {}),
         },
-        paint: { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
+        paint: format === "html"
+          ? { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" }
+          : { fill: icon?.paint === "stroke" ? null : source.fill ?? "#000000", stroke: icon?.paint === "stroke" ? { fill: source.fill ?? "#000000", width: icon.strokeWidth } : source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
         semantics: source.type === "text" ? { content: source.content ?? "", textAlign: source.textAlign, textAlignVertical: source.textAlignVertical, lineHeight: source.lineHeight, wordSpacing: source.wordSpacing, textGrowth: source.textGrowth, runs: richTextRuns(source, paragraphStyles, documentLanguage), paragraphs: (source.paragraphs?.length ? source.paragraphs : (source.content ? [{ from: 0, to: source.content.length }] : [])).map((paragraph) => ({ ...paragraph, headingLevel: paragraph.headingLevel ?? source.headingLevel, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined, effectiveAlign: paragraph.align ?? (paragraph.style ? paragraphStyles[paragraph.style]?.align : undefined) ?? source.textAlign })), language: source.lang ?? source.language ?? documentLanguage, description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null } : { description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null },
         layout: semanticLayout(source),
         ...(scrollMetadata(source, graph, node.id) ? { scroll: scrollMetadata(source, graph, node.id) } : {}),
         ...(textLayout ? { textLayout } : {}),
-        ...(source.type === "path" || source.type === "polygon" ? { vector: vectorForNode(source) } : {}),
+        ...(source.type === "path" || source.type === "polygon" ? { vector: vectorForNode(source) } : icon?.geometry ? { vector: vectorForNode({ id: source.id, type: "path", geometry: icon.geometry, viewBox: icon.viewBox, fillRule: "nonzero" }) } : {}),
         ...(source.type === "icon" ? { icon: { library: source.library, name: source.icon, weight: source.weight ?? 400 } } : {}),
         variants: semanticVariants(authoredSource),
         export: source.export ?? "default", capability: entry,
@@ -448,6 +455,8 @@ function applyRasterScopes(nodes, rasters) {
     : node);
 }
 
+function imagePaint(fill) { return (Array.isArray(fill) ? fill : [fill]).some((item) => item?.enabled !== false && item?.type === "image"); }
+
 function capabilityPaths(node, projection) {
   const paths = new Set([`nodes.${node.type}`]);
   for (const key of ["rotation", "flipX", "flipY", "opacity", "clip", "overflow", "cornerRadius", "blendMode", "decorative", "bleed", "safeMargin", "folds"]) {
@@ -509,9 +518,9 @@ function capabilityPaths(node, projection) {
   return [...paths];
 }
 
-function evaluateCapabilities(paths, table, verification = null) {
+function evaluateCapabilities(paths, table, verification = null, defaultVerdict = null) {
   const entries = paths.map((path) => {
-    const entry = table[path] ?? { verdict: "raster", reason: `Capability ${path} is absent from the table.` };
+    const entry = table[path] ?? (defaultVerdict ? { verdict: defaultVerdict } : { verdict: "raster", reason: `Capability ${path} is absent from the table.` });
     // Only the module-private verification symbol can exercise candidate native
     // emission, including a previously raster-only implementation. This never
     // changes the production table or exposes an author force-native override.

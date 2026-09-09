@@ -32,12 +32,29 @@ async function addNode(slide, node, output, widthIn, heightIn, options) {
   const y = node.geometry.y / output.height * heightIn;
   const w = node.geometry.w / output.width * widthIn;
   const h = node.geometry.h / output.height * heightIn;
-  const common = { x, y, w, h, rotate: node.geometry.rotation, objectName: node.id, altText: node.semantics.description ?? undefined, shadow: shadowOptions(node.paint.effect) };
+  const common = { x, y, w, h, rotate: node.geometry.rotation, flipH: node.geometry.flipX, flipV: node.geometry.flipY, objectName: node.id, altText: node.semantics.decorative ? undefined : node.semantics.linkName ?? node.semantics.description ?? undefined, shadow: shadowOptions(node.paint.effect) };
   if (node.capability.verdict === "ignore") return;
   if (node.capability.verdict === "raster") {
     if (!options.rasterize) throw new Error(`Rasterizer is required for ${node.id}.`);
     const image = await options.rasterize(node.id);
     slide.addImage({ ...common, data: image.data ?? image });
+    return;
+  }
+  const paints = Array.isArray(node.paint.fill) ? node.paint.fill.filter((paint) => paint?.enabled !== false) : [];
+  if (paints.length > 1) {
+    for (let index = 0; index < paints.length; index += 1) await addNode(slide, {
+      ...node,
+      id: `${node.id}:paint:${index}`,
+      paint: { ...node.paint, fill: paints[index], stroke: index === paints.length - 1 ? node.paint.stroke : null },
+      semantics: index === 0 ? node.semantics : { ...node.semantics, description: null, linkName: null, decorative: true },
+    }, output, widthIn, heightIn, options);
+    return;
+  }
+  const image = imageFill(node.paint.fill);
+  if (image) {
+    const data = options.imageData?.(image.url);
+    if (!data) throw new Error(`PPTX image bytes are required for ${node.id}.`);
+    slide.addImage({ ...common, data, transparency: Math.round((1 - Number(node.paint.opacity ?? 1)) * 100), sizing: { type: image.mode === "fit" ? "contain" : "crop", x, y, w, h } });
     return;
   }
   if (node.type === "text") {
@@ -48,7 +65,7 @@ async function addNode(slide, node, output, widthIn, heightIn, options) {
     }
     const runs = pptxRuns(node);
     const firstParagraph = node.semantics.paragraphs[0];
-    slide.addText(runs, { ...common, margin: 0, breakLine: false, valign: "top", paraSpaceAfterPt: 0, fit: "shrink", ...(firstParagraph?.list ? { bullet: bulletOptions(firstParagraph.list) } : {}) });
+    slide.addText(runs, { ...common, margin: 0, breakLine: false, valign: verticalAlign(node.semantics.textAlignVertical), paraSpaceAfterPt: 0, fit: "shrink", ...(firstParagraph?.list ? { bullet: bulletOptions(firstParagraph.list) } : {}) });
     return;
   }
   const fill = solidFill(node.paint.fill);
@@ -87,7 +104,8 @@ function addParagraphText(slide, node, common) {
       if (to <= from) return [];
       return [{ text: node.semantics.content.slice(from, to).replace(/\r?\n$/u, ""), options: textRunOptions(run) }];
     });
-    const options = { ...common, y, h, margin: 0, valign: "top", paraSpaceAfterPt: 0, fit: "shrink", ...(paragraph.align ? { align: paragraph.align === "start" ? "left" : paragraph.align === "end" ? "right" : paragraph.align } : {}), ...(paragraph.list ? { bullet: bulletOptions(paragraph.list) } : {}) };
+    const align = paragraph.effectiveAlign ?? paragraph.align ?? node.semantics.textAlign;
+    const options = { ...common, y, h, margin: 0, valign: verticalAlign(node.semantics.textAlignVertical), paraSpaceAfterPt: 0, fit: "shrink", ...(align ? { align: align === "start" ? "left" : align === "end" ? "right" : align } : {}), ...(paragraph.list ? { bullet: bulletOptions(paragraph.list) } : {}) };
     if (runs.length === 1) slide.addText(runs[0].text, { ...options, ...runs[0].options });
     else slide.addText(runs, options);
     y += h;
@@ -116,6 +134,8 @@ function bulletOptions(list) {
 function textRunOptions(run) {
   return { fontFace: run.fontFamily, fontSize: run.fontSize ? run.fontSize * 0.75 : undefined, bold: Number(run.weight ?? run.fontWeight) >= 600, italic: run.italic ?? run.fontStyle === "italic", underline: run.underline ? { style: "sng" } : undefined, strike: Boolean(run.strikethrough), color: colorHex(run.fill), charSpacing: run.letterSpacing ? run.letterSpacing * 0.75 : undefined, hyperlink: run.link ? { url: run.link } : undefined, lang: run.language };
 }
+function verticalAlign(value) { return value === "center" ? "mid" : value === "bottom" || value === "end" ? "bottom" : "top"; }
+function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).find((item) => item?.type === "image"); }
 function solidFill(fill) { const value = typeof fill === "string" ? fill : fill?.color; return value ? { color: colorHex(value) } : { color: "FFFFFF", transparency: 100 }; }
 function strokeOptions(stroke) { if (!stroke) return { color: "FFFFFF", transparency: 100 }; return { color: colorHex(stroke.fill ?? stroke.color ?? "#000000"), width: Number(stroke.thickness ?? stroke.width ?? 1) * 0.75, dash: stroke.dashPattern ? "dash" : undefined, beginArrowType: stroke.cap === "arrow" ? "triangle" : undefined }; }
 function shadowOptions(effects) {
@@ -140,24 +160,30 @@ async function injectNativeDrawingMl(bytes, ir) {
       const name = regexEscape(node.id);
       const pattern = new RegExp(`(<p:sp>(?:(?!<\\/p:sp>).)*?<p:cNvPr\\b[^>]*name="${name}"[^>]*>(?:(?!<\\/p:sp>).)*?<p:spPr>)([\\s\\S]*?)(<\\/p:spPr>[\\s\\S]*?<\\/p:sp>)`, "u");
       if (node.vector && node.capability.verdict === "native") {
-        const geometry = await customGeometryXml(node.vector);
+        const geometry = await customGeometryXml(node.vector, Boolean(colorHex(typeof node.paint.fill === "string" ? node.paint.fill : node.paint.fill?.color)));
         xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${properties.replace(/<a:prstGeom\b[\s\S]*?<\/a:prstGeom>/u, geometry)}${after}`);
       }
       const fill = (Array.isArray(node.paint.fill) ? node.paint.fill : [node.paint.fill]).find((item) => item?.type === "gradient" && ["linear", "radial"].includes(item.gradientType ?? "linear"));
       if (fill && node.capability.verdict === "native") xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${properties.replace(/<a:(?:solidFill|gradFill)\b[\s\S]*?<\/a:(?:solidFill|gradFill)>|<a:noFill\/>/u, gradientXml(fill))}${after}`);
+      if (node.paint.stroke && node.capability.verdict === "native") xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${drawingStrokeXml(properties, node.paint.stroke)}${after}`);
+      if (node.paint.effect && node.capability.verdict === "native") xml = xml.replace(pattern, (whole, before, properties, after) => `${before}${drawingBlurXml(properties, node.paint.effect)}${after}`);
+      if (node.type === "text" && node.capability.verdict === "native") {
+        const lineHeight = node.semantics.runs.find((run) => Number.isFinite(Number(run.lineHeight)))?.lineHeight;
+        if (lineHeight) xml = xml.replace(new RegExp(`(<p:sp>(?:(?!<\\/p:sp>).)*?<p:cNvPr\\b[^>]*name="${name}"[^>]*>(?:(?!<\\/p:sp>).)*?<p:txBody>[\\s\\S]*?<a:bodyPr\\b[^>]*>[\\s\\S]*?<a:lstStyle\\/>)([\\s\\S]*?)(<\\/p:txBody>)`, "u"), (whole, before, body, after) => `${before}${body.replace(/<a:pPr([^>]*)>/gu, `<a:pPr$1><a:lnSpc><a:spcPts val="${Math.round(Number(lineHeight) * 75)}"/></a:lnSpc>`)}${after}`);
+      }
     }
     writeXmlPart(parts, path, xml);
   }
   return writeOoxmlPackage(parts);
 }
-async function customGeometryXml(vector) {
+async function customGeometryXml(vector, hasFill = true) {
   const encode = (commands) => commands.map((command) => {
     if (command.type === "move") return `<a:moveTo><a:pt x="${coord(command.x)}" y="${coord(command.y)}"/></a:moveTo>`;
     if (command.type === "line") return `<a:lnTo><a:pt x="${coord(command.x)}" y="${coord(command.y)}"/></a:lnTo>`;
     if (command.type === "cubic") return `<a:cubicBezTo><a:pt x="${coord(command.c1x)}" y="${coord(command.c1y)}"/><a:pt x="${coord(command.c2x)}" y="${coord(command.c2y)}"/><a:pt x="${coord(command.x)}" y="${coord(command.y)}"/></a:cubicBezTo>`;
     return "<a:close/>";
   }).join("");
-  const body = encode(await drawingMlCommands(vector));
+  const body = encode(hasFill ? await drawingMlCommands(vector) : scaledVectorCommands(vector, 100000, 100000));
   // Fill topology may change during either fill-rule lowering; stroke authored
   // contours separately so intersections and open ends retain their appearance.
   const paths = `<a:path w="100000" h="100000" stroke="0">${body}</a:path><a:path w="100000" h="100000" fill="none">${encode(scaledVectorCommands(vector, 100000, 100000))}</a:path>`;
@@ -166,9 +192,22 @@ async function customGeometryXml(vector) {
 function coord(value) { return Math.round(Math.max(-2147483648, Math.min(2147483647, value))); }
 function gradientXml(fill) {
   const stops = (fill.colors ?? []).map((stop) => `<a:gs pos="${Math.round(Number(stop.position) * 100000)}">${drawingColor(stop.color)}</a:gs>`).join("");
-  const geometry = (fill.gradientType ?? "linear") === "radial" ? `<a:path path="circle"><a:fillToRect l="0" t="0" r="0" b="0"/></a:path>` : `<a:lin ang="${Math.round(((Number(fill.rotation ?? 0) % 360 + 360) % 360) * 60000)}" scaled="1"/>`;
+  const center = fill.center ?? { x: .5, y: .5 }; const size = fill.size ?? { width: 1, height: 1 };
+  const bounds = { l: center.x - size.width / 2, t: center.y - size.height / 2, r: 1 - center.x - size.width / 2, b: 1 - center.y - size.height / 2 };
+  const rect = Object.entries(bounds).map(([key, value]) => `${key}="${Math.round(value * 100000)}"`).join(" ");
+  const geometry = (fill.gradientType ?? "linear") === "radial" ? `<a:path path="circle"><a:fillToRect ${rect}/></a:path>` : `<a:lin ang="${Math.round(((Number(fill.rotation ?? 0) % 360 + 360) % 360) * 60000)}" scaled="1"/><a:tileRect ${rect}/>`;
   return `<a:gradFill rotWithShape="1"><a:gsLst>${stops}</a:gsLst>${geometry}</a:gradFill>`;
 }
+function drawingStrokeXml(properties, stroke) {
+  const dash = stroke.dashPattern ?? stroke.dash; const cap = { round: "rnd", square: "sq", butt: "flat" }[stroke.cap];
+  return properties.replace(/<a:ln\b([^>]*?)(?:\/>|>([\s\S]*?)<\/a:ln>)/u, (whole, attributes, body = "") => {
+    const clean = cap ? attributes.replace(/\s+cap="[^"]*"/gu, "") : attributes;
+    const preset = Array.isArray(dash) && dash.length ? `<a:custDash>${dash.map((value, index) => index % 2 === 0 ? `<a:ds d="${Math.max(1, Math.round(Number(value) * 100000))}" sp="${Math.max(1, Math.round(Number(dash[index + 1] ?? value) * 100000))}"/>` : "").join("")}</a:custDash>` : "";
+    const join = stroke.join === "round" ? "<a:round/>" : stroke.join === "bevel" ? "<a:bevel/>" : stroke.join === "miter" ? "<a:miter lim=\"800000\"/>" : "";
+    return `<a:ln${clean}${cap ? ` cap="${cap}"` : ""}>${body}${preset}${join}</a:ln>`;
+  });
+}
+function drawingBlurXml(properties, effects) { const blur = (Array.isArray(effects) ? effects : [effects]).find((effect) => effect?.type === "blur"); if (!blur) return properties; const element = `<a:blur rad="${Math.round(Number(blur.radius ?? blur.blur ?? 0) * 9525)}" grow="1"/>`; return /<a:effectLst>/u.test(properties) ? properties.replace(/<a:effectLst>/u, `<a:effectLst>${element}`) : `${properties}<a:effectLst>${element}</a:effectLst>`; }
 function drawingColor(value) { const raw = String(value ?? "#000000").replace(/^#/u, ""); const rgb = raw.slice(0, 6).padEnd(6, "0"); const alpha = raw.length >= 8 ? `<a:alpha val="${Math.round(parseInt(raw.slice(6, 8), 16) / 255 * 100000)}"/>` : ""; return `<a:srgbClr val="${rgb.toUpperCase()}">${alpha}</a:srgbClr>`; }
 function xmlAttribute(value) { return String(value).replace(/[&<>"']/gu, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" })[character]); }
 function regexEscape(value) { return String(value).replace(/[.*+?^${}()|[\]\\]/gu, "\\$&"); }

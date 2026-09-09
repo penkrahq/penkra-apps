@@ -17,8 +17,8 @@ export function pencilIconDefinition(library, name, weight = 400) {
   return ICON_PROVIDERS.get(library)?.(name, normalizeWeight(weight)) ?? null;
 }
 
-// Web and other vector exporters need path data even for Material Symbols,
-// whose interactive Canvas representation uses the bundled variable font.
+// Serialization needs path data even where the interactive Canvas uses the
+// bundled Material Symbols font.
 export function pencilIconVectorDefinition(library, name, weight = 400) {
   if (typeof library !== "string" || typeof name !== "string") return null;
   const normalized = normalizeWeight(weight);

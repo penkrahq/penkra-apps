@@ -18,6 +18,7 @@ test("capability composition rejects conflicting rows in either order", () => {
     for (const groups of [[native, raster], [raster, native], [raster, unverified], [unverified, raster]]) {
       assert.throws(() => mergeCapabilityRows(groups));
     }
+    assert.throws(() => mergeCapabilityRows([native, native]));
   }
   assert.deepEqual(mergeCapabilityRows([{ a: { verdict: "native" } }, { b: { verdict: "raster" } }]), {
     a: { verdict: "native" }, b: { verdict: "raster" },
@@ -39,12 +40,13 @@ test("deliverable capability keys are formats, with extraction and PDF profiles 
   for (const nonFormat of ["slide", "page", "route", "ios", "android", "pdf", "svg", "__proto__"]) assert.equal(capabilityTableFor(nonFormat), null);
   assert.equal(capabilityTableFor("pptx").properties["roles.slide"].verdict, "native");
   assert.equal(capabilityTableFor("html").properties["roles.route"].verdict, "native");
-  assert.ok(extractionEmissionSupport("pdf"));
+  assert.equal(extractionEmissionSupport("pdf").kind, "roleless-node-lowerings");
+  assert.equal(Object.keys(extractionEmissionSupport("pdf").properties).some((path) => path.startsWith("roles.")), false);
   assert.ok(extractionEmissionSupport("svg"));
 });
 
 test("only visually measured vector profiles have native verdicts", () => {
-  const tables = { ...CAPABILITY_TABLES, pdf: extractionEmissionSupport("pdf"), svg: extractionEmissionSupport("svg") };
+  const tables = { ...CAPABILITY_TABLES, svg: extractionEmissionSupport("svg") };
   for (const [format, table] of Object.entries(tables)) {
     for (const path of ["nodes.path", "nodes.polygon", "properties.geometry", "properties.viewBox", "properties.fillRule"]) {
       assert.equal(table.properties[path].status, undefined, `${format}:${path}`);
@@ -72,11 +74,8 @@ test("scroll containers are live only in interactive deliverables and static els
     assert.equal(entry.verdict, "native", format);
     assert.ok(entry.evidence, format);
   }
-  for (const [format, table] of [
-    ["pptx", capabilityTableFor("pptx")],
-    ["pdf", extractionEmissionSupport("pdf")],
-    ["svg", extractionEmissionSupport("svg")],
-  ]) {
+  assert.equal(extractionEmissionSupport("svg").properties["properties.overflow"].verdict, "native");
+  for (const [format, table] of [["pptx", capabilityTableFor("pptx")], ["pdf", extractionEmissionSupport("pdf")]]) {
     const entry = table.properties["properties.overflow"];
     assert.equal(entry.verdict, "raster", format);
     assert.match(entry.reason, /static|scrolling viewport|clipped viewport/iu, format);

@@ -1,6 +1,6 @@
 import fontkit from "@pdf-lib/fontkit";
 import { createHash, randomUUID } from "node:crypto";
-import { PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rgb, scale, setFillingColor, setFontAndSize, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
+import { LineCapStyle, LineJoinStyle, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, clip, concatTransformationMatrix, endPath, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rectangle, rgb, scale, setDashPattern, setFillingColor, setFontAndSize, setLineCap, setLineJoin, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
 import { scaledVectorCommands } from "../vector-path.mjs";
 import { roundedRectangleVector } from "../rounded-rectangle.mjs";
 import { parseCssColor } from "../canvas-theme.mjs";
@@ -43,7 +43,7 @@ export async function exportPdf(ir, options = {}) {
     }
     for (const node of output.nodes) {
       if (node.capability.verdict === "ignore") continue;
-      if (node.capability.verdict === "native" && node.type !== "text" && !color(node.paint.fill) && !color(node.paint.stroke?.fill ?? node.paint.stroke?.color) && !imageFill(node.paint.fill)) continue;
+      if (node.capability.verdict === "native" && node.type !== "text" && !color(node.paint.fill) && !color(node.paint.stroke?.fill ?? node.paint.stroke?.color) && !imageFill(node.paint.fill) && !gradientFill(node.paint.fill)) continue;
       const tag = tagging?.begin(page, node);
       await drawNode(pdf, page, node, output, fonts, options, { bleed, trimWidth, trimHeight });
       tagging?.end(page, tag);
@@ -67,18 +67,14 @@ export async function exportPdf(ir, options = {}) {
   const bytes = new Uint8Array(options.profile === "PDF/X-4" ? await serializePdf16(pdf) : await pdf.save());
   if (options.profile === "PDF/X-4") {
     const report = await preflightPdfx4(bytes);
-    if (!report.canvasWriterSubset?.verified || report.issues.length !== 0) {
+    if (!report.conformant || !report.canvasWriterSubset?.verified || report.issues.length !== 0) {
       const error = new Error("PDF/X-4 serialization did not pass the Canvas generated-subset preflight.");
       error.code = "CANVAS_PDF_PROFILE_INVALID";
       error.preflight = report;
       throw error;
     }
-    // This function constructs a fresh document using the audited Canvas writer
-    // surface; it never imports a caller-supplied PDF object graph. Its serialized
-    // output must pass every applicable generated-subset check above. Supporting
-    // other PDF/X readers' permitted features is not a writer requirement (ISO
-    // 15930-7:2010, clause 5). The standalone checker's aggregate `conformant`
-    // field deliberately remains false: it is not a universal PDF/X validator.
+    // This function constructs a fresh document using the closed, audited Canvas
+    // writer surface; it never imports a caller-supplied PDF object graph.
   }
   return bytes;
 }
@@ -91,12 +87,30 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   const y = pageGeometry.bleed + pageGeometry.trimHeight - (node.geometry.y + node.geometry.h) * sy;
   const width = node.geometry.w * sx;
   const height = node.geometry.h * sy;
-  if (node.capability.verdict === "raster" || imageFill(node.paint.fill)) {
+  const rotation = Number(node.geometry.rotation ?? 0); const flipX = node.geometry.flipX === true; const flipY = node.geometry.flipY === true;
+  const transformed = rotation !== 0 || flipX || flipY;
+  if (transformed) {
+    const radians = -rotation * Math.PI / 180; const cosine = Math.cos(radians); const sine = Math.sin(radians); const fx = flipX ? -1 : 1; const fy = flipY ? -1 : 1;
+    const a = cosine * fx; const b = sine * fx; const c = -sine * fy; const d = cosine * fy; const centerX = x + width / 2; const centerY = y + height / 2;
+    page.pushOperators(pushGraphicsState(), concatTransformationMatrix(a, b, c, d, centerX - a * centerX - c * centerY, centerY - b * centerX - d * centerY));
+  }
+  try {
+  if (node.capability.verdict === "raster") {
     if (!options.rasterizeNode) throw new Error(`PDF rasterizer is required for ${node.id}.`);
     const rendered = await options.rasterizeNode(node.id, 300);
     const image = await pdf.embedPng(rendered.bytes ?? rendered);
     page.drawImage(image, { x, y, width, height });
     return;
+  }
+  const image = imageFill(node.paint.fill);
+  if (image) {
+    const bytes = await options.imageData?.(image.url);
+    if (!bytes) throw new Error(`PDF image bytes are required for ${node.id}.`);
+    const source = Buffer.from(bytes); const embedded = source[0] === 0xff && source[1] === 0xd8 ? await pdf.embedJpg(source) : await pdf.embedPng(source);
+    const sourceRatio = embedded.width / embedded.height; const boxRatio = width / height; let drawWidth = width; let drawHeight = height; let drawX = x; let drawY = y;
+    if (image.mode === "fit") { if (sourceRatio > boxRatio) { drawHeight = width / sourceRatio; drawY += (height - drawHeight) / 2; } else { drawWidth = height * sourceRatio; drawX += (width - drawWidth) / 2; } }
+    else if (sourceRatio > boxRatio) { drawWidth = height * sourceRatio; drawX -= (drawWidth - width) / 2; } else { drawHeight = width / sourceRatio; drawY -= (drawHeight - height) / 2; }
+    page.drawImage(embedded, { x: drawX, y: drawY, width: drawWidth, height: drawHeight, opacity: Number(node.paint.opacity ?? 1) }); return;
   }
   if (node.type === "text") {
     if (node.textLayout) drawShapedText(pdf, page, node, { x, y, width, height, sx, sy }, fonts);
@@ -110,12 +124,14 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   const fillOpacity = opacity * colorAlpha(fill);
   const borderOpacity = opacity * colorAlpha(stroke);
   const borderWidth = Number(node.paint.stroke?.width ?? node.paint.stroke?.thickness ?? 1) * sx;
-  const common = { x, y, width, height, opacity: fillOpacity, borderOpacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) };
+  const strokeOptions = pdfStrokeOptions(node.paint.stroke, sx);
+  const common = { x, y, width, height, opacity: fillOpacity, borderOpacity, ...strokeOptions, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) };
   if (node.vector) drawVector(pdf, page, node, { x, y, width, height, fill, stroke, borderWidth, fillOpacity, borderOpacity });
   else if (node.paint.cornerRadius != null) drawVector(pdf, page, { ...node, vector: roundedRectangleVector(node) }, { x, y, width, height, fill, stroke, borderWidth, fillOpacity, borderOpacity });
-  else if (node.type === "ellipse") page.drawEllipse({ x: x + width / 2, y: y + height / 2, xScale: width / 2, yScale: height / 2, opacity: fillOpacity, borderOpacity, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) });
-  else if (node.type === "line") { if (stroke) page.drawLine({ start: { x, y: y + height }, end: { x: x + width, y }, color: pdfColor(stroke), opacity: borderOpacity, thickness: borderWidth }); }
+  else if (node.type === "ellipse") page.drawEllipse({ x: x + width / 2, y: y + height / 2, xScale: width / 2, yScale: height / 2, opacity: fillOpacity, borderOpacity, ...strokeOptions, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) });
+  else if (node.type === "line") { if (stroke) page.drawLine({ start: { x, y: y + height }, end: { x: x + width, y }, color: pdfColor(stroke), opacity: borderOpacity, thickness: borderWidth, dashArray: strokeOptions.borderDashArray, lineCap: strokeOptions.borderLineCap }); }
   else page.drawRectangle(common);
+  } finally { if (transformed) page.pushOperators(popGraphicsState()); }
 }
 
 function drawVector(pdf, page, node, box) {
@@ -124,7 +140,13 @@ function drawVector(pdf, page, node, box) {
   const graphicsState = page.node.newExtGState("GS", pdf.context.obj({ Type: "ExtGState", ca: box.fillOpacity, CA: box.borderOpacity }));
   operators.push(setGraphicsState(graphicsState));
   if (box.fill) operators.push(setFillingColor(pdfColor(box.fill)));
-  if (box.stroke) operators.push(setStrokingColor(pdfColor(box.stroke)), setLineWidth(box.borderWidth));
+  if (box.stroke) {
+    const stroke = node.paint.stroke ?? {}; const dash = stroke.dashPattern ?? stroke.dash;
+    operators.push(setStrokingColor(pdfColor(box.stroke)), setLineWidth(box.borderWidth));
+    if (Array.isArray(dash) && dash.length) operators.push(setDashPattern(dash.map(Number), 0));
+    operators.push(setLineCap({ round: LineCapStyle.Round, square: LineCapStyle.Projecting, butt: LineCapStyle.Butt }[stroke.cap] ?? LineCapStyle.Butt));
+    operators.push(setLineJoin({ round: LineJoinStyle.Round, bevel: LineJoinStyle.Bevel, miter: LineJoinStyle.Miter }[stroke.join] ?? LineJoinStyle.Miter));
+  }
   for (const command of commands) {
     if (command.type === "move") operators.push(moveTo(command.x, command.y));
     else if (command.type === "line") operators.push(lineTo(command.x, command.y));
@@ -133,6 +155,15 @@ function drawVector(pdf, page, node, box) {
   }
   operators.push(PDFOperator.of(box.fill && box.stroke ? (node.vector.fillRule === "evenodd" ? "B*" : "B") : box.fill ? (node.vector.fillRule === "evenodd" ? "f*" : "f") : box.stroke ? "S" : "n"), popGraphicsState());
   page.pushOperators(...operators);
+}
+
+function pdfStrokeOptions(stroke, scaleFactor) {
+  if (!stroke) return {};
+  const dash = stroke.dashPattern ?? stroke.dash;
+  return {
+    ...(Array.isArray(dash) && dash.length ? { borderDashArray: dash.map((value) => Number(value) * scaleFactor) } : {}),
+    ...(stroke.cap ? { borderLineCap: { round: LineCapStyle.Round, square: LineCapStyle.Projecting, butt: LineCapStyle.Butt }[stroke.cap] ?? LineCapStyle.Butt } : {}),
+  };
 }
 
 function drawShapedText(pdf, page, node, box, fonts) {
@@ -229,7 +260,7 @@ function selectFont(fonts, run) {
   const weight = Number(run.weight ?? run.fontWeight ?? 400);
   return fonts.get(`${family}:${weight >= 700 ? 700 : weight >= 600 ? 600 : weight >= 500 ? 500 : 400}`) ?? fonts.get(`${family}:400`);
 }
-function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).some((item) => item?.type === "image" || typeof item?.url === "string"); }
+function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).find((item) => item?.type === "image" || typeof item?.url === "string"); }
 function color(value) { return typeof value === "string" ? value : value?.color; }
 function colorChannels(value) {
   if (value === "transparent") return { r: 0, g: 0, b: 0, a: 0 };
