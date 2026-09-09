@@ -45,8 +45,17 @@ export async function prepareDocumentExport(document, request, options = {}) {
   if (request.role === "slide") artifact = await exportPptx(ir, { fonts: await readBundledPptxFonts(), rasterize: async (id) => ({ data: `data:image/png;base64,${(await screenshot(id)).data}` }) });
   else if (request.role === "route") {
     const hrefs = new Map(ir.rasters.map((raster, index) => [raster.id, `assets/raster-${index + 1}.png`]));
-    artifact = exportWeb(ir, { rasterHref: (id) => hrefs.get(id) });
+    const imageHrefs = new Map();
+    for (const url of webImageUrls(ir.renderDocument)) {
+      if (!options.assets?.has(url)) continue;
+      imageHrefs.set(url, `assets/image-${imageHrefs.size + 1}${webAssetExtension(url)}`);
+    }
+    artifact = exportWeb(ir, { rasterHref: (id) => hrefs.get(id), assetHref: (url) => imageHrefs.get(url) ?? url });
     for (const [id, href] of hrefs) artifact.set(href, Buffer.from((await screenshot(id)).data, "base64"));
+    for (const [url, href] of imageHrefs) {
+      const asset = options.assets.get(url);
+      artifact.set(href, asset?.bytes ?? asset);
+    }
   }
   else if (request.role === "ios" || request.role === "android") {
     const rasters = new Map();
@@ -64,6 +73,21 @@ export async function prepareDocumentExport(document, request, options = {}) {
   const exportReport = report(ir, artifacts, request.role);
   if (artifact instanceof Map) artifact.set("export-report.json", JSON.stringify(exportReport, null, 2));
   return { destination: request.destination, artifact, report: exportReport };
+}
+
+function webImageUrls(document) {
+  const result = new Set();
+  const visit = (nodes) => { for (const node of nodes ?? []) {
+    for (const fill of (Array.isArray(node.fill) ? node.fill : [node.fill])) if (fill?.type === "image" && typeof fill.url === "string") result.add(fill.url);
+    visit(node.children);
+  } };
+  visit(document.children);
+  return result;
+}
+
+function webAssetExtension(url) {
+  const match = /\.(png|jpe?g|gif|webp|avif|svg)(?:$|[?#])/iu.exec(url);
+  return match ? `.${match[1].toLowerCase().replace("jpeg", "jpg")}` : ".bin";
 }
 
 export async function publishPreparedDocumentExport(prepared) {

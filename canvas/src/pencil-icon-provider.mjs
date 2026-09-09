@@ -17,6 +17,17 @@ export function pencilIconDefinition(library, name, weight = 400) {
   return ICON_PROVIDERS.get(library)?.(name, normalizeWeight(weight)) ?? null;
 }
 
+// Web and other vector exporters need path data even for Material Symbols,
+// whose interactive Canvas representation uses the bundled variable font.
+export function pencilIconVectorDefinition(library, name, weight = 400) {
+  if (typeof library !== "string" || typeof name !== "string") return null;
+  const normalized = normalizeWeight(weight);
+  if (library === "Material Symbols Outlined") return iconifyIcon(materialSymbols, `${name.replaceAll("_", "-")}-outline`, "fill");
+  if (library === "Material Symbols Rounded") return iconifyIcon(materialSymbols, `${name.replaceAll("_", "-")}-outline-rounded`, "fill");
+  if (library === "Material Symbols Sharp") return iconifyIcon(materialSymbols, `${name.replaceAll("_", "-")}-outline-sharp`, "fill");
+  return ICON_PROVIDERS.get(library)?.(name, normalized) ?? null;
+}
+
 function lucideIcon(name) {
   if (typeof name !== "string") return null;
   const icon = icons[toPascalCase(name)];

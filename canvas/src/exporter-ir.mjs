@@ -81,7 +81,7 @@ function buildExporterIRBase(document, request) {
         id: frameId,
         type: "frame",
         export: frame.export ?? "default",
-        geometry: { x: 0, y: 0, localX: 0, localY: 0, w: graphNode.width, h: graphNode.height, rotation: graphNode.rotation ?? 0 },
+        geometry: { x: 0, y: 0, localX: 0, localY: 0, w: graphNode.width, h: graphNode.height, rotation: graphNode.rotation ?? 0, flipX: frame.flipX === true, flipY: frame.flipY === true },
         paint: { fill: frame.fill ?? null, stroke: frame.stroke ?? null, effect: frame.effect ?? null, cornerRadius: frame.cornerRadius ?? null, opacity: graphNode.opacity, blendMode: frame.blendMode ?? "normal" },
         semantics: { description: frame.description ?? null, decorative: frame.decorative === true, landmark: frame.landmark ?? null, linkName: frame.linkName ?? null },
         layout: semanticLayout(frame),
@@ -320,13 +320,16 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
           w: node.width,
           h: node.height,
           rotation: node.rotation ?? 0,
+          flipX: source.flipX === true,
+          flipY: source.flipY === true,
         },
         paint: { fill: source.fill ?? null, stroke: source.stroke ?? null, effect: source.effect ?? null, cornerRadius: source.cornerRadius ?? null, opacity: node.opacity, blendMode: source.blendMode ?? "normal" },
-        semantics: source.type === "text" ? { content: source.content ?? "", textAlign: source.textAlign, textAlignVertical: source.textAlignVertical, runs: richTextRuns(source, paragraphStyles, documentLanguage), paragraphs: (source.paragraphs?.length ? source.paragraphs : (source.content ? [{ from: 0, to: source.content.length, ...(source.headingLevel ? { headingLevel: source.headingLevel } : {}) }] : [])).map((paragraph) => ({ ...paragraph, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined, effectiveAlign: paragraph.align ?? (paragraph.style ? paragraphStyles[paragraph.style]?.align : undefined) ?? source.textAlign })), language: source.lang ?? source.language ?? documentLanguage, description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null } : { description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null },
+        semantics: source.type === "text" ? { content: source.content ?? "", textAlign: source.textAlign, textAlignVertical: source.textAlignVertical, lineHeight: source.lineHeight, wordSpacing: source.wordSpacing, textGrowth: source.textGrowth, runs: richTextRuns(source, paragraphStyles, documentLanguage), paragraphs: (source.paragraphs?.length ? source.paragraphs : (source.content ? [{ from: 0, to: source.content.length }] : [])).map((paragraph) => ({ ...paragraph, headingLevel: paragraph.headingLevel ?? source.headingLevel, resolvedStyle: paragraph.style ? paragraphStyles[paragraph.style] : undefined, effectiveAlign: paragraph.align ?? (paragraph.style ? paragraphStyles[paragraph.style]?.align : undefined) ?? source.textAlign })), language: source.lang ?? source.language ?? documentLanguage, description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null } : { description: source.description ?? null, decorative: source.decorative === true, landmark: source.landmark ?? null, linkName: source.linkName ?? null },
         layout: semanticLayout(source),
         ...(scrollMetadata(source, graph, node.id) ? { scroll: scrollMetadata(source, graph, node.id) } : {}),
         ...(textLayout ? { textLayout } : {}),
         ...(source.type === "path" || source.type === "polygon" ? { vector: vectorForNode(source) } : {}),
+        ...(source.type === "icon" ? { icon: { library: source.library, name: source.icon, weight: source.weight ?? 400 } } : {}),
         variants: semanticVariants(authoredSource),
         export: source.export ?? "default", capability: entry,
         provenance: source.provenance ?? null, clip: effectiveOverflow(source) !== "visible" ? node.id : null, isolation: needsIsolation(source) ? node.id : null,
@@ -501,6 +504,7 @@ function capabilityPaths(node, projection) {
     }
   }
   if (node.type === "path" || node.type === "polygon") for (const key of ["geometry", "viewBox", "fillRule"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
+  if (node.type === "icon") for (const key of ["icon", "library", "weight"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
   if (projection === "semantic") for (const key of ["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "overflow"]) if (node[key] !== undefined) paths.add(`properties.${key}`);
   return [...paths];
 }
@@ -564,7 +568,7 @@ export function richTextRuns(node, paragraphStyles, documentLanguage = null) {
   });
 }
 function textBase(node) {
-  const base = Object.fromEntries(["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "fill", "underline", "strikethrough"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]]));
+  const base = Object.fromEntries(["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "wordSpacing", "fill", "underline", "strikethrough"].filter((key) => node[key] !== undefined).map((key) => [key, node[key]]));
   if (node.lang !== undefined) base.lang = node.lang;
   else if (node.language !== undefined) base.language = node.language;
   return base;
