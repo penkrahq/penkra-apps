@@ -55,5 +55,5 @@ test("audit: PPTX rejects active unsafe rich-text links before packaging", async
     }], notes: [],
   };
   const regular = await readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
-  await assert.rejects(exportPptx(ir, { fonts: [{ typeface: "Inter", faces: { regular } }] }), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  await assert.rejects(exportPptx(ir, { fonts: [{ typeface: "Inter", faces: { regular } }] }), { code: "CANVAS_EXPORT_LINK_UNSAFE" });
 });

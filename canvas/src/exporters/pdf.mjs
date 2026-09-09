@@ -1,6 +1,6 @@
 import fontkit from "@pdf-lib/fontkit";
 import { createHash, randomUUID } from "node:crypto";
-import { LineCapStyle, LineJoinStyle, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, clip, concatTransformationMatrix, endPath, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rectangle, rgb, scale, setDashPattern, setFillingColor, setFontAndSize, setLineCap, setLineJoin, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
+import { LineCapStyle, LineJoinStyle, PDFDict, PDFDocument, PDFHexString, PDFName, PDFNumber, PDFOperator, PDFString, appendBezierCurve, beginText, clip, clipEvenOdd, concatTransformationMatrix, endPath, endText, closePath, lineTo, moveTo, popGraphicsState, pushGraphicsState, rectangle, rgb, scale, setDashPattern, setFillingColor, setFontAndSize, setLineCap, setLineJoin, setTextMatrix, showText, setGraphicsState, setLineWidth, setStrokingColor, translate } from "pdf-lib";
 import { scaledVectorCommands } from "../vector-path.mjs";
 import { roundedRectangleVector } from "../rounded-rectangle.mjs";
 import { parseCssColor } from "../canvas-theme.mjs";
@@ -87,6 +87,8 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   const y = pageGeometry.bleed + pageGeometry.trimHeight - (node.geometry.y + node.geometry.h) * sy;
   const width = node.geometry.w * sx;
   const height = node.geometry.h * sy;
+  const blend = pdfBlendName(node.paint.blendMode);
+  if (blend) page.pushOperators(pushGraphicsState(), setGraphicsState(page.node.newExtGState("GS", pdf.context.obj({ Type: "ExtGState", BM: PDFName.of(blend) }))));
   const rotation = Number(node.geometry.rotation ?? 0); const flipX = node.geometry.flipX === true; const flipY = node.geometry.flipY === true;
   const transformed = rotation !== 0 || flipX || flipY;
   if (transformed) {
@@ -108,18 +110,22 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
     if (!bytes) throw new Error(`PDF image bytes are required for ${node.id}.`);
     const source = Buffer.from(bytes); const embedded = source[0] === 0xff && source[1] === 0xd8 ? await pdf.embedJpg(source) : await pdf.embedPng(source);
     const sourceRatio = embedded.width / embedded.height; const boxRatio = width / height; let drawWidth = width; let drawHeight = height; let drawX = x; let drawY = y;
-    if (image.mode === "fit") { if (sourceRatio > boxRatio) { drawHeight = width / sourceRatio; drawY += (height - drawHeight) / 2; } else { drawWidth = height * sourceRatio; drawX += (width - drawWidth) / 2; } }
-    else if (sourceRatio > boxRatio) { drawWidth = height * sourceRatio; drawX -= (drawWidth - width) / 2; } else { drawHeight = width / sourceRatio; drawY -= (drawHeight - height) / 2; }
-    page.drawImage(embedded, { x: drawX, y: drawY, width: drawWidth, height: drawHeight, opacity: Number(node.paint.opacity ?? 1) }); return;
+    const imageMode = String(image.mode ?? "fill").toLowerCase();
+    if (imageMode === "fit") { if (sourceRatio > boxRatio) { drawHeight = width / sourceRatio; drawY += (height - drawHeight) / 2; } else { drawWidth = height * sourceRatio; drawX += (width - drawWidth) / 2; } }
+    else if (imageMode !== "stretch") { if (sourceRatio > boxRatio) { drawWidth = height * sourceRatio; drawX -= (drawWidth - width) / 2; } else { drawHeight = width / sourceRatio; drawY -= (drawHeight - height) / 2; } }
+    const clipOperators = [pushGraphicsState()]; appendClipPath(clipOperators, node, { x, y, width, height }); clipOperators.push(node.vector?.fillRule === "evenodd" ? clipEvenOdd() : clip(), endPath()); page.pushOperators(...clipOperators);
+    page.drawImage(embedded, { x: drawX, y: drawY, width: drawWidth, height: drawHeight, opacity: Number(node.paint.opacity ?? 1) });
+    page.pushOperators(popGraphicsState()); drawStrokeOnly(pdf, page, node, { x, y, width, height, sx }); return;
   }
   const gradient = gradientFill(node.paint.fill);
   if (gradient) {
     drawGradient(pdf, page, node, gradient, { x, y, width, height });
+    drawStrokeOnly(pdf, page, node, { x, y, width, height, sx });
     return;
   }
   if (node.type === "text") {
     if (node.textLayout) drawShapedText(pdf, page, node, { x, y, width, height, sx, sy }, fonts);
-    else drawText(page, node, { x, y, width, height, textScale: sy }, fonts);
+    else drawText(pdf, page, node, { x, y, width, height, textScale: sy }, fonts);
     return;
   }
   const fill = color(node.paint.fill);
@@ -136,7 +142,19 @@ async function drawNode(pdf, page, node, output, fonts, options, pageGeometry) {
   else if (node.type === "ellipse") page.drawEllipse({ x: x + width / 2, y: y + height / 2, xScale: width / 2, yScale: height / 2, opacity: fillOpacity, borderOpacity, ...strokeOptions, ...(fill ? { color: pdfColor(fill) } : {}), ...(stroke ? { borderColor: pdfColor(stroke), borderWidth } : {}) });
   else if (node.type === "line") { if (stroke) page.drawLine({ start: { x, y: y + height }, end: { x: x + width, y }, color: pdfColor(stroke), opacity: borderOpacity, thickness: borderWidth, dashArray: strokeOptions.borderDashArray, lineCap: strokeOptions.borderLineCap }); }
   else page.drawRectangle(common);
-  } finally { if (transformed) page.pushOperators(popGraphicsState()); }
+  } finally { if (transformed) page.pushOperators(popGraphicsState()); if (blend) page.pushOperators(popGraphicsState()); }
+}
+
+function pdfBlendName(value) {
+  const key = String(value ?? "normal").toLowerCase().replaceAll("-", "_");
+  if (["normal", "pass_through"].includes(key)) return null;
+  const name = {
+    multiply: "Multiply", screen: "Screen", overlay: "Overlay", darken: "Darken", lighten: "Lighten",
+    color_dodge: "ColorDodge", color_burn: "ColorBurn", hard_light: "HardLight", soft_light: "SoftLight",
+    difference: "Difference", exclusion: "Exclusion", hue: "Hue", saturation: "Saturation", color: "Color", luminosity: "Luminosity",
+  }[key];
+  if (name) return name;
+  const error = new Error(`PDF blend mode ${value} is unsupported.`); error.code = "CANVAS_EXPORT_BLEND_UNSUPPORTED"; throw error;
 }
 
 function drawVector(pdf, page, node, box) {
@@ -174,7 +192,7 @@ function pdfStrokeOptions(stroke, scaleFactor) {
 function pdfPaintLayers(node) {
   const paints = Array.isArray(node.paint.fill) ? node.paint.fill.filter((paint) => paint?.enabled !== false) : [];
   if (paints.length <= 1) return [node];
-  return paints.map((fill, index) => ({ ...node, id: `${node.id}:paint:${index}`, paint: { ...node.paint, fill, stroke: index === paints.length - 1 ? node.paint.stroke : null }, semantics: index === 0 ? node.semantics : { ...node.semantics, decorative: true, description: null } }));
+  return paints.map((fill, index) => ({ ...node, id: `${node.id}:paint:${index}`, paint: { ...node.paint, fill, stroke: index === paints.length - 1 ? node.paint.stroke : null, opacity: Number(node.paint.opacity ?? 1) * Number(fill?.opacity ?? 1), blendMode: fill?.blendMode ?? node.paint.blendMode }, semantics: index === 0 ? node.semantics : { ...node.semantics, decorative: true, description: null } }));
 }
 
 function drawGradient(pdf, page, node, gradient, box) {
@@ -192,13 +210,45 @@ function drawGradient(pdf, page, node, gradient, box) {
   const angle = Number(gradient.rotation ?? 0) * Math.PI / 180; const cx = box.x + Number(center.x) * box.width; const cy = box.y + (1 - Number(center.y)) * box.height;
   const radiusX = box.width * Number(size.width) / 2; const radiusY = box.height * Number(size.height) / 2;
   const radial = (gradient.gradientType ?? "linear") === "radial";
-  const coords = radial ? [cx, cy, 0, cx, cy, Math.max(radiusX, radiusY)] : [cx - Math.cos(angle) * radiusX, cy + Math.sin(angle) * radiusY, cx + Math.cos(angle) * radiusX, cy - Math.sin(angle) * radiusY];
+  const coords = radial ? [0, 0, 0, 0, 0, 1] : [cx - Math.cos(angle) * radiusX, cy + Math.sin(angle) * radiusY, cx + Math.cos(angle) * radiusX, cy - Math.sin(angle) * radiusY];
   const shading = pdf.context.obj({ ShadingType: radial ? 3 : 2, ColorSpace: "DeviceRGB", Coords: coords, Function: fn, Extend: [true, true] });
   const resources = page.node.Resources(); let shadings = resources.lookupMaybe(PDFName.of("Shading"), PDFDict); if (!shadings) { shadings = pdf.context.obj({}); resources.set(PDFName.of("Shading"), shadings); }
   const name = PDFName.of(`Sh${shadings.keys().length + 1}`); shadings.set(name, shading);
-  const operators = [pushGraphicsState(), rectangle(box.x, box.y, box.width, box.height), clip(), endPath(), PDFOperator.of("sh", [name])];
+  const operators = [pushGraphicsState()];
+  appendClipPath(operators, node, box);
+  operators.push(node.vector?.fillRule === "evenodd" ? clipEvenOdd() : clip(), endPath());
   const alpha = Number(node.paint.opacity ?? 1); if (alpha !== 1) operators.splice(1, 0, setGraphicsState(page.node.newExtGState("GS", pdf.context.obj({ Type: "ExtGState", ca: alpha, CA: alpha }))));
+  if (radial) { const radians = -Number(gradient.rotation ?? 0) * Math.PI / 180; operators.push(concatTransformationMatrix(Math.cos(radians) * radiusX, Math.sin(radians) * radiusX, -Math.sin(radians) * radiusY, Math.cos(radians) * radiusY, cx, cy)); }
+  operators.push(PDFOperator.of("sh", [name]));
   operators.push(popGraphicsState()); page.pushOperators(...operators);
+}
+
+function appendClipPath(operators, node, box) {
+  const vector = node.vector ?? (node.paint.cornerRadius != null ? roundedRectangleVector(node) : null);
+  if (vector) {
+    for (const command of scaledVectorCommands(vector, box.width, box.height)) {
+      if (command.type === "move") operators.push(moveTo(box.x + command.x, box.y + box.height - command.y));
+      else if (command.type === "line") operators.push(lineTo(box.x + command.x, box.y + box.height - command.y));
+      else if (command.type === "cubic") operators.push(appendBezierCurve(box.x + command.c1x, box.y + box.height - command.c1y, box.x + command.c2x, box.y + box.height - command.c2y, box.x + command.x, box.y + box.height - command.y));
+      else operators.push(closePath());
+    }
+    return;
+  }
+  if (node.type === "ellipse") {
+    const k = 0.5522847498307936; const rx = box.width / 2; const ry = box.height / 2; const cx = box.x + rx; const cy = box.y + ry;
+    operators.push(moveTo(cx + rx, cy), appendBezierCurve(cx + rx, cy + k * ry, cx + k * rx, cy + ry, cx, cy + ry), appendBezierCurve(cx - k * rx, cy + ry, cx - rx, cy + k * ry, cx - rx, cy), appendBezierCurve(cx - rx, cy - k * ry, cx - k * rx, cy - ry, cx, cy - ry), appendBezierCurve(cx + k * rx, cy - ry, cx + rx, cy - k * ry, cx + rx, cy), closePath());
+    return;
+  }
+  operators.push(rectangle(box.x, box.y, box.width, box.height));
+}
+
+function drawStrokeOnly(pdf, page, node, box) {
+  const stroke = color(node.paint.stroke?.fill ?? node.paint.stroke?.color); if (!stroke) return;
+  const borderWidth = Number(node.paint.stroke?.width ?? node.paint.stroke?.thickness ?? 1) * box.sx; const borderOpacity = Number(node.paint.opacity ?? 1) * colorAlpha(stroke);
+  if (node.vector) drawVector(pdf, page, node, { ...box, fill: null, stroke, borderWidth, fillOpacity: 0, borderOpacity });
+  else if (node.paint.cornerRadius != null) drawVector(pdf, page, { ...node, vector: roundedRectangleVector(node) }, { ...box, fill: null, stroke, borderWidth, fillOpacity: 0, borderOpacity });
+  else if (node.type === "ellipse") page.drawEllipse({ x: box.x + box.width / 2, y: box.y + box.height / 2, xScale: box.width / 2, yScale: box.height / 2, borderColor: pdfColor(stroke), borderWidth, borderOpacity, ...pdfStrokeOptions(node.paint.stroke, box.sx) });
+  else page.drawRectangle({ x: box.x, y: box.y, width: box.width, height: box.height, borderColor: pdfColor(stroke), borderWidth, borderOpacity, ...pdfStrokeOptions(node.paint.stroke, box.sx) });
 }
 
 function rgbArray(value) { const { r, g, b } = colorChannels(value); return [r, g, b]; }
@@ -214,6 +264,8 @@ function drawShapedText(pdf, page, node, box, fonts) {
   const operators = [pushGraphicsState(), PDFOperator.of("BDC", [PDFName.of("Span"), pdf.context.obj({ ActualText: PDFHexString.fromText(node.semantics.content) })])];
   const keys = new Map();
   const alphaStates = new Map();
+  const listedParagraphs = new Set();
+  const paragraphs = node.semantics.paragraphs ?? [];
   for (const line of node.textLayout.lines) for (const shaped of line.runs) {
     if (shaped.fakeBold || shaped.fakeItalic) throw profileError(`PDF text ${node.id} requires a real font face, not synthetic styling.`);
     for (let index = 0; index < shaped.glyphs.length; index++) {
@@ -242,19 +294,52 @@ function drawShapedText(pdf, page, node, box, fonts) {
       const alpha = Number(node.paint.opacity ?? 1) * colorAlpha(fill);
       if (!alphaStates.has(alpha)) alphaStates.set(alpha, page.node.newExtGState("GS", pdf.context.obj({ ca: alpha })));
       const gs = alphaStates.get(alpha);
+      if (run.language) operators.push(PDFOperator.of("BDC", [PDFName.of("Span"), pdf.context.obj({ Lang: PDFString.of(run.language) })]));
+      const glyphX = box.x + shaped.positions[index * 2] * box.sx;
+      const baseline = box.y + box.height - (shaped.positions[index * 2 + 1] + node.textLayout.offsetY) * box.sy;
+      const paragraphIndex = paragraphs.findIndex((paragraph) => paragraph.list && offset >= paragraph.from && offset < paragraph.to);
+      if (paragraphIndex >= 0 && !listedParagraphs.has(paragraphIndex)) {
+        listedParagraphs.add(paragraphIndex); drawListMarker(page, font, paragraphs[paragraphIndex].list, listOrdinal(paragraphs, paragraphIndex), glyphX, baseline, shaped.size, fill, Number(node.paint.opacity ?? 1));
+      }
       operators.push(setGraphicsState(gs), setFillingColor(pdfColor(fill)), beginText(), setFontAndSize(keys.get(font), shaped.size),
         setTextMatrix(box.sx, 0, 0, box.sy, box.x + shaped.positions[index * 2] * box.sx,
-          box.y + box.height - (shaped.positions[index * 2 + 1] + node.textLayout.offsetY) * box.sy),
+          baseline),
         showText(PDFHexString.of(glyph.toString(16).padStart(4, "0"))), endText());
+      const advance = program.font.getGlyph(glyph).advanceWidth / program.font.unitsPerEm * shaped.size * box.sx;
+      if (run.underline || run.strikethrough) {
+        operators.push(setStrokingColor(pdfColor(fill)), setLineWidth(Math.max(.5, shaped.size * .05 * box.sy)));
+        for (const lineY of [run.underline ? baseline - shaped.size * .1 * box.sy : null, run.strikethrough ? baseline + shaped.size * .3 * box.sy : null].filter((value) => value != null)) operators.push(moveTo(glyphX, lineY), lineTo(glyphX + advance, lineY), PDFOperator.of("S"));
+      }
+      const link = safePdfLink(run.link);
+      if (link) addLinkAnnotation(pdf, page, { x: glyphX, y: baseline - shaped.size * .25 * box.sy, width: advance, height: shaped.size * box.sy }, link);
+      if (run.language) operators.push(PDFOperator.of("EMC"));
     }
   }
   operators.push(PDFOperator.of("EMC"), popGraphicsState());
   page.pushOperators(...operators);
 }
 
-function drawText(page, node, box, fonts) {
+function safePdfLink(value) {
+  if (value == null) return null;
+  const href = typeof value === "string" ? value.trim() : "";
+  const allowed = /^(?:https?:\/\/|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/iu.test(href) || (!/^[a-z][a-z0-9+.-]*:/iu.test(href) && !href.startsWith("//"));
+  if (href && allowed && !/[\u0000-\u001f\u007f]/u.test(href)) return href;
+  const error = new Error("PDF link URL is unsafe or unsupported."); error.code = "CANVAS_EXPORT_LINK_UNSAFE"; throw error;
+}
+function addLinkAnnotation(pdf, page, box, url) {
+  const annotation = pdf.context.register(pdf.context.obj({ Type: "Annot", Subtype: "Link", Rect: [box.x, box.y, box.x + box.width, box.y + box.height], Border: [0, 0, 0], A: { S: "URI", URI: PDFString.of(url) } }));
+  page.node.addAnnot(annotation);
+}
+
+function drawText(pdf, page, node, box, fonts) {
   let cursorX = box.x;
   let baseline = box.y + box.height;
+  const paragraphs = node.semantics.paragraphs ?? [];
+  for (const [paragraphIndex, paragraph] of paragraphs.entries()) if (paragraph.list) {
+    const run = node.semantics.runs.find((candidate) => candidate.from <= paragraph.from && candidate.to > paragraph.from) ?? node.semantics.runs[0]; const font = selectFont(fonts, run ?? {}); if (!font) continue;
+    const size = Number(run?.fontSize ?? 16) * box.textScale; const priorLines = node.semantics.content.slice(0, paragraph.from).split("\n").length - 1; const lineHeight = Number(run?.lineHeight ?? run?.fontSize ?? 16) * box.textScale;
+    drawListMarker(page, font, paragraph.list, listOrdinal(paragraphs, paragraphIndex), box.x, baseline - size - priorLines * lineHeight, size, color(run?.fill) ?? "#000000", Number(node.paint.opacity ?? 1));
+  }
   for (const run of node.semantics.runs) {
     const text = node.semantics.content.slice(run.from, run.to);
     const font = selectFont(fonts, run);
@@ -271,12 +356,28 @@ function drawText(page, node, box, fonts) {
           throw error;
         }
         const fill = color(run.fill) ?? "#000000";
-        page.drawText(piece, { x: cursorX, y: baseline - size, size, font, color: pdfColor(fill), opacity: Number(node.paint.opacity ?? 1) * colorAlpha(fill) });
-        cursorX += font.widthOfTextAtSize(piece, size);
+        const textY = baseline - size; const advance = font.widthOfTextAtSize(piece, size);
+        if (run.language) page.pushOperators(PDFOperator.of("BDC", [PDFName.of("Span"), pdf.context.obj({ Lang: PDFString.of(run.language) })]));
+        page.drawText(piece, { x: cursorX, y: textY, size, font, color: pdfColor(fill), opacity: Number(node.paint.opacity ?? 1) * colorAlpha(fill) });
+        if (run.language) page.pushOperators(PDFOperator.of("EMC"));
+        if (run.underline) page.drawLine({ start: { x: cursorX, y: textY - size * .1 }, end: { x: cursorX + advance, y: textY - size * .1 }, thickness: Math.max(.5, size * .05), color: pdfColor(fill) });
+        if (run.strikethrough) page.drawLine({ start: { x: cursorX, y: textY + size * .3 }, end: { x: cursorX + advance, y: textY + size * .3 }, thickness: Math.max(.5, size * .05), color: pdfColor(fill) });
+        const link = safePdfLink(run.link); if (link) addLinkAnnotation(pdf, page, { x: cursorX, y: textY, width: advance, height: size }, link);
+        cursorX += advance;
       }
       if (index < pieces.length - 1) { cursorX = box.x; baseline -= Number(run.lineHeight ?? run.fontSize ?? 16) * box.textScale; }
     }
   }
+}
+
+function listOrdinal(paragraphs, paragraphIndex) {
+  let ordinal = 0;
+  for (let index = paragraphIndex - 1; index >= 0 && paragraphs[index].list; index -= 1) ordinal += 1;
+  return ordinal;
+}
+function drawListMarker(page, font, list, ordinal, textX, baseline, size, fill, opacity) {
+  const marker = ["number", "ordered"].includes(list.kind) ? `${Number(list.start ?? 1) + ordinal}.` : `${list.character ?? "•"}`;
+  const width = font.widthOfTextAtSize(marker, size); page.drawText(marker, { x: textX - width - size * .35, y: baseline, size, font, color: pdfColor(fill), opacity: opacity * colorAlpha(fill) });
 }
 
 async function embedFonts(pdf, sources) {

@@ -54,7 +54,9 @@ async function addNode(slide, node, output, widthIn, heightIn, options) {
   if (image) {
     const data = options.imageData?.(image.url);
     if (!data) throw new Error(`PPTX image bytes are required for ${node.id}.`);
-    slide.addImage({ ...common, data, transparency: Math.round((1 - Number(node.paint.opacity ?? 1)) * 100), sizing: { type: image.mode === "fit" ? "contain" : "crop", x, y, w, h } });
+    const imageMode = String(image.mode ?? "fill").toLowerCase();
+    slide.addImage({ ...common, data, transparency: Math.round((1 - Number(node.paint.opacity ?? 1)) * 100), ...(imageMode === "stretch" ? {} : { sizing: { type: imageMode === "fit" ? "contain" : "crop", x, y, w, h } }) });
+    if (node.paint.stroke) slide.addShape("rect", { ...common, objectName: `${node.id}:stroke`, fill: { color: "FFFFFF", transparency: 100 }, line: strokeOptions(node.paint.stroke) });
     return;
   }
   if (node.type === "text") {
@@ -132,13 +134,15 @@ function bulletOptions(list) {
 }
 
 function textRunOptions(run) {
-  return { fontFace: run.fontFamily, fontSize: run.fontSize ? run.fontSize * 0.75 : undefined, bold: Number(run.weight ?? run.fontWeight) >= 600, italic: run.italic ?? run.fontStyle === "italic", underline: run.underline ? { style: "sng" } : undefined, strike: Boolean(run.strikethrough), color: colorHex(run.fill), charSpacing: run.letterSpacing ? run.letterSpacing * 0.75 : undefined, hyperlink: run.link ? { url: safeHref(run.link) } : undefined, lang: run.language };
+  const link = safeLink(run.link);
+  return { fontFace: run.fontFamily, fontSize: run.fontSize ? run.fontSize * 0.75 : undefined, bold: Number(run.weight ?? run.fontWeight) >= 600, italic: run.italic ?? run.fontStyle === "italic", underline: run.underline ? { style: "sng" } : undefined, strike: Boolean(run.strikethrough), color: colorHex(run.fill), charSpacing: run.letterSpacing ? run.letterSpacing * 0.75 : undefined, hyperlink: link ? { url: link } : undefined, lang: run.language };
 }
-function safeHref(value) {
-  const href = String(value).trim();
+function safeLink(value) {
+  if (value == null) return null;
+  const href = typeof value === "string" ? value.trim() : "";
   const allowed = /^(?:https?:\/\/|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/iu.test(href) || (!/^[a-z][a-z0-9+.-]*:/iu.test(href) && !href.startsWith("//"));
-  if (!href || !allowed || /[\u0000-\u001f\u007f]/u.test(href)) throw Object.assign(new Error("Unsafe rich-text link URL."), { code: "CANVAS_WEB_UNSAFE_LINK" });
-  return href;
+  if (href && allowed && !/[\u0000-\u001f\u007f]/u.test(href)) return href;
+  const error = new Error("PPTX link URL is unsafe or unsupported."); error.code = "CANVAS_EXPORT_LINK_UNSAFE"; throw error;
 }
 function verticalAlign(value) { return value === "center" ? "mid" : value === "bottom" || value === "end" ? "bottom" : "top"; }
 function imageFill(fill) { return (Array.isArray(fill) ? fill : [fill]).find((item) => item?.type === "image"); }

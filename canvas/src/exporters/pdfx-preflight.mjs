@@ -17,14 +17,14 @@ import { CANVAS_SRGB_SOURCE_PROFILE, PDFX4_OUTPUT_CONDITION } from "./pdfx-profi
 // It is not a validator for arbitrary third-party PDFs.
 export const PDFX_UNCOVERED = Object.freeze([]);
 
-const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "J", "j", "d", "m", "l", "c", "re", "W", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "sh", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
+const ALLOWED_CONTENT_OPERATORS = new Set(["q", "Q", "cm", "w", "J", "j", "d", "m", "l", "c", "re", "W", "W*", "h", "n", "f", "f*", "S", "B", "B*", "rg", "RG", "g", "G", "k", "K", "gs", "sh", "Do", "BT", "ET", "Tf", "Tm", "Tj", "TJ", "BDC", "BMC", "EMC"]);
 
 // PDF Reference 1.6, chapters 4, 5 and 10: an allowed operator name is
 // insufficient evidence without the corresponding operand types and arity.
 function validContentOperands({ operator, operands }) {
   const numeric = (value) => value?.kind === "number" && Number.isFinite(value.value);
   const numbers = (count) => operands.length === count && operands.every(numeric);
-  if (["q", "Q", "W", "h", "n", "f", "f*", "S", "B", "B*", "BT", "ET", "EMC"].includes(operator)) return operands.length === 0;
+  if (["q", "Q", "W", "W*", "h", "n", "f", "f*", "S", "B", "B*", "BT", "ET", "EMC"].includes(operator)) return operands.length === 0;
   if (["cm", "c", "Tm"].includes(operator)) return numbers(6);
   if (["m", "l"].includes(operator)) return numbers(2);
   if (operator === "re") return numbers(4);

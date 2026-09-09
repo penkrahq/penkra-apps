@@ -1,5 +1,6 @@
 import { capabilityTableFor, extractionEmissionSupport } from "./capability-tables.mjs";
 import { isCascade, resolveCanvasDocument } from "./canvas-resolver.mjs";
+import { parseCssColor } from "./canvas-theme.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { computeDescendantVisualBounds, getAbsolutePositionFull } from "../vendor/open-pencil/engine.source.mjs";
 import { flattenMarks } from "./rich-text.mjs";
@@ -340,8 +341,18 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
       let entry = source.export === "image"
         ? { verdict: "raster", reason: "Author requested image export.", paths: ["properties.export"] }
         : valueSensitiveMobileCapability(source, format) ?? evaluateCapabilities(textLayout ? paths.filter((path) => !MEASURED_PDF_TEXT_PATHS.has(path)) : paths, capability.properties, verification, capability.defaultVerdict);
-      if (format === "pptx" && entry.verdict === "native" && imagePaint(source.fill) && !["rectangle", "frame"].includes(source.type)) {
+      if (format === "pptx" && entry.verdict === "native" && imagePaint(source.fill) && (!["rectangle", "frame"].includes(source.type) || Number(source.cornerRadius ?? 0) !== 0)) {
         entry = { verdict: "raster", reason: "PresentationML rectangular blipFill cannot preserve this node's authored image mask; the bounded node is rendered with its mask and stroke.", paths };
+      }
+      if (format === "pdf" && entry.verdict === "native" && hasGradientStopAlpha(source.fill)) {
+        entry = { verdict: "raster", reason: "PDF gradient-stop alpha requires a luminosity soft mask; the bounded gradient node is rasterized until that value-sensitive mask is emitted.", paths };
+      }
+      if (format === "pdf" && entry.verdict === "native" && hasTiledImagePaint(source.fill)) {
+        entry = { verdict: "raster", reason: "Tiled/repeated image paint requires an image-pattern matrix outside the closed Canvas PDF writer envelope; the bounded paint is rasterized.", paths };
+      }
+      const unsupportedPdfGradient = format === "pdf" ? pdfRasterGradient(source.fill) : null;
+      if (entry.verdict === "native" && unsupportedPdfGradient) {
+        entry = { verdict: "raster", reason: unsupportedPdfGradient === "angular" ? "PDF 1.6 has no native conic/angular shading primitive; the bounded paint is rasterized." : "Tensor mesh shading is outside the closed Canvas PDF writer envelope; the bounded mesh paint is rasterized.", paths };
       }
       result.push({
         id: node.id, type: source.type ?? node.type.toLowerCase(), parent: node.id === rootId ? null : parent, z,
@@ -484,6 +495,24 @@ function applyRasterScopes(nodes, rasters) {
 }
 
 function imagePaint(fill) { return (Array.isArray(fill) ? fill : [fill]).some((item) => item?.enabled !== false && item?.type === "image"); }
+function hasTiledImagePaint(fill) { return (Array.isArray(fill) ? fill : [fill]).some((item) => item?.enabled !== false && item?.type === "image" && ["tile", "repeat"].includes(String(item.mode ?? item.imageScaleMode ?? "").toLowerCase())); }
+function hasGradientStopAlpha(fill) {
+  return (Array.isArray(fill) ? fill : [fill]).some((paint) => paint?.enabled !== false && paint?.type === "gradient" && (paint.colors ?? []).some((stop) => {
+    const value = String(stop.color ?? "");
+    if (value.toLowerCase() === "transparent") return true;
+    if (/^#[0-9a-f]{4}$/iu.test(value)) return value.at(-1).toLowerCase() !== "f";
+    if (/^#[0-9a-f]{8}$/iu.test(value)) return value.slice(-2).toLowerCase() !== "ff";
+    const parsed = parseCssColor(value); return parsed ? parsed.a < 1 : false;
+  }));
+}
+function pdfRasterGradient(fill) {
+  for (const paint of (Array.isArray(fill) ? fill : [fill])) {
+    if (paint?.enabled === false) continue;
+    if (paint?.type === "mesh_gradient") return "mesh";
+    if (paint?.type === "gradient" && ["angular", "mesh"].includes(paint.gradientType)) return paint.gradientType;
+  }
+  return null;
+}
 
 function capabilityPaths(node, projection) {
   const paths = new Set([`nodes.${node.type}`]);
