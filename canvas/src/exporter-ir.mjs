@@ -307,6 +307,9 @@ function collectOutputNodes(graph, sources, authored, root, capability, rootId, 
       const world = getAbsolutePositionFull(node, graph);
       const absolute = { x: world.centerX - node.width / 2, y: world.centerY - node.height / 2 };
       const paths = capabilityPaths(source, projection);
+      if (projection === "semantic" && source.linkName !== undefined && !(source.marks ?? []).some((mark) => mark.type === "link" && mark.from < mark.to)) {
+        throw exportError("CANVAS_LINK_NAME_WITHOUT_LINK", `Text node ${source.id} declares linkName without a linked text range.`);
+      }
       const textLayout = source.type === "text" ? textLayouts?.get(node.id) : null;
       const icon = source.type === "icon" ? pencilIconVectorDefinition(source.library, source.icon, source.weight) : null;
       let entry = source.export === "image"

@@ -50,7 +50,7 @@ const document = {
       id: "layout-matrix", type: "frame", width: 300, height: 140, layout: "horizontal", justifyContent: "center", alignItems: "end",
       minWidth: 240, maxWidth: 360, minHeight: 100, maxHeight: 180,
       children: [
-        { id: "flow-child", type: "rectangle", width: 30, height: 20, fill: "#123456" },
+        { id: "flow-child", type: "rectangle", width: 30, height: 20, fill: [{ value: "#ff0000" }, { value: "#0000ff", when: { appearance: "dark" } }, { value: "#00ff00", when: { appearance: "dark", viewport: "wide" } }] },
         { id: "absolute-child", type: "rectangle", x: 17, y: 19, width: 20, height: 20, layoutPosition: "absolute", fill: "#654321" },
       ],
     },
@@ -62,8 +62,16 @@ const document = {
     { id: "clipped", type: "frame", width: 50, height: 40, clip: true, children: [{ id: "clipped-child", type: "rectangle", width: 100, height: 80, fill: "#00ff00" }] },
     { id: "flipped", type: "rectangle", width: 40, height: 30, flipX: true, flipY: true, rotation: 15, fill: "#abcabc" },
     { id: "icon", type: "icon", library: "lucide", icon: "camera", weight: 400, width: 24, height: 24, fill: "#334455", description: "Camera symbol" },
+    { id: "gradient-icon", type: "icon", library: "lucide", icon: "camera", weight: 400, width: 24, height: 24, fill: { type: "gradient", gradientType: "linear", colors: [{ color: "#f00", position: 0 }, { color: "#00f", position: 1 }] } },
     { id: "line", type: "line", width: 80, height: 30, stroke: { fill: "#112233", thickness: 4, cap: "round", join: "bevel", dash: [5, 3] }, description: "Trend line" },
+    { id: "horizontal-line", type: "line", width: 80, height: 0, stroke: { fill: "#112233", thickness: 4 } },
+    { id: "vertical-line", type: "line", width: 0, height: 40, stroke: { fill: "#112233", thickness: 4 } },
+    { id: "gradient-path", type: "path", width: 60, height: 60, geometry: "M0 0 H60 V60 H0 Z", viewBox: [0, 0, 60, 60], fill: { type: "gradient", gradientType: "linear", colors: [{ color: "#f00", position: 0 }, { color: "#00f", position: 1 }] } },
+    { id: "image-path", type: "path", width: 60, height: 60, geometry: "M0 0 H60 V60 H0 Z", viewBox: [0, 0, 60, 60], fill: { type: "image", url: "image.svg", mode: "fit" } },
+    { id: "opacity-paint", type: "rectangle", width: 50, height: 40, fill: { type: "color", color: "#ff0000", opacity: .25 } },
+    { id: "landmark", type: "frame", landmark: "nav", description: "Secondary navigation", width: 100, height: 40, children: [] },
     { id: "rich", type: "text", width: 220, height: 90, content: "AlphaBeta", textAlign: "end", textAlignVertical: "bottom", lineHeight: 1.5, wordSpacing: 6, textGrowth: "fixed-width", linkName: "Details destination", marks: [{ type: "link", from: 0, to: 5, value: "#details" }], paragraphs: [{ from: 0, to: 5, list: { kind: "bullet", level: 0 }, align: "center" }, { from: 5, to: 9, list: { kind: "number", level: 1 } }] },
+    { id: "single-paragraph", type: "text", width: 160, height: 40, content: "Styled", marks: [{ type: "fill", from: 0, to: 6, value: { type: "color", color: "#123456", opacity: .5 } }], paragraphs: [{ from: 0, to: 6, align: "center" }] },
     { id: "node-heading", type: "text", width: 160, height: 40, content: "Node heading", headingLevel: 2 },
     ...[
       ["scroll-x", "scroll-x"],
@@ -119,6 +127,7 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
   await page.send("Runtime.enable");
   await page.send("Page.reload");
   await page.once("Page.loadEventFired");
+  await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
 
   for (const width of [360, 900, 1280]) {
     await page.send("Emulation.setDeviceMetricsOverride", { width, height: 720, deviceScaleFactor: 1, mobile: false });
@@ -134,9 +143,17 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     assert.equal(heading?.properties?.find((property) => property.name === "level")?.value?.value, 1);
   }
 
+  assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('flow-child')).backgroundColor"), "rgb(255, 0, 0)");
+
   await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "dark" }] });
   await settle(page);
   assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('route')).backgroundColor"), "rgb(17, 17, 17)");
+  assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('flow-child')).backgroundColor"), "rgb(0, 255, 0)");
+  await page.send("Emulation.setDeviceMetricsOverride", { width: 360, height: 720, deviceScaleFactor: 1, mobile: false });
+  await settle(page);
+  assert.equal(await evaluate(page, "getComputedStyle(document.getElementById('flow-child')).backgroundColor"), "rgb(0, 0, 255)");
+  await page.send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 720, deviceScaleFactor: 1, mobile: false });
+  await settle(page);
 
   const { root } = await page.send("DOM.getDocument");
   const { nodeId } = await page.send("DOM.querySelector", { nodeId: root.nodeId, selector: "#route" });
@@ -170,8 +187,12 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
       clip: [read("clipped").overflowX, read("clipped").overflowY],
       flip: read("flipped").transform,
       text: [read("rich").textAlign, read("rich").justifyContent, read("rich").lineHeight, read("rich").wordSpacing, read("rich").height],
-      vectors: [document.querySelector("#icon path") !== null, document.querySelector("#line line").getAttribute("stroke-linecap"), document.querySelector("#line line").getAttribute("stroke-dasharray")],
-      lists: [document.querySelectorAll("#rich ul li").length, document.querySelectorAll("#rich ol li").length],
+      vectors: [document.querySelector("#icon path") !== null, document.querySelector("#line line").getAttribute("stroke-linecap"), document.querySelector("#line line").getAttribute("stroke-dasharray"), document.querySelector("#gradient-path path").getAttribute("fill").startsWith("url("), document.querySelector("#image-path pattern image").getAttribute("href"), document.querySelector("#gradient-icon path").getAttribute("stroke").startsWith("url(")],
+      zeroLines: [read("horizontal-line").height, read("vertical-line").width],
+      opacity: [read("opacity-paint").backgroundColor, getComputedStyle(document.querySelector("#single-paragraph span")).color],
+      paragraph: read("single-paragraph").textAlign,
+      landmark: [document.querySelector("nav#landmark") !== null, document.querySelector("nav#landmark").getAttribute("aria-label")],
+      lists: [document.querySelectorAll("#rich ul li").length, document.querySelectorAll("#rich ol li").length, getComputedStyle(document.querySelector("#rich ol li")).paddingInlineStart],
     };
   })()`), {
     layout: ["center", "flex-end", "240px", "360px", "100px", "180px"],
@@ -179,10 +200,12 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     gradients: [true, true, true], image: ["contain", true],
     effects: ["rgba(0, 0, 0, 0.5) 3px 4px 5px 6px", "blur(2px)", "blur(7px)", "multiply"],
     clip: ["hidden", "hidden"], flip: "matrix(-0.965926, -0.258819, 0.258819, -0.965926, 0, 0)",
-    text: ["end", "flex-end", "24px", "6px", "112px"], vectors: [true, "round", "5 3"], lists: [1, 1],
+    text: ["end", "flex-end", "24px", "6px", "112px"], vectors: [true, "round", "5 3", true, "image.svg", true], zeroLines: ["1px", "1px"],
+    opacity: ["color(srgb 1 0 0 / 0.25)", "color(srgb 0.0705882 0.203922 0.337255 / 0.5)"], paragraph: "center", landmark: [true, "Secondary navigation"], lists: [1, 1, "24px"],
   });
   const completeTree = await page.send("Accessibility.getFullAXTree");
   assert.equal(completeTree.nodes.find((node) => node.role?.value === "link")?.name?.value, "Details destination");
+  assert.ok(completeTree.nodes.some((node) => node.role?.value === "navigation" && node.name?.value === "Secondary navigation"));
   assert.ok(completeTree.nodes.some((node) => node.role?.value === "heading" && node.name?.value === "Node heading" && node.properties?.some((property) => property.name === "level" && property.value?.value === 2)));
 });
 

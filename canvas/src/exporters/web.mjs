@@ -3,7 +3,7 @@ import { pencilIconVectorDefinition } from "../pencil-icon-provider.mjs";
 export function exportWeb(ir, options = {}) {
   const names = ir.outputs.map((output) => `${slug(output.name)}.html`);
   if (new Set(names).size !== names.length) throw Object.assign(new Error("Route names collide in the generated HTML bundle."), { code: "CANVAS_EXPORT_NAME_COLLISION" });
-  const files = new Map([["styles.css", baseCss(ir)]]);
+  const files = new Map([["styles.css", baseCss(ir, options)]]);
   ir.outputs.forEach((output) => files.set(`${slug(output.name)}.html`, `<!doctype html>\n<html lang="${esc(ir.lang ?? "en")}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="styles.css"></head><body>${tree(output, options)}</body></html>\n`));
   return files;
 }
@@ -27,17 +27,18 @@ function html(node, children, parent, options) {
   if (node.type === "line") return line(node, parent, options);
   if (node.vector) return vector(node, parent, options);
   const text = node.type === "text" ? textContent(node) : null;
-  const tag = text?.tag ?? "div";
-  const content = text?.content ?? ordered(node, children).map((child) => html(child, children, node, options)).join("");
-  return `<${tag} id="${esc(node.id)}" class="${classes(node)}" style="${esc(style(node, parent, options))}"${semantics(node)}>${content}</${tag}>`;
+  const landmark = landmarkTag(node.semantics.landmark);
+  const tag = landmark ?? text?.tag ?? "div";
+  const content = landmark && text ? `<${text.tag}${text.css ? ` style="${esc(text.css)}"` : ""}>${text.content}</${text.tag}>` : text?.content ?? ordered(node, children).map((child) => html(child, children, node, options)).join("");
+  return `<${tag} id="${esc(node.id)}" class="${classes(node)}" style="${esc([style(node, parent, options), landmark ? null : text?.css].filter(Boolean).join(";"))}"${semantics(node)}>${content}</${tag}>`;
 }
 
 function icon(node, parent, options) {
   const def = pencilIconVectorDefinition(node.icon?.library, node.icon?.name, node.icon?.weight);
   if (!def?.geometry) throw new Error(`Web vector icon definition is unavailable for ${node.icon?.library ?? "unknown"}/${node.icon?.name ?? "unknown"}.`);
-  const color = solid(node.paint.fill) ?? "currentColor";
-  const paths = (def.layers ?? [{ geometry: def.geometry, opacity: 1 }]).map((layer) => `<path d="${esc(layer.geometry)}" ${def.paint === "stroke" ? `fill="none" stroke="${esc(color)}" stroke-width="${def.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"` : `fill="${esc(color)}"`} opacity="${layer.opacity ?? 1}"/>`).join("");
-  return `<svg id="${esc(node.id)}" class="node icon" viewBox="${def.viewBox.join(" ")}" preserveAspectRatio="xMidYMid meet" style="${esc(style(node, parent, options))}"${semantics(node, true)}>${paths}</svg>`;
+  const paints = svgPaints(node.paint.fill, node, options);
+  const paths = (def.layers ?? [{ geometry: def.geometry, opacity: 1 }]).flatMap((layer) => paints.layers.map((paint) => `<path d="${esc(layer.geometry)}" ${def.paint === "stroke" ? `fill="none" stroke="${paint.value}" stroke-width="${def.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"` : `fill="${paint.value}"`} opacity="${Number(layer.opacity ?? 1) * paint.opacity}"/>`)).join("");
+  return `<svg id="${esc(node.id)}" class="node icon" viewBox="${def.viewBox.join(" ")}" preserveAspectRatio="xMidYMid meet" style="${esc(style(node, parent, options))}"${semantics(node, true)}><defs>${paints.defs}</defs>${paths}</svg>`;
 }
 
 function line(node, parent, options) {
@@ -47,7 +48,9 @@ function line(node, parent, options) {
 
 function vector(node, parent, options) {
   const stroke = node.paint.stroke ?? {};
-  return `<svg id="${esc(node.id)}" class="node ${esc(node.type)}" viewBox="${node.vector.viewBox.join(" ")}" preserveAspectRatio="none" style="${esc(style(node, parent, options))}"${semantics(node, true)}><path d="${esc(node.vector.d)}" fill="${esc(solid(node.paint.fill) ?? "none")}" fill-rule="${node.vector.fillRule}" stroke="${esc(solid(stroke.fill ?? stroke.color) ?? "none")}" ${strokeAttrs(stroke)} vector-effect="non-scaling-stroke"/></svg>`;
+  const paints = svgPaints(node.paint.fill, node, options);
+  const paths = paints.layers.map((paint) => `<path d="${esc(node.vector.d)}" fill="${paint.value}" fill-opacity="${paint.opacity}" fill-rule="${node.vector.fillRule}" stroke="none"/>`).join("");
+  return `<svg id="${esc(node.id)}" class="node ${esc(node.type)}" viewBox="${node.vector.viewBox.join(" ")}" preserveAspectRatio="none" style="${esc(style(node, parent, options))}"${semantics(node, true)}><defs>${paints.defs}</defs>${paths}<path d="${esc(node.vector.d)}" fill="none" stroke="${esc(solid(stroke.fill ?? stroke.color) ?? "none")}" ${strokeAttrs(stroke)} vector-effect="non-scaling-stroke"/></svg>`;
 }
 
 function strokeAttrs(stroke) {
@@ -67,14 +70,14 @@ function textContent(node) {
   };
   if (paragraphs.length === 1 && !paragraphs[0].list) {
     const item = paragraphs[0]; const level = Number(item.headingLevel); const tag = level >= 1 && level <= 6 ? `h${level}` : "p";
-    return { tag, content: body(item) };
+    return { tag, content: body(item), css: paragraphCss(item) };
   }
   let content = "";
   for (let index = 0; index < paragraphs.length;) {
     if (!paragraphs[index].list) { content += paragraph(paragraphs[index++]); continue; }
     const orderedList = ["number", "ordered"].includes(paragraphs[index].list.kind); const tag = orderedList ? "ol" : "ul"; const items = [];
     while (index < paragraphs.length && paragraphs[index].list && ["number", "ordered"].includes(paragraphs[index].list.kind) === orderedList) {
-      const item = paragraphs[index++]; items.push(`<li data-level="${Number(item.list.level ?? 0)}"${paragraphCss(item) ? ` style="${esc(paragraphCss(item))}"` : ""}>${body(item)}</li>`);
+      const item = paragraphs[index++]; const level = Number(item.list.level ?? 0); const css = [paragraphCss(item), `padding-inline-start:${level * 24}px`].filter(Boolean).join(";"); items.push(`<li data-level="${level}" style="${esc(css)}">${body(item)}</li>`);
     }
     content += `<${tag}>${items.join("")}</${tag}>`;
   }
@@ -97,7 +100,7 @@ function style(node, parent, options) {
   else if (node.layout.layoutPosition === "relative") out.push("position:relative");
   if (flowing && ["grid", "horizontal", "vertical"].includes(node.layout.layout) && node.layout.layoutPosition !== "relative") out.push("position:relative");
   if (node.layout.overflow && node.layout.overflow !== "visible" && flowing) out.push("position:relative");
-  out.push(`width:${node.geometry.w}px`, `height:${node.geometry.h}px`);
+  out.push(`width:${node.type === "line" ? Math.max(1, Number(node.geometry.w)) : node.geometry.w}px`, `height:${node.type === "line" ? Math.max(1, Number(node.geometry.h)) : node.geometry.h}px`);
   for (const [key, css] of [["minWidth", "min-width"], ["maxWidth", "max-width"], ["minHeight", "min-height"], ["maxHeight", "max-height"]]) if (node.layout[key] != null) out.push(`${css}:${dimension(node.layout[key])}`);
   const bg = background(node.paint.fill, node, options);
   if (bg.image && !node.vector && node.type !== "icon") out.push(`background-image:${bg.image}`, ...bg.extra);
@@ -141,39 +144,110 @@ function style(node, parent, options) {
 function background(fill, node, options) {
   const paints = (Array.isArray(fill) ? fill : [fill]).filter((item) => item && item.enabled !== false);
   if (!paints.length) return {};
-  if (paints.length === 1 && (typeof paints[0] === "string" || ["color", "solid"].includes(paints[0].type))) return { color: solid(paints[0]) };
+  if (paints.length === 1 && (typeof paints[0] === "string" || ["color", "solid"].includes(paints[0].type))) return { color: paintColor(paints[0]) };
   const images = [], sizes = [], positions = [], repeats = [];
   for (const paint of paints.toReversed()) {
-    if (typeof paint === "string" || ["color", "solid"].includes(paint.type)) { const color = solid(paint); images.push(`linear-gradient(${color},${color})`); sizes.push("100% 100%"); positions.push("0 0"); repeats.push("no-repeat"); }
-    else if (paint.type === "image") { images.push(`url("${cssString(options.assetHref?.(paint.url) ?? paint.url)}")`); sizes.push(paint.mode === "fit" ? "contain" : paint.mode === "stretch" ? "100% 100%" : paint.mode === "tile" ? "auto" : "cover"); positions.push("center"); repeats.push(paint.mode === "tile" ? "repeat" : "no-repeat"); }
+    if (typeof paint === "string" || ["color", "solid"].includes(paint.type)) { const color = paintColor(paint); images.push(`linear-gradient(${color},${color})`); sizes.push("100% 100%"); positions.push("0 0"); repeats.push("no-repeat"); }
+    else if (paint.type === "image") { const url = `url("${cssString(options.assetHref?.(paint.url) ?? paint.url)}")`; images.push(Number(paint.opacity ?? 1) === 1 ? url : `-webkit-cross-fade(${url},transparent,${Number(paint.opacity)})`); sizes.push(paint.mode === "fit" ? "contain" : paint.mode === "stretch" ? "100% 100%" : paint.mode === "tile" ? "auto" : "cover"); positions.push("center"); repeats.push(paint.mode === "tile" ? "repeat" : "no-repeat"); }
     else if (paint.type === "gradient") { images.push(gradient(paint, node)); sizes.push("100% 100%"); positions.push("0 0"); repeats.push("no-repeat"); }
   }
   return { image: images.join(","), extra: [`background-size:${sizes.join(",")}`, `background-position:${positions.join(",")}`, `background-repeat:${repeats.join(",")}`] };
 }
 
 function gradient(fill, node) {
-  const stops = (fill.colors ?? []).filter((item) => item?.enabled !== false).map((item) => `${item.color ?? item.value} ${Number(item.position) * 100}%`).join(",");
+  const stops = (fill.colors ?? []).filter((item) => item?.enabled !== false).map((item) => `${Number(fill.opacity ?? 1) === 1 ? item.color ?? item.value : `color-mix(in srgb,${item.color ?? item.value} ${Number(fill.opacity) * 100}%,transparent)`} ${Number(item.position) * 100}%`).join(",");
   const kind = fill.gradientType ?? "linear"; const cx = Number(fill.center?.x ?? .5); const cy = Number(fill.center?.y ?? .5); const sx = Number(fill.size?.width ?? 1); const sy = Number(fill.size?.height ?? 1); const rotation = Number(fill.rotation ?? 0);
   if (["angular", "conic"].includes(kind)) return `conic-gradient(from ${rotation}deg at ${cx * 100}% ${cy * 100}%,${stops})`;
   const radians = rotation * Math.PI / 180;
   const definition = kind === "linear"
     ? `<linearGradient id="g" x1="${cx - Math.cos(radians) * sx / 2}" y1="${cy - Math.sin(radians) * sy / 2}" x2="${cx + Math.cos(radians) * sx / 2}" y2="${cy + Math.sin(radians) * sy / 2}">${svgStops(fill)}</linearGradient>`
     : `<radialGradient id="g" cx="${cx}" cy="${cy}" r=".5" gradientTransform="rotate(${rotation} ${cx} ${cy}) translate(${cx} ${cy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})">${svgStops(fill)}</radialGradient>`;
-  const shape = node.type === "ellipse" ? `<ellipse cx=".5" cy=".5" rx=".5" ry=".5" fill="url(#g)"/>` : `<rect width="1" height="1" fill="url(#g)"/>`;
+  const opacity = Number(fill.opacity ?? 1);
+  const shape = node.type === "ellipse" ? `<ellipse cx=".5" cy=".5" rx=".5" ry=".5" fill="url(#g)" opacity="${opacity}"/>` : `<rect width="1" height="1" fill="url(#g)" opacity="${opacity}"/>`;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" preserveAspectRatio="none"><defs>${definition}</defs>${shape}</svg>`;
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
 function svgStops(fill) { return (fill.colors ?? []).filter((item) => item?.enabled !== false).map((item) => `<stop offset="${Number(item.position) * 100}%" stop-color="${item.color ?? item.value}"/>`).join(""); }
+function svgPaints(fill, node, options) {
+  const active = (Array.isArray(fill) ? fill : [fill]).filter((item) => item && item.enabled !== false).toReversed();
+  const defs = []; const layers = [];
+  active.forEach((paint, index) => {
+    const opacity = typeof paint === "object" ? Number(paint.opacity ?? 1) : 1;
+    if (typeof paint === "string" || ["color", "solid"].includes(paint.type)) { layers.push({ value: esc(solid(paint)), opacity }); return; }
+    const id = `paint-${String(node.id).replace(/[^A-Za-z0-9_-]/gu, "-")}-${index}`;
+    if (paint.type === "image") {
+      const href = options.assetHref?.(paint.url) ?? paint.url;
+      const preserve = paint.mode === "stretch" ? "none" : paint.mode === "fit" ? "xMidYMid meet" : "xMidYMid slice";
+      defs.push(`<pattern id="${id}" width="1" height="1" patternContentUnits="objectBoundingBox"><image href="${esc(href)}" width="1" height="1" preserveAspectRatio="${preserve}"/></pattern>`);
+      layers.push({ value: `url(#${id})`, opacity }); return;
+    }
+    if (paint.type === "gradient") {
+      const cx = Number(paint.center?.x ?? .5); const cy = Number(paint.center?.y ?? .5); const sx = Number(paint.size?.width ?? 1); const sy = Number(paint.size?.height ?? 1); const rotation = Number(paint.rotation ?? 0); const radians = rotation * Math.PI / 180;
+      if (["angular", "conic"].includes(paint.gradientType)) {
+        // Conic gradients have no SVG paint server; embed the browser-native CSS
+        // rendering in a foreignObject paint tile.
+        const css = `conic-gradient(from ${rotation}deg at ${cx * 100}% ${cy * 100}%,${(paint.colors ?? []).map((item) => `${item.color} ${Number(item.position) * 100}%`).join(",")})`;
+        defs.push(`<pattern id="${id}" width="1" height="1" patternContentUnits="objectBoundingBox"><foreignObject width="1" height="1"><div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;background:${css}"/></foreignObject></pattern>`);
+      } else if ((paint.gradientType ?? "linear") === "linear") defs.push(`<linearGradient id="${id}" x1="${cx - Math.cos(radians) * sx / 2}" y1="${cy - Math.sin(radians) * sy / 2}" x2="${cx + Math.cos(radians) * sx / 2}" y2="${cy + Math.sin(radians) * sy / 2}">${svgStops(paint)}</linearGradient>`);
+      else defs.push(`<radialGradient id="${id}" cx="${cx}" cy="${cy}" r=".5" gradientTransform="rotate(${rotation} ${cx} ${cy}) translate(${cx} ${cy}) scale(${sx} ${sy}) translate(${-cx} ${-cy})">${svgStops(paint)}</radialGradient>`);
+      layers.push({ value: `url(#${id})`, opacity });
+    }
+  });
+  return { defs: defs.join(""), layers: layers.length ? layers : [{ value: "none", opacity: 1 }] };
+}
+function paintColor(paint) { const color = solid(paint); const opacity = typeof paint === "object" ? Number(paint.opacity ?? 1) : 1; return opacity === 1 ? color : `color-mix(in srgb,${color} ${opacity * 100}%,transparent)`; }
 function boxStroke(stroke) { const width = Number(stroke.width ?? stroke.thickness ?? 1); const color = solid(stroke.fill ?? stroke.color) ?? "#000"; const kind = (stroke.dash ?? stroke.dashPattern)?.length ? "dashed" : "solid"; if (stroke.align === "outside") return [`outline:${width}px ${kind} ${color}`]; if (stroke.align === "center") return [`border:${width / 2}px ${kind} ${color}`, `outline:${width / 2}px ${kind} ${color}`]; return [`border:${width}px ${kind} ${color}`]; }
 function shadow(effect) { return `${effect.shadowType === "inner" ? "inset " : ""}${Number(effect.offset?.x ?? effect.x ?? 0)}px ${Number(effect.offset?.y ?? effect.y ?? 0)}px ${Number(effect.blur ?? effect.radius ?? 0)}px ${Number(effect.spread ?? 0)}px ${effect.color ?? "#00000080"}`; }
-function baseCss(ir) { const modes = Object.entries(ir.axes ?? {}).flatMap(([axis, definition]) => (definition.modes ?? []).flatMap((mode) => { const declarations = variants(ir, axis, mode.name, mode.selector); if (!declarations) return []; const media = mode.media ?? (mode.minWidth !== undefined ? `(min-width: ${mode.minWidth}px)` : null); return media ? [`@media ${normalizeMedia(media)}{${declarations}}`] : mode.selector ? [declarations] : []; })).join("\n"); return `*{box-sizing:border-box}body{margin:0}.canvas-output{position:relative;overflow:hidden}.node{min-width:0;margin:0}.canvas-grid{display:grid}.canvas-flex{display:flex}\n${modes}\n`; }
-function variants(ir, axis, mode, selector = "") { return ir.outputs.flatMap((output) => [output.root, ...output.nodes].filter(Boolean).flatMap((node) => Object.entries(node.variants ?? {}).flatMap(([property, cascade]) => { const entry = cascade.findLast((item) => item.when?.[axis] === mode); const css = entry ? variantCss(property, entry.value) : null; return css ? [`#${cssEscape(node.id)}${selector ?? ""}{${css}}`] : []; }))).join(""); }
-function variantCss(property, value) { const names = { fill: "background", gap: "gap", rowGap: "row-gap", columnGap: "column-gap", width: "width", height: "height", opacity: "opacity", justifyContent: "justify-content", alignItems: "align-items", minWidth: "min-width", maxWidth: "max-width", minHeight: "min-height", maxHeight: "max-height", textAlign: "text-align" }; const name = names[property]; if (!name) return null; return `${name}:${typeof value === "number" && property !== "opacity" ? `${value}px` : value}!important`; }
-function runHtml(run, text, label) { const tag = run.link ? "a" : "span"; return `<${tag}${run.link ? ` href="${esc(run.link)}"${label ? ` aria-label="${esc(label)}"` : ""}` : ""}${run.language ? ` lang="${esc(run.language)}"` : ""} style="${esc(runCss(run))}">${esc(text)}</${tag}>`; }
-function runCss(run) { const decoration = [run.underline && "underline", run.strikethrough && "line-through"].filter(Boolean).join(" "); return [`font-family:${run.fontFamily ?? "inherit"}`, `font-size:${run.fontSize ?? 16}px`, run.weight ?? run.fontWeight ? `font-weight:${run.weight ?? run.fontWeight}` : "", run.italic || run.fontStyle === "italic" ? "font-style:italic" : "", decoration ? `text-decoration:${decoration}` : "", run.fill ? `color:${run.fill}` : "", run.letterSpacing != null ? `letter-spacing:${Number(run.letterSpacing)}px` : "", run.wordSpacing != null ? `word-spacing:${Number(run.wordSpacing)}px` : "", run.lineHeight != null ? `line-height:${length(run.lineHeight)}` : ""].filter(Boolean).join(";"); }
+function baseCss(ir, options) { const modes = allVariants(ir, options); return `*{box-sizing:border-box}body{margin:0}.canvas-output{position:relative;overflow:hidden}.node{min-width:0;margin:0}.canvas-grid{display:grid}.canvas-flex{display:flex}\n${modes}\n`; }
+function allVariants(ir, options) {
+  const nodes = ir.outputs.flatMap((output) => [output.root, ...output.nodes].filter(Boolean));
+  const single = Object.entries(ir.axes ?? {}).flatMap(([axis, definition]) => (definition.modes ?? []).flatMap((mode) => {
+    const declarations = nodes.flatMap((node) => Object.entries(node.variants ?? {}).flatMap(([property, cascade]) => {
+      const entry = cascade.findLast((item) => Object.keys(item.when ?? {}).length === 1 && item.when?.[axis] === mode.name);
+      return entry ? [`#${cssEscape(node.id)}${mode.selector ?? ""}{${variantCss(property, entry.value, node, options)}}`] : [];
+    })).join("");
+    if (!declarations) return [];
+    const media = mode.media ?? (mode.minWidth !== undefined ? `(min-width: ${mode.minWidth}px)` : null);
+    return [media ? `@media ${normalizeMedia(media)}{${declarations}}` : declarations];
+  }));
+  const conjunctive = nodes.flatMap((node) => Object.entries(node.variants ?? {}).flatMap(([property, cascade]) => cascade.flatMap((entry) => {
+    if (!entry?.when || Object.keys(entry.when).length === 0) return [];
+    if (Object.keys(entry.when).length === 1) return [];
+    const predicates = Object.entries(entry.when).map(([axis, modeName]) => {
+      const mode = ir.axes?.[axis]?.modes?.find((candidate) => candidate.name === modeName);
+      if (!mode) throw new Error(`Unknown variant predicate ${axis}:${modeName}.`);
+      return { media: mode.media ?? (mode.minWidth !== undefined ? `(min-width: ${mode.minWidth}px)` : null), selector: mode.selector ?? "" };
+    });
+    const declarations = variantCss(property, entry.value, node, options);
+    const selector = `#${cssEscape(node.id)}${predicates.map((item) => item.selector).join("")}`;
+    const rule = `${selector}{${declarations}}`;
+    const media = predicates.map((item) => item.media).filter(Boolean).map(normalizeMedia);
+    return [media.length ? `@media ${media.join(" and ")}{${rule}}` : rule];
+  })));
+  return [...single, ...conjunctive].join("\n");
+}
+function variantCss(property, value, node, options) {
+  const lengths = { gap: "gap", rowGap: "row-gap", columnGap: "column-gap", width: "width", height: "height", minWidth: "min-width", maxWidth: "max-width", minHeight: "min-height", maxHeight: "max-height", fontSize: "font-size", letterSpacing: "letter-spacing", wordSpacing: "word-spacing" };
+  if (lengths[property]) return `${lengths[property]}:${dimension(value)}!important`;
+  if (property === "fill") { const paint = background(value, node, options); return paint.image ? `background-image:${paint.image}!important;${paint.extra.join(";")}` : `background:${paint.color}!important`; }
+  const direct = { opacity: "opacity", justifyContent: "justify-content", alignItems: "align-items", textAlign: "text-align", fontFamily: "font-family", fontWeight: "font-weight", overflow: "overflow" };
+  if (direct[property]) return `${direct[property]}:${["justifyContent", "alignItems"].includes(property) ? alignment(value) : value}!important`;
+  if (property === "padding") return `padding:${padding(value)}!important`;
+  if (property === "cornerRadius") return `border-radius:${padding(value)}!important`;
+  if (property === "lineHeight") return `line-height:${length(value)}!important`;
+  if (property === "fontStyle") return `font-style:${value}!important`;
+  if (property === "rotation") return `transform:rotate(${Number(value)}deg)!important`;
+  if (property === "flipX" || property === "flipY") return `transform:${property === "flipX" ? "scaleX" : "scaleY"}(${value ? -1 : 1})!important`;
+  if (property === "wrap") return `flex-wrap:${value ? "wrap" : "nowrap"}!important`;
+  if (property === "layout") return `display:${value === "grid" ? "grid" : ["horizontal", "vertical"].includes(value) ? "flex" : "block"}!important${["horizontal", "vertical"].includes(value) ? `;flex-direction:${value === "horizontal" ? "row" : "column"}!important` : ""}`;
+  throw Object.assign(new Error(`Web runtime variants do not support ${property}.`), { code: "CANVAS_WEB_VARIANT_UNSUPPORTED" });
+}
+function runHtml(run, text, label) { const tag = run.link ? "a" : "span"; return `<${tag}${run.link ? ` href="${esc(safeHref(run.link))}"${label ? ` aria-label="${esc(label)}"` : ""}` : ""}${run.language ? ` lang="${esc(run.language)}"` : ""} style="${esc(runCss(run))}">${esc(text)}</${tag}>`; }
+function runCss(run) { const decoration = [run.underline && "underline", run.strikethrough && "line-through"].filter(Boolean).join(" "); return [`font-family:${run.fontFamily ?? "inherit"}`, `font-size:${run.fontSize ?? 16}px`, run.weight ?? run.fontWeight ? `font-weight:${run.weight ?? run.fontWeight}` : "", run.italic || run.fontStyle === "italic" ? "font-style:italic" : "", decoration ? `text-decoration:${decoration}` : "", run.fill ? `color:${paintColor(run.fill)}` : "", run.letterSpacing != null ? `letter-spacing:${Number(run.letterSpacing)}px` : "", run.wordSpacing != null ? `word-spacing:${Number(run.wordSpacing)}px` : "", run.lineHeight != null ? `line-height:${length(run.lineHeight)}` : ""].filter(Boolean).join(";"); }
 function classes(node, extra = "") { return [extra, "node", node.type, node.layout.layout === "grid" ? "canvas-grid" : ["horizontal", "vertical"].includes(node.layout.layout) ? "canvas-flex" : ""].filter(Boolean).join(" "); }
 function semantics(node, image = false) { if (node.semantics.decorative) return ` aria-hidden="true"`; return `${node.semantics.description ? ` aria-label="${esc(node.semantics.description)}"` : ""}${image && node.semantics.description ? ` role="img"` : ""}`; }
+function landmarkTag(value) { return ({ nav: "nav", main: "main", header: "header", footer: "footer", aside: "aside", region: "section" })[value] ?? null; }
 function alignment(value) { return ({ start: "flex-start", end: "flex-end", spaceBetween: "space-between" })[value] ?? value; }
 function blend(value) { return String(value).replace(/[A-Z]/gu, (char) => `-${char.toLowerCase()}`).replace("linear-burn", "plus-darker").replace("linear-dodge", "plus-lighter"); }
 function dashArray(value) { return !Array.isArray(value) || !value.length ? [] : value.length % 2 ? [...value, ...value] : value; }
@@ -189,3 +263,4 @@ function esc(value) { return String(value).replace(/[&<>"']/gu, (char) => ({ "&"
 function cssString(value) { return String(value).replace(/["\\\n\r\f]/gu, (char) => `\\${char.codePointAt(0).toString(16)} `); }
 function cssEscape(value) { return String(value).replace(/[^A-Za-z0-9_-]/gu, (char) => `\\${char.codePointAt(0).toString(16)} `); }
 function normalizeMedia(value) { const text = String(value).trim(); return text.startsWith("(") ? text : `(${text})`; }
+function safeHref(value) { const href = String(value).trim(); if (/^(?:javascript|vbscript|data):/iu.test(href) || /[\u0000-\u001f\u007f]/u.test(href)) throw Object.assign(new Error("Unsafe rich-text link URL."), { code: "CANVAS_WEB_UNSAFE_LINK" }); return href; }

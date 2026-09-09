@@ -226,6 +226,23 @@ test("web stroke alignment rasterizes only its affected subtree", () => {
   assert.doesNotMatch(html, /outline:/u);
 });
 
+test("web rejects active rich-text URLs and link names without a link range", () => {
+  const source = (link, linkName = "Destination") => ({ module: "web", children: [{ id: "screen", type: "frame", role: "route", name: "Links", width: 200, height: 100, children: [
+    { id: "copy", type: "text", width: 180, height: 40, content: "Open", linkName, marks: link ? [{ type: "link", from: 0, to: 4, value: link }] : [], paragraphs: [{ from: 0, to: 4 }] },
+  ] }] });
+  assert.throws(() => exportWeb(buildExporterIR(source("javascript:alert(1)"), { role: "route", frames: ["screen"] })), { code: "CANVAS_WEB_UNSAFE_LINK" });
+  assert.throws(() => buildExporterIR(source(null), { role: "route", frames: ["screen"] }), { code: "CANVAS_LINK_NAME_WITHOUT_LINK" });
+  const html = exportWeb(buildExporterIR(source("/safe/path"), { role: "route", frames: ["screen"] })).get("links.html");
+  assert.match(html, /href="\/safe\/path" aria-label="Destination"/u);
+});
+
+test("web rejects cascaded properties without a runtime CSS lowering", () => {
+  const source = { module: "web", axes: { viewport: { modes: [{ name: "small", minWidth: 0 }, { name: "wide", minWidth: 800 }] } }, children: [{ id: "screen", type: "frame", role: "route", name: "Unsupported variant", width: 200, height: 100, children: [
+    { id: "box", type: "rectangle", width: 80, height: 40, stroke: [{ value: { fill: "#000", thickness: 1 } }, { value: { fill: "#000", thickness: 3 }, when: { viewport: "wide" } }] },
+  ] }] };
+  assert.throws(() => exportWeb(buildExporterIR(source, { role: "route", frames: ["screen"] })), { code: "CANVAS_WEB_VARIANT_UNSUPPORTED" });
+});
+
 test("mobile overflow emits native scrolling wrappers while retaining the viewport frame", () => {
   const make = (role, overflow) => buildExporterIR({ module: "mobile", children: [{ id: "screen", type: "frame", role, name: "Overflow", width: 120, height: 80, layout: "none", overflow, children: [
     { id: "content", type: "rectangle", width: 240, height: 180, fill: "#123456" },
