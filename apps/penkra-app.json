@@ -60,6 +60,28 @@
       "handler": "list"
     },
     {
+      "key": "open",
+      "summary": "Open an installed App in the current Thread.",
+      "instructions": "Use the exact installed App slug returned by apps list.",
+      "input": {
+        "type": "object",
+        "properties": { "slug": { "type": "string", "minLength": 1 } },
+        "required": ["slug"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "appId": { "type": "string" },
+          "tabId": { "type": "string" }
+        },
+        "required": ["appId", "tabId"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Open Canvas", "input": { "slug": "canvas" } }],
+      "handler": "open"
+    },
+    {
       "key": "listings.open",
       "summary": "Read one exact registry App/version and its permissions before install or update; this does not change local state.",
       "instructionsPath": "operations/listings.open.md",

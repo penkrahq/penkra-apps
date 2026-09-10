@@ -27,6 +27,13 @@ export function registerAppsOperations(runtime) {
         pageInfo: { nextCursor: null },
       };
     }),
+    runtime.operations.handle("open", async (input, context) => {
+      const slug = requireString(requireRecord(input), "slug");
+      const tab = await context.apps.open({ slug });
+      const snapshot = await runtime.installations.getState();
+      const installed = requireInstalledBySlug(snapshot, slug);
+      return { appId: installed.id, tabId: tab.id };
+    }),
     runtime.operations.handle("listings.open", async (input, context) => {
       const appId = requireCanonicalAppId(requireString(requireRecord(input), "appId"));
       if (context.tab) {
