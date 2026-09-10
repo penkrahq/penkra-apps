@@ -12,6 +12,9 @@ Resolve the exact App and current installation state from Apps itself. `apps lis
 truth for which Apps are installed in this Space. Source code, a similarly named plugin, or a
 registry listing is not evidence that an App is installed.
 
+Use `apps open --slug <installed-slug>` to open an installed App in the current Thread. Use the slug
+returned by `apps list`.
+
 Install, update, uninstall, and retained-data removal are distinct effects. Permissions are explicit
 user grants scoped to the installation; they are not implied by a prior version or a nearby App.
 Apps cannot manage its own `com.penkra.apps` installation.

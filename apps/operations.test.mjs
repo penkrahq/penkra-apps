@@ -16,6 +16,7 @@ function harness(overrides = {}) {
     },
   ];
   const calls = [];
+  const openedApps = [];
   const installations = {
     getState: async () => ({
       installed: [
@@ -67,8 +68,15 @@ function harness(overrides = {}) {
         invocation: { spaceId },
         caller: { kind: callerKind },
         tabs: { open: async () => ({ id: "apps-tab" }) },
+        apps: {
+          open: async ({ slug }) => {
+            openedApps.push(slug);
+            return { id: `${slug}-tab` };
+          },
+        },
         ...context,
       }),
+    openedApps,
   };
 }
 
@@ -86,6 +94,15 @@ test("lists only Apps available in the invocation Space without leaking operatio
     ],
     pageInfo: { nextCursor: null },
   });
+});
+
+test("opens an installed App in the invoking Thread by slug", async () => {
+  const app = harness();
+  assert.deepEqual(await app.invoke("open", { slug: "canvas" }), {
+    appId: "com.example.canvas",
+    tabId: "canvas-tab",
+  });
+  assert.deepEqual(app.openedApps, ["canvas"]);
 });
 
 test("routes current-Space lifecycle operations through the trusted bridge", async () => {
