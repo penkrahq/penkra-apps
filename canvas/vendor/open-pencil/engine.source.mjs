@@ -68699,8 +68699,7 @@ function drawNodeStroke2(r4, canvas, node, rect, hasRadius2, stroke, sc, sg, vec
   const shouldStrokeVectorCenterline = vectorStroke && stroke.align === "CENTER" && node.cornerRadius === 0 && node.type === "VECTOR" && !node.fills.some((fill3) => fill3.visible);
   if (shouldStrokeVectorCenterline) {
     const outlineKey = `${node.id}|${stroke.weight}|${stroke.cap ?? node.strokeCap}|${stroke.join ?? node.strokeJoin}|${node.strokeMiterLimit}`;
-    const centerlinePaths = node.vectorNetwork?.regions.length === 0 && vectorPaths ? vectorPaths : vectorStroke;
-    drawVectorPathStrokes(r4, canvas, centerlinePaths, stroke, sc, node.strokeCap, node.strokeJoin, node.strokeMiterLimit, outlineKey);
+    drawVectorPathStrokes(r4, canvas, vectorStroke, stroke, sc, node.strokeCap, node.strokeJoin, node.strokeMiterLimit, outlineKey);
     return;
   }
   if (!sg) {

@@ -666,11 +666,10 @@ function drawNodeStroke(
     !node.fills.some((fill) => fill.visible)
   if (shouldStrokeVectorCenterline) {
     const outlineKey = `${node.id}|${stroke.weight}|${stroke.cap ?? node.strokeCap}|${stroke.join ?? node.strokeJoin}|${node.strokeMiterLimit}`
-    const centerlinePaths = node.vectorNetwork?.regions.length === 0 && vectorPaths ? vectorPaths : vectorStroke
     drawVectorPathStrokes(
       r,
       canvas,
-      centerlinePaths,
+      vectorStroke,
       stroke,
       sc,
       node.strokeCap,

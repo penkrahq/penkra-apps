@@ -123,6 +123,50 @@ test("a semantic Lucide icon renders its authored round line endings", async () 
   }
 });
 
+test("a multi-path curved Lucide icon renders its complete centerlines", async () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      type: "icon",
+      id: "refresh",
+      width: 24,
+      height: 24,
+      library: "lucide",
+      icon: "refresh-cw",
+      fill: "#000000",
+    }],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["refresh"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image, "CanvasKit should decode the curved Lucide screenshot PNG");
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.ok(pixels, "decoded screenshot should expose RGBA pixels");
+    const rows = new Set();
+    const columns = new Set();
+    let ink = 0;
+    for (let index = 3; index < pixels.length; index += 4) {
+      if (pixels[index] <= 100) continue;
+      const pixel = (index - 3) / 4;
+      ink += 1;
+      columns.add(pixel % image.width());
+      rows.add(Math.floor(pixel / image.width()));
+    }
+    assert.ok(ink > 100);
+    assert.ok(rows.size >= 18);
+    assert.ok(columns.size >= 18);
+  } finally {
+    image.delete();
+  }
+});
+
 function pixelBounds(pixels, width, matches) {
   const bounds = { count: 0, minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
   for (let index = 0; index < pixels.length; index += 4) {
