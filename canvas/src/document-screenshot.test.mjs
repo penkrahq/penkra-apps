@@ -123,6 +123,75 @@ test("a semantic Lucide icon renders its authored round line endings", async () 
   }
 });
 
+test("a partial donut ellipse keeps its inner opening clear instead of filling a chord", async () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      type: "ellipse",
+      id: "usage-arc",
+      width: 16,
+      height: 16,
+      fill: "#B9BEC9",
+      innerRadius: 0.78,
+      startAngle: 90,
+      sweepAngle: -223,
+    }],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["usage-arc"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image, "CanvasKit should decode the partial donut screenshot PNG");
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.ok(pixels, "decoded screenshot should expose RGBA pixels");
+    const innerAlpha = alphaAt(pixels, image.width(), 4, 5);
+    assert.ok(innerAlpha < 16, `the inner radius should not contain a closing chord (alpha ${innerAlpha})`);
+    assert.ok(alphaAt(pixels, image.width(), 14, 5) > 96, "the outer annular arc should remain visible");
+    assert.ok(alphaAt(pixels, image.width(), 8, 1) > 96, "Pencil's 90-degree start should begin at the top");
+    assert.ok(alphaAt(pixels, image.width(), 4, 0) < 16, "the counter-clockwise convention should not rotate the start toward the upper left");
+  } finally {
+    image.delete();
+  }
+});
+
+test("a full donut ellipse preserves its inner opening", async () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      type: "ellipse",
+      id: "usage-track",
+      width: 16,
+      height: 16,
+      fill: "#23252C",
+      innerRadius: 0.78,
+    }],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["usage-track"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image, "CanvasKit should decode the full donut screenshot PNG");
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.ok(pixels, "decoded screenshot should expose RGBA pixels");
+    assert.ok(alphaAt(pixels, image.width(), 8, 8) < 16, "the full ring center should remain transparent");
+    assert.ok(alphaAt(pixels, image.width(), 8, 1) > 96, "the full annular track should remain visible");
+  } finally {
+    image.delete();
+  }
+});
+
 test("a multi-path curved Lucide icon renders its complete centerlines", async () => {
   const document = {
     version: "2.17",

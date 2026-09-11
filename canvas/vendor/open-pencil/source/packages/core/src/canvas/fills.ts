@@ -500,19 +500,26 @@ export function makeArcPath(r: SkiaRenderer, node: SceneNode) {
 
   const path = new r.ck.Path()
   const oval = r.ck.LTRBRect(0, 0, node.width, node.height)
+  const isFullCircle = Math.abs(sweepDeg) >= 359.99
 
   if (arc.innerRadius > 0) {
-    path.addArc(oval, startDeg, sweepDeg)
     const innerOval = r.ck.LTRBRect(cx - innerRx, cy - innerRy, cx + innerRx, cy + innerRy)
-    const innerPath = new r.ck.Path()
-    innerPath.addArc(innerOval, startDeg + sweepDeg, -sweepDeg)
-    path.addPath(innerPath)
+    if (isFullCircle) {
+      path.addOval(oval, false)
+      path.addOval(innerOval, true)
+      return path
+    }
+    path.addArc(oval, startDeg, sweepDeg)
+    const innerEndRadians = arc.endingAngle
+    path.lineTo(
+      cx + innerRx * Math.cos(innerEndRadians),
+      cy + innerRy * Math.sin(innerEndRadians)
+    )
+    path.arcToOval(innerOval, startDeg + sweepDeg, -sweepDeg, false)
     path.close()
-    innerPath.delete()
     return path
   }
 
-  const isFullCircle = Math.abs(sweepDeg) >= 359.99
   if (isFullCircle) {
     path.addOval(oval)
   } else {

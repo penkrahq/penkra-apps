@@ -153,10 +153,10 @@ function applyPencilSceneProperties(graph, document) {
       || sourceNode.startAngle !== undefined
       || sourceNode.sweepAngle !== undefined
     )) {
-      const start = degreesToRadians(sourceNode.startAngle ?? 0);
+      const start = degreesToRadians(-(sourceNode.startAngle ?? 0));
       changes.arcData = {
         startingAngle: start,
-        endingAngle: start + degreesToRadians(sourceNode.sweepAngle ?? 360),
+        endingAngle: start + degreesToRadians(-(sourceNode.sweepAngle ?? 360)),
         innerRadius: sourceNode.innerRadius ?? 0,
       };
     }

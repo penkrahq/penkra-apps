@@ -517,8 +517,8 @@ test("Pencil 2.17 scene properties survive normalization into the render graph",
   assert.equal(row.strokes[0].align, "INSIDE");
   assert.equal(overlay.layoutPositioning, "ABSOLUTE");
   assert.equal(textNode.textAutoResize, "NONE");
-  assert.ok(Math.abs(arc.arcData.startingAngle - Math.PI / 2) < 1e-9);
-  assert.ok(Math.abs(arc.arcData.endingAngle + Math.PI / 2) < 1e-9);
+  assert.ok(Math.abs(arc.arcData.startingAngle + Math.PI / 2) < 1e-9);
+  assert.ok(Math.abs(arc.arcData.endingAngle - Math.PI / 2) < 1e-9);
   assert.equal(arc.arcData.innerRadius, 0.8);
   assert.deepEqual(
     path.vectorNetwork.vertices.map(({ x, y }) => [x, y]),
