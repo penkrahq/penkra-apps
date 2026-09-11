@@ -58,10 +58,13 @@ function assertByteLimit(value, limit, label) {
 function scriptError(value) {
   const message =
     typeof value?.message === "string" ? value.message : String(value);
-  const error = new Error(`Canvas script failed: ${message}`);
-  error.code = message.includes("interrupted")
-    ? "CANVAS_SCRIPT_TIMEOUT"
-    : "CANVAS_SCRIPT_FAILED";
+  const timedOut = message.includes("interrupted");
+  const error = new Error(
+    timedOut
+      ? `Canvas script exceeded its ${EXECUTION_TIMEOUT_MS}ms execution deadline.`
+      : `Canvas script failed: ${message}`,
+  );
+  error.code = timedOut ? "CANVAS_SCRIPT_TIMEOUT" : "CANVAS_SCRIPT_FAILED";
   return error;
 }
 
@@ -82,6 +85,29 @@ const __readonly = (value) => {
   for (const child of Object.values(value)) __readonly(child);
   return Object.freeze(value);
 };
+
+const __idIndex = new Map();
+function __indexTree(node, parent) {
+  __idIndex.set(node.id, { node, parent });
+  for (const child of node.children || []) __indexTree(child, node);
+}
+function __unindexTree(node) {
+  __idIndex.delete(node.id);
+  for (const child of node.children || []) __unindexTree(child);
+}
+for (const node of __document.children || []) __indexTree(node, null);
+
+function __validationIds(excludedIds = new Set()) {
+  const pendingIds = new Set();
+  return {
+    has(id) {
+      return pendingIds.has(id) || (!excludedIds.has(id) && __idIndex.has(id));
+    },
+    add(id) {
+      pendingIds.add(id);
+    },
+  };
+}
 
 function __walk(nodes = __document.children, parent = null, parentPath = [], output = []) {
   for (let index = 0; index < (nodes || []).length; index += 1) {
@@ -138,7 +164,42 @@ function __entries(selector) {
   return output;
 }
 
+function __exactId(target) {
+  let exactId;
+  if (typeof target === "object" && target !== null) {
+    const selected = target.node && typeof target.node === "object" ? target.node : target;
+    if (typeof selected.id === "string") exactId = selected.id;
+  } else if (typeof target === "string" && target.startsWith("#")) {
+    exactId = target.slice(1);
+  } else if (typeof target === "string" && target !== "*" && !target.includes(":") && !target.includes("/")) {
+    exactId = target;
+  }
+  return exactId;
+}
+
+function __indexedEntry(id) {
+  const indexed = __idIndex.get(id);
+  if (!indexed) return null;
+  const path = [indexed.node.id];
+  for (let ancestor = indexed.parent; ancestor; ancestor = __idIndex.get(ancestor.id)?.parent ?? null) {
+    path.unshift(ancestor.id);
+  }
+  const siblings = indexed.parent ? indexed.parent.children : __document.children;
+  return {
+    node: indexed.node,
+    parent: indexed.parent,
+    index: siblings.indexOf(indexed.node),
+    path,
+  };
+}
+
 function __requireOne(target) {
+  const exactId = __exactId(target);
+  if (exactId !== undefined) {
+    const entry = __indexedEntry(exactId);
+    if (!entry) throw new Error("Expected one Canvas node, found 0.");
+    return entry;
+  }
   const entries = __entries(target);
   if (entries.length !== 1) {
     throw new Error("Expected one Canvas node, found " + entries.length + ".");
@@ -213,11 +274,18 @@ function __assertParent(parent) {
 
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
   __assertSelector(selector);
+  const exactId = __exactId(selector);
   if (visitor !== undefined && visitor !== null) {
     if (typeof visitor !== "function") throw new TypeError("Get visitor must be a function.");
     const limit = options.limit === undefined ? Infinity : Number(options.limit);
     if (!(limit === Infinity || (Number.isInteger(limit) && limit >= 1))) {
       throw new RangeError("Get visitor limit must be a positive integer when supplied.");
+    }
+    if (exactId !== undefined) {
+      const entry = __indexedEntry(exactId);
+      if (!entry) return 0;
+      visitor(__context(entry));
+      return 1;
     }
     let count = 0;
     for (const entry of __walkEntries()) {
@@ -236,6 +304,10 @@ globalThis.Get = function Get(selector = "*", visitor, options = {}) {
   if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
     throw new RangeError("Get limit must be an integer from 1 through 1000.");
   }
+  if (exactId !== undefined) {
+    const entry = __indexedEntry(exactId);
+    return entry ? [__context(entry, depth)] : [];
+  }
   const contexts = [];
   for (const entry of __walkEntries()) {
     if (!__matches(entry, selector)) continue;
@@ -249,17 +321,20 @@ globalThis.Get = function Get(selector = "*", visitor, options = {}) {
 
 globalThis.Insert = function Insert(parent, node, position) {
   if (!node || typeof node !== "object" || Array.isArray(node)) throw new TypeError("Insert requires one node object.");
-  __assertNodeTree(node, new Set(__walk().map((entry) => entry.node.id)));
-  const children = parent === null || parent === undefined
+  const inserted = __clone(node);
+  __assertNodeTree(inserted, __validationIds());
+  const parentEntry = parent === null || parent === undefined ? null : __assertParent(parent);
+  const children = parentEntry === null
     ? (__document.children ||= [])
-    : (__assertParent(parent).node.children ||= []);
+    : (parentEntry.node.children ||= []);
   const index = position === undefined ? children.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > children.length) throw new RangeError("Insert position is outside the parent.");
-  children.splice(index, 0, __clone(node));
+  children.splice(index, 0, inserted);
+  __indexTree(inserted, parentEntry?.node ?? null);
   __changed = true;
-  __touchTree(node);
-  if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
-  return node.id;
+  __touchTree(inserted);
+  if (parentEntry) __touched.add(parentEntry.node.id);
+  return inserted.id;
 };
 
 globalThis.Update = function Update(target, properties) {
@@ -281,9 +356,12 @@ globalThis.Update = function Update(target, properties) {
     }
     __assertNodeTree(
       next,
-      new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !previousSubtreeIds.has(id))),
+      __validationIds(previousSubtreeIds),
     );
   }
+  const structural = Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type");
+  const indexedParent = structural ? __idIndex.get(node.id)?.parent ?? null : null;
+  if (structural) __unindexTree(node);
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
     if (value === undefined) {
@@ -296,6 +374,7 @@ globalThis.Update = function Update(target, properties) {
       __changed = true;
     }
   }
+  if (structural) __indexTree(node, indexedParent);
   __touched.add(node.id);
   return node;
 };
@@ -323,11 +402,13 @@ globalThis.Replace = function Replace(target, replacement) {
   collectReplacedIds(entry.node);
   __assertNodeTree(
     next,
-    new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !replacedIds.has(id))),
+    __validationIds(replacedIds),
   );
   const siblings = entry.parent ? entry.parent.children : __document.children;
   if (JSON.stringify(entry.node) !== JSON.stringify(next)) {
+    __unindexTree(entry.node);
     siblings.splice(entry.index, 1, next);
+    __indexTree(next, entry.parent);
     __changed = true;
   }
   __touchTree(next);
@@ -339,6 +420,7 @@ globalThis.Delete = function Delete(target) {
   const entry = __requireOne(target);
   const siblings = entry.parent ? entry.parent.children : __document.children;
   siblings.splice(entry.index, 1);
+  __unindexTree(entry.node);
   __changed = true;
   __touched.add(entry.node.id);
   if (entry.parent) __touched.add(entry.parent.id);
@@ -347,18 +429,23 @@ globalThis.Delete = function Delete(target) {
 
 globalThis.Move = function Move(target, parent, position) {
   const entry = __requireOne(target);
+  const destinationEntry = parent === null || parent === undefined ? null : __assertParent(parent);
+  for (let ancestor = destinationEntry?.node ?? null; ancestor; ancestor = __idIndex.get(ancestor.id)?.parent ?? null) {
+    if (ancestor === entry.node) throw new Error("Move cannot place a node inside its own subtree.");
+  }
   const source = entry.parent ? entry.parent.children : __document.children;
   source.splice(entry.index, 1);
-  const destination = parent === null || parent === undefined
+  const destination = destinationEntry === null
     ? __document.children
-    : (__assertParent(parent).node.children ||= []);
+    : (destinationEntry.node.children ||= []);
   const index = position === undefined ? destination.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > destination.length) throw new RangeError("Move position is outside the parent.");
   destination.splice(index, 0, entry.node);
+  __idIndex.get(entry.node.id).parent = destinationEntry?.node ?? null;
   __changed = true;
   __touched.add(entry.node.id);
   if (entry.parent) __touched.add(entry.parent.id);
-  if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
+  if (destinationEntry) __touched.add(destinationEntry.node.id);
   return entry.node.id;
 };
 
@@ -375,7 +462,7 @@ globalThis.Copy = function Copy(target, parent, position, properties = {}) {
   if (Object.hasOwn(properties, "id") || Object.hasOwn(properties, "children")) {
     throw new Error("Copy overrides cannot replace id or children.");
   }
-  __renewIds(copy, new Set(__walk().map((entry) => entry.node.id)));
+  __renewIds(copy, __validationIds());
   Object.assign(copy, __clone(properties));
   Insert(parent, copy, position);
   return copy.id;

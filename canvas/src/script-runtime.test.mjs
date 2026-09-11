@@ -181,13 +181,21 @@ test("visitor-form Get streams beyond the materialized result cap", async () => 
 });
 
 test("unknown selector prefixes fail explicitly while bare IDs remain valid", async () => {
-  const document = { version: "2.15", children: [{ id: "frame", type: "frame" }] };
+  const document = {
+    version: "2.15",
+    children: [
+      { id: "frame", type: "frame" },
+      { id: "other", type: "rectangle" },
+    ],
+  };
   await assert.rejects(
     executeCanvasScript(document, 'return Get("typo:frame");'),
     /Unknown Canvas selector "typo:frame"/u,
   );
   const result = await executeCanvasScript(document, 'return Get("frame")[0].node.id;');
   assert.equal(result.result, "frame");
+  const wildcard = await executeCanvasScript(document, 'return Get("*").map((entry) => entry.node.id);');
+  assert.deepEqual(wildcard.result, ["frame", "other"]);
 });
 
 test("scripts report semantic mutations without comparing the whole document", async () => {
@@ -228,6 +236,73 @@ test("execute scripts reject invalid and oversized code", async () => {
       "for (let index = 0; index <= 1000; index += 1) Print(index);",
     ),
     /Print is limited to 1,000 entries/,
+  );
+});
+
+test("runaway scripts keep their stable timeout code", async () => {
+  await assert.rejects(
+    executeCanvasScript({ version: "2.17", children: [] }, "while (true) {}"),
+    (error) => {
+      assert.equal(error.code, "CANVAS_SCRIPT_TIMEOUT");
+      return true;
+    },
+  );
+});
+
+test("bulk exact-id inserts do not rescan the existing document for every mutation", async () => {
+  const children = Array.from({ length: 3_200 }, (_, index) => ({
+    id: `existing-${index}`,
+    type: "frame",
+    children: [],
+  }));
+  const document = { version: "2.17", children };
+  const code = Array.from({ length: 220 }, (_, index) =>
+    `Insert("#existing-3199", ${JSON.stringify({
+      id: `added-${index}`,
+      type: "frame",
+      children: [{ id: `label-${index}`, type: "text", content: "x".repeat(80) }],
+    })});`,
+  ).join("\n");
+
+  const result = await executeCanvasScript(document, code);
+
+  assert.equal(result.document.children.at(-1).children.length, 220);
+  assert.equal(result.touchedNodeIds.length, 441);
+});
+
+test("the mutation identity index stays authoritative across structural operations", async () => {
+  const document = {
+    version: "2.17",
+    children: [
+      { id: "left", type: "frame", children: [{ id: "old", type: "text", content: "Old" }] },
+      { id: "right", type: "frame", children: [] },
+    ],
+  };
+  const result = await executeCanvasScript(document, `
+    Insert("#left", { id: "inserted", type: "frame", children: [{ id: "inserted-label", type: "text", content: "Inserted" }] });
+    Update("#inserted", { children: [{ id: "updated-label", type: "text", content: "Updated" }] });
+    Replace("#old", { id: "replacement", type: "text", content: "Replacement" });
+    const copied = Copy("#inserted", "#right");
+    Move("#replacement", "#right", 0);
+    Delete("#updated-label");
+    return {
+      copied,
+      replacement: Get("#replacement")[0].parent.id,
+      removed: Get("#updated-label").length,
+      rightChildren: Get("#right", undefined, { depth: 1 })[0].node.children.map(({ id }) => id),
+    };
+  `);
+
+  assert.equal(result.result.replacement, "right");
+  assert.equal(result.result.removed, 0);
+  assert.deepEqual(result.result.rightChildren, ["replacement", result.result.copied]);
+  await assert.rejects(
+    executeCanvasScript(result.document, 'Insert("#left", { id: "replacement", type: "text" });'),
+    /Node replacement already exists/u,
+  );
+  await assert.rejects(
+    executeCanvasScript(result.document, 'Move("#right", "#" + Get("#right", undefined, { depth: 1 })[0].node.children[1].id);'),
+    /inside its own subtree/u,
   );
 });
 
