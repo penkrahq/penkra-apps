@@ -59,11 +59,13 @@ higher-level client boundary.
 
 ## Design source of truth
 
-- Each App has one authoritative `.pen` file in its own `design/` directory.
-- The App's Pencil file is authoritative for that App's UI/UX content, states,
-  language, hierarchy, and visual composition.
-- Do not invent code UI that is absent from the corresponding Pencil design.
-- Pencil does not override runtime, security, storage, package, or permission boundaries.
+- Use the design artifact explicitly identified by the App's active TODO or by the user; do not
+  infer authority from a file format or connector.
+- Canvas documents may be authoritative design sources. A `.pen` file is reference material unless
+  the active work explicitly designates it as authoritative.
+- Preserve the designated source's UI/UX content, states, language, hierarchy, and visual
+  composition. Do not invent code UI outside the approved design scope.
+- Design artifacts do not override runtime, security, storage, package, or permission boundaries.
 - Shared repository tooling must not force Apps to share a visual design system.
 
 ## Repository scope
