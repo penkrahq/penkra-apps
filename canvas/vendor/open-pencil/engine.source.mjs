@@ -68604,22 +68604,9 @@ function vectorStrokePaths(r4, node) {
   const cached = r4.vectorStrokePathCache.get(node.id);
   if (cached)
     return cached;
-  const paths = [];
-  for (const segment of node.vectorNetwork.segments) {
-    const start = node.vectorNetwork.vertices[segment.start];
-    const end = node.vectorNetwork.vertices[segment.end];
-    const path = new r4.ck.Path;
-    path.moveTo(start.x, start.y);
-    const isStraight = Math.abs(segment.tangentStart.x) < 0.001 && Math.abs(segment.tangentStart.y) < 0.001 && Math.abs(segment.tangentEnd.x) < 0.001 && Math.abs(segment.tangentEnd.y) < 0.001;
-    if (isStraight) {
-      path.lineTo(end.x, end.y);
-    } else {
-      path.cubicTo(start.x + segment.tangentStart.x, start.y + segment.tangentStart.y, end.x + segment.tangentEnd.x, end.y + segment.tangentEnd.y, end.x, end.y);
-    }
-    paths.push(path);
-  }
-  if (paths.length === 0)
+  if (node.vectorNetwork.segments.length === 0)
     return null;
+  const paths = [vectorNetworkToCenterlinePath(r4.ck, node.vectorNetwork)];
   r4.vectorStrokePathCache.set(node.id, paths);
   return paths;
 }
