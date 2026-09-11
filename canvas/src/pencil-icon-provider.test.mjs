@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import phosphor from "@iconify-json/ph/icons.json" with { type: "json" };
+
 import { pencilIconDefinition, pencilIconVectorDefinition } from "./pencil-icon-provider.mjs";
 
 test("every Pencil 2.17 icon library resolves through a catalog provider", () => {
@@ -55,6 +57,26 @@ test("provider lookup never substitutes a different supported icon weight", () =
   assert.equal(pencilIconDefinition("phosphor", "push-pin", 500), null);
   assert.ok(pencilIconDefinition("Material Symbols Rounded", "home", 400));
   assert.ok(pencilIconDefinition("phosphor", "push-pin", 400));
+});
+
+test("explicit Phosphor catalog variants are authoritative over the weight field", () => {
+  for (const variant of ["thin", "light", "bold", "fill", "duotone"]) {
+    const definition = pencilIconDefinition("phosphor", `push-pin-${variant}`, 600);
+    assert.ok(definition, `push-pin-${variant} should resolve independently of weight`);
+    assert.equal(definition.paint, "fill");
+  }
+  assert.equal(pencilIconDefinition("phosphor", "push-pin", 600), null);
+});
+
+test("every bundled Phosphor icon and alias resolves from the complete catalog", () => {
+  const names = [...Object.keys(phosphor.icons ?? {}), ...Object.keys(phosphor.aliases ?? {})];
+  for (const name of names) {
+    const hasExplicitVariant = /-(?:thin|light|bold|fill|duotone)$/u.test(name);
+    assert.ok(
+      pencilIconDefinition("phosphor", name, hasExplicitVariant ? 600 : 400),
+      `${name} should resolve`,
+    );
+  }
 });
 
 test("Material Symbols canonical ligature names resolve through Iconify catalog keys", () => {

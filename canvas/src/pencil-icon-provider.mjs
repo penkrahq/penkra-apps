@@ -59,9 +59,12 @@ function materialIcon(name, suffix, weight) {
 }
 
 function phosphorIcon(name, weight) {
+  if (/-(?:thin|light|bold|fill|duotone)$/u.test(name)) {
+    return iconifyIcon(phosphor, name, "fill");
+  }
   const suffix = ({ 100: "thin", 300: "light", 400: "", 700: "bold" })[weight];
   if (suffix === undefined) return null;
-  return iconifyIcon(phosphor, suffix && !name.endsWith(`-${suffix}`) ? `${name}-${suffix}` : name, "fill");
+  return iconifyIcon(phosphor, suffix ? `${name}-${suffix}` : name, "fill");
 }
 
 function normalizeWeight(value) {

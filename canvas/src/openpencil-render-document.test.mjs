@@ -524,6 +524,7 @@ test("compiles any catalogued Phosphor icon without a hardcoded path", () => {
       type: "icon",
       library: "phosphor",
       icon: "push-pin-fill",
+      weight: 600,
       fill: "#abcdef",
       width: 16,
       height: 16,
