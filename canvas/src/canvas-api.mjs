@@ -40,6 +40,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         projection: source,
         state: base64ToBytes(initialUpdate),
       }),
+    getDocumentHead: (id) =>
+      request(`/${encodeURIComponent(id)}?chunked=auto`),
     getDocument: async (id) => {
       const encoded = encodeURIComponent(id);
       const project = await request(`/${encoded}?chunked=auto`);

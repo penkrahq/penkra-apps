@@ -22,8 +22,11 @@ import { bindingsForExportSet, exportRoleForFormat, listExportFrames, resolveExp
 import { assertExportAvailable } from "./export-availability.mjs";
 import { assertValidDescendantOverrides } from "./canvas-schema.mjs";
 import { normalizeCanvasAliasesInPlace } from "./canvas-normalization.mjs";
+import { shouldCompactSnapshot } from "./snapshot-policy.mjs";
 
 const EXECUTION_INSPECTION_LIMIT = 50;
+const snapshotCompactions = new Map();
+let operationDocumentCache = null;
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -72,6 +75,7 @@ runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }
     throw error;
   }
   await api.deleteDocument(documentId);
+  if (operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
   return { documentId, title: document.title, trashed: true };
 });
 
@@ -100,9 +104,27 @@ runtime.operations.handle("documents.open", async ({ documentId }, context) => {
 runtime.operations.handle("documents.execute", async ({ documentId, code }, context) => {
   const signal = context?.signal ?? new AbortController().signal;
   const { executeCanvasScript, scriptNeedsInspection } = await import("./script-runtime.mjs");
-  const projected = await api.getDocumentProjection(documentId);
-  let payload = projected ?? await api.getDocument(documentId);
-  let model = projected ? null : restoreDocumentModel(payload);
+  const head = await api.getDocumentHead(documentId);
+  const headSequence = authoritativeSequence(head);
+  const cached = operationDocumentCache?.documentId === documentId
+    && operationDocumentCache.sequence === headSequence
+    ? operationDocumentCache
+    : null;
+  if (!cached && operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
+  const projected = cached ? null : await api.getDocumentProjection(documentId);
+  let payload = cached
+    ? {
+      ...head,
+      snapshot: {
+        ...head.snapshot,
+        throughSequence: cached.sequence,
+        state: cached.state,
+        source: structuredClone(cached.source),
+      },
+      updates: [],
+    }
+    : projected ?? await api.getDocument(documentId);
+  let model = cached ? restoreDocumentModel(payload) : projected ? null : restoreDocumentModel(payload);
   try {
     const before = model ? materialize(model) : structuredClone(payload.snapshot.source);
     normalizeCanvasAliasesInPlace(before);
@@ -252,20 +274,35 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     const operationId = crypto.randomUUID();
     const operationUpdates = createDocumentOperationUpdates(model, execution.document);
     Y.applyUpdate(model.doc, operationUpdates.forward, LOCAL_ORIGIN);
-    const appended = await api.appendUpdate(documentId, {
-      clientUpdateId: crypto.randomUUID(),
-      update: encodeUpdate(operationUpdates.forward),
-      expectedSequence: authoritativeSequence(payload),
-      operation: {
-        id: operationId,
-        inverseUpdate: encodeUpdate(operationUpdates.inverse),
-      },
-    });
-    await api.createSnapshot(documentId, {
-      throughSequence: appended.sequence,
-      state: encodeState(model),
-      source: materialize(model),
-    });
+    let appended;
+    try {
+      appended = await api.appendUpdate(documentId, {
+        clientUpdateId: crypto.randomUUID(),
+        update: encodeUpdate(operationUpdates.forward),
+        expectedSequence: authoritativeSequence(payload),
+        operation: {
+          id: operationId,
+          inverseUpdate: encodeUpdate(operationUpdates.inverse),
+        },
+      });
+    } catch (error) {
+      if (operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
+      throw error;
+    }
+    const cachedState = encodeState(model);
+    operationDocumentCache = {
+      documentId,
+      sequence: appended.sequence,
+      state: cachedState,
+      source: structuredClone(execution.document),
+    };
+    if (shouldCompactSnapshot(head.snapshot?.throughSequence, appended.sequence)) {
+      queueSnapshotCompaction(documentId, {
+        throughSequence: appended.sequence,
+        state: cachedState,
+        source: materialize(model),
+      });
+    }
     return operationResult({
       documentId,
       changed: true,
@@ -282,6 +319,19 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     model?.doc.destroy();
   }
 });
+
+function queueSnapshotCompaction(documentId, snapshot) {
+  if (snapshotCompactions.has(documentId)) return snapshotCompactions.get(documentId);
+  const task = api.createSnapshot(documentId, snapshot)
+    .catch((error) => {
+      console.warn(`Canvas snapshot compaction failed for ${documentId}:`, error);
+    })
+    .finally(() => {
+      if (snapshotCompactions.get(documentId) === task) snapshotCompactions.delete(documentId);
+    });
+  snapshotCompactions.set(documentId, task);
+  return task;
+}
 
 function hasQualifiedDescendantOverrides(document) {
   return listSourceNodes(document?.children).some(
@@ -301,6 +351,7 @@ function listSourceNodes(nodes = [], output = []) {
 }
 
 runtime.operations.handle("documents.undo", async ({ documentId, operationId }) => {
+  if (operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
   try {

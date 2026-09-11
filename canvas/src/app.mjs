@@ -71,6 +71,7 @@ import {
   reconcileDocumentPayload,
   restoreDocumentModel,
 } from "./document-model.mjs";
+import { SNAPSHOT_UPDATE_INTERVAL } from "./snapshot-policy.mjs";
 
 const runtime = globalThis.penkra;
 const root = document.querySelector("#app");
@@ -687,7 +688,7 @@ async function flushPending() {
       }
       state.pendingUpdates.shift();
     }
-    if (state.updatesSinceSnapshot >= 10 && state.model) {
+    if (state.updatesSinceSnapshot >= SNAPSHOT_UPDATE_INTERVAL && state.model) {
       await api.createSnapshot(documentId, {
         throughSequence: state.lastSequence,
         state: encodeState(state.model),
