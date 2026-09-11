@@ -86,6 +86,38 @@ test("retained adapter resolves qualified variable, style, and component with so
   assert.equal(built.imports.ui.document.variables.privateInk.cascade[0].value, "#111111");
 });
 
+test("retained component closure preserves instance-owned slot subtrees", async () => {
+  const document = {
+    ...source({}, [
+      {
+        id: "card",
+        type: "frame",
+        properties: { media: { type: "slot", target: "card-media" } },
+        children: [{ id: "card-media", type: "frame", children: [] }],
+      },
+      {
+        id: "wrapper",
+        type: "frame",
+        children: [{
+          id: "card-use",
+          type: "ref",
+          ref: "card",
+          slots: { media: [{ id: "slot-art", type: "rectangle", width: 120, height: 80, fill: "#123456" }] },
+        }],
+      },
+    ]),
+    library: { public: [{ kind: "component", id: "wrapper" }] },
+  };
+  const release = createLibraryRelease(document, { libraryId: "slots", releaseId: "r1" });
+  const retention = await retain(release, [{ kind: "component", id: "wrapper" }], new Map([[release.libraryId, release]]));
+  const consumer = source({ ui: importRecord(release) }, [{ id: "use", type: "ref", ref: "ui:wrapper" }]);
+  const built = buildRetainedCanvasImports(consumer, new Map([["ui", retention]]));
+  const retainedWrapper = built.imports.ui.document.children.find(({ id }) => id === "wrapper");
+  assert.equal(retainedWrapper.children[0].slots.media[0].id, "slot-art");
+  const resolved = resolveCanvasDocument(consumer, { imports: built.imports }).document;
+  assert.equal(resolved.children[0].children[0].children[0].children[0].id, "use/card-use/card-media/slot-art");
+});
+
 test("private direct references reject while retained local private closure remains resolvable", async () => {
   const { release, retention } = await mainFixture();
   const privateRef = source({ ui: importRecord(release) }, [{ id: "bad", type: "rectangle", fill: "${ui:privateInk}" }]);

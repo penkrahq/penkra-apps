@@ -87,13 +87,17 @@ const __readonly = (value) => {
 };
 
 const __idIndex = new Map();
-function __indexTree(node, parent) {
-  __idIndex.set(node.id, { node, parent });
-  for (const child of node.children || []) __indexTree(child, node);
+function __indexTree(node, parent, parentSlot = null) {
+  __idIndex.set(node.id, { node, parent, parentSlot });
+  for (const child of node.children || []) __indexTree(child, node, null);
+  for (const [slot, children] of Object.entries(node.slots || {})) {
+    for (const child of children) __indexTree(child, node, slot);
+  }
 }
 function __unindexTree(node) {
   __idIndex.delete(node.id);
   for (const child of node.children || []) __unindexTree(child);
+  for (const children of Object.values(node.slots || {})) for (const child of children) __unindexTree(child);
 }
 for (const node of __document.children || []) __indexTree(node, null);
 
@@ -109,23 +113,29 @@ function __validationIds(excludedIds = new Set()) {
   };
 }
 
-function __walk(nodes = __document.children, parent = null, parentPath = [], output = []) {
+function __walk(nodes = __document.children, parent = null, parentPath = [], output = [], parentSlot = null) {
   for (let index = 0; index < (nodes || []).length; index += 1) {
     const node = nodes[index];
     const path = [...parentPath, node.id];
-    output.push({ node, parent, index, path });
+    output.push({ node, parent, parentSlot, index, path });
     __walk(node.children || [], node, path, output);
+    for (const [slot, children] of Object.entries(node.slots || {})) {
+      __walk(children, node, [...path, "$slots", slot], output, slot);
+    }
   }
   return output;
 }
 
-function* __walkEntries(nodes = __document.children, parent = null, parentPath = []) {
+function* __walkEntries(nodes = __document.children, parent = null, parentPath = [], parentSlot = null) {
   for (let index = 0; index < (nodes || []).length; index += 1) {
     const node = nodes[index];
     const path = [...parentPath, node.id];
-    const entry = { node, parent, index, path };
+    const entry = { node, parent, parentSlot, index, path };
     yield entry;
     yield* __walkEntries(node.children || [], node, path);
+    for (const [slot, children] of Object.entries(node.slots || {})) {
+      yield* __walkEntries(children, node, [...path, "$slots", slot], slot);
+    }
   }
 }
 
@@ -181,13 +191,19 @@ function __indexedEntry(id) {
   const indexed = __idIndex.get(id);
   if (!indexed) return null;
   const path = [indexed.node.id];
-  for (let ancestor = indexed.parent; ancestor; ancestor = __idIndex.get(ancestor.id)?.parent ?? null) {
-    path.unshift(ancestor.id);
+  let cursor = indexed;
+  for (let ancestor = indexed.parent; ancestor; ancestor = cursor.parent) {
+    if (typeof cursor.parentSlot === "string") path.unshift(ancestor.id, "$slots", cursor.parentSlot);
+    else path.unshift(ancestor.id);
+    cursor = __idIndex.get(ancestor.id) || { parent: null, parentSlot: null };
   }
-  const siblings = indexed.parent ? indexed.parent.children : __document.children;
+  const siblings = indexed.parent
+    ? (typeof indexed.parentSlot === "string" ? indexed.parent.slots[indexed.parentSlot] : indexed.parent.children)
+    : __document.children;
   return {
     node: indexed.node,
     parent: indexed.parent,
+    parentSlot: indexed.parentSlot,
     index: siblings.indexOf(indexed.node),
     path,
   };
@@ -211,12 +227,13 @@ function __nodeAtDepth(node, depth) {
   const clone = __clone(node);
   if (depth === "all") return clone;
   const trim = (current, remaining) => {
-    if (!Array.isArray(current.children)) return;
     if (remaining === 0) {
       delete current.children;
+      delete current.slots;
       return;
     }
-    for (const child of current.children) trim(child, remaining - 1);
+    for (const child of current.children || []) trim(child, remaining - 1);
+    for (const children of Object.values(current.slots || {})) for (const child of children) trim(child, remaining - 1);
   };
   trim(clone, depth);
   return clone;
@@ -227,7 +244,8 @@ function __context(entry, depth = "all") {
   return Object.freeze({
     node: __readonly(__nodeAtDepth(entry.node, depth)),
     parent: entry.parent ? __readonly(__nodeAtDepth(entry.parent, 0)) : null,
-    childCount: Array.isArray(entry.node.children) ? entry.node.children.length : 0,
+    parentSlot: entry.parentSlot ?? null,
+    childCount: (entry.node.children || []).length + Object.values(entry.node.slots || {}).reduce((count, children) => count + children.length, 0),
     index: entry.index,
     path: entry.path.join("/"),
     bounds: inspected.bounds === undefined ? null : __readonly(__clone(inspected.bounds)),
@@ -239,6 +257,7 @@ function __context(entry, depth = "all") {
 function __touchTree(node) {
   __touched.add(node.id);
   for (const child of node.children || []) __touchTree(child);
+  for (const children of Object.values(node.slots || {})) for (const child of children) __touchTree(child);
 }
 
 function __assertContainer(node) {
@@ -264,6 +283,13 @@ function __assertNodeTree(node, usedIds) {
   }
   if (node.children !== undefined) __assertContainer(node);
   for (const child of node.children || []) __assertNodeTree(child, usedIds);
+  if (node.slots !== undefined) {
+    if (node.type !== "ref" || !node.slots || typeof node.slots !== "object" || Array.isArray(node.slots)) throw new TypeError("Canvas node " + node.id + " slots must be an object on a ref.");
+    for (const [slot, children] of Object.entries(node.slots)) {
+      if (!slot || !Array.isArray(children)) throw new TypeError("Canvas node " + node.id + " slot " + slot + " must be an array.");
+      for (const child of children) __assertNodeTree(child, usedIds);
+    }
+  }
 }
 
 function __assertParent(parent) {
@@ -271,6 +297,31 @@ function __assertParent(parent) {
   __assertContainer(entry.node);
   return entry;
 }
+
+function __slotParent(instance, name) {
+  const entry = __requireOne(instance);
+  if (entry.node.type !== "ref") throw new Error("Slot requires a component ref instance.");
+  if (typeof name !== "string" || !name) throw new Error("Slot requires a non-empty slot name.");
+  return { __canvasSlot: true, entry, name };
+}
+
+function __destination(parent) {
+  if (parent && parent.__canvasSlot === true) {
+    const slots = (parent.entry.node.slots ||= {});
+    return { entry: parent.entry, parentSlot: parent.name, children: (slots[parent.name] ||= []) };
+  }
+  const entry = parent === null || parent === undefined ? null : __assertParent(parent);
+  return { entry, parentSlot: null, children: entry === null ? __document.children : (entry.node.children ||= []) };
+}
+
+function __siblings(entry) {
+  if (!entry.parent) return __document.children;
+  return typeof entry.parentSlot === "string" ? entry.parent.slots[entry.parentSlot] : entry.parent.children;
+}
+
+globalThis.Slot = function Slot(instance, name) {
+  return Object.freeze(__slotParent(instance, name));
+};
 
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
   __assertSelector(selector);
@@ -323,18 +374,55 @@ globalThis.Insert = function Insert(parent, node, position) {
   if (!node || typeof node !== "object" || Array.isArray(node)) throw new TypeError("Insert requires one node object.");
   const inserted = __clone(node);
   __assertNodeTree(inserted, __validationIds());
-  const parentEntry = parent === null || parent === undefined ? null : __assertParent(parent);
-  const children = parentEntry === null
-    ? (__document.children ||= [])
-    : (parentEntry.node.children ||= []);
+  const destination = __destination(parent);
+  const parentEntry = destination.entry;
+  const children = destination.children;
   const index = position === undefined ? children.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > children.length) throw new RangeError("Insert position is outside the parent.");
   children.splice(index, 0, inserted);
-  __indexTree(inserted, parentEntry?.node ?? null);
+  __indexTree(inserted, parentEntry?.node ?? null, destination.parentSlot);
   __changed = true;
   __touchTree(inserted);
   if (parentEntry) __touched.add(parentEntry.node.id);
   return inserted.id;
+};
+
+globalThis.SetSlot = function SetSlot(instance, name, nodes) {
+  const parent = __slotParent(instance, name);
+  if (!Array.isArray(nodes)) throw new TypeError("SetSlot requires an array of Canvas nodes.");
+  const previous = parent.entry.node.slots?.[name] || [];
+  const excluded = new Set();
+  for (const node of previous) {
+    const collect = (current) => {
+      excluded.add(current.id);
+      for (const child of current.children || []) collect(child);
+      for (const children of Object.values(current.slots || {})) for (const child of children) collect(child);
+    };
+    collect(node);
+  }
+  const next = __clone(nodes);
+  const used = __validationIds(excluded);
+  for (const node of next) __assertNodeTree(node, used);
+  for (const node of previous) __unindexTree(node);
+  (parent.entry.node.slots ||= {})[name] = next;
+  for (const node of next) __indexTree(node, parent.entry.node, name);
+  __changed = JSON.stringify(previous) !== JSON.stringify(next) || __changed;
+  __touched.add(parent.entry.node.id);
+  for (const node of next) __touchTree(node);
+  return next.map((node) => node.id);
+};
+
+globalThis.ResetSlot = function ResetSlot(instance, name) {
+  const parent = __slotParent(instance, name);
+  if (!Object.hasOwn(parent.entry.node.slots ?? {}, name)) return [];
+  const previous = parent.entry.node.slots[name];
+  for (const node of previous) __unindexTree(node);
+  delete parent.entry.node.slots[name];
+  if (Object.keys(parent.entry.node.slots).length === 0) delete parent.entry.node.slots;
+  __changed = true;
+  __touched.add(parent.entry.node.id);
+  for (const node of previous) __touchTree(node);
+  return previous.map((node) => node.id);
 };
 
 globalThis.Update = function Update(target, properties) {
@@ -344,10 +432,13 @@ globalThis.Update = function Update(target, properties) {
   const collectPreviousIds = (current) => {
     previousSubtreeIds.add(current.id);
     for (const child of current.children || []) collectPreviousIds(child);
+    for (const children of Object.values(current.slots || {})) {
+      for (const child of children) collectPreviousIds(child);
+    }
   };
   collectPreviousIds(node);
   if (Object.hasOwn(properties, "id") && properties.id !== node.id) throw new Error("Update cannot change a node id.");
-  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")) {
+  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "slots") || Object.hasOwn(properties, "type")) {
     const next = __clone(node);
     for (const [key, value] of Object.entries(properties)) {
       if (key === "id") continue;
@@ -359,8 +450,9 @@ globalThis.Update = function Update(target, properties) {
       __validationIds(previousSubtreeIds),
     );
   }
-  const structural = Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type");
+  const structural = Object.hasOwn(properties, "children") || Object.hasOwn(properties, "slots") || Object.hasOwn(properties, "type");
   const indexedParent = structural ? __idIndex.get(node.id)?.parent ?? null : null;
+  const indexedParentSlot = structural ? __idIndex.get(node.id)?.parentSlot ?? null : null;
   if (structural) __unindexTree(node);
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
@@ -374,7 +466,7 @@ globalThis.Update = function Update(target, properties) {
       __changed = true;
     }
   }
-  if (structural) __indexTree(node, indexedParent);
+  if (structural) __indexTree(node, indexedParent, indexedParentSlot);
   __touched.add(node.id);
   return node;
 };
@@ -398,17 +490,20 @@ globalThis.Replace = function Replace(target, replacement) {
   const collectReplacedIds = (node) => {
     replacedIds.add(node.id);
     for (const child of node.children || []) collectReplacedIds(child);
+    for (const children of Object.values(node.slots || {})) {
+      for (const child of children) collectReplacedIds(child);
+    }
   };
   collectReplacedIds(entry.node);
   __assertNodeTree(
     next,
     __validationIds(replacedIds),
   );
-  const siblings = entry.parent ? entry.parent.children : __document.children;
+  const siblings = __siblings(entry);
   if (JSON.stringify(entry.node) !== JSON.stringify(next)) {
     __unindexTree(entry.node);
     siblings.splice(entry.index, 1, next);
-    __indexTree(next, entry.parent);
+    __indexTree(next, entry.parent, entry.parentSlot);
     __changed = true;
   }
   __touchTree(next);
@@ -418,7 +513,7 @@ globalThis.Replace = function Replace(target, replacement) {
 
 globalThis.Delete = function Delete(target) {
   const entry = __requireOne(target);
-  const siblings = entry.parent ? entry.parent.children : __document.children;
+  const siblings = __siblings(entry);
   siblings.splice(entry.index, 1);
   __unindexTree(entry.node);
   __changed = true;
@@ -429,19 +524,19 @@ globalThis.Delete = function Delete(target) {
 
 globalThis.Move = function Move(target, parent, position) {
   const entry = __requireOne(target);
-  const destinationEntry = parent === null || parent === undefined ? null : __assertParent(parent);
+  const destination = __destination(parent);
+  const destinationEntry = destination.entry;
   for (let ancestor = destinationEntry?.node ?? null; ancestor; ancestor = __idIndex.get(ancestor.id)?.parent ?? null) {
     if (ancestor === entry.node) throw new Error("Move cannot place a node inside its own subtree.");
   }
-  const source = entry.parent ? entry.parent.children : __document.children;
+  const source = __siblings(entry);
   source.splice(entry.index, 1);
-  const destination = destinationEntry === null
-    ? __document.children
-    : (destinationEntry.node.children ||= []);
-  const index = position === undefined ? destination.length : Number(position);
-  if (!Number.isInteger(index) || index < 0 || index > destination.length) throw new RangeError("Move position is outside the parent.");
-  destination.splice(index, 0, entry.node);
+  const destinationChildren = destination.children;
+  const index = position === undefined ? destinationChildren.length : Number(position);
+  if (!Number.isInteger(index) || index < 0 || index > destinationChildren.length) throw new RangeError("Move position is outside the parent.");
+  destinationChildren.splice(index, 0, entry.node);
   __idIndex.get(entry.node.id).parent = destinationEntry?.node ?? null;
+  __idIndex.get(entry.node.id).parentSlot = destination.parentSlot;
   __changed = true;
   __touched.add(entry.node.id);
   if (entry.parent) __touched.add(entry.parent.id);
@@ -455,12 +550,15 @@ function __renewIds(node, usedIds) {
   while (usedIds.has(node.id));
   usedIds.add(node.id);
   for (const child of node.children || []) __renewIds(child, usedIds);
+  for (const children of Object.values(node.slots || {})) {
+    for (const child of children) __renewIds(child, usedIds);
+  }
 }
 
 globalThis.Copy = function Copy(target, parent, position, properties = {}) {
   const copy = __clone(__requireOne(target).node);
-  if (Object.hasOwn(properties, "id") || Object.hasOwn(properties, "children")) {
-    throw new Error("Copy overrides cannot replace id or children.");
+  if (Object.hasOwn(properties, "id") || Object.hasOwn(properties, "children") || Object.hasOwn(properties, "slots")) {
+    throw new Error("Copy overrides cannot replace id, children, or slots.");
   }
   __renewIds(copy, __validationIds());
   Object.assign(copy, __clone(properties));

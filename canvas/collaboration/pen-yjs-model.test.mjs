@@ -93,6 +93,48 @@ test("normalization preserves an explicitly empty children array", () => {
   assert.deepEqual(materializePen(createModel(document)), document);
 });
 
+test("component slot content is structural collaborative node data", () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      id: "instance",
+      type: "ref",
+      ref: "card",
+      slots: {
+        content: [{ id: "slot-copy", type: "text", content: "Hello" }],
+        actions: [],
+      },
+    }],
+  };
+  const model = createModel(document);
+  assert.deepEqual(materializePen(model), document);
+  setNodeProperty(model, "slot-copy", "content", "Updated", "alice");
+  assert.equal(materializePen(model).children[0].slots.content[0].content, "Updated");
+  assert.throws(() => setNodeProperty(model, "instance", "slots", {}, "alice"), /structural/u);
+});
+
+test("concurrent edits to independent slot children converge without replacing the slot", () => {
+  const source = createModel({
+    version: "2.17",
+    children: [{
+      id: "instance", type: "ref", ref: "card", slots: { content: [
+        { id: "slot-a", type: "text", content: "A" },
+        { id: "slot-b", type: "text", content: "B" },
+      ] },
+    }],
+  });
+  const alice = cloneModel(source, { guid: "slot-alice" });
+  const bob = cloneModel(source, { guid: "slot-bob" });
+  setNodeProperty(alice, "slot-a", "content", "Alice", "alice");
+  setNodeProperty(bob, "slot-b", "content", "Bob", "bob");
+  syncModels(alice, bob);
+  assert.deepEqual(materializePen(alice), materializePen(bob));
+  assert.deepEqual(
+    materializePen(alice).children[0].slots.content.map((node) => node.content),
+    ["Alice", "Bob"],
+  );
+});
+
 test("whole-document reconciliation produces one faithful Yjs transaction", () => {
   const model = createModel(fixture);
   const updates = [];
@@ -153,9 +195,9 @@ test("whole-document reconciliation writes only sparse changes and preserves exa
   );
 });
 
-test("supported property edits cannot overwrite structural ID, type, or children fields", () => {
+test("supported property edits cannot overwrite structural ID, type, children, or slots fields", () => {
   const model = createModel(fixture);
-  for (const property of ["id", "type", "children"]) {
+  for (const property of ["id", "type", "children", "slots"]) {
     assert.throws(
       () => setNodeProperty(model, "frame-a", property, "invalid", "alice"),
       /structural/,

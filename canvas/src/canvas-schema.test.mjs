@@ -298,6 +298,48 @@ test("component bindings, conditions and instance props are checked in lexical s
   assert.throws(() => validateCanvasDocument(value), /undeclared property missing/);
 });
 
+test("component slots target frame descendants while layer limits remain non-blocking guidance", () => {
+  const value = document();
+  value.children.unshift({
+    id: "card",
+    type: "frame",
+    properties: {
+      content: {
+        type: "slot",
+        target: "body",
+        preferredComponents: ["row"],
+        minItems: 0,
+        maxItems: 2,
+      },
+    },
+    children: [{ id: "body", type: "frame", children: [] }],
+  });
+  value.children[1].children.push({
+    id: "card-use",
+    type: "ref",
+    ref: "card",
+    slots: {
+      content: [{ id: "consumer-copy", type: "text", content: "Hello", marks: [], paragraphs: [{ from: 0, to: 5 }] }],
+    },
+  });
+  assert.equal(validateCanvasDocument(value).valid, true);
+
+  value.children[1].children[1].slots.content.push(
+    { id: "consumer-copy-2", type: "rectangle" },
+    { id: "consumer-copy-3", type: "rectangle" },
+  );
+  assert.equal(validateCanvasDocument(value).valid, true);
+  value.children[1].children[1].slots.content.splice(1);
+  value.children[1].children[1].slots.content[0].bind = { content: "$props.outer" };
+  assert.throws(() => validateCanvasDocument(value), /undeclared property outer/u);
+  delete value.children[1].children[1].slots.content[0].bind;
+  value.children[0].properties.content.target = "missing";
+  assert.throws(() => validateCanvasDocument(value), /must identify a frame descendant/u);
+  value.children[0].properties.content.target = "body";
+  value.children[1].children[1].slots.other = [];
+  assert.throws(() => validateCanvasDocument(value), /does not name a slot/u);
+});
+
 test("cascades validate axis modes and typed prop conditions", () => {
   const value = document();
   value.axes.appearance = { modes: [{ name: "light" }, { name: "dark" }] };

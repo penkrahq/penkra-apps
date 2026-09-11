@@ -77,7 +77,8 @@ test("editor undo persists the exact history event stream through the surface", 
   assert.match(app, /restoreDeletedNode: \(nodeId\) => \{/u);
   assert.match(surface, /undo\(\) \{\s*return replayHistory\(\(\) => editor\.undoAction\(\)\);/u);
   assert.match(surface, /if \(historyMutations\.length\) callbacks\.onMutations\?\.\(historyMutations\)/u);
-  assert.match(surface, /callbacks\.restoreDeletedNode\?\.\(node\.id\) \?\? sceneNodeInsertionMutation\(editor, node\)/u);
+  assert.match(surface, /const sourceId = sceneNodeStructuralId\(sourceDocument, node\.id, node\.canvasProvenance\) \?\? node\.id;/u);
+  assert.match(surface, /callbacks\.restoreDeletedNode\?\.\(sourceId\) \?\? sceneNodeInsertionMutation\(editor, node, sourceDocument\)/u);
 });
 
 test("hidden tabs mount the editor without waiting for a paint frame", async () => {

@@ -46,3 +46,30 @@ test("inspection omits overflow metadata for visible and plain clipped frames", 
   clipped.children[0].clip = true;
   assert.equal(Object.hasOwn(inspect(clipped).items[0], "overflow"), false);
 });
+
+test("inspection maps resolved slot geometry to the authored slot node", () => {
+  const source = {
+    version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      {
+        id: "card", type: "frame", layout: "none", width: 200, height: 100,
+        properties: { content: { type: "slot", target: "body" } },
+        children: [{ id: "body", type: "frame", layout: "none", width: 200, height: 100, children: [] }],
+      },
+      {
+        id: "use", type: "ref", ref: "card", x: 40, y: 60,
+        slots: { content: [{ id: "custom", type: "rectangle", x: 10, y: 15, width: 30, height: 20 }] },
+      },
+    ],
+  };
+  const model = createDocumentModel(source);
+  try {
+    const inspected = inspectDocument(source, listNodes(model));
+    const custom = inspected.items.find((item) => item.id === "custom");
+    assert.deepEqual(custom.bounds, { x: 50, y: 75, width: 30, height: 20 });
+    assert.equal(custom.parentId, "use");
+    assert.equal(custom.parentSlot, "content");
+  } finally {
+    model.doc.destroy();
+  }
+});

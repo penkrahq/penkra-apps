@@ -36,6 +36,26 @@ test("projection deletion is idempotent for recursive scene deletion events", ()
   assert.deepEqual(document.children, []);
 });
 
+test("projection mutations preserve slot parentage", () => {
+  const document = {
+    version: "2.17",
+    children: [
+      { id: "use", type: "ref", ref: "card", slots: { content: [{ id: "first", type: "text", content: "First" }] } },
+      { id: "outside", type: "frame", children: [{ id: "second", type: "text", content: "Second" }] },
+    ],
+  };
+
+  applyMutationsToProjection(document, [
+    { kind: "insert-node", node: { id: "third", type: "text", content: "Third" }, parentId: "use", parentSlot: "content", position: 1 },
+    { kind: "move-node", nodeId: "second", parentId: "use", parentSlot: "content", position: 0 },
+    { kind: "move-node", nodeId: "first", parentId: "outside", position: 0 },
+    { kind: "delete-node", nodeId: "third" },
+  ]);
+
+  assert.deepEqual(document.children[0].slots.content.map((node) => node.id), ["second"]);
+  assert.deepEqual(document.children[1].children.map((node) => node.id), ["first"]);
+});
+
 test("recursive scene deletion persists only the highest deleted ancestor", () => {
   const mutations = [
     { kind: "delete-node", nodeId: "grandchild" },

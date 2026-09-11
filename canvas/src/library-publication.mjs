@@ -277,7 +277,7 @@ function sha256(value) { return createHash("sha256").update(value).digest("hex")
 function compareIdentifiers(left, right) { return left < right ? -1 : left > right ? 1 : 0; }
 function comparePublicItems(left, right) { return compareIdentifiers(left.kind, right.kind) || compareIdentifiers(left.id, right.id); }
 function releaseIdentifier(value, name) { if (typeof value !== "string" || !value || /[\u0000-\u001f\u007f]/u.test(value)) throw libraryError(`${name} must be a non-empty identifier.`); return value; }
-function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
+function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); for (const content of Object.values(node.slots ?? {})) indexNodes(content, map); } return map; }
 function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
 function libraryError(message) { const error = new Error(message); error.code = "CANVAS_LIBRARY_INVALID"; return error; }
 function retainedIntegrity(message) { const error = new Error(message); error.code = "CANVAS_IMPORT_INTEGRITY"; return error; }

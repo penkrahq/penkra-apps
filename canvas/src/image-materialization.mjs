@@ -220,6 +220,10 @@ function findNode(nodes = [], id) {
     if (node.id === id) return node;
     const child = findNode(node.children, id);
     if (child) return child;
+    for (const content of Object.values(node.slots ?? {})) {
+      const slotChild = findNode(content, id);
+      if (slotChild) return slotChild;
+    }
   }
   return null;
 }

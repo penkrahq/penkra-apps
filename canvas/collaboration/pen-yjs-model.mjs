@@ -1,6 +1,6 @@
 import * as Y from "yjs";
 
-const RESERVED_NODE_PROPERTIES = new Set(["id", "type", "children"]);
+const RESERVED_NODE_PROPERTIES = new Set(["id", "type", "children", "slots"]);
 
 export function createModel(penDocument, options = {}) {
   const doc = options.doc ?? new Y.Doc(options.docOptions);
@@ -124,32 +124,41 @@ export function setNodePropertyPath(
   });
 }
 
-export function insertNode(model, node, parentId, position, origin) {
+export function insertNode(model, node, parentId, position, origin, parentSlot = null) {
   assertEditableModel(model);
   assertPosition(position);
   if (parentId !== null) getLiveNode(model, parentId);
   assertJsonValue(node, "$insertedNode");
   validateNodeTree([node], new Set(model.nodes.keys()));
   transact(model, origin, () => {
-    model.nodes.set(node.id, createYNode(node, parentId, position));
+    if (parentId !== null && typeof parentSlot === "string") addSlotName(getLiveNode(model, parentId), parentSlot);
+    model.nodes.set(node.id, createYNode(node, parentId, position, parentSlot));
     initializeNodeMarks(model.nodes.get(node.id), node);
     importChildren(model.nodes, node.children, node.id);
+    importSlots(model.nodes, node.slots, node.id);
   });
 }
 
-export function moveNode(model, nodeId, parentId, position, origin) {
+export function moveNode(model, nodeId, parentId, position, origin, parentSlot = null) {
   assertEditableModel(model);
   assertPosition(position);
   const node = getLiveNode(model, nodeId);
   transact(model, origin, () => {
     if (parentId === nodeId) throw new Error("A node cannot parent itself.");
     if (parentId !== null) {
-      getLiveNode(model, parentId);
+      const parent = getLiveNode(model, parentId);
       assertNoLocalParentCycle(model, nodeId, parentId);
+      if (typeof parentSlot === "string") addSlotName(parent, parentSlot);
     }
     node.set("parentId", parentId);
+    node.set("parentSlot", parentSlot);
     node.set("position", position);
   });
+}
+
+function addSlotName(node, slot) {
+  const names = Array.isArray(node.get("slotNames")) ? node.get("slotNames") : [];
+  if (!names.includes(slot)) node.set("slotNames", [...names, slot]);
 }
 
 export function deleteNode(model, nodeId, origin) {
@@ -167,10 +176,11 @@ export function replaceModelContent(model, penDocument, origin) {
   assertJsonValue(penDocument);
   validateNodeTree(penDocument.children, new Set());
   const desired = new Map();
-  const collect = (nodes = [], parentId = null) => {
+  const collect = (nodes = [], parentId = null, parentSlot = null) => {
     nodes.forEach((node, position) => {
-      desired.set(node.id, { node, parentId, position });
+      desired.set(node.id, { node, parentId, parentSlot, position });
       collect(node.children, node.id);
+      for (const [slot, children] of Object.entries(node.slots ?? {})) collect(children, node.id, slot);
     });
   };
   collect(penDocument.children);
@@ -192,18 +202,20 @@ export function replaceModelContent(model, penDocument, origin) {
       if (!desired.has(id) && current.get("deleted") !== true)
         current.set("deleted", true);
     }
-    for (const [id, { node, parentId, position }] of desired) {
+    for (const [id, { node, parentId, parentSlot, position }] of desired) {
       let current = model.nodes.get(id);
       if (!(current instanceof Y.Map)) {
-        model.nodes.set(id, createYNode(node, parentId, position));
+        model.nodes.set(id, createYNode(node, parentId, position, parentSlot));
         initializeNodeMarks(model.nodes.get(id), node);
         continue;
       }
       setYValueIfChanged(current, "type", node.type);
       setYValueIfChanged(current, "parentId", parentId);
+      setYValueIfChanged(current, "parentSlot", parentSlot);
       setYValueIfChanged(current, "position", position);
       setYValueIfChanged(current, "deleted", false);
       setYValueIfChanged(current, "hadChildren", Array.isArray(node.children));
+      setYJsonValueIfChanged(current, "slotNames", Object.keys(node.slots ?? {}));
       const properties = current.get("properties");
       if (!(properties instanceof Y.Map))
         throw new Error(`Node ${id} has invalid properties.`);
@@ -242,6 +254,11 @@ export function replaceModelContent(model, penDocument, origin) {
 
 function setYValueIfChanged(map, key, value) {
   if (!Object.is(map.get(key), value)) map.set(key, value);
+}
+
+function setYJsonValueIfChanged(map, key, value) {
+  const current = map.get(key);
+  if (!jsonValuesEqual(current, value)) map.set(key, cloneJson(value));
 }
 
 function jsonValuesEqual(left, right) {
@@ -293,9 +310,19 @@ export function materializePen(model) {
   );
   breakParentCycles(parentById);
   const childrenByParent = new Map();
+  const slotsByParent = new Map();
 
   for (const [id, node] of live) {
     const effectiveParent = parentById.get(id);
+    const parentSlot = node.get("parentSlot");
+    if (typeof parentSlot === "string") {
+      const slots = slotsByParent.get(effectiveParent) ?? new Map();
+      const children = slots.get(parentSlot) ?? [];
+      children.push({ id, node });
+      slots.set(parentSlot, children);
+      slotsByParent.set(effectiveParent, slots);
+      continue;
+    }
     const children = childrenByParent.get(effectiveParent) ?? [];
     children.push({ id, node });
     childrenByParent.set(effectiveParent, children);
@@ -305,6 +332,12 @@ export function materializePen(model) {
     children.sort((left, right) => {
       const delta =
         Number(left.node.get("position")) - Number(right.node.get("position"));
+      return delta || left.id.localeCompare(right.id);
+    });
+  }
+  for (const slots of slotsByParent.values()) for (const children of slots.values()) {
+    children.sort((left, right) => {
+      const delta = Number(left.node.get("position")) - Number(right.node.get("position"));
       return delta || left.id.localeCompare(right.id);
     });
   }
@@ -335,6 +368,17 @@ export function materializePen(model) {
       .filter(Boolean);
     if (children.length > 0 || node.get("hadChildren") === true)
       value.children = children;
+    const slotGroups = slotsByParent.get(id) ?? new Map();
+    const slotNames = new Set([
+      ...(Array.isArray(node.get("slotNames")) ? node.get("slotNames") : []),
+      ...slotGroups.keys(),
+    ]);
+    if (slotNames.size > 0) {
+      value.slots = Object.fromEntries([...slotNames].map((name) => [
+        name,
+        (slotGroups.get(name) ?? []).map(build).filter(Boolean),
+      ]));
+    }
     visiting.delete(id);
     return value;
   };
@@ -364,16 +408,21 @@ export function cloneModel(model, docOptions) {
   return openModel(doc);
 }
 
-function importChildren(nodes, children = [], parentId) {
+function importChildren(nodes, children = [], parentId, parentSlot = null) {
   children.forEach((node, index) => {
     if (nodes.has(node.id)) throw new Error(`Duplicate node ID ${node.id}.`);
-    nodes.set(node.id, createYNode(node, parentId, index));
+    nodes.set(node.id, createYNode(node, parentId, index, parentSlot));
     initializeNodeMarks(nodes.get(node.id), node);
     importChildren(nodes, node.children, node.id);
+    importSlots(nodes, node.slots, node.id);
   });
 }
 
-function createYNode(node, parentId, position) {
+function importSlots(nodes, slots = {}, parentId) {
+  for (const [slot, children] of Object.entries(slots ?? {})) importChildren(nodes, children, parentId, slot);
+}
+
+function createYNode(node, parentId, position, parentSlot = null) {
   if (
     !node ||
     typeof node !== "object" ||
@@ -386,9 +435,11 @@ function createYNode(node, parentId, position) {
   const properties = new Y.Map();
   value.set("type", node.type);
   value.set("parentId", parentId);
+  value.set("parentSlot", parentSlot);
   value.set("position", position);
   value.set("deleted", false);
   value.set("hadChildren", Array.isArray(node.children));
+  value.set("slotNames", Object.keys(node.slots ?? {}));
   for (const [key, property] of Object.entries(node)) {
     if (key !== "id" && key !== "type" && key !== "children") {
       if (node.type === "text" && key === "content" && typeof property === "string") {
@@ -456,6 +507,10 @@ function validateNodeTree(children, occupiedIds) {
     occupiedIds.add(node.id);
     if (node.children !== undefined)
       validateNodeTree(node.children, occupiedIds);
+    if (node.slots !== undefined) {
+      if (!node.slots || typeof node.slots !== "object" || Array.isArray(node.slots)) throw new Error(`Node ${node.id} slots must be an object.`);
+      for (const content of Object.values(node.slots)) validateNodeTree(content, occupiedIds);
+    }
   }
 }
 

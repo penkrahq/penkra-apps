@@ -118,6 +118,7 @@ export function validateCrossDocumentReferences(document, imports) {
     }
     inspectValue(node, node.id);
     for (const child of node.children ?? []) visit(child);
+    for (const children of Object.values(node.slots ?? {})) for (const child of children) visit(child);
   };
   inspectValue(document.variables ?? {}, "variables");
   inspectValue(document.paragraphStyles ?? {}, "paragraphStyles");

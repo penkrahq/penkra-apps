@@ -132,10 +132,14 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     const inspectDocument = needsInitialInspection
       ? (await import("./document-inspection.mjs")).inspectDocument
       : null;
+    let retainedImports;
+    if (inspectDocument && Object.keys(before.imports ?? {}).length > 0) {
+      retainedImports = await loadRetainedCanvasImports(api, before, { documentId });
+    }
     let beforeInspection = { items: [] };
     if (inspectDocument) {
       const inspectionModel = model ?? createDocumentModel(before);
-      try { beforeInspection = inspectDocument(before, listNodes(inspectionModel), 1_000); }
+      try { beforeInspection = inspectDocument(before, listNodes(inspectionModel), 1_000, undefined, { imports: retainedImports?.imports }); }
       finally { if (!model) inspectionModel.doc.destroy(); }
     }
     const execution = await executeCanvasScript(
@@ -160,8 +164,9 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
       throw error;
     }
-    let retainedImports;
-    if (hasQualifiedDescendantOverrides(execution.document)) {
+    const executionHasImports = Object.keys(execution.document.imports ?? {}).length > 0;
+    const importsChanged = JSON.stringify(before.imports ?? {}) !== JSON.stringify(execution.document.imports ?? {});
+    if (hasQualifiedDescendantOverrides(execution.document) || (executionHasImports && (!retainedImports || importsChanged))) {
       retainedImports = await loadRetainedCanvasImports(
         api,
         { ...execution.document, imports: execution.document.imports ?? {} },
@@ -200,6 +205,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
           listNodes(validationModel),
           EXECUTION_INSPECTION_LIMIT,
           new Set(touchedNodeIds),
+          { imports: retainedImports?.imports },
         );
         existingInspection = inspected.items;
         inspectionTotal = inspected.total;

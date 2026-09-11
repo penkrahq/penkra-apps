@@ -297,6 +297,7 @@ function walkCanvasNodes(children, visit) {
   for (const node of children ?? []) {
     visit(node);
     walkCanvasNodes(node?.children, visit);
+    for (const content of Object.values(node?.slots ?? {})) walkCanvasNodes(content, visit);
   }
 }
 

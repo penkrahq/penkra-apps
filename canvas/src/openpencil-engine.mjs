@@ -141,6 +141,9 @@ function applyPencilSceneProperties(graph, document) {
     const sceneNode = graph.getNode(sourceNode.id);
     if (!sceneNode) return;
     const changes = {};
+    if (sourceNode.provenance !== undefined) {
+      changes.canvasProvenance = structuredClone(sourceNode.provenance);
+    }
     if (sourceNode.layoutPosition === "absolute") changes.layoutPositioning = "ABSOLUTE";
     if (sourceNode.type === "text" && sourceNode.textGrowth === "fixed-width-height") {
       changes.textAutoResize = "NONE";
@@ -432,7 +435,7 @@ export function sceneEventToPenMutations(
   const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
   if (!selection?.effectiveNode || !isOpenPencilEditableNode(selection.effectiveNode)) return [];
   const mutations = sceneUpdateToMutations(
-    nodeId,
+    selection.isInstanceDescendant ? nodeId : selection.sourceNode.id,
     changedSceneProperties(previousSceneValues, changes),
   );
   if (!selection.isInstanceDescendant) return mutations;
@@ -448,9 +451,10 @@ export function sceneEventToPenMutations(
 export function sceneTextEditCommitMutations(editor, document, nodeId, previousSceneValues) {
   const node = editor.graph.getNode(nodeId);
   if (!node) return [];
-  const sourceNode = findPenNode(document, nodeId);
+  const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
+  const sourceNode = selection?.sourceNode ?? findPenNode(document, nodeId);
   if (!sourceNode) {
-    const insertion = sceneNodeInsertionMutation(editor, node);
+    const insertion = sceneNodeInsertionMutation(editor, node, document);
     return insertion ? [insertion] : [];
   }
   const mutations = sceneEventToPenMutations(
@@ -464,13 +468,12 @@ export function sceneTextEditCommitMutations(editor, document, nodeId, previousS
   const runsChanged = !Object.is(previousSceneValues?.styleRuns, node.styleRuns);
   if (!textChanged && !runsChanged) return mutations;
 
-  const selection = resolveCanvasNodeSelection({ document, graph: editor.graph, selectedId: nodeId });
   const effectiveSource = selection?.effectiveNode ?? sourceNode;
   const richMutations = [];
   if (Array.isArray(effectiveSource.marks)) {
     richMutations.push({
       kind: "set-property",
-      nodeId,
+      nodeId: selection?.isInstanceDescendant ? nodeId : sourceNode.id,
       property: "marks",
       value: sceneStyleRunsToMarks(node, effectiveSource, previousSceneValues?.text),
     });
@@ -478,7 +481,7 @@ export function sceneTextEditCommitMutations(editor, document, nodeId, previousS
   if (textChanged && Array.isArray(effectiveSource.paragraphs)) {
     richMutations.push({
       kind: "set-property",
-      nodeId,
+      nodeId: selection?.isInstanceDescendant ? nodeId : sourceNode.id,
       property: "paragraphs",
       value: remapParagraphsForTextEdit(effectiveSource, node.text),
     });
@@ -599,17 +602,37 @@ function mergeCanvasMarks(marks) {
   return result;
 }
 
-export function sceneNodeInsertionMutation(editor, node) {
+export function sceneNodeInsertionMutation(editor, node, document = null) {
   const penNode = sceneNodeToCanvasNode(node);
   const position = sceneNodePosition(editor, node);
   if (!penNode || position === null) return null;
-  const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
+  const destination = sceneParentMutationDestination(editor, document, node.parentId);
+  if (!destination) return null;
   return {
     kind: "insert-node",
     node: penNode,
-    parentId: pageIds.has(node.parentId) ? null : node.parentId,
+    ...destination,
     position,
   };
+}
+
+export function sceneNodeStructuralId(document, nodeId, provenance = null) {
+  const reference = provenance?.reference ?? nodeId;
+  if (typeof reference !== "string" || !reference || reference.includes("/")) return null;
+  return provenance && !findPenNode(document, reference) ? null : reference;
+}
+
+export function sceneParentMutationDestination(editor, document, parentId) {
+  const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
+  if (pageIds.has(parentId)) return { parentId: null };
+  if (!document) return { parentId };
+  const parent = editor.graph.getNode(parentId);
+  const target = parent?.canvasProvenance?.slotTarget;
+  if (target && typeof target.instanceId === "string" && typeof target.name === "string") {
+    return { parentId: target.instanceId, parentSlot: target.name };
+  }
+  const sourceId = sceneNodeStructuralId(document, parentId, parent?.canvasProvenance);
+  return sourceId ? { parentId: sourceId } : null;
 }
 
 export function sceneNodePosition(editor, node) {
@@ -702,6 +725,7 @@ function walkPenNodes(nodes, visit) {
   for (const node of nodes ?? []) {
     visit(node);
     walkPenNodes(node.children, visit);
+    for (const content of Object.values(node.slots ?? {})) walkPenNodes(content, visit);
   }
 }
 

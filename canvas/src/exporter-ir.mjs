@@ -174,6 +174,7 @@ function assertWebVariantCoverage(document) {
   const visit = (nodes) => { for (const node of nodes ?? []) {
     for (const [property, value] of Object.entries(node)) if (isCascade(value) && !WEB_RUNTIME_VARIANT_PROPERTIES.has(property)) unsupported.push(`${node.id}.${property}`);
     visit(node.children);
+    for (const content of Object.values(node.slots ?? {})) visit(content);
   } };
   visit(document.children);
   if (unsupported.length) throw exportError("CANVAS_CAPABILITY_UNVERIFIED", `Web runtime variants are not implemented for: ${unsupported.join(", ")}.`);
@@ -656,5 +657,5 @@ function descendantIds(graph, roots, result = []) {
   return result;
 }
 function needsIsolation(node) { return Number(node.opacity ?? 1) < 1 || ![undefined, "normal", "pass_through"].includes(node.blendMode) || effectiveOverflow(node) !== "visible"; }
-function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
+function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); for (const content of Object.values(node.slots ?? {})) indexNodes(content, map); } return map; }
 function exportError(code, message) { const error = new Error(message); error.code = code; return error; }

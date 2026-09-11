@@ -336,22 +336,30 @@ const continueIcon = {
 If an icon does not render, verify its exact library-specific name or choose a known equivalent
 from the same library. Do not replace ordinary interface icons with generated raster images.
 
-## Reusable components and instances
+## Components, typed properties, and slots
 
-A reusable component is a frame with `reusable: true`. An instance is a `ref` node whose `ref`
-points to that frame ID. Put per-instance changes in the ref's `descendants` object. A key may be
-one unique source descendant ID or its exact slash-separated path relative to the component root.
-Do not include the component root ID in that path. Canvas canonicalizes a bare ID to the same
-relative path before rendering; an unknown path, duplicate equivalent key, unsupported property,
-or invalid value fails the execution before it commits.
+A component definition is a source node referenced by a `ref` instance; it needs no editor-status
+flag. Component definitions are usually root-level frames outside role-bearing output frames.
+Declare customization on the component's `properties`. Scalar and single-value properties arrive
+through an instance's `props`; a `slot` property names a descendant frame whose children the
+instance owns structurally, and its content arrives through the instance's `slots`.
 
 ```js
 Insert(null, {
   id: "labeled-component",
   type: "frame",
   name: "Labeled component",
-  reusable: true,
-  layout: "horizontal",
+  properties: {
+    label: { type: "string", default: "Label" },
+    content: {
+      type: "slot",
+      target: "component-content",
+      preferredComponents: ["content-row"],
+      minItems: 0,
+      maxItems: 4
+    }
+  },
+  layout: "vertical",
   width: "fit_content",
   padding: [12, 18],
   gap: 8,
@@ -363,11 +371,19 @@ Insert(null, {
     id: "component-label",
     type: "text",
     content: "Label",
+    bind: { content: "$props.label" },
     textGrowth: "auto",
     fontFamily: "Inter",
     fontSize: 14,
     fontWeight: "600",
-    fill: "#FFFFFF"
+    fill: "#FFFFFF",
+    marks: [],
+    paragraphs: [{ from: 0, to: 5 }]
+  }, {
+    id: "component-content",
+    type: "frame",
+    layout: "vertical",
+    children: []
   }]
 });
 
@@ -375,11 +391,32 @@ Insert("#instance-container", {
   id: "labeled-instance",
   type: "ref",
   ref: "labeled-component",
-  descendants: {
-    "component-label": { content: "Updated label", fill: "#EEF2FF" }
+  props: { label: "Updated label" },
+  slots: {
+    content: [{
+      id: "instance-detail",
+      type: "text",
+      content: "Instance-owned detail",
+      marks: [],
+      paragraphs: [{ from: 0, to: 21 }]
+    }]
   }
 });
 ```
+
+Property types are `string`, `number`, `boolean`, `color`, `enum`, `icon`, `node`, and `slot`.
+A slot's `target` must identify one descendant frame. `preferredComponents` guides compatible
+authoring choices; `minItems` and `maxItems` report non-blocking design-system guidance, matching
+the way slot layer limits behave in established design tools. Omitting a slot keeps the
+target frame's default children. Supplying an empty array deliberately clears them. Slot content is
+ordinary authored Canvas structure with stable node IDs, selection, collaboration, undo, and
+ordering—not an opaque JSON prop.
+
+Use `descendants` for a narrow per-instance override of component-owned structure. A key may be one
+unique source descendant ID or its exact slash-separated path relative to the component root. Do
+not include the component root ID in that path. Canvas canonicalizes a bare ID to the same relative
+path before rendering; an unknown path, duplicate equivalent key, unsupported property, or invalid
+value fails the execution before it commits.
 
 Every descendant type supports `name`, `x`, `y`, `width`, `height`, `rotation`, and `enabled`.
 `fill` is supported only on paintable `frame`, `rectangle`, `ellipse`, `polygon`, `path`, `text`,
@@ -391,9 +428,10 @@ surface is not text-only: for example, `{ "tab/active-rule": { fill: "#4F46E5" }
 rectangle inside the instance, and `{ "tab": { fill: "#EEF2FF" } }` changes its source frame.
 Properties outside this list are rejected rather than stored without a rendered effect.
 
-The selector walker traverses source `children`; it does not expand an instance into synthetic
-children. Therefore `Get` cannot select a rendered instance descendant. Update the ref's
-`descendants`, or edit the reusable source when every instance should change. `Get("*")` reports
+The selector walker traverses authored `children` and instance-owned slot content; it does not
+expand component-owned descendants into synthetic source nodes. Slot paths contain the explicit
+branch marker `$slots`, for example `instance/$slots/content/instance-detail`. Update an instance's
+`descendants`, or edit the component source when every instance should change. `Get("*")` reports
 authored source paths from the document root, so a component child may appear as
 `component-id/row/label`; the corresponding descendant override key is `row/label` because it is
 relative to that component and deliberately omits `component-id`.
@@ -461,6 +499,24 @@ following read-only execution when fresh measurements or problem analysis matter
 otherwise provide an exact selector, node, or `Get` context for a containing frame or group.
 Position is a zero-based child index and defaults to the end.
 
+Use `Slot(instance, name)` as the structural destination for an instance slot. It can be passed to
+`Insert`, `Move`, or `Copy`. `SetSlot(instance, name, nodes)` atomically replaces or clears one
+slot's complete authored contents. `ResetSlot(instance, name)` removes that instance override so
+the component's default slot content appears again.
+
+```js
+Insert(Slot("#labeled-instance", "content"), {
+  id: "second-detail",
+  type: "text",
+  content: "Another detail",
+  marks: [],
+  paragraphs: [{ from: 0, to: 14 }]
+});
+Move("#existing-detail", Slot("#labeled-instance", "content"), 0);
+SetSlot("#labeled-instance", "content", []);
+ResetSlot("#labeled-instance", "content");
+```
+
 `Update(target, properties)` changes exactly one source node, preserves omitted properties, and
 cannot change its ID. Set a property to `undefined` to remove it. Supplying `children` replaces the
 complete child array after validating the new hierarchy and every ID. Prefer ordinary property
@@ -473,7 +529,7 @@ keeps the target ID. Use it only when the node's complete structure is intention
 subtree to the root or another container. Both preserve the target ID.
 
 `Copy(target, parent, position?, properties?)` clones one subtree and renews every copied ID.
-Optional overrides apply to the copied root but cannot replace its ID or children. Retain returned
+Optional overrides apply to the copied root but cannot replace its ID, children, or slots. Retain returned
 IDs instead of rediscovering nodes with broad selectors.
 
 ```js

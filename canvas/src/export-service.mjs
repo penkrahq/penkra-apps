@@ -84,6 +84,7 @@ function webImageUrls(document) {
   const visit = (nodes) => { for (const node of nodes ?? []) {
     for (const fill of (Array.isArray(node.fill) ? node.fill : [node.fill])) if (fill?.type === "image" && typeof fill.url === "string") result.add(fill.url);
     visit(node.children);
+    for (const content of Object.values(node.slots ?? {})) visit(content);
   } };
   visit(document.children);
   return result;

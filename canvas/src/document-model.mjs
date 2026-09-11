@@ -148,10 +148,11 @@ export function listNodes(model) {
 
 export function listDocumentNodes(document) {
   const output = [];
-  const visit = (nodes = [], depth = 0, parentId = null) => {
+  const visit = (nodes = [], depth = 0, parentId = null, parentSlot = null) => {
     nodes.forEach((node, index) => {
-      output.push({ node, depth, parentId, index });
+      output.push({ node, depth, parentId, parentSlot, index });
       visit(node.children, depth + 1, node.id);
+      for (const [slot, content] of Object.entries(node.slots ?? {})) visit(content, depth + 1, node.id, slot);
     });
   };
   visit(document.children);
@@ -172,9 +173,9 @@ export function mutate(model, mutation, origin = LOCAL_ORIGIN) {
         origin,
       );
     case "insert-node":
-      return insertNode(model, mutation.node, mutation.parentId ?? null, mutation.position, origin);
+      return insertNode(model, mutation.node, mutation.parentId ?? null, mutation.position, origin, mutation.parentSlot ?? null);
     case "move-node":
-      return moveNode(model, mutation.nodeId, mutation.parentId ?? null, mutation.position, origin);
+      return moveNode(model, mutation.nodeId, mutation.parentId ?? null, mutation.position, origin, mutation.parentSlot ?? null);
     case "delete-node":
       return deleteNode(model, mutation.nodeId, origin);
     case "restore-node":

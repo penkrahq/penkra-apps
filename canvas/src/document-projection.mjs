@@ -40,16 +40,17 @@ function applyMutation(document, index, mutation) {
   if (mutation.kind === "insert-node") {
     if (index.has(mutation.node.id)) return;
     const parentId = mutation.parentId ?? null;
-    const children = childrenFor(document, index, parentId);
+    const parentSlot = mutation.parentSlot ?? null;
+    const children = childrenFor(document, index, parentId, parentSlot);
     const node = structuredClone(mutation.node);
     children.splice(insertionIndex(children, mutation.position), 0, node);
-    indexSubtree(index, node, parentId);
+    indexSubtree(index, node, parentId, parentSlot);
     return;
   }
   if (mutation.kind === "delete-node") {
     const entry = index.get(mutation.nodeId);
     if (!entry) return;
-    const children = childrenFor(document, index, entry.parentId);
+    const children = childrenFor(document, index, entry.parentId, entry.parentSlot);
     const position = children.findIndex((node) => node.id === mutation.nodeId);
     if (position >= 0) children.splice(position, 1);
     removeSubtreeFromIndex(index, entry.node);
@@ -58,40 +59,52 @@ function applyMutation(document, index, mutation) {
   if (mutation.kind === "move-node") {
     const entry = index.get(mutation.nodeId);
     if (!entry) throw new Error(`Projection node ${mutation.nodeId} was not found.`);
-    const source = childrenFor(document, index, entry.parentId);
+    const source = childrenFor(document, index, entry.parentId, entry.parentSlot);
     const sourceIndex = source.findIndex((node) => node.id === mutation.nodeId);
     if (sourceIndex < 0) throw new Error(`Projection node ${mutation.nodeId} has no parent entry.`);
     const [node] = source.splice(sourceIndex, 1);
     const parentId = mutation.parentId ?? null;
-    const target = childrenFor(document, index, parentId);
+    const parentSlot = mutation.parentSlot ?? null;
+    const target = childrenFor(document, index, parentId, parentSlot);
     target.splice(insertionIndex(target, mutation.position), 0, node);
     entry.parentId = parentId;
+    entry.parentSlot = parentSlot;
     return;
   }
   throw new Error(`Unsupported projection mutation: ${String(mutation.kind)}`);
 }
 
-function childrenFor(document, index, parentId) {
+function childrenFor(document, index, parentId, parentSlot = null) {
   if (parentId === null) return document.children ??= [];
   const parent = index.get(parentId)?.node;
   if (!parent) throw new Error(`Projection parent ${parentId} was not found.`);
+  if (typeof parentSlot === "string") {
+    if (parent.type !== "ref") throw new Error(`Projection slot parent ${parentId} must be a ref.`);
+    return (parent.slots ??= {})[parentSlot] ??= [];
+  }
   return parent.children ??= [];
 }
 
 function createProjectionIndex(document) {
   const index = new Map();
-  for (const node of document.children ?? []) indexSubtree(index, node, null);
+  for (const node of document.children ?? []) indexSubtree(index, node, null, null);
   return index;
 }
 
-function indexSubtree(index, node, parentId) {
-  index.set(node.id, { node, parentId });
-  for (const child of node.children ?? []) indexSubtree(index, child, node.id);
+function indexSubtree(index, node, parentId, parentSlot = null) {
+  index.set(node.id, { node, parentId, parentSlot });
+  for (const child of node.children ?? []) indexSubtree(index, child, node.id, null);
+  for (const [slot, children] of Object.entries(node.slots ?? {})) {
+    for (const child of children) indexSubtree(index, child, node.id, slot);
+  }
 }
 
 function removeSubtreeFromIndex(index, node) {
   index.delete(node.id);
   for (const child of node.children ?? []) removeSubtreeFromIndex(index, child);
+  for (const children of Object.values(node.slots ?? {})) {
+    for (const child of children) removeSubtreeFromIndex(index, child);
+  }
 }
 
 function insertionIndex(children, position) {

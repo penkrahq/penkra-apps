@@ -41,6 +41,7 @@ export function migrateM4Descendants(source) {
     for (const node of children ?? []) {
       if (node?.type === "ref") instances.push({ instance: node, depth });
       collectInstances(node?.children, depth + 1);
+      for (const content of Object.values(node?.slots ?? {})) collectInstances(content, depth + 1);
     }
   };
   collectInstances(document.children);
@@ -71,6 +72,7 @@ function indexParents(children, parentId = null, output = new Map()) {
   for (const node of children ?? []) {
     if (typeof node?.id === "string") output.set(node.id, parentId);
     indexParents(node?.children, node?.id ?? parentId, output);
+    for (const content of Object.values(node?.slots ?? {})) indexParents(content, node?.id ?? parentId, output);
   }
   return output;
 }
@@ -180,6 +182,9 @@ export function migrateM7AssignRoles(source, options = {}) {
 function subtreeContainsId(node, ids) {
   for (const child of node?.children ?? []) {
     if (ids.has(child?.id) || subtreeContainsId(child, ids)) return true;
+  }
+  for (const content of Object.values(node?.slots ?? {})) {
+    for (const child of content) if (ids.has(child?.id) || subtreeContainsId(child, ids)) return true;
   }
   return false;
 }
@@ -324,6 +329,7 @@ function walkNodes(children, visitor) {
   for (const node of children ?? []) {
     visitor(node);
     walkNodes(node.children, visitor);
+    for (const content of Object.values(node.slots ?? {})) walkNodes(content, visitor);
   }
 }
 
@@ -373,6 +379,7 @@ function indexNodes(children, output = new Map()) {
   for (const node of children ?? []) {
     if (typeof node?.id === "string") output.set(node.id, node);
     indexNodes(node?.children, output);
+    for (const content of Object.values(node?.slots ?? {})) indexNodes(content, output);
   }
   return output;
 }
@@ -440,10 +447,14 @@ function transformNodes(children, transform) {
     if (Array.isArray(transformed)) {
       children.splice(index, 1, ...transformed);
       index += transformed.length - 1;
-      for (const node of transformed) transformNodes(node.children, transform);
+      for (const node of transformed) {
+        transformNodes(node.children, transform);
+        for (const content of Object.values(node.slots ?? {})) transformNodes(content, transform);
+      }
     } else {
       children[index] = transformed;
       transformNodes(transformed.children, transform);
+      for (const content of Object.values(transformed.slots ?? {})) transformNodes(content, transform);
     }
   }
 }

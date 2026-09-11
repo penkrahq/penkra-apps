@@ -90,6 +90,7 @@ export function migrateCanvasDocument(source) {
     for (const node of nodes) {
       if (node.export === "live") { node.export = "default"; renamedExports += 1; }
       if (Array.isArray(node.children)) renameExports(node.children);
+      for (const content of Object.values(node.slots ?? {})) renameExports(content);
     }
   };
   renameExports(document.children);
@@ -100,6 +101,7 @@ export function migrateCanvasDocument(source) {
       for (const node of nodes) {
         if (node.role === "page") delete node.role;
         if (Array.isArray(node.children)) removePageRoles(node.children);
+        for (const content of Object.values(node.slots ?? {})) removePageRoles(content);
       }
     };
     removePageRoles(document.children);
@@ -127,6 +129,7 @@ function migrateLegacyComponentVariants(source) {
     for (const node of children ?? []) {
       if (typeof node?.id === "string") nodes.set(node.id, node);
       visit(node?.children);
+      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
   };
   visit(document.children);
@@ -186,6 +189,7 @@ function canonicalizeEmptyLegacyPaths(document, notes) {
         changes += 1;
       }
       visit(node?.children);
+      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
   };
   visit(document.children);
@@ -208,6 +212,7 @@ function wrapLegacyScalarVariableReferences(document, notes) {
         changes += 1;
       }
       visit(node?.children);
+      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
   };
   visit(document.children);
@@ -222,6 +227,7 @@ function collapseUniformLegacyAxes(document, notes, legacyThemeAxes) {
       for (const node of nodes ?? []) {
         if (typeof node?.modes?.[axis] === "string") selected.add(node.modes[axis]);
         collect(node?.children);
+        for (const content of Object.values(node?.slots ?? {})) collect(content);
       }
     };
     collect(document.children);
@@ -287,6 +293,7 @@ function collapseLegacyVariantAxes(document, notes, legacyThemeAxes) {
           if (Object.keys(node.modes).length === 0) delete node.modes;
         }
         visit(node.children, mode);
+        for (const content of Object.values(node.slots ?? {})) visit(content, mode);
       }
     };
     visit(document.children, defaultMode);
@@ -304,6 +311,7 @@ function canonicalizeLegacyTextAlignment(document, notes) {
         changes += 1;
       }
       visit(node?.children);
+      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
   };
   visit(document.children);
@@ -324,6 +332,7 @@ function canonicalizeLegacyAnnotatedDimensions(document, notes) {
         changes += 1;
       }
       visit(node?.children);
+      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
   };
   visit(document.children);
@@ -342,6 +351,7 @@ function repairLegacyParagraphs(document, notes) {
         notes.push(`Regenerated paragraph ranges from content for text node \`${node.id}\`; preserved usable paragraph metadata deterministically.`);
       }
       visit(node?.children);
+      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
   };
   visit(document.children);

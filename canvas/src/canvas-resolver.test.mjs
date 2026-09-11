@@ -108,6 +108,85 @@ test("component expansion applies local and imported descendant overrides before
   });
 });
 
+test("component slots inherit defaults, replace them with consumer nodes, and clear explicitly", () => {
+  const component = {
+    id: "card",
+    type: "frame",
+    properties: {
+      content: { type: "slot", target: "body", minItems: 0, maxItems: 2 },
+    },
+    children: [{
+      id: "body",
+      type: "frame",
+      layout: "vertical",
+      children: [{ id: "default-copy", type: "text", content: "Default" }],
+    }],
+  };
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {},
+    children: [
+      component,
+      { id: "default-use", type: "ref", ref: "card" },
+      { id: "custom-use", type: "ref", ref: "card", slots: { content: [
+        { id: "custom-copy", type: "text", content: "Consumer", fill: "#123456" },
+      ] } },
+      { id: "empty-use", type: "ref", ref: "card", slots: { content: [] } },
+    ],
+  };
+  const resolved = resolveCanvasDocument(source).document;
+  assert.equal(resolved.children[1].children[0].children[0].content, "Default");
+  assert.equal(resolved.children[2].children[0].children[0].id, "custom-use/body/custom-copy");
+  assert.equal(resolved.children[2].children[0].children[0].content, "Consumer");
+  assert.deepEqual(resolved.children[3].children[0].children, []);
+  assert.equal(component.children[0].children[0].id, "default-copy");
+});
+
+test("imported component slots resolve consumer-owned refs and variables in consumer scope", () => {
+  const library = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [{
+      id: "library-card", type: "frame",
+      properties: { content: { type: "slot", target: "body" } },
+      children: [{ id: "body", type: "frame", children: [] }],
+    }],
+  };
+  const source = {
+    axes: {}, variables: { ink: { tokenType: "color", cascade: [{ value: "#abcdef" }] } }, paragraphStyles: {}, children: [
+      { id: "local-chip", type: "frame", fill: "${ink}", children: [] },
+      { id: "use", type: "ref", ref: "ui:library-card", slots: { content: [
+        { id: "chip-use", type: "ref", ref: "local-chip" },
+      ] } },
+    ],
+  };
+  const resolved = resolveCanvasDocument(source, { imports: { ui: { document: library } } }).document.children[1];
+  assert.equal(resolved.children[0].children[0].id, "use/body/chip-use");
+  assert.equal(resolved.children[0].children[0].fill, "#abcdef");
+});
+
+test("slots resolve identically across generic, deck, web, and mobile modules", () => {
+  const roles = { deck: "slide", web: "route", mobile: "ios" };
+  for (const module of ["generic", "deck", "web", "mobile"]) {
+    const source = {
+      module, axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+      children: [
+        {
+          id: "component", type: "frame",
+          properties: { content: { type: "slot", target: "body" } },
+          children: [{ id: "body", type: "frame", children: [] }],
+        },
+        {
+          id: "output", type: "frame", ...(roles[module] ? { role: roles[module] } : {}),
+          children: [{ id: "use", type: "ref", ref: "component", slots: { content: [{ id: "copy", type: "text", content: module, marks: [], paragraphs: [{ from: 0, to: module.length }] }] } }],
+        },
+      ],
+    };
+    assert.equal(validateCanvasDocument(source).valid, true);
+    const resolved = resolveCanvasDocument(source).document;
+    assert.equal(resolved.module, module);
+    assert.equal(resolved.children[1].children[0].children[0].children[0].content, module);
+    assert.equal(resolved.children[1].children[0].slots, undefined);
+  }
+});
+
 test("component expansion canonicalizes legacy alignment aliases before applying overrides", () => {
   const source = {
     axes: {}, variables: {}, paragraphStyles: {}, children: [{
@@ -129,6 +208,7 @@ test("component expansion canonicalizes legacy alignment aliases before applying
   assert.equal(source.children[0].children[0].textAlign, "left");
 });
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
+import { validateCanvasDocument } from "./canvas-schema.mjs";
 
 test("dotted aliases retain numeric types and rich-text ranges follow interpolation", () => {
   const token = (value) => ({ tokenType: "number", cascade: [{ value }] });

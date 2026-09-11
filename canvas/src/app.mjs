@@ -1105,6 +1105,7 @@ function mountEditorSurface() {
           kind: "insert-node",
           node: structuredClone(deleted.node),
           parentId: deleted.parentId,
+          ...(deleted.parentSlot ? { parentSlot: deleted.parentSlot } : {}),
           position: deleted.position,
         } : null;
       },
@@ -1172,6 +1173,15 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
     const existing = new Set(documentNodes.map(({ node }) => node.id));
     const mutations = compactDeletionMutations(batch.mutations, documentNodes);
     const documentEntryById = new Map(documentNodes.map((entry) => [entry.node.id, entry]));
+    const crossesSlotBoundary = mutations.some((mutation) => (
+      ["insert-node", "move-node"].includes(mutation.kind) && typeof mutation.parentSlot === "string"
+    ) || (
+      ["delete-node", "move-node"].includes(mutation.kind)
+      && typeof documentEntryById.get(mutation.nodeId)?.parentSlot === "string"
+    ));
+    const structuralSelectionReference = crossesSlotBoundary
+      ? mutations.findLast((mutation) => mutation.kind === "move-node")?.nodeId ?? null
+      : null;
     for (const mutation of mutations) {
       if (mutation.kind !== "delete-node") continue;
       const entry = documentEntryById.get(mutation.nodeId);
@@ -1179,6 +1189,7 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
       state.deletedNodeSnapshots.set(mutation.nodeId, {
         node: structuredClone(entry.node),
         parentId: entry.parentId,
+        parentSlot: entry.parentSlot ?? null,
         position: entry.index,
       });
     }
@@ -1208,13 +1219,31 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
       applyMutationsToProjection(state.materializedDocument, appliedMutations);
       state.documentNodes = null;
       state.documentNodeById = null;
+      state.renderableDocument = null;
       state.preparedRenderDocument = null;
       state.compatibilityDocument = null;
+      if (crossesSlotBoundary && state.engineSurface === surface) {
+        const renderable = currentRenderableDocument();
+        const selectedId = structuralSelectionReference
+          ? resolvedRuntimeIdForReference(renderable.children, structuralSelectionReference)
+          : null;
+        state.selectedId = selectedId;
+        surface.replaceDocument(currentMaterializedDocument(), selectedId, currentPreparedRenderDocument());
+      }
       renderSelection();
       renderLayersTree();
       renderHistoryControls();
     }
   });
+}
+
+function resolvedRuntimeIdForReference(nodes, reference) {
+  for (const node of nodes ?? []) {
+    if (node.id === reference || node.provenance?.reference === reference) return node.id;
+    const child = resolvedRuntimeIdForReference(node.children, reference);
+    if (child) return child;
+  }
+  return null;
 }
 
 function renderLayersTree() {
@@ -1264,7 +1293,10 @@ function layerRow({ node, depth, hasChildren }) {
   const role = type === "frame" && node.role
     ? `<span class="layer-role">${escapeHtml({ slide: "Slide", route: "Route", ios: "iOS", android: "Android" }[node.role] ?? node.role)}</span>`
     : "";
-  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${role}${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
+  const slot = node.canvasProvenance?.slotTarget
+    ? `<span class="layer-role">Slot · ${escapeHtml(node.canvasProvenance.slotTarget.name)}</span>`
+    : "";
+  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${role}${slot}${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
 }
 
 function renderInspector(selection) {
@@ -1302,7 +1334,8 @@ function authoringField(descriptor, nodeId) {
 
 function selectionHeading(selection) {
   const node = selection.effectiveNode;
-  return `<section class="selection-heading"><span class="layer-type">${node.type === "text" ? "T" : "◇"}</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(selection.referenceId)}</span></div><button class="button copy-reference" data-action="copy-node-reference" type="button" title="Copy a reference you can paste into a Thread or send to an agent">Copy reference</button></section>`;
+  const slot = selection.slotTarget?.name ?? selection.slot?.name;
+  return `<section class="selection-heading"><span class="layer-type">${node.type === "text" ? "T" : "◇"}</span><div><strong>${escapeHtml(node.name ?? node.type)}</strong><span>${escapeHtml(node.type)} · ${escapeHtml(selection.referenceId)}${slot ? ` · Slot ${escapeHtml(slot)}` : ""}</span></div><button class="button copy-reference" data-action="copy-node-reference" type="button" title="Copy a reference you can paste into a Thread or send to an agent">Copy reference</button></section>`;
 }
 
 function renderSelection() {
@@ -1735,7 +1768,7 @@ function commitInspectorField(input) {
       } else {
         mutate(state.model, {
           kind: "set-property-path",
-          nodeId: state.selectedId,
+          nodeId: selection.sourceNode.id,
           property,
           path,
           value,
@@ -1759,7 +1792,7 @@ function commitInspectorField(input) {
         value,
       }, LOCAL_ORIGIN);
     } else {
-      mutate(state.model, { kind: "set-property", nodeId: state.selectedId, property, value }, LOCAL_ORIGIN);
+      mutate(state.model, { kind: "set-property", nodeId: selection.sourceNode.id, property, value }, LOCAL_ORIGIN);
     }
     state.fieldDrafts.delete(key);
     state.fieldErrors.delete(key);

@@ -45,6 +45,21 @@ test("Canvas restores cloud snapshots and preserves unsupported content", () => 
   restored.doc.destroy();
 });
 
+test("Canvas indexes slot children as ordinary editable nodes with their structural branch", () => {
+  const model = createDocumentModel({
+    version: "2.17",
+    children: [{ id: "instance", type: "ref", ref: "card", slots: {
+      content: [{ id: "slot-copy", type: "text", content: "Before" }],
+    } }],
+  });
+  assert.deepEqual(listNodes(model).map(({ node, parentId, parentSlot }) => ({ id: node.id, parentId, parentSlot })), [
+    { id: "instance", parentId: null, parentSlot: null },
+    { id: "slot-copy", parentId: "instance", parentSlot: "content" },
+  ]);
+  mutate(model, { kind: "set-property", nodeId: "slot-copy", property: "content", value: "After" });
+  assert.equal(materialize(model).children[0].slots.content[0].content, "After");
+});
+
 test("Canvas reports snapshot decoding and Yjs application separately", () => {
   const source = {
     version: "2.15",

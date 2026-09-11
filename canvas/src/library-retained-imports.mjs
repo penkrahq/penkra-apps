@@ -365,6 +365,9 @@ function collectNodes(node, found, bodies) {
   if (!prior) bodies.set(node.id, node);
   found.add(node.id);
   for (const child of node.children ?? []) collectNodes(child, found, bodies);
+  for (const children of Object.values(node.slots ?? {})) {
+    for (const child of children) collectNodes(child, found, bodies);
+  }
 }
 
 function snapshot(value) {

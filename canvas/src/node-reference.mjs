@@ -10,9 +10,16 @@ export function resolveCanvasNodeReferenceId({ document, graph, selectedId }) {
   if (sourceIds.has(selectedId)) return selectedId;
   if (!graph?.getNode) return null;
 
+  const selected = graph.getNode(selectedId);
+  const resolvedReference = selected?.canvasProvenance?.reference;
+  if (typeof resolvedReference === "string" && resolvedReference.length > 0) {
+    const rootId = resolvedReference.split("/")[0];
+    if (sourceIds.has(rootId)) return resolvedReference;
+  }
+
   const descendantPath = [];
   const visited = new Set();
-  let current = graph.getNode(selectedId);
+  let current = selected;
   while (current && !visited.has(current.id)) {
     visited.add(current.id);
     if (sourceIds.has(current.id)) {
@@ -44,6 +51,8 @@ export function resolveCanvasNodeSelection({ document, graph, selectedId }) {
       descendantPath: null,
       override: null,
       isInstanceDescendant: false,
+      slot: null,
+      slotTarget: null,
     };
   }
 
@@ -73,6 +82,8 @@ export function resolveCanvasNodeSelection({ document, graph, selectedId }) {
     descendantPath,
     override,
     isInstanceDescendant: descendantPath !== null,
+    slot: runtimeNode?.canvasProvenance?.slot ?? null,
+    slotTarget: runtimeNode?.canvasProvenance?.slotTarget ?? null,
   };
 }
 
@@ -80,6 +91,7 @@ function collectSourceNodeIds(nodes = [], output = new Set()) {
   for (const node of nodes ?? []) {
     if (typeof node?.id === "string") output.add(node.id);
     collectSourceNodeIds(node?.children, output);
+    for (const content of Object.values(node?.slots ?? {})) collectSourceNodeIds(content, output);
   }
   return output;
 }
@@ -88,6 +100,7 @@ function collectSourceNodes(nodes = [], output = new Map()) {
   for (const node of nodes ?? []) {
     if (typeof node?.id === "string") output.set(node.id, node);
     collectSourceNodes(node?.children, output);
+    for (const content of Object.values(node?.slots ?? {})) collectSourceNodes(content, output);
   }
   return output;
 }

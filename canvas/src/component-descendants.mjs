@@ -34,6 +34,7 @@ function collectNodes(nodes = [], output = new Map()) {
   for (const node of nodes) {
     if (typeof node?.id === "string") output.set(node.id, node);
     collectNodes(node?.children, output);
+    for (const content of Object.values(node?.slots ?? {})) collectNodes(content, output);
   }
   return output;
 }

@@ -87,6 +87,41 @@ test("materializes direct data URLs and Pencil-compatible G generations", async 
   assert.equal(generated.document.children[0].fill.url, "images/generated.png");
 });
 
+test("generated slot images use the authored slot node dimensions", async () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      id: "card-instance",
+      type: "ref",
+      ref: "card",
+      slots: {
+        media: [{
+          id: "slot-image",
+          type: "rectangle",
+          width: 320,
+          height: 180,
+          fill: { type: "image", url: "penkra-generation://slot", mode: "fill" },
+        }],
+      },
+    }],
+  };
+  let request;
+  await materializeDocumentImages({
+    api: {},
+    documentId: "document-1",
+    document,
+    generations: [{ nodeId: "slot-image", kind: "ai", prompt: "school courtyard", url: "penkra-generation://slot" }],
+    dependencies: {
+      generateAi: async (input) => {
+        request = input;
+        return { path: "images/slot.png", sha256: "a".repeat(64), size: 8, mimeType: "image/png" };
+      },
+    },
+  });
+  assert.deepEqual(request, { prompt: "school courtyard", width: 320, height: 180 });
+  assert.equal(document.children[0].slots.media[0].fill.url, "images/slot.png");
+});
+
 test("stops an unbounded remote response once it exceeds the image limit", async () => {
   const value = fixture({ type: "image", url: "https://example.com/oversized.png" });
   const body = new ReadableStream({

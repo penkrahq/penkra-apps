@@ -22,6 +22,7 @@ import {
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 test("references inherit root paint from ordinary Canvas frames without a legacy reusable flag", () => {
   const graph = createOpenPencilGraph({ children: [
@@ -688,6 +689,64 @@ test("an instance-descendant edit persists at its canonical Pencil descendants p
     path: ["row-label", "content"],
     value: "Blocked",
   }]);
+});
+
+test("a resolved slot child edit targets its instance-owned source node", () => {
+  const source = {
+    version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "card", type: "frame", properties: { content: { type: "slot", target: "body" } }, children: [{ id: "body", type: "frame", children: [] }] },
+      { id: "use", type: "ref", ref: "card", slots: { content: [{ id: "custom", type: "text", content: "Before" }] } },
+    ],
+  };
+  const prepared = prepareOpenPencilRenderDocument(resolveCanvasDocument(source).document);
+  const editor = createOpenPencilEditor(source, { preparedDocument: prepared });
+  const nodeId = "use/body/custom";
+  const node = editor.graph.getNode(nodeId);
+  editor.select([nodeId]);
+
+  assert.deepEqual(sceneEventToPenMutations(
+    editor,
+    source,
+    nodeId,
+    { text: "After" },
+    sceneNodePropertySnapshot(node),
+  ), [{ kind: "set-property", nodeId: "custom", property: "content", value: "After" }]);
+});
+
+test("new scene children inserted at a resolved slot target retain slot parentage", () => {
+  const source = {
+    version: "2.17",
+    children: [{ id: "use", type: "ref", ref: "card", slots: { content: [] } }],
+  };
+  const parent = {
+    id: "use/body",
+    childIds: ["created"],
+    canvasProvenance: { slotTarget: { instanceId: "use", name: "content" } },
+  };
+  const editor = {
+    graph: {
+      getPages: () => [{ id: "page" }],
+      getNode: (id) => id === parent.id ? parent : null,
+    },
+  };
+  const created = {
+    id: "created", type: "TEXT", name: "Text", parentId: parent.id,
+    x: 0, y: 0, width: 100, height: 20, text: "Created", fontFamily: "Inter", fontSize: 14, fontWeight: 400,
+    fills: [], styleRuns: [],
+  };
+
+  assert.deepEqual(sceneNodeInsertionMutation(editor, created, source), {
+    kind: "insert-node",
+    node: {
+      id: "created", type: "text", name: "Text", x: 0, y: 0, width: 100, height: 20,
+      content: "Created", fontFamily: "Inter", fontSize: 14, fontWeight: 400,
+      marks: [], paragraphs: [{ from: 0, to: 7 }],
+    },
+    parentId: "use",
+    parentSlot: "content",
+    position: 0,
+  });
 });
 
 test("Pencil gradients and blur effects map faithfully without changing the source", () => {

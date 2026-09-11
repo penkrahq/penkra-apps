@@ -15,6 +15,7 @@ export function listExportFrames(document, role) {
   const visit = (node) => {
     if (node?.type === "frame" && node.role === role) frames.push(node.id);
     for (const child of node?.children ?? []) visit(child);
+    for (const content of Object.values(node?.slots ?? {})) for (const child of content) visit(child);
   };
   for (const child of document.children ?? []) visit(child);
   return frames;

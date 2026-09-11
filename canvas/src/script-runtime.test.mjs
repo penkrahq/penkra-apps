@@ -306,6 +306,55 @@ test("the mutation identity index stays authoritative across structural operatio
   );
 });
 
+test("slot content is addressable structural data across script mutations", async () => {
+  const document = {
+    version: "2.17",
+    children: [
+      {
+        id: "card",
+        type: "frame",
+        reusable: true,
+        properties: {
+          content: { type: "slot", target: "body" },
+        },
+        children: [{ id: "body", type: "frame", children: [] }],
+      },
+      {
+        id: "use",
+        type: "ref",
+        ref: "card",
+        slots: {
+          content: [{ id: "first", type: "text", content: "First" }],
+        },
+      },
+      { id: "outside", type: "frame", children: [] },
+    ],
+  };
+
+  const result = await executeCanvasScript(document, `
+    Insert(Slot("#use", "content"), { id: "second", type: "text", content: "Second" });
+    Move("#first", "#outside");
+    const copied = Copy("#outside", Slot("#use", "content"));
+    Delete("#second");
+    SetSlot("#use", "content", [{ id: "final", type: "text", content: "Final" }]);
+    const reset = ResetSlot("#use", "content");
+    return {
+      copied,
+      reset,
+      finalRemoved: Get("#final").length,
+      removed: Get("#second").length,
+      outside: Get("#outside", undefined, { depth: 1 })[0].node.children.map(({ id }) => id),
+    };
+  `);
+
+  assert.deepEqual(result.result.reset, ["final"]);
+  assert.equal(result.result.finalRemoved, 0);
+  assert.equal(result.result.removed, 0);
+  assert.deepEqual(result.result.outside, ["first"]);
+  assert.equal(result.document.children[1].slots, undefined);
+  assert.match(result.result.copied, /^outside-copy-/u);
+});
+
 test("Canvas script rejects invalid hierarchy and identity at the mutation boundary", async () => {
   const document = {
     version: "2.17",

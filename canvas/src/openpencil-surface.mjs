@@ -18,6 +18,8 @@ import {
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
   sceneNodeInsertionMutation,
+  sceneNodeStructuralId,
+  sceneParentMutationDestination,
   sceneNodePosition,
   sceneTextEditCommitMutations,
 } from "./openpencil-engine.mjs";
@@ -48,6 +50,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   });
   const unbindCanvasTheme = bindCanvasThemeBackground(editor, element);
   let sceneValues = captureSceneValues(editor);
+  let sceneProvenance = captureSceneProvenance(editor);
   let textEditSession = null;
   let historyMutations = null;
   const emitMutations = (mutations) => {
@@ -122,10 +125,12 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     }),
     editor.onEditorEvent("node:created", (node) => {
       sceneValues.set(node.id, sceneNodePropertySnapshot(node));
+      sceneProvenance.set(node.id, node.canvasProvenance ?? null);
       reconcileTimeShaderAnimation();
+      const sourceId = sceneNodeStructuralId(sourceDocument, node.id, node.canvasProvenance) ?? node.id;
       const insertion = historyMutations
-        ? callbacks.restoreDeletedNode?.(node.id) ?? sceneNodeInsertionMutation(editor, node)
-        : sceneNodeInsertionMutation(editor, node);
+        ? callbacks.restoreDeletedNode?.(sourceId) ?? sceneNodeInsertionMutation(editor, node, sourceDocument)
+        : sceneNodeInsertionMutation(editor, node, sourceDocument);
       if (!insertion) {
         callbacks.onUnsupportedEdit?.(`${node.type} creation is not currently available in Canvas.`);
         return;
@@ -134,30 +139,37 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     }),
     editor.onEditorEvent("node:deleted", (nodeId) => {
       sceneValues.delete(nodeId);
-      emitMutations([{ kind: "delete-node", nodeId }]);
+      const sourceId = sceneNodeStructuralId(sourceDocument, nodeId, sceneProvenance.get(nodeId));
+      sceneProvenance.delete(nodeId);
+      if (sourceId) emitMutations([{ kind: "delete-node", nodeId: sourceId }]);
+      else callbacks.onUnsupportedEdit?.("A component-owned descendant cannot be deleted independently.");
       reconcileTimeShaderAnimation();
     }),
     editor.onEditorEvent("node:reparented", (nodeId, _oldParentId, newParentId) => {
-      const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
       const node = editor.graph.getNode(nodeId);
       const position = node ? sceneNodePosition(editor, node) : null;
-      if (position === null) {
+      const sourceId = sceneNodeStructuralId(sourceDocument, nodeId, node?.canvasProvenance ?? sceneProvenance.get(nodeId));
+      const destination = sceneParentMutationDestination(editor, sourceDocument, newParentId);
+      if (position === null || !sourceId || !destination) {
         callbacks.onUnsupportedEdit?.(`${nodeId} has no authored sibling position after reparenting.`);
         return;
       }
       emitMutations([{
         kind: "move-node",
-        nodeId,
-        parentId: pageIds.has(newParentId) ? null : newParentId,
+        nodeId: sourceId,
+        ...destination,
         position,
       }]);
     }),
     editor.onEditorEvent("node:reordered", (nodeId, parentId, index) => {
-      const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
+      const node = editor.graph.getNode(nodeId);
+      const sourceId = sceneNodeStructuralId(sourceDocument, nodeId, node?.canvasProvenance ?? sceneProvenance.get(nodeId));
+      const destination = sceneParentMutationDestination(editor, sourceDocument, parentId);
+      if (!sourceId || !destination) return;
       emitMutations([{
         kind: "move-node",
-        nodeId,
-        parentId: pageIds.has(parentId) ? null : parentId,
+        nodeId: sourceId,
+        ...destination,
         position: index,
       }]);
     }),
@@ -289,6 +301,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
           preparedDocument,
         );
         sceneValues = captureSceneValues(editor);
+        sceneProvenance = captureSceneProvenance(editor);
         reconcileTimeShaderAnimation();
       } finally {
         refreshingDocument = false;
@@ -328,5 +341,11 @@ function registerDocumentFonts(document, assets) {
 function captureSceneValues(editor) {
   return new Map(
     [...editor.graph.nodes.values()].map((node) => [node.id, sceneNodePropertySnapshot(node)]),
+  );
+}
+
+function captureSceneProvenance(editor) {
+  return new Map(
+    [...editor.graph.nodes.values()].map((node) => [node.id, node.canvasProvenance ?? null]),
   );
 }

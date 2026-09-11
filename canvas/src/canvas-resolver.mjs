@@ -169,6 +169,13 @@ function resolveRef(instance, context) {
   const props = resolveProps(target.properties ?? {}, instance.props ?? {});
   const targetContext = { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] };
   const resolved = resolveNode(target, targetContext);
+  applyResolvedSlots(
+    resolved,
+    target,
+    instance.slots ?? {},
+    { ...instanceContext, componentRoot: false, resolving: targetContext.resolving },
+    instance.id,
+  );
   const descendantOverrides = canonicalDescendantOverridesForComponent(instance, target, { strict: true });
   if (descendantOverrides.errors.length) {
     const error = new Error(descendantOverrides.errors.join("\n"));
@@ -192,6 +199,49 @@ function resolveRef(instance, context) {
     if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues);
   }
   return output;
+}
+
+function applyResolvedSlots(resolvedRoot, sourceRoot, suppliedSlots, context, instanceId) {
+  if (!suppliedSlots || typeof suppliedSlots !== "object" || Array.isArray(suppliedSlots)) {
+    throw new Error(`Component instance slots must be an object.`);
+  }
+  const declarations = sourceRoot.properties ?? {};
+  for (const [name, children] of Object.entries(suppliedSlots)) {
+    const declaration = declarations[name];
+    if (declaration?.type !== "slot") throw new Error(`Component ${sourceRoot.id} has no slot named ${name}.`);
+    if (!Array.isArray(children)) throw new Error(`Component slot ${name} must be an array of Canvas nodes.`);
+    const sourceTarget = nodeAtRelativePath(sourceRoot, declaration.target);
+    const resolvedTarget = nodeAtRelativePath(resolvedRoot, declaration.target);
+    if (!sourceTarget || !resolvedTarget || sourceTarget.type !== "frame") throw new Error(`Component slot ${name} target ${declaration.target} is not a frame descendant.`);
+    resolvedTarget.provenance = {
+      ...(resolvedTarget.provenance ?? {}),
+      slotTarget: { instanceId, name },
+    };
+    resolvedTarget.children = children.map((child) => {
+      const resolved = resolveNode(child, context);
+      if (resolved) markResolvedSlotContent(resolved, instanceId, name);
+      return resolved;
+    }).filter(Boolean);
+  }
+}
+
+function markResolvedSlotContent(node, instanceId, name) {
+  const prior = node.provenance ?? {};
+  node.provenance = {
+    ...prior,
+    reference: prior.reference ?? prior.from ?? node.id,
+    slot: { instanceId, name },
+  };
+  for (const child of node.children ?? []) markResolvedSlotContent(child, instanceId, name);
+}
+
+function nodeAtRelativePath(root, path) {
+  let node = root;
+  for (const id of String(path ?? "").split("/").filter(Boolean)) {
+    node = (node.children ?? []).find((candidate) => candidate.id === id);
+    if (!node) return null;
+  }
+  return node === root ? null : node;
 }
 
 function normalizedImportedOwner(imported, context) {
@@ -230,6 +280,10 @@ function applyResolvedDescendantOverrides(resolvedRoot, sourceRoot, overrides, c
 function resolveProps(declarations, supplied) {
   const result = {};
   for (const [name, declaration] of Object.entries(declarations)) {
+    if (declaration.type === "slot") {
+      if (Object.hasOwn(supplied, name)) throw new Error(`Component slot ${name} must be supplied through instance.slots.`);
+      continue;
+    }
     const has = Object.hasOwn(supplied, name);
     if (!has && !Object.hasOwn(declaration, "default") && declaration.optional !== true) throw new Error(`Required component property ${name} is missing.`);
     const value = has ? supplied[name] : Object.hasOwn(declaration, "default") ? declaration.default : null;
@@ -244,11 +298,27 @@ function prefixResolvedNode(node, instanceId, sourceId, props) {
   const idMap = new Map();
   const collect = (candidate, prefix) => {
     idMap.set(candidate.id, prefix);
-    for (const child of candidate.children ?? []) collect(child, `${prefix}/${child.id}`);
+    for (const child of candidate.children ?? []) {
+      const childPath = child.id.startsWith(`${candidate.id}/`)
+        ? child.id.slice(candidate.id.length + 1)
+        : child.id;
+      collect(child, `${prefix}/${childPath}`);
+    }
   };
   collect(node, instanceId);
   const clone = (candidate) => {
-    const result = { ...candidate, id: idMap.get(candidate.id), provenance: { from: candidate.id === node.id ? sourceId : candidate.id, props, lowered: true } };
+    const prior = candidate.provenance ?? {};
+    const result = {
+      ...candidate,
+      id: idMap.get(candidate.id),
+      provenance: {
+        ...prior,
+        from: prior.from ?? (candidate.id === node.id ? sourceId : candidate.id),
+        reference: prior.slot ? prior.reference : idMap.get(candidate.id),
+        props,
+        lowered: true,
+      },
+    };
     if (typeof candidate.notesFor === "string") result.notesFor = idMap.get(candidate.notesFor) ?? candidate.notesFor;
     if (candidate.children) result.children = candidate.children.map(clone);
     return result;
@@ -282,6 +352,7 @@ function compatible(value, declaration) {
   if (["string", "color", "icon"].includes(declaration.type)) return typeof value === "string";
   if (declaration.type === "enum") return declaration.values.includes(value);
   if (declaration.type === "node") return value && typeof value === "object" && typeof value.type === "string";
+  if (declaration.type === "slot") return Array.isArray(value);
   return false;
 }
 
@@ -354,4 +425,4 @@ function selectModes(axes, requested) {
   return selected;
 }
 
-function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); } return map; }
+function indexNodes(children, map = new Map()) { for (const node of children ?? []) { map.set(node.id, node); indexNodes(node.children, map); for (const content of Object.values(node.slots ?? {})) indexNodes(content, map); } return map; }

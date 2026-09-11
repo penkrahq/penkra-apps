@@ -63,9 +63,11 @@ export const CANVAS_SCHEMA = deepFreeze({
       cascade: { type: "array", items: { type: "object" }, minItems: 1 },
     } },
     property: { type: "object", required: ["type"], fields: {
-      type: { type: "enum", values: ["string", "number", "boolean", "color", "enum", "icon", "node"] },
+      type: { type: "enum", values: ["string", "number", "boolean", "color", "enum", "icon", "node", "slot"] },
       optional: { type: "boolean" }, default: { type: "json" }, values: { type: "array", items: { type: "json" } },
       min: { type: "number" }, max: { type: "number" },
+      target: { type: "string" }, preferredComponents: { type: "array", items: { type: "string" } },
+      minItems: { type: "integer" }, maxItems: { type: "integer" },
     } },
   },
   root: {
@@ -120,7 +122,10 @@ export const CANVAS_SCHEMA = deepFreeze({
       }),
       icon: fields(["icon", "library", "weight"], { icon: { type: "string" }, library: { type: "string" }, weight: { type: "number" } }),
       path: fields(["geometry", "viewBox", "fillRule"], { geometry: { type: "string" }, viewBox: { type: "array", items: { type: "number" } }, fillRule: { type: "enum", values: ["nonzero", "evenodd"] } }),
-      ref: fields(["ref", "props"], { ref: { type: "string" }, props: { type: "record" } }),
+      ref: fields(["ref", "props", "slots"], {
+        ref: { type: "string" }, props: { type: "record" },
+        slots: { type: "record", values: { type: "array", items: { ref: "node" } }, capability: false },
+      }),
     },
     variants: Object.fromEntries(CANVAS_NODE_TYPES.map((type) => [type, { type }])),
   },
@@ -173,6 +178,7 @@ export function validateCanvasDocument(document, options = {}) {
       if (!Array.isArray(node.viewBox) || node.viewBox.length !== 4 || node.viewBox.some((value) => !Number.isFinite(value)) || node.viewBox[2] <= 0 || node.viewBox[3] <= 0) errors.push(`${node.id}.viewBox must contain x, y, positive width and positive height.`);
     }
     if (node.type === "ref" && typeof node.ref !== "string") errors.push(`${node.id}.ref must be a string.`);
+    if (node.slots !== undefined && node.type !== "ref") errors.push(`${node.id}.slots may only appear on a ref.`);
     validateProperties(node, errors);
   });
   if (document.lang !== undefined && !validLanguage(document.lang)) errors.push("lang must be a valid BCP-47 language tag.");
@@ -186,6 +192,7 @@ export function validateCanvasDocument(document, options = {}) {
   validateRefs(nodes, parents, errors);
   validateDescendantOverrides(document, nodes, errors);
   validateComponentSemantics(document, nodes, errors);
+  validateSlotSemantics(document, nodes, errors, options.imports);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
 }
@@ -326,10 +333,24 @@ function validateProperties(node, errors) {
   if (node.properties === undefined) return;
   if (!plainObject(node.properties)) { errors.push(`${node.id}.properties must be an object.`); return; }
   for (const [name, property] of Object.entries(node.properties)) {
-    if (!plainObject(property) || !["string", "number", "boolean", "color", "enum", "icon", "node"].includes(property.type)) errors.push(`${node.id}.properties.${name} has an invalid type.`);
+    if (!plainObject(property) || !["string", "number", "boolean", "color", "enum", "icon", "node", "slot"].includes(property.type)) errors.push(`${node.id}.properties.${name} has an invalid type.`);
     if (property?.optional === true && Object.hasOwn(property, "default")) errors.push(`${node.id}.properties.${name} cannot be optional and have a default.`);
     if (property?.type === "enum" && (!Array.isArray(property.values) || property.values.length === 0)) errors.push(`${node.id}.properties.${name} enum needs values.`);
     if (property?.type === "number" && property.min !== undefined && property.max !== undefined && property.min > property.max) errors.push(`${node.id}.properties.${name} min exceeds max.`);
+    if (property?.type === "slot") {
+      if (typeof property.target !== "string" || !property.target) errors.push(`${node.id}.properties.${name} slot needs a target descendant path.`);
+      if (Object.hasOwn(property, "default") || Object.hasOwn(property, "optional") || Object.hasOwn(property, "values") || Object.hasOwn(property, "min") || Object.hasOwn(property, "max")) errors.push(`${node.id}.properties.${name} slot uses target, preferredComponents, minItems and maxItems rather than scalar-property fields.`);
+      if (property.minItems !== undefined && property.minItems < 0) errors.push(`${node.id}.properties.${name}.minItems must be non-negative.`);
+      if (property.maxItems !== undefined && property.maxItems < 0) errors.push(`${node.id}.properties.${name}.maxItems must be non-negative.`);
+      if (property.minItems !== undefined && property.maxItems !== undefined && property.minItems > property.maxItems) errors.push(`${node.id}.properties.${name}.minItems exceeds maxItems.`);
+      if (property.preferredComponents !== undefined && (
+        !Array.isArray(property.preferredComponents)
+        || property.preferredComponents.some((id) => typeof id !== "string" || !id)
+        || new Set(property.preferredComponents).size !== property.preferredComponents.length
+      )) errors.push(`${node.id}.properties.${name}.preferredComponents must contain unique non-empty component references.`);
+    } else if (["target", "preferredComponents", "minItems", "maxItems"].some((field) => Object.hasOwn(property ?? {}, field))) {
+      errors.push(`${node.id}.properties.${name} uses slot-only fields on a ${property?.type ?? "missing"} property.`);
+    }
     if (Object.hasOwn(property ?? {}, "default") && !propertyValueCompatible(property.default, property)) errors.push(`${node.id}.properties.${name} default does not satisfy ${property.type}.`);
   }
 }
@@ -484,6 +505,12 @@ function validateRefs(nodes, parents, errors) {
       if (child.type === "ref" && !child.ref.includes(":") && componentIds.has(child.ref)) dependencies.get(componentId).add(child.ref);
       collectDependencies(componentId, child);
     }
+    for (const children of Object.values(candidate.slots ?? {})) {
+      for (const child of children) {
+        if (child.type === "ref" && !child.ref.includes(":") && componentIds.has(child.ref)) dependencies.get(componentId).add(child.ref);
+        collectDependencies(componentId, child);
+      }
+    }
   };
   for (const componentId of componentIds) collectDependencies(componentId, nodes.get(componentId));
   const visiting = new Set(); const visited = new Set();
@@ -525,6 +552,9 @@ function validateComponentSemantics(document, nodes, errors) {
       if (target) validateSuppliedProps(node, target.properties ?? {}, errors);
     }
     for (const child of node.children ?? []) visit(child, declarations);
+    for (const children of Object.values(node.slots ?? {})) {
+      for (const child of children) visit(child, {});
+    }
   };
   for (const node of document.children ?? []) visit(node);
   for (const [name, variable] of Object.entries(document.variables ?? {})) {
@@ -538,6 +568,7 @@ function validateSuppliedProps(instance, declarations, errors) {
     return;
   }
   for (const [name, declaration] of Object.entries(declarations)) {
+    if (declaration.type === "slot") continue;
     if (!Object.hasOwn(instance.props ?? {}, name)) {
       if (!Object.hasOwn(declaration, "default") && declaration.optional !== true) errors.push(`${instance.id}.props is missing required property ${name}.`);
       continue;
@@ -547,6 +578,40 @@ function validateSuppliedProps(instance, declarations, errors) {
     else if (!propertyValueCompatible(value, declaration)) errors.push(`${instance.id}.props.${name} does not satisfy ${declaration.type}.`);
   }
   for (const name of Object.keys(instance.props ?? {})) if (!Object.hasOwn(declarations, name)) errors.push(`${instance.id}.props supplies undeclared property ${name}.`);
+}
+
+function validateSlotSemantics(document, nodes, errors, imports) {
+  for (const component of nodes.values()) {
+    const slots = Object.entries(component.properties ?? {}).filter(([, declaration]) => declaration?.type === "slot");
+    if (slots.length === 0) continue;
+    const targets = new Set();
+    for (const [name, declaration] of slots) {
+      const target = nodeAtPath(component, declaration.target);
+      if (!target || target.type !== "frame") {
+        errors.push(`${component.id}.properties.${name}.target must identify a frame descendant of the component.`);
+        continue;
+      }
+      if (targets.has(declaration.target)) errors.push(`${component.id}.properties.${name}.target duplicates another slot target ${declaration.target}.`);
+      targets.add(declaration.target);
+    }
+  }
+  for (const instance of nodes.values()) {
+    if (instance.slots === undefined) {
+      continue;
+    }
+    if (instance.type !== "ref" || typeof instance.ref !== "string") continue;
+    if (!plainObject(instance.slots)) continue;
+    const target = descendantComponent(instance.ref, nodes, imports);
+    if (!target) continue;
+    const declarations = target.properties ?? {};
+    for (const [name, content] of Object.entries(instance.slots)) {
+      const declaration = declarations[name];
+      if (declaration?.type !== "slot") {
+        errors.push(`${instance.id}.slots.${name} does not name a slot on component ${target.id}.`);
+        continue;
+      }
+    }
+  }
 }
 
 function validateConditionAst(condition, declarations, path, errors) {
@@ -607,6 +672,7 @@ function propertyValueCompatible(value, declaration) {
   if (["string", "color", "icon"].includes(declaration.type)) return typeof value === "string";
   if (declaration.type === "enum") return declaration.values?.includes(value);
   if (declaration.type === "node") return plainObject(value) && typeof value.type === "string";
+  if (declaration.type === "slot") return Array.isArray(value);
   return false;
 }
 
@@ -670,7 +736,11 @@ function validateFlowInstancePath(flow, source, nodes, parents, errors) {
 function isDescendant(nodeId, ancestorId, parents) { let current = parents.get(nodeId); while (current) { if (current === ancestorId) return true; current = parents.get(current); } return false; }
 
 function walk(children = [], parent, visit) {
-  for (const node of children) { visit(node, parent); walk(node.children, node.id, visit); }
+  for (const node of children) {
+    visit(node, parent);
+    walk(node.children, node.id, visit);
+    for (const content of Object.values(node.slots ?? {})) walk(content, node.id, visit);
+  }
 }
 
 function plainObject(value) { return value && typeof value === "object" && !Array.isArray(value); }
