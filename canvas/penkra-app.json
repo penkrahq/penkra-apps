@@ -32,6 +32,42 @@
   ],
   "operations": [
     {
+      "key": "icons.search",
+      "instructionsPath": "operations/icons.search.md",
+      "summary": "Search Canvas's bundled icon catalogs and return exact library and icon identifiers for native icon nodes.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "minLength": 1, "maxLength": 100, "description": "Words expected in the icon name, such as loader, school, arrow left, or progress activity." },
+          "library": { "enum": ["lucide", "feather", "Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp", "phosphor"], "description": "Optional exact Canvas icon library. Omit it to search every bundled library." },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 100, "default": 40, "description": "Maximum matches to return." }
+        },
+        "required": ["query"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "properties": { "library": { "type": "string" }, "icon": { "type": "string" } },
+              "required": ["library", "icon"],
+              "additionalProperties": false
+            }
+          },
+          "total": { "type": "integer", "minimum": 0 },
+          "truncated": { "type": "boolean" }
+        },
+        "required": ["items", "total", "truncated"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Find a loading-state icon", "input": { "query": "loader", "library": "lucide", "limit": 20 } }],
+      "handler": "icons.search"
+    },
+    {
       "key": "documents.list",
       "instructionsPath": "operations/documents.list.md",
       "summary": "Find Account-owned and shared Canvas documents and resolve the exact document ID needed by later operations.",
@@ -84,6 +120,9 @@
                 },
                 "lastOpenedAt": {
                   "type": ["string", "null"]
+                },
+                "module": {
+                  "enum": ["generic", "deck", "web", "mobile", null]
                 }
               },
               "required": [
@@ -94,7 +133,8 @@
                 "access",
                 "createdAt",
                 "updatedAt",
-                "lastOpenedAt"
+                "lastOpenedAt",
+                "module"
               ],
               "additionalProperties": false
             }

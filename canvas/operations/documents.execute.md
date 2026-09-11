@@ -311,6 +311,9 @@ do not use gradients, blur, and shadows as substitutes for hierarchy and composi
 
 Use native `type: "icon"` nodes for interface and symbolic icons. They remain identifiable and
 editable. Supply the exact `library` and `icon`, explicit width and height, and a visible fill.
+When the identifier is not already known, use `canvas icons search` and copy a returned `library`
+and `icon` pair exactly. Do not guess catalog identifiers or approximate available icons with
+primitive shapes.
 Supported libraries are:
 
 - `lucide`;

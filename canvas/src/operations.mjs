@@ -23,6 +23,7 @@ import { assertExportAvailable } from "./export-availability.mjs";
 import { assertValidDescendantOverrides } from "./canvas-schema.mjs";
 import { normalizeCanvasAliasesInPlace } from "./canvas-normalization.mjs";
 import { shouldCompactSnapshot } from "./snapshot-policy.mjs";
+import { searchCanvasIcons } from "./pencil-icon-provider.mjs";
 
 const EXECUTION_INSPECTION_LIMIT = 50;
 const snapshotCompactions = new Map();
@@ -32,6 +33,9 @@ const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
 const api = createCanvasApi(runtime);
 
+runtime.operations.handle("icons.search", async ({ query, library, limit }) =>
+  searchCanvasIcons(query, { library, limit }));
+
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
   const limit = input.limit ?? 500;
@@ -39,9 +43,12 @@ runtime.operations.handle("documents.list", async (input = {}) => {
   let cursor;
   do {
     const page = await api.listDocuments(cursor);
-    items.push(...page.items.filter(
-      (document) => !query || document.title.toLowerCase().includes(query),
-    ));
+    items.push(...page.items
+      .filter((document) => !query || document.title.toLowerCase().includes(query))
+      .map(({ projection, ...document }) => ({
+        ...document,
+        module: projection?.module ?? null,
+      })));
     cursor = page.pageInfo.nextCursor ?? undefined;
   } while (cursor && items.length < limit);
   return {

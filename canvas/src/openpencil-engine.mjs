@@ -213,7 +213,14 @@ export function refreshOpenPencilEditor(
     panY: editor.state.panY,
     zoom: editor.state.zoom,
   };
-  editor.replaceGraph(createOpenPencilGraph(document, assets, preparedDocument));
+  const nextGraph = createOpenPencilGraph(document, assets, preparedDocument);
+  // Retained effect pictures are keyed by node ID, which survives a document
+  // refresh. Graph replacement emits no per-node invalidations, so clear the
+  // old pictures before the new graph can render those same IDs.
+  for (const renderer of editor.canvasRenderers ?? []) {
+    renderer.invalidateAllPictures();
+  }
+  editor.replaceGraph(nextGraph);
   editor.state.panX = viewport.panX;
   editor.state.panY = viewport.panY;
   editor.state.zoom = viewport.zoom;

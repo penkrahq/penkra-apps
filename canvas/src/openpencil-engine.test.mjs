@@ -1596,6 +1596,32 @@ test("component instances expose their immediate authored descendant for hierarc
   assert.equal(graph.hitTestDeep(x, y, "Ue7jf")?.id, instanceLabel.id);
 });
 
+test("document refresh invalidates retained effect pictures before replacing same-ID nodes", () => {
+  const source = { children: [{ id: "card", type: "rectangle", width: 62, height: 87,
+    fill: "#FFFFFF", stroke: "#80A9FF", strokeWidth: 2,
+    effect: { type: "shadow", shadowType: "outer", color: "#00000044", blur: 5 },
+  }] };
+  const editor = createOpenPencilEditor(source);
+  const pictures = [new Map([["card", { strokeWidth: 2 }]]), new Map([["card", { strokeWidth: 2 }]])];
+  const renderers = pictures.map((cache) => ({ invalidateAllPictures() { cache.clear(); } }));
+  const wrapped = {
+    state: editor.state,
+    canvasRenderers: renderers,
+    get graph() { return editor.graph; },
+    replaceGraph(graph) {
+      for (const cache of pictures) assert.equal(cache.size, 0);
+      editor.replaceGraph(graph);
+    },
+    select: (...args) => editor.select(...args),
+    requestRender: () => editor.requestRender(),
+  };
+  source.children[0].strokeWidth = 1;
+  source.children[0].stroke = "#92B5FF";
+  refreshOpenPencilEditor(wrapped, source, "card");
+  assert.equal(editor.graph.getNode("card").strokes[0].weight, 1);
+  assert.deepEqual([...editor.state.selectedIds], ["card"]);
+});
+
 test("repeated document refresh keeps one editor, viewport, and selection", () => {
   const source = {
     version: "2.15",

@@ -221,16 +221,22 @@ async function showLibrary() {
     load: () => loadEveryDocumentPage(api.listDocuments),
     apply: (documents) => {
       if (state.route !== "library") return;
-      state.documents = documents;
+      const nextDocuments = documents.map((document) => ({
+        ...document,
+        module: document.projection?.module ?? null,
+        moduleLoaded: Object.hasOwn(document.projection ?? {}, "module"),
+      }));
+      state.documents = nextDocuments;
       state.loading = false;
       state.error = null;
       render();
-      void documentModuleLabels.load(documents, (id, module) => {
-        if (state.route !== "library" || state.documents !== documents) return;
-        const document = documents.find((candidate) => candidate.id === id);
+      const legacyDocuments = nextDocuments.filter((document) => !document.moduleLoaded);
+      if (legacyDocuments.length > 0) void documentModuleLabels.load(legacyDocuments, (id, module) => {
+        if (state.route !== "library" || state.documents !== nextDocuments) return;
+        const document = nextDocuments.find((candidate) => candidate.id === id);
         if (document) { document.module = module; document.moduleLoaded = true; }
         const label = root.querySelector(`[data-document-module="${CSS.escape(id)}"]`);
-        if (label) label.textContent = module ?? (module === null ? "Unassigned" : "Unavailable");
+        if (label) label.textContent = module ?? "Unavailable";
       });
     },
     onError: handleDocumentCollectionError,
@@ -937,7 +943,7 @@ function renderLibrary() {
     </div>
     ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
     ${documents.length ? `<section class="document-grid">${documents.map(documentCard).join("")}</section>` : `<section class="empty"><div>${icon("file")}<h2>No files here yet</h2><p>Create a design here. Shared files appear automatically when another owner adds your verified Account email.</p></div></section>`}
-  </div></main>${renderContextMenu()}${renderDialog()}${renderToast()}`;
+  </div></main>${renderDialog()}${renderToast()}`;
 }
 
 function renderTrash() {
@@ -961,7 +967,7 @@ function segment(key, label) {
 
 function documentCard(document) {
   const ownership = document.access === "owner" ? "Your file" : `Shared by ${document.ownerName ?? "another Account"}`;
-  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span data-document-module="${escapeHtml(document.id)}">${escapeHtml(document.module ?? (document.moduleLoaded ? document.module === null ? "Unassigned" : "Unavailable" : "Loading type…"))}</span><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
+  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span data-document-module="${escapeHtml(document.id)}">${escapeHtml(document.module ?? (document.moduleLoaded ? "Unassigned" : "Loading type…"))}</span><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
 }
 
 function trashCard(document) {
@@ -973,7 +979,7 @@ function renderContextMenu() {
   if (!menu) return "";
   const document = state.documents.find((item) => item.id === menu.documentId);
   if (!document || document.access !== "owner") return "";
-  return `<div class="context-menu-backdrop" data-action="close-context-menu"><div class="context-menu" role="menu" aria-label="${escapeHtml(document.title)} actions" style="left:${menu.x}px;top:${menu.y}px"><button role="menuitem" data-trash-document="${document.id}">${icon("trash")}<span>Move to Trash</span></button></div></div>`;
+  return `<div class="context-menu-backdrop" data-role="context-menu-layer" data-action="close-context-menu"><div class="context-menu" role="menu" aria-label="${escapeHtml(document.title)} actions" style="left:${menu.x}px;top:${menu.y}px"><button role="menuitem" data-trash-document="${document.id}">${icon("trash")}<span>Move to Trash</span></button></div></div>`;
 }
 
 function renderEditor() {
@@ -1482,25 +1488,10 @@ function bindLibrary() {
         x: Math.min(event.clientX, Math.max(8, innerWidth - 190)),
         y: Math.min(event.clientY, Math.max(8, innerHeight - 70)),
       };
-      render();
+      syncContextMenu();
     });
   });
-  root.querySelector('[data-action="close-context-menu"]')?.addEventListener("click", (event) => {
-    if (event.target !== event.currentTarget) return;
-    state.contextMenu = null;
-    render();
-  });
-  root.querySelectorAll("[data-trash-document]").forEach((button) => button.addEventListener("click", () => {
-    const document = state.documents.find((item) => item.id === button.dataset.trashDocument);
-    if (!document) return;
-    state.contextMenu = null;
-    state.dialog = documentTrashConfirmation(document, {
-      returnDialog: null,
-      returnFocusSelector: `[data-document-id="${document.id}"]`,
-    });
-    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
-    render();
-  }));
+  syncContextMenu();
   root.querySelectorAll("[data-restore-document]").forEach((button) => button.addEventListener("click", () => void act(async () => {
     await api.restoreDocument(button.dataset.restoreDocument);
     state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== button.dataset.restoreDocument);
@@ -1517,6 +1508,29 @@ function bindLibrary() {
   root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
   root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
   root.querySelector('[data-action="confirm-permanently-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
+}
+
+function syncContextMenu() {
+  root.querySelector('[data-role="context-menu-layer"]')?.remove();
+  const markup = renderContextMenu();
+  if (!markup) return;
+  root.insertAdjacentHTML("beforeend", markup);
+  root.querySelector('[data-action="close-context-menu"]')?.addEventListener("click", (event) => {
+    if (event.target !== event.currentTarget) return;
+    state.contextMenu = null;
+    syncContextMenu();
+  });
+  root.querySelector("[data-trash-document]")?.addEventListener("click", (event) => {
+    const document = state.documents.find((item) => item.id === event.currentTarget.dataset.trashDocument);
+    if (!document) return;
+    state.contextMenu = null;
+    state.dialog = documentTrashConfirmation(document, {
+      returnDialog: null,
+      returnFocusSelector: `[data-document-id="${document.id}"]`,
+    });
+    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
+    render();
+  });
 }
 
 function bindEditor() {

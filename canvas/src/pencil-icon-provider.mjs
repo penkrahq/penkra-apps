@@ -2,6 +2,7 @@ import { icons } from "lucide";
 import feather from "@iconify-json/feather/icons.json" with { type: "json" };
 import materialSymbols from "@iconify-json/material-symbols/icons.json" with { type: "json" };
 import phosphor from "@iconify-json/ph/icons.json" with { type: "json" };
+import svgpath from "svgpath";
 
 const ICON_PROVIDERS = new Map([
   ["lucide", (name) => lucideIcon(name)],
@@ -11,10 +12,78 @@ const ICON_PROVIDERS = new Map([
   ["Material Symbols Sharp", (name, weight) => materialIcon(name, "outline-sharp", weight)],
   ["phosphor", (name, weight) => phosphorIcon(name, weight)],
 ]);
+export const CANVAS_ICON_LIBRARIES = Object.freeze([...ICON_PROVIDERS.keys()]);
+const iconCatalogs = new Map();
 
 export function pencilIconDefinition(library, name, weight = 400) {
   if (typeof library !== "string" || typeof name !== "string") return null;
   return ICON_PROVIDERS.get(library)?.(name, normalizeWeight(weight)) ?? null;
+}
+
+export function searchCanvasIcons(query, options = {}) {
+  const normalizedQuery = String(query ?? "").trim().toLowerCase();
+  if (!normalizedQuery) throw new TypeError("Icon search requires a non-empty query.");
+  const limit = options.limit ?? 40;
+  if (!Number.isInteger(limit) || limit < 1 || limit > 100) {
+    throw new TypeError("Icon search limit must be an integer from 1 through 100.");
+  }
+  const libraries = options.library === undefined
+    ? CANVAS_ICON_LIBRARIES
+    : CANVAS_ICON_LIBRARIES.includes(options.library)
+      ? [options.library]
+      : (() => { throw new TypeError(`Unknown Canvas icon library ${JSON.stringify(options.library)}.`); })();
+  const terms = normalizedQuery.split(/\s+/u);
+  const matches = libraries.flatMap((library) => iconCatalog(library)
+    .filter((icon) => terms.every((term) => icon.includes(term)))
+    .map((icon) => ({ library, icon, rank: iconRank(icon, normalizedQuery) })));
+  matches.sort((left, right) => left.rank - right.rank
+    || left.icon.length - right.icon.length
+    || left.icon.localeCompare(right.icon)
+    || left.library.localeCompare(right.library));
+  return {
+    items: matches.slice(0, limit).map(({ library, icon }) => ({ library, icon })),
+    total: matches.length,
+    truncated: matches.length > limit,
+  };
+}
+
+function iconCatalog(library) {
+  if (iconCatalogs.has(library)) return iconCatalogs.get(library);
+  let names;
+  if (library === "lucide") names = Object.keys(icons).map(pascalToKebab);
+  else if (library === "feather") names = iconifyNames(feather);
+  else if (library === "phosphor") names = iconifyNames(phosphor);
+  else {
+    const suffix = ({
+      "Material Symbols Outlined": "-outline",
+      "Material Symbols Rounded": "-outline-rounded",
+      "Material Symbols Sharp": "-outline-sharp",
+    })[library];
+    names = iconifyNames(materialSymbols)
+      .filter((name) => name.endsWith(suffix))
+      .map((name) => name.slice(0, -suffix.length).replaceAll("-", "_"));
+  }
+  const catalog = Object.freeze([...new Set(names)].sort());
+  iconCatalogs.set(library, catalog);
+  return catalog;
+}
+
+function iconifyNames(collection) {
+  return [...Object.keys(collection.icons ?? {}), ...Object.keys(collection.aliases ?? {})];
+}
+
+function pascalToKebab(name) {
+  return name
+    .replace(/([a-z0-9])([A-Z])/gu, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/gu, "$1-$2")
+    .toLowerCase();
+}
+
+function iconRank(icon, query) {
+  if (icon === query) return 0;
+  if (icon.startsWith(`${query}-`) || icon.startsWith(`${query}_`)) return 1;
+  if (icon.split(/[-_]/u).includes(query)) return 2;
+  return 3;
 }
 
 // Serialization needs path data even where the interactive Canvas uses the
@@ -81,7 +150,9 @@ function iconifyIcon(collection, requestedName, paint) {
     if (!path) return [];
     const opacity = attributes.match(/\bopacity=(?:"([^"]+)"|'([^']+)')/u);
     return [{
-      geometry: isolateSvgSubpath(path[1] ?? path[2]),
+      geometry: paint === "fill"
+        ? closeSvgFillSubpaths(path[1] ?? path[2])
+        : isolateSvgSubpath(path[1] ?? path[2]),
       opacity: opacity ? Number(opacity[1] ?? opacity[2]) : 1,
     }];
   });
@@ -117,6 +188,19 @@ function isolateSvgSubpath(path) {
   // the current point before every source path preserves the complete command,
   // including relative coordinate pairs after its first moveto.
   return `M0 0 ${String(path)}`;
+}
+
+function closeSvgFillSubpaths(path) {
+  const normalized = svgpath(String(path)).abs().unshort().unarc().toString();
+  let firstMove = true;
+  const closed = normalized.replace(/M/gu, () => {
+    if (firstMove) {
+      firstMove = false;
+      return "M";
+    }
+    return "Z M";
+  });
+  return `${closed} Z`;
 }
 
 function primitivePath(element, attributes) {

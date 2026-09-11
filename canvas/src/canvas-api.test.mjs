@@ -21,7 +21,7 @@ test("Canvas API stays inside the generic project namespace", async () => {
   };
   const api = createCanvasApi(runtime);
   await api.listDocuments();
-  assert.equal(calls[0].path, "/projects?limit=100");
+  assert.equal(calls[0].path, "/projects?limit=100&projectionFields=module");
   assert.equal(calls[0].method, "GET");
 });
 

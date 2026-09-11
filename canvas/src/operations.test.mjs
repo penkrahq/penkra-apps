@@ -65,6 +65,7 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
     "documents.open",
     "documents.trash",
     "documents.undo",
+    "icons.search",
     "libraries.accept",
     "libraries.inspect",
     "libraries.publish",
@@ -75,6 +76,17 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
   assert.deepEqual(
     await handlers.get("documents.open")({ documentId: "document-1" }, context),
     { documentId: "document-1", tabId: "tab-1" },
+  );
+  assert.deepEqual(
+    await handlers.get("icons.search")({ query: "loader", library: "lucide", limit: 2 }),
+    {
+      items: [
+        { library: "lucide", icon: "loader" },
+        { library: "lucide", icon: "loader-circle" },
+      ],
+      total: 4,
+      truncated: true,
+    },
   );
 });
 
@@ -104,10 +116,10 @@ test("documents.list continues through Account pages until it finds the requeste
 
   const result = await handlers.get("documents.list")({ query: "requested", limit: 1 });
 
-  assert.deepEqual(result.items, [{ id: "match", title: "Requested design" }]);
+  assert.deepEqual(result.items, [{ id: "match", title: "Requested design", module: null }]);
   assert.deepEqual(paths, [
-    "/projects?limit=100",
-    "/projects?limit=100&cursor=page-2",
+    "/projects?limit=100&projectionFields=module",
+    "/projects?limit=100&projectionFields=module&cursor=page-2",
   ]);
 });
 

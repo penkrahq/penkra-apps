@@ -47,6 +47,7 @@ precise edits, and export the result. A Canvas document can contain:
 
 - role-bearing frames for slides, routes, and mobile screens, plus roleless physical frames for PDF pages;
 - nested layouts, groups, text, shapes, paths, icons, and images;
+- exact icon discovery across the bundled Lucide, Feather, Material Symbols, and Phosphor catalogs;
 - solid colors, gradients, strokes, opacity, blur, and shadows;
 - reusable components and instances with per-instance overrides;
 - variables and appearance axes that resolve differently per mode;

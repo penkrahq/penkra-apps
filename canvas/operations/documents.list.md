@@ -8,7 +8,9 @@ identifiers: they repeat, they change, and several documents in one Account are 
 usually the better first move when you do not already know the title.
 
 Each entry reports `access` as `owner` or `editor`. Only an owner can share, unshare, or trash a
-document; an editor can change content. `updatedAt` and `lastOpenedAt` are the reliable way to tell
+document; an editor can change content. `module` identifies whether the document is generic,
+deck, web, or mobile work; it is `null` only when an older stored projection does not expose that
+field. `updatedAt` and `lastOpenedAt` are the reliable way to tell
 several similarly named documents apart, and `lastOpenedAt` is usually what the user means by
 "the one I was just in".
 

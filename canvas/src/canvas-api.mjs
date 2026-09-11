@@ -31,7 +31,7 @@ export function createCanvasApi(runtime = globalThis.penkra) {
 
   const api = {
     listDocuments: (cursor) =>
-      request(`?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+      request(`?limit=100&projectionFields=module${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
     listTrash: (cursor) =>
       request(`/trash?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
     createDocument: ({ source, initialUpdate, ...input }) =>
