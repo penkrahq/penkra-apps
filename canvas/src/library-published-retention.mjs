@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256 } from "./sha256.mjs";
 import { validateLibraryRelease, releaseIdentity } from "./library-publication.mjs";
 import { buildRetainedCanvasImports } from "./library-retained-imports.mjs";
 import { prepareLibraryRetention } from "./library-retention-preparation.mjs";
@@ -26,7 +26,7 @@ export async function preparePublishedLibraryRetention(published, requestedItems
   const assets = new Map();
   const addAsset = (identity, descriptor, bytes) => {
     if (!(bytes instanceof Uint8Array) || bytes.length !== descriptor.size
-      || createHash("sha256").update(bytes).digest("hex") !== descriptor.sha256) throw integrity();
+      || sha256(bytes) !== descriptor.sha256) throw integrity();
     const key = assetKey(identity, descriptor.path);
     const prior = assets.get(key);
     if (prior && (prior.sha256 !== descriptor.sha256 || prior.size !== descriptor.size)) throw integrity();

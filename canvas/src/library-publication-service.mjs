@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256 } from "./sha256.mjs";
 import { loadCanvasImports, normalizeImportRecord } from "./canvas-imports.mjs";
 import { createLibraryRelease } from "./library-publication.mjs";
 
@@ -15,7 +15,7 @@ export async function prepareLibraryRelease(api, document, options) {
     if (ownedAssets.has(asset.path)) throw invalid(`Asset ${asset.path} is duplicated.`);
     const bytes = new Uint8Array(asset.bytes);
     ownedAssets.set(asset.path, bytes);
-    return { path: asset.path, sha256: createHash("sha256").update(bytes).digest("hex"), size: bytes.byteLength, ...(asset.mimeType === undefined ? {} : { mimeType: asset.mimeType }) };
+    return { path: asset.path, sha256: sha256(bytes), size: bytes.byteLength, ...(asset.mimeType === undefined ? {} : { mimeType: asset.mimeType }) };
   });
   // Retention is consumer-local transport metadata. Normalize the author's
   // records before removing it so accepted follow identities cannot be

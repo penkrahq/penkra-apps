@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256 } from "./sha256.mjs";
 import { preparePublicLibraryItemContent, releaseIdentity, validateLibraryRelease, validateRetainedLibraryItem } from "./library-publication.mjs";
 import { variableReferences } from "./variable-references.mjs";
 
@@ -67,7 +67,7 @@ export async function prepareLibraryRetention(rootRelease, requestedItems, reade
       const result = await readers.readAsset(releaseIdentity(release), structuredClone(descriptor));
       if (!(result instanceof Uint8Array)) throw invalid("CANVAS_IMPORT_INTEGRITY");
       const bytes = new Uint8Array(result);
-      if (bytes.length !== descriptor.size || createHash("sha256").update(bytes).digest("hex") !== descriptor.sha256) {
+      if (bytes.length !== descriptor.size || sha256(bytes) !== descriptor.sha256) {
         throw invalid("CANVAS_IMPORT_INTEGRITY");
       }
       assets.set(assetKey, { release: releaseIdentity(release), ...structuredClone(descriptor), bytes });

@@ -12,8 +12,11 @@ import {
 } from "./openpencil-engine.mjs";
 import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
-import { loadRetainedCanvasImports } from "./library-retained-loader.mjs";
-import { resolveCanvasDocument } from "./canvas-resolver.mjs";
+import {
+  libraryImportCompatibilityIssue,
+  loadEditorLibraryImports,
+  resolveEditorCanvasDocument,
+} from "./editor-library-imports.mjs";
 import {
   isPencilAuthorableNode,
   parsePencilAuthoringValue,
@@ -95,6 +98,7 @@ const state = {
   assets: new Map(),
   imports: Object.create(null),
   importSignature: null,
+  libraryImportError: null,
   importRefreshPromise: null,
   model: null,
   selectedId: null,
@@ -506,6 +510,7 @@ function closeDocument() {
   state.assets = new Map();
   state.imports = Object.create(null);
   state.importSignature = null;
+  state.libraryImportError = null;
   state.importRefreshPromise = null;
   state.persistence?.destroy();
   state.undo?.destroy();
@@ -564,7 +569,7 @@ async function refreshRetainedImports(documentId, force = false) {
     const source = currentMaterializedDocument();
     const signature = JSON.stringify(source.imports ?? {});
     if (!force && signature === state.importSignature) return false;
-    const retained = await loadRetainedCanvasImports(
+    const retained = await loadEditorLibraryImports(
       api,
       { ...source, imports: source.imports ?? {} },
       { documentId },
@@ -575,6 +580,7 @@ async function refreshRetainedImports(documentId, force = false) {
       continue;
     }
     state.imports = retained.imports;
+    state.libraryImportError = retained.error;
     state.importSignature = signature;
     state.assets = new Map([...state.assets, ...retained.assets]);
     invalidateDocumentProjection();
@@ -794,12 +800,9 @@ function currentRenderableDocument() {
       "document.resolve-imports",
       () => {
         const source = currentMaterializedDocument();
-        try { return resolveCanvasDocument(source, { imports: state.imports }).document; }
-        catch (error) {
-          const requested = Object.keys(source.imports ?? {}).join(",") || "none";
-          const loaded = Object.keys(state.imports ?? {}).join(",") || "none";
-          throw new Error(`${error.message} Requested imports: ${requested}. Loaded imports: ${loaded}.`, { cause: error });
-        }
+        const resolved = resolveEditorCanvasDocument(source, state.imports);
+        state.libraryImportError ??= resolved.error;
+        return resolved.document;
       },
       { documentId: state.document?.id },
     );
@@ -985,11 +988,16 @@ function renderEditor() {
   if (state.compatibilityDocument !== document) {
     state.compatibilityIssues = performanceMonitor.measure(
       "document.compatibility",
-      () => analyzeOpenPencilCompatibility(
-        document,
-        state.assets,
-        currentPreparedRenderDocument(),
-      ),
+      () => {
+        const issues = analyzeOpenPencilCompatibility(
+          document,
+          state.assets,
+          currentPreparedRenderDocument(),
+        );
+        const libraryIssue = libraryImportCompatibilityIssue(document, state.libraryImportError, state.document.id);
+        if (libraryIssue) issues.push(libraryIssue);
+        return issues;
+      },
       { documentId: state.document.id, nodes: documentNodes.length },
     );
     state.compatibilityNodeIds = new Set(state.compatibilityIssues.map((issue) => issue.nodeId));
@@ -1082,6 +1090,10 @@ function mountEditorSurface() {
         if (expandSelectedLayerAncestors(nodeId)) renderLayersTree();
         renderSelection();
         scrollSelectedLayerIntoView();
+      },
+      onDocumentLink: (targetDocumentId) => {
+        if (state.document?.id !== documentId || targetDocumentId === documentId) return;
+        void navigateToDocument(targetDocumentId);
       },
       onViewport: (viewport) => {
         if (state.document?.id !== documentId) return;

@@ -26,6 +26,7 @@ import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
 import { createTimeShaderAnimation } from "./time-shader-animation.mjs";
+import { createCanvasDocumentLinkInteraction } from "./document-links.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
@@ -219,6 +220,11 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
         overlayCanvas.hitTestComponentLabel,
         overlayCanvas.hitTestFrameTitle,
       );
+      const documentLinks = createCanvasDocumentLinkInteraction({
+        getDocument: () => sourceDocument,
+        getEditor: () => editor,
+        onOpen: (documentId) => callbacks.onDocumentLink?.(documentId),
+      });
       useTextEdit(overlayCanvasRef, editor);
       watch(() => editor.state.editingTextId, (nodeId, previousNodeId) => {
         if (previousNodeId && textEditSession?.nodeId === previousNodeId) {
@@ -254,6 +260,8 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
           class: "openpencil-surface openpencil-overlay-surface",
           tabindex: "0",
           "aria-label": "Canvas design viewport",
+          onPointerdown: documentLinks.pointerDown,
+          onClick: documentLinks.click,
           onPointermove: updateShaderMouse,
         }),
       ]);

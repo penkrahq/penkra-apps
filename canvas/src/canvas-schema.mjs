@@ -4,6 +4,7 @@ import {
   canonicalDescendantOverridesForComponent,
 } from "./component-descendants.mjs";
 import { normalizeCanvasDocumentAliases } from "./canvas-normalization.mjs";
+import { isCanvasDocumentId } from "./document-links.mjs";
 
 const DESCENDANT_OVERRIDE_PROPERTIES = new Set([
   "name", "x", "y", "width", "height", "rotation", "enabled", "fill",
@@ -89,7 +90,7 @@ export const CANVAS_SCHEMA = deepFreeze({
   node: {
     required: ["id", "type"],
     groups: {
-      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "bleed", "safeMargin", "folds", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
+      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "bleed", "safeMargin", "folds", "properties", "bind", "visible", "varies", "modes", "notesFor", "documentLink"], {
         id: { type: "string" }, type: { type: "enum", values: CANVAS_NODE_TYPES },
         name: { type: "string" }, x: { type: "number" }, y: { type: "number" },
         width: { type: "dimension" }, height: { type: "dimension" }, rotation: { type: "number" },
@@ -99,6 +100,7 @@ export const CANVAS_SCHEMA = deepFreeze({
         bleed: { type: "number" }, safeMargin: { type: "number" }, folds: { type: "array", items: { type: "number" } },
         properties: { type: "record", values: { ref: "property" } }, bind: { type: "record", values: { type: "string" } },
         visible: { type: "object" }, varies: { type: "array", items: { type: "string" } }, modes: { type: "record", values: { type: "string" } }, notesFor: { type: "string" },
+        documentLink: { type: "string", capability: false },
       }),
       layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip", "overflow"], {
         layout: { type: "enum", values: ["none", "horizontal", "vertical", "grid"] }, gap: { type: "canvas-value" }, rowGap: { type: "canvas-value" }, columnGap: { type: "canvas-value" },
@@ -162,6 +164,7 @@ export function validateCanvasDocument(document, options = {}) {
     else { nodes.set(node.id, node); parents.set(node.id, parent); }
     if (node.export !== undefined && !["default", "image"].includes(node.export)) errors.push(`${node.id}.export must be default or image.`);
     if (node.decorative === true && node.description != null) errors.push(`${node.id}.description and decorative are mutually exclusive.`);
+    if (node.documentLink !== undefined && !isCanvasDocumentId(node.documentLink)) errors.push(`${node.id}.documentLink must be a Canvas document UUID.`);
     if (node.role !== undefined && node.type !== "frame") errors.push(`${node.id}.role may only appear on a frame.`);
     else if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
     validateFrameGeometry(node, errors);

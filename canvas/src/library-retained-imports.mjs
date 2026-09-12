@@ -1,7 +1,6 @@
-import { createHash } from "node:crypto";
-
 import { normalizeImportRecord, validateCrossDocumentReferences } from "./canvas-imports.mjs";
 import { PUBLIC_ITEM_KINDS, publicItemKey, validateRetainedLibraryItem } from "./library-publication.mjs";
+import { sha256 } from "./sha256.mjs";
 import { variableReferences } from "./variable-references.mjs";
 
 const ALIAS_PATTERN = /^[A-Za-z][\w-]*$/u;
@@ -376,7 +375,7 @@ function snapshotRetentions(value) {
 }
 function identityKey(identity) { return JSON.stringify([identity.libraryId, identity.releaseId, identity.contentHash]); }
 function assetKey(identity, path) { return `${identityKey(identity)}\u0000${path}`; }
-function hash(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
+function hash(bytes) { return sha256(bytes); }
 function sameAsset(left, right) {
   if (left.path !== right.path || left.sha256 !== right.sha256 || left.size !== right.size || (left.mimeType ?? undefined) !== (right.mimeType ?? undefined)) return false;
   if (!(left.bytes instanceof Uint8Array) || !(right.bytes instanceof Uint8Array)) return left.bytes === undefined && right.bytes === undefined;

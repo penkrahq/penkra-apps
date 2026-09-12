@@ -49,6 +49,7 @@ precise edits, and export the result. A Canvas document can contain:
 - nested layouts, groups, text, shapes, paths, icons, and images;
 - solid colors, gradients, strokes, opacity, blur, and shadows;
 - reusable components and instances with per-instance overrides;
+- linked cards and controls that open another Canvas document when clicked;
 - variables and appearance axes that resolve differently per mode;
 - review screenshots that show the saved design without editor controls.
 
@@ -93,3 +94,8 @@ Document IDs identify designs; node IDs identify layers within a design; tab IDs
 Canvas surfaces. Resolve each from Canvas or Penkra results instead of inferring it from a title or
 screen position, and copy an identifier from the result that produced it rather than reconstructing
 one from memory.
+
+Set a visual node's `documentLink` to the exact Canvas document UUID when it should open that
+document on a normal click. A link on a frame or group also applies when one of its descendants is
+clicked. A person can hold Command, Control, Alt, or Shift while clicking to select and edit the
+linked object without following it.
