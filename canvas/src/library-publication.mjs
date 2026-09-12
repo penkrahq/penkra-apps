@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256 as hashSha256 } from "./sha256.mjs";
 import { variableReferences } from "./variable-references.mjs";
 
 export const LIBRARY_RELEASE_SCHEMA = "com.penkra.canvas.library-release/1";
@@ -273,7 +273,7 @@ function canonicalJson(value) {
   throw libraryError("Library release content is not canonical JSON.");
 }
 
-function sha256(value) { return createHash("sha256").update(value).digest("hex"); }
+function sha256(value) { return hashSha256(value); }
 function compareIdentifiers(left, right) { return left < right ? -1 : left > right ? 1 : 0; }
 function comparePublicItems(left, right) { return compareIdentifiers(left.kind, right.kind) || compareIdentifiers(left.id, right.id); }
 function releaseIdentifier(value, name) { if (typeof value !== "string" || !value || /[\u0000-\u001f\u007f]/u.test(value)) throw libraryError(`${name} must be a non-empty identifier.`); return value; }

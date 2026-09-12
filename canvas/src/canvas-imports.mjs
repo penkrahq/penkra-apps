@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256 } from "./sha256.mjs";
 import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 import { assertPublicLibraryItem, PUBLIC_ITEM_KINDS, releaseIdentity, validateLibraryRelease } from "./library-publication.mjs";
 import { variableReferences } from "./variable-references.mjs";
@@ -175,7 +175,7 @@ async function readReleaseAsset(api, options, release, asset) {
   if (!read) throw importError(`Published asset ${asset.path} requires a release asset reader.`, "CANVAS_IMPORT_ASSET_READER_REQUIRED");
   const bytes = await read(releaseIdentity(release), asset);
   if (!(bytes instanceof Uint8Array) || bytes.byteLength !== asset.size) throw importError(`Published asset ${asset.path} has inconsistent bytes.`, "CANVAS_IMPORT_INTEGRITY");
-  if (createHash("sha256").update(bytes).digest("hex") !== asset.sha256) throw importError(`Published asset ${asset.path} failed its content hash check.`, "CANVAS_IMPORT_INTEGRITY");
+  if (sha256(bytes) !== asset.sha256) throw importError(`Published asset ${asset.path} failed its content hash check.`, "CANVAS_IMPORT_INTEGRITY");
   return bytes;
 }
 

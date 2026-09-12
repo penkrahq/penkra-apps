@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { sha256 } from "./sha256.mjs";
 import { validateLibraryStorageDescriptor } from "./canvas-schema.mjs";
 import { normalizeImportRecord } from "./canvas-imports.mjs";
 import { validateLibraryRelease } from "./library-publication.mjs";
@@ -238,6 +238,6 @@ function validateRetentionShape(retention, allowStoredAssets) {
 function validateDescriptor(value) {
   validateLibraryStorageDescriptor(value);
 }
-function hash(bytes) { return createHash("sha256").update(bytes).digest("hex"); }
+function hash(bytes) { return sha256(bytes); }
 function invalid(code) { return Object.assign(new Error("Canvas library storage failed validation."), { code }); }
 function plainObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
