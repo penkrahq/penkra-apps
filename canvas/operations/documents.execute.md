@@ -65,6 +65,7 @@ Common properties include:
 | `overflow` | Frame viewport behavior: `visible`, `clip`, `scroll-x`, `scroll-y`, or `scroll-both` |
 | `flipX`, `flipY` | Horizontal or vertical reflection |
 | `theme` | Existing theme override retained with the node |
+| `documentLink` | Exact Canvas document UUID opened when the node or one of its descendants is clicked |
 
 Useful node types:
 
@@ -92,6 +93,12 @@ string. They do not render as design layers, so create them only when the user w
 stored with the document. A script node depends on an existing `scriptUri` resource and `inputs`;
 this operation cannot create that external resource, so preserve existing script nodes rather than
 inventing new ones.
+
+A frame, group, shape, text, icon, or component instance may set `documentLink` to another Canvas
+document's exact UUID. A normal click on that node, or on a descendant of a linked frame or group,
+opens the destination. Holding Command, Control, Alt, or Shift preserves ordinary selection and
+editing instead. Use this for catalogue cards and document hubs; it is Canvas editor navigation,
+not an exported website or presentation hyperlink.
 
 Use top-level frames for slides, routes, screens, physical PDF pages, and reusable component definitions. A new document
 already contains the `starterFrameId` returned by `documents.create`; update or replace that frame

@@ -1091,6 +1091,10 @@ function mountEditorSurface() {
         renderSelection();
         scrollSelectedLayerIntoView();
       },
+      onDocumentLink: (targetDocumentId) => {
+        if (state.document?.id !== documentId || targetDocumentId === documentId) return;
+        void navigateToDocument(targetDocumentId);
+      },
       onViewport: (viewport) => {
         if (state.document?.id !== documentId) return;
         state.engineViewport = viewport;

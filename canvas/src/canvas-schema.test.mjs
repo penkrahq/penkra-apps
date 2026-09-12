@@ -4,6 +4,17 @@ import { assertCapabilityTotality, capabilityPathInventory, validateCanvasDocume
 
 function document() { return { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", children: [{ id: "copy", type: "text", content: "Hi", paragraphs: [{ from: 0, to: 2 }], marks: [] }] }] }; }
 
+test("nodes accept only valid Canvas document links", () => {
+  const source = document();
+  source.children[0].documentLink = "8e29a956-ffec-4f9c-a85b-7ee006042c89";
+  assert.equal(validateCanvasDocument(source).valid, true);
+  for (const documentLink of ["", "another-document", [], {}, 7, null]) {
+    const invalid = structuredClone(source);
+    invalid.children[0].documentLink = documentLink;
+    assert.throws(() => validateCanvasDocument(invalid), /documentLink/u);
+  }
+});
+
 test("published import identities and explicit public surfaces are structural document data", () => {
   const source = document();
   source.library = { public: [{ kind: "component", id: "slide" }] };
