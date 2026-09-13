@@ -167,7 +167,10 @@ asset namespacing and inline ref expansion are implemented. The deliberate migra
 one source projection, applies all transforms best-effort, validates and creates a copy, transfers
 assets, verifies the copied projection, writes a per-document prose Markdown report, and then renames
 the untouched original as superseded. Failed copies go to recoverable Trash. M4 materializes refs;
-M5 deletes editor chrome; ambiguous M10/M11 cases never block. No production migration was run.
+M5 deletes editor chrome; ambiguous M10/M11 cases never block. The fifteen-document legacy corpus
+completed this pipeline on 2026-09-07: every copied projection and asset inventory was read back,
+fourteen owned sources were renamed only after verification, and the one shared editor source was
+left unchanged. The run evidence is in `research/migration-0.2.60-20260907/`.
 
 ## Stage 7 — exporter IR — implementation complete, constants resolved
 
@@ -257,7 +260,10 @@ every unsupported construct is explicitly raster or ignore. US-8 passes. This cl
 
 - Canvas full suite: 433/433 PASS.
 - Canvas production build: PASS; unresolved native claims are explicit raster fallbacks.
-- Packaged Canvas app validation and final sideload: pending Penkra 0.12.6 host validation.
+- Packaged Canvas 0.2.83 validation and final sideload on Penkra Dev 0.12.6: PASS. All 24 declared
+  operations and root help passed immutable-package validation; runtime readiness completed in
+  385 ms. Package digest: `ed28e2a7d002db1e5430bf409f9fdde1b292a3fad6f1009a27f11f48dde232b0`
+  (70,619,763 bytes).
 - Backend: 220/220 PASS; contracts and server typechecks PASS.
 - Host focused App-platform suite: 70/70 PASS; SDK and desktop typechecks PASS.
 - Pinned mobile fixture compiles: PASS.
@@ -267,11 +273,10 @@ every unsupported construct is explicitly raster or ignore. US-8 passes. This cl
 
 ## Unclosed gates, consolidated
 
-These are not “implementation is probably fine” claims. They are the exact missing evidence or
-architecture input:
-
-1. Stage 6: production migration is a separately authorized one-document-at-a-time action; no
-   automatic or corpus-wide migration gate remains.
+The remaining evidence boundaries are external PowerPoint line-breaking/no-font reopen validation
+and PDF/X-4 preflight on a conforming runner. The implementation fails closed rather than claiming
+either result without that evidence. The production Canvas publication is an operational release
+dependency on Penkra 0.12.6, not an unresolved Canvas implementation gate.
 
 ## Pencil file-compatibility deletion verification — 2026-09-04
 

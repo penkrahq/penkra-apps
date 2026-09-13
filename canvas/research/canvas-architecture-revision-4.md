@@ -4809,8 +4809,11 @@ handshake, manifest, census, and sequencing passages remain only as historical r
   M1–M18 best-effort transforms, validates a new copy, transfers assets, verifies the copied
   projection, writes one prose Markdown report beside the run, and then renames the untouched
   original as superseded. A failed copy goes to recoverable Trash.
-- All fifteen current Canvas documents are in scope for that deliberate pipeline. They are processed
-  one at a time; this scope statement is not a census, registration requirement, or open-path gate.
+- The fifteen-document legacy corpus completed that pipeline on 2026-09-07. Each copied projection
+  and asset inventory was read back before its owned source was renamed; the one shared source on
+  which the account had editor access remained unchanged. The evidence is in
+  `research/migration-0.2.60-20260907/`. Any future migration remains a deliberate one-document run,
+  never an open-path action.
 - There are no reviewed manifests, manifest registry, evidence schema, source-sequence pin, corpus
   registration requirement, or census gate. An ambiguous case takes the reasonable transform and is
   recorded under dropped, approximated, or inferred behavior in the prose report; it does not block.
