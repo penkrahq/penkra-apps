@@ -1,9 +1,10 @@
-# Opening a scoped resource
+# Opening a local resource
 
-Use this operation with one current host-minted handle, the matching `kind` (`file` or
-`directory`), and the user-facing resource name. All three describe the same granted resource.
-Never infer a handle from a path or substitute a path as the handle ID.
+Use this operation with one absolute local `path` supplied by the host-open flow.
+
+When the path identifies a file, Explorer opens its containing directory and selects and previews
+that file while keeping its siblings visible.
 
 The result returns the visible Explorer `tabId`. Snapshot that exact tab before claiming what the
-preview displayed or interacting with its controls. An unknown or expired handle requires reopening
-the resource through Penkra; a kind mismatch requires correcting the resource description.
+preview displayed or interacting with its controls. A missing path requires reopening the resource
+through Penkra.

@@ -1,30 +1,31 @@
 # Explorer
 
-## What this App is
+Explorer browses, searches, previews, and manages local files. A trusted Node controller does the
+filesystem work; the sandboxed tab handles presentation and interaction.
 
-Explorer browses, searches, previews, and manages files through Penkra-scoped access. It operates on
-host-minted file and directory handles, not arbitrary paths. A handle represents an explicitly
-granted resource and cannot be constructed from a filename or filesystem path.
+## Paths come from the host
 
-## Before you write anything
+Explorer works on absolute paths supplied by a trusted open flow. Use the exact path the host gave
+you. When a path is missing, has moved, or no longer exists, re-establish it through that flow
+rather than guessing a replacement — a plausible-looking path is not the same file, and Explorer
+cannot tell the difference.
 
-Resolve the current handle from a trusted Penkra flow and keep all work within that grant. A visible
-Explorer tab has a separate Penkra `tabId`; a tab ID does not identify or expand the underlying file
-scope. Preview support or a handle failure never broadens access.
+A filesystem path and a Penkra `tabId` are different identifiers. A visible Explorer tab has its own
+tab ID; it is not a path, and neither substitutes for the other.
 
-## How to do the common thing
+## Opening things
 
-Use `penkra open` when the user supplies a path or URL and no current handle exists, then preserve
-the handle it returns. Explorer can edit supported text files and preview common text, image, and PDF
-formats within the granted handle. Use Penkra tab operations for screenshots and visible interaction.
+Use `penkra open` when the user gives a path or URL, so the Space's configured handler decides where
+it goes. Opening a file shows its containing directory with the file selected, so the user keeps the
+surrounding context — which is usually why they asked.
 
-## Reference
+`explorer resources.open` opens one exact path directly and returns its tab ID. Reach for it when
+Explorer is specifically what the user wants.
 
-Use `explorer --help` for operation discovery and the exact operation's leaf help for how and when to
-open a scoped resource. Handles, filesystem paths, and visible tab IDs are separate identifiers.
+## What it can do
 
-## When things fail
+Explorer edits supported text files, previews common text, image, and PDF formats, and reveals
+entries in Finder.
 
-Re-establish the intended resource through a trusted open flow when a handle is missing, expired, or
-outside its grant. Do not manufacture a handle from a path, widen the scope, or substitute direct
-filesystem access for an Explorer operation.
+Preview support tells you a file can be displayed. It is not permission to open a different file
+than the one requested.

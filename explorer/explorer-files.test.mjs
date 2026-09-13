@@ -7,6 +7,7 @@ import {
   forgetExplorerRoot,
   listDirectory,
   readEntry,
+  resolveEntryPath,
   restoreExplorerRoot,
   watchEntry,
   writeTextEntry,
@@ -81,4 +82,31 @@ test("reads a file through bounded binary chunks", async () => {
     files,
   );
   assert.equal(await blob.text(), "hello");
+});
+
+test("routes path-backed work through private controller handlers", async () => {
+  const calls = [];
+  globalThis.penkra = {
+    controller: {
+      async invoke(handler, input) {
+        calls.push([handler, input]);
+        if (handler === "explorer.listDirectory") return [];
+        if (handler === "explorer.resolvePath") return "/workspace/app.js";
+        if (handler === "explorer.readBinary") {
+          return { base64: "aGVsbG8=", totalBytes: 5, complete: true };
+        }
+        return null;
+      },
+    },
+  };
+  const root = { path: "/workspace" };
+  await listDirectory(root, "src");
+  assert.equal(await resolveEntryPath(root, "app.js"), "/workspace/app.js");
+  assert.equal(await (await readEntry(root, "README.md")).text(), "hello");
+  assert.deepEqual(calls.map(([handler]) => handler), [
+    "explorer.listDirectory",
+    "explorer.resolvePath",
+    "explorer.readBinary",
+  ]);
+  delete globalThis.penkra;
 });

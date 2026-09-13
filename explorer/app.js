@@ -4,12 +4,14 @@ import {
 } from "./explorer-model.mjs";
 import {
   chooseExplorerRoot, createDirectory, forgetExplorerRoot, listDirectory, readEntry,
-  rememberExplorerRoot, restoreExplorerRoot, statEntry, watchEntry, writeTextEntry,
+  rememberExplorerRoot, resolveEntryPath, restoreExplorerRoot, statEntry, watchEntry, writeTextEntry,
 } from "./explorer-files.mjs";
 import { createEditor, renderMarkdown, runEditorHistoryShortcut } from "./vendor/editor-runtime.mjs";
 
 const runtime = globalThis.penkra;
-if (!runtime?.files || !runtime?.tab) throw new Error("Explorer requires the Penkra App runtime.");
+if (!runtime?.files || !runtime?.tab || !runtime?.controller || !runtime?.shell) {
+  throw new Error("Explorer requires the Penkra App runtime.");
+}
 
 const icons = {
   back: '<path d="m15 18-6-6 6-6"/>', forward: '<path d="m9 18 6-6-6-6"/>',
@@ -46,6 +48,7 @@ let activationSequence = 0;
 let searchTimer = null;
 let typeahead = { value: "", timer: null };
 let resizing = null;
+let pendingRevealPath = null;
 
 function icon(name, className = "") {
   return `<svg class="${className}" aria-hidden="true" viewBox="0 0 24 24">${icons[name]}</svg>`;
@@ -64,7 +67,10 @@ function cleanupObjectUrl() {
 }
 
 function cleanupMarkdownUrls() {
-  for (const url of markdownUrls) void runtime.files.closeUrl(url).catch(() => undefined);
+  for (const url of markdownUrls) {
+    URL.revokeObjectURL(url);
+    void runtime.files.closeUrl(url).catch(() => undefined);
+  }
   markdownUrls = new Set();
 }
 
@@ -103,7 +109,11 @@ function makeDraft(source) {
 async function activateHandle(handle) {
   if (!handle) return;
   const sequence = ++activationSequence;
-  cleanupObjectUrl(); cleanupMarkdownUrls(); cleanupEditor(); cleanupWatchers();
+  const sameRoot = handle.path
+    ? state.handle?.path === handle.path
+    : Boolean(handle.id && state.handle?.id === handle.id);
+  cleanupObjectUrl(); cleanupMarkdownUrls(); cleanupEditor();
+  if (!sameRoot) cleanupWatchers();
   Object.assign(state, {
     handle, root: null, directoryCache: new Map(), expanded: new Set(), selected: null,
     preview: null, error: null, loading: true, history: [], historyIndex: -1, drafts: new Map(),
@@ -116,6 +126,21 @@ async function activateHandle(handle) {
     if (state.root.kind === "directory") {
       state.expanded.add("");
       await loadDirectory("", false, true);
+      if (handle.selectedRelativePath) {
+        const selected = await statEntry(handle, handle.selectedRelativePath);
+        if (sequence !== activationSequence) return;
+        state.selected = selected;
+        state.focusedPath = selected.relativePath;
+        pendingRevealPath = selected.relativePath;
+        pushHistory(selected.relativePath);
+        if (selected.kind === "directory") {
+          state.expanded.add(selected.relativePath);
+          await loadDirectory(selected.relativePath, false, true);
+        } else {
+          await loadPreview(selected);
+          void ensureWatcher(parentRelative(selected.relativePath));
+        }
+      }
     } else {
       state.selected = state.root;
       pushHistory("");
@@ -257,6 +282,7 @@ async function reconcileSelectedEntry(parentPath, entries) {
 
 async function selectEntry(entry, recordHistory = true) {
   state.selected = entry; state.focusedPath = entry.relativePath; state.error = null;
+  pendingRevealPath = entry.relativePath;
   state.preview = null; state.menuOpen = false;
   if (recordHistory) pushHistory(entry.relativePath);
   if (entry.kind === "directory") {
@@ -460,6 +486,11 @@ function render() {
     nextSearch?.focus({ preventScroll: true });
     if (nextSearch && searchSelection.start !== null && searchSelection.end !== null) nextSearch.setSelectionRange(searchSelection.start, searchSelection.end, searchSelection.direction ?? "none");
   } else if (state.focusedPath !== null) focusTreePath(state.focusedPath, false);
+  if (pendingRevealPath !== null) {
+    const revealPath = pendingRevealPath;
+    pendingRevealPath = null;
+    treeRowForPath(revealPath)?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
   mountEditor();
   void hydrateMarkdownPreview();
   hydrateSvgPreview();
@@ -556,8 +587,15 @@ async function hydrateMarkdownPreview() {
     const relativePath = resolveMarkdownPath(base, source);
     if (!relativePath) continue;
     try {
-      const url = await runtime.files.open(state.handle.id, relativePath);
-      if (sequence !== activationSequence || !image.isConnected) { await runtime.files.closeUrl(url).catch(() => undefined); continue; }
+      const localUrl = Boolean(state.handle.path);
+      const url = localUrl
+        ? URL.createObjectURL(await readEntry(state.handle, relativePath))
+        : await runtime.files.open(state.handle.id, relativePath);
+      if (sequence !== activationSequence || !image.isConnected) {
+        if (localUrl) URL.revokeObjectURL(url);
+        else await runtime.files.closeUrl(url).catch(() => undefined);
+        continue;
+      }
       markdownUrls.add(url); image.src = url;
     } catch { image.removeAttribute("src"); image.classList.add("is-unavailable"); }
   }
@@ -603,6 +641,10 @@ async function createFolder(form) {
 
 async function showInFinder(entry) {
   if (!state.handle) return;
+  if (state.handle.path) {
+    await runtime.shell.showItemInFolder(await resolveEntryPath(state.handle, entry.relativePath));
+    return;
+  }
   const relativePath = finderRelativePath(entry);
   await runtime.open({ handleId: state.handle.id, ...(relativePath ? { relativePath } : {}), with: "system" });
 }
@@ -620,10 +662,14 @@ async function savePath(path = currentPath()) {
 }
 
 function focusTreePath(path, scroll = true) {
-  const target = [...root.querySelectorAll("button[data-path]")].find((row) => row.dataset.path === path);
+  const target = treeRowForPath(path);
   if (!target) return;
   for (const row of root.querySelectorAll("button[data-path]")) row.tabIndex = row === target ? 0 : -1;
   target.focus({ preventScroll: !scroll }); state.focusedPath = path;
+}
+
+function treeRowForPath(path) {
+  return [...root.querySelectorAll("button[data-path]")].find((row) => row.dataset.path === path);
 }
 
 async function toggleDirectory(path, forceOpen) {
@@ -770,7 +816,9 @@ window.addEventListener("keydown", (event) => {
 window.addEventListener("beforeunload", (event) => { if (hasDirtyDrafts()) { event.preventDefault(); event.returnValue = ""; } });
 
 runtime.tab.onNavigate(async ({ route, state: navigationState }) => {
-  if (route === "/open" && navigationState?.id) await activateHandle(navigationState);
+  if (route === "/open" && (navigationState?.path || navigationState?.id)) {
+    await activateHandle(navigationState);
+  }
 });
 
 async function bootstrap() {

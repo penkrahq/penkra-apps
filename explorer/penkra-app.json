@@ -12,16 +12,14 @@
   "operations": [
     {
       "key": "resources.open",
-      "summary": "Open one host-minted file or directory handle in Explorer and return its tabId; use penkra open first when you have only a path, never a handle.",
+      "summary": "Open one local file or directory path in Explorer and return its tabId.",
       "instructionsPath": "operations/resources.open.md",
       "input": {
         "type": "object",
         "properties": {
-          "handleId": { "type": "string", "minLength": 1 },
-          "kind": { "enum": ["file", "directory"] },
-          "name": { "type": "string", "minLength": 1 }
+          "path": { "type": "string", "minLength": 1 }
         },
-        "required": ["handleId", "kind", "name"],
+        "required": ["path"],
         "additionalProperties": false
       },
       "output": {
@@ -30,7 +28,7 @@
         "required": ["tabId"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Open a host-approved project directory", "input": { "handleId": "handle_01HXYZ", "kind": "directory", "name": "Penkra" } }],
+      "examples": [{ "name": "Open a local project directory", "input": { "path": "/Users/example/Penkra" } }],
       "handler": "resources.open"
     }
   ],
@@ -39,6 +37,7 @@
       {
         "intent": "open-file",
         "operation": "resources.open",
+        "input": "path",
         "extensions": [
           ".bash",
           ".c",
@@ -90,7 +89,7 @@
           ".zsh"
         ]
       },
-      { "intent": "open-directory", "operation": "resources.open" }
+      { "intent": "open-directory", "operation": "resources.open", "input": "path" }
     ]
   }
 }
