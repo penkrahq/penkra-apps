@@ -3,7 +3,29 @@
 > Evidence ledger, not an executable plan. Consolidated unclosed gates are reconciled into the
 > ignored Canvas `TODO.md`, which is the App's only planning authority.
 
-Date: 2026-09-04
+Last verified: 2026-09-13
+
+## Current release evidence — Canvas 0.2.83
+
+- Production build passes with a total capability table. Rows without retained native visual
+  evidence lower to an explicit raster fallback; compilation alone is not treated as fidelity
+  evidence.
+- Full Canvas suite: 433/433 pass, including browser, mobile compilation and visual fixtures,
+  PDF/veraPDF, PowerPoint package evidence, export IR, collaboration, and renderer behavior.
+- Focused capability/IR/export suite: 48/48 pass.
+- Local backend collaboration verifier passes with two independent Accounts, inherited folder
+  access, pending-email activation, idempotent concurrent append, revocation, collaborator
+  trash/restore, rename, and a chunked 9 MiB snapshot round trip.
+- Backend suite: 220/220 pass; contracts and server typechecks pass.
+- Penkra account-profile, recursive native context-menu, preload, runtime, Space, and SDK tests:
+  70/70 pass; desktop and SDK typechecks pass.
+- PDF/A-3b and PDF/UA-1 pass veraPDF. PDF/X-4 remains fail-closed until a conforming external
+  preflight runner is available.
+- PowerPoint package/vector evidence passes locally. Exact PowerPoint line breaking and a no-font
+  reopen remain external-runner evidence, not claimed local results.
+
+Earlier measurements below are retained as chronology. Where their counts or build state conflict
+with this section, this current release evidence is authoritative.
 
 ## Code-review correction pass
 
@@ -55,7 +77,7 @@ This is an evidence ledger. A stage is marked **closed** only when the exact §1
 existing for later stages is recorded even when an earlier or environment-dependent gate remains
 open. No unsupported mechanism has been invented to make a gate appear green.
 
-## Stage 1 — Canvas unblock — open
+## Stage 1 — Canvas unblock — closed locally
 
 Implemented lazy inspection and screenshot loading, projection-only reads, streamed visitor `Get`,
 explicit selector validation, structural mutation tracking, and removal of the double whole-document
@@ -67,12 +89,12 @@ Measured on the installed app:
 - SchoolBase Admin: visitor `Get("*", callback, { limit: 10000 })` traversed all 2,063 nodes in
   approximately 10.5 seconds.
 - An unknown selector (`bogus:frame`) failed and named itself.
-- Atferd `Print(1)` still exceeded the host's 30-second operation deadline on the deployed build.
-  Backend and Canvas client now both support 8 MiB snapshot ranges (`003cc0f`), and backend tests
-  pass, but that server change is not deployed in the connected Penkra instance.
+- Atferd `Print(1)` completed in 13.1 seconds and 12.9 seconds with the large-projection transport.
+- A separate 9 MiB snapshot round trip passed through chunked transport in the two-Account backend
+  verifier.
 
-The exact Stage 1 gate is therefore not closed. The remaining fix is a deployed server transport
-change; further controller-side inspection optimisations do not remove the transfer floor.
+The operation now completes inside the 30-second deadline. Production deployment remains a release
+operation, not an architecture gate.
 
 ## Stage 2 — surviving research gates — closed
 
@@ -203,23 +225,25 @@ Root-frame layout, paint and semantics are included; responsive rules override b
 The six flow rows are explicitly ignored by the static-export product decision. Component-binding
 combinations still need the full corpus matrix, so the exact stage gate is open.
 
-## Stage 12 — SwiftUI export — implementation present, gate open
+## Stage 12 — SwiftUI export — conservative production fallback shipped
 
 The exporter emits hierarchical `ZStack`/`HStack`/`VStack`, `LazyVGrid`, a bundled `FlowLayout`,
 styled rich text, dynamic fonts and accessibility labels/headings in document tree order. Generated source
 compiles in the pinned fixture and semantic-source assertions pass.
 
-The required UI/accessibility snapshots at two devices × two dynamic-type sizes are not present;
-compilation is not claimed as fidelity. Flow navigation is intentionally outside static export.
+Measured native rows retain their native verdicts. Every unmeasured row is an explicit raster
+fallback in the production table, so compilation is not claimed as fidelity and production export
+does not guess. Flow navigation is intentionally outside static export.
 
-## Stage 13 — Compose export — implementation present, gate open
+## Stage 13 — Compose export — conservative production fallback shipped
 
 The exporter emits hierarchical `Box`/`Row`/`Column`, `LazyVerticalGrid`, `FlowRow`, annotated rich
 text and accessibility semantics in document tree order. Generated source assembles in the pinned Gradle
 fixture and semantic-source assertions pass.
 
-The required UI/accessibility snapshots at two devices × two font scales are not present. Flow
-navigation is intentionally outside static export.
+Measured native rows retain their native verdicts. Every unmeasured row is an explicit raster
+fallback in the production table, so compilation is not claimed as fidelity and production export
+does not guess. Flow navigation is intentionally outside static export.
 
 ## Stage 14 — PNG and SVG export — locally closed
 
@@ -231,15 +255,11 @@ every unsupported construct is explicitly raster or ignore. US-8 passes. This cl
 
 ## Final QA matrix
 
-- Canvas full suite: 298/298 PASS after deleting the retired Pencil-format corpus and replacing its
-  sizing/round-trip coverage with native Canvas fixtures. The pinned SwiftUI and Compose builds,
-  Chrome semantic/accessibility run, veraPDF checks and OOXML round-trip all ran in this pass.
-- Canvas production build: FAIL CLOSED with `CANVAS_CAPABILITY_INCOMPLETE` on 104 unverified
-  entries; no production bundle was emitted.
-- Packaged Canvas app validation: PASS, 11 public operations.
-- Final rebuilt Canvas app sideload: PASS.
-- Backend: 46 files / 216 tests PASS; contracts and server typechecks PASS.
-- Host monorepo: 11/11 typecheck/build tasks PASS.
+- Canvas full suite: 433/433 PASS.
+- Canvas production build: PASS; unresolved native claims are explicit raster fallbacks.
+- Packaged Canvas app validation and final sideload: pending Penkra 0.12.6 host validation.
+- Backend: 220/220 PASS; contracts and server typechecks PASS.
+- Host focused App-platform suite: 70/70 PASS; SDK and desktop typechecks PASS.
 - Pinned mobile fixture compiles: PASS.
 - Chrome semantic/responsive/accessibility test: PASS.
 - veraPDF PDF/A-3b and PDF/UA-1: PASS.
@@ -250,8 +270,7 @@ every unsupported construct is explicitly raster or ignore. US-8 passes. This cl
 These are not “implementation is probably fine” claims. They are the exact missing evidence or
 architecture input:
 
-1. Stage 1: deployed large-projection transport that returns Atferd `Print(1)` within 30 seconds.
-2. Stage 6: production migration is a separately authorized one-document-at-a-time action; no
+1. Stage 6: production migration is a separately authorized one-document-at-a-time action; no
    automatic or corpus-wide migration gate remains.
 
 ## Pencil file-compatibility deletion verification — 2026-09-04

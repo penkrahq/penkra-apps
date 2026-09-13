@@ -13,19 +13,22 @@ export function useCanvasResizeObserver({
   getCanvasKitValue,
   resizeCanvas
 }: ResizeObserverOptions) {
-  let resizeRaf = 0
+  let stopped = false
+  let resizing = false
 
   function cancelResize() {
-    cancelAnimationFrame(resizeRaf)
+    stopped = true
   }
 
   useResizeObserver(canvasRef, () => {
     const canvas = canvasRef.value
-    if (!canvas || !getCanvasKitValue() || resizeRaf) return
-    resizeRaf = requestAnimationFrame(() => {
-      resizeRaf = 0
+    if (stopped || resizing || !canvas || !getCanvasKitValue()) return
+    resizing = true
+    try {
       resizeCanvas(canvas)
-    })
+    } finally {
+      resizing = false
+    }
   })
 
   return { cancelResize }

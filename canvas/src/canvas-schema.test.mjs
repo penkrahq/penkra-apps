@@ -4,10 +4,43 @@ import { assertCapabilityTotality, capabilityPathInventory, validateCanvasDocume
 
 function document() { return { version: "2.15", module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "slide", type: "frame", role: "slide", children: [{ id: "copy", type: "text", content: "Hi", paragraphs: [{ from: 0, to: 2 }], marks: [] }] }] }; }
 
+test("physical sizing, bleed and advisory guides belong to frames in any module", () => {
+  for (const module of ["generic", "deck", "web", "mobile"]) {
+    const source = document();
+    source.module = module;
+    delete source.children[0].role;
+    Object.assign(source.children[0], { width: 300, height: 200, physical: { w: 150, h: 100, unit: "mm" }, bleed: 9, safeMargin: 12, folds: [100, 200] });
+    assert.equal(validateCanvasDocument(source).valid, true);
+    source.children[0].physical.w = 0;
+    assert.throws(() => validateCanvasDocument(source), /finite positive/);
+  }
+});
+
+test("node export override accepts default/image and rejects the withdrawn live value", () => {
+  const source = document();
+  for (const value of ["default", "image"]) {
+    source.children[0].export = value;
+    assert.equal(validateCanvasDocument(source).valid, true);
+  }
+  source.children[0].export = "live";
+  assert.throws(() => validateCanvasDocument(source));
+});
+
 test("canonical schema validates roots, rich text, roles, refs and flows", () => {
   assert.equal(validateCanvasDocument(document()).valid, true);
   const bad = document(); bad.children[0].children[0].marks = [{ type: "fill", from: 0, to: 4, value: "red" }];
   assert.throws(() => validateCanvasDocument(bad), /inside/);
+});
+
+test("axes are appearance and viewport, not interaction or component props", () => {
+  const source = document();
+  source.axes = { appearance: { modes: [{ name: "light" }] }, viewport: { modes: [{ name: "wide" }] } };
+  assert.equal(validateCanvasDocument(source).valid, true);
+  for (const name of ["interaction", "kind"]) {
+    const invalid = structuredClone(source);
+    invalid.axes[name] = { modes: [{ name: "default" }] };
+    assert.throws(() => validateCanvasDocument(invalid));
+  }
 });
 
 test("generated nested schemas reject malformed geometry, physical sizes and rich-text records", () => {
@@ -30,7 +63,8 @@ test("canonical schema enforces role, notes, node modes and flow relationships",
 });
 
 test("capability totality is generated from the canonical inventory", () => {
-  assert.equal(capabilityPathInventory().length, 143);
+  assert.equal(capabilityPathInventory().length, 142);
+  assert.equal(capabilityPathInventory().includes("roles.page"), false);
   const properties = Object.fromEntries(capabilityPathInventory().map((path) => [path, { verdict: "native" }]));
   assert.equal(assertCapabilityTotality({ properties }), true);
   properties["properties.fill"] = { verdict: null, status: "unverified" };
@@ -74,9 +108,9 @@ test("same-type overlapping marks are invalid because writes must clip", () => {
 
 test("variables carry tokenType beside cascade and node modes name an axis mode", () => {
   const value = document();
-  value.axes.theme = { modes: [{ name: "light" }, { name: "dark" }] };
-  value.variables.brand = { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#000", when: { theme: "dark" } }] };
-  value.children[0].modes = { theme: "dark" };
+  value.axes.appearance = { modes: [{ name: "light" }, { name: "dark" }] };
+  value.variables.brand = { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#000", when: { appearance: "dark" } }] };
+  value.children[0].modes = { appearance: "dark" };
   assert.equal(validateCanvasDocument(value).valid, true);
   value.variables.brand = [{ value: "#fff" }];
   assert.throws(() => validateCanvasDocument(value), /tokenType and a non-empty cascade/);

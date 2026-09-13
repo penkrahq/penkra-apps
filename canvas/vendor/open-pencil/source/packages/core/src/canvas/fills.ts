@@ -444,6 +444,44 @@ export function applyImageFill(
 ): boolean {
   const hash = fill.imageHash
   if (!hash) return false
+  const vector = graph.vectorImages.get(hash)
+  if (vector) {
+    let picture = r.vectorImageCache.get(hash)
+    if (!picture) {
+      const bounds = r.ck.LTRBRect(0, 0, vector.width, vector.height)
+      const recorder = new r.ck.PictureRecorder()
+      const canvas = recorder.beginRecording(bounds)
+      const worldViewport = r.worldViewport
+      r.worldViewport = { x: 0, y: 0, w: vector.width, h: vector.height }
+      try {
+        r.renderNode(canvas, graph, vector.nodeId, {}, 0, 0)
+      } finally {
+        r.worldViewport = worldViewport
+      }
+      picture = recorder.finishRecordingAsPicture()
+      recorder.delete()
+      r.vectorImageCache.set(hash, picture)
+    }
+    const localMatrix = makeImageFillLocalMatrix(
+      r,
+      fill,
+      node,
+      vector.width,
+      vector.height
+    )
+    const tileMode = (fill.imageScaleMode ?? 'FILL') === 'TILE'
+      ? r.ck.TileMode.Repeat
+      : r.ck.TileMode.Decal
+    const shader = picture.makeShader(
+      tileMode,
+      tileMode,
+      r.ck.FilterMode.Linear,
+      localMatrix,
+      r.ck.LTRBRect(0, 0, vector.width, vector.height)
+    )
+    r.fillPaint.setShader(shader)
+    return true
+  }
   let img = r.imageCache.get(hash)
   if (!img) {
     const data = graph.images.get(hash)

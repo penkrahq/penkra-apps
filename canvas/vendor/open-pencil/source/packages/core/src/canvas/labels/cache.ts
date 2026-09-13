@@ -1,9 +1,12 @@
 import type { SceneGraph, SceneNode } from '@open-pencil/scene-graph'
 
-export interface CachedSection {
+export interface CachedFrame {
   nodeId: string
   absX: number
   absY: number
+}
+
+export interface CachedSection extends CachedFrame {
   nested: boolean
 }
 
@@ -48,6 +51,7 @@ function collectVisibleLabels<
 }
 
 export class LabelCache {
+  private frames: CachedFrame[] = []
   private sections: CachedSection[] = []
   private components: CachedComponent[] = []
   private cachedSceneVersion = -1
@@ -79,6 +83,11 @@ export class LabelCache {
     this.cachedPageId = null
     this.sections = []
     this.components = []
+    this.frames = []
+  }
+
+  getFrames(graph: SceneGraph, viewport: Viewport) {
+    return collectVisibleLabels(graph, viewport, this.frames, () => ({}))
   }
 
   getSections(
@@ -110,6 +119,7 @@ export class LabelCache {
   private rebuild(graph: SceneGraph, pageId: string | null): void {
     this.sections = []
     this.components = []
+    this.frames = []
 
     const pageNode = graph.getNode(pageId ?? graph.rootId)
     if (!pageNode) return
@@ -133,6 +143,10 @@ export class LabelCache {
       if (!child || !child.visible) continue
       const ax = ox + child.x
       const ay = oy + child.y
+
+      if (child.type === 'FRAME' && COMPONENT_LABEL_PARENT_TYPES.has(parentType)) {
+        this.frames.push({ nodeId: childId, absX: ax, absY: ay })
+      }
 
       if (child.type === 'SECTION') {
         this.sections.push({ nodeId: childId, absX: ax, absY: ay, nested: insideSection })

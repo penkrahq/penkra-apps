@@ -1,0 +1,35 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "E4F321C7-9414-4B90-8FD8-EEDE2A14283B.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native fixture appearance_0_78FDC3CA-61DB-47BC-80B9-453231C252EE.png",
+        "timestamp" : 1788601270.588
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "63C45C29-BC89-4172-9755-6BBAE6F181A0.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility tree_0_FD879539-BED9-433B-82A1-A342B4046046.txt",
+        "timestamp" : 1788601270.472
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "A3D92728-7F7B-44D1-BE51-155B891905D9",
+        "deviceName" : "iPhone 17 Pro",
+        "exportedFileName" : "3F7907F5-CE8E-443C-9CF4-6B611A97D406.mp4",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Screen Recording 2026-09-05 at 03.41.06 AM.mp4",
+        "timestamp" : 1788601266.597
+      }
+    ],
+    "testIdentifier" : "AccessibilityTests/testExportedDescriptionsAndDecorativeText()",
+    "testIdentifierURL" : "test://com.apple.xcode/CanvasSimulatorQA/CanvasAccessibilityTests/AccessibilityTests/testExportedDescriptionsAndDecorativeText"
+  }
+]

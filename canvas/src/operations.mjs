@@ -14,10 +14,16 @@ import {
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
 import { loadCanvasImports } from "./canvas-imports.mjs";
+import { searchCanvasIcons } from "./pencil-icon-provider.mjs";
+import { isSvgAsset, prepareAssetForRendering } from "./document-assets.mjs";
+import { applySvgConversionRequests } from "./svg-vectors.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
 const api = createCanvasApi(runtime);
+
+runtime.operations.handle("icons.search", async ({ query, library, limit }) =>
+  searchCanvasIcons(query, { library, limit }));
 
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
@@ -25,10 +31,28 @@ runtime.operations.handle("documents.list", async (input = {}) => {
   const query = String(input.query ?? "").trim().toLowerCase();
   let cursor;
   do {
-    const page = await api.listDocuments(cursor);
-    items.push(...page.items.filter(
-      (document) => !query || document.title.toLowerCase().includes(query),
-    ));
+    const page = await api.listDocuments(cursor, {
+      view: input.view ?? "all",
+      ...(input.folderId ? { folderId: input.folderId } : {}),
+    });
+    items.push(
+      ...page.items
+        .filter((document) => !query || document.title.toLowerCase().includes(query))
+        .map((document) => Object.fromEntries(Object.entries({
+          id: document.id,
+          title: document.title,
+          ownerAccountId: document.ownerAccountId,
+          ownerName: document.ownerName,
+          access: document.access,
+          createdAt: document.createdAt,
+          updatedAt: document.updatedAt,
+          lastOpenedAt: document.lastOpenedAt,
+          folderId: document.folderId,
+          folderName: document.folderName,
+          lastEditor: document.lastEditor,
+          thumbnailUpdatedAt: document.thumbnailUpdatedAt,
+        }).filter(([, value]) => value !== undefined))),
+    );
     cursor = page.pageInfo.nextCursor ?? undefined;
   } while (cursor && items.length < limit);
   return {
@@ -49,11 +73,6 @@ runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }
     error.code = "CANVAS_DOCUMENT_NOT_FOUND";
     throw error;
   }
-  if (document.access !== "owner") {
-    const error = new Error(`Only the document owner can move ${document.title} to Trash.`);
-    error.code = "CANVAS_DOCUMENT_TRASH_FORBIDDEN";
-    throw error;
-  }
   if (confirmTitle !== document.title) {
     const error = new Error(
       `Trash confirmation did not match the current title. Pass confirmTitle exactly as ${JSON.stringify(document.title)} after the user confirms moving this document to Trash.`,
@@ -65,17 +84,68 @@ runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }
   return { documentId, title: document.title, trashed: true };
 });
 
-runtime.operations.handle("documents.create", async ({ title, module }) => {
-  const source = createBlankDocumentSource({ module });
+runtime.operations.handle("documents.create", async ({ title, module, preset, folderId = null }) => {
+  const source = createBlankDocumentSource({ module, preset });
   const starterFrameId = source.children[0].id;
   const model = createDocumentModel(source);
   try {
-    const document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
-    return { documentId: document.id, title, access: "owner", starterFrameId };
+    const document = await api.createDocument({ title, folderId, source, initialUpdate: encodeState(model) });
+    await updateThumbnailBestEffort(document.id, 0, source, []);
+    return { documentId: document.id, title, access: "owner", folderId: document.folderId ?? folderId, starterFrameId };
   } finally {
     model.doc.destroy();
   }
 });
+
+runtime.operations.handle("documents.move", async ({ documentId, folderId = null }) => {
+  const result = await api.moveDocument(documentId, folderId);
+  return { documentId, folderId: result.folderId };
+});
+
+runtime.operations.handle("documents.duplicate", async ({ documentId, title, folderId }) => {
+  const source = await api.getDocument(documentId);
+  const model = restoreDocumentModel(source);
+  try {
+    const document = materialize(model);
+    const duplicate = await api.createDocument({
+      title,
+      folderId: folderId === undefined ? source.folderId ?? null : folderId,
+      source: document,
+      initialUpdate: encodeState(model),
+    });
+    await updateThumbnailBestEffort(duplicate.id, 0, document, source.assets ?? []);
+    return { documentId: duplicate.id, title: duplicate.title, folderId: duplicate.folderId ?? null };
+  } finally {
+    model.doc.destroy();
+  }
+});
+
+runtime.operations.handle("folders.list", async (input = {}) => {
+  const items = [];
+  let cursor;
+  do {
+    const page = await api.listFolders(cursor, {
+      view: input.view ?? "roots",
+      parentId: input.parentId ?? null,
+      limit: Math.min(100, input.limit ?? 100),
+    });
+    items.push(...page.items);
+    cursor = page.pageInfo.nextCursor ?? undefined;
+  } while (cursor && items.length < (input.limit ?? 500));
+  return { items: items.slice(0, input.limit ?? 500) };
+});
+
+runtime.operations.handle("folders.create", async ({ name, parentId = null }) =>
+  api.createFolder(name, parentId));
+runtime.operations.handle("folders.rename", async ({ folderId, name }) =>
+  api.updateFolder(folderId, { name }));
+runtime.operations.handle("folders.move", async ({ folderId, parentId = null }) =>
+  api.updateFolder(folderId, { parentId }));
+runtime.operations.handle("folders.trash", async ({ folderId }) => api.deleteFolder(folderId));
+runtime.operations.handle("folders.restore", async ({ folderId }) => api.restoreFolder(folderId));
+runtime.operations.handle("folders.sharing.list", async ({ folderId }) => api.listFolderGrants(folderId));
+runtime.operations.handle("folders.sharing.add", async ({ folderId, email }) => api.grantFolderAccess(folderId, email));
+runtime.operations.handle("folders.sharing.remove", async ({ folderId, grantId }) => api.revokeFolderGrant(folderId, grantId));
 
 runtime.operations.handle("documents.open", async ({ documentId }, context) => {
   const navigation = { route: "/document", state: { documentId } };
@@ -115,6 +185,16 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         ]),
       ),
     );
+    let assetDescriptors = payload.assets;
+    let svgConversions = [];
+    if (execution.svgConversions?.length) {
+      assetDescriptors ??= await api.listAssets(documentId);
+      svgConversions = applySvgConversionRequests(
+        execution.document,
+        execution.svgConversions,
+        await readDocumentAssets(api, documentId, assetDescriptors),
+      );
+    }
     // Build once in isolation before touching the working clone. This enforces
     // the complete normalized-tree contract without relying on Yjs to roll a
     // partially applied transaction back after a validation error.
@@ -130,7 +210,6 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
     structuralModel.doc.destroy();
     const changedByScript = execution.changed;
     let uploadedAssets = [];
-    let assetDescriptors = payload.assets;
     if (changedByScript) {
       assetDescriptors ??= (await api.listAssets(documentId));
       const materialized = await materializeDocumentImages({
@@ -192,6 +271,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         prints: execution.prints,
         result: execution.result,
         touchedNodeIds,
+        svgConversions,
         inspection,
         issues,
       }, screenshots);
@@ -224,6 +304,12 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       state: encodeState(model),
       source: materialize(model),
     });
+    await updateThumbnailBestEffort(
+      documentId,
+      appended.sequence,
+      materialize(model),
+      [...(assetDescriptors ?? []), ...uploadedAssets],
+    );
     return operationResult({
       documentId,
       changed: true,
@@ -232,6 +318,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       prints: execution.prints,
       result: execution.result,
       touchedNodeIds,
+      svgConversions,
       inspection,
       issues,
     }, screenshots);
@@ -273,7 +360,10 @@ runtime.operations.handle("documents.export", async (input) => {
   try {
     const document = materialize(model);
     const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
-    const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
+    const imported = await loadCanvasImports(api, document, {
+      rootDocumentId: input.documentId,
+      rasterizeSvg: rasterizeDocumentSvg,
+    });
     const assets = new Map([...rootAssets, ...imported.assets]);
     const sets = input.bindings?.length ? input.bindings : [null];
     const destinations = resolveExportDestinations(input.destination, sets);
@@ -283,21 +373,25 @@ runtime.operations.handle("documents.export", async (input) => {
       const bindings = bindingSet ? Object.fromEntries(Object.entries(bindingSet).filter(([key]) => key !== "output")) : {};
       reports.push(await exportDocument(document, { ...input, destination: destinations[index], bindings, imports: imported.imports }, { assets, title: payload.title }));
     }
-    return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), rasterized: reports.flatMap((report) => report.rasterized) };
+    return { artifacts: reports.flatMap((report) => report.artifacts), consequences: reports.flatMap((report) => report.consequences), lowered: reports.flatMap((report) => report.lowered), embeddedFonts: reports.flatMap((report) => report.embeddedFonts), bundledFonts: reports.flatMap((report) => report.bundledFonts ?? []), rasterized: reports.flatMap((report) => report.rasterized) };
   } finally { model.doc.destroy(); }
 });
 
-runtime.operations.handle("documents.export-image", async (input) => {
-  const { exportImage } = await import("./export-service.mjs");
+runtime.operations.handle("documents.extract", async (input) => {
+  const { extractDocumentNodes } = await import("./export-service.mjs");
   const payload = await api.getDocument(input.documentId);
   const model = restoreDocumentModel(payload);
   try {
     const document = materialize(model);
     const rootAssets = await readDocumentAssets(api, input.documentId, payload.assets);
-    const imported = await loadCanvasImports(api, document, { rootDocumentId: input.documentId });
-    return await exportImage(document, input, {
+    const imported = await loadCanvasImports(api, document, {
+      rootDocumentId: input.documentId,
+      rasterizeSvg: rasterizeDocumentSvg,
+    });
+    return await extractDocumentNodes(document, input, {
       assets: new Map([...rootAssets, ...imported.assets]),
       imports: imported.imports,
+      title: payload.title,
     });
   } finally { model.doc.destroy(); }
 });
@@ -320,8 +414,35 @@ async function readDocumentAssets(api, documentId, descriptors) {
   const byPath = new Map(descriptors.map((asset) => [asset.path, asset]));
   return new Map(await Promise.all([...byPath.values()].map(async (asset) => [
     asset.path,
-    { ...asset, bytes: await api.readAsset(documentId, asset) },
+    await prepareAssetForRendering(
+      { ...asset, bytes: await api.readAsset(documentId, asset) },
+      isSvgAsset(asset) ? rasterizeDocumentSvg : null,
+    ),
   ])));
+}
+
+async function rasterizeDocumentSvg(bytes) {
+  return (await import("./document-screenshot.mjs")).rasterizeSvgImage(bytes);
+}
+
+async function updateThumbnailBestEffort(documentId, sequence, document, assetDescriptors) {
+  try {
+    const target = document.children?.find((node) => node?.type === "frame" && node.role)
+      ?? document.children?.find((node) => node?.type === "frame");
+    if (!target) return;
+    const assets = assetDescriptors.length
+      ? await readDocumentAssets(api, documentId, assetDescriptors)
+      : new Map();
+    const [thumbnail] = await (await import("./document-screenshot.mjs")).takeDocumentScreenshots(
+      document,
+      [{ nodeIds: [target.id] }],
+      assets,
+      { maxDimension: 640 },
+    );
+    if (thumbnail?.data) await api.writeThumbnail(documentId, sequence, thumbnail.data);
+  } catch (error) {
+    console.warn("Canvas kept the last saved thumbnail after preview generation failed.", error);
+  }
 }
 
 runtime.operations.handle("sharing.list", async ({ documentId }) =>

@@ -80,6 +80,8 @@ export class SceneGraph {
   private sourceMetadataPreservationDepth = 0
   positionPreviewVersion = 0
   instanceIndex = new Map<string, Set<string>>()
+  /** Retained vector image sources compiled from SVG assets by host integrations. */
+  vectorImages = new Map<string, { nodeId: string; width: number; height: number }>()
 
   constructor() {
     const root = createDefaultNode(generateId, 'FRAME', {

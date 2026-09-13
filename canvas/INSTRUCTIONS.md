@@ -2,7 +2,8 @@
 
 Canvas is Penkra's collaborative visual design workspace. Designs are saved to the user's Penkra
 Account and remain fully editable: people and agents can continue arranging layers, changing copy,
-refining styles, and reviewing the same document together.
+refining styles, and reviewing the same document together. A finished design can be exported to the
+artifact it was designed to become — a presentation, a PDF, a website, or mobile source.
 
 ## When to use Canvas
 
@@ -19,20 +20,41 @@ Canvas is especially useful when composition matters: hierarchy, typography, ima
 spacing, alignment, and the relationship between multiple frames. Use a document, spreadsheet,
 codebase, or image-generation workflow when the requested result belongs primarily in that medium.
 
+## What a Canvas document is
+
+A document has a **type**: `generic`, `deck`, `web`, or `mobile`. Choose `generic` for visual work
+that stays flexible or will be extracted as images, SVG, or PDF. Choose a deliverable type when the
+result is meant to become a presentation, website, or mobile source. An untouched generic document
+can adopt one of those deliverable types later; once a document has a deliverable type or contains
+role-bearing frames, its type is settled.
+
+Deck, web, and mobile work each has a matching Skill: `canvas-deck`, `canvas-web`, and
+`canvas-mobile`. Read it before substantial work on that deliverable. Generic designs use the
+shared Canvas guidance in this manual.
+
+Within a document, a frame carrying a **role** is an export unit: one slide, one page, one route,
+one screen. Creation presets add the first suitable role-bearing frame. Most frames have
+no role at all — layouts, cards, groups, and reusable components are ordinary frames, and anything
+sitting outside a role frame is scratch space that no export will ever collect.
+
 ## What agents can do
 
-Agents can find and open existing designs, create new documents, inspect their structure, and make
-precise edits. A Canvas document can contain:
+Agents can find and open existing designs, create new documents, inspect their structure, make
+precise edits, and export the result. A Canvas document can contain:
 
-- top-level frames for slides, screens, pages, and reusable components;
+- role-bearing frames for slides, pages, routes, and screens;
 - nested layouts, groups, text, shapes, paths, icons, and images;
+- placed SVG assets that stay sharp through retained vector rendering, with explicit fail-closed
+  conversion to editable native paths when the artwork itself needs modification;
+- exact icon discovery across the bundled Lucide, Feather, Material Symbols, and Phosphor catalogs;
 - solid colors, gradients, strokes, opacity, blur, and shadows;
 - reusable components and instances with per-instance overrides;
-- existing variables, themes, imported resources, and advanced visual content;
+- variables and appearance axes that resolve differently per mode;
 - review screenshots that show the saved design without editor controls.
 
 Agents can also share an owned document with another Penkra Account, inspect current sharing, and
-remove access when the user asks.
+remove access. Sharing grants editor access, notifies nobody, and is only ever done when the user
+asks for it in those terms.
 
 ## Designing well
 
@@ -43,7 +65,8 @@ design.
 
 Build in meaningful sections so the user can see progress and redirect early. For multiple design
 directions, make the alternatives genuinely different in visual personality, not small palette or
-spacing variations. Keep each direction coherent enough to judge on its own.
+spacing variations. Keep each direction coherent enough to judge on its own, and keep them in one
+document, side by side, where they can be compared.
 
 Treat Canvas as a professional design surface:
 
@@ -68,4 +91,5 @@ observed. Preserve newer work rather than recreating or undoing it from stale as
 
 Document IDs identify designs; node IDs identify layers within a design; tab IDs identify visible
 Canvas surfaces. Resolve each from Canvas or Penkra results instead of inferring it from a title or
-screen position.
+screen position, and copy an identifier from the result that produced it rather than reconstructing
+one from memory.

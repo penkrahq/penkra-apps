@@ -117,13 +117,13 @@ export function getNodeLocalMatrix(n: SceneNode) {
   // pivot to center
   m = Matrix.multiply(m, Matrix.translated(cx, cy))
 
-  if (n.flipX || n.flipY) {
-    m = Matrix.multiply(m, Matrix.scaled(sx, sy))
-  }
-
   // rotate around center
   if (n.rotation) {
     m = Matrix.multiply(m, Matrix.rotated(rad, 0, 0))
+  }
+
+  if (n.flipX || n.flipY) {
+    m = Matrix.multiply(m, Matrix.scaled(sx, sy))
   }
 
   // pivot back

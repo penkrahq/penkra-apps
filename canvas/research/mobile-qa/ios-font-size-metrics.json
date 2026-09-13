@@ -1,0 +1,37 @@
+[
+  {
+    "fontPointSize" : 24,
+    "requested" : 24,
+    "scaledPointSize" : 24,
+    "scaledUnit" : 1,
+    "scaledValue" : 24
+  },
+  {
+    "fontPointSize" : 28.25,
+    "requested" : 28.25,
+    "scaledPointSize" : 28,
+    "scaledUnit" : 1,
+    "scaledValue" : 28.333333333333332
+  },
+  {
+    "fontPointSize" : 32,
+    "requested" : 32,
+    "scaledPointSize" : 32,
+    "scaledUnit" : 1,
+    "scaledValue" : 32
+  },
+  {
+    "fontPointSize" : 40,
+    "requested" : 40,
+    "scaledPointSize" : 40,
+    "scaledUnit" : 1,
+    "scaledValue" : 40
+  },
+  {
+    "fontPointSize" : 48,
+    "requested" : 48,
+    "scaledPointSize" : 48,
+    "scaledUnit" : 1,
+    "scaledValue" : 48
+  }
+]

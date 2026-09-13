@@ -2,6 +2,28 @@ import { expect, test, useEditorSetupWithClear } from '#tests/e2e/fixtures'
 
 const editor = useEditorSetupWithClear('/?test&no-chrome&no-rulers')
 
+test('frame role labels are derived without changing authored names', async () => {
+  await editor.page.evaluate(() => {
+    const store = window.openPencil?.getStore?.()
+    if (!store) throw new Error('OpenPencil store not initialized')
+    for (const [index, role] of ['slide', 'route', 'ios', 'android', undefined].entries()) {
+      store.graph.createNode('FRAME', store.state.currentPageId, {
+        name: 'Overview',
+        canvasRole: role,
+        x: 100 + (index % 3) * 240,
+        y: 100 + Math.floor(index / 3) * 220,
+        width: 200,
+        height: 150,
+        fills: [{ type: 'SOLID', color: { r: 1, g: 1, b: 1, a: 1 }, visible: true, opacity: 1 }]
+      })
+    }
+    store.clearSelection()
+    store.requestRender()
+  })
+  await editor.canvas.waitForRender()
+  await expectCanvas('automatic-frame-role-labels')
+})
+
 async function expectCanvas(name: string) {
   editor.canvas.assertNoErrors()
   const buffer = await editor.canvas.canvas.screenshot()

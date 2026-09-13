@@ -10,6 +10,7 @@ import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mj
 import { pencilResourceAsset } from "./pencil-resources.mjs";
 import { resolveCanvasNodeSelection } from "./node-reference.mjs";
 import { flattenMarks, isMarkInclusive } from "./rich-text.mjs";
+import { finalizeSvgVectorAssets, registerSvgVectorAsset } from "./svg-vectors.mjs";
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",
@@ -121,7 +122,7 @@ function applyShaderAssets(graph, document, assets) {
     for (const fill of Array.isArray(node.fill) ? node.fill : node.fill ? [node.fill] : []) {
       for (const texture of fill?.__canvasShader?.textures ?? []) {
         const asset = pencilResourceAsset(assets, texture.url);
-        if (asset) graph.images.set(texture.sha256, asset.bytes);
+        if (asset) graph.images.set(texture.sha256, asset.renderBytes ?? asset.bytes);
       }
     }
   });
@@ -210,7 +211,14 @@ export function refreshOpenPencilEditor(
     panY: editor.state.panY,
     zoom: editor.state.zoom,
   };
-  editor.replaceGraph(createOpenPencilGraph(document, assets, preparedDocument));
+  const nextGraph = createOpenPencilGraph(document, assets, preparedDocument);
+  // Effect pictures are keyed by node ID, which survives a document refresh.
+  // Replacing the graph emits no per-node updates to invalidate those pictures.
+  // Clear them before replaceGraph can request a render of the new scene.
+  for (const renderer of editor.canvasRenderers ?? []) {
+    renderer.invalidateAllPictures();
+  }
+  editor.replaceGraph(nextGraph);
   editor.state.panX = viewport.panX;
   editor.state.panY = viewport.panY;
   editor.state.zoom = viewport.zoom;
@@ -220,6 +228,7 @@ export function refreshOpenPencilEditor(
 }
 
 function applyImageAssets(graph, document, assets) {
+  const svgState = {};
   walkPenNodes(document.children, (sourceNode) => {
     const sourceFills = Array.isArray(sourceNode.fill) ? sourceNode.fill : [sourceNode.fill];
     if (!sourceFills.some((fill) => fill?.type === "image")) return;
@@ -229,7 +238,8 @@ function applyImageAssets(graph, document, assets) {
       if (fill?.type !== "image") return sceneNode.fills[index];
       const asset = pencilResourceAsset(assets, fill.url);
       if (!asset) return sceneNode.fills[index];
-      graph.images.set(asset.sha256, asset.bytes);
+      registerSvgVectorAsset(graph, asset, svgState);
+      graph.images.set(asset.sha256, asset.renderBytes ?? asset.bytes);
       return {
         type: "IMAGE",
         imageHash: asset.sha256,
@@ -244,6 +254,7 @@ function applyImageAssets(graph, document, assets) {
     });
     graph.updateNode(sourceNode.id, { fills });
   });
+  finalizeSvgVectorAssets(graph, svgState);
 }
 
 function imageScaleMode(mode) {

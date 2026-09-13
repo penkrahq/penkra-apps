@@ -531,6 +531,7 @@ export interface SceneNode {
 
   /** Penkra fork metadata preserving canonical Pencil identities and authored sizing. */
   pencilNodeId?: string
+  canvasRole?: string
   pencilAddress?: string
   pencilWidthOmitted?: boolean
   pencilHeightOmitted?: boolean

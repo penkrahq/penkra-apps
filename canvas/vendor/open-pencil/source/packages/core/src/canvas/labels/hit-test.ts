@@ -16,6 +16,7 @@ import {
 } from '#core/constants'
 
 import type { CachedComponent, CachedSection, LabelCache } from './cache'
+import { frameTitleText } from './text'
 
 function measureGlyphWidth(font: Font, text: string): number {
   const glyphIds = font.getGlyphIDs(text)
@@ -257,7 +258,7 @@ export function hitTestFrameTitle(
   if (!isTopLevel) return null
 
   const abs = graph.getAbsolutePosition(id)
-  const labelW = measureGlyphWidth(font, node.name) / zoom
+  const labelW = measureGlyphWidth(font, frameTitleText(node)) / zoom
   const labelH = LABEL_FONT_SIZE / zoom
   const hit = rotatePoint(canvasX - abs.x, canvasY - abs.y, node.rotation)
   const labelY = -LABEL_OFFSET_Y / zoom - labelH

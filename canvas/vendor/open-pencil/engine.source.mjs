@@ -898,10 +898,10 @@ function getNodeLocalMatrix(n) {
   let m = Matrix.identity();
   m = Matrix.multiply(m, Matrix.translated(n.x, n.y));
   m = Matrix.multiply(m, Matrix.translated(cx, cy));
-  if (n.flipX || n.flipY)
-    m = Matrix.multiply(m, Matrix.scaled(sx, sy));
   if (n.rotation)
     m = Matrix.multiply(m, Matrix.rotated(rad, 0, 0));
+  if (n.flipX || n.flipY)
+    m = Matrix.multiply(m, Matrix.scaled(sx, sy));
   m = Matrix.multiply(m, Matrix.translated(-cx, -cy));
   return m;
 }
@@ -1307,11 +1307,13 @@ function effectOverflow(effects) {
       continue;
     if (effect.type !== "DROP_SHADOW" && effect.type !== "LAYER_BLUR" && effect.type !== "FOREGROUND_BLUR")
       continue;
-    const blurSpread = (effect.radius / 2 <= 0.03 ? 0 : Math.ceil(3 * effect.radius / 2)) + effect.spread;
-    left = Math.max(left, blurSpread - effect.offset.x, 0);
-    right = Math.max(right, blurSpread + effect.offset.x, 0);
-    top = Math.max(top, blurSpread - effect.offset.y, 0);
-    bottom = Math.max(bottom, blurSpread + effect.offset.y, 0);
+    const blurSpread = (effect.radius / 2 <= 0.03 ? 0 : Math.ceil(3 * effect.radius / 2)) + (effect.type === "DROP_SHADOW" ? effect.spread : 0);
+    const offsetX = effect.type === "DROP_SHADOW" ? effect.offset.x : 0;
+    const offsetY = effect.type === "DROP_SHADOW" ? effect.offset.y : 0;
+    left = Math.max(left, blurSpread - offsetX, 0);
+    right = Math.max(right, blurSpread + offsetX, 0);
+    top = Math.max(top, blurSpread - offsetY, 0);
+    bottom = Math.max(bottom, blurSpread + offsetY, 0);
   }
   return {
     left,
@@ -1439,8 +1441,88 @@ function transformedLocalBounds(node, local, abs) {
     maxY: abs.y + Math.max(...points.map((point) => point.y))
   };
 }
-function nodeVisualBounds(node, getAbsolutePosition2) {
+function nodeVisualBounds(node, getAbsolutePosition2, getNode) {
   const abs = getAbsolutePosition2(node.id);
+  if (getNode) {
+    const transform = (point) => {
+      let current = node;
+      let result = point;
+      while (current) {
+        const x = current.flipX ? -result.x : result.x;
+        const y = current.flipY ? -result.y : result.y;
+        const angle = degToRad(current.rotation ?? 0);
+        result = {
+          x: x * Math.cos(angle) - y * Math.sin(angle),
+          y: x * Math.sin(angle) + y * Math.cos(angle)
+        };
+        current = current.parentId ? getNode(current.parentId) : undefined;
+      }
+      return {
+        x: abs.x + result.x,
+        y: abs.y + result.y
+      };
+    };
+    const local = geometryBlobBounds([...node.fillGeometry ?? [], ...node.strokes?.some((stroke2) => stroke2.visible && stroke2.align !== "INSIDE") ? node.strokeGeometry ?? [] : []]);
+    const left = 0;
+    const top = 0;
+    const right = node.width;
+    let bottom = node.height;
+    if (node.type === "TEXT" && node.textDecoration && node.textDecoration !== "NONE") {
+      const fontSize = node.fontSize ?? 14;
+      bottom += (node.textUnderlineOffset ?? fontSize * 0.18) + (node.textDecorationThickness ?? Math.max(1, fontSize / 16)) + fontSize * 0.35;
+    }
+    const points = [
+      {
+        x: left,
+        y: top
+      },
+      {
+        x: right,
+        y: top
+      },
+      {
+        x: right,
+        y: bottom
+      },
+      {
+        x: left,
+        y: bottom
+      }
+    ].map(transform);
+    const stroke = strokeOverflow(node.strokes);
+    const effects = effectOverflow(node.effects);
+    const bounds2 = {
+      minX: Math.min(...points.map((point) => point.x)) - stroke - effects.left,
+      minY: Math.min(...points.map((point) => point.y)) - stroke - effects.top,
+      maxX: Math.max(...points.map((point) => point.x)) + stroke + effects.right,
+      maxY: Math.max(...points.map((point) => point.y)) + stroke + effects.bottom
+    };
+    if (local) {
+      const geometryPoints = [
+        {
+          x: local.x,
+          y: local.y
+        },
+        {
+          x: local.x + local.width,
+          y: local.y
+        },
+        {
+          x: local.x + local.width,
+          y: local.y + local.height
+        },
+        {
+          x: local.x,
+          y: local.y + local.height
+        }
+      ].map(transform);
+      bounds2.minX = Math.min(bounds2.minX, ...geometryPoints.map((point) => point.x));
+      bounds2.minY = Math.min(bounds2.minY, ...geometryPoints.map((point) => point.y));
+      bounds2.maxX = Math.max(bounds2.maxX, ...geometryPoints.map((point) => point.x));
+      bounds2.maxY = Math.max(bounds2.maxY, ...geometryPoints.map((point) => point.y));
+    }
+    return bounds2;
+  }
   const base = computeVisualBounds([node], getAbsolutePosition2);
   let bounds = {
     minX: base.x,
@@ -1464,18 +1546,18 @@ function collectDescendantVisualBounds(nodeId, getNode, getAbsolutePosition2, cl
   const node = getNode(nodeId);
   if (!node?.visible)
     return null;
-  const own = nodeVisualBounds(node, getAbsolutePosition2);
+  const own = nodeVisualBounds(node, getAbsolutePosition2, getNode);
   let bounds = clip ? intersectVisualBounds(own, clip) : own;
   const isClippableContainer = node.type === "FRAME" || node.type === "COMPONENT" || node.type === "INSTANCE";
   let childClip = clip;
   if (isClippableContainer && node.clipsContent) {
-    const abs = getAbsolutePosition2(node.id);
-    const nodeClip = {
-      minX: abs.x,
-      minY: abs.y,
-      maxX: abs.x + node.width,
-      maxY: abs.y + node.height
-    };
+    const nodeClip = nodeVisualBounds({
+      ...node,
+      strokes: [],
+      effects: [],
+      fillGeometry: [],
+      strokeGeometry: []
+    }, getAbsolutePosition2, getNode);
     childClip = childClip ? intersectVisualBounds(childClip, nodeClip) : nodeClip;
     if (!childClip)
       return bounds;
@@ -2639,6 +2721,7 @@ var init_types = __esm(() => {
     sourceMetadataPreservationDepth = 0;
     positionPreviewVersion = 0;
     instanceIndex = /* @__PURE__ */ new Map;
+    vectorImages = /* @__PURE__ */ new Map;
     constructor() {
       const root = createDefaultNode(generateId, "FRAME", {
         name: "Document",
@@ -62217,10 +62300,14 @@ function appendShapePath(tagName, element, presentation, transform, result) {
   if (!pathData)
     return;
   const strokeWidth = Number.parseFloat(presentation.strokeWidth);
+  const fill3 = normalizeSVGPaint(presentation.fill);
+  const stroke = normalizeSVGPaint(presentation.stroke);
+  if (!fill3 && !stroke)
+    return;
   result.push({
     d: pathData,
-    fill: normalizeSVGPaint(presentation.fill),
-    stroke: normalizeSVGPaint(presentation.stroke),
+    fill: fill3,
+    stroke,
     strokeWidth: Number.isFinite(strokeWidth) ? strokeWidth : 1,
     strokeCap: presentation.strokeCap,
     strokeJoin: presentation.strokeJoin,
@@ -62258,7 +62345,7 @@ function collectPaths(element, inherited, parentTransform, result, elementsById,
   }
 }
 function extractPaths(svgBody) {
-  const root = parseSVGFragment(svgBody)?.documentElement;
+  const root = (parseSVGDocument(svgBody) ?? parseSVGFragment(svgBody))?.documentElement;
   if (!root)
     return [];
   const elementsById = new Map;
@@ -64039,6 +64126,30 @@ function applyImageFill(r4, fill3, node, graph) {
   const hash2 = fill3.imageHash;
   if (!hash2)
     return false;
+  const vector = graph.vectorImages.get(hash2);
+  if (vector) {
+    let picture = r4.vectorImageCache.get(hash2);
+    if (!picture) {
+      const bounds = r4.ck.LTRBRect(0, 0, vector.width, vector.height);
+      const recorder = new r4.ck.PictureRecorder;
+      const canvas = recorder.beginRecording(bounds);
+      const worldViewport = r4.worldViewport;
+      r4.worldViewport = { x: 0, y: 0, w: vector.width, h: vector.height };
+      try {
+        r4.renderNode(canvas, graph, vector.nodeId, {}, 0, 0);
+      } finally {
+        r4.worldViewport = worldViewport;
+      }
+      picture = recorder.finishRecordingAsPicture();
+      recorder.delete();
+      r4.vectorImageCache.set(hash2, picture);
+    }
+    const localMatrix2 = makeImageFillLocalMatrix(r4, fill3, node, vector.width, vector.height);
+    const tileMode = (fill3.imageScaleMode ?? "FILL") === "TILE" ? r4.ck.TileMode.Repeat : r4.ck.TileMode.Decal;
+    const shader2 = picture.makeShader(tileMode, tileMode, r4.ck.FilterMode.Linear, localMatrix2, r4.ck.LTRBRect(0, 0, vector.width, vector.height));
+    r4.fillPaint.setShader(shader2);
+    return true;
+  }
   let img = r4.imageCache.get(hash2);
   if (!img) {
     const data = graph.images.get(hash2);
@@ -65461,6 +65572,7 @@ function collectVisibleLabels(graph, viewport, cachedItems, metadata) {
 }
 
 class LabelCache {
+  frames = [];
   sections = [];
   components = [];
   cachedSceneVersion = -1;
@@ -65481,6 +65593,10 @@ class LabelCache {
     this.cachedPageId = null;
     this.sections = [];
     this.components = [];
+    this.frames = [];
+  }
+  getFrames(graph, viewport) {
+    return collectVisibleLabels(graph, viewport, this.frames, () => ({}));
   }
   getSections(graph, viewport) {
     return collectVisibleLabels(graph, viewport, this.sections, (cached) => ({
@@ -65501,6 +65617,7 @@ class LabelCache {
   rebuild(graph, pageId) {
     this.sections = [];
     this.components = [];
+    this.frames = [];
     const pageNode = graph.getNode(pageId ?? graph.rootId);
     if (!pageNode)
       return;
@@ -65517,6 +65634,9 @@ class LabelCache {
         continue;
       const ax = ox + child.x;
       const ay = oy + child.y;
+      if (child.type === "FRAME" && COMPONENT_LABEL_PARENT_TYPES.has(parentType)) {
+        this.frames.push({ nodeId: childId, absX: ax, absY: ay });
+      }
       if (child.type === "SECTION") {
         this.sections.push({ nodeId: childId, absX: ax, absY: ay, nested: insideSection });
         this.walkChildren(graph, childId, ax, ay, true);
@@ -65538,6 +65658,40 @@ var init_cache = __esm(() => {
   LABEL_TYPES = new Set(["COMPONENT", "COMPONENT_SET"]);
   COMPONENT_LABEL_PARENT_TYPES = new Set(["CANVAS", "SECTION"]);
 });
+
+// vendor/open-pencil/source/packages/core/src/canvas/labels/text.ts
+function frameTitleText(node) {
+  return node.canvasRole ? `${node.canvasRole} · ${node.name}` : node.name;
+}
+function measureLabelText(font, text) {
+  const glyphIds = font.getGlyphIDs(text);
+  const widths = font.getGlyphWidths(glyphIds);
+  let result = 0;
+  for (const width of widths)
+    result += width;
+  return result;
+}
+function ellipsizeLabelText(font, text, maxWidth) {
+  if (maxWidth <= 0)
+    return "";
+  if (measureLabelText(font, text) <= maxWidth)
+    return text;
+  const ellipsis = "…";
+  const ellipsisWidth = measureLabelText(font, ellipsis);
+  if (maxWidth <= ellipsisWidth)
+    return ellipsis;
+  let width = 0;
+  let end = 0;
+  const glyphIds = font.getGlyphIDs(text);
+  const widths = font.getGlyphWidths(glyphIds);
+  for (let index = 0;index < widths.length; index++) {
+    if (width + widths[index] + ellipsisWidth > maxWidth)
+      break;
+    width += widths[index];
+    end = index + 1;
+  }
+  return text.slice(0, end) + ellipsis;
+}
 
 // vendor/open-pencil/source/packages/core/src/canvas/labels/hit-test.ts
 function measureGlyphWidth(font, text) {
@@ -65669,7 +65823,7 @@ function hitTestFrameTitle(graph, canvasX, canvasY, zoom, selectedIds, font) {
   if (!isTopLevel)
     return null;
   const abs2 = graph.getAbsolutePosition(id);
-  const labelW = measureGlyphWidth(font, node.name) / zoom;
+  const labelW = measureGlyphWidth(font, frameTitleText(node)) / zoom;
   const labelH = LABEL_FONT_SIZE / zoom;
   const hit = rotatePoint3(canvasX - abs2.x, canvasY - abs2.y, node.rotation);
   const labelY = -LABEL_OFFSET_Y / zoom - labelH;
@@ -65928,6 +66082,9 @@ function destroyRenderer(r4) {
   for (const img of r4.imageCache.values())
     img.delete();
   r4.imageCache.clear();
+  for (const picture of r4.vectorImageCache.values())
+    picture.delete();
+  r4.vectorImageCache.clear();
   for (const img of r4.pencilShaderImages.values())
     img.delete();
   r4.pencilShaderImages.clear();
@@ -66058,37 +66215,6 @@ function applyClippedBlur(r4, canvas, node, rect, hasRadius2, sigma) {
   canvas.restore();
 }
 
-// vendor/open-pencil/source/packages/core/src/canvas/labels/text.ts
-function measureLabelText(font, text) {
-  const glyphIds = font.getGlyphIDs(text);
-  const widths = font.getGlyphWidths(glyphIds);
-  let result = 0;
-  for (const width of widths)
-    result += width;
-  return result;
-}
-function ellipsizeLabelText(font, text, maxWidth) {
-  if (maxWidth <= 0)
-    return "";
-  if (measureLabelText(font, text) <= maxWidth)
-    return text;
-  const ellipsis = "…";
-  const ellipsisWidth = measureLabelText(font, ellipsis);
-  if (maxWidth <= ellipsisWidth)
-    return ellipsis;
-  let width = 0;
-  let end = 0;
-  const glyphIds = font.getGlyphIDs(text);
-  const widths = font.getGlyphWidths(glyphIds);
-  for (let index = 0;index < widths.length; index++) {
-    if (width + widths[index] + ellipsisWidth > maxWidth)
-      break;
-    width += widths[index];
-    end = index + 1;
-  }
-  return text.slice(0, end) + ellipsis;
-}
-
 // vendor/open-pencil/source/packages/core/src/canvas/labels/selection.ts
 function getOverlayRotation(node, overlays) {
   return overlays?.rotationPreview?.nodeId === node.id ? overlays.rotationPreview.angle : node.rotation;
@@ -66132,7 +66258,7 @@ function drawSingleFrameTitle(r4, canvas, graph, node, overlays, labelFont, colo
   const world = getWorldMatrix({ ...node, rotation: overlayRotation }, graph);
   const origin = r4.ck.Matrix.mapPoints(world, [0, 0]);
   r4.auxFill.setColor(r4.ck.Color4f(color.r, color.g, color.b, color.a));
-  const displayText = ellipsizeLabelText(labelFont, node.name, node.width * r4.zoom);
+  const displayText = ellipsizeLabelText(labelFont, frameTitleText(node), node.width * r4.zoom);
   if (!displayText)
     return;
   canvas.save();
@@ -67422,13 +67548,15 @@ function drawHorizontalRulerTicks(r4, canvas, font, step, selBounds) {
   }
   canvas.restore();
 }
-function drawVerticalRulerTicks(r4, canvas, font, step, selBounds) {
+function drawVerticalRulerTicks(r4, canvas, font, step, selBounds, edge) {
   const R5 = RULER_SIZE;
   const vh = r4.viewportHeight;
   const minorStep = step / 5;
   const badgeW = RULER_BADGE_EXCLUSION;
+  const rulerLeft = edge === "left" ? 0 : r4.viewportWidth - R5;
+  const rulerRight = edge === "left" ? R5 : r4.viewportWidth;
   canvas.save();
-  canvas.clipRect(r4.ck.LTRBRect(0, R5, R5, vh), r4.ck.ClipOp.Intersect, false);
+  canvas.clipRect(r4.ck.LTRBRect(rulerLeft, R5, rulerRight, vh), r4.ck.ClipOp.Intersect, false);
   const worldTop = -r4.panY / r4.zoom;
   const worldBottom = (vh - r4.panY) / r4.zoom;
   const startY = Math.floor(worldTop / step) * step;
@@ -67438,12 +67566,14 @@ function drawVerticalRulerTicks(r4, canvas, font, step, selBounds) {
       continue;
     const isMajor = Math.abs(wy % step) < RULER_MAJOR_TOLERANCE;
     const tickLen = isMajor ? R5 * RULER_MAJOR_TICK : R5 * RULER_MINOR_TICK;
-    canvas.drawLine(R5 - tickLen, sy, R5, sy, r4.rulerTickPaint);
+    const tickEdge = edge === "left" ? R5 : rulerLeft;
+    const tickStart = edge === "left" ? R5 - tickLen : rulerLeft + tickLen;
+    canvas.drawLine(tickStart, sy, tickEdge, sy, r4.rulerTickPaint);
     if (isMajor) {
       const skipForBadge = selBounds != null && (Math.abs(sy - selBounds.sy1) < badgeW || Math.abs(sy - selBounds.sy2) < badgeW);
       if (!skipForBadge) {
         canvas.save();
-        canvas.translate(R5 * RULER_TEXT_BASELINE, sy - 2);
+        canvas.translate(rulerLeft + R5 * RULER_TEXT_BASELINE, sy - 2);
         canvas.rotate(-90, 0, 0);
         canvas.drawText(rulerLabel(wy), 0, 3, r4.rulerTextPaint, font);
         canvas.restore();
@@ -67467,7 +67597,9 @@ function drawRulers(r4, canvas, graph, selectedIds) {
   }
   canvas.drawRect(r4.ck.LTRBRect(0, 0, vw, R5), r4.rulerBgPaint);
   canvas.drawRect(r4.ck.LTRBRect(0, R5, R5, vh), r4.rulerBgPaint);
+  canvas.drawRect(r4.ck.LTRBRect(vw - R5, R5, vw, vh), r4.rulerBgPaint);
   canvas.drawRect(r4.ck.LTRBRect(0, 0, R5, R5), r4.rulerBgPaint);
+  canvas.drawRect(r4.ck.LTRBRect(vw - R5, 0, vw, R5), r4.rulerBgPaint);
   const font = r4.sizeFont ?? r4.textFont;
   if (!font)
     return;
@@ -67475,11 +67607,13 @@ function drawRulers(r4, canvas, graph, selectedIds) {
   const selNodes = [...selectedIds].map((id) => graph.getNode(id)).filter((n) => n !== undefined);
   const selBounds = selNodes.length > 0 ? getSelectionScreenBounds(r4, graph, selNodes) : null;
   drawHorizontalRulerTicks(r4, canvas, font, step, selBounds);
-  drawVerticalRulerTicks(r4, canvas, font, step, selBounds);
+  drawVerticalRulerTicks(r4, canvas, font, step, selBounds, "left");
+  drawVerticalRulerTicks(r4, canvas, font, step, selBounds, "right");
   if (selBounds) {
     r4.rulerHlPaint.setColor(r4.selColor(RULER_HIGHLIGHT_ALPHA));
     canvas.drawRect(r4.ck.LTRBRect(Math.max(R5, selBounds.sx1), 0, selBounds.sx2, R5), r4.rulerHlPaint);
     canvas.drawRect(r4.ck.LTRBRect(0, Math.max(R5, selBounds.sy1), R5, selBounds.sy2), r4.rulerHlPaint);
+    canvas.drawRect(r4.ck.LTRBRect(vw - R5, Math.max(R5, selBounds.sy1), vw, selBounds.sy2), r4.rulerHlPaint);
     drawRulerBadge(r4, canvas, font, Math.round((selBounds.sx1 - r4.panX) / r4.zoom).toString(), Math.max(R5, selBounds.sx1), 0, "horizontal");
     drawRulerBadge(r4, canvas, font, Math.round((selBounds.sx2 - r4.panX) / r4.zoom).toString(), selBounds.sx2, 0, "horizontal");
     drawRulerBadge(r4, canvas, font, Math.round((selBounds.sy1 - r4.panY) / r4.zoom).toString(), 0, Math.max(R5, selBounds.sy1), "vertical");
@@ -68188,7 +68322,7 @@ function collectSubtreeCullBounds(graph, nodeId, cache, countCache) {
   const node = graph.getNode(nodeId);
   if (!node?.visible || node.internalOnly)
     return null;
-  let bounds = nodeVisualBounds(node, (id) => graph.getAbsolutePosition(id));
+  let bounds = nodeVisualBounds(node, (id) => graph.getAbsolutePosition(id), (id) => graph.getNode(id));
   let subtreeNodeCount = 1;
   const clippable = node.type === "FRAME" || node.type === "COMPONENT" || node.type === "INSTANCE";
   let childClip = null;
@@ -68361,11 +68495,9 @@ function renderNode(r4, canvas, graph, nodeId, overlays, parentAbsX = 0, parentA
   canvas.translate(node.x, node.y);
   const needsNodeLayer = node.opacity < 1 || needsIsolatedBlendLayer(node.blendMode);
   if (needsNodeLayer) {
-    const bounds = computeDescendantVisualBounds([nodeId], (id) => graph.getNode(id) ?? undefined, (id) => graph.getAbsolutePosition(id));
-    const layerBounds = bounds ? r4.ck.LTRBRect(bounds.minX - absX, bounds.minY - absY, bounds.maxX - absX, bounds.maxY - absY) : r4.ck.LTRBRect(0, 0, node.width, node.height);
     r4.opacityPaint.setAlphaf(node.opacity);
     setFigmaPaintBlendMode(r4, r4.opacityPaint, node.blendMode);
-    canvas.saveLayer(r4.opacityPaint, layerBounds);
+    canvas.saveLayer(r4.opacityPaint);
   }
   const layerBlur = node.effects.find((e4) => e4.visible && (e4.type === "LAYER_BLUR" || e4.type === "FOREGROUND_BLUR"));
   if (layerBlur) {
@@ -68528,6 +68660,23 @@ function vectorStrokePaths(r4, node) {
   return paths;
 }
 function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, strokeCap, strokeJoin, miterLimit, outlineCacheKey) {
+  if (stroke.align === "INSIDE" || stroke.align === "OUTSIDE") {
+    const boundary = new r4.ck.Path;
+    for (const path of vectorPaths)
+      boundary.addPath(path);
+    const fillType = vectorPaths[0]?.getFillType();
+    if (fillType !== undefined)
+      boundary.setFillType(fillType);
+    canvas.save();
+    try {
+      canvas.clipPath(boundary, stroke.align === "INSIDE" ? r4.ck.ClipOp.Intersect : r4.ck.ClipOp.Difference, true);
+      drawVectorPathStrokes(r4, canvas, vectorPaths, { ...stroke, align: "CENTER", weight: stroke.weight * 2 }, sc, strokeCap, strokeJoin, miterLimit);
+    } finally {
+      canvas.restore();
+      boundary.delete();
+    }
+    return;
+  }
   const cap = stroke.cap ?? strokeCap ?? "NONE";
   const join2 = stroke.join ?? strokeJoin ?? "MITER";
   const dash = stroke.dashPattern;
@@ -68569,6 +68718,9 @@ function drawVectorPathStrokes(r4, canvas, vectorPaths, stroke, sc, strokeCap, s
   }
   for (const outline of outlines)
     canvas.drawPath(outline, r4.fillPaint);
+  if (!outlineCacheKey)
+    for (const outline of outlines)
+      outline.delete();
 }
 function drawRegularStroke(r4, canvas, node, rect, hasRadius2, stroke, sc) {
   configureStrokePaint(r4, node, stroke, sc);
@@ -70096,6 +70248,7 @@ class SkiaRenderer {
   pendingFontNodes = new Map;
   textPictureGenerations = new Map;
   imageCache = new Map;
+  vectorImageCache = new Map;
   pencilShaderCanvas = null;
   pencilShaderGL = null;
   pencilShaderPrograms = new Map;
@@ -70998,6 +71151,7 @@ var init_export = __esm(() => {
   init_raster();
   init_direction();
   init_defs();
+  init_paths();
   init_paths();
 });
 
@@ -89064,6 +89218,9 @@ function selectionAllHasDecoration(runs, start, end, deco, nodeDeco) {
 
 // vendor/open-pencil/source/packages/core/src/index.ts
 init_fonts();
+
+// vendor/open-pencil/source/packages/core/src/io/index.ts
+init_svg2();
 // vendor/open-pencil/source/fork-entry.ts
 init_renderer();
 await init_layout2();
@@ -89280,7 +89437,7 @@ function convertFill(fill3, ctx, node) {
     const result = {
       type: "SOLID",
       visible,
-      opacity: parsedColor.a,
+      opacity: parsedColor.a * (typeof item === "string" ? 1 : Number(item.opacity ?? 1)),
       color,
       blendMode: mapPenBlendMode(typeof item === "string" ? undefined : item.blendMode)
     };
@@ -89352,18 +89509,20 @@ function convertStroke(stroke, ctx, node) {
   const results = fills.flatMap((fill3, index) => {
     if (typeof fill3 !== "string" && fill3.type === "gradient") {
       const gradient = convertPenGradient(fill3, ctx, undefined, index);
-      return [{
-        visible: fill3.enabled !== false,
-        color: { r: 1, g: 1, b: 1, a: 1 },
-        opacity: Number(fill3.opacity ?? 1),
-        weight: strokeWeight(stroke),
-        align,
-        dashPattern: stroke.dashPattern ?? [],
-        blendMode: gradient.blendMode,
-        gradientStops: gradient.gradientStops,
-        gradientTransform: gradient.gradientTransform,
-        type: gradient.type
-      }];
+      return [
+        {
+          visible: fill3.enabled !== false,
+          color: { r: 1, g: 1, b: 1, a: 1 },
+          opacity: Number(fill3.opacity ?? 1),
+          weight: strokeWeight(stroke),
+          align,
+          dashPattern: stroke.dashPattern ?? [],
+          blendMode: gradient.blendMode,
+          gradientStops: gradient.gradientStops,
+          gradientTransform: gradient.gradientTransform,
+          type: gradient.type
+        }
+      ];
     }
     if (typeof fill3 !== "string" && !["color", "solid"].includes(fill3.type))
       return [];
@@ -89372,15 +89531,17 @@ function convertStroke(stroke, ctx, node) {
     const color = { ...parsedColor, a: 1 };
     if (node)
       bindIfVar(node, `strokes[${index}]`, rawColor, ctx);
-    return [{
-      visible: typeof fill3 === "string" || fill3.enabled !== false,
-      color,
-      opacity: parsedColor.a,
-      blendMode: mapPenBlendMode(typeof fill3 === "string" ? undefined : fill3.blendMode),
-      weight: strokeWeight(stroke),
-      align,
-      dashPattern: stroke.dashPattern ?? []
-    }];
+    return [
+      {
+        visible: typeof fill3 === "string" || fill3.enabled !== false,
+        color,
+        opacity: parsedColor.a * (typeof fill3 === "string" ? 1 : Number(fill3.opacity ?? 1)),
+        blendMode: mapPenBlendMode(typeof fill3 === "string" ? undefined : fill3.blendMode),
+        weight: strokeWeight(stroke),
+        align,
+        dashPattern: stroke.dashPattern ?? []
+      }
+    ];
   });
   if (node) {
     if (typeof stroke.thickness === "object") {
@@ -89417,11 +89578,13 @@ function convertEffects2(effect) {
     if (item.enabled === false)
       return [];
     if (item.type === "blur" || item.type === "background_blur") {
-      return [{
-        type: item.type === "background_blur" ? "BACKGROUND_BLUR" : "LAYER_BLUR",
-        visible: true,
-        radius: Number(item.radius ?? 0)
-      }];
+      return [
+        {
+          type: item.type === "background_blur" ? "BACKGROUND_BLUR" : "LAYER_BLUR",
+          visible: true,
+          radius: Number(item.radius ?? 0)
+        }
+      ];
     }
     if (item.type !== "shadow")
       return [];
@@ -89573,7 +89736,7 @@ function mapNodeType2(pen) {
   if (pen.type === "line")
     return "LINE";
   if (pen.type === "polygon")
-    return "POLYGON";
+    return pen.geometry ? "VECTOR" : "POLYGON";
   if (pen.type === "group")
     return "GROUP";
   if (pen.type === "text" || pen.type === "icon_font")
@@ -89607,7 +89770,10 @@ function writePathCommands(network, loops) {
       const t1 = segment.tangentStart;
       const t2 = segment.tangentEnd;
       const curved = t1.x !== 0 || t1.y !== 0 || t2.x !== 0 || t2.y !== 0;
-      commands.push(curved ? { code: 4, args: [start.x + t1.x, start.y + t1.y, end.x + t2.x, end.y + t2.y, end.x, end.y] } : { code: 2, args: [end.x, end.y] });
+      commands.push(curved ? {
+        code: 4,
+        args: [start.x + t1.x, start.y + t1.y, end.x + t2.x, end.y + t2.y, end.x, end.y]
+      } : { code: 2, args: [end.x, end.y] });
     }
     commands.push({ code: 0, args: [] });
   }
@@ -89690,6 +89856,7 @@ function buildBaseOverrides(pen) {
     y: pen.y ?? 0,
     visible: pen.enabled !== false,
     opacity: pen.opacity ?? 1,
+    ...pen.blendMode ? { blendMode: mapPenBlendMode(pen.blendMode) ?? "NORMAL" } : {},
     rotation: pen.rotation ?? 0,
     flipX: pen.flipX ?? false,
     flipY: pen.flipY ?? false,
@@ -89828,7 +89995,7 @@ function applyAllRefProps(penNodes, graph, componentIds, penSources, ctx) {
       applyAllRefProps(pen.children, graph, componentIds, penSources, ctx);
   }
 }
-function applyCanvasIconDefinition(node, pen, ctx) {
+function applyCanvasIconDefinition(node, pen, ctx, authoredSize, graph) {
   const definition29 = pen.__canvasIcon;
   if (!definition29)
     return;
@@ -89836,16 +90003,20 @@ function applyCanvasIconDefinition(node, pen, ctx) {
   const parsedColor = parseFillColor(colorValue ?? "#000000", ctx);
   const color = { ...parsedColor, a: 1 };
   if (definition29.fontFamily) {
+    const width = authoredSize?.width ?? node.width;
+    const height = authoredSize?.height ?? node.height;
+    node.textAutoResize = "NONE";
     node.text = definition29.content ?? "";
     node.fontFamily = definition29.fontFamily;
     node.fontWeight = definition29.weight ?? 400;
-    node.fontSize = Math.min(node.width, node.height);
-    node.lineHeight = node.height;
+    node.fontSize = Math.min(width, height);
+    node.lineHeight = height;
     node.textAlignHorizontal = "CENTER";
     node.textAlignVertical = "CENTER";
-    node.textAutoResize = "NONE";
     node.textPicture = null;
     node.figmaDerivedTextGlyphs = null;
+    if (graph)
+      graph.updateNode(node.id, { width, height });
   } else if (definition29.layers) {
     const networks = definition29.layers.map((layer) => parseSVGPath(layer.geometry));
     for (const network of networks)
@@ -89855,7 +90026,9 @@ function applyCanvasIconDefinition(node, pen, ctx) {
     const placeholders = definition29.layers.flatMap((layer, index) => networks[index].regions.map((region) => ({
       windingRule: region.windingRule,
       commandsBlob: new Uint8Array(0),
-      fills: [{ type: "SOLID", visible: true, opacity: parsedColor.a * layer.opacity, color }]
+      fills: [
+        { type: "SOLID", visible: true, opacity: parsedColor.a * layer.opacity, color }
+      ]
     })));
     node.fillGeometry = regenerateIconFillGeometry(vectorNetwork, placeholders);
     node.fills = [];
@@ -89867,16 +90040,18 @@ function applyCanvasIconDefinition(node, pen, ctx) {
   if (definition29.paint === "stroke") {
     node.fills = [];
     const scale = Math.min(node.width / definition29.viewBox[2], node.height / definition29.viewBox[3]);
-    node.strokes = [{
-      visible: true,
-      color,
-      opacity: parsedColor.a,
-      weight: (definition29.strokeWidth ?? 1) * scale,
-      align: "CENTER",
-      cap: "ROUND",
-      join: "ROUND",
-      dashPattern: []
-    }];
+    node.strokes = [
+      {
+        visible: true,
+        color,
+        opacity: parsedColor.a,
+        weight: (definition29.strokeWidth ?? 1) * scale,
+        align: "CENTER",
+        cap: "ROUND",
+        join: "ROUND",
+        dashPattern: []
+      }
+    ];
     node.strokeJoin = "ROUND";
     node.strokeCap = "ROUND";
   } else if (!definition29.layers) {
@@ -89907,6 +90082,8 @@ function createSceneNode(pen, parentId, graph, ctx, componentIds, penSources) {
   }
   const node = graph.createNode(sceneType, parentId, overrides);
   node.pencilNodeId = pen.id;
+  if (pen.type === "frame")
+    node.canvasRole = pen.role;
   node.pencilAddress = pen.id;
   node.pencilWidthOmitted = pen.width === undefined;
   node.pencilHeightOmitted = pen.height === undefined;
@@ -89922,7 +90099,12 @@ function createSceneNode(pen, parentId, graph, ctx, componentIds, penSources) {
   if (pen.gridColumn !== undefined || pen.gridRow !== undefined) {
     const column = gridPlacement(pen.gridColumn);
     const row = gridPlacement(pen.gridRow);
-    node.gridPosition = { column: column.start, columnSpan: column.span, row: row.start, rowSpan: row.span };
+    node.gridPosition = {
+      column: column.start,
+      columnSpan: column.span,
+      row: row.start,
+      rowSpan: row.span
+    };
   }
   if (pen.type === "polygon")
     node.pointCount = Math.max(3, Math.round(pen.polygonCount ?? 3));
@@ -89943,9 +90125,10 @@ function createSceneNode(pen, parentId, graph, ctx, componentIds, penSources) {
     if (pen.width === undefined && !pen.textGrowth)
       node.width = estimatePenTextWidth(node.text, node.fontSize, node.letterSpacing);
   }
-  if (pen.type === "icon" && pen.__canvasIcon)
-    applyCanvasIconDefinition(node, pen, ctx);
-  if (pen.type === "path" && pen.geometry) {
+  if (pen.type === "icon" && pen.__canvasIcon) {
+    applyCanvasIconDefinition(node, pen, ctx, { width: w.value, height: h.value }, graph);
+  }
+  if ((pen.type === "path" || pen.type === "polygon") && pen.geometry) {
     const vectorNetwork = parseSVGPath(pen.geometry, pen.fillRule === "evenodd" ? "EVENODD" : "NONZERO");
     node.vectorNetwork = vectorNetwork;
     scaleVectorNetwork2(vectorNetwork, node.width, node.height, pen.viewBox);
@@ -89965,9 +90148,9 @@ function createSceneNode(pen, parentId, graph, ctx, componentIds, penSources) {
         node.layoutAlignSelf = "STRETCH";
     }
   }
+  penSources.set(pen.id, pen);
   if (pen.reusable) {
     componentIds.set(pen.id, node.id);
-    penSources.set(pen.id, pen);
   }
   if (pen.children) {
     for (const child of pen.children) {
@@ -90037,7 +90220,7 @@ function findCloneByComponentPath(graph, instanceId, path) {
   }
   return match;
 }
-function applyOverrideProps(target, overrideData, ctx) {
+function applyOverrideProps(target, overrideData, ctx, graph) {
   const previousIntrinsicHeight = target.height;
   let textMetricsChanged = false;
   if (overrideData.fill !== undefined)
@@ -90104,7 +90287,7 @@ function applyOverrideProps(target, overrideData, ctx) {
     applyCanvasIconDefinition(target, {
       ...overrideData,
       fill: overrideData.__canvasIconFill
-    }, ctx);
+    }, ctx, undefined, graph);
   }
   const intrinsic = textMetricsChanged && target.type === "TEXT" && target.textAutoResize === "WIDTH_AND_HEIGHT";
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight };
@@ -90156,7 +90339,7 @@ function applyDescendantOverrides(graph, pen, ctx, componentIds, penSources) {
           createSceneNode(child, clone2.id, graph, ctx, componentIds, penSources);
         }
       }
-      const changed = applyOverrideProps(clone2, overrideData, ctx);
+      const changed = applyOverrideProps(clone2, overrideData, ctx, graph);
       applyIntrinsicOverrideSizing(graph, clone2, instanceNode, changed);
       continue;
     }
@@ -90236,6 +90419,8 @@ function fixInstanceWidths(graph) {
 function fixTextWidths(graph) {
   for (const node of graph.getAllNodes()) {
     if (node.type !== "TEXT" || !node.text || node.text.length <= 1)
+      continue;
+    if (node.fontFamily.startsWith("Material Symbols "))
       continue;
     if (node.width >= node.fontSize * 2)
       continue;
@@ -90364,11 +90549,13 @@ function effectOverflow3(effects) {
       continue;
     }
     const kernel = effect.radius / 2 <= 0.03 ? 0 : Math.ceil(3 * effect.radius / 2);
-    const blurSpread = kernel + effect.spread;
-    left = Math.max(left, blurSpread - effect.offset.x, 0);
-    right = Math.max(right, blurSpread + effect.offset.x, 0);
-    top = Math.max(top, blurSpread - effect.offset.y, 0);
-    bottom = Math.max(bottom, blurSpread + effect.offset.y, 0);
+    const blurSpread = kernel + (effect.type === "DROP_SHADOW" ? effect.spread : 0);
+    const offsetX = effect.type === "DROP_SHADOW" ? effect.offset.x : 0;
+    const offsetY = effect.type === "DROP_SHADOW" ? effect.offset.y : 0;
+    left = Math.max(left, blurSpread - offsetX, 0);
+    right = Math.max(right, blurSpread + offsetX, 0);
+    top = Math.max(top, blurSpread - offsetY, 0);
+    bottom = Math.max(bottom, blurSpread + offsetY, 0);
   }
   return { left, right, top, bottom };
 }
@@ -90460,8 +90647,64 @@ function transformedLocalBounds2(node, local, abs2) {
     maxY: abs2.y + Math.max(...points.map((point) => point.y))
   };
 }
-function nodeVisualBounds3(node, getAbsolutePosition2) {
+function nodeVisualBounds3(node, getAbsolutePosition2, getNode2) {
   const abs2 = getAbsolutePosition2(node.id);
+  if (getNode2) {
+    const transform = (point) => {
+      let current = node;
+      let result = point;
+      while (current) {
+        const x2 = current.flipX ? -result.x : result.x;
+        const y = current.flipY ? -result.y : result.y;
+        const angle2 = degToRad4(current.rotation ?? 0);
+        result = {
+          x: x2 * Math.cos(angle2) - y * Math.sin(angle2),
+          y: x2 * Math.sin(angle2) + y * Math.cos(angle2)
+        };
+        current = current.parentId ? getNode2(current.parentId) : undefined;
+      }
+      return { x: abs2.x + result.x, y: abs2.y + result.y };
+    };
+    const local = geometryBlobBounds3([
+      ...node.fillGeometry ?? [],
+      ...node.strokes?.some((stroke2) => stroke2.visible && stroke2.align !== "INSIDE") ? node.strokeGeometry ?? [] : []
+    ]);
+    const left = 0;
+    const top = 0;
+    const right = node.width;
+    let bottom = node.height;
+    if (node.type === "TEXT" && node.textDecoration && node.textDecoration !== "NONE") {
+      const fontSize = node.fontSize ?? 14;
+      bottom += (node.textUnderlineOffset ?? fontSize * 0.18) + (node.textDecorationThickness ?? Math.max(1, fontSize / 16)) + fontSize * 0.35;
+    }
+    const points = [
+      { x: left, y: top },
+      { x: right, y: top },
+      { x: right, y: bottom },
+      { x: left, y: bottom }
+    ].map(transform);
+    const stroke = strokeOverflow3(node.strokes);
+    const effects = effectOverflow3(node.effects);
+    const bounds2 = {
+      minX: Math.min(...points.map((point) => point.x)) - stroke - effects.left,
+      minY: Math.min(...points.map((point) => point.y)) - stroke - effects.top,
+      maxX: Math.max(...points.map((point) => point.x)) + stroke + effects.right,
+      maxY: Math.max(...points.map((point) => point.y)) + stroke + effects.bottom
+    };
+    if (local) {
+      const geometryPoints = [
+        { x: local.x, y: local.y },
+        { x: local.x + local.width, y: local.y },
+        { x: local.x + local.width, y: local.y + local.height },
+        { x: local.x, y: local.y + local.height }
+      ].map(transform);
+      bounds2.minX = Math.min(bounds2.minX, ...geometryPoints.map((point) => point.x));
+      bounds2.minY = Math.min(bounds2.minY, ...geometryPoints.map((point) => point.y));
+      bounds2.maxX = Math.max(bounds2.maxX, ...geometryPoints.map((point) => point.x));
+      bounds2.maxY = Math.max(bounds2.maxY, ...geometryPoints.map((point) => point.y));
+    }
+    return bounds2;
+  }
   const base = computeVisualBounds3([node], getAbsolutePosition2);
   let bounds = {
     minX: base.x,
@@ -90489,18 +90732,12 @@ function collectDescendantVisualBounds2(nodeId, getNode2, getAbsolutePosition2, 
   const node = getNode2(nodeId);
   if (!node?.visible)
     return null;
-  const own = nodeVisualBounds3(node, getAbsolutePosition2);
+  const own = nodeVisualBounds3(node, getAbsolutePosition2, getNode2);
   let bounds = clip ? intersectVisualBounds3(own, clip) : own;
   const isClippableContainer = node.type === "FRAME" || node.type === "COMPONENT" || node.type === "INSTANCE";
   let childClip = clip;
   if (isClippableContainer && node.clipsContent) {
-    const abs2 = getAbsolutePosition2(node.id);
-    const nodeClip = {
-      minX: abs2.x,
-      minY: abs2.y,
-      maxX: abs2.x + node.width,
-      maxY: abs2.y + node.height
-    };
+    const nodeClip = nodeVisualBounds3({ ...node, strokes: [], effects: [], fillGeometry: [], strokeGeometry: [] }, getAbsolutePosition2, getNode2);
     childClip = childClip ? intersectVisualBounds3(childClip, nodeClip) : nodeClip;
     if (!childClip)
       return bounds;
@@ -90516,6 +90753,296 @@ function computeDescendantVisualBounds3(nodeIds, getNode2, getAbsolutePosition2)
     bounds = unionVisualBounds3(bounds, collectDescendantVisualBounds2(nodeId, getNode2, getAbsolutePosition2));
   }
   return bounds;
+}
+// vendor/open-pencil/source/packages/scene-graph/src/parse-path.ts
+var import_svgpath4 = __toESM(require_svgpath(), 1);
+function parseSVGPath2(d, windingRule = "NONZERO") {
+  const parsed = parsePath3(d, windingRule, {
+    includeOpenRegions: false,
+    strictCommands: false
+  });
+  return parsed.ok ? parsed.network : { vertices: [], segments: [], regions: [] };
+}
+function parsePath3(d, windingRule, options) {
+  const vertices = [];
+  const segments = [];
+  const subPaths = [];
+  let currentSubPath = null;
+  let cx = 0;
+  let cy = 0;
+  const vertexMap = new Map;
+  function getOrCreateVertex(x2, y) {
+    const key = `${x2},${y}`;
+    const existing = vertexMap.get(key);
+    if (existing !== undefined)
+      return existing;
+    const idx = vertices.length;
+    vertices.push({ x: x2, y });
+    vertexMap.set(key, idx);
+    return idx;
+  }
+  function addSegment(x1, y1, x2, y2, tx1, ty1, tx2, ty2) {
+    const startIdx = getOrCreateVertex(x1, y1);
+    const endIdx = getOrCreateVertex(x2, y2);
+    const segIdx = segments.length;
+    segments.push({
+      start: startIdx,
+      end: endIdx,
+      tangentStart: { x: tx1 - x1, y: ty1 - y1 },
+      tangentEnd: { x: tx2 - x2, y: ty2 - y2 }
+    });
+    if (currentSubPath) {
+      currentSubPath.segmentIndices.push(segIdx);
+    }
+  }
+  function addLine(x1, y1, x2, y2) {
+    addSegment(x1, y1, x2, y2, x1, y1, x2, y2);
+  }
+  function addCubic(x1, y1, cp1x, cp1y, cp2x, cp2y, x2, y2) {
+    addSegment(x1, y1, x2, y2, cp1x, cp1y, cp2x, cp2y);
+  }
+  const parsed = import_svgpath4.default(d);
+  const parseError = "err" in parsed && typeof parsed.err === "string" ? parsed.err : null;
+  if (parseError)
+    return { ok: false, error: parseError };
+  if (options.strictCommands) {
+    const unsupportedCommands = new Set;
+    parsed.iterate((segment) => {
+      if (!["M", "L", "Q", "C", "Z"].includes(segment[0]))
+        unsupportedCommands.add(segment[0]);
+    });
+    const unsupportedCommand = unsupportedCommands.values().next().value;
+    if (unsupportedCommand !== undefined) {
+      return { ok: false, error: `Unsupported path command ${unsupportedCommand}` };
+    }
+  }
+  const normalized = parsed.abs().unshort().unarc();
+  normalized.iterate((seg) => {
+    const cmd = seg[0];
+    if (cmd === "M") {
+      cx = seg[1];
+      cy = seg[2];
+      currentSubPath = {
+        startVertexIndex: getOrCreateVertex(cx, cy),
+        segmentIndices: [],
+        closed: false
+      };
+      subPaths.push(currentSubPath);
+    } else if (cmd === "L") {
+      addLine(cx, cy, seg[1], seg[2]);
+      cx = seg[1];
+      cy = seg[2];
+    } else if (cmd === "H") {
+      addLine(cx, cy, seg[1], cy);
+      cx = seg[1];
+    } else if (cmd === "V") {
+      addLine(cx, cy, cx, seg[1]);
+      cy = seg[1];
+    } else if (cmd === "C") {
+      addCubic(cx, cy, seg[1], seg[2], seg[3], seg[4], seg[5], seg[6]);
+      cx = seg[5];
+      cy = seg[6];
+    } else if (cmd === "Q") {
+      const qx = seg[1];
+      const qy = seg[2];
+      const ex = seg[3];
+      const ey = seg[4];
+      const cp1x = cx + 2 / 3 * (qx - cx);
+      const cp1y = cy + 2 / 3 * (qy - cy);
+      const cp2x = ex + 2 / 3 * (qx - ex);
+      const cp2y = ey + 2 / 3 * (qy - ey);
+      addCubic(cx, cy, cp1x, cp1y, cp2x, cp2y, ex, ey);
+      cx = ex;
+      cy = ey;
+    } else if (cmd === "Z" || cmd === "z") {
+      if (currentSubPath) {
+        const startVert = vertices[currentSubPath.startVertexIndex];
+        if (Math.abs(cx - startVert.x) > 0.001 || Math.abs(cy - startVert.y) > 0.001) {
+          addLine(cx, cy, startVert.x, startVert.y);
+        }
+        currentSubPath.closed = true;
+        cx = startVert.x;
+        cy = startVert.y;
+      }
+    }
+  });
+  const regions = [];
+  const regionPaths = subPaths.filter((subPath) => windingRule !== "NONE" && subPath.segmentIndices.length > 0 && (subPath.closed || options.includeOpenRegions));
+  if (regionPaths.length > 0 && windingRule !== "NONE") {
+    regions.push({
+      windingRule,
+      loops: regionPaths.map((subPath) => subPath.segmentIndices)
+    });
+  }
+  return { ok: true, network: { vertices, segments, regions } };
+}
+// vendor/open-pencil/source/packages/scene-graph/src/matrix.ts
+var identity3 = () => [1, 0, 0, 0, 1, 0, 0, 0, 1];
+var multiply22 = (m1, m2) => {
+  return [
+    m1[0] * m2[0] + m1[1] * m2[3] + m1[2] * m2[6],
+    m1[0] * m2[1] + m1[1] * m2[4] + m1[2] * m2[7],
+    m1[0] * m2[2] + m1[1] * m2[5] + m1[2] * m2[8],
+    m1[3] * m2[0] + m1[4] * m2[3] + m1[5] * m2[6],
+    m1[3] * m2[1] + m1[4] * m2[4] + m1[5] * m2[7],
+    m1[3] * m2[2] + m1[4] * m2[5] + m1[5] * m2[8],
+    m1[6] * m2[0] + m1[7] * m2[3] + m1[8] * m2[6],
+    m1[6] * m2[1] + m1[7] * m2[4] + m1[8] * m2[7],
+    m1[6] * m2[2] + m1[7] * m2[5] + m1[8] * m2[8]
+  ];
+};
+var multiply3 = (...ms) => {
+  if (ms.length === 0)
+    return identity3();
+  let out = ms[0].slice();
+  for (let i2 = 1;i2 < ms.length; i2++)
+    out = multiply22(out, ms[i2]);
+  return out;
+};
+var translated2 = (dx, dy) => [1, 0, dx, 0, 1, dy, 0, 0, 1];
+var rotated2 = (radians, px2 = 0, py = 0) => {
+  const s = Math.sin(radians);
+  const c3 = Math.cos(radians);
+  return [
+    c3,
+    -s,
+    s * py + (1 - c3) * px2,
+    s,
+    c3,
+    -s * px2 + (1 - c3) * py,
+    0,
+    0,
+    1
+  ];
+};
+var scaled2 = (sx, sy, px2 = 0, py = 0) => {
+  return [
+    sx,
+    0,
+    px2 - sx * px2,
+    0,
+    sy,
+    py - sy * py,
+    0,
+    0,
+    1
+  ];
+};
+var invert3 = (m) => {
+  const det = m[0] * m[4] * m[8] + m[1] * m[5] * m[6] + m[2] * m[3] * m[7] - m[2] * m[4] * m[6] - m[1] * m[3] * m[8] - m[0] * m[5] * m[7];
+  if (!det)
+    return null;
+  return [
+    (m[4] * m[8] - m[5] * m[7]) / det,
+    (m[2] * m[7] - m[1] * m[8]) / det,
+    (m[1] * m[5] - m[2] * m[4]) / det,
+    (m[5] * m[6] - m[3] * m[8]) / det,
+    (m[0] * m[8] - m[2] * m[6]) / det,
+    (m[2] * m[3] - m[0] * m[5]) / det,
+    (m[3] * m[7] - m[4] * m[6]) / det,
+    (m[1] * m[6] - m[0] * m[7]) / det,
+    (m[0] * m[4] - m[1] * m[3]) / det
+  ];
+};
+var mapPoints2 = (matrix, ptArr) => {
+  if (ptArr.length % 2)
+    throw new Error("mapPoints requires even length [x,y,...].");
+  const out = ptArr.slice();
+  for (let i2 = 0;i2 < out.length; i2 += 2) {
+    const x2 = out[i2];
+    const y = out[i2 + 1];
+    const denom = matrix[6] * x2 + matrix[7] * y + matrix[8];
+    const xTrans = matrix[0] * x2 + matrix[1] * y + matrix[2];
+    const yTrans = matrix[3] * x2 + matrix[4] * y + matrix[5];
+    out[i2] = xTrans / denom;
+    out[i2 + 1] = yTrans / denom;
+  }
+  return out;
+};
+var mapPoint2 = (m, p4) => {
+  const arr = mapPoints2(m, [p4.x, p4.y]);
+  return { x: arr[0], y: arr[1] };
+};
+var Matrix2 = { identity: identity3, multiply: multiply3, translated: translated2, rotated: rotated2, scaled: scaled2, invert: invert3, mapPoints: mapPoints2, mapPoint: mapPoint2 };
+var matrix_default = Matrix2;
+
+// vendor/open-pencil/source/packages/scene-graph/src/coordinate.ts
+function getWorldMatrix2(node, graph) {
+  const chain = [];
+  let current = node;
+  while (current) {
+    chain.unshift(current);
+    if (!current.parentId)
+      break;
+    current = graph.getNode(current.parentId);
+  }
+  let matrix = matrix_default.identity();
+  for (const n of chain) {
+    const local = getNodeLocalMatrix2(n);
+    matrix = matrix_default.multiply(matrix, local);
+  }
+  return matrix;
+}
+function getAbsolutePositionFull2(node, graph) {
+  const matrix = getWorldMatrix2(node, graph);
+  const origin = matrix_default.mapPoints(matrix, [0, 0]);
+  const x2 = origin[0];
+  const y = origin[1];
+  const pts = matrix_default.mapPoints(matrix, [
+    0,
+    0,
+    node.width,
+    0,
+    node.width,
+    node.height,
+    0,
+    node.height
+  ]);
+  const [x1, y1, x22, y2, x3, y3, x4, y4] = pts;
+  const minX = Math.min(x1, x22, x3, x4);
+  const maxX = Math.max(x1, x22, x3, x4);
+  const minY = Math.min(y1, y2, y3, y4);
+  const maxY = Math.max(y1, y2, y3, y4);
+  const width = maxX - minX;
+  const height = maxY - minY;
+  let angle2 = Math.atan2(matrix[3], matrix[0]);
+  const det = matrix[0] * matrix[4] - matrix[1] * matrix[3];
+  if (det < 0) {
+    angle2 = -angle2;
+  }
+  const rotation = angle2 * (180 / Math.PI);
+  const center = matrix_default.mapPoints(matrix, [node.width / 2, node.height / 2]);
+  const centerX = center[0];
+  const centerY = center[1];
+  return {
+    x: x2,
+    y,
+    boundX: minX,
+    boundY: minY,
+    width,
+    height,
+    rotation,
+    centerX,
+    centerY
+  };
+}
+function getNodeLocalMatrix2(n) {
+  const rad = n.rotation * Math.PI / 180;
+  const cx = n.width / 2;
+  const cy = n.height / 2;
+  const sx = n.flipX ? -1 : 1;
+  const sy = n.flipY ? -1 : 1;
+  let m = matrix_default.identity();
+  m = matrix_default.multiply(m, matrix_default.translated(n.x, n.y));
+  m = matrix_default.multiply(m, matrix_default.translated(cx, cy));
+  if (n.rotation) {
+    m = matrix_default.multiply(m, matrix_default.rotated(rad, 0, 0));
+  }
+  if (n.flipX || n.flipY) {
+    m = matrix_default.multiply(m, matrix_default.scaled(sx, sy));
+  }
+  m = matrix_default.multiply(m, matrix_default.translated(-cx, -cy));
+  return m;
 }
 // vendor/open-pencil/source/packages/vue/dist/canvas/CanvasRoot.js
 init_canvas();
@@ -91029,18 +91556,21 @@ function createCanvasRenderLoop(editor, renderNow, options = {}) {
   };
 }
 function useCanvasResizeObserver({ canvasRef, getCanvasKitValue, resizeCanvas }) {
-  let resizeRaf = 0;
+  let stopped = false;
+  let resizing = false;
   function cancelResize() {
-    cancelAnimationFrame(resizeRaf);
+    stopped = true;
   }
   useResizeObserver(canvasRef, () => {
     const canvas = canvasRef.value;
-    if (!canvas || !getCanvasKitValue() || resizeRaf)
+    if (stopped || resizing || !canvas || !getCanvasKitValue())
       return;
-    resizeRaf = requestAnimationFrame(() => {
-      resizeRaf = 0;
+    resizing = true;
+    try {
       resizeCanvas(canvas);
-    });
+    } finally {
+      resizing = false;
+    }
   });
   return { cancelResize };
 }
@@ -91188,8 +91718,8 @@ function createRulerVisibility(options) {
   const noRulersParam = (IS_BROWSER ? new URLSearchParams(window.location.search) : new URLSearchParams).has("no-rulers");
   const { isMobile } = useViewportKind();
   return function shouldShowRulers() {
-    if (options?.showRulers === false)
-      return false;
+    if (typeof options?.showRulers === "boolean")
+      return options.showRulers;
     return !noRulersParam && !isMobile.value;
   };
 }
@@ -95247,10 +95777,16 @@ export {
   createCanvasSceneGraph,
   createDefaultEditorState,
   createEditor,
+  createSVGNodesFromImport,
   fontManager,
+  getAbsolutePositionFull2 as getAbsolutePositionFull,
   getCanvasKit,
+  getWorldMatrix2 as getWorldMatrix,
+  parseSVGPath2 as parseSVGPath,
+  prepareSVGImport,
   provideEditor,
   useCanvas,
   useCanvasInput,
-  useTextEdit
+  useTextEdit,
+  vectorNetworkToSVGPaths
 };

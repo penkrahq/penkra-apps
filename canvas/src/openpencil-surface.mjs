@@ -26,6 +26,7 @@ import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
 import { createTimeShaderAnimation } from "./time-shader-animation.mjs";
+import { rasterizeSvgWithCanvasKit } from "./svg-rasterization.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
@@ -36,6 +37,10 @@ export function prepareOpenPencilEngine() {
     preparePencilScriptRuntime(),
   ]).then(([canvasKit]) => canvasKit);
   return canvasKitReady;
+}
+
+export async function rasterizeOpenPencilSvgAsset(bytes) {
+  return rasterizeSvgWithCanvasKit(bytes, await prepareOpenPencilEngine());
 }
 
 export function mountOpenPencilSurface(element, document, callbacks = {}) {
@@ -63,6 +68,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
 
   let refreshingDocument = false;
   let visible = callbacks.visible ?? true;
+  let sceneCanvasElement = null;
   const hasTimeShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
     (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
   ));
@@ -168,6 +174,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       provideEditor(editor);
       const sceneCanvasRef = ref(null);
       const overlayCanvasRef = ref(null);
+      watch(sceneCanvasRef, (canvas) => { sceneCanvasElement = canvas; }, { flush: "sync" });
       const surfaceReady = ref(false);
       const onLayerReady = createLayeredSurfaceReadiness({
         layerCount: 2,
@@ -297,6 +304,15 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     setVisible(nextVisible) {
       visible = nextVisible;
       reconcileTimeShaderAnimation();
+    },
+    capturePreview(maxDimension = 640) {
+      if (!sceneCanvasElement?.width || !sceneCanvasElement?.height) return null;
+      const scale = Math.min(1, maxDimension / Math.max(sceneCanvasElement.width, sceneCanvasElement.height));
+      const preview = globalThis.document.createElement("canvas");
+      preview.width = Math.max(1, Math.round(sceneCanvasElement.width * scale));
+      preview.height = Math.max(1, Math.round(sceneCanvasElement.height * scale));
+      preview.getContext("2d")?.drawImage(sceneCanvasElement, 0, 0, preview.width, preview.height);
+      return preview.toDataURL("image/png").split(",", 2)[1] ?? null;
     },
     unmount() {
       timeShaderAnimation.stop();

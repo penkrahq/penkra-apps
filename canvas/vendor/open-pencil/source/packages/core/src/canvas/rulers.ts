@@ -82,15 +82,18 @@ function drawVerticalRulerTicks(
   canvas: Canvas,
   font: InstanceType<CanvasKit['Font']>,
   step: number,
-  selBounds: SelectionScreenBounds | null
+  selBounds: SelectionScreenBounds | null,
+  edge: 'left' | 'right'
 ): void {
   const R = RULER_SIZE
   const vh = r.viewportHeight
   const minorStep = step / 5
   const badgeW = RULER_BADGE_EXCLUSION
+  const rulerLeft = edge === 'left' ? 0 : r.viewportWidth - R
+  const rulerRight = edge === 'left' ? R : r.viewportWidth
 
   canvas.save()
-  canvas.clipRect(r.ck.LTRBRect(0, R, R, vh), r.ck.ClipOp.Intersect, false)
+  canvas.clipRect(r.ck.LTRBRect(rulerLeft, R, rulerRight, vh), r.ck.ClipOp.Intersect, false)
   const worldTop = -r.panY / r.zoom
   const worldBottom = (vh - r.panY) / r.zoom
   const startY = Math.floor(worldTop / step) * step
@@ -100,7 +103,9 @@ function drawVerticalRulerTicks(
     if (sy < R) continue
     const isMajor = Math.abs(wy % step) < RULER_MAJOR_TOLERANCE
     const tickLen = isMajor ? R * RULER_MAJOR_TICK : R * RULER_MINOR_TICK
-    canvas.drawLine(R - tickLen, sy, R, sy, r.rulerTickPaint)
+    const tickEdge = edge === 'left' ? R : rulerLeft
+    const tickStart = edge === 'left' ? R - tickLen : rulerLeft + tickLen
+    canvas.drawLine(tickStart, sy, tickEdge, sy, r.rulerTickPaint)
 
     if (isMajor) {
       const skipForBadge =
@@ -108,7 +113,7 @@ function drawVerticalRulerTicks(
         (Math.abs(sy - selBounds.sy1) < badgeW || Math.abs(sy - selBounds.sy2) < badgeW)
       if (!skipForBadge) {
         canvas.save()
-        canvas.translate(R * RULER_TEXT_BASELINE, sy - 2)
+        canvas.translate(rulerLeft + R * RULER_TEXT_BASELINE, sy - 2)
         canvas.rotate(-90, 0, 0)
         canvas.drawText(rulerLabel(wy), 0, 3, r.rulerTextPaint, font)
         canvas.restore()
@@ -139,7 +144,9 @@ export function drawRulers(
 
   canvas.drawRect(r.ck.LTRBRect(0, 0, vw, R), r.rulerBgPaint)
   canvas.drawRect(r.ck.LTRBRect(0, R, R, vh), r.rulerBgPaint)
+  canvas.drawRect(r.ck.LTRBRect(vw - R, R, vw, vh), r.rulerBgPaint)
   canvas.drawRect(r.ck.LTRBRect(0, 0, R, R), r.rulerBgPaint)
+  canvas.drawRect(r.ck.LTRBRect(vw - R, 0, vw, R), r.rulerBgPaint)
 
   const font = r.sizeFont ?? r.textFont
   if (!font) return
@@ -151,12 +158,17 @@ export function drawRulers(
   const selBounds = selNodes.length > 0 ? getSelectionScreenBounds(r, graph, selNodes) : null
 
   drawHorizontalRulerTicks(r, canvas, font, step, selBounds)
-  drawVerticalRulerTicks(r, canvas, font, step, selBounds)
+  drawVerticalRulerTicks(r, canvas, font, step, selBounds, 'left')
+  drawVerticalRulerTicks(r, canvas, font, step, selBounds, 'right')
 
   if (selBounds) {
     r.rulerHlPaint.setColor(r.selColor(RULER_HIGHLIGHT_ALPHA))
     canvas.drawRect(r.ck.LTRBRect(Math.max(R, selBounds.sx1), 0, selBounds.sx2, R), r.rulerHlPaint)
     canvas.drawRect(r.ck.LTRBRect(0, Math.max(R, selBounds.sy1), R, selBounds.sy2), r.rulerHlPaint)
+    canvas.drawRect(
+      r.ck.LTRBRect(vw - R, Math.max(R, selBounds.sy1), vw, selBounds.sy2),
+      r.rulerHlPaint
+    )
 
     drawRulerBadge(
       r,

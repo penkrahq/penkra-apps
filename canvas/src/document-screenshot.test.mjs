@@ -3,7 +3,107 @@ import { Buffer } from "node:buffer";
 import test from "node:test";
 
 import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
-import { takeDocumentScreenshots } from "./document-screenshot.mjs";
+import { rasterizeSvgImage, takeDocumentScreenshots } from "./document-screenshot.mjs";
+
+test("rasterizes SVG geometry into a CanvasKit-decodable PNG", async () => {
+  const svg = new TextEncoder().encode(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8">
+      <path fill="#ef4444" d="M0 0h12v8H0z"/>
+    </svg>
+  `);
+  const bytes = await rasterizeSvgImage(svg);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(bytes);
+  assert.ok(image, "CanvasKit should decode the rasterized SVG PNG");
+  try {
+    assert.equal(image.width(), 12);
+    assert.equal(image.height(), 8);
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.ok(pixels);
+    assert.deepEqual([...pixels.subarray(0, 4)], [239, 68, 68, 255]);
+  } finally {
+    image.delete();
+  }
+});
+
+test("an explicit export bound constrains a raster with far-off descendants", async () => {
+  const [screenshot] = await takeDocumentScreenshots({
+    version: "2.17",
+    children: [{
+      id: "top",
+      type: "frame",
+      width: 1280,
+      height: 88,
+      children: [{
+        id: "overflow",
+        type: "rectangle",
+        x: 30000,
+        width: 324,
+        height: 88,
+        fill: "#ffffff",
+      }],
+    }],
+  }, [{
+    nodeIds: ["top"],
+    bounds: { minX: 0, minY: 0, maxX: 1280, maxY: 88 },
+  }]);
+
+  assert.equal(screenshot.width, 1280);
+  assert.equal(screenshot.height, 88);
+});
+
+test("renders a placed SVG from retained geometry instead of its raster fallback", async () => {
+  const svg = new TextEncoder().encode(`
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+      <path fill="#ef4444" d="M0 0h10v10H0z"/>
+      <path fill="#ffffff" d="M4 0h2v10H4z"/>
+    </svg>
+  `);
+  const path = "images/vector.svg";
+  const [screenshot] = await takeDocumentScreenshots({
+    version: "2.17",
+    children: [{
+      id: "vector",
+      type: "rectangle",
+      x: 500,
+      y: 700,
+      width: 100,
+      height: 100,
+      fill: { type: "image", url: path, mode: "stretch" },
+    }],
+  }, [{ nodeIds: ["vector"] }], new Map([[path, {
+    path,
+    mimeType: "image/svg+xml",
+    sha256: "e".repeat(64),
+    bytes: svg,
+    renderBytes: new Uint8Array([0, 1, 2, 3]),
+  }]]), { scale: 4 });
+
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image);
+  try {
+    assert.equal(image.width(), 400);
+    assert.equal(image.height(), 400);
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.deepEqual([...pixels.subarray((200 * 400 + 80) * 4, (200 * 400 + 80) * 4 + 4)], [239, 68, 68, 255]);
+    assert.deepEqual([...pixels.subarray((200 * 400 + 200) * 4, (200 * 400 + 200) * 4 + 4)], [255, 255, 255, 255]);
+  } finally {
+    image.delete();
+  }
+});
 
 test("an exact nested component-instance screenshot includes its overridden text", async () => {
   const document = {
@@ -118,6 +218,50 @@ test("a semantic Lucide icon renders its authored round line endings", async () 
       alphaAt(pixels, image.width(), 21, 6) > 150,
       "the final diagonal should extend past its centerline endpoint with a round cap",
     );
+  } finally {
+    image.delete();
+  }
+});
+
+test("a multi-path curved Lucide icon renders its complete centerlines", async () => {
+  const document = {
+    version: "2.17",
+    children: [{
+      type: "icon",
+      id: "refresh",
+      width: 24,
+      height: 24,
+      library: "lucide",
+      icon: "refresh-cw",
+      fill: "#000000",
+    }],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["refresh"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image, "CanvasKit should decode the curved Lucide screenshot PNG");
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(),
+      height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    assert.ok(pixels, "decoded screenshot should expose RGBA pixels");
+    const rows = new Set();
+    const columns = new Set();
+    let ink = 0;
+    for (let index = 3; index < pixels.length; index += 4) {
+      if (pixels[index] <= 100) continue;
+      const pixel = (index - 3) / 4;
+      ink += 1;
+      columns.add(pixel % image.width());
+      rows.add(Math.floor(pixel / image.width()));
+    }
+    assert.ok(ink > 100);
+    assert.ok(rows.size >= 18);
+    assert.ok(columns.size >= 18);
   } finally {
     image.delete();
   }

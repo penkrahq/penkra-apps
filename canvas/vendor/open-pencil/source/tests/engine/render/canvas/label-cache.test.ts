@@ -50,6 +50,25 @@ function buildGraph() {
 }
 
 describe('LabelCache', () => {
+  it('provides visible top-level frames for frame-title drawing and invalidates them', () => {
+    const { g, pageId, sectionId } = buildGraph()
+    const frame = g.createNode('FRAME', pageId, { x: 20, y: 20, width: 80, height: 60 })
+    const sectionFrame = g.createNode('FRAME', sectionId, { x: 30, y: 30, width: 80, height: 60 })
+    g.createNode('FRAME', frame.id, { x: 0, y: 0, width: 40, height: 30 })
+    g.createNode('FRAME', pageId, { x: 2000, y: 20, width: 80, height: 60 })
+    const cache = new LabelCache()
+    const viewport = { x: 0, y: 0, w: 1000, h: 1000 }
+    cache.update(g, pageId, 1)
+    expect(
+      cache
+        .getFrames(g, viewport)
+        .map(({ node }) => node.id)
+        .sort()
+    ).toEqual([frame.id, sectionFrame.id].sort())
+    cache.invalidate()
+    expect(cache.getFrames(g, viewport)).toEqual([])
+  })
+
   it('collects sections on first call', () => {
     const { g, pageId } = buildGraph()
     const cache = new LabelCache()

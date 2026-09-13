@@ -1,4 +1,5 @@
 import { materialize, restoreDocumentModel } from "./document-model.mjs";
+import { prepareAssetForRendering } from "./document-assets.mjs";
 
 export async function loadCanvasImports(api, document, options = {}) {
   const assets = new Map();
@@ -21,7 +22,10 @@ export async function loadCanvasImports(api, document, options = {}) {
       const ownedPrefix = [prefix, "imports", alias].filter(Boolean).join("/");
       for (const asset of payload.assets ?? []) {
         const key = `${ownedPrefix}/${asset.path}`;
-        assets.set(key, { ...asset, path: key, bytes: await api.readAsset(record.documentId, asset) });
+        assets.set(key, await prepareAssetForRendering(
+          { ...asset, path: key, bytes: await api.readAsset(record.documentId, asset) },
+          options.rasterizeSvg,
+        ));
       }
       imports[alias] = {
         document: imported,

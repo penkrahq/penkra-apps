@@ -5,7 +5,9 @@ import { join } from "node:path";
 const root = new URL("../", import.meta.url);
 const output = new URL("../dist/", import.meta.url);
 const { assertAllCapabilityTables } = await import(new URL("src/capability-tables.mjs", root));
-assertAllCapabilityTables();
+const developmentBuildWithUnverifiedCapabilities =
+  process.env.CANVAS_DEV_BUILD_WITH_UNVERIFIED_CAPABILITIES === "1";
+if (!developmentBuildWithUnverifiedCapabilities) assertAllCapabilityTables();
 const yjsEntry = new URL("node_modules/yjs/dist/yjs.mjs", root).pathname;
 const lazyOperationModules = ["document-inspection", "script-runtime", "document-screenshot"];
 const dedupeYjsPlugin = {
@@ -101,6 +103,7 @@ await cp(new URL("assets/icon.svg", root), new URL("assets/icon.svg", output));
 await mkdir(new URL("assets/color/", output), { recursive: true });
 await cp(new URL("assets/color/sRGB2014.icc", root), new URL("assets/color/sRGB2014.icc", output));
 await cp(new URL("operations/", root), new URL("operations/", output), { recursive: true });
+await cp(new URL("skills/", root), new URL("skills/", output), { recursive: true });
 await cp(
   new URL("node_modules/canvaskit-wasm/bin/canvaskit.wasm", root),
   new URL("canvaskit.wasm", output),
@@ -109,7 +112,7 @@ await cp(
   new URL("node_modules/@jitl/quickjs-wasmfile-release-sync/dist/emscripten-module.wasm", root),
   new URL("emscripten-module.wasm", output),
 );
-for (const font of ["Inter-Regular.ttf", "Inter-Medium.ttf", "Inter-SemiBold.ttf", "Inter-Bold.ttf", "Inter-ExtraBold.ttf"]) {
+for (const font of ["Inter-Regular.ttf", "Inter-Medium.ttf", "Inter-SemiBold.ttf", "Inter-Bold.ttf", "Inter-ExtraBold.ttf", "Inter-OFL.txt"]) {
   await cp(new URL(`vendor/open-pencil/fonts/${font}`, root), new URL(font, output));
 }
 for (const weight of [400, 500]) {
@@ -162,6 +165,7 @@ try {
 
 const collaborationSource = await readFile(new URL("collaboration/pen-yjs-model.mjs", root));
 const buildInfo = {
+  developmentBuildWithUnverifiedCapabilities,
   files: {},
   sources: {
     collaborationSha256: createHash("sha256").update(collaborationSource).digest("hex"),

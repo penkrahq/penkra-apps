@@ -32,7 +32,7 @@ A frame carries a `role` naming what kind of deliverable unit it is.
 | `ios` | `mobile` | SwiftUI source |
 | `android` | `mobile` | Compose source |
 
-There is no `page` role and no `print` module. A PDF page is a frame that declares a real-world
+PDF output uses `documents.extract`. A PDF page is a frame that declares a real-world
 `physical` size, and multi-page PDFs come from `documents.extract`, because a PDF page carries no
 semantics beyond its dimensions — nothing to project, nothing to lose.
 

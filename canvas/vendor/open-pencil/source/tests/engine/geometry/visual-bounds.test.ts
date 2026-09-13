@@ -188,18 +188,14 @@ describe('computeVisualBounds', () => {
       ],
       idPos
     )
-    // blurSpread = radius + spread = 10 + 0 = 10
-    // left expansion: max(0, blurSpread + max(0, -offset.x)) = max(0, 10 + 0) = 10
-    // right expansion: max(0, blurSpread + max(0, offset.x)) = max(0, 10 + 5) = 15
-    // top expansion: max(0, blurSpread + max(0, -offset.y)) = max(0, 10 + 3) = 13
-    // bottom expansion: max(0, blurSpread + max(0, offset.y)) = max(0, 10 + 0) = 10
+    // sigma=radius/2; ceil(3*sigma)=15, translated by (5,-3).
     expect(withShadow.x).toBe(noEffect.x - 10)
-    expect(withShadow.y).toBe(noEffect.y - 13)
-    expect(withShadow.width).toBe(noEffect.width + 10 + 15)
-    expect(withShadow.height).toBe(noEffect.height + 13 + 10)
+    expect(withShadow.y).toBe(noEffect.y - 18)
+    expect(withShadow.width).toBe(noEffect.width + 10 + 20)
+    expect(withShadow.height).toBe(noEffect.height + 18 + 12)
   })
 
-  test('LAYER_BLUR expands bounds by radius', () => {
+  test('LAYER_BLUR expands bounds by the three-sigma kernel', () => {
     const noEffect = computeVisualBounds([{ id: 'r1', width: 50, height: 60 }], idPos)
     const withBlur = computeVisualBounds(
       [
@@ -221,10 +217,9 @@ describe('computeVisualBounds', () => {
       ],
       idPos
     )
-    // blurSpread = 20, offset = (0,0)
-    // All sides expand by 20
-    expect(withBlur.width).toBe(noEffect.width + 40)
-    expect(withBlur.height).toBe(noEffect.height + 40)
+    // radius=20 gives sigma=10, hence 30 pixels on each side.
+    expect(withBlur.width).toBe(noEffect.width + 60)
+    expect(withBlur.height).toBe(noEffect.height + 60)
   })
 
   test('invisible effect does not expand bounds', () => {
@@ -283,20 +278,11 @@ describe('computeVisualBounds', () => {
       ],
       idPos
     )
-    // strokeOverflow: OUTSIDE weight=5 → overflow=5
-    // effectOverflow: blurSpread=10, offset=(3,3)
-    //   left   = 10 + max(0, -3) = 10
-    //   right  = 10 + max(0,  3) = 13
-    //   top    = 10 + max(0, -3) = 10
-    //   bottom = 10 + max(0,  3) = 13
-    // Total left expansion: 5 (stroke) + 10 (effect) = 15
-    // Total right expansion: 5 (stroke) + 13 (effect) = 18
-    // Total top expansion: 5 (stroke) + 10 (effect) = 15
-    // Total bottom expansion: 5 (stroke) + 13 (effect) = 18
-    expect(combined.x).toBe(noEffects.x - 15)
-    expect(combined.y).toBe(noEffects.y - 15)
-    expect(combined.width).toBe(noEffects.width + 15 + 18) // 50 + 33 = 83
-    expect(combined.height).toBe(noEffects.height + 15 + 18) // 60 + 33 = 93
+    // Five-pixel stroke plus a 15-pixel kernel translated by (3,3).
+    expect(combined.x).toBe(noEffects.x - 17)
+    expect(combined.y).toBe(noEffects.y - 17)
+    expect(combined.width).toBe(noEffects.width + 17 + 23)
+    expect(combined.height).toBe(noEffects.height + 17 + 23)
   })
 
   test('multiple strokes takes maximum overflow', () => {
@@ -476,12 +462,10 @@ describe('computeVisualBounds', () => {
       ],
       idPos
     )
-    // Effect 1: blurSpread=5, offset=(10,0) → left=5, right=15, top=5, bottom=5
-    // Effect 2: blurSpread=3, offset=(-10,0) → left=13, right=3, top=3, bottom=3
-    // After Math.max: left=max(5,13)=13, right=max(15,3)=15, top=max(5,3)=5, bottom=max(5,3)=5
-    expect(multiEffect.x).toBe(noEffects.x - 13)
-    expect(multiEffect.width).toBe(noEffects.width + 13 + 15) // 50 + 28 = 78
-    expect(multiEffect.y).toBe(noEffects.y - 5)
-    expect(multiEffect.height).toBe(noEffects.height + 5 + 5) // 60 + 10 = 70
+    // Kernels ceil(7.5)=8 and ceil(4.5)=5, translated in opposite directions.
+    expect(multiEffect.x).toBe(noEffects.x - 15)
+    expect(multiEffect.width).toBe(noEffects.width + 15 + 18)
+    expect(multiEffect.y).toBe(noEffects.y - 8)
+    expect(multiEffect.height).toBe(noEffects.height + 8 + 8)
   })
 })

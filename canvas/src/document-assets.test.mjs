@@ -32,6 +32,29 @@ test("hydrates new or changed assets into the live document asset map", async ()
   assert.deepEqual(current.get("images/new.png").bytes, new Uint8Array([14]));
 });
 
+test("keeps SVG source bytes and prepares a separate renderer cache", async () => {
+  const source = new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"/>');
+  const renderBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
+  let rasterized;
+  const result = await hydrateDocumentAssets({
+    readAsset: async () => source,
+  }, "document-id", [{
+    path: "images/card.svg",
+    sha256: "c".repeat(64),
+    size: source.byteLength,
+    mimeType: "image/svg+xml",
+  }], new Map(), {
+    rasterizeSvg: async (bytes) => (rasterized = bytes, renderBytes),
+  });
+
+  const asset = result.assets.get("images/card.svg");
+  assert.deepEqual(rasterized, source);
+  assert.deepEqual(asset.bytes, source);
+  assert.deepEqual(asset.renderBytes, renderBytes);
+  assert.equal(asset.path, "images/card.svg");
+  assert.equal(asset.mimeType, "image/svg+xml");
+});
+
 test("detects image fills whose document assets have not loaded", () => {
   const document = {
     children: [{

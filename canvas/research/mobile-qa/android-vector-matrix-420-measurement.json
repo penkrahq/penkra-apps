@@ -1,0 +1,13 @@
+{
+  "path": "research/mobile-qa/android-vector-matrix-420dpi.png",
+  "scale": 2.625,
+  "cases": 20,
+  "checkedInteriorPixels": 1577758,
+  "registeredOffset": {
+    "x": 0,
+    "y": 0
+  },
+  "boundaryTolerancePixels": 2,
+  "channelTolerance": 2,
+  "verified": true
+}

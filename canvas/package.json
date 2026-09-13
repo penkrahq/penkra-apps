@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "build": "bun scripts/build.mjs",
+    "build:dev": "CANVAS_DEV_BUILD_WITH_UNVERIFIED_CAPABILITIES=1 bun scripts/build.mjs",
     "build:engine": "bun scripts/build-openpencil.mjs",
-    "test": "node --test src/*.test.mjs compatibility/*.test.mjs collaboration/pen-yjs-model.test.mjs"
+    "test": "node scripts/test.mjs src/*.test.mjs src/exporters/*.test.mjs compatibility/*.test.mjs collaboration/pen-yjs-model.test.mjs"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "5.2.8",
@@ -13,6 +14,7 @@
     "@iconify-json/material-symbols": "1.2.89",
     "@iconify-json/ph": "1.2.2",
     "@pdf-lib/fontkit": "1.1.1",
+    "@xmldom/xmldom": "0.9.12",
     "canvaskit-wasm": "0.40.0",
     "fflate": "0.8.3",
     "lucide": "1.31.0",
@@ -20,6 +22,7 @@
     "pdf-lib": "1.17.1",
     "pptxgenjs": "4.0.1",
     "quickjs-emscripten": "0.32.0",
+    "svgpath": "2.6.0",
     "vue": "3.5.18",
     "y-indexeddb": "9.0.12",
     "yjs": "13.6.30"

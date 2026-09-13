@@ -72,6 +72,7 @@ const __inspection = JSON.parse(__canvasInspectionJson);
 const __prints = [];
 const __touched = new Set();
 const __generations = [];
+const __svgConversions = [];
 const __screenshots = [];
 let __changed = false;
 let __copyCounter = 0;
@@ -279,6 +280,16 @@ globalThis.Update = function Update(target, properties) {
   return node;
 };
 
+globalThis.SetModule = function SetModule(module) {
+  const allowed = new Set(["deck", "web", "mobile"]);
+  if (!allowed.has(module)) throw new Error("SetModule requires deck, web, or mobile.");
+  if (__document.module !== "generic") throw new Error("Only a generic Canvas document can set its module later.");
+  if (__walk().some((entry) => entry.node.role !== undefined)) throw new Error("SetModule requires a document with no role-bearing frames.");
+  __document.module = module;
+  __changed = true;
+  return module;
+};
+
 globalThis.Replace = function Replace(target, replacement) {
   const entry = __requireOne(target);
   if (!replacement || typeof replacement !== "object" || Array.isArray(replacement)) throw new TypeError("Replace requires one node object.");
@@ -392,6 +403,39 @@ globalThis.G = function G(target, source, prompt) {
   return entry.node.id;
 };
 
+globalThis.ConvertSvgToVectors = function ConvertSvgToVectors(target, options = {}) {
+  const entry = __requireOne(target);
+  if (!options || typeof options !== "object" || Array.isArray(options)) {
+    throw new TypeError("ConvertSvgToVectors options must be an object.");
+  }
+  const mode = options.mode === undefined ? "copy" : options.mode;
+  if (mode !== "copy" && mode !== "replace") {
+    throw new Error("ConvertSvgToVectors mode must be copy or replace.");
+  }
+  const fills = (Array.isArray(entry.node.fill) ? entry.node.fill : [entry.node.fill]).filter(Boolean);
+  if (fills.length !== 1 || fills[0]?.type !== "image" || typeof fills[0].url !== "string") {
+    throw new Error("ConvertSvgToVectors requires a node with exactly one image fill.");
+  }
+  const usedIds = new Set(__walk().map((candidate) => candidate.node.id));
+  let createdId = entry.node.id;
+  if (mode === "copy") {
+    const base = entry.node.id + "-editable";
+    createdId = base;
+    let suffix = 1;
+    while (usedIds.has(createdId)) createdId = base + "-" + (++suffix);
+  }
+  __svgConversions.push({
+    sourceNodeId: entry.node.id,
+    createdId,
+    mode,
+    offset: mode === "copy" ? Number(options.offset ?? 24) : 0,
+  });
+  __changed = true;
+  __touched.add(entry.node.id);
+  __touched.add(createdId);
+  return createdId;
+};
+
 const __result = (0, eval)("(function () {\n" + __canvasCode + "\n})()");
-JSON.stringify({ document: __document, changed: __changed, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations, screenshots: __screenshots });
+JSON.stringify({ document: __document, changed: __changed, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations, svgConversions: __svgConversions, screenshots: __screenshots });
 `;

@@ -3,6 +3,21 @@ import test from "node:test";
 
 import { executeCanvasScript, scriptNeedsInspection } from "./script-runtime.mjs";
 
+test("generic module assignment preserves artwork and is one-way", async () => {
+  const source = { version: "2.17", module: "generic", children: [{ id: "art", type: "rectangle", width: 40, height: 20, fill: "#123456" }] };
+  for (const module of ["deck", "web", "mobile"]) {
+    const result = await executeCanvasScript(source, `return SetModule(${JSON.stringify(module)});`);
+    assert.equal(result.document.module, module);
+    assert.deepEqual(result.document.children, source.children);
+    assert.equal(source.module, "generic");
+    await assert.rejects(() => executeCanvasScript(result.document, 'SetModule("deck");'), /Only a generic/u);
+  }
+  await assert.rejects(() => executeCanvasScript(source, 'SetModule("print");'), /requires deck, web, or mobile/u);
+  await assert.rejects(() => executeCanvasScript(source, 'SetModule("asset");'), /requires deck, web, or mobile/u);
+  const roles = { ...source, children: [{ id: "slide", type: "frame", role: "slide", width: 100, height: 100 }] };
+  await assert.rejects(() => executeCanvasScript(roles, 'SetModule("deck");'), /no role-bearing frames/u);
+});
+
 test("inspection context is requested only when scripts mention inspection fields", () => {
   assert.equal(scriptNeedsInspection("Print(1);"), false);
   assert.equal(scriptNeedsInspection('return Get("#a")[0].bounds;'), true);
@@ -99,6 +114,55 @@ test("TakeScreenshot records exact node groups without changing the document", a
   assert.deepEqual(result.screenshots, [{ nodeIds: ["screen"] }]);
   assert.deepEqual(result.touchedNodeIds, []);
   assert.equal(result.document.children[0].id, "screen");
+});
+
+test("ConvertSvgToVectors queues a deterministic editable copy for the host", async () => {
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "logo",
+      type: "rectangle",
+      width: 100,
+      height: 80,
+      fill: { type: "image", url: "images/logo.svg", mode: "fit" },
+    }],
+  };
+  const result = await executeCanvasScript(
+    source,
+    'return ConvertSvgToVectors("#logo", { offset: 32 });',
+  );
+
+  assert.equal(result.result, "logo-editable");
+  assert.deepEqual(result.svgConversions, [{
+    sourceNodeId: "logo",
+    createdId: "logo-editable",
+    mode: "copy",
+    offset: 32,
+  }]);
+  assert.deepEqual(result.touchedNodeIds, ["logo", "logo-editable"]);
+  assert.deepEqual(result.document, source);
+});
+
+test("ConvertSvgToVectors supports replacement and rejects non-image targets", async () => {
+  const document = {
+    version: "2.17",
+    children: [
+      { id: "logo", type: "rectangle", width: 10, height: 10, fill: { type: "image", url: "images/logo.svg", mode: "fit" } },
+      { id: "label", type: "text", content: "Logo" },
+    ],
+  };
+  const result = await executeCanvasScript(
+    document,
+    'return ConvertSvgToVectors("#logo", { mode: "replace" });',
+  );
+  assert.equal(result.result, "logo");
+  assert.deepEqual(result.svgConversions, [{
+    sourceNodeId: "logo", createdId: "logo", mode: "replace", offset: 0,
+  }]);
+  await assert.rejects(
+    executeCanvasScript(document, 'ConvertSvgToVectors("#label");'),
+    /exactly one image fill/u,
+  );
 });
 
 test("TakeScreenshot rejects ambiguous, empty, and duplicate targets", async () => {

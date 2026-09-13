@@ -1,0 +1,13 @@
+{
+  "path": "research/mobile-qa/ios-vector-matrix-3x.png",
+  "scale": 3,
+  "cases": 20,
+  "checkedInteriorPixels": 2079474,
+  "registeredOffset": {
+    "x": 14,
+    "y": 75
+  },
+  "boundaryTolerancePixels": 2,
+  "channelTolerance": 2,
+  "verified": true
+}

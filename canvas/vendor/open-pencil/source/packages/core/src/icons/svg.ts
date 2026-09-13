@@ -4,7 +4,7 @@ import svgpath from 'svgpath'
 
 import { parseSVGPath } from '@open-pencil/scene-graph/parse-path'
 
-import { parseSVGFragment } from '#core/io/formats/svg/document'
+import { parseSVGDocument, parseSVGFragment } from '#core/io/formats/svg/document'
 
 import type { IconData, IconifyIconEntry, IconPathInfo } from './types'
 
@@ -169,10 +169,13 @@ function appendShapePath(
   const pathData = tagName === 'path' ? element.getAttribute('d') : shapeToD(tagName, element)
   if (!pathData) return
   const strokeWidth = Number.parseFloat(presentation.strokeWidth)
+  const fill = normalizeSVGPaint(presentation.fill)
+  const stroke = normalizeSVGPaint(presentation.stroke)
+  if (!fill && !stroke) return
   result.push({
     d: pathData,
-    fill: normalizeSVGPaint(presentation.fill),
-    stroke: normalizeSVGPaint(presentation.stroke),
+    fill,
+    stroke,
     strokeWidth: Number.isFinite(strokeWidth) ? strokeWidth : 1,
     strokeCap: presentation.strokeCap,
     strokeJoin: presentation.strokeJoin,
@@ -236,7 +239,7 @@ function collectPaths(
 }
 
 export function extractPaths(svgBody: string): IconPathInfo[] {
-  const root = parseSVGFragment(svgBody)?.documentElement
+  const root = (parseSVGDocument(svgBody) ?? parseSVGFragment(svgBody))?.documentElement
   if (!root) return []
   const elementsById = new Map<string, Element>()
   for (const element of Array.from(root.getElementsByTagName('*'))) {

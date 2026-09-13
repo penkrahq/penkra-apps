@@ -1,0 +1,50 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "819DEC76-CDFC-49B0-9ACD-2E5EEED1DE71.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native fixture appearance_0_5AADD3E8-C03C-4887-A1CE-1950491A4700.png",
+        "timestamp" : 1788643227.267
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "ED4F12ED-4159-4C67-ADE5-BEC1523D5E63.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility tree_0_38A859F2-3A03-4181-A858-40774568A2E4.txt",
+        "timestamp" : 1788643227.119
+      }
+    ],
+    "testIdentifier" : "AccessibilityTests/testExportedDescriptionsAndDecorativeText()",
+    "testIdentifierURL" : "test://com.apple.xcode/CanvasSimulatorQA/CanvasAccessibilityTests/AccessibilityTests/testExportedDescriptionsAndDecorativeText"
+  },
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "1FC7C23C-817F-4EA4-A2D6-215C82604783.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Nested accessibility appearance_0_B65F4F0F-A1E5-4210-929F-86E732836332.png",
+        "timestamp" : 1788643232.415
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "B7430EA6-169A-45F3-A2E0-4F3C00C067C1.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Nested accessibility tree_0_7F538DA9-083F-4C7B-B6C7-D32C694D8125.txt",
+        "timestamp" : 1788643232.263
+      }
+    ],
+    "testIdentifier" : "AccessibilityTests/testNestedDecorationsAndVisibleGroupLabels()",
+    "testIdentifierURL" : "test://com.apple.xcode/CanvasSimulatorQA/CanvasAccessibilityTests/AccessibilityTests/testNestedDecorationsAndVisibleGroupLabels"
+  }
+]

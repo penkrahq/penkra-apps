@@ -1,0 +1,44 @@
+{
+  "bundledFonts" : [
+    "Inter-Regular.ttf",
+    "Inter-Medium.ttf",
+    "Inter-SemiBold.ttf",
+    "Inter-Bold.ttf",
+    "Inter-ExtraBold.ttf"
+  ],
+  "contentSizeCategory" : "UICTContentSizeCategoryAccessibilityXXL",
+  "fonts" : [
+    {
+      "available" : true,
+      "requested" : "Inter",
+      "resolved" : "Inter-Regular"
+    },
+    {
+      "available" : true,
+      "requested" : "Inter-Regular",
+      "resolved" : "Inter-Regular"
+    },
+    {
+      "available" : true,
+      "requested" : "Inter-Bold",
+      "resolved" : "Inter-Bold"
+    },
+    {
+      "available" : true,
+      "requested" : "Inter-SemiBold",
+      "resolved" : "Inter-SemiBold"
+    },
+    {
+      "available" : true,
+      "requested" : "Inter-Medium",
+      "resolved" : "Inter-Medium"
+    }
+  ],
+  "interFamilyFaces" : [
+    "Inter-Regular",
+    "Inter-Medium",
+    "Inter-SemiBold",
+    "Inter-Bold",
+    "Inter-ExtraBold"
+  ]
+}

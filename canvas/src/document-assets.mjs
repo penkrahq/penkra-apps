@@ -1,5 +1,6 @@
-export async function hydrateDocumentAssets(api, documentId, descriptors = [], current = new Map()) {
+export async function hydrateDocumentAssets(api, documentId, descriptors = [], current = new Map(), dependencies = {}) {
   const assets = current;
+  const rasterizeSvg = dependencies.rasterizeSvg;
   let changed = false;
   await Promise.all(descriptors.map(async (descriptor) => {
     const existing = assets.get(descriptor.path);
@@ -9,10 +10,19 @@ export async function hydrateDocumentAssets(api, documentId, descriptors = [], c
       && Number(existing.size ?? existing.bytes.byteLength) === Number(descriptor.size)
     ) return;
     const bytes = await api.readAsset(documentId, descriptor);
-    assets.set(descriptor.path, { ...descriptor, bytes });
+    assets.set(descriptor.path, await prepareAssetForRendering({ ...descriptor, bytes }, rasterizeSvg));
     changed = true;
   }));
   return { assets, changed };
+}
+
+export function isSvgAsset(asset) {
+  return asset?.mimeType === "image/svg+xml" || /\.svg$/iu.test(asset?.path ?? "");
+}
+
+export async function prepareAssetForRendering(asset, rasterizeSvg) {
+  if (!rasterizeSvg || !isSvgAsset(asset)) return asset;
+  return { ...asset, renderBytes: await rasterizeSvg(asset.bytes) };
 }
 
 export function hasUnloadedDocumentImages(document, assets) {

@@ -1,0 +1,26 @@
+[
+  {
+    "attachments" : [
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "00692365-EE1F-43F9-8287-6BF351CEB154.png",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native fixture appearance_0_04015403-6931-4595-A9D1-A21CCA529966.png",
+        "timestamp" : 1788601469.398
+      },
+      {
+        "configurationName" : "Test Scheme Action",
+        "deviceId" : "8F053C2C-958D-4CC5-AB38-E838CFAC9442",
+        "deviceName" : "iPad mini (A17 Pro)",
+        "exportedFileName" : "3E1E97BB-7EA5-4FBD-A8FA-96A0E256ACC3.txt",
+        "isAssociatedWithFailure" : false,
+        "suggestedHumanReadableName" : "Native accessibility tree_0_DB96CCA7-00B8-41E1-B813-4B25C3950F9E.txt",
+        "timestamp" : 1788601469.265
+      }
+    ],
+    "testIdentifier" : "AccessibilityTests/testExportedDescriptionsAndDecorativeText()",
+    "testIdentifierURL" : "test://com.apple.xcode/CanvasSimulatorQA/CanvasAccessibilityTests/AccessibilityTests/testExportedDescriptionsAndDecorativeText"
+  }
+]

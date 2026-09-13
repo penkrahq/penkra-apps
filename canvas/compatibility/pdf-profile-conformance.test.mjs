@@ -1,59 +1,79 @@
 import assert from "node:assert/strict";
-import { spawnSync } from "node:child_process";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { access, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { basename, join } from "node:path";
+import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
 import test from "node:test";
 
-import { buildExporterIR } from "../src/exporter-ir.mjs";
+import { buildExtractionIR } from "../src/exporter-ir.mjs";
 import { exportPdf } from "../src/exporters/pdf.mjs";
 
 const IMAGE = "penkra-verapdf:1.30.2";
-
-test("PDF/A-3 output passes pinned veraPDF 1.30.2", async (context) => {
-  if (spawnSync("docker", ["image", "inspect", IMAGE]).status !== 0) {
-    context.skip(`Build the pinned ${IMAGE} image from veraPDF-apps tag v1.30.2 to run conformance.`);
-    return;
+const execute = promisify(execFile);
+async function inspectValidator(signal) {
+  const native = process.env.CANVAS_VERAPDF ?? fileURLToPath(new URL("../tmp/tools/verapdf-1.30.2/verapdf", import.meta.url));
+  if (process.env.CANVAS_VERAPDF || await access(native).then(() => true, () => false)) {
+    const version = await execute(native, ["--version"], { signal, timeout: 15_000 });
+    assert.match(version.stdout, /\b1\.30\.2\b/u);
+    return native;
   }
+  await execute("docker", ["image", "inspect", IMAGE], { signal, timeout: 15_000 });
+  return null;
+}
+
+async function validate(directory, flavour, signal, native) {
+  if (native) return execute(native, ["--format", "text", "--verbose", "--flavour", flavour, join(directory, "fixture.pdf")], { signal, timeout: 90_000, maxBuffer: 8 * 1024 * 1024 });
+  const name = basename(directory);
+  try {
+    return await execute("docker", ["run", "--rm", "--name", name, "--platform", "linux/amd64", "-v", `${directory}:/data`, IMAGE, "--format", "text", "--verbose", "--flavour", flavour, "/data/fixture.pdf"], { signal, timeout: 90_000, maxBuffer: 8 * 1024 * 1024 });
+  } catch (error) {
+    // The exact task-created container name is known; killing the Docker CLI
+    // alone does not establish that its container has stopped.
+    await execute("docker", ["rm", "-f", name], { timeout: 10_000 }).catch(cleanup => {
+      console.error(`Validator container cleanup failed for ${name}: ${cleanup.message}`);
+    });
+    throw error;
+  }
+}
+
+test("PDF/A-3 output passes pinned veraPDF 1.30.2", { timeout: 120_000 }, async (context) => {
+  const native = await inspectValidator(context.signal);
   const directory = await mkdtemp(join(tmpdir(), "canvas-pdfa3-"));
   try {
     const document = fixture();
     const outputIntent = await readFile(new URL("../assets/color/sRGB2014.icc", import.meta.url));
     const inter = await readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
-    const bytes = await exportPdf(buildExporterIR(document, { role: "page", profile: "PDF/A-3", frames: ["page"] }), {
+    const bytes = await exportPdf(buildExtractionIR(document, { format: "pdf", nodeId: "page" }), {
       profile: "PDF/A-3", title: "Canvas PDF/A-3 fixture", outputIntent, fonts: { "Inter:400": inter },
     });
     const path = join(directory, "fixture.pdf");
     await writeFile(path, bytes);
-    const validation = spawnSync("docker", ["run", "--rm", "--platform", "linux/amd64", "-v", `${directory}:/data`, IMAGE, "--format", "text", "--verbose", "--flavour", "3b", "/data/fixture.pdf"], { encoding: "utf8" });
-    assert.equal(validation.status, 0, validation.stderr);
+    const validation = await validate(directory, "3b", context.signal, native);
     assert.match(validation.stdout, /^PASS .* 3b$/mu);
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
 });
 
-test("PDF/UA-1 output passes pinned veraPDF 1.30.2", async (context) => {
-  if (spawnSync("docker", ["image", "inspect", IMAGE]).status !== 0) {
-    context.skip(`Build the pinned ${IMAGE} image from veraPDF-apps tag v1.30.2 to run conformance.`);
-    return;
-  }
+test("PDF/UA-1 output passes pinned veraPDF 1.30.2", { timeout: 120_000 }, async (context) => {
+  const native = await inspectValidator(context.signal);
   const directory = await mkdtemp(join(tmpdir(), "canvas-pdfua1-"));
   try {
     const inter = await readFile(new URL("../vendor/open-pencil/fonts/Inter-Regular.ttf", import.meta.url));
-    const bytes = await exportPdf(buildExporterIR(fixture(), { role: "page", profile: "PDF/UA-1", frames: ["page"] }), { profile: "PDF/UA-1", title: "Canvas PDF/UA-1 fixture", fonts: { "Inter:400": inter } });
+    const bytes = await exportPdf(buildExtractionIR(fixture(), { format: "pdf", nodeId: "page" }), { profile: "PDF/UA-1", title: "Canvas PDF/UA-1 fixture", fonts: { "Inter:400": inter } });
     await writeFile(join(directory, "fixture.pdf"), bytes);
-    const validation = spawnSync("docker", ["run", "--rm", "--platform", "linux/amd64", "-v", `${directory}:/data`, IMAGE, "--format", "text", "--verbose", "--flavour", "ua1", "/data/fixture.pdf"], { encoding: "utf8" });
-    assert.equal(validation.status, 0, validation.stderr);
+    const validation = await validate(directory, "ua1", context.signal, native);
     assert.match(validation.stdout, /^PASS .* ua1$/mu);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
 test("unverified PDF/X-4 profile cannot be mislabeled", async () => {
-  const ir = buildExporterIR(fixture(), { role: "page", frames: ["page"] });
+  const ir = buildExtractionIR(fixture(), { format: "pdf", nodeId: "page" });
   await assert.rejects(exportPdf(ir, { profile: "PDF/X-4" }), { code: "CANVAS_PDF_PROFILE_UNVERIFIED" });
 });
 
 function fixture() {
-  return { version: "2.15", module: "print", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "page", type: "frame", role: "page", size: "a4", physical: { w: 210, h: 297, unit: "mm" }, width: 794, height: 1123, children: [{ id: "text", type: "text", x: 72, y: 72, width: 400, height: 60, content: "Canvas profile fixture", fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 22 }], marks: [] }] }] };
+  return { version: "2.15", module: "generic", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [{ id: "page", type: "frame", size: "a4", physical: { w: 210, h: 297, unit: "mm" }, width: 794, height: 1123, children: [{ id: "text", type: "text", x: 72, y: 72, width: 400, height: 60, content: "Canvas profile fixture", fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 22 }], marks: [] }] }] };
 }

@@ -14,7 +14,7 @@ import {
   SIZE_PILL_TEXT_OFFSET_Y
 } from '#core/constants'
 
-import { ellipsizeLabelText } from './text'
+import { ellipsizeLabelText, frameTitleText } from './text'
 
 function getOverlayRotation(node: SceneNode, overlays?: RenderOverlays): number {
   return overlays?.rotationPreview?.nodeId === node.id
@@ -79,7 +79,7 @@ export function drawSingleFrameTitle(
 
   r.auxFill.setColor(r.ck.Color4f(color.r, color.g, color.b, color.a))
 
-  const displayText = ellipsizeLabelText(labelFont, node.name, node.width * r.zoom)
+  const displayText = ellipsizeLabelText(labelFont, frameTitleText(node), node.width * r.zoom)
   if (!displayText) return
 
   canvas.save()

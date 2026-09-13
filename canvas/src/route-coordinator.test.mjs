@@ -35,6 +35,10 @@ function fixture({ blockLibrary = false } = {}) {
       calls.push("trash");
       openDocumentId = null;
     },
+    showFolder: async (folderId) => {
+      calls.push(`folder:${folderId}`);
+      openDocumentId = null;
+    },
   });
   return { calls, library, router };
 }
@@ -128,5 +132,18 @@ test("Trash navigation is host-restorable", async () => {
     "trash",
     { route: { route: "/trash" } },
     "trash",
+  ]);
+});
+
+test("folder navigation is host-restorable", async () => {
+  const current = fixture();
+
+  await current.router.navigateToFolder("folder-1");
+  await current.router.handleHostNavigation({ route: "/folder", state: { folderId: "folder-1" } });
+
+  assert.deepEqual(current.calls, [
+    "folder:folder-1",
+    { route: { route: "/folder", state: { folderId: "folder-1" } } },
+    "folder:folder-1",
   ]);
 });

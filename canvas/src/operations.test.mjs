@@ -55,13 +55,25 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
   };
   assert.deepEqual([...handlers.keys()].sort(), [
     "documents.create",
-      "documents.execute",
-      "documents.export",
-      "documents.export-image",
-      "documents.list",
+    "documents.duplicate",
+    "documents.execute",
+    "documents.export",
+    "documents.extract",
+    "documents.list",
+    "documents.move",
     "documents.open",
     "documents.trash",
     "documents.undo",
+    "folders.create",
+    "folders.list",
+    "folders.move",
+    "folders.rename",
+    "folders.restore",
+    "folders.sharing.add",
+    "folders.sharing.list",
+    "folders.sharing.remove",
+    "folders.trash",
+    "icons.search",
     "sharing.add",
     "sharing.list",
     "sharing.remove",
@@ -69,6 +81,17 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
   assert.deepEqual(
     await handlers.get("documents.open")({ documentId: "document-1" }, context),
     { documentId: "document-1", tabId: "tab-1" },
+  );
+  assert.deepEqual(
+    await handlers.get("icons.search")({ query: "loader", library: "lucide", limit: 2 }),
+    {
+      items: [
+        { library: "lucide", icon: "loader" },
+        { library: "lucide", icon: "loader-circle" },
+      ],
+      total: 4,
+      truncated: true,
+    },
   );
 });
 
@@ -100,8 +123,8 @@ test("documents.list continues through Account pages until it finds the requeste
 
   assert.deepEqual(result.items, [{ id: "match", title: "Requested design" }]);
   assert.deepEqual(paths, [
-    "/projects?limit=100",
-    "/projects?limit=100&cursor=page-2",
+    "/projects?limit=100&projectionFields=module&view=all",
+    "/projects?limit=100&projectionFields=module&view=all&cursor=page-2",
   ]);
 });
 
@@ -259,6 +282,81 @@ test("execute returns TakeScreenshot renders as MCP-compatible rich content", as
   }]);
   assert.equal(result.structuredContent.changed, false);
   assert.equal(requests.some((request) => request.method === "POST"), false);
+});
+
+test("execute converts a durable SVG asset into an atomic editable-path copy", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const svg = Buffer.from(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect width="10" height="10" fill="#2563eb"/></svg>',
+  );
+  const descriptor = {
+    path: "images/logo.svg",
+    sha256: "f".repeat(64),
+    size: svg.byteLength,
+    mimeType: "image/svg+xml",
+  };
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "logo",
+      type: "rectangle",
+      name: "Placed logo",
+      width: 100,
+      height: 100,
+      fill: { type: "image", url: descriptor.path, mode: "fit" },
+    }],
+  };
+  const model = createDocumentModel(source);
+  const state = encodeState(model);
+  model.doc.destroy();
+  globalThis.penkra = {
+    account: {
+      async request(request) {
+        requests.push(request);
+        if (request.path === "/projects/document-1?chunked=auto") {
+          return response(200, {
+            id: "document-1",
+            title: "Design",
+            access: "owner",
+            ownerAccountId: "account-1",
+            assets: [descriptor],
+            snapshot: { throughSequence: 7, state, projection: source },
+            updates: [],
+          });
+        }
+        if (request.path === "/projects/document-1/blobs") return response(200, { items: [descriptor] });
+        if (request.path === `/projects/document-1/blobs/${descriptor.sha256}?offset=0`) {
+          return response(200, { bytes: svg.toString("base64"), complete: true });
+        }
+        if (request.path === "/projects/document-1/updates") return response(200, { sequence: 8 });
+        if (request.path === "/projects/document-1/snapshots") return response(200, { throughSequence: 8 });
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+      subscribe() {},
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?svg-convert-test=${Date.now()}`);
+
+  const result = await handlers.get("documents.execute")({
+    documentId: "document-1",
+    code: 'return ConvertSvgToVectors("#logo");',
+  });
+
+  assert.equal(result.changed, true);
+  assert.deepEqual(result.svgConversions, [{
+    sourceNodeId: "logo",
+    createdNodeId: "logo-editable",
+    shapeCount: 1,
+    mode: "copy",
+    fidelity: "exact",
+    warnings: [],
+  }]);
+  const snapshot = decodeJson(requests.find((request) => request.path === "/projects/document-1/snapshots").body).projection;
+  assert.equal(snapshot.children[0].fill.url, descriptor.path);
+  assert.equal(snapshot.children[1].id, "logo-editable");
+  assert.equal(snapshot.children[1].children[0].type, "path");
 });
 
 test("invalid execute output fails before any shared update or snapshot write", async () => {

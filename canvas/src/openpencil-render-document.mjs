@@ -7,6 +7,7 @@ import {
   transpilePencilShaderWebGL1,
 } from "./pencil-shader-runtime.mjs";
 import { normalizePencilMeshGradient } from "./pencil-mesh-gradient.mjs";
+import { normalizeStrokeDash } from "./stroke-dash.mjs";
 
 const NUMERIC_PROPERTIES = new Set([
   "x",
@@ -550,6 +551,12 @@ function normalizePencilNode(node, issues, nodeId) {
   if (node.textAlign === "justify") node.textAlign = "justified";
   if (node.textAlignVertical === "middle") node.textAlignVertical = "center";
 
+  if (isRecord(node.stroke) && (Object.hasOwn(node.stroke, "fill") || Object.hasOwn(node.stroke, "fills"))) {
+    // Lower Canvas stroke fields at the owned renderer boundary, without
+    // interpreting a stroke descriptor as if it were itself a fill paint.
+    node.stroke.thickness = node.stroke.width ?? node.stroke.thickness ?? 1;
+    if (node.stroke.dash !== undefined || node.stroke.dashPattern !== undefined) node.stroke.dashPattern = normalizeStrokeDash(node.stroke.dash ?? node.stroke.dashPattern);
+  }
   if (node.stroke !== undefined && !isOpenPencilStroke(node.stroke)) {
     const fills = Array.isArray(node.stroke) ? node.stroke : [node.stroke];
     for (const fill of fills) {

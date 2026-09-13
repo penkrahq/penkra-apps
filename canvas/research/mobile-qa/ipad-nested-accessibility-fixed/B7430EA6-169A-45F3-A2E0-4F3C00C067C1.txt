@@ -1,0 +1,24 @@
+Attributes: Application, 0x109205330, pid: 55697, label: 'CanvasSimulatorQA'
+Element subtree:
+ →Application, 0x109205330, pid: 55697, label: 'CanvasSimulatorQA'
+    Window (Main), 0x109205450, {{0.0, 0.0}, {744.0, 1133.0}}
+      Other, 0x109205810, {{0.0, 0.0}, {744.0, 1133.0}}
+        Other, 0x109205930, {{0.0, 0.0}, {744.0, 1133.0}}
+          Other, 0x109205570, {{0.0, 0.0}, {744.0, 1133.0}}
+            Other, 0x109205690, {{0.0, 0.0}, {744.0, 1133.0}}
+              Other, 0x109205ed0, {{0.0, 0.0}, {744.0, 1133.0}}
+                Other, 0x109205a50, {{175.5, 144.0}, {393.0, 852.0}}, label: 'Canvas mobile export verification screen'
+                  StaticText, 0x109205b70, {{195.5, 224.0}, {141.5, 24.5}}, label: 'Native Canvas heading'
+                  StaticText, 0x109205c90, {{195.5, 262.5}, {182.0, 17.0}}, label: 'Responsive type and layout'
+                  Other, 0x109205db0, {{195.5, 293.5}, {125.5, 15.0}}
+                  Other, 0x109205ff0, {{195.5, 347.5}, {96.0, 60.0}}, label: 'Orange circle'
+                  Other, 0x109206110, {{195.5, 421.5}, {330.0, 90.0}}
+                  Other, 0x109206230, {{195.5, 525.5}, {330.0, 90.0}}, label: 'Visible group description'
+                    StaticText, 0x109106ca0, {{195.5, 525.5}, {126.0, 15.0}}, label: 'Visible nested description'
+Path to element:
+ →Application, 0x109205330, pid: 55697, label: 'CanvasSimulatorQA'
+Query chain:
+ →Find: Target Application 'com.penkra.canvas.qa.simulator'
+  Output: {
+    Application, 0x106717fc0, pid: 55697, label: 'CanvasSimulatorQA'
+  }

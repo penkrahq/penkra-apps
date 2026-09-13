@@ -2,6 +2,58 @@ import { expect, test, useEditorSetupWithClear } from '#tests/e2e/fixtures'
 
 const editor = useEditorSetupWithClear('/?test&no-chrome&no-rulers')
 
+test('vector stroke alignment preserves inside and outside boundaries', async () => {
+  await editor.page.evaluate(() => {
+    const store = window.openPencil?.getStore?.()
+    if (!store) throw new Error('OpenPencil store not initialized')
+    const alignments = ['CENTER', 'INSIDE', 'OUTSIDE'] as const
+    for (const [column, align] of alignments.entries()) {
+      for (const dashed of [false, true]) {
+        store.graph.createNode('VECTOR', store.state.currentPageId, {
+          name: `${align} ${dashed ? 'dashed' : 'solid'} vector`,
+          x: 90 + column * 210,
+          y: dashed ? 260 : 90,
+          width: 140,
+          height: 100,
+          vectorNetwork: {
+            vertices: [
+              { x: 0, y: 0 },
+              { x: 140, y: 0 },
+              { x: 140, y: 100 },
+              { x: 0, y: 100 }
+            ],
+            segments: [0, 1, 2, 3].map((start) => ({
+              start,
+              end: (start + 1) % 4,
+              tangentStart: { x: 0, y: 0 },
+              tangentEnd: { x: 0, y: 0 }
+            })),
+            regions: [{ windingRule: 'NONZERO', loops: [[0, 1, 2, 3]] }]
+          },
+          fills: [
+            { type: 'SOLID', color: { r: 0.04, g: 0.29, b: 0.44, a: 1 }, visible: true, opacity: 1 }
+          ],
+          strokes: [
+            {
+              color: { r: 0.96, g: 0.64, b: 0.38, a: 1 },
+              weight: 12,
+              align,
+              visible: true,
+              opacity: 1,
+              dashPattern: dashed ? [18, 12] : []
+            }
+          ]
+        })
+      }
+    }
+    store.clearSelection()
+    store.requestRender()
+  })
+  await editor.canvas.waitForRender()
+  editor.canvas.assertNoErrors()
+  expect(await editor.canvas.canvas.screenshot()).toMatchSnapshot('vector-stroke-alignment.png')
+})
+
 test('stroke caps joins and miter limits', async () => {
   await editor.page.evaluate(() => {
     const store = window.openPencil?.getStore?.()

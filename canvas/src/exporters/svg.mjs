@@ -1,5 +1,5 @@
 export function exportSvg(ir, output, options = {}) {
-  const children = output.nodes.sort((a, b) => a.z - b.z).map((node) => svgNode(node, options)).join("\n");
+  const children = output.nodes.map((node) => svgNode(node, options)).join("\n");
   const semantics = output.root?.semantics ?? {};
   const access = semantics.decorative ? ` aria-hidden="true"` : semantics.description ? ` aria-label="${esc(semantics.description)}"` : "";
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${output.width}" height="${output.height}" viewBox="0 0 ${output.width} ${output.height}" role="img" lang="${esc(ir.lang ?? "en")}"${access}>\n${children}\n</svg>\n`;
@@ -18,6 +18,12 @@ function svgNode(node, options) {
   if (node.type === "text") return `<text id="${esc(node.id)}" x="${x}" y="${y + (node.semantics.runs[0]?.fontSize ?? 16)}" opacity="${opacity}"${transform}${access}>${node.semantics.runs.map((run) => `<tspan font-family="${esc(run.fontFamily ?? "sans-serif")}" font-size="${run.fontSize ?? 16}" font-weight="${run.weight ?? run.fontWeight ?? 400}"${run.italic || run.fontStyle === "italic" ? ` font-style="italic"` : ""}${run.underline || run.strikethrough ? ` text-decoration="${[run.underline ? "underline" : null, run.strikethrough ? "line-through" : null].filter(Boolean).join(" ")}"` : ""}${run.letterSpacing != null ? ` letter-spacing="${Number(run.letterSpacing)}"` : ""}${run.wordSpacing != null ? ` word-spacing="${Number(run.wordSpacing)}"` : ""}${run.language ? ` lang="${esc(run.language)}"` : ""} fill="${esc(color(run.fill) ?? "#000")}">${esc(node.semantics.content.slice(run.from, run.to))}</tspan>`).join("")}</text>`;
   const fill = color(node.paint.fill) ?? "none"; const stroke = color(node.paint.stroke?.fill ?? node.paint.stroke?.color) ?? "none";
   const strokeWidth = Number(node.paint.stroke?.width ?? node.paint.stroke?.thickness ?? 1);
+  if (node.vector) {
+    const [vx, vy, vw, vh] = node.vector.viewBox;
+    const vectorTransform = `translate(${x} ${y}) scale(${w / vw} ${h / vh}) translate(${-vx} ${-vy})`;
+    const combined = rotation ? `rotate(${rotation} ${x + w / 2} ${y + h / 2}) ${vectorTransform}` : vectorTransform;
+    return `<path id="${esc(node.id)}" d="${esc(node.vector.d)}" fill="${fill}" fill-rule="${node.vector.fillRule}" stroke="${stroke}" stroke-width="${strokeWidth}" vector-effect="non-scaling-stroke" opacity="${opacity}" transform="${combined}"${access}/>`;
+  }
   if (node.type === "ellipse") return `<ellipse id="${esc(node.id)}" cx="${x + w / 2}" cy="${y + h / 2}" rx="${w / 2}" ry="${h / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity}"${transform}${access}/>`;
   if (node.type === "line") return `<line id="${esc(node.id)}" x1="${x}" y1="${y}" x2="${x + w}" y2="${y + h}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity}"${transform}${access}/>`;
   const radius = Number(node.paint.cornerRadius ?? 0);

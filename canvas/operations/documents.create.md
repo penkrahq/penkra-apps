@@ -6,23 +6,23 @@ content, opens no tab, and shares with nobody. Use `documents.execute` for conte
 
 ## Choose the module first
 
-Every Canvas document has a **module**, and it is **fixed for the life of the document**. It cannot
-be changed afterward, and a document cannot hold two.
+Every Canvas document has one **module**. Choose the deliverable module when the intended output is
+known. Choose `generic` for flexible visual work; before it has any role-bearing frames, a generic
+document can adopt a deliverable module through `SetModule`.
 
 | Module | Produces |
 | --- | --- |
+| `generic` | editable visual designs and extracted PNG, SVG, or PDF files |
 | `deck` | a PowerPoint presentation |
-| `print` | a PDF |
 | `web` | HTML, CSS, and assets |
 | `mobile` | SwiftUI or Jetpack Compose source |
 
 Choose it from the artifact the user wants at the end, not from what the content looks like along
-the way. A one-page site and a printed flyer can be visually identical and are different modules,
-because one becomes HTML and the other becomes a PDF. When the request does not say, ask; picking
-wrongly costs the whole document.
+the way. When the intended deliverable is unclear and the choice affects the work, ask. Use generic
+when the user wants an editable visual design rather than a code or presentation export.
 
 The module also determines which capabilities survive export, so it is worth reading the module's
-Skill before designing: `canvas-deck`, `canvas-print`, `canvas-web`, or `canvas-mobile`.
+Skill before designing: `canvas-deck`, `canvas-web`, or `canvas-mobile`.
 
 ## What you get back
 
@@ -30,22 +30,22 @@ Creation stamps one starter frame carrying the module's default role and size:
 
 | Module | Starter frame | Role | Size |
 | --- | --- | --- | --- |
+| `generic` | 720×480 | — | — |
 | `deck` | 1280×720 | `slide` | `widescreen` |
-| `print` | 794×1123 | `page` | `a4` |
 | `web` | 720×480 | `route` | — |
 | `mobile` | 393×852 | `ios` | `iphone` |
 
 The response identifies it as `starterFrameId`. Build the first composition by updating or replacing
 that frame rather than leaving it behind new content.
 
-## Roles are stamped, never typed
+## Roles identify deliverable frames
 
 A **role** marks a frame as an export unit — one slide, one page, one route, one screen. There are
-exactly five: `slide`, `page`, `route`, `ios`, and `android`. Export collects the frames carrying
+`slide`, `route`, `ios`, and `android` are deliverable roles. Export collects the frames carrying
 the role it targets and ignores everything else.
 
-Roles arrive from presets, which are module data. Do not write `role` or `size` by hand: a
-misspelled role produces a frame that looks correct and is silently excluded from every export.
+Creation presets supply the starter frame's role and size. Add later deliverable frames with the
+same valid role and the dimensions required by the module.
 
 Most frames have no role at all. Layout containers, cards, groups, and reusable components are
 ordinary frames living inside a role frame or out on the open canvas beside it. Only a new export

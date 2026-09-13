@@ -1,9 +1,5 @@
-export const PRINT_RASTER_PPI = 300;
-export const PRINT_BLEED_POINTS = 9;
-
 const policies = Object.freeze({
   slide: Object.freeze([{ name: "1x", ppi: 96, scale: 1 }]),
-  page: Object.freeze([{ name: "print", ppi: PRINT_RASTER_PPI, scale: PRINT_RASTER_PPI / 96 }]),
   route: Object.freeze([{ name: "1x", ppi: 96, scale: 1 }, { name: "2x", ppi: 192, scale: 2 }, { name: "3x", ppi: 288, scale: 3 }]),
   ios: Object.freeze([{ name: "@2x", ppi: 192, scale: 2 }, { name: "@3x", ppi: 288, scale: 3 }]),
   android: Object.freeze([

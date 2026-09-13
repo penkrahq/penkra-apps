@@ -95,6 +95,7 @@ export class SkiaRenderer {
   pendingFontNodes = new Map<string, PendingFontNode>()
   textPictureGenerations = new Map<string, { data: Uint8Array; generation: number }>()
   imageCache = new Map<string, CKImage>()
+  vectorImageCache = new Map<string, SkPicture>()
   pencilShaderCanvas: HTMLCanvasElement | null = null
   pencilShaderGL: WebGLRenderingContext | null = null
   pencilShaderPrograms = new Map<string, {

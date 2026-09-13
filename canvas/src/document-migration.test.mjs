@@ -29,7 +29,7 @@ test("the complete migration pipeline produces one schema-valid canonical docume
   assert.equal(result.document.children[1].children[1].type, "text");
   assert.deepEqual(result.document.children[1].padding, { start: 10, end: 20 });
   assert.deepEqual(result.document.variables.ink, { tokenType: "color", cascade: [
-    { value: "#fff" }, { value: "#000", when: { theme: "dark" } },
+    { value: "#fff" }, { value: "#000", when: { appearance: "dark" } },
   ] });
 });
 
@@ -67,4 +67,32 @@ test("copy migration verifies the copy before renaming the untouched original", 
 test("best-effort migration preserves existing import identifiers", () => {
   const source = { version: "2.15", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: { shared: { documentId: "another-document" } }, flows: [], children: [] };
   assert.deepEqual(migrateCanvasDocument(source).document.imports, source.imports);
+});
+
+test("legacy print migration preserves physical artwork and guides without a page role", () => {
+  const frame = { id: "poster", type: "frame", role: "page", width: 600, height: 400, physical: { w: 150, h: 100, unit: "mm" }, bleed: 9, safeMargin: 12, folds: [200], children: [{ id: "mark", type: "rectangle", width: 20, height: 20, fill: "#123456" }] };
+  const source = { module: "print", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [frame] };
+  const result = migrateCanvasDocument(source).document;
+  assert.equal(result.module, "generic");
+  const expected = structuredClone(frame); delete expected.role;
+  assert.deepEqual(result.children[0], expected);
+  assert.equal(source.children[0].role, "page");
+});
+
+test("migration renames only node live exports and never replaces invalid content with an empty frame", async () => {
+  const source = { module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: { ui: { documentId: "library", pin: "live" } }, flows: [], children: [
+    { id: "art", type: "frame", export: "live", width: 100, height: 100, children: [] },
+  ] };
+  const result = migrateCanvasDocument(source);
+  assert.equal(result.document.children[0].export, "default");
+  assert.equal(result.document.imports.ui.pin, "live");
+  assert.equal(source.children[0].export, "live");
+  const invalid = { ...source, axes: { unknown: { modes: [{ name: "custom" }] } } };
+  assert.throws(() => migrateCanvasDocument(invalid), { code: "CANVAS_MIGRATION_INVALID" });
+  const model = createDocumentModel(invalid);
+  const payload = { title: "Keep me", snapshot: { source: invalid, state: encodeState(model) }, updates: [] };
+  model.doc.destroy();
+  const calls = [];
+  await assert.rejects(createCanvasMigrationCopy({ createDocument: async () => { calls.push("create"); } }, "original", payload, { reportDirectory: "/tmp/unused-migration-report" }), { code: "CANVAS_MIGRATION_INVALID" });
+  assert.deepEqual(calls, []);
 });

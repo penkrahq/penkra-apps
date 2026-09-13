@@ -3,9 +3,9 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.40",
+  "version": "0.2.83",
   "compatibility": {
-    "penkra": ">=0.11.15"
+    "penkra": ">=0.12.6"
   },
   "icons": [
     {
@@ -25,6 +25,11 @@
       "reason": "Canvas stores and synchronizes your Account-owned design documents and sharing grants."
     },
     {
+      "name": "account-profile",
+      "required": true,
+      "reason": "Canvas shows your signed-in name and profile picture in collaboration controls."
+    },
+    {
       "name": "network-fetch",
       "required": true,
       "reason": "Canvas loads the exact font faces used by a design through host-validated online font providers."
@@ -32,7 +37,66 @@
   ],
   "operations": [
     {
+      "key": "icons.search",
+      "instructionsPath": "operations/icons.search.md",
+      "summary": "Search Canvas's bundled icon catalogs and return exact library and icon identifiers for native icon nodes.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Words expected in the icon name, such as loader, school, arrow left, or progress activity."
+          },
+          "library": {
+            "enum": ["lucide", "feather", "Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp", "phosphor"],
+            "description": "Optional exact Canvas icon library. Omit it to search every bundled library."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 40,
+            "description": "Maximum matches to return."
+          }
+        },
+        "required": ["query"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "properties": {
+                "library": { "type": "string" },
+                "icon": { "type": "string" }
+              },
+              "required": ["library", "icon"],
+              "additionalProperties": false
+            }
+          },
+          "total": { "type": "integer", "minimum": 0 },
+          "truncated": { "type": "boolean" }
+        },
+        "required": ["items", "total", "truncated"],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "name": "Find a loading-state icon",
+          "input": { "query": "loader", "library": "lucide", "limit": 20 }
+        }
+      ],
+      "handler": "icons.search"
+    },
+    {
       "key": "documents.list",
+      "instructionsPath": "operations/documents.list.md",
       "summary": "Find Account-owned and shared Canvas documents and resolve the exact document ID needed by later operations.",
       "input": {
         "type": "object",
@@ -47,6 +111,15 @@
             "minimum": 1,
             "maximum": 500,
             "description": "Maximum matching documents to return."
+          },
+          "view": {
+            "enum": ["all", "root", "folder", "recent"],
+            "description": "Collection to search. Use folder with folderId for one folder's immediate designs."
+          },
+          "folderId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Folder used when view is folder."
           }
         },
         "additionalProperties": false
@@ -83,6 +156,31 @@
                 },
                 "lastOpenedAt": {
                   "type": ["string", "null"]
+                },
+                "folderId": {
+                  "type": ["string", "null"]
+                },
+                "folderName": {
+                  "type": ["string", "null"]
+                },
+                "lastEditor": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "accountId": { "type": "string" },
+                        "name": { "type": ["string", "null"] },
+                        "avatarUrl": { "type": ["string", "null"] },
+                        "isCurrentUser": { "type": "boolean" }
+                      },
+                      "required": ["accountId", "name", "avatarUrl", "isCurrentUser"],
+                      "additionalProperties": false
+                    },
+                    { "type": "null" }
+                  ]
+                },
+                "thumbnailUpdatedAt": {
+                  "type": ["string", "null"]
                 }
               },
               "required": [
@@ -93,7 +191,11 @@
                 "access",
                 "createdAt",
                 "updatedAt",
-                "lastOpenedAt"
+                "lastOpenedAt",
+                "folderId",
+                "folderName",
+                "lastEditor",
+                "thumbnailUpdatedAt"
               ],
               "additionalProperties": false
             }
@@ -116,7 +218,7 @@
     {
       "key": "documents.create",
       "summary": "Create a blank Account-owned Canvas document. Use documents.execute to add or inspect design content.",
-      "instructions": "Creation accepts a title only and produces the same minimal blank document as the Canvas UI: one white 720×480 starter frame. The result identifies that frame as `starterFrameId`; replace or update it when building the first composition so it does not remain underneath new content. Creation does not open a tab or add design content. Call documents.execute for content, then documents.open when visible review matters.",
+      "instructionsPath": "operations/documents.create.md",
       "input": {
         "type": "object",
         "properties": {
@@ -126,7 +228,10 @@
             "maxLength": 255,
             "description": "Title shown in Canvas and document lists."
           },
-          "module": { "enum": ["deck", "print", "web", "mobile"], "description": "Canvas module fixed for the lifetime of the document." }
+          "module": { "enum": ["generic", "deck", "web", "mobile"], "description": "Canvas module. A generic document may set a deliverable module later while it has no role-bearing frames." },
+          "preset": { "enum": ["a4", "letter"], "description": "Optional physical-size preset for a generic blank document." }
+          ,
+          "folderId": { "type": ["string", "null"], "format": "uuid", "description": "Optional folder that should contain the new design." }
         },
         "required": ["title", "module"],
         "additionalProperties": false
@@ -147,9 +252,13 @@
             "type": "string",
             "minLength": 1,
             "description": "Exact ID of the blank document's initial 720×480 frame."
+          },
+          "folderId": {
+            "type": ["string", "null"],
+            "format": "uuid"
           }
         },
-        "required": ["documentId", "title", "access", "starterFrameId"],
+        "required": ["documentId", "title", "access", "folderId", "starterFrameId"],
         "additionalProperties": false
       },
       "examples": [
@@ -162,6 +271,56 @@
         }
       ],
       "handler": "documents.create"
+    },
+    {
+      "key": "documents.move",
+      "summary": "Move one editable Canvas document to a folder or to the root library.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "folderId": { "type": ["string", "null"], "format": "uuid", "description": "Destination folder, or null for the root library." }
+        },
+        "required": ["documentId", "folderId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "folderId": { "type": ["string", "null"], "format": "uuid" }
+        },
+        "required": ["documentId", "folderId"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Move a design to the root library", "input": { "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9", "folderId": null } }],
+      "handler": "documents.move"
+    },
+    {
+      "key": "documents.duplicate",
+      "summary": "Duplicate one readable Canvas document into an editable destination folder.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "folderId": { "type": ["string", "null"], "format": "uuid", "description": "Destination folder. Omit to keep the duplicate beside the source." }
+        },
+        "required": ["documentId", "title"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string" },
+          "folderId": { "type": ["string", "null"], "format": "uuid" }
+        },
+        "required": ["documentId", "title", "folderId"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Duplicate a design beside its source", "input": { "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9", "title": "Design variation" } }],
+      "handler": "documents.duplicate"
     },
     {
       "key": "documents.execute",
@@ -179,7 +338,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100000,
-            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, G, TakeScreenshot, and Print."
+            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
           }
         },
         "required": ["documentId", "code"],
@@ -213,6 +372,23 @@
               "type": "string"
             },
             "maxItems": 10000
+          },
+          "svgConversions": {
+            "type": "array",
+            "maxItems": 1000,
+            "items": {
+              "type": "object",
+              "properties": {
+                "sourceNodeId": { "type": "string" },
+                "createdNodeId": { "type": "string" },
+                "shapeCount": { "type": "integer", "minimum": 1 },
+                "mode": { "enum": ["copy", "replace"] },
+                "fidelity": { "const": "exact" },
+                "warnings": { "type": "array", "maxItems": 0 }
+              },
+              "required": ["sourceNodeId", "createdNodeId", "shapeCount", "mode", "fidelity", "warnings"],
+              "additionalProperties": false
+            }
           },
           "inspection": {
             "type": "array",
@@ -254,6 +430,7 @@
           "prints",
           "result",
           "touchedNodeIds",
+          "svgConversions",
           "inspection",
           "issues",
           "screenshots"
@@ -351,16 +528,15 @@
     },
     {
       "key": "documents.export",
-      "summary": "Export explicit role-bearing Canvas frames to their native deck, print, web, or mobile artifact.",
+      "summary": "Export explicit role-bearing Canvas frames to their native deck, web, or mobile artifact.",
       "input": {
         "type": "object",
         "properties": {
           "documentId": { "type": "string", "format": "uuid" },
-          "role": { "enum": ["slide", "page", "route", "ios", "android"] },
+          "role": { "enum": ["slide", "route", "ios", "android"] },
           "frames": { "type": "array", "minItems": 1, "maxItems": 1000, "items": { "type": "string", "minLength": 1 } },
-          "destination": { "type": "string", "minLength": 1, "description": "Absolute file path for slide/page or absolute directory path for route/ios/android. Existing destinations are rejected." },
+          "destination": { "type": "string", "minLength": 1, "description": "Absolute file path for slide or absolute directory path for route/ios/android. Existing destinations are rejected." },
           "modes": { "type": "object", "additionalProperties": { "type": "string" } },
-          "profile": { "enum": ["PDF/A-3", "PDF/X-4", "PDF/UA-1", null] },
           "bindings": { "type": "array", "maxItems": 1000, "items": { "type": "object", "required": ["output"], "properties": { "output": { "type": "string", "minLength": 1 } }, "additionalProperties": true } }
         },
         "required": ["documentId", "role", "frames", "destination"],
@@ -373,9 +549,10 @@
           "consequences": { "type": "array" },
           "lowered": { "type": "array" },
           "embeddedFonts": { "type": "array" },
+          "bundledFonts": { "type": "array" },
           "rasterized": { "type": "array" }
         },
-        "required": ["artifacts", "consequences", "lowered", "embeddedFonts", "rasterized"],
+        "required": ["artifacts", "consequences", "lowered", "embeddedFonts", "bundledFonts", "rasterized"],
         "additionalProperties": false
       },
       "examples": [
@@ -392,19 +569,20 @@
       "handler": "documents.export"
     },
     {
-      "key": "documents.export-image",
-      "summary": "Export explicit Canvas subtrees as PNG or SVG.",
+      "key": "documents.extract",
+      "summary": "Extract Canvas nodes as PNG, SVG or a multi-page PDF without requiring an export role.",
       "input": {
         "type": "object",
         "properties": {
           "documentId": { "type": "string", "format": "uuid" },
-          "frames": { "type": "array", "minItems": 1, "maxItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Exactly one subtree; destination names one output file." },
-          "format": { "enum": ["png", "svg"] },
+          "node": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 }, "description": "Exact nodes in artifact order. Several nodes can share one PDF file." },
+          "format": { "enum": ["png", "svg", "pdf"] },
+          "profile": { "enum": ["PDF/X-4"], "description": "PDF-only standards profile; fails closed until conformance is verified." },
           "scale": { "type": "number", "exclusiveMinimum": 0, "maximum": 8 },
-          "destination": { "type": "string", "minLength": 1 },
+          "destination": { "type": "string", "minLength": 1, "description": "Absolute path. A trailing / creates a new directory containing <nodeId>.<format> per node; otherwise use this exact filename. Existing destinations and filename collisions are errors." },
           "modes": { "type": "object", "additionalProperties": { "type": "string" } }
         },
-        "required": ["documentId", "frames", "format", "destination"],
+        "required": ["documentId", "node", "format", "destination"],
         "additionalProperties": false
       },
       "output": { "type": "object", "additionalProperties": true },
@@ -413,14 +591,14 @@
           "name": "Export one subtree as a two-times PNG",
           "input": {
             "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "frames": ["frame-1"],
+            "node": ["frame-1"],
             "format": "png",
             "scale": 2,
             "destination": "/Users/example/Downloads/frame-1.png"
           }
         }
       ],
-      "handler": "documents.export-image"
+      "handler": "documents.extract"
     },
     {
       "key": "documents.open",
@@ -509,7 +687,153 @@
       "handler": "documents.trash"
     },
     {
+      "key": "folders.list",
+      "summary": "List accessible Canvas folders at the root, inside one parent, among recent folders, or in Trash.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "view": { "enum": ["roots", "children", "recent", "trash"] },
+          "parentId": { "type": ["string", "null"], "format": "uuid" },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 500 }
+        },
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": { "items": { "type": "array", "maxItems": 500, "items": { "type": "object", "additionalProperties": true } } },
+        "required": ["items"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "List root folders", "input": { "view": "roots", "limit": 20 } }],
+      "handler": "folders.list"
+    },
+    {
+      "key": "folders.create",
+      "summary": "Create a Canvas folder at the library root or inside one accessible parent folder.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "parentId": { "type": ["string", "null"], "format": "uuid" }
+        },
+        "required": ["name"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Create a root folder", "input": { "name": "Project assets" } }],
+      "handler": "folders.create"
+    },
+    {
+      "key": "folders.rename",
+      "summary": "Rename one owned Canvas folder without changing its contents.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "folderId": { "type": "string", "format": "uuid" },
+          "name": { "type": "string", "minLength": 1, "maxLength": 255 }
+        },
+        "required": ["folderId", "name"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Rename a folder", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9", "name": "Current work" } }],
+      "handler": "folders.rename"
+    },
+    {
+      "key": "folders.move",
+      "summary": "Move one owned Canvas folder to another accessible parent or to the root library.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "folderId": { "type": "string", "format": "uuid" },
+          "parentId": { "type": ["string", "null"], "format": "uuid" }
+        },
+        "required": ["folderId", "parentId"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Move a folder to the root library", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9", "parentId": null } }],
+      "handler": "folders.move"
+    },
+    {
+      "key": "folders.trash",
+      "summary": "Move one owned folder, its nested folders, and the contained designs to recoverable Trash.",
+      "input": {
+        "type": "object",
+        "properties": { "folderId": { "type": "string", "format": "uuid" } },
+        "required": ["folderId"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Move a folder subtree to Trash", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9" } }],
+      "handler": "folders.trash"
+    },
+    {
+      "key": "folders.restore",
+      "summary": "Restore one owned Canvas folder subtree from recoverable Trash.",
+      "input": {
+        "type": "object",
+        "properties": { "folderId": { "type": "string", "format": "uuid" } },
+        "required": ["folderId"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Restore a folder subtree", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9" } }],
+      "handler": "folders.restore"
+    },
+    {
+      "key": "folders.sharing.list",
+      "summary": "List active editors and pending email grants for one owned Canvas folder.",
+      "input": {
+        "type": "object",
+        "properties": { "folderId": { "type": "string", "format": "uuid" } },
+        "required": ["folderId"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": { "items": { "type": "array", "items": { "type": "object", "additionalProperties": true } } },
+        "required": ["items"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Review folder access", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9" } }],
+      "handler": "folders.sharing.list"
+    },
+    {
+      "key": "folders.sharing.add",
+      "summary": "Grant inherited editor access on one owned Canvas folder to an exact Account email.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "folderId": { "type": "string", "format": "uuid" },
+          "email": { "type": "string", "format": "email", "maxLength": 320 }
+        },
+        "required": ["folderId", "email"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Add a folder editor", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9", "email": "designer@example.com" } }],
+      "handler": "folders.sharing.add"
+    },
+    {
+      "key": "folders.sharing.remove",
+      "summary": "Revoke one exact active editor or pending email grant from an owned Canvas folder.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "folderId": { "type": "string", "format": "uuid" },
+          "grantId": { "type": "string", "format": "uuid" }
+        },
+        "required": ["folderId", "grantId"],
+        "additionalProperties": false
+      },
+      "output": { "type": "object", "additionalProperties": true },
+      "examples": [{ "name": "Remove an exact folder grant", "input": { "folderId": "2b67fba2-4417-40fe-90b6-c7820f190af9", "grantId": "22d3b50e-2a49-499b-8f3c-8a1587a42247" } }],
+      "handler": "folders.sharing.remove"
+    },
+    {
       "key": "sharing.list",
+      "instructionsPath": "operations/sharing.list.md",
       "summary": "List current editors and pending Account email grants for one owned document before changing access.",
       "input": {
         "type": "object",
@@ -556,6 +880,7 @@
     },
     {
       "key": "sharing.add",
+      "instructionsPath": "operations/sharing.add.md",
       "summary": "Grant editor access on one owned document to an exact Penkra Account email; this changes access but sends no email.",
       "input": {
         "type": "object",
@@ -598,6 +923,7 @@
     },
     {
       "key": "sharing.remove",
+      "instructionsPath": "operations/sharing.remove.md",
       "summary": "Revoke one exact editor or pending email grant from an owned document after resolving its current grant ID.",
       "input": {
         "type": "object",
@@ -635,5 +961,11 @@
       "handler": "sharing.remove"
     }
   ],
-  "contributions": {}
+  "contributions": {
+    "skills": [
+      { "path": "skills/canvas-deck" },
+      { "path": "skills/canvas-web" },
+      { "path": "skills/canvas-mobile" }
+    ]
+  }
 }

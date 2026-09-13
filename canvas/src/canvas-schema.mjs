@@ -1,7 +1,7 @@
 import { validateRichText } from "./rich-text.mjs";
 
-export const CANVAS_MODULES = Object.freeze(["deck", "print", "web", "mobile"]);
-export const CANVAS_ROLES = Object.freeze({ deck: ["slide"], print: ["page"], web: ["route"], mobile: ["ios", "android"] });
+export const CANVAS_MODULES = Object.freeze(["generic", "deck", "web", "mobile"]);
+export const CANVAS_ROLES = Object.freeze({ deck: ["slide"], web: ["route"], mobile: ["ios", "android"] });
 export const CANVAS_NODE_TYPES = Object.freeze(["frame", "group", "rectangle", "ellipse", "polygon", "line", "path", "text", "icon", "ref"]);
 
 const fields = (names, overrides = {}) => Object.fromEntries(names.map((name) => [name, {
@@ -67,7 +67,7 @@ export const CANVAS_SCHEMA = deepFreeze({
         name: { type: "string" }, x: { type: "number" }, y: { type: "number" },
         width: { type: "dimension" }, height: { type: "dimension" }, rotation: { type: "number" },
         flipX: { type: "boolean" }, flipY: { type: "boolean" }, opacity: { type: "number" }, enabled: { type: "boolean" },
-        export: { type: "enum", values: ["live", "image"] }, description: { type: "string", capability: false }, decorative: { type: "boolean" },
+        export: { type: "enum", values: ["default", "image"] }, description: { type: "string", capability: false }, decorative: { type: "boolean" },
         role: { type: "enum", values: Object.values(CANVAS_ROLES).flat() }, size: { type: "string" }, physical: { ref: "physical" },
         bleed: { type: "number" }, safeMargin: { type: "number" }, folds: { type: "array", items: { type: "number" } },
         properties: { type: "record", values: { ref: "property" } }, bind: { type: "record", values: { type: "string" } },
@@ -132,12 +132,16 @@ export function validateCanvasDocument(document, options = {}) {
     if (typeof node.id !== "string" || !node.id) errors.push("Every node needs a non-empty id.");
     else if (nodes.has(node.id)) errors.push(`Duplicate node id ${node.id}.`);
     else { nodes.set(node.id, node); parents.set(node.id, parent); }
-    if (node.export !== undefined && !["live", "image"].includes(node.export)) errors.push(`${node.id}.export must be live or image.`);
+    if (node.export !== undefined && !["default", "image"].includes(node.export)) errors.push(`${node.id}.export must be default or image.`);
     if (node.decorative === true && node.description != null) errors.push(`${node.id}.description and decorative are mutually exclusive.`);
     if (node.role !== undefined && node.type !== "frame") errors.push(`${node.id}.role may only appear on a frame.`);
     else if (node.role !== undefined && !CANVAS_ROLES[document.module]?.includes(node.role)) errors.push(`${node.id}.role ${node.role} is invalid for ${document.module}.`);
-    validatePrintGeometry(node, errors);
+    validateFrameGeometry(node, errors);
     if (node.type === "text") errors.push(...validateRichText(node));
+    if (["path", "polygon"].includes(node.type)) {
+      if (typeof node.geometry !== "string" || !node.geometry.trim()) errors.push(`${node.id}.geometry must be a non-empty SVG path string.`);
+      if (!Array.isArray(node.viewBox) || node.viewBox.length !== 4 || node.viewBox.some((value) => !Number.isFinite(value)) || node.viewBox[2] <= 0 || node.viewBox[3] <= 0) errors.push(`${node.id}.viewBox must contain x, y, positive width and positive height.`);
+    }
     if (node.type === "ref" && typeof node.ref !== "string") errors.push(`${node.id}.ref must be a string.`);
     validateProperties(node, errors);
   });
@@ -154,15 +158,16 @@ export function validateCanvasDocument(document, options = {}) {
   return invalid(errors, options);
 }
 
-function validatePrintGeometry(node, errors) {
+function validateFrameGeometry(node, errors) {
+  if (node.physical && [node.physical.w, node.physical.h].some((value) => !Number.isFinite(value) || value <= 0)) errors.push(`${node.id}.physical dimensions must be finite positive numbers.`);
   const hasPrintGeometry = node.bleed !== undefined || node.safeMargin !== undefined || node.folds !== undefined;
   if (!hasPrintGeometry) return;
-  if (node.type !== "frame" || node.role !== "page") errors.push(`${node.id}.bleed, safeMargin and folds may only appear on a page frame.`);
+  if (node.type !== "frame") errors.push(`${node.id}.bleed, safeMargin and folds may only appear on a frame.`);
   if (node.bleed !== undefined && (!Number.isFinite(node.bleed) || node.bleed < 0)) errors.push(`${node.id}.bleed must be a non-negative number of points.`);
   if (node.safeMargin !== undefined && (!Number.isFinite(node.safeMargin) || node.safeMargin < 0)) errors.push(`${node.id}.safeMargin must be a non-negative number of points.`);
   if (node.folds !== undefined) {
     if (!Array.isArray(node.folds) || node.folds.some((fold) => !Number.isFinite(fold) || fold <= 0 || (typeof node.width === "number" && fold >= node.width))) {
-      errors.push(`${node.id}.folds must contain positions strictly inside the page width.`);
+      errors.push(`${node.id}.folds must contain positions strictly inside the frame width.`);
     } else if (new Set(node.folds).size !== node.folds.length || node.folds.some((fold, index) => index > 0 && fold <= node.folds[index - 1])) {
       errors.push(`${node.id}.folds must be unique and strictly increasing.`);
     }
@@ -197,6 +202,7 @@ function validateProperties(node, errors) {
 
 function validateAxes(axes, errors) {
   for (const [name, axis] of Object.entries(axes)) {
+    if (!["appearance", "viewport"].includes(name)) errors.push(`Axis ${name} is not supported; use appearance or viewport.`);
     if (!plainObject(axis) || !Array.isArray(axis.modes) || axis.modes.length === 0) { errors.push(`Axis ${name} needs a non-empty modes array.`); continue; }
     const names = axis.modes.map((mode) => mode?.name);
     if (names.some((mode) => typeof mode !== "string" || !mode)) errors.push(`Axis ${name} modes need non-empty names.`);

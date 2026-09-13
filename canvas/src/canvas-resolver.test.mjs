@@ -1,6 +1,37 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+
+test("component expansion preserves instance placement, sizing, opacity and image override", () => {
+  const component = { id: "component", type: "frame", x: 1000, y: 2000, width: 300, height: 70, opacity: 1, fill: "#123456", children: [{ id: "ink", type: "rectangle", x: 50, y: 15, width: 200, height: 40 }] };
+  const source = { axes: {}, variables: {}, children: [component,
+    { id: "one", type: "ref", ref: "component", x: 20, y: 280, width: 320, height: 80, opacity: 0.5, export: "image" },
+    { id: "two", type: "ref", ref: "component" },
+  ] };
+  const resolved = resolveCanvasDocument(source).document;
+  const one = resolved.children[1], two = resolved.children[2];
+  assert.deepEqual([one.x, one.y, one.width, one.height, one.opacity, one.export], [20, 280, 320, 80, 0.5, "image"]);
+  assert.deepEqual([one.children[0].x, one.children[0].y], [50, 15]);
+  assert.deepEqual([two.x, two.y, two.width, two.height, two.opacity], [0, 0, 300, 70, 1]);
+  assert.deepEqual([component.x, component.y, component.opacity], [1000, 2000, 1]);
+});
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
+
+test("dotted aliases retain numeric types and rich-text ranges follow interpolation", () => {
+  const token = (value) => ({ tokenType: "number", cascade: [{ value }] });
+  const content = "Size ${space.600}";
+  const source = { axes: {}, variables: {
+    "space.600": token(24), "space-large": token("${space.600}"),
+  }, children: [{ id: "frame", type: "frame", gap: "${space-large}", children: [
+    { id: "text", type: "text", content, marks: [{ type: "weight", value: 700, from: 5, to: content.length }], paragraphs: [{ from: 0, to: content.length }] },
+  ] }] };
+  const frame = resolveCanvasDocument(source).document.children[0];
+  assert.equal(frame.gap, 24);
+  assert.equal(frame.children[0].content, "Size 24");
+  assert.deepEqual(frame.children[0].marks, [{ type: "weight", value: 700, from: 5, to: 7 }]);
+  assert.deepEqual(frame.children[0].paragraphs, [{ from: 0, to: 7 }]);
+  source.variables["space.600"] = token("${space-large}");
+  assert.throws(() => resolveCanvasDocument(source), /Variable cycle/);
+});
 
 test("resolver selects axes, binds typed props, expands refs and interpolates variables", () => {
   const source = { version: "2.15", module: "deck", axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } }, variables: { school: { tokenType: "string", cascade: [{ value: "Universal International School" }] }, ink: { tokenType: "color", cascade: [{ value: "#111" }, { value: "#fff", when: { appearance: "dark" } }] } }, paragraphStyles: {}, imports: {}, flows: [], children: [
@@ -66,4 +97,38 @@ test("qualified refs use the library namespace and namespace its owned image ass
   const instance = resolved.document.children[0].children[0];
   assert.equal(instance.fill, "#abcdef");
   assert.equal(instance.children[0].fill.url, "imports/ui/assets/photo.png");
+});
+
+test("imported paragraph styles keep source identity while following consumer modes", () => {
+  const axes = { appearance: { modes: [{ name: "light" }, { name: "dark" }] } };
+  const library = { axes, variables: { ink: { tokenType: "color", cascade: [{ value: "#111" }, { value: "#fff", when: { appearance: "dark" } }] } },
+    paragraphStyles: { body: { fill: "${ink}", fontSize: 18 } }, children: [
+      { id: "card", type: "frame", children: [{ id: "label", type: "text", content: "Library", paragraphs: [{ from: 0, to: 7, style: "body" }] }] },
+    ] };
+  const document = { axes, variables: {}, paragraphStyles: { body: { fill: "#f00", fontSize: 30 } }, children: [
+    { id: "consumer", type: "text", content: "Local", paragraphs: [{ from: 0, to: 5, style: "body" }] },
+    { id: "dark", type: "ref", ref: "ui:card" },
+    { id: "light", type: "frame", modes: { appearance: "light" }, children: [{ id: "light-card", type: "ref", ref: "ui:card" }] },
+  ] };
+  const result = resolveCanvasDocument(document, { modes: { appearance: "dark" }, imports: { ui: { document: library } } }).document;
+  const darkStyle = result.children[1].children[0].paragraphs[0].style;
+  const lightStyle = result.children[2].children[0].children[0].paragraphs[0].style;
+  assert.deepEqual(result.paragraphStyles[darkStyle], { fill: "#fff", fontSize: 18 });
+  assert.deepEqual(result.paragraphStyles[lightStyle], { fill: "#111", fontSize: 18 });
+  assert.deepEqual(result.paragraphStyles.body, { fill: "#f00", fontSize: 30 });
+  assert.equal(document.children[0].paragraphs[0].style, "body");
+  assert.equal(library.children[0].children[0].paragraphs[0].style, "body");
+});
+
+test("library defaults resolve absent modes and local overrides tolerate unrelated consumer axes", () => {
+  const library = { axes: { appearance: { modes: [{ name: "dark" }, { name: "light" }] } }, variables: { ink: { tokenType: "color", cascade: [{ value: "#000" }, { value: "#fff", when: { appearance: "dark" } }] } }, children: [
+    { id: "default", type: "rectangle", fill: "${ink}" },
+    { id: "locked", type: "rectangle", modes: { appearance: "light" }, fill: "${ink}" },
+  ] };
+  const source = { axes: { viewport: { modes: [{ name: "wide" }] } }, variables: {}, children: [
+    { id: "one", type: "ref", ref: "ui:default" }, { id: "two", type: "ref", ref: "ui:locked" },
+  ] };
+  const result = resolveCanvasDocument(source, { imports: { ui: { document: library } } }).document;
+  assert.equal(result.children[0].fill, "#fff");
+  assert.equal(result.children[1].fill, "#000");
 });

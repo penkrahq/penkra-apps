@@ -16,6 +16,8 @@ export function destroyRenderer(r: SkiaRenderer): void {
 
   for (const img of r.imageCache.values()) img.delete()
   r.imageCache.clear()
+  for (const picture of r.vectorImageCache.values()) picture.delete()
+  r.vectorImageCache.clear()
   for (const img of r.pencilShaderImages.values()) img.delete()
   r.pencilShaderImages.clear()
   if (r.pencilShaderGL) {

@@ -14,7 +14,7 @@ export function createRulerVisibility(options?: RulerVisibilityOptions) {
   const { isMobile } = useViewportKind()
 
   return function shouldShowRulers() {
-    if (options?.showRulers === false) return false
+    if (typeof options?.showRulers === 'boolean') return options.showRulers
     return !noRulersParam && !isMobile.value
   }
 }
