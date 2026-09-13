@@ -98,15 +98,22 @@ function createMappedComponentClone(
       ? `${parent.pencilAddress}/${pencilNodeId}`
       : null
   const props = cloneNodeProps(src, componentId, mode)
-  if (!pencilAddress) return graph.createNode(src.type, destParentId, props)
+  if (!pencilAddress || !pencilNodeId) {
+    return mode === 'compact-instance'
+      ? graph.createCompactNode(src.type, destParentId, props)
+      : graph.createNode(src.type, destParentId, props)
+  }
   if (graph.nodes.has(pencilAddress)) {
     throw new Error(`Duplicate Pencil instance address: ${pencilAddress}`)
   }
-  return graph.createNodeWithId(pencilAddress, src.type, destParentId, {
+  const mappedProps = {
     ...props,
     pencilNodeId,
     pencilAddress
-  })
+  }
+  return mode === 'compact-instance'
+    ? graph.createCompactNodeWithId(pencilAddress, src.type, destParentId, mappedProps)
+    : graph.createNodeWithId(pencilAddress, src.type, destParentId, mappedProps)
 }
 
 function cloneChildrenWithMapping(

@@ -7,7 +7,7 @@ import {
   migrateM2AssignModule,
   migrateM3DropReusable,
   migrateM4Descendants,
-  migrateM5DeleteEditorSlots,
+  migrateM5ComponentSlots,
   migrateM6UniformText,
   migrateM7AssignRoles,
   migrateM8AddFlows,
@@ -122,7 +122,7 @@ test("M1 remaps partial rich-text ranges around the inserted delimiters", () => 
   assert.deepEqual(document.paragraphs, [{ from: 0, to: 7 }]);
 });
 
-test("M5 deletes Pencil editor slot metadata without changing other node data", () => {
+test("M5 migrates Pencil slot declarations to native Canvas component properties", () => {
   const source = { children: [{
     id: "component",
     type: "frame",
@@ -130,12 +130,89 @@ test("M5 deletes Pencil editor slot metadata without changing other node data", 
     slot: ["content"],
     children: [{ id: "child", type: "frame", slot: [] }],
   }] };
-  const { document, changes } = migrateM5DeleteEditorSlots(source);
+  const { document, changes } = migrateM5ComponentSlots(source);
   assert.equal(changes, 2);
   assert.equal(Object.hasOwn(document.children[0], "slot"), false);
   assert.equal(Object.hasOwn(document.children[0].children[0], "slot"), false);
   assert.equal(document.children[0].reusable, true);
+  assert.deepEqual(document.children[0].properties, {
+    slot_self: { type: "slot", target: ".", preferredComponents: ["content"] },
+    slot_child: { type: "slot", target: "child" },
+  });
   assert.deepEqual(source.children[0].slot, ["content"]);
+});
+
+test("M5 preserves structural slot replacements as instance-owned slot content", () => {
+  const source = { children: [
+    {
+      id: "card",
+      type: "frame",
+      reusable: true,
+      children: [{ id: "body", type: "frame", slot: [], width: 100, children: [] }],
+    },
+    {
+      id: "use",
+      type: "ref",
+      ref: "card",
+      descendants: {
+        body: {
+          replace: {
+            id: "replacement",
+            type: "frame",
+            name: "Custom body",
+            context: "Why this content differs.",
+            width: 200,
+            children: [{ id: "copy", type: "text", content: "Custom" }],
+          },
+        },
+      },
+    },
+  ] };
+
+  const { document } = migrateM5ComponentSlots(source);
+  assert.deepEqual(document.children[1].slots, {
+    slot_body: [{ id: "copy", type: "text", content: "Custom" }],
+  });
+  assert.deepEqual(document.children[1].descendants, {
+    body: { name: "Custom body", description: "Why this content differs.", width: 200 },
+  });
+});
+
+test("empty resolved slots receive a renderer-only affordance without changing authored data", () => {
+  const source = { children: [{
+    id: "empty-slot",
+    type: "frame",
+    provenance: { slotTarget: { instanceId: "use", name: "content" } },
+    width: 100,
+    height: 80,
+    children: [],
+  }, {
+    id: "filled-slot",
+    type: "frame",
+    provenance: { slotTarget: { instanceId: "use", name: "media" } },
+    width: 100,
+    height: 80,
+    fill: "#FFFFFF",
+    children: [],
+  }, {
+    id: "occupied-slot",
+    type: "frame",
+    provenance: { slotTarget: { instanceId: "use", name: "detail" } },
+    width: 100,
+    height: 80,
+    children: [{ id: "copy", type: "text", content: "Custom" }],
+  }] };
+
+  const { document, issues } = prepareOpenPencilRenderDocument(source);
+  assert.deepEqual(issues, []);
+  assert.equal(document.children[0].padding, 9);
+  assert.equal(document.children[0].children[0].fill.type, "shader");
+  assert.equal(document.children[0].children[0].fill.enabled, true);
+  assert.match(document.children[0].children[0].fill.__canvasShader.source, /gl_FragColor/u);
+  assert.equal(document.children[0].children[0].__canvasGenerated, true);
+  assert.equal(document.children[1].fill, "#FFFFFF");
+  assert.equal(document.children[2].fill, undefined);
+  assert.equal(source.children[0].fill, undefined);
 });
 
 test("M2, M3, M7 and M8 establish root module, export roles and closed vocabulary", () => {
@@ -178,24 +255,20 @@ test("M6 partitions newline-terminated paragraphs and records the uniform named 
   assert.deepEqual(document.children[0].marks, []);
 });
 
-test("M4 materializes descendant overrides without a manifest", () => {
+test("M4 preserves property descendant overrides as canonical component instances", () => {
   const source = { children: [
     { id: "component", type: "frame", children: [{ id: "label", type: "text", content: "Default" }] },
     { id: "property-instance", type: "ref", ref: "component", descendants: { label: { content: "Bound" } } },
     { id: "clone-instance", type: "ref", ref: "component", x: 20, descendants: { label: { content: "Cloned" } } },
   ] };
   const { document } = migrateM4Descendants(source);
-  assert.equal(document.children[1].type, "frame");
-  assert.equal(document.children[1].children[0].content, "Bound");
-  assert.equal(Object.hasOwn(document.children[1], "descendants"), false);
-  assert.equal(document.children[2].type, "frame");
-  assert.equal(document.children[2].id, "clone-instance");
-  assert.equal(document.children[2].x, 20);
-  assert.equal(document.children[2].children[0].id, "clone-instance/label");
-  assert.equal(document.children[2].children[0].content, "Cloned");
+  assert.equal(document.children[1].type, "ref");
+  assert.deepEqual(document.children[1].descendants, { label: { content: "Bound" } });
+  assert.equal(document.children[2].type, "ref");
+  assert.deepEqual(document.children[2].descendants, { label: { content: "Cloned" } });
 });
 
-test("M4 materializes the original nested ref graph once from deepest to shallowest", () => {
+test("M4 preserves nested component graphs with property overrides", () => {
   const source = { children: [
     { id: "leaf", type: "frame", children: [{ id: "label", type: "text", content: "Default" }] },
     { id: "component", type: "frame", children: [
@@ -204,11 +277,9 @@ test("M4 materializes the original nested ref graph once from deepest to shallow
     { id: "outer", type: "ref", ref: "component", descendants: {} },
   ] };
   const { document, changes } = migrateM4Descendants(source);
-  assert.equal(changes, 2);
-  assert.equal(document.children[1].children[0].type, "frame");
-  assert.equal(document.children[2].children[0].type, "frame");
-  assert.equal(document.children[2].children[0].children[0].content, "Nested");
-  assert.equal(document.children[2].children[0].children[0].id, "outer/nested/label");
+  assert.equal(changes, 0);
+  assert.equal(document.children[1].children[0].type, "ref");
+  assert.equal(document.children[2].type, "ref");
 });
 
 test("M4 remaps every materialized descendant id and its internal relationships", () => {
@@ -219,8 +290,18 @@ test("M4 remaps every materialized descendant id and its internal relationships"
         { id: "note", type: "text", content: "Note", notesFor: "body" },
       ] },
     ] },
-    { id: "one", type: "ref", ref: "component", descendants: {} },
-    { id: "two", type: "ref", ref: "component", descendants: {} },
+    { id: "one", type: "ref", ref: "component", descendants: {
+      body: { id: "body", type: "frame", children: [
+        { id: "nested", type: "ref", ref: "body" },
+        { id: "note", type: "text", content: "One", notesFor: "body" },
+      ] },
+    } },
+    { id: "two", type: "ref", ref: "component", descendants: {
+      body: { id: "body", type: "frame", children: [
+        { id: "nested", type: "ref", ref: "body" },
+        { id: "note", type: "text", content: "Two", notesFor: "body" },
+      ] },
+    } },
   ] };
   const { document } = migrateM4Descendants(source, { entries: {
     one: { action: "clone", evidence: "reviewed structural clone" },

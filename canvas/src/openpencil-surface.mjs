@@ -53,10 +53,23 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   let sceneProvenance = captureSceneProvenance(editor);
   let textEditSession = null;
   let historyMutations = null;
+  let refreshingDocument = false;
+  let authoringEvent = false;
+  let authoringGeneration = 0;
+  const beginAuthoringEvent = () => {
+    const generation = ++authoringGeneration;
+    authoringEvent = true;
+    queueMicrotask(() => {
+      if (authoringGeneration === generation) authoringEvent = false;
+    });
+  };
   const emitMutations = (mutations) => {
-    if (!mutations.length) return;
-    if (historyMutations) historyMutations.push(...mutations);
-    else callbacks.onMutations?.(mutations);
+    routeOpenPencilMutations(mutations, {
+      refreshingDocument,
+      authoringEvent,
+      historyMutations,
+      onMutations: callbacks.onMutations,
+    });
   };
   if (callbacks.viewport) {
     editor.state.panX = callbacks.viewport.panX;
@@ -64,14 +77,19 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     editor.state.zoom = callbacks.viewport.zoom;
   }
 
-  let refreshingDocument = false;
   let visible = callbacks.visible ?? true;
-  const hasTimeShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
-    (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
-  ));
-  const hasMouseShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
-    (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "mouse"),
-  ));
+  const hasTimeShader = () =>
+    [...editor.graph.nodes.values()].some((node) =>
+      node.fills?.some((fill) =>
+        fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
+      ),
+    );
+  const hasMouseShader = () =>
+    [...editor.graph.nodes.values()].some((node) =>
+      node.fills?.some((fill) =>
+        fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "mouse"),
+      ),
+    );
   const updateShaderMouse = (event) => {
     if (!hasMouseShader()) return;
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -109,8 +127,14 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       reconcileTimeShaderAnimation();
       if (textEditSession?.nodeId === nodeId) return;
       const sourceNode = findPenNode(sourceDocument, nodeId);
-      if (editor.state.selectedIds.has(nodeId) && sourceNode && !isOpenPencilEditableNode(sourceNode)) {
-        callbacks.onUnsupportedEdit?.(`${sourceNode.type} cannot be edited faithfully; its source was left unchanged.`);
+      if (
+        editor.state.selectedIds.has(nodeId) &&
+        sourceNode &&
+        !isOpenPencilEditableNode(sourceNode)
+      ) {
+        callbacks.onUnsupportedEdit?.(
+          `${sourceNode.type} cannot be edited faithfully; its source was left unchanged.`,
+        );
         return;
       }
       const mutations = sceneEventToPenMutations(
@@ -127,12 +151,16 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       sceneValues.set(node.id, sceneNodePropertySnapshot(node));
       sceneProvenance.set(node.id, node.canvasProvenance ?? null);
       reconcileTimeShaderAnimation();
-      const sourceId = sceneNodeStructuralId(sourceDocument, node.id, node.canvasProvenance) ?? node.id;
+      const sourceId =
+        sceneNodeStructuralId(sourceDocument, node.id, node.canvasProvenance) ?? node.id;
       const insertion = historyMutations
-        ? callbacks.restoreDeletedNode?.(sourceId) ?? sceneNodeInsertionMutation(editor, node, sourceDocument)
+        ? (callbacks.restoreDeletedNode?.(sourceId) ??
+          sceneNodeInsertionMutation(editor, node, sourceDocument))
         : sceneNodeInsertionMutation(editor, node, sourceDocument);
       if (!insertion) {
-        callbacks.onUnsupportedEdit?.(`${node.type} creation is not currently available in Canvas.`);
+        callbacks.onUnsupportedEdit?.(
+          `${node.type} creation is not currently available in Canvas.`,
+        );
         return;
       }
       emitMutations([insertion]);
@@ -142,36 +170,53 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const sourceId = sceneNodeStructuralId(sourceDocument, nodeId, sceneProvenance.get(nodeId));
       sceneProvenance.delete(nodeId);
       if (sourceId) emitMutations([{ kind: "delete-node", nodeId: sourceId }]);
-      else callbacks.onUnsupportedEdit?.("A component-owned descendant cannot be deleted independently.");
+      else
+        callbacks.onUnsupportedEdit?.(
+          "A component-owned descendant cannot be deleted independently.",
+        );
       reconcileTimeShaderAnimation();
     }),
     editor.onEditorEvent("node:reparented", (nodeId, _oldParentId, newParentId) => {
       const node = editor.graph.getNode(nodeId);
       const position = node ? sceneNodePosition(editor, node) : null;
-      const sourceId = sceneNodeStructuralId(sourceDocument, nodeId, node?.canvasProvenance ?? sceneProvenance.get(nodeId));
+      const sourceId = sceneNodeStructuralId(
+        sourceDocument,
+        nodeId,
+        node?.canvasProvenance ?? sceneProvenance.get(nodeId),
+      );
       const destination = sceneParentMutationDestination(editor, sourceDocument, newParentId);
       if (position === null || !sourceId || !destination) {
-        callbacks.onUnsupportedEdit?.(`${nodeId} has no authored sibling position after reparenting.`);
+        callbacks.onUnsupportedEdit?.(
+          `${nodeId} has no authored sibling position after reparenting.`,
+        );
         return;
       }
-      emitMutations([{
-        kind: "move-node",
-        nodeId: sourceId,
-        ...destination,
-        position,
-      }]);
+      emitMutations([
+        {
+          kind: "move-node",
+          nodeId: sourceId,
+          ...destination,
+          position,
+        },
+      ]);
     }),
     editor.onEditorEvent("node:reordered", (nodeId, parentId, index) => {
       const node = editor.graph.getNode(nodeId);
-      const sourceId = sceneNodeStructuralId(sourceDocument, nodeId, node?.canvasProvenance ?? sceneProvenance.get(nodeId));
+      const sourceId = sceneNodeStructuralId(
+        sourceDocument,
+        nodeId,
+        node?.canvasProvenance ?? sceneProvenance.get(nodeId),
+      );
       const destination = sceneParentMutationDestination(editor, sourceDocument, parentId);
       if (!sourceId || !destination) return;
-      emitMutations([{
-        kind: "move-node",
-        nodeId: sourceId,
-        ...destination,
-        position: index,
-      }]);
+      emitMutations([
+        {
+          kind: "move-node",
+          nodeId: sourceId,
+          ...destination,
+          position: index,
+        },
+      ]);
     }),
   ];
 
@@ -206,22 +251,16 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
         layer: "scene",
         showRulers: false,
         recomputeLayoutAfterFonts: false,
-        onPerformance: (name, duration, details) => callbacks.onPerformance?.(
-          name,
-          duration,
-          { ...details, layer: "scene" },
-        ),
+        onPerformance: (name, duration, details) =>
+          callbacks.onPerformance?.(name, duration, { ...details, layer: "scene" }),
         onReady: onLayerReady,
       });
       const overlayCanvas = useCanvas(overlayCanvasRef, editor, {
         layer: "overlays",
         showRulers: true,
         recomputeLayoutAfterFonts: false,
-        onPerformance: (name, duration, details) => callbacks.onPerformance?.(
-          name,
-          duration,
-          { ...details, layer: "overlays" },
-        ),
+        onPerformance: (name, duration, details) =>
+          callbacks.onPerformance?.(name, duration, { ...details, layer: "overlays" }),
         onReady: onLayerReady,
       });
       useCanvasInput(
@@ -232,43 +271,63 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
         overlayCanvas.hitTestFrameTitle,
       );
       useTextEdit(overlayCanvasRef, editor);
-      watch(() => editor.state.editingTextId, (nodeId, previousNodeId) => {
-        if (previousNodeId && textEditSession?.nodeId === previousNodeId) {
-          const mutations = sceneTextEditCommitMutations(
-            editor,
-            sourceDocument,
-            previousNodeId,
-            textEditSession.before,
-          );
-          emitMutations(mutations);
-          callbacks.onTextEditCommit?.(previousNodeId);
-          textEditSession = null;
-        }
-        if (nodeId) {
-          const node = editor.graph.getNode(nodeId);
-          textEditSession = node ? {
-            nodeId,
-            before: sceneNodePropertySnapshot(node),
-          } : null;
-          callbacks.onTextEditStart?.(nodeId);
-        }
-      }, { flush: "sync" });
-      return () => h("div", {
-        class: ["openpencil-surface-stack", { "is-ready": surfaceReady.value }],
-      }, [
-        h("canvas", {
-          ref: sceneCanvasRef,
-          class: "openpencil-surface openpencil-scene-surface",
-          "aria-hidden": "true",
-        }),
-        h("canvas", {
-          ref: overlayCanvasRef,
-          class: "openpencil-surface openpencil-overlay-surface",
-          tabindex: "0",
-          "aria-label": "Canvas design viewport",
-          onPointermove: updateShaderMouse,
-        }),
-      ]);
+      watch(
+        () => editor.state.editingTextId,
+        (nodeId, previousNodeId) => {
+          if (previousNodeId && textEditSession?.nodeId === previousNodeId) {
+            const mutations = sceneTextEditCommitMutations(
+              editor,
+              sourceDocument,
+              previousNodeId,
+              textEditSession.before,
+            );
+            emitMutations(mutations);
+            callbacks.onTextEditCommit?.(previousNodeId);
+            textEditSession = null;
+          }
+          if (nodeId) {
+            const node = editor.graph.getNode(nodeId);
+            textEditSession = node
+              ? {
+                  nodeId,
+                  before: sceneNodePropertySnapshot(node),
+                }
+              : null;
+            callbacks.onTextEditStart?.(nodeId);
+          }
+        },
+        { flush: "sync" },
+      );
+      return () =>
+        h(
+          "div",
+          {
+            class: ["openpencil-surface-stack", { "is-ready": surfaceReady.value }],
+            onPointerdownCapture: beginAuthoringEvent,
+            onPointermoveCapture: beginAuthoringEvent,
+            onPointerupCapture: beginAuthoringEvent,
+            onKeydownCapture: beginAuthoringEvent,
+            onBeforeinputCapture: beginAuthoringEvent,
+            onInputCapture: beginAuthoringEvent,
+            onPasteCapture: beginAuthoringEvent,
+            onCutCapture: beginAuthoringEvent,
+            onBlurCapture: beginAuthoringEvent,
+          },
+          [
+            h("canvas", {
+              ref: sceneCanvasRef,
+              class: "openpencil-surface openpencil-scene-surface",
+              "aria-hidden": "true",
+            }),
+            h("canvas", {
+              ref: overlayCanvasRef,
+              class: "openpencil-surface openpencil-overlay-surface",
+              tabindex: "0",
+              "aria-label": "Canvas design viewport",
+              onPointermove: updateShaderMouse,
+            }),
+          ],
+        );
     },
   };
 
@@ -332,8 +391,22 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   }
 }
 
+export function routeOpenPencilMutations(
+  mutations,
+  { refreshingDocument = false, authoringEvent = false, historyMutations = null, onMutations } = {},
+) {
+  if (refreshingDocument || (!authoringEvent && !historyMutations) || !mutations.length)
+    return false;
+  if (historyMutations) historyMutations.push(...mutations);
+  else onMutations?.(mutations);
+  return true;
+}
+
 function registerDocumentFonts(document, assets) {
-  for (const font of collectPencilDocumentFonts(document, assets instanceof Map ? assets : new Map())) {
+  for (const font of collectPencilDocumentFonts(
+    document,
+    assets instanceof Map ? assets : new Map(),
+  )) {
     fontManager.registerDocumentFont(font.family, font.bytes);
   }
 }

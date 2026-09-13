@@ -5,9 +5,10 @@ its document model and does not import, export, or preserve Pencil files.
 
 ## Design authority
 
-[`design/canvas.pen`](./design/canvas.pen) is the approved and authoritative source for Canvas UI
-hierarchy, language, states, and visual composition. Keep implementation behavior and copy
-reconciled with that file; historical design briefs live only in Git history.
+The Account-owned Canvas document named `Canvas — App design` is the approved source for Canvas UI
+hierarchy, language, states, and visual composition. [`design/canvas.pen`](./design/canvas.pen) is a
+historical source artifact only; it is not an authoring surface or design authority. Keep
+implementation behavior and copy reconciled with the Canvas document.
 
 The implemented model and runtime contract are documented in
 [`ARCHITECTURE.md`](./ARCHITECTURE.md). Unfinished Canvas work belongs only in
@@ -23,9 +24,13 @@ establishes the lossless Yjs document model and convergence/undo behavior.
   updates, snapshots, sharing grants, and realtime subscription authorization.
 - The trusted Penkra host mediates the App's declared `account-data` permission;
   Account cookies and install receipts never enter App renderer code.
-- The App combines its network provider with official `y-indexeddb` persistence
-  so a previously opened document remains editable offline and merges on
-  reconnect.
+- The App persists only identified, unacknowledged local Yjs updates through
+  official `y-indexeddb`, then replays that outbox over the authoritative server
+  head and removes each entry after acknowledgement. It never merges a cached
+  full-document replica into a newer server document.
+- Document operations always materialize the authoritative snapshot and every
+  following update before reading, editing, or compacting. They do not cache a
+  projection by sequence alone.
 - The visible editor uses an audited, locally owned scene/layout/CanvasKit/input
   engine derived from OpenPencil. Its normalized graph is disposable view state and the Canvas Yjs
   model remains canonical.

@@ -75,6 +75,14 @@ const SUPPORTED_ICON_LIBRARIES = [
   "Material Symbols Rounded",
   "Material Symbols Sharp",
 ];
+const SLOT_PLACEHOLDER_SHADER = `#version 100
+precision mediump float;
+void main() {
+  float phase = mod(gl_FragCoord.x - gl_FragCoord.y, 7.0);
+  float distanceToLine = min(phase, 7.0 - phase);
+  float alpha = 1.0 - smoothstep(1.15, 2.15, distanceToLine);
+  gl_FragColor = vec4(0.553, 0.475, 0.941, alpha);
+}`;
 
 export function prepareOpenPencilRenderDocument(source, options = {}) {
   const document = lowerCanvasModelForOpenPencil(source);
@@ -226,6 +234,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
+  compileSlotPlaceholders(document.children);
   compileDescendantIcons(document.children, issues);
   return { document, issues };
 }
@@ -278,7 +287,20 @@ export function lowerCanvasModelForOpenPencil(source) {
         const name = binding.slice(7);
         if (!Object.hasOwn(props, name) || path.length === 0) continue;
         const key = path.join("/");
-        descendants[key] = { ...(descendants[key] ?? {}), [property]: structuredClone(props[name]) };
+        const nestedTarget = node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")
+          ? nodes.get(node.ref)
+          : null;
+        if (nestedTarget?.properties?.[property]) {
+          descendants[key] = {
+            ...(descendants[key] ?? {}),
+            props: {
+              ...(descendants[key]?.props ?? {}),
+              [property]: structuredClone(props[name]),
+            },
+          };
+        } else {
+          descendants[key] = { ...(descendants[key] ?? {}), [property]: structuredClone(props[name]) };
+        }
       }
       for (const child of node.children ?? []) visit(child, [...path, child.id]);
     };
@@ -298,7 +320,62 @@ function walkCanvasNodes(children, visit) {
     visit(node);
     walkCanvasNodes(node?.children, visit);
     for (const content of Object.values(node?.slots ?? {})) walkCanvasNodes(content, visit);
+    for (const override of Object.values(node?.descendants ?? {})) {
+      walkCanvasNodes(override?.children, visit);
+    }
   }
+}
+
+function compileSlotPlaceholders(children) {
+  let compiled = null;
+  walkCanvasNodes(children, (node) => {
+    if (
+      node?.type !== "frame"
+      || !isRecord(node.provenance?.slotTarget)
+      || (node.children?.length ?? 0) > 0
+      || node.fill !== undefined
+    ) return;
+    compiled ??= (() => {
+      const definition = parsePencilShader(SLOT_PLACEHOLDER_SHADER);
+      return {
+        webglSource: transpilePencilShaderWebGL1(definition),
+        uniforms: definition.uniforms,
+      };
+    })();
+    const fill = {
+      type: "shader",
+      enabled: true,
+      __canvasShader: {
+        source: SLOT_PLACEHOLDER_SHADER,
+        webglSource: compiled.webglSource,
+        uniforms: compiled.uniforms,
+        values: {},
+        textures: [],
+        fallback: {
+          type: "diagonal-hatch",
+          color: "#8D79F0",
+          spacing: 7,
+          lineWidth: 1,
+        },
+      },
+    };
+    node.padding = 9;
+    node.children = [{
+      id: `${node.id}/@canvas-slot-placeholder`,
+      type: "frame",
+      name: "Empty slot affordance",
+      width: "fill_container",
+      height: "fill_container",
+      fill,
+      stroke: {
+        fill: "#8D79F0",
+        thickness: 1,
+        alignment: "inside",
+      },
+      __canvasGenerated: true,
+      children: [],
+    }];
+  });
 }
 
 function compileDescendantIcons(nodes, issues) {

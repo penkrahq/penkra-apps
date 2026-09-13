@@ -298,7 +298,26 @@ test("component bindings, conditions and instance props are checked in lexical s
   assert.throws(() => validateCanvasDocument(value), /undeclared property missing/);
 });
 
-test("component slots target frame descendants while layer limits remain non-blocking guidance", () => {
+test("nested component props can bind to compatible parent component props", () => {
+  const value = document();
+  value.children.unshift(
+    {
+      id: "icon", type: "frame", properties: {
+        harness: { type: "enum", values: ["claude", "codex"], default: "claude" },
+      }, children: [],
+    },
+    {
+      id: "row", type: "frame", properties: {
+        harness: { type: "enum", values: ["claude", "codex"], default: "claude" },
+      }, children: [{ id: "icon-use", type: "ref", ref: "icon", bind: { harness: "$props.harness" } }],
+    },
+  );
+  assert.equal(validateCanvasDocument(value).valid, true);
+  value.children[1].properties.harness.values.push("grok");
+  assert.throws(() => validateCanvasDocument(value), /cannot forward enum property harness/);
+});
+
+test("component slots target the component root or frame descendants while layer limits remain non-blocking guidance", () => {
   const value = document();
   value.children.unshift({
     id: "card",
@@ -333,8 +352,10 @@ test("component slots target frame descendants while layer limits remain non-blo
   value.children[1].children[1].slots.content[0].bind = { content: "$props.outer" };
   assert.throws(() => validateCanvasDocument(value), /undeclared property outer/u);
   delete value.children[1].children[1].slots.content[0].bind;
+  value.children[0].properties.content.target = ".";
+  assert.equal(validateCanvasDocument(value).valid, true);
   value.children[0].properties.content.target = "missing";
-  assert.throws(() => validateCanvasDocument(value), /must identify a frame descendant/u);
+  assert.throws(() => validateCanvasDocument(value), /must identify the component root or a frame descendant/u);
   value.children[0].properties.content.target = "body";
   value.children[1].children[1].slots.other = [];
   assert.throws(() => validateCanvasDocument(value), /does not name a slot/u);

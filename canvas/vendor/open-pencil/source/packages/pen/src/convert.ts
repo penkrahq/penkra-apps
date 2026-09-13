@@ -158,6 +158,7 @@ export interface PenNode {
   __canvasScript?: unknown
   __canvasSticky?: unknown
   __canvasImported?: boolean
+  provenance?: Record<string, unknown>
 }
 
 export interface VarContext {

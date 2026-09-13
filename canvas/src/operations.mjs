@@ -27,7 +27,6 @@ import { searchCanvasIcons } from "./pencil-icon-provider.mjs";
 
 const EXECUTION_INSPECTION_LIMIT = 50;
 const snapshotCompactions = new Map();
-let operationDocumentCache = null;
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -82,7 +81,6 @@ runtime.operations.handle("documents.trash", async ({ documentId, confirmTitle }
     throw error;
   }
   await api.deleteDocument(documentId);
-  if (operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
   return { documentId, title: document.title, trashed: true };
 });
 
@@ -111,27 +109,12 @@ runtime.operations.handle("documents.open", async ({ documentId }, context) => {
 runtime.operations.handle("documents.execute", async ({ documentId, code }, context) => {
   const signal = context?.signal ?? new AbortController().signal;
   const { executeCanvasScript, scriptNeedsInspection } = await import("./script-runtime.mjs");
-  const head = await api.getDocumentHead(documentId);
-  const headSequence = authoritativeSequence(head);
-  const cached = operationDocumentCache?.documentId === documentId
-    && operationDocumentCache.sequence === headSequence
-    ? operationDocumentCache
-    : null;
-  if (!cached && operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
-  const projected = cached ? null : await api.getDocumentProjection(documentId);
-  let payload = cached
-    ? {
-      ...head,
-      snapshot: {
-        ...head.snapshot,
-        throughSequence: cached.sequence,
-        state: cached.state,
-        source: structuredClone(cached.source),
-      },
-      updates: [],
-    }
-    : projected ?? await api.getDocument(documentId);
-  let model = cached ? restoreDocumentModel(payload) : projected ? null : restoreDocumentModel(payload);
+  let payload = await api.getDocumentProjection(documentId);
+  // getDocumentProjection avoids downloading chunked CRDT state when the
+  // snapshot projection is current. Once updates exist, the API returns the
+  // complete fetched snapshot and update log, which must be materialized
+  // before either reading or compacting the document.
+  let model = payload.updates?.length > 0 ? restoreDocumentModel(payload) : null;
   try {
     const before = model ? materialize(model) : structuredClone(payload.snapshot.source);
     normalizeCanvasAliasesInPlace(before);
@@ -299,17 +282,10 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         },
       });
     } catch (error) {
-      if (operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
       throw error;
     }
     const cachedState = encodeState(model);
-    operationDocumentCache = {
-      documentId,
-      sequence: appended.sequence,
-      state: cachedState,
-      source: structuredClone(execution.document),
-    };
-    if (shouldCompactSnapshot(head.snapshot?.throughSequence, appended.sequence)) {
+    if (shouldCompactSnapshot(payload.snapshot?.throughSequence, appended.sequence)) {
       queueSnapshotCompaction(documentId, {
         throughSequence: appended.sequence,
         state: cachedState,
@@ -364,7 +340,6 @@ function listSourceNodes(nodes = [], output = []) {
 }
 
 runtime.operations.handle("documents.undo", async ({ documentId, operationId }) => {
-  if (operationDocumentCache?.documentId === documentId) operationDocumentCache = null;
   const payload = await api.getDocument(documentId);
   const model = restoreDocumentModel(payload);
   try {

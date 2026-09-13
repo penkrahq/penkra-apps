@@ -2,6 +2,8 @@
 
 > Historical verification record. Its fixed findings are complete and are not TODOs. Consult
 > `research/implementation-progress.md` for the reconciled gate status.
+> The Stage 6 statements about deleting Pencil slots are also historical: native Canvas slots now
+> preserve component insertion surfaces and instance-owned content.
 
 Date: 2026-09-04
 
@@ -74,6 +76,58 @@ before/after render identity remains open. M15 is `modes: { theme: "dark" }`; M1
 
 The environment-only gates remain open exactly as requested: PowerPoint rendering, the no-font
 host, PDF/X-4 preflight, and mobile UI/accessibility snapshot runners.
+
+## Native slots, icon catalog, and `penkra` migration verification — 2026-09-12
+
+- Canvas now models structural component insertion with typed `slot` properties and instance-owned
+  `slots`. A slot may target the component root or a frame descendant. Nested typed properties,
+  slot ownership, selection, editing, and instance swaps use the same component resolver rather
+  than a Pencil-only compatibility layer.
+- The bundled Phosphor catalog is available through the ordinary Canvas icon node and icon search
+  operation. Migrated icons retain their source IDs; Canvas does not generate replacement IDs.
+- The attached 2.0 MB source was migrated into Canvas document
+  `f572abce-0531-4564-8dba-2c73893d3fc7`. At live sequence 3419, an audit against the canonical
+  persistent Canvas projection matched all 2,638 migrated source nodes: zero property differences,
+  zero type differences, zero parent/slot differences, zero sibling-order differences, and zero
+  missing or extra source nodes. The only additional node is the intentional Canvas decision note.
+  Four raster assets were retained under durable content-addressed Canvas paths.
+- All 43 source screens were rendered locally. Representative live Canvas renders cover the
+  expanded sidebar and provider menu, agent rows and connection menu, onboarding artwork, app
+  launcher artwork, composer context, and empty-slot affordance. The live document structure and
+  local render oracle are the same canonical persistent representation.
+- The final focused Canvas migration/render/component/runtime/persistence suite passes 276 tests.
+  The OpenPencil
+  source engine and all upstream packages rebuild successfully; scene-graph typecheck and the Pen
+  package build pass. The upstream aggregate check reaches its pre-existing repository lint debt
+  and stops with 59 violations outside this integration's changed lines. The broader Canvas suite's
+  only repeatable external failure is the local LibreOffice wrapper pointing to a missing
+  `/Applications/LibreOffice.app/Contents/MacOS/soffice`; the browser artifact checks pass alone.
+
+## Live persistence correction — 2026-09-12
+
+- The editor no longer stores a full Yjs document in IndexedDB. It stores only identified,
+  unacknowledged local updates and removes each outbox entry after the server acknowledges it.
+  This prevents a stale renderer replica from merging deleted structure into a newer server head.
+- OpenPencil graph replacement is disposable view work. Scene mutations are forwarded to the
+  canonical model only during a captured user authoring event or an explicit undo/redo replay;
+  refresh and background graph mutations are ignored.
+- Renderer code no longer creates server snapshots. Snapshot compaction remains in the operation
+  path, after a conflict-checked append, and undo snapshots the backend-issued inverse.
+- A second defect was reproduced independently of the editor: `getDocumentProjection` returned a
+  snapshot plus following updates, while `documents.execute` read only the projection. Valid
+  updates were therefore invisible until the ten-update compaction boundary, where stale
+  projection could be snapshotted and the update log pruned. Operations now restore and
+  materialize every returned update before reading, editing, or compacting.
+- The process-local operation cache was removed. A sequence number identifies the logical update
+  head, not the byte identity of an in-process projection, so it is not a sufficient cache key.
+- Recovery used ordinary conflict-checked updates rather than replacing a snapshot at the same
+  sequence. Two fresh reads after the final installed-editor open matched the canonical digest:
+  2,638 authored nodes, FNV accumulator `3871342111`, secondary accumulator `268971219`, sequence
+  3419. The current package opened with `Saved`, Undo and Redo disabled, and the Layers panel
+  exposed all 20 migrated roots without advancing the sequence.
+- Library module labels now come from the bounded collection projection (`projectionFields=module`)
+  instead of issuing one CRDT state read per document. The per-document fallback and its
+  `Unavailable` state were deleted.
 
 ## Clean-cut correction
 

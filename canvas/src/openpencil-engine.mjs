@@ -67,7 +67,11 @@ export function createOpenPencilEditor(document, options = {}) {
     document,
     options.assets,
     options.preparedDocument,
-    { computeLayout: options.computeInitialLayout !== false },
+    {
+      computeLayout: options.computeInitialLayout !== false,
+      populateInstances: options.populateInstances !== false,
+      compactInstanceStorage: options.compactInstanceStorage !== false,
+    },
   );
   return createEditor({
     graph,
@@ -89,7 +93,10 @@ export function createOpenPencilGraph(
   );
   const graph = measureGraphPhase(
     "engine.graph.adapt-model",
-    () => createCanvasSceneGraph(renderDocument),
+    () => createCanvasSceneGraph(renderDocument, {
+      populateInstances: options.populateInstances !== false,
+      instanceCloneMode: options.compactInstanceStorage ? "compact-instance" : "deep",
+    }),
   );
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
@@ -182,7 +189,9 @@ function canvasStyleRuns(node, paragraphStyles) {
   });
   return flattened.flatMap((run) => {
     const style = {};
-    if (run.weight !== undefined || run.fontWeight !== undefined) style.fontWeight = Number(run.weight ?? run.fontWeight);
+    if (run.weight !== undefined || run.fontWeight !== undefined) {
+      style.fontWeight = canvasFontWeight(run.weight ?? run.fontWeight);
+    }
     if (run.italic !== undefined || run.fontStyle !== undefined) style.italic = Boolean(run.italic ?? run.fontStyle === "italic");
     if (run.underline !== undefined) style.underline = Boolean(run.underline);
     if (run.strikethrough !== undefined) style.strikethrough = Boolean(run.strikethrough);
@@ -195,6 +204,14 @@ function canvasStyleRuns(node, paragraphStyles) {
     if (fill) style.fills = [{ type: "SOLID", visible: true, opacity: 1, color: fill }];
     return Object.keys(style).length ? [{ start: run.from, length: run.to - run.from, style }] : [];
   });
+}
+
+function canvasFontWeight(value) {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value !== "string") return 400;
+  const numeric = Number(value);
+  if (Number.isFinite(numeric)) return numeric;
+  return value.toLowerCase() === "bold" ? 700 : 400;
 }
 
 function degreesToRadians(value) {
@@ -213,7 +230,9 @@ export function refreshOpenPencilEditor(
     panY: editor.state.panY,
     zoom: editor.state.zoom,
   };
-  const nextGraph = createOpenPencilGraph(document, assets, preparedDocument);
+  const nextGraph = createOpenPencilGraph(document, assets, preparedDocument, {
+    compactInstanceStorage: true,
+  });
   // Retained effect pictures are keyed by node ID, which survives a document
   // refresh. Graph replacement emits no per-node invalidations, so clear the
   // old pictures before the new graph can render those same IDs.
@@ -348,6 +367,12 @@ export function analyzeOpenPencilCompatibility(document, assets = new Map(), pre
   const componentIds = new Set();
   walkPenNodes(prepared.document.children, (node) => {
     if (node.reusable === true) componentIds.add(node.id);
+  });
+  // Native Canvas components are defined by reference, not by Pencil's legacy
+  // `reusable` authoring flag. Any local source node may be a component target;
+  // imported/legacy prepared components remain covered by the set above.
+  walkPenNodes(document.children, (node) => {
+    if (typeof node?.id === "string") componentIds.add(node.id);
   });
   walkPenNodes(document.children, (node) => {
     if (node.type !== "ref" || componentIds.has(node.ref)) return;
@@ -733,6 +758,9 @@ function walkPenNodes(nodes, visit) {
     visit(node);
     walkPenNodes(node.children, visit);
     for (const content of Object.values(node.slots ?? {})) walkPenNodes(content, visit);
+    for (const override of Object.values(node.descendants ?? {})) {
+      walkPenNodes(override?.children, visit);
+    }
   }
 }
 

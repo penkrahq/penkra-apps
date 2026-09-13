@@ -4,19 +4,23 @@ export function canonicalDescendantOverrides(document, instance, { strict = fals
   const component = nodes.get(instance.ref);
   if (!component) return { overrides: structuredClone(instance.descendants), errors: [] };
 
-  return canonicalDescendantOverridesForComponent(instance, component, { strict });
+  return canonicalDescendantOverridesForComponent(instance, component, { strict, components: nodes });
 }
 
-export function canonicalDescendantOverridesForComponent(instance, component, { strict = false } = {}) {
+export function canonicalDescendantOverridesForComponent(instance, component, { strict = false, components } = {}) {
   if (!plainObject(instance?.descendants)) return { overrides: {}, errors: [] };
 
+  components ??= collectNodes([component]);
   const paths = new Map();
-  collectPaths(component.children ?? [], [], paths);
+  collectPaths(component.children ?? [], [], paths, components, new Set([component.id]));
   const output = {};
   const errors = [];
   for (const [key, value] of Object.entries(instance.descendants)) {
-    const canonical = key.includes("/") ? key : paths.get(key);
-    if (!canonical || !pathExists(component, canonical)) {
+    const direct = resolveComponentDescendant(component, key, { components });
+    const canonical = direct
+      ? key
+      : canonicalizeLegacyPath(component, key, components) ?? paths.get(key);
+    if (!canonical || !resolveComponentDescendant(component, canonical, { components })) {
       errors.push(`${instance.id}.descendants.${key} does not identify a descendant of component ${component.id}. Descendant paths omit the component root ID.`);
       if (!strict) output[key] = structuredClone(value);
       continue;
@@ -30,6 +34,67 @@ export function canonicalDescendantOverridesForComponent(instance, component, { 
   return { overrides: output, errors };
 }
 
+function canonicalizeLegacyPath(component, path, components) {
+  const output = [];
+  let searchRoot = component;
+  for (const id of String(path ?? "").split("/").filter(Boolean)) {
+    const relative = uniqueLiteralPath(searchRoot.children ?? [], id);
+    if (!relative) return null;
+    output.push(...relative);
+    const selected = literalNodeAtPath(searchRoot.children ?? [], relative);
+    if (!selected) return null;
+    if (selected.type === "ref" && typeof selected.ref === "string" && !selected.ref.includes(":")) {
+      searchRoot = components.get(selected.ref);
+      if (!searchRoot) return null;
+    } else {
+      searchRoot = selected;
+    }
+  }
+  return output.join("/");
+}
+
+function uniqueLiteralPath(children, id) {
+  const matches = [];
+  const visit = (nodes, prefix) => {
+    for (const node of nodes ?? []) {
+      const path = [...prefix, node.id];
+      if (node.id === id) matches.push(path);
+      visit(node.children, path);
+    }
+  };
+  visit(children, []);
+  return matches.length === 1 ? matches[0] : null;
+}
+
+function literalNodeAtPath(children, path) {
+  let node = null;
+  for (const id of path) {
+    node = (node?.children ?? children).find((candidate) => candidate?.id === id);
+    if (!node) return null;
+  }
+  return node;
+}
+
+export function resolveComponentDescendant(component, path, { components } = {}) {
+  components ??= collectNodes([component]);
+  let children = component.children ?? [];
+  const visited = new Set([component.id]);
+  let node = null;
+  for (const id of String(path ?? "").split("/").filter(Boolean)) {
+    node = children.find((candidate) => candidate?.id === id);
+    if (!node) return null;
+    children = node.children ?? [];
+    if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
+      const target = components.get(node.ref);
+      if (target && !visited.has(target.id)) {
+        visited.add(target.id);
+        children = target.children ?? [];
+      }
+    }
+  }
+  return node;
+}
+
 function collectNodes(nodes = [], output = new Map()) {
   for (const node of nodes) {
     if (typeof node?.id === "string") output.set(node.id, node);
@@ -39,22 +104,18 @@ function collectNodes(nodes = [], output = new Map()) {
   return output;
 }
 
-function collectPaths(nodes, parentPath, output) {
+function collectPaths(nodes, parentPath, output, components, visited) {
   for (const node of nodes) {
     const path = [...parentPath, node.id];
-    output.set(node.id, path.join("/"));
-    collectPaths(node.children ?? [], path, output);
+    const canonical = path.join("/");
+    if (!output.has(node.id)) output.set(node.id, canonical);
+    else if (output.get(node.id) !== canonical) output.set(node.id, null);
+    collectPaths(node.children ?? [], path, output, components, visited);
+    if (node.type !== "ref" || typeof node.ref !== "string" || node.ref.includes(":")) continue;
+    const target = components.get(node.ref);
+    if (!target || visited.has(target.id)) continue;
+    collectPaths(target.children ?? [], path, output, components, new Set([...visited, target.id]));
   }
-}
-
-function pathExists(component, path) {
-  let children = component.children ?? [];
-  for (const id of path.split("/")) {
-    const node = children.find((candidate) => candidate?.id === id);
-    if (!node) return false;
-    children = node.children ?? [];
-  }
-  return true;
 }
 
 function plainObject(value) {

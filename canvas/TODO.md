@@ -8,7 +8,7 @@
 
 ## Penkra design migration
 
-- [ ] Translate source-design slots without retaining Pencil editor chrome or foreign metadata.
-- [ ] Preserve source IDs where globally unique and use one deterministic collision rule where expansion creates duplicates.
-- [ ] Resume and complete the screens in exact source order and geometry.
-- [ ] Compare every migrated screen visually against the designated `.pen` source.
+- [x] Translate source-design slots without retaining Pencil editor chrome or foreign metadata.
+- [x] Preserve source IDs where globally unique and use one deterministic collision rule where expansion creates duplicates.
+- [x] Resume and complete the screens in exact source order and geometry.
+- [x] Compare every migrated screen visually against the designated `.pen` source.

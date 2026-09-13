@@ -21,6 +21,17 @@ export function createDefaultSourceMetadata(): SourceMetadata {
   }
 }
 
+const sharedGeneratedSourceMetadata = createDefaultSourceMetadata()
+
+/** Read-only-by-convention metadata shared by generated component descendants. */
+export function getSharedGeneratedSourceMetadata(): SourceMetadata {
+  return sharedGeneratedSourceMetadata
+}
+
+export function isSharedGeneratedSourceMetadata(source: SourceMetadata): boolean {
+  return source === sharedGeneratedSourceMetadata
+}
+
 export function createDefaultNode(
   generateId: () => string,
   type: NodeType,
@@ -167,6 +178,53 @@ export function createDefaultNode(
     figmaDerivedTextGlyphs: null,
     ...overrides
   }
+}
+
+let compactNodePrototype: SceneNode | null = null
+
+/**
+ * Create a behaviorally complete scene node whose unchanged primitive defaults
+ * are shared through a prototype. Generated instance descendants can number in
+ * the tens of thousands; storing the same scalar defaults as own properties on
+ * every clone dominates their memory without adding independent state.
+ *
+ * Mutable values remain own properties, as do identity and type fields. A later
+ * assignment to an inherited primitive creates an own property normally, so
+ * editor mutations keep the same semantics as ordinary nodes.
+ */
+export function createCompactDefaultNode(
+  generateId: () => string,
+  type: NodeType,
+  overrides: Partial<SceneNode> = {}
+): SceneNode {
+  compactNodePrototype ??= createDefaultNode(() => '__compact_defaults__', 'FRAME')
+  const node = Object.assign(Object.create(compactNodePrototype), {
+    id: generateId(),
+    type,
+    name: type.charAt(0) + type.slice(1).toLowerCase(),
+    parentId: null,
+    childIds: []
+  }) as SceneNode
+  // Do not freeze this prototype: ECMAScript rejects assignment through an
+  // inherited non-writable data property instead of creating an own property.
+  // It is module-private, and mutable arrays/objects are never inherited.
+  for (const [key, value] of Object.entries(overrides) as [
+    keyof SceneNode,
+    SceneNode[keyof SceneNode]
+  ][]) {
+    const shareable = value === null || (typeof value !== 'object' && typeof value !== 'function')
+    if (!shareable || !Object.is(value, compactNodePrototype[key])) {
+      ;(node as Record<keyof SceneNode, SceneNode[keyof SceneNode]>)[key] = value
+    }
+  }
+  for (const [key, value] of Object.entries(compactNodePrototype) as [
+    keyof SceneNode,
+    SceneNode[keyof SceneNode]
+  ][]) {
+    if (value === null || typeof value !== 'object' || Object.hasOwn(node, key)) continue
+    ;(node as Record<keyof SceneNode, SceneNode[keyof SceneNode]>)[key] = structuredClone(value)
+  }
+  return node
 }
 
 export const CONTAINER_TYPES = new Set<NodeType>([

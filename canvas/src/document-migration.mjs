@@ -2,13 +2,17 @@ import { createHash } from "node:crypto";
 import { mkdir, unlink, writeFile } from "node:fs/promises";
 import { isAbsolute, join, resolve } from "node:path";
 import { validateCanvasDocument } from "./canvas-schema.mjs";
+import {
+  canonicalDescendantOverridesForComponent,
+  resolveComponentDescendant,
+} from "./component-descendants.mjs";
 import { createDocumentModel, encodeState, materialize, restoreDocumentModel } from "./document-model.mjs";
 import {
   migrateM1DelimitedVariables,
   migrateM2AssignModule,
   migrateM3DropReusable,
   migrateM4Descendants,
-  migrateM5DeleteEditorSlots,
+  migrateM5ComponentSlots,
   migrateM6UniformText,
   migrateM7AssignRoles,
   migrateM8AddFlows,
@@ -28,14 +32,14 @@ export function migrateCanvasDocument(source) {
   const steps = [
     ["M1", (value) => migrateM1DelimitedVariables(value)],
     ["M2", (value) => migrateM2AssignModule(value)],
-    ["M5", migrateM5DeleteEditorSlots],
+    ["MV", migrateLegacyComponentVariants],
+    ["M5", migrateM5ComponentSlots],
     ["M6", migrateM6UniformText],
     ["M10", (value) => migrateM10Scripts(value)],
     ["M11", (value) => migrateM11Notes(value)],
     ["M12", migrateM12Contexts],
     ["M13", migrateM13Prompts],
     ["M7", (value) => migrateM7AssignRoles(value)],
-    ["MV", migrateLegacyComponentVariants],
     ["M4", (value) => migrateM4Descendants(value)],
     ["M3", migrateM3DropReusable],
     ["M14", migrateM14ThemesToAxes],
@@ -55,6 +59,7 @@ export function migrateCanvasDocument(source) {
     notes.push(...(result.notes ?? []));
   }
   repairLegacyParagraphs(document, notes);
+  canonicalizeLegacyStrokes(document, notes);
   canonicalizeLegacyAnnotatedDimensions(document, notes);
   canonicalizeLegacyTextAlignment(document, notes);
   wrapLegacyScalarVariableReferences(document, notes);
@@ -125,29 +130,32 @@ function migrateLegacyComponentVariants(source) {
   const definitions = document.themes && typeof document.themes === "object" && !Array.isArray(document.themes)
     ? document.themes : {};
   const nodes = new Map();
-  const visit = (children) => {
+  const instances = [];
+  const visit = (children, depth = 0) => {
     for (const node of children ?? []) {
       if (typeof node?.id === "string") nodes.set(node.id, node);
-      visit(node?.children);
-      for (const content of Object.values(node?.slots ?? {})) visit(content);
+      if (node?.type === "ref") instances.push({ instance: node, depth });
+      visit(node?.children, depth + 1);
+      for (const content of Object.values(node?.slots ?? {})) visit(content, depth + 1);
+      for (const override of Object.values(node?.descendants ?? {})) {
+        if (override?.id && override?.type) visit([override], depth + 1);
+      }
     }
   };
   visit(document.children);
+  instances.sort((left, right) => right.depth - left.depth);
   let changes = 0;
   const notes = [];
-  for (const instance of nodes.values()) {
-    if (instance.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) continue;
+  for (const { instance } of instances) {
+    if (typeof instance.ref !== "string" || instance.ref.includes(":")) continue;
     const target = nodes.get(instance.ref);
-    if (!target || !instance.theme || typeof instance.theme !== "object" || Array.isArray(instance.theme)) continue;
-    for (const [axis, mode] of Object.entries(instance.theme)) {
+    if (!target) continue;
+    const instanceTheme = instance.theme && typeof instance.theme === "object" && !Array.isArray(instance.theme)
+      ? instance.theme
+      : {};
+    for (const [axis, mode] of Object.entries(instanceTheme)) {
       if (["theme", "mode"].includes(axis) || !Array.isArray(definitions[axis]) || !definitions[axis].includes(mode)) continue;
-      target.properties ??= {};
-      const declaration = { type: "enum", values: [...definitions[axis]], default: definitions[axis][0] };
-      if (target.properties[axis] !== undefined
-        && JSON.stringify(target.properties[axis]) !== JSON.stringify(declaration)) {
-        throw migrationError(`Legacy component ${target.id} has an incompatible property named ${axis}.`);
-      }
-      target.properties[axis] = declaration;
+      declareLegacyEnumProperty(target, axis, definitions, instance.id);
       instance.props ??= {};
       if (Object.hasOwn(instance.props, axis) && instance.props[axis] !== mode) {
         throw migrationError(`Legacy ref ${instance.id} selects conflicting ${axis} values.`);
@@ -155,29 +163,252 @@ function migrateLegacyComponentVariants(source) {
       instance.props[axis] = mode;
       delete instance.theme[axis];
       if (Object.keys(instance.theme).length === 0) delete instance.theme;
-      rewriteAxisConditionsAsProps(target, axis);
+      rewriteAxisConditionsThroughComponentRefs(
+        target, axis, axis, document.variables, nodes, definitions, instance.id,
+      );
       changes += 1;
     }
+    const canonical = canonicalDescendantOverridesForComponent(instance, target, {
+      strict: true,
+      components: nodes,
+    });
+    if (canonical.errors.length > 0) {
+      notes.push(`Dropped ${canonical.errors.length} stale descendant override path(s) from legacy ref \`${instance.id}\`; none identified an effective component descendant.`);
+      changes += canonical.errors.length;
+    }
+    if (instance.descendants !== undefined) instance.descendants = canonical.overrides;
+    for (const [path, override] of Object.entries(canonical.overrides)) {
+      const descendant = resolveComponentDescendant(target, path, { components: nodes });
+      if (descendant && ["id", "type", "ref", "descendants"].some((key) => Object.hasOwn(override, key))) {
+        canonical.overrides[path] = {
+          replace: { ...structuredClone(override), id: descendant.id },
+        };
+        changes += 1;
+        continue;
+      }
+      if (!override?.theme || typeof override.theme !== "object" || Array.isArray(override.theme)) continue;
+      for (const [axis, mode] of Object.entries(override.theme)) {
+        if (!Array.isArray(definitions[axis]) || !definitions[axis].includes(mode)) continue;
+        if (descendant?.type === "ref" && !["theme", "mode"].includes(axis)) {
+          const descendantTarget = nodes.get(descendant.ref);
+          if (!descendantTarget) continue;
+          declareLegacyEnumProperty(descendantTarget, axis, definitions, instance.id);
+          override.props ??= {};
+          if (Object.hasOwn(override.props, axis) && override.props[axis] !== mode) {
+            throw migrationError(`Legacy ref ${instance.id} descendant ${path} selects conflicting ${axis} values.`);
+          }
+          override.props[axis] = mode;
+          rewriteAxisConditionsThroughComponentRefs(
+            descendantTarget, axis, axis, document.variables, nodes, definitions, instance.id,
+          );
+        } else if (!["theme", "mode"].includes(axis)) {
+          const boundary = nearestComponentBoundary(target, path, nodes);
+          const propName = `${axis}__${descendant.id}`;
+          declareLegacyEnumProperty(
+            boundary.component,
+            propName,
+            { [propName]: definitions[axis] },
+            instance.id,
+            descendant.theme?.[axis] ?? definitions[axis][0],
+          );
+          rewriteAxisConditionsThroughComponentRefs(
+            descendant, axis, propName, document.variables, nodes,
+            { [propName]: definitions[axis] }, instance.id,
+          );
+          const receiver = boundary.instancePath
+            ? (canonical.overrides[boundary.instancePath] ??= {})
+            : instance;
+          receiver.props ??= {};
+          if (Object.hasOwn(receiver.props, propName) && receiver.props[propName] !== mode) {
+            throw migrationError(`Legacy ref ${instance.id} descendant ${path} selects conflicting ${axis} values.`);
+          }
+          receiver.props[propName] = mode;
+        } else {
+          override.modes ??= {};
+          override.modes[axis] = mode;
+        }
+        delete override.theme[axis];
+        changes += 1;
+      }
+      if (Object.keys(override.theme).length === 0) delete override.theme;
+    }
+    for (const [path, override] of Object.entries(canonical.overrides)) {
+      if (override && typeof override === "object" && !Array.isArray(override) && Object.keys(override).length === 0) {
+        delete canonical.overrides[path];
+      }
+    }
+    if (Object.keys(canonical.overrides).length === 0) delete instance.descendants;
   }
   if (changes) notes.push(`Converted ${changes} legacy component-variant selection(s) into canonical enum properties and instance props.`);
   return { document, changes, notes };
 }
 
-function rewriteAxisConditionsAsProps(value, axis) {
-  if (Array.isArray(value)) {
-    for (const entry of value) rewriteAxisConditionsAsProps(entry, axis);
-    return;
+function declareLegacyEnumProperty(target, axis, definitions, instanceId, defaultMode = definitions[axis][0]) {
+  target.properties ??= {};
+  const declaration = { type: "enum", values: [...definitions[axis]], default: defaultMode };
+  if (target.properties[axis] !== undefined
+    && JSON.stringify(target.properties[axis]) !== JSON.stringify(declaration)) {
+    throw migrationError(`Legacy component ${target.id} referenced by ${instanceId} has an incompatible property named ${axis}.`);
   }
-  if (!value || typeof value !== "object") return;
-  if (value.when && typeof value.when === "object" && !Array.isArray(value.when) && Object.hasOwn(value.when, axis)) {
-    value.when.props ??= {};
-    if (Object.hasOwn(value.when.props, axis) && value.when.props[axis] !== value.when[axis]) {
+  target.properties[axis] = declaration;
+}
+
+function rewriteAxisConditionsAsProps(value, axis, propName = axis, variables = {}, variableTrail = new Set()) {
+  if (typeof value === "string") {
+    const reference = /^\$\{([A-Za-z][\w-]*)\}$/u.exec(value)?.[1];
+    const definition = reference ? variables?.[reference] : null;
+    const cascade = Array.isArray(definition?.value) ? definition.value : null;
+    if (!cascade || !cascade.some((entry) => entry?.theme?.[axis] !== undefined || entry?.when?.[axis] !== undefined)
+      || variableTrail.has(reference)) return value;
+    const nextTrail = new Set([...variableTrail, reference]);
+    return cascade.map((entry) => ({
+      value: rewriteAxisConditionsAsProps(structuredClone(entry.value), axis, propName, variables, nextTrail),
+      ...rewriteLegacyVariantCondition(entry, axis, propName),
+    }));
+  }
+  if (Array.isArray(value)) {
+    for (let index = 0; index < value.length; index += 1) {
+      value[index] = rewriteAxisConditionsAsProps(value[index], axis, propName, variables, variableTrail);
+    }
+    return value;
+  }
+  if (!value || typeof value !== "object") return value;
+  const condition = value.when && typeof value.when === "object" && !Array.isArray(value.when)
+    ? value.when
+    : Object.hasOwn(value, "value") && value.theme && typeof value.theme === "object" && !Array.isArray(value.theme)
+      ? value.theme
+      : null;
+  if (condition && Object.hasOwn(condition, axis)) {
+    value.when = { ...condition, props: { ...(condition.props ?? {}) } };
+    delete value.theme;
+    if (Object.hasOwn(value.when.props, propName) && value.when.props[propName] !== value.when[axis]) {
       throw migrationError(`Legacy component cascade has conflicting ${axis} conditions.`);
     }
-    value.when.props[axis] = value.when[axis];
+    value.when.props[propName] = value.when[axis];
     delete value.when[axis];
+  } else if (condition?.props && propName !== axis && Object.hasOwn(condition.props, axis)) {
+    value.when = { ...condition, props: { ...condition.props } };
+    if (Object.hasOwn(value.when.props, propName) && value.when.props[propName] !== value.when.props[axis]) {
+      throw migrationError(`Legacy component cascade has conflicting ${axis} conditions.`);
+    }
+    value.when.props[propName] = value.when.props[axis];
+    delete value.when.props[axis];
   }
-  for (const child of Object.values(value)) rewriteAxisConditionsAsProps(child, axis);
+  for (const [key, child] of Object.entries(value)) {
+    if (["when", "theme"].includes(key)) continue;
+    value[key] = rewriteAxisConditionsAsProps(child, axis, propName, variables, variableTrail);
+  }
+  return value;
+}
+
+function rewriteAxisConditionsThroughComponentRefs(
+  value,
+  axis,
+  propName,
+  variables,
+  components,
+  definitions,
+  instanceId,
+  visited = new Set(),
+) {
+  const nested = [];
+  const collect = (candidate) => {
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return;
+    if (candidate.type === "ref" && typeof candidate.ref === "string" && !candidate.ref.includes(":")) {
+      const target = components.get(candidate.ref);
+      const explicitlySelected = Object.hasOwn(candidate.props ?? {}, propName);
+      if (target && !explicitlySelected
+        && componentSubtreeDependsOnLegacyAxis(target, axis, propName, variables, components)) {
+        nested.push({ instance: candidate, target });
+      }
+    }
+    for (const child of candidate.children ?? []) collect(child);
+    for (const children of Object.values(candidate.slots ?? {})) for (const child of children) collect(child);
+  };
+  collect(value);
+  rewriteAxisConditionsAsProps(value, axis, propName, variables);
+  for (const { instance, target } of nested) {
+    declareLegacyEnumProperty(target, propName, definitions, instanceId);
+    instance.bind ??= {};
+    const expected = `$props.${propName}`;
+    if (Object.hasOwn(instance.bind, propName) && instance.bind[propName] !== expected) {
+      throw migrationError(`Legacy ref ${instance.id} has an incompatible binding for component property ${propName}.`);
+    }
+    instance.bind[propName] = expected;
+    const key = `${target.id}:${axis}:${propName}`;
+    if (visited.has(key)) continue;
+    rewriteAxisConditionsThroughComponentRefs(
+      target, axis, propName, variables, components, definitions, instanceId, new Set([...visited, key]),
+    );
+  }
+}
+
+function componentSubtreeDependsOnLegacyAxis(component, axis, propName, variables, components, visited = new Set()) {
+  const key = `${component.id}:${axis}:${propName}`;
+  if (visited.has(key)) return false;
+  visited = new Set([...visited, key]);
+  if (Object.hasOwn(component.properties ?? {}, propName)) return true;
+  const depends = (value, variableTrail = new Set()) => {
+    if (typeof value === "string") {
+      const reference = /^\$\{([A-Za-z][\w-]*)\}$/u.exec(value)?.[1];
+      if (!reference || variableTrail.has(reference)) return false;
+      const definition = variables?.[reference];
+      const cascade = Array.isArray(definition?.value) ? definition.value : null;
+      return cascade ? depends(cascade, new Set([...variableTrail, reference])) : false;
+    }
+    if (Array.isArray(value)) return value.some((item) => depends(item, variableTrail));
+    if (!value || typeof value !== "object") return false;
+    if (value.theme?.[axis] !== undefined || value.when?.[axis] !== undefined
+      || value.when?.props?.[propName] !== undefined) return true;
+    return Object.entries(value).some(([name, child]) => !["children", "slots", "descendants"].includes(name)
+      && depends(child, variableTrail));
+  };
+  const visit = (node) => {
+    if (depends(node)) return true;
+    for (const child of node.children ?? []) {
+      if (child.type === "ref" && typeof child.ref === "string" && !child.ref.includes(":")) {
+        if (Object.hasOwn(child.props ?? {}, propName)) continue;
+        const target = components.get(child.ref);
+        if (target && componentSubtreeDependsOnLegacyAxis(target, axis, propName, variables, components, visited)) return true;
+      }
+      if (visit(child)) return true;
+    }
+    for (const children of Object.values(node.slots ?? {})) for (const child of children) if (visit(child)) return true;
+    return false;
+  };
+  return visit(component);
+}
+
+function rewriteLegacyVariantCondition(entry, axis, propName) {
+  const condition = entry?.when ?? entry?.theme;
+  if (!condition || typeof condition !== "object" || Array.isArray(condition)) return {};
+  const when = structuredClone(condition);
+  if (Object.hasOwn(when, axis)) {
+    when.props = { ...(when.props ?? {}), [propName]: when[axis] };
+    delete when[axis];
+  }
+  return Object.keys(when).length > 0 ? { when } : {};
+}
+
+function nearestComponentBoundary(component, path, components) {
+  let current = component;
+  let boundary = { component, instancePath: null };
+  const traversed = [];
+  for (const id of String(path).split("/").filter(Boolean)) {
+    const child = (current.children ?? []).find((candidate) => candidate?.id === id);
+    if (!child) break;
+    traversed.push(id);
+    if (child.type === "ref" && typeof child.ref === "string" && !child.ref.includes(":")) {
+      const target = components.get(child.ref);
+      if (target) {
+        boundary = { component: target, instancePath: traversed.join("/") };
+        current = target;
+        continue;
+      }
+    }
+    current = child;
+  }
+  return boundary;
 }
 
 function canonicalizeEmptyLegacyPaths(document, notes) {
@@ -321,8 +552,14 @@ function canonicalizeLegacyTextAlignment(document, notes) {
 function canonicalizeLegacyAnnotatedDimensions(document, notes) {
   const dimensionKeys = new Set(["width", "height", "minWidth", "maxWidth", "minHeight", "maxHeight"]);
   let changes = 0;
-  const visit = (nodes) => {
-    for (const node of nodes ?? []) {
+  const visit = (value) => {
+    if (Array.isArray(value)) {
+      for (const item of value) visit(item);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    {
+      const node = value;
       for (const key of dimensionKeys) {
         const value = node?.[key];
         if (typeof value !== "string") continue;
@@ -331,12 +568,40 @@ function canonicalizeLegacyAnnotatedDimensions(document, notes) {
         node[key] = match[1];
         changes += 1;
       }
-      visit(node?.children);
-      for (const content of Object.values(node?.slots ?? {})) visit(content);
     }
+    for (const child of Object.values(value)) visit(child);
   };
-  visit(document.children);
+  visit(document);
   if (changes) notes.push(`Canonicalized ${changes} legacy annotated sizing value(s) while preserving fill/fit layout intent.`);
+}
+
+function canonicalizeLegacyStrokes(document, notes) {
+  const aliases = ["strokeWidth", "strokeAlignment", "strokeLinecap", "strokeLinejoin", "strokeDashPattern"];
+  let changes = 0;
+  const visit = (value) => {
+    if (Array.isArray(value)) {
+      for (const item of value) visit(item);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    if (value.stroke !== undefined && aliases.some((key) => Object.hasOwn(value, key))) {
+      const stroke = value.stroke && typeof value.stroke === "object" && !Array.isArray(value.stroke)
+        && (Object.hasOwn(value.stroke, "fill") || Object.hasOwn(value.stroke, "fills"))
+        ? structuredClone(value.stroke)
+        : { fill: structuredClone(value.stroke) };
+      if (value.strokeWidth !== undefined) stroke.width = structuredClone(value.strokeWidth);
+      if (value.strokeAlignment !== undefined) stroke.align = ({ inner: "inside", outer: "outside" })[value.strokeAlignment] ?? value.strokeAlignment;
+      if (value.strokeLinecap !== undefined) stroke.cap = value.strokeLinecap;
+      if (value.strokeLinejoin !== undefined) stroke.join = value.strokeLinejoin;
+      if (value.strokeDashPattern !== undefined) stroke.dash = structuredClone(value.strokeDashPattern);
+      value.stroke = stroke;
+      for (const key of aliases) delete value[key];
+      changes += 1;
+    }
+    for (const child of Object.values(value)) visit(child);
+  };
+  visit(document);
+  if (changes) notes.push(`Canonicalized ${changes} legacy split stroke definition(s) as native Canvas stroke descriptors.`);
 }
 
 function repairLegacyParagraphs(document, notes) {

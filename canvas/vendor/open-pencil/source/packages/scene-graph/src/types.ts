@@ -535,6 +535,7 @@ export interface SceneNode {
   pencilAddress?: string
   pencilWidthOmitted?: boolean
   pencilHeightOmitted?: boolean
+  canvasProvenance?: Record<string, unknown>
 }
 
 export type ComponentPropertyType = 'VARIANT' | 'TEXT' | 'BOOLEAN' | 'INSTANCE_SWAP'

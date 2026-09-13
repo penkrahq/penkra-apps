@@ -33,7 +33,6 @@ export function migrateM3DropReusable(source) {
 export function migrateM4Descendants(source) {
   const document = structuredClone(source);
   const nodes = indexNodes(document.children);
-  const parents = indexParents(document.children);
   let changes = 0;
   const notes = [];
   const instances = [];
@@ -49,13 +48,13 @@ export function migrateM4Descendants(source) {
   for (const { instance } of instances) {
     if (instance.type !== "ref") continue;
     const target = nodes.get(instance.ref);
-    const nestedInRole = target ? hasRoleAncestor(instance.ref, nodes, parents) : false;
-    if (!isRecord(instance.descendants) && !nestedInRole) continue;
+    const structuralOverride = isRecord(instance.descendants)
+      && Object.values(instance.descendants).some((override) => isRecord(override)
+        && ["id", "type", "ref", "descendants"].some((key) => Object.hasOwn(override, key)));
+    if (!structuralOverride) continue;
     if (target) {
       replaceObject(instance, materializeLegacyInstance(instance, target, notes));
-      notes.push(nestedInRole
-        ? `Approximated ref \`${instance.id}\` as a materialized clone because its legacy target was nested inside an export frame.`
-        : `Approximated ref \`${instance.id}\` as a materialized clone so its descendant overrides remain visible.`);
+      notes.push(`Materialized legacy ref \`${instance.id}\` because it structurally replaces a component descendant; ordinary property overrides remain component instances.`);
     } else {
       const missing = instance.ref;
       const fallback = { ...structuredClone(instance), type: "group", children: [] };
@@ -66,24 +65,6 @@ export function migrateM4Descendants(source) {
     changes += 1;
   }
   return { document, changes, notes };
-}
-
-function indexParents(children, parentId = null, output = new Map()) {
-  for (const node of children ?? []) {
-    if (typeof node?.id === "string") output.set(node.id, parentId);
-    indexParents(node?.children, node?.id ?? parentId, output);
-    for (const content of Object.values(node?.slots ?? {})) indexParents(content, node?.id ?? parentId, output);
-  }
-  return output;
-}
-
-function hasRoleAncestor(nodeId, nodes, parents) {
-  let ancestor = parents.get(nodeId);
-  while (ancestor) {
-    if (nodes.get(ancestor)?.role) return true;
-    ancestor = parents.get(ancestor);
-  }
-  return false;
 }
 
 export function migrateM1DelimitedVariables(source) {
@@ -117,15 +98,72 @@ export function migrateM1DelimitedVariables(source) {
   return { document: visit(document), changes, notes: changes ? [`Approximated ${changes} legacy whole-value variable reference(s) with canonical interpolation delimiters.`] : [] };
 }
 
-export function migrateM5DeleteEditorSlots(source) {
+export function migrateM5ComponentSlots(source) {
   const document = structuredClone(source);
+  const nodes = indexNodes(document.children);
+  const componentSlots = new Map();
   let changes = 0;
-  walkNodes(document.children, (node) => {
-    if (!Object.hasOwn(node, "slot")) return;
-    delete node.slot;
-    changes += 1;
+  for (const component of nodes.values()) {
+    if (component.reusable !== true) continue;
+    const slots = [];
+    const collect = (node, path = []) => {
+      if (node !== component && node.reusable === true) return;
+      if (Object.hasOwn(node, "slot")) {
+        const name = `slot_${node === component ? "self" : node.id}`;
+        const target = node === component ? "." : path.join("/");
+        const declaration = {
+          type: "slot",
+          target,
+          ...(node.slot.length > 0 ? { preferredComponents: structuredClone(node.slot) } : {}),
+        };
+        component.properties ??= {};
+        if (component.properties[name] !== undefined
+          && JSON.stringify(component.properties[name]) !== JSON.stringify(declaration)) {
+          throw migrationError("M5", `Component ${component.id} already has an incompatible property named ${name}.`);
+        }
+        component.properties[name] = declaration;
+        slots.push({ name, target, targetId: node.id });
+        delete node.slot;
+        changes += 1;
+      }
+      for (const child of node.children ?? []) collect(child, [...path, child.id]);
+    };
+    collect(component);
+    if (slots.length > 0) componentSlots.set(component.id, slots);
+  }
+  walkNodes(document.children, (instance) => {
+    if (instance.type !== "ref") return;
+    const slots = componentSlots.get(instance.ref);
+    if (!slots || !isRecord(instance.descendants)) return;
+    for (const slot of slots) {
+      const candidates = new Set([slot.target, slot.targetId, ...(slot.target === "." ? [instance.ref] : [])]);
+      const path = Object.keys(instance.descendants).find((key) => candidates.has(key));
+      if (!path) continue;
+      const override = instance.descendants[path];
+      const replacement = isRecord(override?.replace)
+        ? override.replace
+        : isRecord(override) && override.type === "frame" ? override : null;
+      if (!replacement || replacement.type !== "frame") continue;
+      instance.slots ??= {};
+      instance.slots[slot.name] = structuredClone(replacement.children ?? []);
+      const properties = Object.fromEntries(Object.entries(replacement)
+        .filter(([key]) => !["id", "type", "children"].includes(key))
+        .map(([key, value]) => [key, structuredClone(value)]));
+      if (typeof properties.context === "string" && properties.description === undefined) {
+        properties.description = properties.context;
+      }
+      delete properties.context;
+      if (Object.keys(properties).length > 0) instance.descendants[path] = properties;
+      else delete instance.descendants[path];
+      if (Object.keys(instance.descendants).length === 0) delete instance.descendants;
+      changes += 1;
+    }
   });
-  return { document, changes, notes: changes ? [`Dropped ${changes} Pencil editor-chrome \`slot\` field(s).`] : [] };
+  return {
+    document,
+    changes,
+    notes: changes ? [`Migrated ${componentSlots.size} component slot declaration set(s) and their instance-owned content.`] : [],
+  };
 }
 
 export function migrateM6UniformText(source) {
@@ -330,6 +368,9 @@ function walkNodes(children, visitor) {
     visitor(node);
     walkNodes(node.children, visitor);
     for (const content of Object.values(node.slots ?? {})) walkNodes(content, visitor);
+    for (const override of Object.values(node.descendants ?? {})) {
+      if (isRecord(override?.replace)) walkNodes([override.replace], visitor);
+    }
   }
 }
 

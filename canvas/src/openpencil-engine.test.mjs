@@ -39,6 +39,19 @@ test("references inherit root paint from ordinary Canvas frames without a legacy
   assert.equal(instance.opacity, 0.5);
 });
 
+test("native Canvas component references do not produce compatibility warnings", () => {
+  const document = { children: [
+    { id: "instance", type: "ref", ref: "source" },
+    { id: "source", type: "frame", layout: "none", width: 300, height: 70, children: [] },
+  ] };
+  assert.deepEqual(analyzeOpenPencilCompatibility(document), []);
+
+  const missing = { children: [{ id: "instance", type: "ref", ref: "missing" }] };
+  assert.deepEqual(analyzeOpenPencilCompatibility(missing).map(({ nodeId, kind }) => ({ nodeId, kind })), [
+    { nodeId: "instance", kind: "component" },
+  ]);
+});
+
 test("solid fill and stroke paint opacity multiply color alpha", () => {
   const paint = { type: "color", color: "#33669980", opacity: 0.5 };
   const graph = createOpenPencilGraph({ children: [{ id: "paint", type: "rectangle", width: 100, height: 100,
@@ -155,6 +168,28 @@ test("canonical named paragraph styles reach CanvasKit runs and marks override t
   assert.equal(runs.at(-1).style.fontWeight, 500);
   assert.equal(runs.at(-1).style.fontSize, 20);
   assert.deepEqual(runs.at(-1).style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
+});
+
+test("canonical paragraph styles normalize CSS font-weight keywords without invalid glyph runs", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    module: "web",
+    axes: {}, variables: {}, imports: {}, flows: [],
+    paragraphStyles: {
+      normal: { fontFamily: "Inter", fontSize: 13, fontWeight: "normal", fill: "#FFFFFF" },
+      bold: { fontFamily: "Inter", fontSize: 13, fontWeight: "bold", fill: "#FFFFFF" },
+      numeric: { fontFamily: "Inter", fontSize: 13, fontWeight: "500", fill: "#FFFFFF" },
+    },
+    children: [
+      { id: "normal", type: "text", content: "Normal", paragraphs: [{ from: 0, to: 6, style: "normal" }], marks: [] },
+      { id: "bold", type: "text", content: "Bold", paragraphs: [{ from: 0, to: 4, style: "bold" }], marks: [] },
+      { id: "numeric", type: "text", content: "Medium", paragraphs: [{ from: 0, to: 6, style: "numeric" }], marks: [] },
+    ],
+  });
+
+  assert.equal(graph.getNode("normal").styleRuns[0].style.fontWeight, 400);
+  assert.equal(graph.getNode("bold").styleRuns[0].style.fontWeight, 700);
+  assert.equal(graph.getNode("numeric").styleRuns[0].style.fontWeight, 500);
 });
 
 test("Pencil image opacity and blend mode survive asset binding", () => {
@@ -367,6 +402,94 @@ test("deferring the fallback-font layout preserves the final graph geometry", ()
       },
     );
   }
+});
+
+test("scene graph instance population can be disabled for a compact editor projection", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      {
+        id: "component",
+        type: "frame",
+        width: 200,
+        height: 100,
+        children: [{ id: "component-child", type: "rectangle", width: 20, height: 20 }],
+      },
+      { id: "instance", type: "ref", ref: "component", width: 200, height: 100 },
+    ],
+  };
+
+  const populated = createOpenPencilGraph(source, new Map(), null, {
+    computeLayout: false,
+  });
+  const compact = createOpenPencilGraph(source, new Map(), null, {
+    computeLayout: false,
+    populateInstances: false,
+  });
+
+  assert.ok(populated.getNode("instance").childIds.length > 0);
+  assert.deepEqual(compact.getNode("instance").childIds, []);
+  assert.ok(compact.nodes.size < populated.nodes.size);
+});
+
+test("editor instance descendants structurally share unchanged primitive defaults", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      {
+        id: "component",
+        type: "frame",
+        width: 200,
+        height: 100,
+        children: [{ id: "component-child", type: "rectangle", width: 20, height: 20 }],
+      },
+      { id: "instance", type: "ref", ref: "component", width: 200, height: 100 },
+    ],
+  };
+  const editor = createOpenPencilEditor(source, { computeInitialLayout: false });
+  const instance = editor.graph.getNode("instance");
+  const child = editor.graph.getNode(instance.childIds[0]);
+
+  assert.equal(child.rotation, 0);
+  assert.equal(Object.hasOwn(child, "rotation"), false);
+  editor.graph.updateNode(child.id, { rotation: 15 });
+  assert.equal(child.rotation, 15);
+  assert.equal(Object.hasOwn(child, "rotation"), true);
+});
+
+test("a deferred reference renders slot replacement content with editable provenance", () => {
+  const source = {
+    version: "2.17",
+    children: [
+      {
+        id: "component", type: "frame", width: 200, height: 100,
+        properties: { body: { type: "slot", target: "holder" } },
+        children: [{ id: "holder", type: "frame", children: [
+          { id: "default", type: "text", content: "Default" },
+        ] }],
+      },
+      { id: "instance", type: "ref", ref: "component", slots: {
+        body: [{ id: "custom", type: "text", content: "Custom" }],
+      } },
+    ],
+  };
+  const deferred = resolveCanvasDocument(source, { shouldExpandRef: () => false }).document;
+  const prepared = prepareOpenPencilRenderDocument(deferred).document;
+  const graph = createOpenPencilGraph(deferred, new Map(), { document: prepared }, {
+    computeLayout: false,
+    compactInstanceStorage: true,
+  });
+
+  assert.equal(graph.getNode("instance/holder/default"), undefined);
+  assert.equal(graph.getNode("instance/holder/custom").text, "Custom");
+  assert.deepEqual(graph.getNode("instance/holder/custom").canvasProvenance.slot, {
+    instanceId: "instance",
+    name: "body",
+  });
+  assert.deepEqual(graph.getNode("instance/holder").canvasProvenance.slotTarget, {
+    instanceId: "instance",
+    name: "body",
+  });
 });
 
 test("auto-sized text keeps hug-content flex layouts compact", () => {

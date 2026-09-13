@@ -17,11 +17,19 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         : { body: encodeJson(options.body), contentType: "application/json" }),
     });
     let value;
-    try { value = response.body.byteLength > 0 ? decodeJson(response.body) : null; }
-    catch (cause) { throw new Error(`Invalid JSON response for /projects${path} (${response.body.byteLength} bytes): ${cause.message}`, { cause }); }
+    try {
+      value = response.body.byteLength > 0 ? decodeJson(response.body) : null;
+    } catch (cause) {
+      throw new Error(
+        `Invalid JSON response for /projects${path} (${response.body.byteLength} bytes): ${cause.message}`,
+        { cause },
+      );
+    }
     if (response.status < 200 || response.status >= 300) {
       const message = value?.message ?? "Canvas request failed";
-      const error = new Error(`${message} (${response.status}; ${options.method ?? "GET"} /projects${path}).`);
+      const error = new Error(
+        `${message} (${response.status}; ${options.method ?? "GET"} /projects${path}).`,
+      );
       error.code = value?.code ?? "CANVAS_REQUEST_FAILED";
       error.status = response.status;
       throw error;
@@ -31,7 +39,9 @@ export function createCanvasApi(runtime = globalThis.penkra) {
 
   const api = {
     listDocuments: (cursor) =>
-      request(`?limit=100&projectionFields=module${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
+      request(
+        `?limit=100&projectionFields=module${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`,
+      ),
     listTrash: (cursor) =>
       request(`/trash?limit=100${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`),
     createDocument: ({ source, initialUpdate, ...input }) =>
@@ -40,27 +50,28 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         projection: source,
         state: base64ToBytes(initialUpdate),
       }),
-    getDocumentHead: (id) =>
-      request(`/${encodeURIComponent(id)}?chunked=auto`),
+    getDocumentHead: (id) => request(`/${encodeURIComponent(id)}?chunked=auto`),
     getDocument: async (id) => {
       const encoded = encodeURIComponent(id);
       const project = await request(`/${encoded}?chunked=auto`);
-      const assets = await request(`/${encoded}/blobs`);
-      const snapshot = project.snapshot.chunked
-        ? await readChunkedSnapshot(request, encoded, project.snapshot)
-        : { ...project.snapshot, source: project.snapshot.projection };
-      return {
-        ...project,
-        snapshot,
-        assets: assets.items,
-      };
+      return readFetchedDocument(request, encoded, project);
     },
     getDocumentProjection: async (id) => {
       const encoded = encodeURIComponent(id);
       const project = await request(`/${encoded}?chunked=auto`);
-      if ((project.updates ?? []).length > 0) return null;
+      if ((project.updates ?? []).length > 0) {
+        return readFetchedDocument(request, encoded, project);
+      }
       const source = project.snapshot.chunked
-        ? decodeJson(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "projection", project.snapshot.projectionBytes))
+        ? decodeJson(
+            await readSnapshotContent(
+              request,
+              encoded,
+              project.snapshot.throughSequence,
+              "projection",
+              project.snapshot.projectionBytes,
+            ),
+          )
         : project.snapshot.projection;
       return { ...project, snapshot: { ...project.snapshot, source } };
     },
@@ -70,7 +81,15 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       // lastOpenedAt. Do not fall back when an older backend lacks state reads.
       const project = await request(`/${encoded}/state?chunked=auto`);
       const state = project.snapshot.chunked
-        ? bytesToBase64(await readSnapshotContent(request, encoded, project.snapshot.throughSequence, "state", project.snapshot.stateBytes))
+        ? bytesToBase64(
+            await readSnapshotContent(
+              request,
+              encoded,
+              project.snapshot.throughSequence,
+              "state",
+              project.snapshot.stateBytes,
+            ),
+          )
         : project.snapshot.state;
       return { snapshot: { state }, updates: project.updates ?? [] };
     },
@@ -80,10 +99,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
     },
     renameDocument: (id, title) =>
       request(`/${encodeURIComponent(id)}`, { method: "PATCH", body: { title } }),
-    deleteDocument: (id) =>
-      request(`/${encodeURIComponent(id)}`, { method: "DELETE" }),
-    restoreDocument: (id) =>
-      request(`/${encodeURIComponent(id)}/restore`, { method: "POST" }),
+    deleteDocument: (id) => request(`/${encodeURIComponent(id)}`, { method: "DELETE" }),
+    restoreDocument: (id) => request(`/${encodeURIComponent(id)}/restore`, { method: "POST" }),
     permanentlyDeleteDocument: (id) =>
       request(`/${encodeURIComponent(id)}/permanent`, { method: "DELETE" }),
     appendUpdate: (id, input) =>
@@ -95,10 +112,10 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       return encodeJson(snapshot).byteLength <= ACCOUNT_DATA_MAX_REQUEST_BYTES
         ? request(`/${encodeURIComponent(id)}/snapshots`, { method: "POST", body: snapshot })
         : uploadSnapshot(request, id, {
-          ...input,
-          projection: source,
-          state: base64ToBytes(state),
-        });
+            ...input,
+            projection: source,
+            state: base64ToBytes(state),
+          });
     },
     listGrants: (id) => request(`/${encodeURIComponent(id)}/grants`),
     grantAccess: (id, email) =>
@@ -107,10 +124,9 @@ export function createCanvasApi(runtime = globalThis.penkra) {
         body: { email },
       }),
     revokeGrant: (id, grantId) =>
-      request(
-        `/${encodeURIComponent(id)}/grants/${encodeURIComponent(grantId)}`,
-        { method: "DELETE" },
-      ),
+      request(`/${encodeURIComponent(id)}/grants/${encodeURIComponent(grantId)}`, {
+        method: "DELETE",
+      }),
     subscribe: (id, listener, options = {}) =>
       runtime.account.subscribe(`project:${id}`, listener, options),
     subscribeToDocuments: (listener, options) =>
@@ -127,11 +143,17 @@ export function createCanvasApi(runtime = globalThis.penkra) {
           mimeType: snapshot.mimeType,
         },
       });
-      if (!isReceiptObject(started)) throw uploadReceiptInvalid("Canvas asset upload returned an invalid start receipt.");
+      if (!isReceiptObject(started))
+        throw uploadReceiptInvalid("Canvas asset upload returned an invalid start receipt.");
       if (started.status === "ready") return uploadedAsset(started.blob, snapshot);
       const chunkSize = started.chunkSize;
-      if (!Number.isSafeInteger(chunkSize) || chunkSize <= 0) throw uploadReceiptInvalid("Canvas asset upload returned an invalid chunk size.");
-      for (let offset = 0, part = 1; offset < snapshot.bytes.byteLength; offset += chunkSize, part += 1) {
+      if (!Number.isSafeInteger(chunkSize) || chunkSize <= 0)
+        throw uploadReceiptInvalid("Canvas asset upload returned an invalid chunk size.");
+      for (
+        let offset = 0, part = 1;
+        offset < snapshot.bytes.byteLength;
+        offset += chunkSize, part += 1
+      ) {
         await request(`${root}/${encodeURIComponent(started.uploadId)}/parts`, {
           method: "POST",
           body: { part, bytes: bytesToBase64(snapshot.bytes.subarray(offset, offset + chunkSize)) },
@@ -140,7 +162,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       const completed = await request(`${root}/${encodeURIComponent(started.uploadId)}/complete`, {
         method: "POST",
       });
-      if (!isReceiptObject(completed)) throw uploadReceiptInvalid("Canvas asset upload returned an invalid completion receipt.");
+      if (!isReceiptObject(completed))
+        throw uploadReceiptInvalid("Canvas asset upload returned an invalid completion receipt.");
       return uploadedAsset(completed.blob, snapshot);
     },
     generateImage: (id, input) =>
@@ -156,7 +179,8 @@ export function createCanvasApi(runtime = globalThis.penkra) {
           `/${encodeURIComponent(id)}/blobs/${asset.sha256}?offset=${offset}`,
         );
         const bytes = base64ToBytes(result.bytes);
-        if (!bytes.byteLength && !result.complete) throw new Error(`Empty asset range for ${asset.path}.`);
+        if (!bytes.byteLength && !result.complete)
+          throw new Error(`Empty asset range for ${asset.path}.`);
         chunks.push(bytes);
         offset += bytes.byteLength;
         if (result.complete || offset >= asset.size) break;
@@ -173,18 +197,47 @@ export function createCanvasApi(runtime = globalThis.penkra) {
   return api;
 }
 
+async function readFetchedDocument(request, encoded, project) {
+  const [assets, snapshot] = await Promise.all([
+    request(`/${encoded}/blobs`),
+    project.snapshot.chunked
+      ? readChunkedSnapshot(request, encoded, project.snapshot)
+      : Promise.resolve({ ...project.snapshot, source: project.snapshot.projection }),
+  ]);
+  return {
+    ...project,
+    snapshot,
+    assets: assets.items,
+  };
+}
+
 function snapshotUploadAsset(asset) {
-  if (!asset || typeof asset !== "object" || Array.isArray(asset)
-    || typeof asset.path !== "string" || !asset.path
-    || typeof asset.sha256 !== "string" || !asset.sha256
-    || (asset.mimeType !== undefined && typeof asset.mimeType !== "string")
-    || !(asset.bytes instanceof Uint8Array)) throw uploadReceiptInvalid("Canvas asset upload metadata is invalid.");
-  return { path: asset.path, sha256: asset.sha256, mimeType: asset.mimeType, bytes: new Uint8Array(asset.bytes) };
+  if (
+    !asset ||
+    typeof asset !== "object" ||
+    Array.isArray(asset) ||
+    typeof asset.path !== "string" ||
+    !asset.path ||
+    typeof asset.sha256 !== "string" ||
+    !asset.sha256 ||
+    (asset.mimeType !== undefined && typeof asset.mimeType !== "string") ||
+    !(asset.bytes instanceof Uint8Array)
+  )
+    throw uploadReceiptInvalid("Canvas asset upload metadata is invalid.");
+  return {
+    path: asset.path,
+    sha256: asset.sha256,
+    mimeType: asset.mimeType,
+    bytes: new Uint8Array(asset.bytes),
+  };
 }
 
 function uploadedAsset(blob, snapshot) {
-  if (!isReceiptObject(blob)
-    || blob.sha256 !== snapshot.sha256 || blob.size !== snapshot.bytes.byteLength) {
+  if (
+    !isReceiptObject(blob) ||
+    blob.sha256 !== snapshot.sha256 ||
+    blob.size !== snapshot.bytes.byteLength
+  ) {
     throw uploadReceiptInvalid("Canvas asset upload returned invalid blob metadata.");
   }
   // The Account blob projection identifies content, while the Pencil-relative
@@ -194,13 +247,31 @@ function uploadedAsset(blob, snapshot) {
   return { ...blob, path: snapshot.path };
 }
 
-function isReceiptObject(value) { return Boolean(value) && typeof value === "object" && !Array.isArray(value); }
-function uploadReceiptInvalid(message) { const error = new Error(message); error.code = "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID"; throw error; }
+function isReceiptObject(value) {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+function uploadReceiptInvalid(message) {
+  const error = new Error(message);
+  error.code = "CANVAS_ASSET_UPLOAD_RECEIPT_INVALID";
+  throw error;
+}
 
 async function readChunkedSnapshot(request, encodedProjectId, snapshot) {
   const [projectionBytes, stateBytes] = await Promise.all([
-    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "projection", snapshot.projectionBytes),
-    readSnapshotContent(request, encodedProjectId, snapshot.throughSequence, "state", snapshot.stateBytes),
+    readSnapshotContent(
+      request,
+      encodedProjectId,
+      snapshot.throughSequence,
+      "projection",
+      snapshot.projectionBytes,
+    ),
+    readSnapshotContent(
+      request,
+      encodedProjectId,
+      snapshot.throughSequence,
+      "state",
+      snapshot.stateBytes,
+    ),
   ]);
   const projection = decodeJson(projectionBytes);
   return {
@@ -227,8 +298,15 @@ async function uploadSnapshot(request, projectId, input) {
   });
   const partsRoot = `/snapshot-uploads/${encodeURIComponent(started.uploadId)}`;
   try {
-    for (const [kind, bytes] of [["projection", projection], ["state", state]]) {
-      for (let offset = 0, part = 1; offset < bytes.byteLength; offset += started.chunkSize, part += 1) {
+    for (const [kind, bytes] of [
+      ["projection", projection],
+      ["state", state],
+    ]) {
+      for (
+        let offset = 0, part = 1;
+        offset < bytes.byteLength;
+        offset += started.chunkSize, part += 1
+      ) {
         await request(`${partsRoot}/parts`, {
           method: "POST",
           body: {
@@ -269,24 +347,30 @@ async function readSnapshotContent(request, encodedProjectId, throughSequence, k
       const remaining = Math.ceil((totalBytes - offset) / rangeSize);
       const tail = new Array(remaining);
       let next = 0;
-      await Promise.all(Array.from({ length: Math.min(4, remaining) }, async () => {
-        for (;;) {
-          const index = next++;
-          if (index >= remaining) break;
-          const position = offset + index * rangeSize;
-          const length = Math.min(rangeSize, totalBytes - position);
-          const part = await request(`/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${position}&length=${length}`);
-          const content = base64ToBytes(part.bytes);
-          if (content.byteLength !== length) throw new Error(`Incomplete Canvas ${kind} range at ${position}.`);
-          tail[index] = content;
-        }
-      }));
+      await Promise.all(
+        Array.from({ length: Math.min(4, remaining) }, async () => {
+          for (;;) {
+            const index = next++;
+            if (index >= remaining) break;
+            const position = offset + index * rangeSize;
+            const length = Math.min(rangeSize, totalBytes - position);
+            const part = await request(
+              `/${encodedProjectId}/snapshots/${throughSequence}/content?kind=${kind}&offset=${position}&length=${length}`,
+            );
+            const content = base64ToBytes(part.bytes);
+            if (content.byteLength !== length)
+              throw new Error(`Incomplete Canvas ${kind} range at ${position}.`);
+            tail[index] = content;
+          }
+        }),
+      );
       chunks.push(...tail);
       offset = totalBytes;
       break;
     }
   }
-  if (Number.isSafeInteger(totalBytes) && offset !== totalBytes) throw new Error(`Canvas ${kind} length does not match snapshot metadata.`);
+  if (Number.isSafeInteger(totalBytes) && offset !== totalBytes)
+    throw new Error(`Canvas ${kind} length does not match snapshot metadata.`);
   const output = new Uint8Array(offset);
   let cursor = 0;
   for (const chunk of chunks) {
@@ -298,7 +382,5 @@ async function readSnapshotContent(request, encodedProjectId, throughSequence, k
 
 async function sha256(bytes) {
   const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return [...new Uint8Array(digest)]
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }

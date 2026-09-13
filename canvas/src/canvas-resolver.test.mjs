@@ -58,6 +58,64 @@ test("component expansion preserves instance placement, sizing, opacity and imag
   assert.deepEqual([component.x, component.y, component.opacity], [1000, 2000, 1]);
 });
 
+test("editor projections may defer reference expansion by authored root without changing source", () => {
+  const source = {
+    module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "component", type: "frame", layout: "none", width: 100, height: 40, fill: "#123456", children: [
+        { id: "label", type: "text", content: "Default", marks: [], paragraphs: [{ from: 0, to: 7 }] },
+      ] },
+      { id: "overview-root", type: "frame", layout: "none", children: [
+        { id: "deferred", type: "ref", ref: "component", x: 10, y: 20, props: {} },
+      ] },
+      { id: "detail-root", type: "frame", layout: "none", children: [
+        { id: "expanded", type: "ref", ref: "component", x: 30, y: 40, props: {} },
+      ] },
+    ],
+  };
+  const result = resolveCanvasDocument(source, {
+    shouldExpandRef: (_instance, { rootId }) => rootId === "detail-root",
+  }).document;
+  assert.equal(result.children[1].children[0].type, "ref");
+  assert.equal(result.children[1].children[0].id, "deferred");
+  assert.equal(result.children[2].children[0].type, "frame");
+  assert.equal(result.children[2].children[0].id, "expanded");
+  assert.equal(source.children[1].children[0].type, "ref");
+});
+
+test("deferred references compile slots into canonical descendant overrides", () => {
+  const source = {
+    module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      {
+        id: "component", type: "frame", properties: {
+          body: { type: "slot", target: "holder" },
+        },
+        children: [{ id: "holder", type: "frame", children: [
+          { id: "default", type: "text", content: "Default" },
+        ] }],
+      },
+      { id: "instance", type: "ref", ref: "component", slots: {
+        body: [{ id: "custom", type: "text", content: "Custom" }],
+      } },
+    ],
+  };
+  const result = resolveCanvasDocument(source, { shouldExpandRef: () => false }).document;
+  const instance = result.children[1];
+
+  assert.equal(instance.slots, undefined);
+  assert.equal(instance.descendants.holder.children[0].id, "instance/holder/custom");
+  assert.deepEqual(instance.descendants.holder.children[0].provenance.slot, {
+    instanceId: "instance",
+    name: "body",
+  });
+  assert.deepEqual(instance.descendants.holder.provenance.slotTarget, {
+    instanceId: "instance",
+    name: "body",
+  });
+  assert.equal(source.children[1].slots.body[0].id, "custom");
+});
+
 test("component expansion applies local and imported descendant overrides before export", () => {
   const component = {
     id: "component", type: "frame", fill: "#eeeeee", children: [
@@ -108,6 +166,131 @@ test("component expansion applies local and imported descendant overrides before
   });
 });
 
+test("nested instance props resolve before deeper descendant overrides without materializing components", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [
+      {
+        id: "badge", type: "frame", properties: {
+          tone: { type: "enum", values: ["neutral", "danger"], default: "neutral" },
+        },
+        fill: [
+          { value: "#eeeeee" },
+          { value: "#ff0000", when: { props: { tone: "danger" } } },
+        ],
+        children: [{ id: "badge-label", type: "text", content: "Ready", paragraphs: [{ from: 0, to: 5 }] }],
+      },
+      {
+        id: "card", type: "frame", children: [
+          { id: "header", type: "ref", ref: "badge" },
+        ],
+      },
+      {
+        id: "instance", type: "ref", ref: "card", descendants: {
+          header: { props: { tone: "danger" } },
+          "header/badge-label": { content: "Blocked" },
+        },
+      },
+    ],
+  };
+
+  const resolved = resolveCanvasDocument(source).document.children[2];
+  assert.equal(resolved.children[0].fill, "#ff0000");
+  assert.equal(resolved.children[0].children[0].content, "Blocked");
+  assert.equal(source.children[1].children[0].type, "ref");
+});
+
+test("typed props forward across multiple nested component boundaries", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [
+      {
+        id: "identity", type: "frame", properties: {
+          harness: { type: "enum", values: ["claude", "codex"], default: "claude" },
+        }, children: [
+          { id: "claude", type: "text", content: "Claude", visible: { op: "eq", arg: { prop: "harness" }, value: "claude" } },
+          { id: "codex", type: "text", content: "Codex", visible: { op: "eq", arg: { prop: "harness" }, value: "codex" } },
+        ],
+      },
+      { id: "row", type: "frame", properties: {
+        harness: { type: "enum", values: ["claude", "codex"], default: "claude" },
+      }, children: [{ id: "identity-use", type: "ref", ref: "identity", bind: { harness: "$props.harness" } }] },
+      { id: "section", type: "frame", properties: {
+        harness: { type: "enum", values: ["claude", "codex"], default: "claude" },
+      }, children: [{ id: "row-use", type: "ref", ref: "row", bind: { harness: "$props.harness" } }] },
+      { id: "sidebar", type: "frame", properties: {
+        harness: { type: "enum", values: ["claude", "codex"], default: "claude" },
+      }, children: [{ id: "section-use", type: "ref", ref: "section", bind: { harness: "$props.harness" } }] },
+      { id: "instance", type: "ref", ref: "sidebar", props: { harness: "codex" } },
+    ],
+  };
+
+  const identity = resolveCanvasDocument(source).document.children[4].children[0].children[0].children[0];
+  assert.equal(identity.children.find((child) => child.id.endsWith("/claude")).enabled, false);
+  assert.equal(identity.children.find((child) => child.id.endsWith("/codex")).enabled, true);
+});
+
+test("a reference can expose a typed component interface that forwards to its target", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [
+      { id: "base", type: "frame", properties: {
+        state: { type: "enum", values: ["off", "on"], default: "off" },
+      }, fill: [
+        { value: "#777777" },
+        { value: "#00ff00", when: { props: { state: "on" } } },
+      ], children: [] },
+      { id: "alias", type: "ref", ref: "base", properties: {
+        state: { type: "enum", values: ["off", "on"], default: "off" },
+      }, bind: { state: "$props.state" } },
+      { id: "use", type: "ref", ref: "alias", props: { state: "on" } },
+    ],
+  };
+
+  const resolved = resolveCanvasDocument(source).document;
+  assert.equal(resolved.children[1].fill, "#777777");
+  assert.equal(resolved.children[2].fill, "#00ff00");
+});
+
+test("an explicit descendant prop override wins over an inherited component binding", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [
+      { id: "menu", type: "frame", properties: {
+        state: { type: "enum", values: ["closed", "open"], default: "closed" },
+      }, enabled: [
+        { value: false },
+        { value: true, when: { props: { state: "open" } } },
+      ], children: [] },
+      { id: "composer", type: "frame", properties: {
+        state: { type: "enum", values: ["closed", "open"], default: "closed" },
+      }, children: [{ id: "menu-use", type: "ref", ref: "menu", bind: { state: "$props.state" } }] },
+      { id: "use", type: "ref", ref: "composer", props: { state: "closed" }, descendants: {
+        "menu-use": { props: { state: "open" } },
+      } },
+    ],
+  };
+
+  const menu = resolveCanvasDocument(source).document.children[2].children[0];
+  assert.equal(menu.enabled, true);
+});
+
+test("typed instance swaps preserve the target path identity and resolve replacement components", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {}, children: [
+      { id: "assistant", type: "frame", fill: "#eeeeee", children: [] },
+      { id: "user", type: "frame", fill: "#222222", children: [] },
+      { id: "transcript", type: "frame", children: [
+        { id: "row", type: "ref", ref: "assistant" },
+      ] },
+      { id: "instance", type: "ref", ref: "transcript", descendants: {
+        row: { replace: { id: "ignored-replacement-id", type: "ref", ref: "user" } },
+      } },
+    ],
+  };
+
+  const resolved = resolveCanvasDocument(source).document.children[3];
+  assert.equal(resolved.children[0].id, "instance/row");
+  assert.equal(resolved.children[0].fill, "#222222");
+  assert.equal(source.children[2].children[0].ref, "assistant");
+});
+
 test("component slots inherit defaults, replace them with consumer nodes, and clear explicitly", () => {
   const component = {
     id: "card",
@@ -139,6 +322,34 @@ test("component slots inherit defaults, replace them with consumer nodes, and cl
   assert.equal(resolved.children[2].children[0].children[0].content, "Consumer");
   assert.deepEqual(resolved.children[3].children[0].children, []);
   assert.equal(component.children[0].children[0].id, "default-copy");
+});
+
+test("a component root can be the native slot insertion surface", () => {
+  const source = {
+    axes: {}, variables: {}, paragraphStyles: {},
+    children: [
+      {
+        id: "overlay",
+        type: "frame",
+        properties: { content: { type: "slot", target: "." } },
+        children: [{ id: "default", type: "rectangle", width: 10, height: 10 }],
+      },
+      {
+        id: "use",
+        type: "ref",
+        ref: "overlay",
+        slots: { content: [{ id: "custom", type: "rectangle", width: 20, height: 20 }] },
+      },
+    ],
+  };
+
+  const resolved = resolveCanvasDocument(source).document.children[1];
+  assert.equal(resolved.children.length, 1);
+  assert.equal(resolved.children[0].id, "use/custom");
+  assert.deepEqual(resolved.provenance.slotTarget, {
+    instanceId: "use",
+    name: "content",
+  });
 });
 
 test("imported component slots resolve consumer-owned refs and variables in consumer scope", () => {
@@ -265,6 +476,26 @@ test("node modes override the selected mode for their subtree", () => {
     { id: "route", type: "frame", role: "route", modes: { theme: "dark" }, fill: "${ink}", children: [] },
   ] };
   assert.equal(resolveCanvasDocument(source).document.children[0].fill, "#000");
+});
+
+test("component prop cascades resolve inside compound layout values", () => {
+  const source = {
+    module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "switch", type: "frame", properties: {
+        state: { type: "enum", values: ["off", "on"], default: "off" },
+      }, padding: [
+        2,
+        [{ value: 18, when: { props: { state: "off" } } }, { value: 2, when: { props: { state: "on" } } }],
+        2,
+        [{ value: 2, when: { props: { state: "off" } } }, { value: 18, when: { props: { state: "on" } } }],
+      ], children: [] },
+      { id: "enabled", type: "ref", ref: "switch", props: { state: "on" } },
+    ],
+  };
+  const resolved = resolveCanvasDocument(source).document;
+  assert.deepEqual(resolved.children[0].padding, [2, 18, 2, 2]);
+  assert.deepEqual(resolved.children[1].padding, [2, 2, 2, 18]);
 });
 
 test("typed flow source paths remap to expanded instance ids", () => {

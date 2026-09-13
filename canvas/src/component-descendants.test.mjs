@@ -52,13 +52,18 @@ test("bare descendant IDs canonicalize to source-relative paths and override non
 test("invalid paths and unsupported descendant properties fail with a stable pre-commit code", () => {
   for (const descendants of [
     { missing: { fill: "#000000" } },
-    { "tab/underline": { opacity: 0.5 } },
+    { "tab/underline": { ref: "tabs" } },
     { "tab/underline": { fontWeight: 600 } },
   ]) {
     assert.throws(() => assertValidDescendantOverrides(documentWith(descendants)), {
       code: "CANVAS_DESCENDANT_OVERRIDE_INVALID",
     });
   }
+});
+
+test("ordinary native Canvas paint and layout properties remain available to component overrides", () => {
+  const source = documentWith({ tab: { opacity: 0.5, padding: 8, stroke: "#333333" } });
+  assert.doesNotThrow(() => assertValidDescendantOverrides(source));
 });
 
 test("qualified component descendant overrides validate against retained import content", () => {
@@ -75,6 +80,62 @@ test("qualified component descendant overrides validate against retained import 
     () => assertValidDescendantOverrides(source, { imports: { ui: imported } }),
     { code: "CANVAS_DESCENDANT_OVERRIDE_INVALID" },
   );
+});
+
+test("nested component descendants use one canonical path through instance ownership", () => {
+  const source = documentWith(undefined);
+  source.children.unshift({
+    id: "badge", type: "frame", properties: {
+      tone: { type: "enum", values: ["neutral", "danger"], default: "neutral" },
+    },
+    children: [{
+      id: "badge-label", type: "text", content: "Ready", paragraphs: [{ from: 0, to: 5 }],
+      bind: { fill: "$props.tone" },
+    }],
+  });
+  source.children[1].children[0].children.unshift({ id: "status", type: "ref", ref: "badge" });
+  source.children[2].descendants = {
+    "tab/status": { props: { tone: "danger" } },
+    "tab/status/badge-label": { content: "Blocked" },
+  };
+
+  assert.doesNotThrow(() => assertValidDescendantOverrides(source));
+  const prepared = prepareOpenPencilRenderDocument(source);
+  assert.deepEqual(Object.keys(prepared.document.children[2].descendants), ["tab/status", "tab/status/badge-label"]);
+});
+
+test("legacy nested paths anchor their first component descendant without skipping canonical structure", () => {
+  const source = documentWith(undefined);
+  source.children.unshift({
+    id: "badge", type: "frame", children: [
+      { id: "badge-label", type: "text", content: "Ready", paragraphs: [{ from: 0, to: 5 }] },
+    ],
+  });
+  source.children[1].children[0].children.unshift({ id: "status", type: "ref", ref: "badge" });
+  source.children[2].descendants = { "status/badge-label": { content: "Blocked" } };
+
+  const prepared = prepareOpenPencilRenderDocument(source);
+  assert.deepEqual(Object.keys(prepared.document.children[2].descendants), ["tab/status/badge-label"]);
+});
+
+test("legacy component-chain paths expand omitted layout ancestors at every instance boundary", () => {
+  const source = documentWith(undefined);
+  source.children.unshift({
+    id: "badge", type: "frame", children: [{
+      id: "badge-layout", type: "frame", children: [
+        { id: "badge-label", type: "text", content: "Ready", paragraphs: [{ from: 0, to: 5 }] },
+      ],
+    }],
+  });
+  source.children[1].children[0].children.unshift({
+    id: "status-layout", type: "frame", children: [{ id: "status", type: "ref", ref: "badge" }],
+  });
+  source.children[2].descendants = { "status/badge-label": { content: "Blocked" } };
+
+  const prepared = prepareOpenPencilRenderDocument(source);
+  assert.deepEqual(Object.keys(prepared.document.children[2].descendants), [
+    "tab/status-layout/status/badge-layout/badge-label",
+  ]);
 });
 
 test("legacy text alignment aliases do not prevent descendant validation", () => {

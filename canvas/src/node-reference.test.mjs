@@ -180,6 +180,29 @@ describe("Canvas canonical node identity", () => {
     assert.equal(target.isInstanceDescendant, true);
     assert.deepEqual(target.slotTarget, { instanceId: "use", name: "content" });
   });
+
+  it("keeps an instance-swap target path stable while exposing the replacement as effective data", () => {
+    const swapDocument = {
+      version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+      children: [
+        { id: "assistant", type: "frame", fill: "#eeeeee", children: [] },
+        { id: "user", type: "frame", fill: "#222222", children: [] },
+        { id: "transcript", type: "frame", children: [{ id: "row", type: "ref", ref: "assistant" }] },
+        { id: "use", type: "ref", ref: "transcript", descendants: {
+          row: { replace: { id: "row", type: "ref", ref: "user" } },
+        } },
+      ],
+    };
+    const resolved = resolveCanvasDocument(swapDocument).document;
+    const prepared = prepareOpenPencilRenderDocument(resolved);
+    const graph = createOpenPencilGraph(swapDocument, new Map(), prepared);
+    const selection = resolveCanvasNodeSelection({ document: swapDocument, graph, selectedId: "use/row" });
+
+    assert.equal(selection.referenceId, "use/row");
+    assert.equal(selection.sourceNode.ref, "assistant");
+    assert.equal(selection.effectiveNode.id, "row");
+    assert.equal(selection.effectiveNode.ref, "user");
+  });
 });
 
 describe("copyTextToClipboard", () => {

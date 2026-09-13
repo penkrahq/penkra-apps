@@ -7,7 +7,7 @@ import type {
   VectorNetwork
 } from '@open-pencil/scene-graph'
 import { copyEffects, copyFills, copyStrokes } from '@open-pencil/scene-graph/copy'
-import { populateInstanceChildren } from '@open-pencil/scene-graph/instances'
+import { populateInstanceChildren, type NodeCloneMode } from '@open-pencil/scene-graph/instances'
 import { parseSVGPath } from '@open-pencil/scene-graph/parse-path'
 
 import {
@@ -543,7 +543,7 @@ function findCloneByComponentPath(
   path: string
 ): SceneNode | undefined {
   const parts = path.split('/').filter(Boolean)
-  if (parts.length === 0) return undefined
+  if (parts.length === 0) return graph.getNode(instanceId)
   let parentId = instanceId
   let match: SceneNode | undefined
   for (const componentId of parts) {
@@ -623,6 +623,9 @@ function applyOverrideProps(
     target.height = parseSize(overrideData.height, target.height, ctx).value
   if (overrideData.rotation !== undefined) target.rotation = overrideData.rotation
   if (overrideData.name !== undefined) target.name = overrideData.name
+  if (overrideData.provenance !== undefined) {
+    target.canvasProvenance = structuredClone(overrideData.provenance)
+  }
   if (overrideData.__canvasIcon) {
     applyCanvasIconDefinition(
       target,
@@ -678,11 +681,11 @@ function applyIntrinsicOverrideSizing(
   }
 }
 
-function populateInstances(graph: SceneGraph): void {
+function populateInstances(graph: SceneGraph, mode: NodeCloneMode = 'deep'): void {
   for (const node of graph.getAllNodes()) {
     if (node.type === 'INSTANCE' && node.componentId && node.childIds.length === 0) {
       const component = graph.getNode(node.componentId)
-      if (component) populateInstanceChildren(graph, node.id, node.componentId)
+      if (component) populateInstanceChildren(graph, node.id, node.componentId, mode)
     }
   }
 }
@@ -799,7 +802,15 @@ function fixTextWidths(graph: SceneGraph): void {
   }
 }
 
-export function createCanvasSceneGraph(doc: PenDocument): SceneGraph {
+export interface CreateCanvasSceneGraphOptions {
+  populateInstances?: boolean
+  instanceCloneMode?: NodeCloneMode
+}
+
+export function createCanvasSceneGraph(
+  doc: PenDocument,
+  options: CreateCanvasSceneGraphOptions = {}
+): SceneGraph {
   const graph = new SceneGraph()
 
   for (const page of graph.getPages(true)) {
@@ -825,9 +836,9 @@ export function createCanvasSceneGraph(doc: PenDocument): SceneGraph {
   }
 
   applyAllRefProps(doc.children, graph, componentIds, penSources, ctx)
-  populateInstances(graph)
+  if (options.populateInstances !== false) populateInstances(graph, options.instanceCloneMode)
   walkAndApplyOverrides(doc.children, graph, ctx, componentIds, penSources)
-  populateInstances(graph)
+  if (options.populateInstances !== false) populateInstances(graph, options.instanceCloneMode)
   resolveThemeVariables(doc.children, graph, ctx)
   fixInstanceWidths(graph)
   fixTextWidths(graph)

@@ -494,7 +494,7 @@ test("a durable execute receipt does not wait for periodic snapshot compaction",
   await snapshotResponse;
 });
 
-test("consecutive operations reuse retained Yjs state only at the exact authorized head", async () => {
+test("the next operation materializes an appended update before snapshot compaction", async () => {
   const handlers = new Map();
   const source = {
     version: "2.17",
@@ -509,7 +509,8 @@ test("consecutive operations reuse retained Yjs state only at the exact authoriz
   const model = createDocumentModel(source);
   let snapshot = { throughSequence: 7, state: encodeState(model), projection: source };
   model.doc.destroy();
-  let nextSequence = 17;
+  let nextSequence = 8;
+  const updates = [];
   let projectReads = 0;
   globalThis.penkra = {
     account: {
@@ -522,12 +523,15 @@ test("consecutive operations reuse retained Yjs state only at the exact authoriz
             access: "owner",
             ownerAccountId: "account-1",
             snapshot,
-            updates: [],
+            updates,
           });
         }
         if (request.path === "/projects/document-1/blobs") return response(200, { items: [] });
         if (request.path === "/projects/document-1/updates") {
-          return response(200, { sequence: nextSequence++ });
+          const body = decodeJson(request.body);
+          const sequence = nextSequence++;
+          updates.push({ sequence, update: body.update });
+          return response(200, { sequence });
         }
         if (request.path === "/projects/document-1/snapshots") {
           const body = decodeJson(request.body);
@@ -553,11 +557,12 @@ test("consecutive operations reuse retained Yjs state only at the exact authoriz
   const readsAfterFirst = projectReads;
   const second = await execute({
     documentId: "document-1",
-    code: 'Insert("#root", { id: "second", type: "rectangle", width: 1, height: 1 });',
+    code: 'return Get("#first")[0]?.node.type ?? null;',
   });
 
-  assert.equal(first.sequence, 17);
-  assert.equal(second.sequence, 18);
+  assert.equal(first.sequence, 8);
+  assert.equal(second.sequence, 8);
+  assert.equal(second.result, "rectangle");
   assert.equal(projectReads - readsAfterFirst, 1);
 });
 

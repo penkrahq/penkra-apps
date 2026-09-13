@@ -1,21 +1,39 @@
 import { interpolateRichText } from "./rich-text.mjs";
 import { resolveVariableReferences } from "./variable-references.mjs";
-import { canonicalDescendantOverridesForComponent } from "./component-descendants.mjs";
+import {
+  canonicalDescendantOverridesForComponent,
+  resolveComponentDescendant,
+} from "./component-descendants.mjs";
 import { normalizeCanvasDocumentAliases } from "./canvas-normalization.mjs";
 
 export function resolveCanvasDocument(document, options = {}) {
   document = normalizeCanvasDocumentAliases(document);
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
   const variableValues = resolveVariables(document.variables ?? {}, modes, options.bindings ?? {}, options.imports ?? {});
-  const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, { modes, props: {} }), variableValues)]));
+  const rootContext = { modes, props: {} };
+  const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, rootContext), variableValues, rootContext)]));
   const localNodes = indexNodes(document.children);
   const imports = options.imports ?? {};
   const consequences = [];
   const lowered = [];
   const resolving = [];
   const styleRegistry = { styles: paragraphStyles, nextId: 0 };
-  const baseContext = { owner: document, rootOwner: document, styleRegistry, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving, normalizedOwners: new WeakMap() };
-  const children = document.children.map((node) => resolveNode(node, baseContext)).filter(Boolean);
+  const baseContext = {
+    owner: document,
+    rootOwner: document,
+    styleRegistry,
+    props: {},
+    modes,
+    variableValues,
+    localNodes,
+    imports,
+    consequences,
+    lowered,
+    resolving,
+    normalizedOwners: new WeakMap(),
+    shouldExpandRef: options.shouldExpandRef ?? (() => true),
+  };
+  const children = document.children.map((node) => resolveNode(node, { ...baseContext, rootId: node.id })).filter(Boolean);
   const flows = (document.flows ?? []).map(remapResolvedFlowSource);
   return { document: { ...document, paragraphStyles, children, flows }, modes, consequences, lowered };
 }
@@ -46,13 +64,36 @@ export function resolveCascade(value, context) {
 }
 
 function resolveNode(source, context) {
-  if (source.type === "ref") return resolveRef(source, context);
-  if (source.modes) {
+  const path = context.componentPath?.join("/");
+  const scopedOverride = path ? context.descendantOverrides?.[path] : null;
+  if (plainObject(scopedOverride?.replace) && !context.consumedReplacementPaths?.has(path)) {
+    source = { ...structuredClone(scopedOverride.replace), id: source.id };
+    context = {
+      ...context,
+      consumedReplacementPaths: new Set([...(context.consumedReplacementPaths ?? []), path]),
+    };
+  }
+  const authoredModes = {
+    ...(source.modes ?? {}),
+    ...(plainObject(scopedOverride?.modes) ? scopedOverride.modes : {}),
+  };
+  if (Object.keys(authoredModes).length > 0) {
     const axes = context.owner.axes ?? {};
     const inherited = Object.fromEntries(Object.entries(context.modes).filter(([name]) => Object.hasOwn(axes, name)));
-    const modes = { ...context.modes, ...selectModes(axes, { ...inherited, ...source.modes }) };
+    const modes = { ...context.modes, ...selectModes(axes, { ...inherited, ...authoredModes }) };
     const bindings = Object.fromEntries(Object.entries(context.variableValues).filter(([name]) => !Object.hasOwn(context.owner.variables ?? {}, name)));
     context = { ...context, modes, scopedModes: true, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings, context.imports) };
+  }
+  if (source.type === "ref") {
+    if (source.properties) {
+      context = context.componentRoot
+        ? { ...context, componentRoot: false }
+        : { ...context, props: resolveProps(source.properties, {}), componentRoot: false };
+    } else if (context.componentRoot) context = { ...context, componentRoot: false };
+    if (!context.shouldExpandRef(source, { rootId: context.rootId, componentPath: context.componentPath ?? [] })) {
+      return resolveDeferredRef(source, context);
+    }
+    return resolveRef(source, context);
   }
   if (source.properties) {
     context = context.componentRoot
@@ -63,10 +104,10 @@ function resolveNode(source, context) {
   for (const [key, raw] of Object.entries(source)) {
     if (["children", "properties", "bind", "varies"].includes(key)) continue;
     const value = resolveCascade(raw, context);
-    output[key] = source.type === "text" && key === "content" ? value : resolveValue(value, context.variableValues);
+    output[key] = source.type === "text" && key === "content" ? value : resolveValue(value, context.variableValues, context);
   }
   for (const [key, binding] of Object.entries(source.bind ?? {}))
-    output[key] = resolveValue(resolveBinding(binding, context.props), context.variableValues);
+    output[key] = resolveValue(resolveBinding(binding, context.props), context.variableValues, context);
   if (source.visible && typeof source.visible === "object" && source.visible.op)
     output.enabled = evaluateCondition(source.visible, context);
   if (output.type === "text") {
@@ -100,9 +141,113 @@ function resolveNode(source, context) {
       if (output[key] !== undefined) output[key] = namespaceAssetReferences(output[key], context.assetPrefix);
     }
   }
-  output.children = (source.children ?? []).map((child) => resolveNode(child, context)).filter(Boolean);
+  output.children = (source.children ?? []).map((child) => resolveNode(child, context.componentPath
+    ? { ...context, componentPath: [...context.componentPath, child.id] }
+    : context)).filter(Boolean);
   if (source.children === undefined) delete output.children;
   return output;
+}
+
+function resolveDeferredRef(source, context) {
+  const output = {};
+  for (const [key, raw] of Object.entries(source)) {
+    const value = resolveCascade(raw, context);
+    output[key] = resolveValue(value, context.variableValues, context);
+  }
+  if (context.assetPrefix) {
+    for (const key of ["fill", "stroke", "effect"]) {
+      if (output[key] !== undefined) output[key] = namespaceAssetReferences(output[key], context.assetPrefix);
+    }
+  }
+  const qualified = String(source.ref ?? "").split(":");
+  let owner = context.owner;
+  let components = context.localNodes;
+  if (qualified.length > 1) {
+    const alias = qualified.shift();
+    const imported = context.imports[alias];
+    if (!imported) throw new Error(`Import ${alias} is missing or unreadable.`);
+    owner = normalizedImportedOwner(imported, context);
+    components = indexNodes(owner.children);
+  }
+  const targetId = qualified.join(":");
+  const target = components.get(targetId);
+  if (!target) throw new Error(`Ref ${source.id} target ${source.ref} was not found.`);
+  const canonical = canonicalDescendantOverridesForComponent(source, target, {
+    strict: true,
+    components,
+  });
+  if (canonical.errors.length) {
+    const error = new Error(canonical.errors.join("\n"));
+    error.code = "CANVAS_DESCENDANT_OVERRIDE_INVALID";
+    throw error;
+  }
+  const descendants = structuredClone(canonical.overrides);
+  compileDeferredSlots({
+    source,
+    target,
+    descendants,
+    context,
+    components,
+  });
+  if (Object.keys(descendants).length > 0) output.descendants = descendants;
+  delete output.slots;
+  return output;
+}
+
+function compileDeferredSlots({ source, target, descendants, context, components }) {
+  const suppliedSlots = source.slots ?? {};
+  if (!plainObject(suppliedSlots)) throw new Error(`Component instance slots must be an object.`);
+  const declarations = target.properties ?? {};
+  for (const [name, declaration] of Object.entries(declarations)) {
+    if (declaration?.type !== "slot") continue;
+    const targetNode = declaration.target === "."
+      ? target
+      : resolveComponentDescendant(target, declaration.target, { components });
+    if (!targetNode || targetNode.type !== "frame") {
+      throw new Error(`Component slot ${name} target ${declaration.target} is not the component root or a frame descendant.`);
+    }
+    const path = declaration.target;
+    const prior = descendants[path] ?? {};
+    descendants[path] = {
+      ...prior,
+      provenance: {
+        ...(prior.provenance ?? targetNode.provenance ?? {}),
+        slotTarget: {
+          instanceId: source.id,
+          name,
+          ...(declaration.preferredComponents
+            ? { preferredComponents: structuredClone(declaration.preferredComponents) }
+            : {}),
+        },
+      },
+    };
+  }
+  for (const [name, children] of Object.entries(suppliedSlots)) {
+    const declaration = declarations[name];
+    if (declaration?.type !== "slot") throw new Error(`Component ${target.id} has no slot named ${name}.`);
+    if (!Array.isArray(children)) throw new Error(`Component slot ${name} must be an array of Canvas nodes.`);
+    const path = declaration.target;
+    const parentPrefix = path === "." ? source.id : `${source.id}/${path}`;
+    const resolvedChildren = children.map((child) => resolveNode(child, {
+      ...context,
+      componentRoot: false,
+    })).filter(Boolean).map((child) => prefixDeferredSlotContent(child, parentPrefix, source.id, name));
+    descendants[path] = { ...(descendants[path] ?? {}), children: resolvedChildren };
+  }
+}
+
+function prefixDeferredSlotContent(node, parentPrefix, instanceId, name) {
+  const reference = node.provenance?.reference ?? node.provenance?.from ?? node.id;
+  node.id = `${parentPrefix}/${node.id}`;
+  node.provenance = {
+    ...(node.provenance ?? {}),
+    reference,
+    slot: { instanceId, name },
+  };
+  node.children = (node.children ?? []).map((child) => (
+    prefixDeferredSlotContent(child, node.id, instanceId, name)
+  ));
+  return node;
 }
 
 function resolveParagraphStyle(name, context) {
@@ -125,7 +270,7 @@ function resolveParagraphStyle(name, context) {
     variableValues = resolveVariables(owner.variables ?? {}, modes, {}, imported.imports ?? {});
   }
   if (!Object.hasOwn(owner.paragraphStyles ?? {}, id)) throw new Error(`Paragraph style ${name} was not found in its owning document.`);
-  return resolveValue(resolveCascade(owner.paragraphStyles[id], { ...context, modes }), variableValues);
+  return resolveValue(resolveCascade(owner.paragraphStyles[id], { ...context, modes }), variableValues, { ...context, modes });
 }
 
 function namespaceAssetReferences(value, prefix) {
@@ -166,8 +311,38 @@ function resolveRef(instance, context) {
   if (!target) throw new Error(`Ref ${instance.id} target ${instance.ref} was not found.`);
   const cycleKey = `${owner === context.owner ? "local" : instance.ref}:${target.id}`;
   if (context.resolving.includes(cycleKey)) throw new Error(`Ref cycle: ${[...context.resolving, cycleKey].join(" -> ")}.`);
-  const props = resolveProps(target.properties ?? {}, instance.props ?? {});
-  const targetContext = { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] };
+  const ownDescendants = canonicalDescendantOverridesForComponent(instance, target, { strict: true, components: localNodes });
+  if (ownDescendants.errors.length) {
+    const error = new Error(ownDescendants.errors.join("\n"));
+    error.code = "CANVAS_DESCENDANT_OVERRIDE_INVALID";
+    throw error;
+  }
+  const componentPath = context.componentPath ?? [];
+  const prefix = componentPath.join("/");
+  const prefixedOwnDescendants = Object.fromEntries(Object.entries(ownDescendants.overrides).map(([path, override]) => [
+    [prefix, path].filter(Boolean).join("/"),
+    override,
+  ]));
+  const descendantOverrides = { ...prefixedOwnDescendants, ...(context.descendantOverrides ?? {}) };
+  const instanceOverride = prefix ? descendantOverrides[prefix] : null;
+  const suppliedProps = { ...(instance.props ?? {}) };
+  for (const [name, binding] of Object.entries(instance.bind ?? {})) {
+    if (!Object.hasOwn(target.properties ?? {}, name)) continue;
+    suppliedProps[name] = resolveBinding(binding, context.props, `ref ${instance.id} property ${name}`);
+  }
+  Object.assign(suppliedProps, plainObject(instanceOverride?.props) ? instanceOverride.props : {});
+  const props = resolveProps(target.properties ?? {}, suppliedProps);
+  const targetContext = {
+    ...context,
+    owner,
+    localNodes,
+    variableValues,
+    props,
+    componentRoot: true,
+    componentPath,
+    descendantOverrides,
+    resolving: [...context.resolving, cycleKey],
+  };
   const resolved = resolveNode(target, targetContext);
   applyResolvedSlots(
     resolved,
@@ -176,27 +351,22 @@ function resolveRef(instance, context) {
     { ...instanceContext, componentRoot: false, resolving: targetContext.resolving },
     instance.id,
   );
-  const descendantOverrides = canonicalDescendantOverridesForComponent(instance, target, { strict: true });
-  if (descendantOverrides.errors.length) {
-    const error = new Error(descendantOverrides.errors.join("\n"));
-    error.code = "CANVAS_DESCENDANT_OVERRIDE_INVALID";
-    throw error;
-  }
   applyResolvedDescendantOverrides(
     resolved,
     target,
-    descendantOverrides.overrides,
+    relativeDescendantOverrides(descendantOverrides, componentPath),
     { ...instanceContext, props, componentRoot: false, resolving: targetContext.resolving },
+    localNodes,
   );
   context.lowered.push({ node: instance.id, from: instance.ref, why: "Reference expanded into target-native nodes." });
   const output = prefixResolvedNode(resolved, instance.id, target.id, props);
   // A component definition's canvas position is not the instance position.
   // Keep instance geometry/compositing and the author's one-way export override
   // when replacing the reference with its resolved visual subtree.
-  output.x = resolveValue(resolveCascade(instance.x ?? 0, instanceContext), instanceContext.variableValues);
-  output.y = resolveValue(resolveCascade(instance.y ?? 0, instanceContext), instanceContext.variableValues);
+  output.x = resolveValue(resolveCascade(instance.x ?? 0, instanceContext), instanceContext.variableValues, instanceContext);
+  output.y = resolveValue(resolveCascade(instance.y ?? 0, instanceContext), instanceContext.variableValues, instanceContext);
   for (const key of ["name", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "layoutPosition", "gridColumn", "gridRow"]) {
-    if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues);
+    if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues, instanceContext);
   }
   return output;
 }
@@ -206,17 +376,28 @@ function applyResolvedSlots(resolvedRoot, sourceRoot, suppliedSlots, context, in
     throw new Error(`Component instance slots must be an object.`);
   }
   const declarations = sourceRoot.properties ?? {};
+  for (const [name, declaration] of Object.entries(declarations)) {
+    if (declaration?.type !== "slot") continue;
+    const resolvedTarget = nodeAtRelativePath(resolvedRoot, declaration.target);
+    if (!resolvedTarget) throw new Error(`Component slot ${name} target ${declaration.target} is unavailable after resolution.`);
+    resolvedTarget.provenance = {
+      ...(resolvedTarget.provenance ?? {}),
+      slotTarget: {
+        instanceId,
+        name,
+        ...(declaration.preferredComponents
+          ? { preferredComponents: structuredClone(declaration.preferredComponents) }
+          : {}),
+      },
+    };
+  }
   for (const [name, children] of Object.entries(suppliedSlots)) {
     const declaration = declarations[name];
     if (declaration?.type !== "slot") throw new Error(`Component ${sourceRoot.id} has no slot named ${name}.`);
     if (!Array.isArray(children)) throw new Error(`Component slot ${name} must be an array of Canvas nodes.`);
     const sourceTarget = nodeAtRelativePath(sourceRoot, declaration.target);
     const resolvedTarget = nodeAtRelativePath(resolvedRoot, declaration.target);
-    if (!sourceTarget || !resolvedTarget || sourceTarget.type !== "frame") throw new Error(`Component slot ${name} target ${declaration.target} is not a frame descendant.`);
-    resolvedTarget.provenance = {
-      ...(resolvedTarget.provenance ?? {}),
-      slotTarget: { instanceId, name },
-    };
+    if (!sourceTarget || !resolvedTarget || sourceTarget.type !== "frame") throw new Error(`Component slot ${name} target ${declaration.target} is not the component root or a frame descendant.`);
     resolvedTarget.children = children.map((child) => {
       const resolved = resolveNode(child, context);
       if (resolved) markResolvedSlotContent(resolved, instanceId, name);
@@ -236,6 +417,7 @@ function markResolvedSlotContent(node, instanceId, name) {
 }
 
 function nodeAtRelativePath(root, path) {
+  if (path === ".") return root;
   let node = root;
   for (const id of String(path ?? "").split("/").filter(Boolean)) {
     node = (node.children ?? []).find((candidate) => candidate.id === id);
@@ -255,26 +437,38 @@ function normalizedImportedOwner(imported, context) {
   return normalized;
 }
 
-function applyResolvedDescendantOverrides(resolvedRoot, sourceRoot, overrides, context) {
+function applyResolvedDescendantOverrides(resolvedRoot, sourceRoot, overrides, context, components) {
   for (const [path, override] of Object.entries(overrides)) {
     const ids = path.split("/");
     let resolved = resolvedRoot;
-    let source = sourceRoot;
     for (const id of ids) {
-      resolved = (resolved.children ?? []).find((candidate) => candidate.id === id);
-      source = (source.children ?? []).find((candidate) => candidate.id === id);
-      if (!resolved || !source) break;
+      resolved = (resolved.children ?? []).find((candidate) => (
+        candidate.id === id || candidate.provenance?.from === id
+      ));
+      if (!resolved) break;
     }
+    const source = resolveComponentDescendant(sourceRoot, path, { components });
     if (!resolved || !source) continue;
     for (const [property, raw] of Object.entries(override)) {
+      if (["props", "modes", "replace"].includes(property)) continue;
       if (property === "children") {
         resolved.children = raw.map((child) => resolveNode(child, context)).filter(Boolean);
         continue;
       }
-      const value = resolveValue(resolveCascade(raw, context), context.variableValues);
+      const value = resolveValue(resolveCascade(raw, context), context.variableValues, context);
       resolved[property] = source.type === "text" && property === "content" ? String(value ?? "") : value;
     }
   }
+}
+
+function relativeDescendantOverrides(overrides, componentPath) {
+  const prefix = componentPath.join("/");
+  const output = {};
+  for (const [path, override] of Object.entries(overrides)) {
+    if (!prefix) output[path] = override;
+    else if (path.startsWith(`${prefix}/`)) output[path.slice(prefix.length + 1)] = override;
+  }
+  return output;
 }
 
 function resolveProps(declarations, supplied) {
@@ -292,6 +486,10 @@ function resolveProps(declarations, supplied) {
   }
   for (const name of Object.keys(supplied)) if (!Object.hasOwn(declarations, name)) throw new Error(`Unknown component property ${name}.`);
   return result;
+}
+
+function plainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
 function prefixResolvedNode(node, instanceId, sourceId, props) {
@@ -356,10 +554,10 @@ function compatible(value, declaration) {
   return false;
 }
 
-function resolveBinding(binding, props) {
+function resolveBinding(binding, props, destination = "component property") {
   if (typeof binding !== "string" || !binding.startsWith("$props.")) throw new Error(`Invalid component binding ${binding}.`);
   const name = binding.slice(7);
-  if (!Object.hasOwn(props, name)) throw new Error(`Component binding ${binding} is unavailable.`);
+  if (!Object.hasOwn(props, name)) throw new Error(`Component binding ${binding} is unavailable for ${destination}.`);
   return structuredClone(props[name]);
 }
 
@@ -396,11 +594,23 @@ function resolveVariables(variables, modes, bindings, imports = {}, owners = new
   return output;
 }
 
-function resolveValue(value, variables) {
-  return resolveVariableReferences(value, (name) => {
+function resolveValue(value, variables, context) {
+  const cascaded = context ? resolveNestedCascades(value, context) : value;
+  return resolveVariableReferences(cascaded, (name) => {
     if (!Object.hasOwn(variables, name)) throw new Error(`Variable ${name} was not found.`);
     return variables[name];
   });
+}
+
+function resolveNestedCascades(value, context) {
+  const selected = resolveCascade(value, context);
+  if (selected !== value) return resolveNestedCascades(selected, context);
+  if (Array.isArray(value)) return value.map((item) => resolveNestedCascades(item, context));
+  if (!plainObject(value)) return value;
+  return Object.fromEntries(Object.entries(value).map(([key, child]) => [
+    key,
+    key === "when" ? structuredClone(child) : resolveNestedCascades(child, context),
+  ]));
 }
 
 function matchesWhen(when, context) {

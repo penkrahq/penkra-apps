@@ -1,9 +1,9 @@
 import { createCanvasApi } from "./canvas-api.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
-import { createDocumentModuleLabels } from "./document-module-labels.mjs";
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
-import { IndexeddbPersistence } from "y-indexeddb";
+import { IndexeddbPersistence, storeState } from "y-indexeddb";
+import { canvasUpdateOutboxName, createCanvasUpdateOutbox } from "./canvas-update-outbox.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
 import {
   analyzeOpenPencilCompatibility,
@@ -35,10 +35,7 @@ import {
 } from "./node-reference.mjs";
 import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
 import { beginSelectedTextEditing } from "./text-editing.mjs";
-import {
-  ACCESS_REMOVED_HEADING,
-  ACCESS_REMOVED_MESSAGE,
-} from "./access-removed.mjs";
+import { ACCESS_REMOVED_HEADING, ACCESS_REMOVED_MESSAGE } from "./access-removed.mjs";
 import {
   collaboratorRemovalConfirmation,
   documentPermanentDeleteConfirmation,
@@ -71,14 +68,12 @@ import {
   reconcileDocumentPayload,
   restoreDocumentModel,
 } from "./document-model.mjs";
-import { SNAPSHOT_UPDATE_INTERVAL } from "./snapshot-policy.mjs";
 
 const runtime = globalThis.penkra;
 const root = document.querySelector("#app");
 if (!runtime || !root) throw new Error("Canvas requires the Penkra App runtime.");
 
 const api = createCanvasApi(runtime);
-const documentModuleLabels = createDocumentModuleLabels((id) => api.getDocumentState(id));
 const documentCollectionLifecycle = createDocumentCollectionLifecycle({
   subscribe: (listener) => api.subscribeToDocuments(listener),
 });
@@ -91,6 +86,7 @@ const state = {
   documents: [],
   trashedDocuments: [],
   loading: true,
+  loadingMessage: "Loading Canvas…",
   error: null,
   document: null,
   assets: new Map(),
@@ -116,13 +112,14 @@ const state = {
   documentUnsubscribe: null,
   updateListener: null,
   lastSequence: 0,
-  updatesSinceSnapshot: 0,
   flushing: false,
   reconciling: null,
   pendingUpdates: [],
   localUpdateSequences: new Map(),
   incrementalEngineUpdate: false,
   persistence: null,
+  updateOutbox: null,
+  outboxWritePromise: Promise.resolve(),
   undo: null,
   fieldDrafts: new Map(),
   fieldErrors: new Map(),
@@ -215,6 +212,7 @@ async function showLibrary() {
   closeDocument();
   state.route = "library";
   state.loading = true;
+  state.loadingMessage = "Loading Canvas…";
   state.error = null;
   render();
   await documentCollectionLifecycle.start({
@@ -224,20 +222,11 @@ async function showLibrary() {
       const nextDocuments = documents.map((document) => ({
         ...document,
         module: document.projection?.module ?? null,
-        moduleLoaded: Object.hasOwn(document.projection ?? {}, "module"),
       }));
       state.documents = nextDocuments;
       state.loading = false;
       state.error = null;
       render();
-      const legacyDocuments = nextDocuments.filter((document) => !document.moduleLoaded);
-      if (legacyDocuments.length > 0) void documentModuleLabels.load(legacyDocuments, (id, module) => {
-        if (state.route !== "library" || state.documents !== nextDocuments) return;
-        const document = nextDocuments.find((candidate) => candidate.id === id);
-        if (document) { document.module = module; document.moduleLoaded = true; }
-        const label = root.querySelector(`[data-document-module="${CSS.escape(id)}"]`);
-        if (label) label.textContent = module ?? "Unavailable";
-      });
     },
     onError: handleDocumentCollectionError,
   });
@@ -247,6 +236,7 @@ async function showTrash() {
   closeDocument();
   state.route = "trash";
   state.loading = true;
+  state.loadingMessage = "Loading Trash…";
   state.error = null;
   state.contextMenu = null;
   render();
@@ -325,22 +315,23 @@ async function openDocument(documentId) {
   state.documentOpenStartedAt = performance.now();
   state.route = "editor";
   state.loading = true;
+  state.loadingMessage = "Fetching document…";
   state.error = null;
   render();
   try {
     const [payload] = await Promise.all([
       performanceMonitor.measureAsync(
         "document.fetch",
-        async () => await api.getDocumentProjection(documentId) ?? api.getDocument(documentId),
+        async () => (await api.getDocumentProjection(documentId)) ?? api.getDocument(documentId),
         { documentId },
       ),
-      performanceMonitor.measureAsync(
-        "engine.canvaskit-ready",
-        () => prepareOpenPencilEngine(),
-        { documentId },
-      ),
+      performanceMonitor.measureAsync("engine.canvaskit-ready", () => prepareOpenPencilEngine(), {
+        documentId,
+      }),
     ]);
-    const assetDescriptors = payload.assets ?? await api.listAssets(documentId);
+    state.loadingMessage = "Loading assets…";
+    render();
+    const assetDescriptors = payload.assets ?? (await api.listAssets(documentId));
     const { assets } = await performanceMonitor.measureAsync(
       "document.assets",
       () => hydrateDocumentAssets(api, documentId, assetDescriptors),
@@ -350,15 +341,18 @@ async function openDocument(documentId) {
         assetBytes: assetDescriptors.reduce((total, asset) => total + Number(asset.size ?? 0), 0),
       },
     );
+    state.loadingMessage = "Restoring document…";
+    render();
     state.document = payload;
     state.accessRemoved = false;
     state.model = performanceMonitor.measure(
       "document.restore-model",
-      () => restoreDocumentModel(payload, {
-        onPerformance: (name, duration, details) => {
-          performanceMonitor.record(name, duration, { documentId, ...details });
-        },
-      }),
+      () =>
+        restoreDocumentModel(payload, {
+          onPerformance: (name, duration, details) => {
+            performanceMonitor.record(name, duration, { documentId, ...details });
+          },
+        }),
       {
         documentId,
         updates: payload.updates?.length ?? 0,
@@ -368,24 +362,23 @@ async function openDocument(documentId) {
     );
     state.assets = new Map(assets);
     invalidateDocumentProjection();
-    const serverStateVector = performanceMonitor.measure(
-      "document.state-vector",
-      () => Y.encodeStateVector(state.model.doc),
-      { documentId },
+    state.updateOutbox = createCanvasUpdateOutbox();
+    state.persistence = new IndexeddbPersistence(
+      canvasUpdateOutboxName(documentId),
+      state.updateOutbox.doc,
     );
-    state.persistence = new IndexeddbPersistence(`penkra-canvas:${documentId}`, state.model.doc);
+    state.outboxWritePromise = Promise.resolve();
+    state.loadingMessage = "Syncing offline changes…";
+    render();
     await performanceMonitor.measureAsync(
       "document.indexeddb-sync",
       () => state.persistence.whenSynced,
       { documentId },
     );
-    const offlineUpdate = performanceMonitor.measure(
-      "document.offline-diff",
-      () => Y.encodeStateAsUpdate(state.model.doc, serverStateVector),
-      { documentId },
-    );
-    if (offlineUpdate.byteLength > 2) {
-      queueEncodedUpdate(documentId, encodeUpdate(offlineUpdate));
+    for (const item of state.updateOutbox.list()) {
+      applyRemoteUpdate(state.model, item.update);
+      state.pendingUpdates.push(item);
+      state.localUpdateSequences.set(item.clientUpdateId, null);
     }
     state.undo = createUndoManager(state.model);
     state.lastSequence = Math.max(
@@ -401,11 +394,15 @@ async function openDocument(documentId) {
       queueUpdate(documentId, update);
       state.engineDocumentDirty = origin !== ENGINE_ORIGIN;
       state.engineDocumentDirtyReason = state.engineDocumentDirty
-        ? origin === LOCAL_ORIGIN ? "local-model-update" : "unclassified-model-update"
+        ? origin === LOCAL_ORIGIN
+          ? "local-model-update"
+          : "unclassified-model-update"
         : null;
-      state.updatesSinceSnapshot += 1;
       if (state.realtimeConnection === REALTIME_CONNECTED) {
-        setSync(navigator.onLine ? "saving" : "offline", navigator.onLine ? "Saving…" : "Offline — changes stay on this device");
+        setSync(
+          navigator.onLine ? "saving" : "offline",
+          navigator.onLine ? "Saving…" : "Offline — changes stay on this device",
+        );
       } else {
         applyDisconnectedState(false);
       }
@@ -416,59 +413,77 @@ async function openDocument(documentId) {
     state.model.doc.on("update", state.updateListener);
     state.realtimeConnection = REALTIME_RECONNECTING;
     state.presence = null;
+    state.loadingMessage = "Connecting collaboration…";
+    render();
     state.documentUnsubscribe = await performanceMonitor.measureAsync(
       "document.realtime-subscribe",
-      () => api.subscribe(
-        documentId,
-        (event) => {
-        if (event.event === "project:update" && event.payload?.update) {
-          state.lastSequence = Math.max(state.lastSequence, Number(event.payload.sequence ?? 0));
-          if (event.payload.clientUpdateId && state.localUpdateSequences.has(event.payload.clientUpdateId)) {
-            state.localUpdateSequences.delete(event.payload.clientUpdateId);
-            return;
-          }
-          const changed = applyRemoteUpdate(state.model, event.payload.update);
-          if (!changed) return;
-          state.engineDocumentDirty = true;
-          state.engineDocumentDirtyReason = "realtime-remote-update";
-          if (JSON.stringify(currentMaterializedDocument().imports ?? {}) !== state.importSignature) {
-            if (!state.loading) void scheduleRetainedImportRefresh(documentId);
-          } else if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
-            void refreshDocumentAssets(documentId)
-              .catch((error) => console.warn("Canvas could not refresh document assets.", error))
-              .finally(() => {
-                if (state.document?.id === documentId) render();
+      () =>
+        api.subscribe(
+          documentId,
+          (event) => {
+            if (event.event === "project:update" && event.payload?.update) {
+              state.lastSequence = Math.max(
+                state.lastSequence,
+                Number(event.payload.sequence ?? 0),
+              );
+              if (
+                event.payload.clientUpdateId &&
+                state.localUpdateSequences.has(event.payload.clientUpdateId)
+              ) {
+                state.localUpdateSequences.delete(event.payload.clientUpdateId);
+                return;
+              }
+              const changed = applyRemoteUpdate(state.model, event.payload.update);
+              if (!changed) return;
+              state.engineDocumentDirty = true;
+              state.engineDocumentDirtyReason = "realtime-remote-update";
+              if (
+                JSON.stringify(currentMaterializedDocument().imports ?? {}) !==
+                state.importSignature
+              ) {
+                if (!state.loading) void scheduleRetainedImportRefresh(documentId);
+              } else if (hasUnloadedDocumentImages(currentMaterializedDocument(), state.assets)) {
+                void refreshDocumentAssets(documentId)
+                  .catch((error) =>
+                    console.warn("Canvas could not refresh document assets.", error),
+                  )
+                  .finally(() => {
+                    if (state.document?.id === documentId) render();
+                  });
+              } else {
+                render();
+              }
+            }
+            if (event.event === "project:renamed" && typeof event.payload?.title === "string") {
+              state.document.title = event.payload.title;
+              render();
+            }
+            if (event.event === "presence") {
+              state.presence = normalizePresenceCount(event.payload?.count);
+              render();
+            }
+            if (event.event === "project:deleted") {
+              void routes.navigateToDocumentUnavailable({
+                documentId,
+                reason: event.payload?.recoverableUntil ? "trashed" : "deleted",
+                ...(state.document?.title ? { title: state.document.title } : {}),
               });
-          } else {
-            render();
-          }
-        }
-        if (event.event === "project:renamed" && typeof event.payload?.title === "string") {
-          state.document.title = event.payload.title;
-          render();
-        }
-        if (event.event === "presence") {
-          state.presence = normalizePresenceCount(event.payload?.count);
-          render();
-        }
-        if (event.event === "project:deleted") {
-          void routes.navigateToDocumentUnavailable({
-            documentId,
-            reason: event.payload?.recoverableUntil ? "trashed" : "deleted",
-            ...(state.document?.title ? { title: state.document.title } : {}),
-          });
-        }
-        if (event.event === "access-revoked") handleAccessRemoved();
-        },
-        {
-          onConnectionStateChange: (connectionState) => {
-            void handleRealtimeConnectionChange(documentId, connectionState);
+            }
+            if (event.event === "access-revoked") handleAccessRemoved();
           },
-        },
-      ),
+          {
+            onConnectionStateChange: (connectionState) => {
+              void handleRealtimeConnectionChange(documentId, connectionState);
+            },
+          },
+        ),
       { documentId },
     );
+    state.loadingMessage = "Reconciling changes…";
+    render();
     await reconcileFromServer(documentId);
+    state.loadingMessage = "Resolving libraries…";
+    render();
     await performanceMonitor.measureAsync(
       "document.retained-imports",
       () => refreshRetainedImports(documentId, true),
@@ -504,7 +519,6 @@ async function openDocument(documentId) {
 
 function closeDocument() {
   documentCollectionLifecycle.stop();
-  documentModuleLabels.cancel();
   disposeEngineSurface();
   state.documentUnsubscribe?.();
   state.documentUnsubscribe = null;
@@ -515,9 +529,12 @@ function closeDocument() {
   state.importSignature = null;
   state.importRefreshPromise = null;
   state.persistence?.destroy();
+  state.updateOutbox?.doc.destroy();
   state.undo?.destroy();
   state.model?.doc.destroy();
   state.persistence = null;
+  state.updateOutbox = null;
+  state.outboxWritePromise = Promise.resolve();
   state.undo = null;
   state.pendingUpdates = [];
   state.localUpdateSequences.clear();
@@ -676,7 +693,12 @@ function queueUpdate(documentId, update) {
 function queueEncodedUpdate(documentId, update) {
   if (state.document?.id !== documentId) return;
   const clientUpdateId = crypto.randomUUID();
-  state.pendingUpdates.push({ clientUpdateId, update });
+  const item = { clientUpdateId, update };
+  state.updateOutbox?.append(item);
+  void persistUpdateOutbox()
+    .then(() => flushPending())
+    .catch(() => undefined);
+  state.pendingUpdates.push(item);
   state.localUpdateSequences.set(clientUpdateId, null);
 }
 
@@ -685,6 +707,7 @@ async function flushPending() {
   state.flushing = true;
   const documentId = state.document.id;
   try {
+    await state.outboxWritePromise;
     while (state.pendingUpdates.length > 0) {
       const item = state.pendingUpdates[0];
       const result = await api.appendUpdate(documentId, item);
@@ -692,15 +715,9 @@ async function flushPending() {
       if (state.localUpdateSequences.has(item.clientUpdateId)) {
         state.localUpdateSequences.set(item.clientUpdateId, Number(result.sequence));
       }
+      state.updateOutbox?.remove(item.clientUpdateId);
+      await persistUpdateOutbox();
       state.pendingUpdates.shift();
-    }
-    if (state.updatesSinceSnapshot >= SNAPSHOT_UPDATE_INTERVAL && state.model) {
-      await api.createSnapshot(documentId, {
-        throughSequence: state.lastSequence,
-        state: encodeState(state.model),
-        source: currentMaterializedDocument(),
-      });
-      state.updatesSinceSnapshot = 0;
     }
     if (state.realtimeConnection === REALTIME_CONNECTED) {
       setSync("saved", "Saved");
@@ -726,7 +743,10 @@ async function flushPending() {
       setTimeout(() => void flushPending(), 3_000);
       return;
     }
-    setSync(navigator.onLine ? "error" : "offline", navigator.onLine ? "Couldn’t save — retrying" : "Offline — changes stay on this device");
+    setSync(
+      navigator.onLine ? "error" : "offline",
+      navigator.onLine ? "Couldn’t save — retrying" : "Offline — changes stay on this device",
+    );
     setTimeout(() => void flushPending(), 3_000);
   } finally {
     state.flushing = false;
@@ -734,12 +754,19 @@ async function flushPending() {
   }
 }
 
+function persistUpdateOutbox() {
+  const persistence = state.persistence;
+  if (!persistence) return state.outboxWritePromise;
+  state.outboxWritePromise = state.outboxWritePromise.then(() => {
+    if (state.persistence !== persistence) return undefined;
+    return storeState(persistence);
+  });
+  return state.outboxWritePromise;
+}
+
 async function handleRealtimeConnectionChange(documentId, connectionState) {
   if (state.document?.id !== documentId) return;
-  state.realtimeConnection = realtimeStateAfterSignal(
-    state.realtimeConnection,
-    connectionState,
-  );
+  state.realtimeConnection = realtimeStateAfterSignal(state.realtimeConnection, connectionState);
   if (connectionState !== REALTIME_CONNECTED) {
     state.presence = null;
     applyDisconnectedState();
@@ -801,11 +828,21 @@ function currentRenderableDocument() {
       "document.resolve-imports",
       () => {
         const source = currentMaterializedDocument();
-        try { return resolveCanvasDocument(source, { imports: state.imports }).document; }
-        catch (error) {
+        try {
+          return resolveCanvasDocument(source, {
+            imports: state.imports,
+            // Keep authored component instances compact through preparation.
+            // The scene graph realizes each descendant once; export and
+            // inspection retain the resolver's eager default.
+            shouldExpandRef: () => false,
+          }).document;
+        } catch (error) {
           const requested = Object.keys(source.imports ?? {}).join(",") || "none";
           const loaded = Object.keys(state.imports ?? {}).join(",") || "none";
-          throw new Error(`${error.message} Requested imports: ${requested}. Loaded imports: ${loaded}.`, { cause: error });
+          throw new Error(
+            `${error.message} Requested imports: ${requested}. Loaded imports: ${loaded}.`,
+            { cause: error },
+          );
         }
       },
       { documentId: state.document?.id },
@@ -832,9 +869,7 @@ function currentDocumentNodes() {
       () => listDocumentNodes(currentMaterializedDocument()),
       { documentId: state.document?.id },
     );
-    state.documentNodeById = new Map(
-      state.documentNodes.map(({ node }) => [node.id, node]),
-    );
+    state.documentNodeById = new Map(state.documentNodes.map(({ node }) => [node.id, node]));
   }
   return state.documentNodes;
 }
@@ -856,12 +891,13 @@ function currentCanvasSelection() {
 
 function render() {
   const renderStartedAt = performance.now();
-  const retainedHost = state.route === "editor" && state.document && state.engineSurface
-    ? root.querySelector('[data-role="openpencil-surface"]')
-    : null;
+  const retainedHost =
+    state.route === "editor" && state.document && state.engineSurface
+      ? root.querySelector('[data-role="openpencil-surface"]')
+      : null;
   if (!retainedHost) disposeEngineSurface();
   if (state.loading) {
-    root.innerHTML = `<main class="shell empty"><div><span class="muted">Loading Canvas…</span></div></main>`;
+    root.innerHTML = `<main class="shell empty"><div><span class="muted">${escapeHtml(state.loadingMessage)}</span></div></main>`;
     return;
   }
   if (state.error) {
@@ -869,11 +905,14 @@ function render() {
     bindCommon();
     return;
   }
-  root.innerHTML = state.route === "editor" && state.document && state.model
-    ? renderEditor()
-    : state.route === "document-unavailable" && state.documentUnavailable
-      ? renderDocumentUnavailable()
-      : state.route === "trash" ? renderTrash() : renderLibrary();
+  root.innerHTML =
+    state.route === "editor" && state.document && state.model
+      ? renderEditor()
+      : state.route === "document-unavailable" && state.documentUnavailable
+        ? renderDocumentUnavailable()
+        : state.route === "trash"
+          ? renderTrash()
+          : renderLibrary();
   if (retainedHost) {
     root.querySelector('[data-role="openpencil-surface"]')?.replaceWith(retainedHost);
   }
@@ -884,11 +923,12 @@ function render() {
       if (state.engineDocumentDirty) {
         performanceMonitor.measure(
           "engine.replace-document",
-          () => state.engineSurface.replaceDocument(
-            currentMaterializedDocument(),
-            state.selectedId,
-            currentPreparedRenderDocument(),
-          ),
+          () =>
+            state.engineSurface.replaceDocument(
+              currentMaterializedDocument(),
+              state.selectedId,
+              currentPreparedRenderDocument(),
+            ),
           {
             documentId: state.document.id,
             nodes: state.documentNodes?.length ?? 0,
@@ -899,8 +939,7 @@ function render() {
         state.engineDocumentDirtyReason = null;
       }
     } else scheduleEditorSurfaceMount();
-  }
-  else bindLibrary();
+  } else bindLibrary();
   focusRequestedControl();
   performanceMonitor.record("ui.render", performance.now() - renderStartedAt, {
     route: state.route,
@@ -912,13 +951,17 @@ function renderDocumentUnavailable() {
   const unavailable = state.documentUnavailable;
   const deleted = unavailable.reason === "deleted";
   const trashed = unavailable.reason === "trashed";
-  const heading = trashed ? "This design is in Trash" : deleted ? "This design was deleted" : "This design is unavailable";
+  const heading = trashed
+    ? "This design is in Trash"
+    : deleted
+      ? "This design was deleted"
+      : "This design is unavailable";
   const subject = unavailable.title ? `“${unavailable.title}”` : "This Canvas design";
   const detail = trashed
     ? `${subject} was moved to Trash by its owner and can be restored from the Trash page for 30 days.`
     : deleted
-    ? `${subject} was permanently deleted and can no longer be opened.`
-    : `${subject} no longer exists or you no longer have access to it.`;
+      ? `${subject} was permanently deleted and can no longer be opened.`
+      : `${subject} no longer exists or you no longer have access to it.`;
   return `<main class="shell empty"><div>${icon("file")}<h2>${heading}</h2><p>${escapeHtml(detail)}</p><div class="library-actions"><button class="button primary" data-action="back">Back to files</button></div></div></main>`;
 }
 
@@ -927,7 +970,9 @@ function renderLibrary() {
   const documents = state.documents.filter((document) => {
     const matchesGroup =
       state.libraryFilter === "all" ||
-      (state.libraryFilter === "owned" ? document.access === "owner" : document.access === "editor");
+      (state.libraryFilter === "owned"
+        ? document.access === "owner"
+        : document.access === "editor");
     return matchesGroup && (!query || document.title.toLowerCase().includes(query));
   });
   return `<main class="shell library"><div class="library-inner">
@@ -948,8 +993,9 @@ function renderLibrary() {
 
 function renderTrash() {
   const query = state.search.trim().toLowerCase();
-  const documents = state.trashedDocuments.filter((document) =>
-    !query || document.title.toLowerCase().includes(query));
+  const documents = state.trashedDocuments.filter(
+    (document) => !query || document.title.toLowerCase().includes(query),
+  );
   return `<main class="shell library"><div class="library-inner">
     <header class="library-header">
       <div class="library-title"><h1>Trash</h1><p>Items in Trash are permanently deleted after 30 days.</p></div>
@@ -966,8 +1012,11 @@ function segment(key, label) {
 }
 
 function documentCard(document) {
-  const ownership = document.access === "owner" ? "Your file" : `Shared by ${document.ownerName ?? "another Account"}`;
-  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span data-document-module="${escapeHtml(document.id)}">${escapeHtml(document.module ?? (document.moduleLoaded ? "Unassigned" : "Loading type…"))}</span><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
+  const ownership =
+    document.access === "owner"
+      ? "Your file"
+      : `Shared by ${document.ownerName ?? "another Account"}`;
+  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span>${escapeHtml(document.module ?? "Unassigned")}</span><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
 }
 
 function trashCard(document) {
@@ -992,11 +1041,7 @@ function renderEditor() {
   if (state.compatibilityDocument !== document) {
     state.compatibilityIssues = performanceMonitor.measure(
       "document.compatibility",
-      () => analyzeOpenPencilCompatibility(
-        document,
-        state.assets,
-        currentPreparedRenderDocument(),
-      ),
+      () => analyzeOpenPencilCompatibility(document, state.assets, currentPreparedRenderDocument()),
       { documentId: state.document.id, nodes: documentNodes.length },
     );
     state.compatibilityNodeIds = new Set(state.compatibilityIssues.map((issue) => issue.nodeId));
@@ -1029,7 +1074,7 @@ function renderEditor() {
       <section class="viewport" data-role="viewport" data-tool="${state.activeTool}" tabindex="0" aria-label="Canvas viewport">
         <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading" role="status" aria-live="polite">Rendering design…</div></div>
         ${state.realtimeConnection === REALTIME_RECONNECTING && navigator.onLine ? `<div class="connection-banner">${icon("refresh")}<span>Reconnecting and merging changes</span></div>` : ""}
-        ${unsupported.length ? `<div class="compatibility-banner"><span>${unsupportedNodeCount} object${unsupportedNodeCount === 1 ? " needs" : "s need"} compatibility review</span><button class="button" data-action="compatibility">Review</button></div>` : ""}
+        ${unsupported.length ? `<div class="compatibility-banner"><span>${unsupportedNodeCount} object${unsupportedNodeCount === 1 ? " has" : "s have"} rendering issues</span><button class="button" data-action="compatibility">Review</button></div>` : ""}
         <div class="zoom-controls" aria-label="Canvas zoom"><button class="tool" data-action="zoom-out" aria-label="Zoom out">−</button><button class="zoom-label" data-action="fit" aria-label="Fit design in view">${Math.round((state.engineViewport?.zoom ?? 1) * 100)}%</button><button class="tool" data-action="zoom-in" aria-label="Zoom in">+</button></div>
         <div class="tool-palette" aria-label="Canvas tools"><button class="tool ${state.activeTool === "select" ? "active" : ""}" data-tool="SELECT" aria-label="Select tool" title="Select (V)">${icon("cursor")}</button><button class="tool ${state.activeTool === "hand" ? "active" : ""}" data-tool="HAND" aria-label="Pan canvas" title="Pan canvas (H or Space)">${icon("hand")}</button><span class="tool-separator"></span><button class="tool" data-tool="FRAME" aria-label="Frame tool" title="Frame (F)">${icon("frame")}</button><button class="tool" data-tool="RECTANGLE" aria-label="Rectangle tool" title="Rectangle (R)">${icon("rectangle")}</button><button class="tool" data-tool="ELLIPSE" aria-label="Ellipse tool" title="Ellipse (O)">${icon("ellipse")}</button><button class="tool" data-tool="TEXT" aria-label="Text tool" title="Text (T)">${icon("text")}</button></div>
       </section>
@@ -1046,81 +1091,88 @@ function mountEditorSurface() {
   const firstFrameStartedAt = performance.now();
   try {
     let surface;
-    surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentRenderableDocument(), {
-      visible: state.appTabActive,
-      assets: state.assets,
-      preparedDocument: currentPreparedRenderDocument(),
-      selectedId: state.selectedId,
-      viewport: state.engineViewport,
-      getViewportInsets: () => visibleViewportInsets(host),
-      onPerformance: (name, duration, details) => {
-        performanceMonitor.record(name, duration, { documentId, ...details });
-      },
-      onReady: () => {
-        if (state.engineSurface !== surface) return;
-        state.engineReady = true;
-        renderHistoryControls();
-        renderLayersTree();
-        host.querySelector(".engine-loading")?.remove();
-        performanceMonitor.record(
-          "engine.first-frame",
-          performance.now() - firstFrameStartedAt,
-          {
-            documentId,
-            graphNodes: surface.editor.graph.nodes.size,
+    surface = performanceMonitor.measure(
+      "engine.mount",
+      () =>
+        mountOpenPencilSurface(host, currentRenderableDocument(), {
+          visible: state.appTabActive,
+          assets: state.assets,
+          preparedDocument: currentPreparedRenderDocument(),
+          selectedId: state.selectedId,
+          viewport: state.engineViewport,
+          getViewportInsets: () => visibleViewportInsets(host),
+          onPerformance: (name, duration, details) => {
+            performanceMonitor.record(name, duration, { documentId, ...details });
           },
-        );
-        if (state.documentOpenStartedAt !== null) {
-          performanceMonitor.record(
-            "document.interactive",
-            performance.now() - state.documentOpenStartedAt,
-            {
-              documentId,
-              nodes: state.documentNodes?.length ?? 0,
-              graphNodes: surface.editor.graph.nodes.size,
-            },
-          );
-          state.documentOpenStartedAt = null;
-        }
-      },
-      onSelection: ([nodeId]) => {
-        if (state.document?.id !== documentId || nodeId === state.selectedId) return;
-        state.selectedId = nodeId ?? null;
-        if (expandSelectedLayerAncestors(nodeId)) renderLayersTree();
-        renderSelection();
-        scrollSelectedLayerIntoView();
-      },
-      onViewport: (viewport) => {
-        if (state.document?.id !== documentId) return;
-        state.engineViewport = viewport;
-        const label = root.querySelector('[data-action="fit"]');
-        if (label) label.textContent = `${Math.round(viewport.zoom * 100)}%`;
-      },
-      onTool: (tool) => {
-        state.activeTool = tool.toLowerCase();
-        root.querySelectorAll("button[data-tool]").forEach((button) => {
-          button.classList.toggle("active", button.dataset.tool === tool);
-        });
-      },
-      onTextEditStart: () => state.undo?.stopCapturing(),
-      onMutations: (mutations) => queueEngineMutations(documentId, surface, mutations),
-      onTextEditCommit: () => queueMicrotask(() => state.undo?.stopCapturing()),
-      restoreDeletedNode: (nodeId) => {
-        const deleted = state.deletedNodeSnapshots.get(nodeId);
-        return deleted ? {
-          kind: "insert-node",
-          node: structuredClone(deleted.node),
-          parentId: deleted.parentId,
-          ...(deleted.parentSlot ? { parentSlot: deleted.parentSlot } : {}),
-          position: deleted.position,
-        } : null;
-      },
-      onUnsupportedEdit: (text) => setToast(text, true),
-      onError: (error) => {
-        state.engineReady = false;
-        host.innerHTML = `<div class="engine-error"><strong>Canvas could not render this design.</strong><span>${escapeHtml(message(error))}</span></div>`;
-      },
-    }), { documentId, nodes: state.documentNodes?.length ?? 0 });
+          onReady: () => {
+            if (state.engineSurface !== surface) return;
+            state.engineReady = true;
+            renderHistoryControls();
+            renderLayersTree();
+            host.querySelector(".engine-loading")?.remove();
+            performanceMonitor.record(
+              "engine.first-frame",
+              performance.now() - firstFrameStartedAt,
+              {
+                documentId,
+                graphNodes: surface.editor.graph.nodes.size,
+              },
+            );
+            if (state.documentOpenStartedAt !== null) {
+              performanceMonitor.record(
+                "document.interactive",
+                performance.now() - state.documentOpenStartedAt,
+                {
+                  documentId,
+                  nodes: state.documentNodes?.length ?? 0,
+                  graphNodes: surface.editor.graph.nodes.size,
+                },
+              );
+              state.documentOpenStartedAt = null;
+            }
+          },
+          onSelection: ([nodeId]) => {
+            if (state.document?.id !== documentId || nodeId === state.selectedId) return;
+            state.selectedId = nodeId ?? null;
+            if (expandSelectedLayerAncestors(nodeId)) renderLayersTree();
+            renderSelection();
+            scrollSelectedLayerIntoView();
+          },
+          onViewport: (viewport) => {
+            if (state.document?.id !== documentId) return;
+            state.engineViewport = viewport;
+            const label = root.querySelector('[data-action="fit"]');
+            if (label) label.textContent = `${Math.round(viewport.zoom * 100)}%`;
+          },
+          onTool: (tool) => {
+            state.activeTool = tool.toLowerCase();
+            root.querySelectorAll("button[data-tool]").forEach((button) => {
+              button.classList.toggle("active", button.dataset.tool === tool);
+            });
+          },
+          onTextEditStart: () => state.undo?.stopCapturing(),
+          onMutations: (mutations) => queueEngineMutations(documentId, surface, mutations),
+          onTextEditCommit: () => queueMicrotask(() => state.undo?.stopCapturing()),
+          restoreDeletedNode: (nodeId) => {
+            const deleted = state.deletedNodeSnapshots.get(nodeId);
+            return deleted
+              ? {
+                  kind: "insert-node",
+                  node: structuredClone(deleted.node),
+                  parentId: deleted.parentId,
+                  ...(deleted.parentSlot ? { parentSlot: deleted.parentSlot } : {}),
+                  position: deleted.position,
+                }
+              : null;
+          },
+          onUnsupportedEdit: (text) => setToast(text, true),
+          onError: (error) => {
+            state.engineReady = false;
+            host.innerHTML = `<div class="engine-error"><strong>Canvas could not render this design.</strong><span>${escapeHtml(message(error))}</span></div>`;
+          },
+        }),
+      { documentId, nodes: state.documentNodes?.length ?? 0 },
+    );
     state.engineSurface = surface;
     state.engineDocumentDirty = false;
     state.engineDocumentDirtyReason = null;
@@ -1132,17 +1184,19 @@ function mountEditorSurface() {
 function scheduleEditorSurfaceMount() {
   const generation = ++state.engineMountGeneration;
   const documentId = state.document?.id;
-  const scheduleAfterPaint = () => setTimeout(() => {
-    if (
-      generation !== state.engineMountGeneration
-      || state.loading
-      || state.route !== "editor"
-      || state.document?.id !== documentId
-      || !state.model
-      || state.engineSurface
-    ) return;
-    mountEditorSurface();
-  }, 0);
+  const scheduleAfterPaint = () =>
+    setTimeout(() => {
+      if (
+        generation !== state.engineMountGeneration ||
+        state.loading ||
+        state.route !== "editor" ||
+        state.document?.id !== documentId ||
+        !state.model ||
+        state.engineSurface
+      )
+        return;
+      mountEditorSurface();
+    }, 0);
   if (typeof requestAnimationFrame === "function" && document.visibilityState !== "hidden") {
     requestAnimationFrame(scheduleAfterPaint);
   } else {
@@ -1174,19 +1228,21 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
     const batch = pendingEngineBatch;
     if (!batch || batch.surface !== surface) return;
     pendingEngineBatch = null;
-    if (state.engineSurface !== surface || state.document?.id !== documentId || !state.model) return;
+    if (state.engineSurface !== surface || state.document?.id !== documentId || !state.model)
+      return;
     const documentNodes = currentDocumentNodes();
     const existing = new Set(documentNodes.map(({ node }) => node.id));
     const mutations = compactDeletionMutations(batch.mutations, documentNodes);
     const documentEntryById = new Map(documentNodes.map((entry) => [entry.node.id, entry]));
-    const crossesSlotBoundary = mutations.some((mutation) => (
-      ["insert-node", "move-node"].includes(mutation.kind) && typeof mutation.parentSlot === "string"
-    ) || (
-      ["delete-node", "move-node"].includes(mutation.kind)
-      && typeof documentEntryById.get(mutation.nodeId)?.parentSlot === "string"
-    ));
+    const crossesSlotBoundary = mutations.some(
+      (mutation) =>
+        (["insert-node", "move-node"].includes(mutation.kind) &&
+          typeof mutation.parentSlot === "string") ||
+        (["delete-node", "move-node"].includes(mutation.kind) &&
+          typeof documentEntryById.get(mutation.nodeId)?.parentSlot === "string"),
+    );
     const structuralSelectionReference = crossesSlotBoundary
-      ? mutations.findLast((mutation) => mutation.kind === "move-node")?.nodeId ?? null
+      ? (mutations.findLast((mutation) => mutation.kind === "move-node")?.nodeId ?? null)
       : null;
     for (const mutation of mutations) {
       if (mutation.kind !== "delete-node") continue;
@@ -1206,9 +1262,10 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
         for (const mutation of mutations) {
           if (mutation.kind === "insert-node" && existing.has(mutation.node.id)) continue;
           if (mutation.kind !== "insert-node" && !existing.has(mutation.nodeId)) continue;
-          const modelMutation = mutation.kind === "insert-node" && state.model.nodes.has(mutation.node.id)
-            ? { kind: "restore-node", nodeId: mutation.node.id }
-            : mutation;
+          const modelMutation =
+            mutation.kind === "insert-node" && state.model.nodes.has(mutation.node.id)
+              ? { kind: "restore-node", nodeId: mutation.node.id }
+              : mutation;
           mutate(state.model, modelMutation, ENGINE_ORIGIN);
           appliedMutations.push(mutation);
           if (mutation.kind === "insert-node") {
@@ -1234,7 +1291,11 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
           ? resolvedRuntimeIdForReference(renderable.children, structuralSelectionReference)
           : null;
         state.selectedId = selectedId;
-        surface.replaceDocument(currentMaterializedDocument(), selectedId, currentPreparedRenderDocument());
+        surface.replaceDocument(
+          currentMaterializedDocument(),
+          selectedId,
+          currentPreparedRenderDocument(),
+        );
       }
       renderSelection();
       renderLayersTree();
@@ -1248,6 +1309,10 @@ function resolvedRuntimeIdForReference(nodes, reference) {
     if (node.id === reference || node.provenance?.reference === reference) return node.id;
     const child = resolvedRuntimeIdForReference(node.children, reference);
     if (child) return child;
+    for (const override of Object.values(node.descendants ?? {})) {
+      const descendant = resolvedRuntimeIdForReference(override?.children, reference);
+      if (descendant) return descendant;
+    }
   }
   return null;
 }
@@ -1296,34 +1361,47 @@ function layerRow({ node, depth, hasChildren }) {
   const issue = state.compatibilityNodeIds.has(sourceId);
   const type = String(node.type).toLowerCase();
   const expanded = hasChildren && state.expandedLayerIds.has(node.id);
-  const role = type === "frame" && node.role
-    ? `<span class="layer-role">${escapeHtml({ slide: "Slide", route: "Route", ios: "iOS", android: "Android" }[node.role] ?? node.role)}</span>`
-    : "";
+  const role =
+    type === "frame" && node.role
+      ? `<span class="layer-role">${escapeHtml({ slide: "Slide", route: "Route", ios: "iOS", android: "Android" }[node.role] ?? node.role)}</span>`
+      : "";
   const slot = node.canvasProvenance?.slotTarget
     ? `<span class="layer-role">Slot · ${escapeHtml(node.canvasProvenance.slotTarget.name)}</span>`
     : "";
-  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${role}${slot}${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
+  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? (expanded ? "▾" : "▸") : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${role}${slot}${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
 }
 
 function renderInspector(selection) {
   const node = selection?.effectiveNode;
-  if (!node) return `<div class="inspector-empty">Select an object to inspect and edit its properties.</div>`;
+  if (!node)
+    return `<div class="inspector-empty">Select an object to inspect and edit its properties.</div>`;
   const sceneEditable = isOpenPencilEditableNode(node);
   if (!isPencilAuthorableNode(node, sceneEditable)) {
     return `${selectionHeading(selection)}<div class="inspector-empty">This unsupported object is preserved without alteration and cannot currently be edited in Canvas.</div>`;
   }
   const fieldNodeId = selection.referenceId;
   const numeric = ["x", "y", "width", "height", "rotation"];
-  const simpleFill = typeof node.fill === "string"
-    || node.fill?.type === "color"
-    || node.fill?.type === "solid"
-    || node.fill == null;
+  const simpleFill =
+    typeof node.fill === "string" ||
+    node.fill?.type === "color" ||
+    node.fill?.type === "solid" ||
+    node.fill == null;
   return `${selectionHeading(selection)}
-  <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, fieldNodeId)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("rotation", node.rotation ?? 0, "number", false, fieldNodeId)}</div></section>
-  <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("gap", node.gap ?? 0, "number", false, fieldNodeId)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, fieldNodeId)}</div></section>
+  <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, fieldNodeId)}${numeric
+    .slice(0, 2)
+    .map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId))
+    .join("")}${field("rotation", node.rotation ?? 0, "number", false, fieldNodeId)}</div></section>
+  <section class="section"><h3>Layout</h3><div class="field-grid">${numeric
+    .slice(2, 4)
+    .map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId))
+    .join(
+      "",
+    )}${field("gap", node.gap ?? 0, "number", false, fieldNodeId)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : (node.padding ?? 0), "text", false, fieldNodeId)}</div></section>
   <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, fieldNodeId) : ""}${field("opacity", node.opacity ?? 1, "number", false, fieldNodeId)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, fieldNodeId)}</div></section>
   ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, fieldNodeId)}${field("fontFamily", node.fontFamily ?? "Inter", "text", true, fieldNodeId)}${field("fontSize", node.fontSize ?? 16, "number", false, fieldNodeId)}${field("fontWeight", node.fontWeight ?? "400", "text", false, fieldNodeId)}${field("lineHeight", node.lineHeight ?? 1.2, "number", false, fieldNodeId)}</div></section>` : ""}
-  ${pencilAuthoringSections(node).map((section) => renderAuthoringSection(section, fieldNodeId)).join("")}
+  ${pencilAuthoringSections(node)
+    .map((section) => renderAuthoringSection(section, fieldNodeId))
+    .join("")}
   ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved but not currently represented faithfully. Review compatibility for details.</p></section>` : ""}
   ${selection.isInstanceDescendant ? "" : `<div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`}`;
 }
@@ -1334,8 +1412,19 @@ function renderAuthoringSection(section, nodeId) {
 
 function authoringField(descriptor, nodeId) {
   const path = descriptor.path.join(".");
-  const options = { kind: descriptor.kind, path, label: descriptor.path.at(-1) ?? descriptor.property };
-  return field(descriptor.property, descriptor.value, descriptor.kind, descriptor.full, nodeId, options);
+  const options = {
+    kind: descriptor.kind,
+    path,
+    label: descriptor.path.at(-1) ?? descriptor.property,
+  };
+  return field(
+    descriptor.property,
+    descriptor.value,
+    descriptor.kind,
+    descriptor.full,
+    nodeId,
+    options,
+  );
 }
 
 function selectionHeading(selection) {
@@ -1358,9 +1447,8 @@ function renderSelection() {
   const inspector = root.querySelector(".side-panel.inspector .panel-scroll");
   if (inspector) {
     const selection = currentCanvasSelection();
-    inspector.innerHTML = state.inspectorTab === "design"
-      ? renderInspector(selection)
-      : renderCodeInspector(selection);
+    inspector.innerHTML =
+      state.inspectorTab === "design" ? renderInspector(selection) : renderCodeInspector(selection);
     bindInspectorControls();
   }
   performanceMonitor.record("ui.selection", performance.now() - startedAt, {
@@ -1401,7 +1489,15 @@ function syncPanelVisibility() {
   const body = root.querySelector(".editor-body");
   editor?.classList.toggle("has-closed-panel", !(state.layersOpen && state.inspectorOpen));
   if (body) {
-    body.classList.remove("show-layers", "show-inspector", "show-none", "layers-open", "layers-closed", "inspector-open", "inspector-closed");
+    body.classList.remove(
+      "show-layers",
+      "show-inspector",
+      "show-none",
+      "layers-open",
+      "layers-closed",
+      "inspector-open",
+      "inspector-closed",
+    );
     body.classList.add(state.activePanel ? `show-${state.activePanel}` : "show-none");
     body.classList.add(state.layersOpen ? "layers-open" : "layers-closed");
     body.classList.add(state.inspectorOpen ? "inspector-open" : "inspector-closed");
@@ -1418,13 +1514,14 @@ function syncPanelVisibility() {
 }
 
 function renderCodeInspector(selection) {
-  if (!selection?.sourceNode) return `<div class="inspector-empty">Select an object to inspect its stored properties.</div>`;
+  if (!selection?.sourceNode)
+    return `<div class="inspector-empty">Select an object to inspect its stored properties.</div>`;
   const source = selection.isInstanceDescendant
     ? {
-      nodeId: selection.referenceId,
-      componentSource: selection.sourceNode,
-      instanceOverride: selection.override,
-    }
+        nodeId: selection.referenceId,
+        componentSource: selection.sourceNode,
+        instanceOverride: selection.override,
+      }
     : selection.sourceNode;
   return `<section class="section code-section"><h3>Stored properties</h3><pre>${escapeHtml(JSON.stringify(source, null, 2))}</pre></section>`;
 }
@@ -1442,7 +1539,9 @@ function field(property, value, type = "text", full = false, nodeId = "", option
   if (kind === "json" || kind === "textarea") {
     const text = state.fieldDrafts.has(key)
       ? displayed
-      : kind === "json" ? JSON.stringify(value, null, 2) : displayed;
+      : kind === "json"
+        ? JSON.stringify(value, null, 2)
+        : displayed;
     control = `<textarea id="field-${property}" class="field field-area" ${attributes} ${invalid}>${escapeHtml(text)}</textarea>`;
   } else if (kind === "boolean") {
     control = `<input id="field-${property}" class="field field-check" type="checkbox" ${attributes} ${displayed ? "checked" : ""} ${invalid} />`;
@@ -1455,17 +1554,25 @@ function field(property, value, type = "text", full = false, nodeId = "", option
 function bindCommon() {
   root.querySelector('[data-action="retry"]')?.addEventListener("click", () => void bootstrap());
   if (state.route === "document-unavailable") {
-    root.querySelector('[data-action="back"]')?.addEventListener("click", () => void navigateToLibrary());
+    root
+      .querySelector('[data-action="back"]')
+      ?.addEventListener("click", () => void navigateToLibrary());
   }
-  root.querySelectorAll("[data-action=close-dialog]").forEach((button) =>
-    button.addEventListener("click", closeDialog),
-  );
+  root
+    .querySelectorAll("[data-action=close-dialog]")
+    .forEach((button) => button.addEventListener("click", closeDialog));
 }
 
 function bindLibrary() {
-  root.querySelector('[data-action="open-trash"]')?.addEventListener("click", () => void navigateToTrash());
-  root.querySelector('[data-action="back-to-files"]')?.addEventListener("click", () => void navigateToLibrary());
-  root.querySelector('[data-action="new"]')?.addEventListener("click", () => void act(() => createBlankDocument()));
+  root
+    .querySelector('[data-action="open-trash"]')
+    ?.addEventListener("click", () => void navigateToTrash());
+  root
+    .querySelector('[data-action="back-to-files"]')
+    ?.addEventListener("click", () => void navigateToLibrary());
+  root
+    .querySelector('[data-action="new"]')
+    ?.addEventListener("click", () => void act(() => createBlankDocument()));
   root.querySelector('[data-role="search"]')?.addEventListener("input", (event) => {
     state.search = event.target.value;
     render();
@@ -1473,10 +1580,12 @@ function bindLibrary() {
     search?.focus();
     search?.setSelectionRange(state.search.length, state.search.length);
   });
-  root.querySelectorAll("[data-filter]").forEach((button) => button.addEventListener("click", () => {
-    state.libraryFilter = button.dataset.filter;
-    render();
-  }));
+  root.querySelectorAll("[data-filter]").forEach((button) =>
+    button.addEventListener("click", () => {
+      state.libraryFilter = button.dataset.filter;
+      render();
+    }),
+  );
   root.querySelectorAll("[data-document-id]").forEach((button) => {
     button.addEventListener("click", () => void navigateToDocument(button.dataset.documentId));
     button.addEventListener("contextmenu", (event) => {
@@ -1492,22 +1601,40 @@ function bindLibrary() {
     });
   });
   syncContextMenu();
-  root.querySelectorAll("[data-restore-document]").forEach((button) => button.addEventListener("click", () => void act(async () => {
-    await api.restoreDocument(button.dataset.restoreDocument);
-    state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== button.dataset.restoreDocument);
-    setToast("Document restored.");
-    render();
-  })));
-  root.querySelectorAll("[data-permanently-delete-document]").forEach((button) => button.addEventListener("click", () => {
-    const document = state.trashedDocuments.find((item) => item.id === button.dataset.permanentlyDeleteDocument);
-    if (!document) return;
-    state.dialog = documentPermanentDeleteConfirmation(document);
-    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
-    render();
-  }));
-  root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
-  root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
-  root.querySelector('[data-action="confirm-permanently-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
+  root.querySelectorAll("[data-restore-document]").forEach((button) =>
+    button.addEventListener(
+      "click",
+      () =>
+        void act(async () => {
+          await api.restoreDocument(button.dataset.restoreDocument);
+          state.trashedDocuments = state.trashedDocuments.filter(
+            (item) => item.id !== button.dataset.restoreDocument,
+          );
+          setToast("Document restored.");
+          render();
+        }),
+    ),
+  );
+  root.querySelectorAll("[data-permanently-delete-document]").forEach((button) =>
+    button.addEventListener("click", () => {
+      const document = state.trashedDocuments.find(
+        (item) => item.id === button.dataset.permanentlyDeleteDocument,
+      );
+      if (!document) return;
+      state.dialog = documentPermanentDeleteConfirmation(document);
+      state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
+      render();
+    }),
+  );
+  root
+    .querySelector('[data-action="cancel-confirmation"]')
+    ?.addEventListener("click", cancelDestructiveConfirmation);
+  root
+    .querySelector('[data-action="confirm-trash-document"]')
+    ?.addEventListener("click", () => void confirmDestructiveAction());
+  root
+    .querySelector('[data-action="confirm-permanently-delete-document"]')
+    ?.addEventListener("click", () => void confirmDestructiveAction());
 }
 
 function syncContextMenu() {
@@ -1521,7 +1648,9 @@ function syncContextMenu() {
     syncContextMenu();
   });
   root.querySelector("[data-trash-document]")?.addEventListener("click", (event) => {
-    const document = state.documents.find((item) => item.id === event.currentTarget.dataset.trashDocument);
+    const document = state.documents.find(
+      (item) => item.id === event.currentTarget.dataset.trashDocument,
+    );
     if (!document) return;
     state.contextMenu = null;
     state.dialog = documentTrashConfirmation(document, {
@@ -1534,32 +1663,40 @@ function syncContextMenu() {
 }
 
 function bindEditor() {
-  root.querySelector('[data-action="back"]')?.addEventListener("click", () => void navigateToLibrary());
+  root
+    .querySelector('[data-action="back"]')
+    ?.addEventListener("click", () => void navigateToLibrary());
   if (state.accessRemoved) return;
   root.querySelector('[data-action="undo"]')?.addEventListener("click", undo);
   root.querySelector('[data-action="redo"]')?.addEventListener("click", redo);
-  root.querySelectorAll("[data-panel]").forEach((button) => button.addEventListener("click", () => {
-    const panel = button.dataset.panel;
-    const wasOpen = state[`${panel}Open`];
-    state.activePanel = panel;
-    state[`${panel}Open`] = true;
-    syncPanelVisibility();
-    if (panel === "layers" && !wasOpen) {
+  root.querySelectorAll("[data-panel]").forEach((button) =>
+    button.addEventListener("click", () => {
+      const panel = button.dataset.panel;
+      const wasOpen = state[`${panel}Open`];
+      state.activePanel = panel;
+      state[`${panel}Open`] = true;
+      syncPanelVisibility();
+      if (panel === "layers" && !wasOpen) {
+        renderLayersTree();
+        scrollSelectedLayerIntoView();
+      }
+    }),
+  );
+  root.querySelectorAll("[data-asset-panel]").forEach((button) =>
+    button.addEventListener("click", () => {
+      state.assetPanel = button.dataset.assetPanel;
+      root.querySelectorAll("[data-asset-panel]").forEach((candidate) => {
+        candidate.classList.toggle("active", candidate.dataset.assetPanel === state.assetPanel);
+      });
       renderLayersTree();
-      scrollSelectedLayerIntoView();
-    }
-  }));
-  root.querySelectorAll("[data-asset-panel]").forEach((button) => button.addEventListener("click", () => {
-    state.assetPanel = button.dataset.assetPanel;
-    root.querySelectorAll("[data-asset-panel]").forEach((candidate) => {
-      candidate.classList.toggle("active", candidate.dataset.assetPanel === state.assetPanel);
-    });
-    renderLayersTree();
-  }));
-  root.querySelectorAll("[data-inspector-tab]").forEach((button) => button.addEventListener("click", () => {
-    state.inspectorTab = button.dataset.inspectorTab;
-    render();
-  }));
+    }),
+  );
+  root.querySelectorAll("[data-inspector-tab]").forEach((button) =>
+    button.addEventListener("click", () => {
+      state.inspectorTab = button.dataset.inspectorTab;
+      render();
+    }),
+  );
   root.querySelector('[data-action="close-layers"]')?.addEventListener("click", () => {
     state.layersOpen = false;
     if (state.activePanel === "layers") state.activePanel = null;
@@ -1571,19 +1708,25 @@ function bindEditor() {
     if (state.activePanel === "inspector") state.activePanel = null;
     syncPanelVisibility();
   });
-  root.querySelector('[data-role="title"]')?.addEventListener("change", (event) => void act(async () => {
-    const title = event.target.value.trim();
-    if (!title || title === state.document.title) return;
-    await api.renameDocument(state.document.id, title);
-    state.document.title = title;
-    setToast("Document renamed.");
-    render();
-  }));
+  root.querySelector('[data-role="title"]')?.addEventListener(
+    "change",
+    (event) =>
+      void act(async () => {
+        const title = event.target.value.trim();
+        if (!title || title === state.document.title) return;
+        await api.renameDocument(state.document.id, title);
+        state.document.title = title;
+        setToast("Document renamed.");
+        render();
+      }),
+  );
   bindLayersTree();
   bindInspectorControls();
-  root.querySelectorAll("button[data-tool]").forEach((button) => button.addEventListener("click", () => {
-    state.engineSurface?.editor.setTool(button.dataset.tool);
-  }));
+  root.querySelectorAll("button[data-tool]").forEach((button) =>
+    button.addEventListener("click", () => {
+      state.engineSurface?.editor.setTool(button.dataset.tool);
+    }),
+  );
   root.querySelector('[data-action="zoom-in"]')?.addEventListener("click", () => {
     const editor = state.engineSurface?.editor;
     if (!editor) return;
@@ -1594,33 +1737,51 @@ function bindEditor() {
     if (!editor) return;
     editor.zoomToLevel(editor.state.zoom / 1.2);
   });
-  root.querySelector('[data-action="fit"]')?.addEventListener("click", () => state.engineSurface?.fitDesignInView());
+  root
+    .querySelector('[data-action="fit"]')
+    ?.addEventListener("click", () => state.engineSurface?.fitDesignInView());
   root.querySelector('[data-action="share"]')?.addEventListener("click", () => void openShare());
-  root.querySelector('[data-action="compatibility"]')?.addEventListener("click", () => openDialog("compatibility", '[data-action="compatibility"]'));
-  root.querySelector('[data-action="menu"]')?.addEventListener("click", () => openDialog("menu", '[data-action="menu"]'));
+  root
+    .querySelector('[data-action="compatibility"]')
+    ?.addEventListener("click", () => openDialog("compatibility", '[data-action="compatibility"]'));
+  root
+    .querySelector('[data-action="menu"]')
+    ?.addEventListener("click", () => openDialog("menu", '[data-action="menu"]'));
   root.querySelector('[data-action="trash-document"]')?.addEventListener("click", () => {
     state.dialog = documentTrashConfirmation(state.document);
     state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
     render();
   });
-  root.querySelector('[data-action="grant"]')?.addEventListener("click", () => void act(async () => {
-    const input = root.querySelector('[data-role="share-email"]');
-    const email = input?.value.trim();
-    if (!email) return;
-    await api.grantAccess(state.document.id, email);
-    state.grants = (await api.listGrants(state.document.id)).items;
-    render();
-  }));
-  root.querySelectorAll("[data-revoke-grant]").forEach((button) => button.addEventListener("click", () => {
-    const grant = state.grants.find((item) => item.id === button.dataset.revokeGrant);
-    if (!grant) return;
-    state.dialog = collaboratorRemovalConfirmation(grant);
-    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
-    render();
-  }));
-  root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
-  root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
-  root.querySelector('[data-action="confirm-remove-collaborator"]')?.addEventListener("click", () => void confirmDestructiveAction());
+  root.querySelector('[data-action="grant"]')?.addEventListener(
+    "click",
+    () =>
+      void act(async () => {
+        const input = root.querySelector('[data-role="share-email"]');
+        const email = input?.value.trim();
+        if (!email) return;
+        await api.grantAccess(state.document.id, email);
+        state.grants = (await api.listGrants(state.document.id)).items;
+        render();
+      }),
+  );
+  root.querySelectorAll("[data-revoke-grant]").forEach((button) =>
+    button.addEventListener("click", () => {
+      const grant = state.grants.find((item) => item.id === button.dataset.revokeGrant);
+      if (!grant) return;
+      state.dialog = collaboratorRemovalConfirmation(grant);
+      state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
+      render();
+    }),
+  );
+  root
+    .querySelector('[data-action="cancel-confirmation"]')
+    ?.addEventListener("click", cancelDestructiveConfirmation);
+  root
+    .querySelector('[data-action="confirm-trash-document"]')
+    ?.addEventListener("click", () => void confirmDestructiveAction());
+  root
+    .querySelector('[data-action="confirm-remove-collaborator"]')
+    ?.addEventListener("click", () => void confirmDestructiveAction());
 }
 
 function bindLayersTree() {
@@ -1669,14 +1830,18 @@ function bindLayersTree() {
       event.preventDefault();
       state.expandedLayerIds.add(element.dataset.nodeId);
       renderLayersTree();
-      currentLayersTree()?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)?.focus();
+      currentLayersTree()
+        ?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)
+        ?.focus();
       return;
     }
     if (event.key === "ArrowLeft" && element.getAttribute("aria-expanded") === "true") {
       event.preventDefault();
       state.expandedLayerIds.delete(element.dataset.nodeId);
       renderLayersTree();
-      currentLayersTree()?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)?.focus();
+      currentLayersTree()
+        ?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)
+        ?.focus();
     }
   });
 }
@@ -1688,7 +1853,10 @@ function bindInspectorControls() {
   root.querySelectorAll("[data-property]").forEach((input) => {
     input.addEventListener("input", () => {
       if (!state.selectedId) return;
-      state.fieldDrafts.set(inspectorFieldKey(input), input.type === "checkbox" ? input.checked : input.value);
+      state.fieldDrafts.set(
+        inspectorFieldKey(input),
+        input.type === "checkbox" ? input.checked : input.value,
+      );
     });
     input.addEventListener("keydown", (event) => {
       if (event.key !== "Escape" || !state.selectedId) return;
@@ -1772,21 +1940,29 @@ function commitInspectorField(input) {
     if (path.length > 0) {
       if (selection.isInstanceDescendant) {
         const propertyValue = setObjectPath(selection.effectiveNode[property], path, value);
-        mutate(state.model, {
-          kind: "set-property-path",
-          nodeId: selection.instanceId,
-          property: "descendants",
-          path: [selection.descendantPath, property],
-          value: propertyValue,
-        }, LOCAL_ORIGIN);
+        mutate(
+          state.model,
+          {
+            kind: "set-property-path",
+            nodeId: selection.instanceId,
+            property: "descendants",
+            path: [selection.descendantPath, property],
+            value: propertyValue,
+          },
+          LOCAL_ORIGIN,
+        );
       } else {
-        mutate(state.model, {
-          kind: "set-property-path",
-          nodeId: selection.sourceNode.id,
-          property,
-          path,
-          value,
-        }, LOCAL_ORIGIN);
+        mutate(
+          state.model,
+          {
+            kind: "set-property-path",
+            nodeId: selection.sourceNode.id,
+            property,
+            path,
+            value,
+          },
+          LOCAL_ORIGIN,
+        );
       }
       state.fieldDrafts.delete(key);
       state.fieldErrors.delete(key);
@@ -1798,15 +1974,23 @@ function commitInspectorField(input) {
     if (editor && changes && isOpenPencilEditableNode(selection.effectiveNode)) {
       editor.updateNodeWithUndo(state.selectedId, changes, `Set ${property}`);
     } else if (selection.isInstanceDescendant) {
-      mutate(state.model, {
-        kind: "set-property-path",
-        nodeId: selection.instanceId,
-        property: "descendants",
-        path: [selection.descendantPath, property],
-        value,
-      }, LOCAL_ORIGIN);
+      mutate(
+        state.model,
+        {
+          kind: "set-property-path",
+          nodeId: selection.instanceId,
+          property: "descendants",
+          path: [selection.descendantPath, property],
+          value,
+        },
+        LOCAL_ORIGIN,
+      );
     } else {
-      mutate(state.model, { kind: "set-property", nodeId: selection.sourceNode.id, property, value }, LOCAL_ORIGIN);
+      mutate(
+        state.model,
+        { kind: "set-property", nodeId: selection.sourceNode.id, property, value },
+        LOCAL_ORIGIN,
+      );
     }
     state.fieldDrafts.delete(key);
     state.fieldErrors.delete(key);
@@ -1814,7 +1998,11 @@ function commitInspectorField(input) {
     state.fieldDrafts.set(key, raw);
     state.fieldErrors.set(key, message(error));
     render();
-    root.querySelector(`[data-property="${CSS.escape(property)}"][data-path="${CSS.escape(input.dataset.path ?? "")}"]`)?.focus();
+    root
+      .querySelector(
+        `[data-property="${CSS.escape(property)}"][data-path="${CSS.escape(input.dataset.path ?? "")}"]`,
+      )
+      ?.focus();
   }
 }
 
@@ -1866,7 +2054,12 @@ function handleKeyboardShortcut(event) {
   }
   if (state.route !== "editor" || !state.model || event.defaultPrevented) return;
   const target = event.target;
-  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable) return;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target?.isContentEditable
+  )
+    return;
   const command = event.metaKey || event.ctrlKey;
   if (command && event.key.toLowerCase() === "z") {
     event.preventDefault();
@@ -1886,11 +2079,11 @@ function handleKeyboardShortcut(event) {
   }
   if (target instanceof Element && target.closest("button, select, a[href]")) return;
   if (
-    event.key === "Enter"
-    && !event.shiftKey
-    && !event.altKey
-    && !command
-    && beginSelectedTextEditing({
+    event.key === "Enter" &&
+    !event.shiftKey &&
+    !event.altKey &&
+    !command &&
+    beginSelectedTextEditing({
       editor: state.engineSurface?.editor,
       selection: currentCanvasSelection(),
     })
@@ -1907,7 +2100,8 @@ function handleKeyboardShortcut(event) {
   if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key) && state.selectedId) {
     event.preventDefault();
     const amount = event.shiftKey ? 10 : 1;
-    const horizontal = event.key === "ArrowLeft" ? -amount : event.key === "ArrowRight" ? amount : 0;
+    const horizontal =
+      event.key === "ArrowLeft" ? -amount : event.key === "ArrowRight" ? amount : 0;
     const vertical = event.key === "ArrowUp" ? -amount : event.key === "ArrowDown" ? amount : 0;
     state.engineSurface?.editor.nudgeSelected(horizontal, vertical);
     return;
@@ -2011,18 +2205,31 @@ function renderDialog() {
     );
   }
   if (state.dialog === "menu") {
-    return dialog("Document actions", `<div class="grant-list">${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
+    return dialog(
+      "Document actions",
+      `<div class="grant-list">${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`,
+    );
   }
   if (state.dialog === "compatibility") {
-    return dialog("Compatibility review", `<p class="muted">Canvas preserves the original design data. The objects below are not represented faithfully by the current renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
+    return dialog(
+      "Rendering issues",
+      `<p class="muted">Canvas preserves the original design data. The objects below are not represented faithfully by the current renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`,
+    );
   }
   if (state.dialog === "share") {
-    return dialog("Share document", `<p class="muted">Add editors by their Penkra Account email. No email will be sent.</p><div class="share-form"><input class="field" data-role="share-email" type="email" placeholder="name@example.com" aria-label="Collaborator email" /><button class="button primary" data-action="grant">Add editor</button></div><div class="grant-list">${state.grants.map((grant) => `<div class="grant-row"><div><strong>${escapeHtml(grant.email)}</strong><span>${grant.status === "active" ? "Editor" : "Pending account"}</span></div><button class="button danger" data-revoke-grant="${grant.id}">Remove</button></div>`).join("") || `<p class="muted">No other editors have access.</p>`}</div>`);
+    return dialog(
+      "Share document",
+      `<p class="muted">Add editors by their Penkra Account email. No email will be sent.</p><div class="share-form"><input class="field" data-role="share-email" type="email" placeholder="name@example.com" aria-label="Collaborator email" /><button class="button primary" data-action="grant">Add editor</button></div><div class="grant-list">${state.grants.map((grant) => `<div class="grant-row"><div><strong>${escapeHtml(grant.email)}</strong><span>${grant.status === "active" ? "Editor" : "Pending account"}</span></div><button class="button danger" data-revoke-grant="${grant.id}">Remove</button></div>`).join("") || `<p class="muted">No other editors have access.</p>`}</div>`,
+    );
   }
   return "";
 }
 
-function dialog(title, body, actions = '<button class="button" data-action="close-dialog">Done</button>') {
+function dialog(
+  title,
+  body,
+  actions = '<button class="button" data-action="close-dialog">Done</button>',
+) {
   return `<div class="modal-backdrop"><section class="dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}"><header class="dialog-head"><h2>${escapeHtml(title)}</h2></header><div class="dialog-body">${body}</div><footer class="dialog-actions">${actions}</footer></section></div>`;
 }
 
@@ -2070,7 +2277,9 @@ async function confirmDestructiveAction() {
     }
     if (result === "permanently-deleted-document") {
       state.dialog = null;
-      state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== confirmation.documentId);
+      state.trashedDocuments = state.trashedDocuments.filter(
+        (item) => item.id !== confirmation.documentId,
+      );
       setToast("Document permanently deleted.");
       render();
       return;
@@ -2094,7 +2303,11 @@ function focusRequestedControl() {
 function trapDialogFocus(event) {
   const dialogElement = root.querySelector('[role="dialog"]');
   if (!dialogElement) return;
-  const controls = [...dialogElement.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')];
+  const controls = [
+    ...dialogElement.querySelectorAll(
+      'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+    ),
+  ];
   if (controls.length === 0) return;
   const first = controls[0];
   const last = controls.at(-1);
@@ -2122,7 +2335,10 @@ async function act(action) {
 
 function setToast(text, error = false) {
   state.toast = { text, error };
-  setTimeout(() => { state.toast = null; render(); }, 3_000);
+  setTimeout(() => {
+    state.toast = null;
+    render();
+  }, 3_000);
 }
 
 function showTransientToast(text, error = false) {
@@ -2138,7 +2354,9 @@ function showTransientToast(text, error = false) {
 }
 
 function renderToast() {
-  return state.toast ? `<div class="toast ${state.toast.error ? "error-copy" : ""}">${escapeHtml(state.toast.text)}</div>` : "";
+  return state.toast
+    ? `<div class="toast ${state.toast.error ? "error-copy" : ""}">${escapeHtml(state.toast.text)}</div>`
+    : "";
 }
 
 function fillValue(fill) {
@@ -2174,9 +2392,17 @@ function message(error) {
 }
 
 function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>'"]/gu, (character) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
-  })[character]);
+  return String(value ?? "").replace(
+    /[&<>'"]/gu,
+    (character) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;",
+      })[character],
+  );
 }
 
 function icon(name) {
@@ -2190,7 +2416,8 @@ function icon(name) {
     frame: '<path d="M5 5h14v14H5z"/><path d="M3 8h4M17 8h4M8 3v4M8 17v4"/>',
     hand: '<path d="M7.5 11V6.5a1.5 1.5 0 0 1 3 0V10 5.5a1.5 1.5 0 0 1 3 0V10 7a1.5 1.5 0 0 1 3 0v4-2a1.5 1.5 0 0 1 3 0v5.5c0 4-2.5 6.5-6.5 6.5h-1.2a6 6 0 0 1-4.8-2.4L4.3 15a1.6 1.6 0 0 1 2.4-2.1L9 15"/>',
     more: '<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>',
-    refresh: '<path d="M20 11a8 8 0 0 0-14.9-4M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14.9 4M20 20v-5h-5"/>',
+    refresh:
+      '<path d="M20 11a8 8 0 0 0-14.9-4M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14.9 4M20 20v-5h-5"/>',
     redo: '<path d="M18 8v5h-5"/><path d="M18 13a7 7 0 1 0-1.7 4.6"/>',
     rectangle: '<rect x="5" y="7" width="14" height="10" rx="1"/>',
     text: '<path d="M5 6h14M12 6v12M8 18h8"/>',

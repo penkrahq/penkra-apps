@@ -6,6 +6,7 @@ import test from "node:test";
 
 import { createCanvasMigrationCopy, migrateCanvasDocument } from "./document-migration.mjs";
 import { validateCanvasDocument } from "./canvas-schema.mjs";
+import { resolveCanvasDocument } from "./canvas-resolver.mjs";
 import { createDocumentModel, encodeState } from "./document-model.mjs";
 
 test("the complete migration pipeline produces one schema-valid canonical document", () => {
@@ -25,8 +26,8 @@ test("the complete migration pipeline produces one schema-valid canonical docume
   assert.equal(result.document.module, "web");
   assert.equal(result.document.children[0].role, undefined);
   assert.equal(result.document.children[1].role, "route");
-  assert.equal(result.document.children[1].children[0].type, "frame");
-  assert.equal(result.document.children[1].children[0].children[0].content, "Changed");
+  assert.equal(result.document.children[1].children[0].type, "ref");
+  assert.deepEqual(result.document.children[1].children[0].descendants, { label: { content: "Changed" } });
   assert.equal(result.document.children[1].children[1].type, "text");
   assert.deepEqual(result.document.children[1].padding, { start: 10, end: 20 });
   assert.deepEqual(result.document.variables.ink, { tokenType: "color", cascade: [
@@ -186,7 +187,122 @@ test("migration preserves legacy ref variants as component enum props without cl
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 
-test("migration materializes refs whose legacy targets are nested in an export frame", () => {
+test("migration forwards a component variant through nested components that depend on it", () => {
+  const source = {
+    module: "generic", themes: { harness: ["claude", "codex"] },
+    variables: {
+      claudeVisible: { type: "boolean", value: [
+        { value: true, theme: { harness: "claude" } },
+        { value: false, theme: { harness: "codex" } },
+      ] },
+      codexVisible: { type: "boolean", value: [
+        { value: false, theme: { harness: "claude" } },
+        { value: true, theme: { harness: "codex" } },
+      ] },
+    },
+    paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "identity", type: "frame", reusable: true, children: [
+        { id: "claude", type: "text", content: "Claude", enabled: "$claudeVisible" },
+        { id: "codex", type: "text", content: "Codex", enabled: "$codexVisible" },
+      ] },
+      { id: "row", type: "frame", reusable: true, children: [
+        { id: "identity-use", type: "ref", ref: "identity" },
+      ] },
+      { id: "selected", type: "ref", ref: "row", theme: { harness: "codex" } },
+    ],
+  };
+
+  const migrated = migrateCanvasDocument(source).document;
+  const [identity, row, selected] = migrated.children;
+  assert.deepEqual(row.properties.harness, { type: "enum", values: ["claude", "codex"], default: "claude" });
+  assert.deepEqual(identity.properties.harness, { type: "enum", values: ["claude", "codex"], default: "claude" });
+  assert.deepEqual(row.children[0].bind, { harness: "$props.harness" });
+  assert.deepEqual(selected.props, { harness: "codex" });
+  assert.deepEqual(identity.children[1].enabled, [
+    { value: false, when: { props: { harness: "claude" } } },
+    { value: true, when: { props: { harness: "codex" } } },
+  ]);
+  const resolved = resolveCanvasDocument(migrated).document.children[2];
+  assert.equal(resolved.children[0].children[0].enabled, false);
+  assert.equal(resolved.children[0].children[1].enabled, true);
+});
+
+test("migration preserves nested legacy variants as typed descendant props and scoped modes", () => {
+  const source = {
+    module: "generic", themes: {
+      state: ["default", "active"], mode: ["light", "dark"],
+    }, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "badge", type: "frame", reusable: true, children: [
+        { id: "surface", type: "rectangle", fill: [{ value: "#777" }, { value: "#111", when: { state: "active" } }] },
+      ] },
+      { id: "card", type: "frame", reusable: true, children: [
+        { id: "layout", type: "frame", children: [
+          { id: "status", type: "ref", ref: "badge", theme: { state: "default" } },
+          { id: "copy", type: "text", content: "Text", theme: { mode: "light" } },
+        ] },
+      ] },
+      { id: "instance", type: "ref", ref: "card", descendants: {
+        status: { theme: { state: "active" } },
+        copy: { theme: { mode: "dark" } },
+      } },
+    ],
+  };
+
+  const result = migrateCanvasDocument(source);
+  const [badge, card, instance] = result.document.children;
+  assert.equal(card.children[0].children[0].type, "ref");
+  assert.deepEqual(badge.properties.state, { type: "enum", values: ["default", "active"], default: "default" });
+  assert.deepEqual(instance.descendants["layout/status"].props, { state: "active" });
+  assert.deepEqual(instance.descendants["layout/copy"].modes, { appearance: "dark" });
+  assert.doesNotThrow(() => validateCanvasDocument(result.document));
+});
+
+test("migration lifts a native descendant variant to its nearest component boundary and preserves token conditions", () => {
+  const source = {
+    module: "generic",
+    themes: { state: ["default", "open"], mode: ["light", "dark"] },
+    variables: {
+      pickerVisible: { type: "boolean", value: [
+        { value: false, theme: { state: "default" } },
+        { value: true, theme: { state: "open" } },
+      ] },
+      pickerFill: { type: "color", value: [
+        { value: "#fff", theme: { mode: "light" } },
+        { value: "#111", theme: { mode: "dark" } },
+      ] },
+    },
+    paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "composer", type: "frame", reusable: true, children: [
+        { id: "trigger", type: "frame", theme: { state: "default" }, children: [
+          { id: "picker", type: "frame", enabled: "$pickerVisible", fill: "$pickerFill", children: [] },
+        ] },
+      ] },
+      { id: "screen", type: "ref", ref: "composer", theme: { state: "default" }, descendants: {
+        trigger: { theme: { state: "open" } },
+      } },
+    ],
+  };
+
+  const result = migrateCanvasDocument(source).document;
+  const [composer, screen] = result.children;
+  assert.deepEqual(composer.properties.state__trigger, {
+    type: "enum", values: ["default", "open"], default: "default",
+  });
+  assert.deepEqual(screen.props, { state: "default", state__trigger: "open" });
+  assert.equal(screen.descendants, undefined);
+  assert.deepEqual(composer.children[0].children[0].enabled, [
+    { value: false, when: { props: { state__trigger: "default" } } },
+    { value: true, when: { props: { state__trigger: "open" } } },
+  ]);
+  assert.equal(composer.children[0].children[0].fill, "${pickerFill}");
+  assert.deepEqual(result.axes, { appearance: { modes: [{ name: "light" }, { name: "dark" }] } });
+  assert.doesNotThrow(() => validateCanvasDocument(result));
+});
+
+test("migration preserves refs whose targets are nested in an export frame", () => {
   const source = {
     module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
     children: [{ id: "route", type: "frame", role: "route", width: 800, height: 600, children: [
@@ -199,13 +315,11 @@ test("migration materializes refs whose legacy targets are nested in an export f
   };
   const result = migrateCanvasDocument(source);
   const instance = result.document.children[0].children[1];
-  assert.equal(instance.type, "frame");
+  assert.equal(instance.type, "ref");
   assert.equal(instance.id, "instance");
   assert.equal(instance.x, 20);
-  assert.equal(instance.children[0].id, "instance/nested-label");
-  assert.equal(instance.children[1].geometry, "M 0 0");
-  assert.ok(result.notes.some((note) => note.includes("legacy target was nested inside an export frame")));
-  assert.ok(result.notes.some((note) => note.includes("intentionally empty legacy path")));
+  assert.equal(instance.ref, "nested-component");
+  assert.equal(result.document.children[0].children[0].children[1].geometry, "M 0 0");
   assert.doesNotThrow(() => validateCanvasDocument(result.document));
 });
 

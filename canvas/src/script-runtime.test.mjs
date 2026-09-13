@@ -18,6 +18,36 @@ test("generic module assignment preserves artwork and is one-way", async () => {
   await assert.rejects(() => executeCanvasScript(roles, 'SetModule("deck");'), /no role-bearing frames/u);
 });
 
+test("UpdateDocument exactly replaces bounded root metadata without changing nodes or module", async () => {
+  const source = {
+    module: "web", lang: "en", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [{ id: "route", type: "frame", role: "route", width: 100, height: 100 }],
+  };
+  const result = await executeCanvasScript(source, `return UpdateDocument({
+    lang: null,
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: { ink: { tokenType: "color", cascade: [{ value: "#111111" }] } },
+    paragraphStyles: { body: { fontSize: 14 } },
+    imports: {},
+    flows: []
+  });`);
+  assert.equal(result.changed, true);
+  assert.equal(result.document.lang, undefined);
+  assert.equal(result.document.module, "web");
+  assert.deepEqual(result.document.children, source.children);
+  assert.deepEqual(result.result, ["lang", "axes", "variables", "paragraphStyles", "imports", "flows"]);
+  assert.deepEqual(result.touchedNodeIds, []);
+});
+
+test("UpdateDocument rejects structural and publication root changes", async () => {
+  const source = { module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [] };
+  for (const code of [
+    'UpdateDocument({ children: [] });',
+    'UpdateDocument({ module: "web" });',
+    'UpdateDocument({ library: {} });',
+  ]) await assert.rejects(() => executeCanvasScript(source, code), /cannot change root property/u);
+});
+
 test("inspection context is requested only when scripts mention inspection fields", () => {
   assert.equal(scriptNeedsInspection("Print(1);"), false);
   assert.equal(scriptNeedsInspection('return Get("#a")[0].bounds;'), true);

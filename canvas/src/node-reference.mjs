@@ -69,7 +69,9 @@ export function resolveCanvasNodeSelection({ document, graph, selectedId }) {
     ? canonicalOverrides[descendantPath]
     : null;
   const effectiveNode = sourceNode
-    ? { ...structuredClone(sourceNode), ...structuredClone(override ?? {}) }
+    ? override?.replace
+      ? { ...structuredClone(override.replace), id: sourceNode.id }
+      : { ...structuredClone(sourceNode), ...structuredClone(override ?? {}) }
     : null;
 
   return {

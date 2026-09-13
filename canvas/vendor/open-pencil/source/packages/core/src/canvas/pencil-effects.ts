@@ -19,6 +19,44 @@ type ShaderDefinition = {
   uniforms: ShaderUniform[]
   textures: { name: string; sha256: string }[]
   values: Record<string, unknown>
+  fallback?: {
+    type: 'diagonal-hatch'
+    color: string
+    spacing: number
+    lineWidth: number
+  }
+}
+
+function applyShaderFallback(r: SkiaRenderer, definition: ShaderDefinition): boolean {
+  const fallback = definition.fallback
+  if (fallback?.type !== 'diagonal-hatch') return false
+  const spacing = Math.max(1, fallback.spacing)
+  const recorder = new r.ck.PictureRecorder()
+  const canvas = recorder.beginRecording(r.ck.LTRBRect(0, 0, spacing, spacing))
+  const paint = new r.ck.Paint()
+  const color = parseColor(fallback.color)
+  paint.setAntiAlias(true)
+  paint.setStyle(r.ck.PaintStyle.Stroke)
+  paint.setStrokeWidth(Math.max(0.25, fallback.lineWidth))
+  paint.setColor(r.ck.Color4f(color.r, color.g, color.b, color.a))
+  canvas.drawLine(-spacing, 0, 0, spacing, paint)
+  canvas.drawLine(0, 0, spacing, spacing, paint)
+  canvas.drawLine(spacing, 0, spacing * 2, spacing, paint)
+  const picture = recorder.finishRecordingAsPicture()
+  const canvasMatrix = r.pencilShaderRenderCanvas?.getTotalMatrix()
+  const deviceAnchoredMatrix = canvasMatrix ? r.ck.Matrix.invert(canvasMatrix) : undefined
+  const shader = picture.makeShader(
+    r.ck.TileMode.Repeat,
+    r.ck.TileMode.Repeat,
+    r.ck.FilterMode.Nearest,
+    deviceAnchoredMatrix ?? undefined,
+    r.ck.LTRBRect(0, 0, spacing, spacing)
+  )
+  r.fillPaint.setShader(shader)
+  picture.delete()
+  paint.delete()
+  recorder.delete()
+  return true
 }
 type MeshPoint = {
   position: [number, number]
@@ -158,17 +196,7 @@ function imageTexture(r: SkiaRenderer, hash: string | undefined, graph: SceneGra
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-  gl.texImage2D(
-    gl.TEXTURE_2D,
-    0,
-    gl.RGBA,
-    width,
-    height,
-    0,
-    gl.RGBA,
-    gl.UNSIGNED_BYTE,
-    pixels
-  )
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels)
   const result = { texture, width, height }
   r.pencilShaderTextures.set(hash, result)
   return result
@@ -362,17 +390,7 @@ function backdropTexture(r: SkiaRenderer, node: SceneNode, width: number, height
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-  gl.texImage2D(
-    gl.TEXTURE_2D,
-    0,
-    gl.RGBA,
-    width,
-    height,
-    0,
-    gl.RGBA,
-    gl.UNSIGNED_BYTE,
-    output
-  )
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, output)
   return { texture, width, height, transient: true }
 }
 
@@ -458,9 +476,9 @@ export function applyPencilShaderFill(
       image = renderShader(r, definition, node, graph)
     } catch (error) {
       console.error('Pencil shader render failed', error)
-      return false
+      return applyShaderFallback(r, definition)
     }
-    if (!image) return false
+    if (!image) return applyShaderFallback(r, definition)
     if (!dynamic) r.pencilShaderImages.set(key, image)
   }
   const shader = image.makeShaderOptions(
@@ -535,7 +553,11 @@ function evaluateMeshSurface(patch: MeshPatch, u: number, v: number): Point {
     p11.position,
     v
   )
-  const bilinear = pointMix(pointMix(p00.position, p10.position, u), pointMix(p01.position, p11.position, u), v)
+  const bilinear = pointMix(
+    pointMix(p00.position, p10.position, u),
+    pointMix(p01.position, p11.position, u),
+    v
+  )
   const crossed = pointAdd(pointMix(top, bottom, v), pointMix(left, right, u))
   return [crossed[0] - bilinear[0], crossed[1] - bilinear[1]]
 }
@@ -552,10 +574,30 @@ function meshSegments(patch: MeshPatch, width: number, height: number): number {
     (center[1] - bilinearCenter[1]) * height
   )
   const boundaryControls: [Point, Point, Point, Point][] = [
-    [patch.p00.position, pointAdd(patch.p00.position, patch.p00.rightHandle), pointAdd(patch.p10.position, patch.p10.leftHandle), patch.p10.position],
-    [patch.p01.position, pointAdd(patch.p01.position, patch.p01.rightHandle), pointAdd(patch.p11.position, patch.p11.leftHandle), patch.p11.position],
-    [patch.p00.position, pointAdd(patch.p00.position, patch.p00.bottomHandle), pointAdd(patch.p01.position, patch.p01.topHandle), patch.p01.position],
-    [patch.p10.position, pointAdd(patch.p10.position, patch.p10.bottomHandle), pointAdd(patch.p11.position, patch.p11.topHandle), patch.p11.position]
+    [
+      patch.p00.position,
+      pointAdd(patch.p00.position, patch.p00.rightHandle),
+      pointAdd(patch.p10.position, patch.p10.leftHandle),
+      patch.p10.position
+    ],
+    [
+      patch.p01.position,
+      pointAdd(patch.p01.position, patch.p01.rightHandle),
+      pointAdd(patch.p11.position, patch.p11.leftHandle),
+      patch.p11.position
+    ],
+    [
+      patch.p00.position,
+      pointAdd(patch.p00.position, patch.p00.bottomHandle),
+      pointAdd(patch.p01.position, patch.p01.topHandle),
+      patch.p01.position
+    ],
+    [
+      patch.p10.position,
+      pointAdd(patch.p10.position, patch.p10.bottomHandle),
+      pointAdd(patch.p11.position, patch.p11.topHandle),
+      patch.p11.position
+    ]
   ]
   for (const curve of boundaryControls) {
     for (const t of [0.25, 0.5, 0.75]) {
@@ -563,7 +605,10 @@ function meshSegments(patch: MeshPatch, width: number, height: number): number {
       const chordPoint = pointMix(curve[0], curve[3], t)
       error = Math.max(
         error,
-        Math.hypot((curvePoint[0] - chordPoint[0]) * width, (curvePoint[1] - chordPoint[1]) * height)
+        Math.hypot(
+          (curvePoint[0] - chordPoint[0]) * width,
+          (curvePoint[1] - chordPoint[1]) * height
+        )
       )
     }
   }

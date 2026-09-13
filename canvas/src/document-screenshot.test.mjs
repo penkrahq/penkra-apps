@@ -5,6 +5,39 @@ import test from "node:test";
 import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
 import { takeDocumentScreenshots } from "./document-screenshot.mjs";
 
+test("Canvas-owned empty-slot hatching renders without a browser WebGL context", async () => {
+  const document = {
+    children: [{
+      id: "slot", type: "frame", width: 80, height: 50,
+      provenance: { slotTarget: { instanceId: "use", name: "content" } },
+      children: [],
+    }],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["slot"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image, "CanvasKit should decode the empty-slot screenshot PNG");
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(), height: image.height(),
+      colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB,
+    });
+    let purple = 0;
+    let transparent = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      const [red, green, blue, alpha] = pixels.slice(index, index + 4);
+      if (alpha < 16) transparent += 1;
+      if (alpha > 96 && blue > red && red > green) purple += 1;
+    }
+    assert.ok(purple > 100, "the renderer-native diagonal hatch should remain visible");
+    assert.ok(transparent > 100, "the hatch should retain transparent spacing between lines");
+  } finally {
+    image.delete();
+  }
+});
+
 test("an exact nested component-instance screenshot includes its overridden text", async () => {
   const document = {
     version: "2.15",

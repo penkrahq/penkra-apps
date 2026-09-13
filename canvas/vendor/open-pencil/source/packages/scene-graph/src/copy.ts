@@ -21,7 +21,7 @@ import type {
   Stroke,
   StyleRun
 } from './'
-import { createDefaultSourceMetadata } from './node-defaults'
+import { createDefaultSourceMetadata, getSharedGeneratedSourceMetadata } from './node-defaults'
 import { cloneVectorNetwork } from './vector-network'
 
 // --- Individual copy functions ---
@@ -70,6 +70,18 @@ export function copyStyleRun(r: StyleRun): StyleRun {
 }
 
 // --- Array copy functions ---
+
+const SHARED_EMPTY_ARRAY: never[] = []
+Object.freeze(SHARED_EMPTY_ARRAY)
+const SHARED_EMPTY_RECORD: Record<string, never> = Object.freeze({})
+
+function sharedEmptyArray<T>(): T[] {
+  return SHARED_EMPTY_ARRAY as T[]
+}
+
+function copyRecord<T>(record: Record<string, T>): Record<string, T> {
+  return Object.keys(record).length === 0 ? SHARED_EMPTY_RECORD : { ...record }
+}
 
 const internalCopySources = new WeakMap<object, object>()
 
@@ -150,7 +162,7 @@ export function scaleGeometryPaths(paths: GeometryPath[], scaleX: number, scaleY
 /** Copy an optional array: non-empty → mapped, empty → [], undefined → undefined. */
 function copyOpt<T, U>(arr: T[] | undefined, fn: (arr: T[]) => U[]): U[] | undefined {
   if (arr === undefined) return undefined
-  return arr.length > 0 ? fn(arr) : []
+  return arr.length > 0 ? fn(arr) : sharedEmptyArray<U>()
 }
 
 function copyGradientStop(gs: GradientStop): GradientStop {
@@ -158,19 +170,19 @@ function copyGradientStop(gs: GradientStop): GradientStop {
 }
 
 function copySpread<T extends object>(arr: T[] | undefined): T[] {
-  return arr?.map((item) => ({ ...item })) ?? []
+  return arr?.length ? arr.map((item) => ({ ...item })) : sharedEmptyArray<T>()
 }
 
 function copyPropertyDefs(
   defs: ComponentPropertyDefinition[] | undefined
 ): ComponentPropertyDefinition[] {
-  return (
-    defs?.map((d) => ({
-      ...d,
-      variantOptions: d.variantOptions ? [...d.variantOptions] : undefined,
-      preferredValues: d.preferredValues ? [...d.preferredValues] : undefined
-    })) ?? []
-  )
+  return defs?.length
+    ? defs.map((d) => ({
+        ...d,
+        variantOptions: d.variantOptions ? [...d.variantOptions] : undefined,
+        preferredValues: d.preferredValues ? [...d.preferredValues] : undefined
+      }))
+    : sharedEmptyArray<ComponentPropertyDefinition>()
 }
 
 function copyGlyphs(glyphs: FigmaDerivedTextGlyph[] | null): FigmaDerivedTextGlyph[] | null {
@@ -193,7 +205,7 @@ function copyArcData(a: ArcData): ArcData {
  * would otherwise share by reference. When adding a mutable SceneNode field,
  * add its copy behavior here or document why sharing is intentional.
  */
-export type NodeCloneMode = 'deep' | 'fig-import'
+export type NodeCloneMode = 'deep' | 'fig-import' | 'compact-instance'
 
 export function cloneNodeProps(
   src: SceneNode,
@@ -216,8 +228,8 @@ export function cloneNodeProps(
   return {
     ...rest,
     ...(componentId !== null ? { componentId } : {}),
-    boundVariables: { ...src.boundVariables },
-    variableModes: { ...src.variableModes },
+    boundVariables: copyRecord(src.boundVariables),
+    variableModes: copyRecord(src.variableModes),
     overrides: Object.keys(src.overrides).length > 0 ? structuredClone(src.overrides) : {},
     fills: copyOpt(src.fills, (value) => markCopySource(value, copyFills(value))),
     strokes: copyOpt(src.strokes, (value) => markCopySource(value, copyStrokes(value))),
@@ -226,7 +238,7 @@ export function cloneNodeProps(
     styleRuns: copyOpt(src.styleRuns, (value) => markCopySource(value, copyStyleRuns(value))),
     // Generated instance descendants have no independent Figma provenance. Retaining the source
     // component's opaque raw payload here duplicates megabytes of metadata per instance.
-    source: componentId === null ? structuredClone(src.source) : createDefaultSourceMetadata(),
+    source: componentId === null ? structuredClone(src.source) : getSharedGeneratedSourceMetadata(),
     dashPattern: copyOpt(src.dashPattern, (a) => [...a]),
     fontVariations: copyOpt(src.fontVariations, (a) => a.map((v) => ({ ...v }))),
     fontFeatures: copyOpt(src.fontFeatures, (a) => a.map((v) => ({ ...v }))),
@@ -237,13 +249,13 @@ export function cloneNodeProps(
     gridTemplateRows: copySpread(src.gridTemplateRows),
     componentPropertyDefinitions: copyPropertyDefs(src.componentPropertyDefinitions),
     componentPropertyReferences: copySpread(src.componentPropertyReferences),
-    componentPropertyAssignments: { ...src.componentPropertyAssignments },
+    componentPropertyAssignments: copyRecord(src.componentPropertyAssignments),
     symbolLinks: copySpread(src.symbolLinks),
     variantPropSpecs: copySpread(src.variantPropSpecs),
     pluginData: copySpread(src.pluginData),
     pluginRelaunchData: copySpread(src.pluginRelaunchData),
     exportSettings: copySpread(src.exportSettings),
-    componentPropertyValues: { ...src.componentPropertyValues },
+    componentPropertyValues: copyRecord(src.componentPropertyValues),
     figmaDerivedLayout: src.figmaDerivedLayout ? { ...src.figmaDerivedLayout } : null,
     arcData: src.arcData ? copyArcData(src.arcData) : null,
     vectorNetwork: src.vectorNetwork ? cloneVectorNetwork(src.vectorNetwork) : null,

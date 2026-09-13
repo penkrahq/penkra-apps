@@ -364,6 +364,12 @@ function createDefaultSourceMetadata() {
     }
   };
 }
+function getSharedGeneratedSourceMetadata() {
+  return sharedGeneratedSourceMetadata;
+}
+function isSharedGeneratedSourceMetadata(source) {
+  return source === sharedGeneratedSourceMetadata;
+}
 function createDefaultNode(generateId, type, overrides = {}) {
   return {
     id: generateId(),
@@ -511,6 +517,25 @@ function createDefaultNode(generateId, type, overrides = {}) {
     ...overrides
   };
 }
+function createCompactDefaultNode(generateId, type, overrides = {}) {
+  compactNodePrototype ??= createDefaultNode(() => "__compact_defaults__", "FRAME");
+  const node = Object.assign(Object.create(compactNodePrototype), {
+    id: generateId(),
+    type,
+    name: type.charAt(0) + type.slice(1).toLowerCase(),
+    parentId: null,
+    childIds: []
+  });
+  for (const [key, value] of Object.entries(overrides))
+    if (!(value === null || typeof value !== "object" && typeof value !== "function") || !Object.is(value, compactNodePrototype[key]))
+      node[key] = value;
+  for (const [key, value] of Object.entries(compactNodePrototype)) {
+    if (value === null || typeof value !== "object" || Object.hasOwn(node, key))
+      continue;
+    node[key] = structuredClone(value);
+  }
+  return node;
+}
 function mergeVectorNetworks(networks) {
   const vertices = [];
   const segments = [];
@@ -647,6 +672,12 @@ function copyStyleRun(r) {
     }
   };
 }
+function sharedEmptyArray() {
+  return SHARED_EMPTY_ARRAY;
+}
+function copyRecord(record) {
+  return Object.keys(record).length === 0 ? SHARED_EMPTY_RECORD : { ...record };
+}
 function markCopySource(source, copy) {
   internalCopySources.set(copy, internalCopySources.get(source) ?? source);
   return copy;
@@ -714,7 +745,7 @@ function scaleGeometryPaths(paths, scaleX, scaleY) {
 function copyOpt(arr, fn) {
   if (arr === undefined)
     return;
-  return arr.length > 0 ? fn(arr) : [];
+  return arr.length > 0 ? fn(arr) : sharedEmptyArray();
 }
 function copyGradientStop(gs) {
   return {
@@ -723,14 +754,14 @@ function copyGradientStop(gs) {
   };
 }
 function copySpread(arr) {
-  return arr?.map((item) => ({ ...item })) ?? [];
+  return arr?.length ? arr.map((item) => ({ ...item })) : sharedEmptyArray();
 }
 function copyPropertyDefs(defs) {
-  return defs?.map((d) => ({
+  return defs?.length ? defs.map((d) => ({
     ...d,
     variantOptions: d.variantOptions ? [...d.variantOptions] : undefined,
     preferredValues: d.preferredValues ? [...d.preferredValues] : undefined
-  })) ?? [];
+  })) : sharedEmptyArray();
 }
 function copyGlyphs(glyphs) {
   return glyphs ? glyphs.map((g) => ({
@@ -761,15 +792,15 @@ function cloneNodeProps(src, componentId, mode = "deep") {
   return {
     ...rest,
     ...componentId !== null ? { componentId } : {},
-    boundVariables: { ...src.boundVariables },
-    variableModes: { ...src.variableModes },
+    boundVariables: copyRecord(src.boundVariables),
+    variableModes: copyRecord(src.variableModes),
     overrides: Object.keys(src.overrides).length > 0 ? structuredClone(src.overrides) : {},
     fills: copyOpt(src.fills, (value) => markCopySource(value, copyFills(value))),
     strokes: copyOpt(src.strokes, (value) => markCopySource(value, copyStrokes(value))),
     effects: copyOpt(src.effects, (value) => markCopySource(value, copyEffects(value))),
     layoutGrids: copyOpt(src.layoutGrids, copyLayoutGrids),
     styleRuns: copyOpt(src.styleRuns, (value) => markCopySource(value, copyStyleRuns(value))),
-    source: componentId === null ? structuredClone(src.source) : createDefaultSourceMetadata(),
+    source: componentId === null ? structuredClone(src.source) : getSharedGeneratedSourceMetadata(),
     dashPattern: copyOpt(src.dashPattern, (a) => [...a]),
     fontVariations: copyOpt(src.fontVariations, (a) => a.map((v) => ({ ...v }))),
     fontFeatures: copyOpt(src.fontFeatures, (a) => a.map((v) => ({ ...v }))),
@@ -780,13 +811,13 @@ function cloneNodeProps(src, componentId, mode = "deep") {
     gridTemplateRows: copySpread(src.gridTemplateRows),
     componentPropertyDefinitions: copyPropertyDefs(src.componentPropertyDefinitions),
     componentPropertyReferences: copySpread(src.componentPropertyReferences),
-    componentPropertyAssignments: { ...src.componentPropertyAssignments },
+    componentPropertyAssignments: copyRecord(src.componentPropertyAssignments),
     symbolLinks: copySpread(src.symbolLinks),
     variantPropSpecs: copySpread(src.variantPropSpecs),
     pluginData: copySpread(src.pluginData),
     pluginRelaunchData: copySpread(src.pluginRelaunchData),
     exportSettings: copySpread(src.exportSettings),
-    componentPropertyValues: { ...src.componentPropertyValues },
+    componentPropertyValues: copyRecord(src.componentPropertyValues),
     figmaDerivedLayout: src.figmaDerivedLayout ? { ...src.figmaDerivedLayout } : null,
     arcData: src.arcData ? copyArcData(src.arcData) : null,
     vectorNetwork: src.vectorNetwork ? cloneVectorNetwork(src.vectorNetwork) : null,
@@ -795,9 +826,10 @@ function cloneNodeProps(src, componentId, mode = "deep") {
     gridPosition: src.gridPosition ? { ...src.gridPosition } : null
   };
 }
-var CONTAINER_TYPES, internalCopySources;
+var sharedGeneratedSourceMetadata, compactNodePrototype = null, CONTAINER_TYPES, SHARED_EMPTY_ARRAY, SHARED_EMPTY_RECORD, internalCopySources;
 var init_copy = __esm(() => {
   init_constants();
+  sharedGeneratedSourceMetadata = createDefaultSourceMetadata();
   CONTAINER_TYPES = /* @__PURE__ */ new Set([
     "CANVAS",
     "FRAME",
@@ -808,6 +840,9 @@ var init_copy = __esm(() => {
     "COMPONENT_SET",
     "INSTANCE"
   ]);
+  SHARED_EMPTY_ARRAY = [];
+  Object.freeze(SHARED_EMPTY_ARRAY);
+  SHARED_EMPTY_RECORD = Object.freeze({});
   internalCopySources = /* @__PURE__ */ new WeakMap;
 });
 
@@ -1813,15 +1848,16 @@ function createMappedComponentClone(graph, src, componentId, destParentId, mode 
   const pencilNodeId = typeof src.pencilNodeId === "string" ? src.pencilNodeId : null;
   const pencilAddress = typeof parent?.pencilAddress === "string" && pencilNodeId ? `${parent.pencilAddress}/${pencilNodeId}` : null;
   const props = cloneNodeProps(src, componentId, mode);
-  if (!pencilAddress)
-    return graph.createNode(src.type, destParentId, props);
+  if (!pencilAddress || !pencilNodeId)
+    return mode === "compact-instance" ? graph.createCompactNode(src.type, destParentId, props) : graph.createNode(src.type, destParentId, props);
   if (graph.nodes.has(pencilAddress))
     throw new Error(`Duplicate Pencil instance address: ${pencilAddress}`);
-  return graph.createNodeWithId(pencilAddress, src.type, destParentId, {
+  const mappedProps = {
     ...props,
     pencilNodeId,
     pencilAddress
-  });
+  };
+  return mode === "compact-instance" ? graph.createCompactNodeWithId(pencilAddress, src.type, destParentId, mappedProps) : graph.createNodeWithId(pencilAddress, src.type, destParentId, mappedProps);
 }
 function cloneChildrenWithMapping(graph, sourceParentId, destParentId, mode = "deep") {
   const sourceParent = graph.nodes.get(sourceParentId);
@@ -2138,6 +2174,8 @@ function updateNodePreview(graph, id, changes) {
 function markSourceFieldsEdited(node, changeKeys) {
   if (changeKeys.length === 0)
     return;
+  if (isSharedGeneratedSourceMetadata(node.source))
+    node.source = createDefaultSourceMetadata();
   const editedFields = new Set(node.source.editedFields);
   for (const key of changeKeys)
     editedFields.add(key);
@@ -2905,8 +2943,21 @@ var init_types = __esm(() => {
       this.nodes.get(parentId)?.childIds.push(node.id);
       return this.registerNode(node, parentId);
     }
+    createCompactNode(type, parentId, overrides = {}) {
+      const node = createCompactDefaultNode(() => this.generateNodeId(), type, overrides);
+      this.nodes.get(parentId)?.childIds.push(node.id);
+      return this.registerNode(node, parentId);
+    }
     createNodeWithId(id, type, parentId, overrides = {}) {
       const node = createDefaultNode(() => id, type, overrides);
+      node.id = id;
+      const parent = parentId ? this.nodes.get(parentId) : undefined;
+      if (parent && !parent.childIds.includes(id))
+        parent.childIds.push(id);
+      return this.registerNode(node, parentId);
+    }
+    createCompactNodeWithId(id, type, parentId, overrides = {}) {
+      const node = createCompactDefaultNode(() => id, type, overrides);
       node.id = id;
       const parent = parentId ? this.nodes.get(parentId) : undefined;
       if (parent && !parent.childIds.includes(id))
@@ -63278,6 +63329,32 @@ var init_shapes = __esm(() => {
 });
 
 // vendor/open-pencil/source/packages/core/src/canvas/pencil-effects.ts
+function applyShaderFallback(r4, definition29) {
+  const fallback = definition29.fallback;
+  if (fallback?.type !== "diagonal-hatch")
+    return false;
+  const spacing = Math.max(1, fallback.spacing);
+  const recorder = new r4.ck.PictureRecorder;
+  const canvas = recorder.beginRecording(r4.ck.LTRBRect(0, 0, spacing, spacing));
+  const paint = new r4.ck.Paint;
+  const color = parseColor(fallback.color);
+  paint.setAntiAlias(true);
+  paint.setStyle(r4.ck.PaintStyle.Stroke);
+  paint.setStrokeWidth(Math.max(0.25, fallback.lineWidth));
+  paint.setColor(r4.ck.Color4f(color.r, color.g, color.b, color.a));
+  canvas.drawLine(-spacing, 0, 0, spacing, paint);
+  canvas.drawLine(0, 0, spacing, spacing, paint);
+  canvas.drawLine(spacing, 0, spacing * 2, spacing, paint);
+  const picture = recorder.finishRecordingAsPicture();
+  const canvasMatrix = r4.pencilShaderRenderCanvas?.getTotalMatrix();
+  const deviceAnchoredMatrix = canvasMatrix ? r4.ck.Matrix.invert(canvasMatrix) : undefined;
+  const shader = picture.makeShader(r4.ck.TileMode.Repeat, r4.ck.TileMode.Repeat, r4.ck.FilterMode.Nearest, deviceAnchoredMatrix ?? undefined, r4.ck.LTRBRect(0, 0, spacing, spacing));
+  r4.fillPaint.setShader(shader);
+  picture.delete();
+  paint.delete();
+  recorder.delete();
+  return true;
+}
 function shaderContext(r4) {
   if (r4.pencilShaderGL)
     return r4.pencilShaderGL;
@@ -63645,10 +63722,10 @@ function applyPencilShaderFill(r4, fill3, node, graph) {
       image = renderShader(r4, definition29, node, graph);
     } catch (error2) {
       console.error("Pencil shader render failed", error2);
-      return false;
+      return applyShaderFallback(r4, definition29);
     }
     if (!image)
-      return false;
+      return applyShaderFallback(r4, definition29);
     if (!dynamic)
       r4.pencilShaderImages.set(key, image);
   }
@@ -63691,10 +63768,30 @@ function meshSegments(patch, width, height) {
   const bilinearCenter = pointMix(pointMix(patch.p00.position, patch.p10.position, 0.5), pointMix(patch.p01.position, patch.p11.position, 0.5), 0.5);
   let error2 = Math.hypot((center[0] - bilinearCenter[0]) * width, (center[1] - bilinearCenter[1]) * height);
   const boundaryControls = [
-    [patch.p00.position, pointAdd(patch.p00.position, patch.p00.rightHandle), pointAdd(patch.p10.position, patch.p10.leftHandle), patch.p10.position],
-    [patch.p01.position, pointAdd(patch.p01.position, patch.p01.rightHandle), pointAdd(patch.p11.position, patch.p11.leftHandle), patch.p11.position],
-    [patch.p00.position, pointAdd(patch.p00.position, patch.p00.bottomHandle), pointAdd(patch.p01.position, patch.p01.topHandle), patch.p01.position],
-    [patch.p10.position, pointAdd(patch.p10.position, patch.p10.bottomHandle), pointAdd(patch.p11.position, patch.p11.topHandle), patch.p11.position]
+    [
+      patch.p00.position,
+      pointAdd(patch.p00.position, patch.p00.rightHandle),
+      pointAdd(patch.p10.position, patch.p10.leftHandle),
+      patch.p10.position
+    ],
+    [
+      patch.p01.position,
+      pointAdd(patch.p01.position, patch.p01.rightHandle),
+      pointAdd(patch.p11.position, patch.p11.leftHandle),
+      patch.p11.position
+    ],
+    [
+      patch.p00.position,
+      pointAdd(patch.p00.position, patch.p00.bottomHandle),
+      pointAdd(patch.p01.position, patch.p01.topHandle),
+      patch.p01.position
+    ],
+    [
+      patch.p10.position,
+      pointAdd(patch.p10.position, patch.p10.bottomHandle),
+      pointAdd(patch.p11.position, patch.p11.topHandle),
+      patch.p11.position
+    ]
   ];
   for (const curve of boundaryControls) {
     for (const t of [0.25, 0.5, 0.75]) {
@@ -90150,7 +90247,7 @@ function cloneRepresentsComponent(graph, node, componentId) {
 function findCloneByComponentPath(graph, instanceId, path) {
   const parts = path.split("/").filter(Boolean);
   if (parts.length === 0)
-    return;
+    return graph.getNode(instanceId);
   let parentId = instanceId;
   let match;
   for (const componentId of parts) {
@@ -90226,6 +90323,9 @@ function applyOverrideProps(target, overrideData, ctx) {
     target.rotation = overrideData.rotation;
   if (overrideData.name !== undefined)
     target.name = overrideData.name;
+  if (overrideData.provenance !== undefined) {
+    target.canvasProvenance = structuredClone(overrideData.provenance);
+  }
   if (overrideData.__canvasIcon) {
     applyCanvasIconDefinition(target, {
       ...overrideData,
@@ -90263,12 +90363,12 @@ function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
     current = current.parentId ? graph.getNode(current.parentId) : undefined;
   }
 }
-function populateInstances2(graph) {
+function populateInstances2(graph, mode = "deep") {
   for (const node of graph.getAllNodes()) {
     if (node.type === "INSTANCE" && node.componentId && node.childIds.length === 0) {
       const component = graph.getNode(node.componentId);
       if (component)
-        populateInstanceChildren(graph, node.id, node.componentId);
+        populateInstanceChildren(graph, node.id, node.componentId, mode);
     }
   }
 }
@@ -90375,7 +90475,7 @@ function fixTextWidths(graph) {
     node.width = node.text.length * node.fontSize * 0.65;
   }
 }
-function createCanvasSceneGraph(doc) {
+function createCanvasSceneGraph(doc, options = {}) {
   const graph = new SceneGraph;
   for (const page2 of graph.getPages(true)) {
     graph.deleteNode(page2.id);
@@ -90389,9 +90489,11 @@ function createCanvasSceneGraph(doc) {
     createSceneNode(child, child.__canvasImported ? graph.rootId : page.id, graph, ctx, componentIds, penSources);
   }
   applyAllRefProps(doc.children, graph, componentIds, penSources, ctx);
-  populateInstances2(graph);
+  if (options.populateInstances !== false)
+    populateInstances2(graph, options.instanceCloneMode);
   walkAndApplyOverrides(doc.children, graph, ctx, componentIds, penSources);
-  populateInstances2(graph);
+  if (options.populateInstances !== false)
+    populateInstances2(graph, options.instanceCloneMode);
   resolveThemeVariables(doc.children, graph, ctx);
   fixInstanceWidths(graph);
   fixTextWidths(graph);

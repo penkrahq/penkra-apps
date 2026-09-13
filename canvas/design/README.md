@@ -1,6 +1,7 @@
 # Design
 
-`canvas.pen` is the authoritative UI/UX design source for the Canvas App.
+`canvas.pen` is a retained historical source artifact. The Account-owned Canvas document named
+`Canvas — App design` is the authoritative UI/UX design source for the Canvas App.
 
 The editor uses OpenPencil's current editor UI as its visual and interaction
 baseline. Canvas adopts the proven density, side-panel structure, sectional

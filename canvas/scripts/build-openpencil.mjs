@@ -5,7 +5,9 @@ const canvasRoot = new URL("../", import.meta.url);
 const sourceRoot = new URL("vendor/open-pencil/source/", canvasRoot);
 const output = new URL("vendor/open-pencil/engine.source.mjs", canvasRoot);
 
-await run(["bunx", "bun@1.3.10", "run", "build:packages"], sourceRoot.pathname);
+if (process.env.OPENPENCIL_SKIP_PACKAGE_BUILD !== "1") {
+  await run(["bunx", "bun@1.3.10", "run", "build:packages"], sourceRoot.pathname);
+}
 const bundle = await Bun.build({
   entrypoints: [new URL("fork-entry.ts", sourceRoot).pathname],
   target: "browser",

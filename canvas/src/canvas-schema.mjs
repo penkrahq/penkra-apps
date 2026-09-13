@@ -2,14 +2,14 @@ import { validateRichText } from "./rich-text.mjs";
 import {
   canonicalDescendantOverrides,
   canonicalDescendantOverridesForComponent,
+  resolveComponentDescendant,
 } from "./component-descendants.mjs";
 import { normalizeCanvasDocumentAliases } from "./canvas-normalization.mjs";
 
-const DESCENDANT_OVERRIDE_PROPERTIES = new Set([
-  "name", "x", "y", "width", "height", "rotation", "enabled", "fill",
-  "content", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight",
-  "letterSpacing", "textAlign", "textAlignVertical", "textGrowth",
-  "library", "icon", "weight", "children",
+const STRUCTURAL_DESCENDANT_PROPERTIES = new Set([
+  "id", "type", "ref", "properties", "bind", "visible", "varies", "role",
+  "size", "physical", "bleed", "safeMargin", "folds", "notesFor", "slots",
+  "descendants",
 ]);
 
 export const CANVAS_MODULES = Object.freeze(["generic", "deck", "web", "mobile"]);
@@ -227,18 +227,21 @@ function validateDescendantOverrides(document, nodes, errors, imports) {
       errors.push(`${instance.id}.descendants cannot be validated because component ${instance.ref} was not found.`);
       continue;
     }
+    const componentNodes = instance.ref.includes(":")
+      ? indexDescendantNodes(importedDocumentForReference(instance.ref, imports)?.children)
+      : nodes;
     const canonical = instance.ref.includes(":")
-      ? canonicalDescendantOverridesForComponent(instance, component, { strict: true })
+      ? canonicalDescendantOverridesForComponent(instance, component, { strict: true, components: componentNodes })
       : canonicalDescendantOverrides(document, instance, { strict: true });
     errors.push(...canonical.errors);
     for (const [path, override] of Object.entries(canonical.overrides)) {
-      const target = component && nodeAtPath(component, path);
+      const target = component && resolveComponentDescendant(component, path, { components: componentNodes });
       if (!plainObject(override)) {
         errors.push(`${instance.id}.descendants.${path} must be an object.`);
         continue;
       }
       for (const property of Object.keys(override)) {
-        if (!DESCENDANT_OVERRIDE_PROPERTIES.has(property)) {
+        if (!descendantOverrideDefinition(property) || STRUCTURAL_DESCENDANT_PROPERTIES.has(property)) {
           errors.push(`${instance.id}.descendants.${path}.${property} is not a supported descendant override.`);
         } else if (target && !descendantPropertySupported(target.type, property)) {
           errors.push(`${instance.id}.descendants.${path}.${property} does not apply to ${target.type} descendants.`);
@@ -251,6 +254,14 @@ function validateDescendantOverrides(document, nodes, errors, imports) {
           );
         }
       }
+      if (target?.type === "ref" && override.props !== undefined) {
+        const declarationTarget = descendantComponent(target.ref, componentNodes, imports);
+        if (!declarationTarget) errors.push(`${instance.id}.descendants.${path}.props cannot be validated because component ${target.ref} was not found.`);
+        else validateSuppliedProps({
+          id: `${instance.id}.descendants.${path}`,
+          props: { ...(target.props ?? {}), ...override.props },
+        }, declarationTarget.properties ?? {}, errors);
+      }
       if (override.children !== undefined && !["frame", "group"].includes(target?.type)) {
         errors.push(`${instance.id}.descendants.${path}.children may only replace children of a frame or group.`);
       }
@@ -259,10 +270,15 @@ function validateDescendantOverrides(document, nodes, errors, imports) {
 }
 
 function validateDescendantOverrideValue(value, property, path, errors) {
-  const definition = Object.assign({}, ...Object.values(CANVAS_SCHEMA.node.groups))[property];
+  const definition = descendantOverrideDefinition(property);
   if (!definition) return;
   if (isCascadeValue(value) && !["array", "record", "object"].includes(definition.type) && !definition.ref) return;
   validateGeneratedShape(value, definition, path, errors);
+}
+
+function descendantOverrideDefinition(property) {
+  if (property === "replace") return { ref: "node" };
+  return Object.assign({}, ...Object.values(CANVAS_SCHEMA.node.groups))[property];
 }
 
 function descendantComponent(reference, nodes, imports) {
@@ -280,17 +296,39 @@ function descendantComponent(reference, nodes, imports) {
 }
 
 function descendantPropertySupported(type, property) {
-  if (["name", "x", "y", "width", "height", "rotation", "enabled"].includes(property)) return true;
-  if (property === "fill") return ["frame", "rectangle", "ellipse", "polygon", "path", "text", "icon", "ref"].includes(type);
+  if (property === "replace") return true;
+  if (STRUCTURAL_DESCENDANT_PROPERTIES.has(property)) return false;
   if (property === "children") return ["frame", "group"].includes(type);
+  if (property === "props") return type === "ref";
+  if (["clip", "overflow"].includes(property)) return type === "frame";
+  if (["geometry", "viewBox", "fillRule"].includes(property)) return ["path", "polygon"].includes(type);
   if (["library", "icon", "weight"].includes(property)) return type === "icon";
-  return type === "text" && [
+  if ([
     "content", "fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight",
-    "letterSpacing", "textAlign", "textAlignVertical", "textGrowth",
-  ].includes(property);
+    "letterSpacing", "wordSpacing", "textAlign", "textAlignVertical", "textGrowth",
+    "underline", "strikethrough", "headingLevel", "landmark", "linkName", "paragraphs", "marks", "style", "lang",
+  ].includes(property)) return type === "text";
+  return true;
+}
+
+function importedDocumentForReference(reference, imports) {
+  const separator = reference.indexOf(":");
+  if (separator < 0) return null;
+  const imported = imports?.[reference.slice(0, separator)];
+  return imported?.document ?? imported ?? null;
+}
+
+function indexDescendantNodes(children, output = new Map()) {
+  for (const node of children ?? []) {
+    if (typeof node?.id === "string") output.set(node.id, node);
+    indexDescendantNodes(node?.children, output);
+    for (const content of Object.values(node?.slots ?? {})) indexDescendantNodes(content, output);
+  }
+  return output;
 }
 
 function nodeAtPath(component, path) {
+  if (path === ".") return component;
   let current = component;
   for (const id of path.split("/")) {
     current = (current.children ?? []).find((node) => node?.id === id);
@@ -338,7 +376,7 @@ function validateProperties(node, errors) {
     if (property?.type === "enum" && (!Array.isArray(property.values) || property.values.length === 0)) errors.push(`${node.id}.properties.${name} enum needs values.`);
     if (property?.type === "number" && property.min !== undefined && property.max !== undefined && property.min > property.max) errors.push(`${node.id}.properties.${name} min exceeds max.`);
     if (property?.type === "slot") {
-      if (typeof property.target !== "string" || !property.target) errors.push(`${node.id}.properties.${name} slot needs a target descendant path.`);
+      if (typeof property.target !== "string" || !property.target) errors.push(`${node.id}.properties.${name} slot needs a component-root or descendant-frame target.`);
       if (Object.hasOwn(property, "default") || Object.hasOwn(property, "optional") || Object.hasOwn(property, "values") || Object.hasOwn(property, "min") || Object.hasOwn(property, "max")) errors.push(`${node.id}.properties.${name} slot uses target, preferredComponents, minItems and maxItems rather than scalar-property fields.`);
       if (property.minItems !== undefined && property.minItems < 0) errors.push(`${node.id}.properties.${name}.minItems must be non-negative.`);
       if (property.maxItems !== undefined && property.maxItems < 0) errors.push(`${node.id}.properties.${name}.maxItems must be non-negative.`);
@@ -485,11 +523,6 @@ function validateRefs(nodes, parents, errors) {
   for (const node of nodes.values()) if (node.type === "ref" && !node.ref.includes(":")) {
     localRefs.set(node.id, node.ref);
     if (!nodes.has(node.ref)) errors.push(`${node.id} references missing node ${node.ref}.`);
-    let ancestor = parents.get(node.ref);
-    while (ancestor) {
-      if (nodes.get(ancestor)?.role) { errors.push(`${node.id} targets ${node.ref} inside role-bearing frame ${ancestor}.`); break; }
-      ancestor = parents.get(ancestor);
-    }
   }
   for (const start of localRefs.keys()) {
     const path = []; const seen = new Set(); let current = start;
@@ -535,7 +568,13 @@ function validateComponentSemantics(document, nodes, errors) {
       const name = binding.slice(7);
       const declaration = declarations[name];
       if (!declaration) errors.push(`${node.id}.bind.${property} references undeclared property ${name}.`);
-      else if (!bindingDestinationAccepts(property, declaration.type)) {
+      else if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
+        const targetDeclaration = nodes.get(node.ref)?.properties?.[property];
+        if (!targetDeclaration) errors.push(`${node.id}.bind.${property} must target a declared property of component ${node.ref}.`);
+        else if (!propertyDeclarationAssignable(declaration, targetDeclaration)) {
+          errors.push(`${node.id}.bind.${property} cannot forward ${declaration.type} property ${name} to incompatible ${targetDeclaration.type} property ${property}.`);
+        }
+      } else if (!bindingDestinationAccepts(property, declaration.type)) {
         errors.push(`${node.id}.bind.${property} cannot accept ${declaration.type} property ${name}.`);
       }
     }
@@ -569,15 +608,26 @@ function validateSuppliedProps(instance, declarations, errors) {
   }
   for (const [name, declaration] of Object.entries(declarations)) {
     if (declaration.type === "slot") continue;
-    if (!Object.hasOwn(instance.props ?? {}, name)) {
+    if (!Object.hasOwn(instance.props ?? {}, name) && !Object.hasOwn(instance.bind ?? {}, name)) {
       if (!Object.hasOwn(declaration, "default") && declaration.optional !== true) errors.push(`${instance.id}.props is missing required property ${name}.`);
       continue;
     }
+    if (Object.hasOwn(instance.bind ?? {}, name)) continue;
     const value = instance.props[name];
     if (isCascadeValue(value)) errors.push(`${instance.id}.props.${name} may not be a cascade.`);
     else if (!propertyValueCompatible(value, declaration)) errors.push(`${instance.id}.props.${name} does not satisfy ${declaration.type}.`);
   }
   for (const name of Object.keys(instance.props ?? {})) if (!Object.hasOwn(declarations, name)) errors.push(`${instance.id}.props supplies undeclared property ${name}.`);
+}
+
+function propertyDeclarationAssignable(source, target) {
+  if (source?.type !== target?.type) return false;
+  if (source.type === "enum") return source.values?.every((value) => target.values?.includes(value)) === true;
+  if (source.type === "number") {
+    if (target.min !== undefined && (source.min === undefined || source.min < target.min)) return false;
+    if (target.max !== undefined && (source.max === undefined || source.max > target.max)) return false;
+  }
+  return true;
 }
 
 function validateSlotSemantics(document, nodes, errors, imports) {
@@ -588,7 +638,7 @@ function validateSlotSemantics(document, nodes, errors, imports) {
     for (const [name, declaration] of slots) {
       const target = nodeAtPath(component, declaration.target);
       if (!target || target.type !== "frame") {
-        errors.push(`${component.id}.properties.${name}.target must identify a frame descendant of the component.`);
+        errors.push(`${component.id}.properties.${name}.target must identify the component root or a frame descendant.`);
         continue;
       }
       if (targets.has(declaration.target)) errors.push(`${component.id}.properties.${name}.target duplicates another slot target ${declaration.target}.`);

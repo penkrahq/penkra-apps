@@ -20,7 +20,7 @@ import { cloneNodeProps } from './copy'
 import { bindNodeEvents } from './events'
 import * as HitTest from './hit-test'
 import * as Instances from './instances'
-import { CONTAINER_TYPES, createDefaultNode } from './node-defaults'
+import { CONTAINER_TYPES, createCompactDefaultNode, createDefaultNode } from './node-defaults'
 import { updateNodePreview } from './preview'
 import { styleDetachmentChanges } from './shared-styles'
 import { markSourceFieldsEdited } from './source-metadata'
@@ -295,6 +295,15 @@ export class SceneGraph {
     this.nodes.get(parentId)?.childIds.push(node.id)
     return this.registerNode(node, parentId)
   }
+  createCompactNode(
+    type: NodeType,
+    parentId: string,
+    overrides: Partial<SceneNode> = {}
+  ): SceneNode {
+    const node = createCompactDefaultNode(() => this.generateNodeId(), type, overrides)
+    this.nodes.get(parentId)?.childIds.push(node.id)
+    return this.registerNode(node, parentId)
+  }
   createNodeWithId(
     id: string,
     type: NodeType,
@@ -302,6 +311,19 @@ export class SceneGraph {
     overrides: Partial<SceneNode> = {}
   ): SceneNode {
     const node = createDefaultNode(() => id, type, overrides)
+    node.id = id
+    const parent = parentId ? this.nodes.get(parentId) : undefined
+    if (parent && !parent.childIds.includes(id)) parent.childIds.push(id)
+    return this.registerNode(node, parentId)
+  }
+
+  createCompactNodeWithId(
+    id: string,
+    type: NodeType,
+    parentId: string | null,
+    overrides: Partial<SceneNode> = {}
+  ): SceneNode {
+    const node = createCompactDefaultNode(() => id, type, overrides)
     node.id = id
     const parent = parentId ? this.nodes.get(parentId) : undefined
     if (parent && !parent.childIds.includes(id)) parent.childIds.push(id)

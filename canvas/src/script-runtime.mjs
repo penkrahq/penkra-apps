@@ -481,6 +481,41 @@ globalThis.SetModule = function SetModule(module) {
   return module;
 };
 
+globalThis.UpdateDocument = function UpdateDocument(properties) {
+  if (!properties || typeof properties !== "object" || Array.isArray(properties)) {
+    throw new TypeError("UpdateDocument requires a root property object.");
+  }
+  const allowed = new Set(["lang", "axes", "variables", "paragraphStyles", "imports", "flows"]);
+  for (const key of Object.keys(properties)) {
+    if (!allowed.has(key)) throw new Error("UpdateDocument cannot change root property " + JSON.stringify(key) + ".");
+  }
+  for (const [key, value] of Object.entries(properties)) {
+    if (key === "lang") {
+      if (value !== null && typeof value !== "string") throw new TypeError("UpdateDocument lang must be a string or null.");
+      if (value === null) {
+        if (Object.hasOwn(__document, "lang")) {
+          delete __document.lang;
+          __changed = true;
+        }
+      } else if (__document.lang !== value) {
+        __document.lang = value;
+        __changed = true;
+      }
+      continue;
+    }
+    if (key === "flows") {
+      if (!Array.isArray(value)) throw new TypeError("UpdateDocument flows must be an array.");
+    } else if (!value || typeof value !== "object" || Array.isArray(value)) {
+      throw new TypeError("UpdateDocument " + key + " must be an object.");
+    }
+    if (JSON.stringify(__document[key]) !== JSON.stringify(value)) {
+      __document[key] = __clone(value);
+      __changed = true;
+    }
+  }
+  return Object.keys(properties);
+};
+
 globalThis.Replace = function Replace(target, replacement) {
   const entry = __requireOne(target);
   if (!replacement || typeof replacement !== "object" || Array.isArray(replacement)) throw new TypeError("Replace requires one node object.");
