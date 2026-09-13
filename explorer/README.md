@@ -20,7 +20,9 @@ The file tree watches loaded directories, preserves both scroll axes, supports c
 keyboard navigation, and uses a resizable rail. Editable text uses a bundled CodeMirror 6 surface;
 Markdown preview uses bundled markdown-it with raw HTML disabled. All runtime dependencies and file
 icons are local package assets, so the App does not require renderer network access. SVG files open
-in a checkerboard-backed visual viewer with a Source/Preview switch and remain editable as XML.
+in a checkerboard-backed visual viewer with a Source/Preview switch and remain editable as XML. CSV
+and TSV files are parsed with bundled Papa Parse and open as scrollable data grids with sticky
+headings while retaining editable source views.
 
 ## Local verification
 
@@ -28,6 +30,6 @@ in a checkerboard-backed visual viewer with a Source/Preview switch and remain e
 npm test
 ```
 
-`vendor/editor-runtime.mjs` is committed package output. When changing its pinned dependencies, run
+The files under `vendor/` are committed package output. When changing pinned dependencies, run
 `npm install` followed by `npm run build:vendor`, review the generated bundle and notices, and package
 from a clean App directory without `node_modules`.

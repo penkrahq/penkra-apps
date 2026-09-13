@@ -2,6 +2,7 @@ import {
   escapeHtml, extensionOf, fileIconName, finderRelativePath, joinRelative, looksLikeText,
   matchesQuery, parentRelative, previewKind, sortEntries, treeRowIndent,
 } from "./explorer-model.mjs";
+import { parseDelimited } from "./vendor/csv-runtime.mjs";
 import {
   chooseExplorerRoot, createDirectory, forgetExplorerRoot, listDirectory, readEntry,
   rememberExplorerRoot, resolveEntryPath, restoreExplorerRoot, statEntry, watchEntry, writeTextEntry,
@@ -32,7 +33,7 @@ const savedRailWidth = Number(localStorage.getItem("explorer.railWidth"));
 const state = {
   handle: null, root: null, directoryCache: new Map(), expanded: new Set(), selected: null,
   query: "", searchResults: [], searchBusy: false, loading: true, error: null, preview: null,
-  markdownMode: "preview", svgMode: "preview", history: [], historyIndex: -1, newFolder: false, menuOpen: false,
+  markdownMode: "preview", svgMode: "preview", tableMode: "preview", history: [], historyIndex: -1, newFolder: false, menuOpen: false,
   drafts: new Map(), watchers: new Map(), watchTimers: new Map(), railScroll: new Map(),
   railWidth: Number.isFinite(savedRailWidth) ? Math.min(520, Math.max(180, savedRailWidth)) : 240,
   focusedPath: null,
@@ -276,6 +277,7 @@ async function reconcileSelectedEntry(parentPath, entries) {
   if (draft?.dirty && diskSource !== draft.savedSource) {
     draft.conflict = { kind: "modified", diskSource }; draft.showDiff = false; return;
   }
+  if (editorPath === replacement.relativePath) cleanupEditor();
   state.drafts.set(replacement.relativePath, makeDraft(diskSource));
   state.preview = { kind, source: diskSource };
 }
@@ -319,7 +321,7 @@ async function loadPreview(entry) {
     if (sequence !== activationSequence || handle !== state.handle) return;
     if (looksLikeText(bytes, bytes.byteLength < file.size)) kind = "text";
   }
-  if (kind === "text" || kind === "markdown" || kind === "svg") {
+  if (kind === "text" || kind === "markdown" || kind === "svg" || kind === "table") {
     const source = await (await readEntry(handle, entry.relativePath)).text();
     if (sequence !== activationSequence || handle !== state.handle) return;
     cleanupObjectUrl();
@@ -426,8 +428,9 @@ function preview() {
 function previewHeader() {
   const markdown = state.preview?.kind === "markdown";
   const svg = state.preview?.kind === "svg";
-  const switchable = markdown || svg;
-  const mode = svg ? state.svgMode : state.markdownMode;
+  const table = state.preview?.kind === "table";
+  const switchable = markdown || svg || table;
+  const mode = svg ? state.svgMode : table ? state.tableMode : state.markdownMode;
   const editable = state.preview?.kind === "text" || switchable;
   const draft = draftFor();
   const status = draft?.saving ? "Saving…" : draft?.saveError ? "Save failed" : draft?.dirty ? "Unsaved" : editable ? "Saved" : "";
@@ -449,6 +452,23 @@ function conflictDiff(draft) {
   return `<div class="diff-panel"><section><header>Your unsaved version</header><pre>${numberedSource(draft.source)}</pre></section><section><header>Version on disk</header><pre>${numberedSource(draft.conflict.diskSource)}</pre></section></div>`;
 }
 
+function tablePreview(source) {
+  const delimiter = extensionOf(state.selected?.name ?? "") === "tsv" ? "\t" : ",";
+  const parsed = parseDelimited(source, { delimiter });
+  if (!parsed.rows.length) return mainStateContent("file", "Empty table", "This file does not contain any rows.");
+  const [header, ...body] = parsed.rows;
+  const width = Math.max(header.length, ...body.map((row) => row.length));
+  const heading = Array.from({ length: width }, (_, index) => `<th scope="col">${escapeHtml(header[index] ?? "") || `<span class="empty-cell">Column ${index + 1}</span>`}</th>`).join("");
+  const rows = body.map((row, rowIndex) => `<tr><th class="row-number" scope="row">${rowIndex + 1}</th>${Array.from({ length: width }, (_, index) => `<td>${escapeHtml(row[index] ?? "") || '<span class="empty-cell">empty</span>'}</td>`).join("")}</tr>`).join("");
+  const warnings = [
+    parsed.issue,
+    parsed.truncatedRows ? `Showing the first ${parsed.rows.length.toLocaleString()} of ${parsed.totalRows.toLocaleString()} rows.` : null,
+    parsed.truncatedColumns ? `Showing the first ${width.toLocaleString()} of ${parsed.columnCount.toLocaleString()} columns.` : null,
+  ].filter(Boolean);
+  const dataRows = Math.max(0, parsed.totalRows - 1);
+  return `<div class="table-preview"><div class="table-summary"><span>${dataRows.toLocaleString()} data row${dataRows === 1 ? "" : "s"} · ${parsed.columnCount.toLocaleString()} column${parsed.columnCount === 1 ? "" : "s"}</span>${warnings.map((warning) => `<span class="table-warning">${icon("warning")}${escapeHtml(warning)}</span>`).join("")}</div><div class="table-scroll"><table class="data-grid"><thead><tr><th class="row-number" aria-label="Row number"></th>${heading}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
 function previewBody() {
   const preview = state.preview;
   if (!preview) return mainStateContent("refresh", "Loading preview…", "");
@@ -456,6 +476,7 @@ function previewBody() {
   if (preview.kind === "image") return `<div class="media-preview"><img src="${escapeHtml(preview.url)}" alt="${escapeHtml(state.selected.name)}" /></div>`;
   if (preview.kind === "pdf") return `<object class="pdf-preview" data="${escapeHtml(preview.url)}" type="application/pdf"><p>PDF preview is unavailable.</p></object>`;
   const draft = draftFor();
+  if (preview.kind === "table" && state.tableMode === "preview") return tablePreview(draft?.source ?? preview.source);
   if (preview.kind === "markdown" && state.markdownMode === "preview") return `<article class="markdown-preview">${renderMarkdown(draft?.source ?? preview.source)}</article>`;
   if (preview.kind === "svg" && state.svgMode === "preview") {
     cleanupObjectUrl();
@@ -649,6 +670,24 @@ async function showInFinder(entry) {
   await runtime.open({ handleId: state.handle.id, ...(relativePath ? { relativePath } : {}), with: "system" });
 }
 
+async function trashEntry(entry) {
+  if (!state.handle?.path) throw new Error("This location must be reopened before it can be moved to Trash.");
+  const affects = (candidate) => candidate === entry.relativePath || candidate.startsWith(`${entry.relativePath}/`);
+  if ([...state.drafts].some(([path, draft]) => affects(path) && draft.dirty)) {
+    throw new Error("Save or discard changes before moving this item to Trash.");
+  }
+  const path = await resolveEntryPath(state.handle, entry.relativePath);
+  await runtime.shell.trashItem(path);
+  if (state.selected && affects(state.selected.relativePath)) {
+    cleanupObjectUrl(); cleanupEditor();
+    state.selected = null; state.preview = null;
+  }
+  for (const path of state.drafts.keys()) if (affects(path)) state.drafts.delete(path);
+  discardCachedBranch(entry.relativePath);
+  await refreshDirectory(parentRelative(entry.relativePath));
+  render();
+}
+
 async function savePath(path = currentPath()) {
   const draft = state.drafts.get(path);
   if (!draft || !state.handle || draft.saving || draft.conflict || !draft.dirty) return;
@@ -744,6 +783,7 @@ root.addEventListener("click", (event) => {
   if (action === "close-deleted") { state.drafts.delete(currentPath()); state.selected = null; state.preview = null; render(); }
   if (button.dataset.mode) {
     if (state.preview?.kind === "svg") state.svgMode = button.dataset.mode;
+    else if (state.preview?.kind === "table") state.tableMode = button.dataset.mode;
     else state.markdownMode = button.dataset.mode;
     render();
   }
@@ -796,10 +836,16 @@ root.addEventListener("contextmenu", (event) => {
   if (!target || !runtime.contextMenu?.show) return;
   event.preventDefault();
   const entry = { kind: target.dataset.kind === "directory" ? "directory" : "file", relativePath: target.dataset.path ?? "" };
-  void runtime.contextMenu.show([{ id: "open", label: "Open" }, { id: "show-in-finder", label: "Show in Finder", separatorBefore: true }]).then((action) => {
+  const items = [
+    { id: "open", label: "Open" },
+    { id: "show-in-finder", label: "Show in Finder", separatorBefore: true },
+    ...(state.handle?.path ? [{ id: "trash", label: "Move to Trash", destructive: true }] : []),
+  ];
+  void runtime.contextMenu.show(items).then((action) => {
     if (action === "open") return selectPath(entry.relativePath, true);
     if (action === "show-in-finder") return showInFinder(entry);
-  }).catch((error) => { state.error = friendlyError(error, "Explorer could not open this item in Finder."); render(); });
+    if (action === "trash") return trashEntry(entry);
+  }).catch((error) => { state.error = friendlyError(error, "Explorer could not complete that file action."); render(); });
 });
 
 root.addEventListener("submit", (event) => {

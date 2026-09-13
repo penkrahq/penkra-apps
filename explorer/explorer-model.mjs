@@ -17,6 +17,7 @@ export function previewKind(entry) {
   if (extension === "md") return "markdown";
   if (extension === "svg") return "svg";
   if (extension === "pdf") return "pdf";
+  if (extension === "csv" || extension === "tsv") return "table";
   if (IMAGE_EXTENSIONS.has(extension)) return "image";
   if (TEXT_EXTENSIONS.has(extension)) return "text";
   return "unsupported";
@@ -73,7 +74,7 @@ export function fileIconName(entry, expanded = false) {
   if (extension === "py") return "python";
   if (extension === "rs") return "rust";
   if (extension === "go") return "go";
-  if (["db", "sqlite", "sqlite3", "sql"].includes(extension)) return "database";
+  if (["csv", "tsv", "db", "sqlite", "sqlite3", "sql"].includes(extension)) return "database";
   return null;
 }
 

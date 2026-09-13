@@ -24,8 +24,12 @@ Explorer is specifically what the user wants.
 
 ## What it can do
 
-Explorer edits supported text files, previews common text, image, and PDF formats, and reveals
-entries in Finder.
+Explorer edits supported text files, previews common text, image, and PDF formats, reveals entries
+in Finder, and moves entries to the operating-system Trash.
+
+Trash is recoverable and is the only removal Explorer performs. Moving something to Trash is still a
+deletion from the user's point of view, so it happens when they ask for it and not as cleanup after
+some other task.
 
 Preview support tells you a file can be displayed. It is not permission to open a different file
 than the one requested.

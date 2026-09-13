@@ -4501,7 +4501,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Text files use a line-numbered syntax editor with undo, search, selections, and standard keybindings. Markdown adds CommonMark/GFM rendering; SVG adds a checkerboard-backed visual preview while preserving editable XML source.",
+                      "content": "Text files use a line-numbered syntax editor with undo, search, selections, and standard keybindings. Markdown adds CommonMark/GFM rendering; SVG adds a checkerboard-backed visual preview; CSV and TSV add a scrollable grid with sticky headings and row numbers. Every format preserves editable source.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -4565,7 +4565,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Editable files show Saved / Unsaved status and Save in the selected-file header. Markdown and SVG add Source / Preview; Cmd/Ctrl+S saves from either view.",
+                      "content": "Editable files show Saved / Unsaved status and Save in the selected-file header. Markdown, SVG, CSV, and TSV add Source / Preview; Cmd/Ctrl+S saves from either view.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"
@@ -4629,7 +4629,7 @@
                       "fill": "$color-text-secondary",
                       "textGrowth": "fixed-width",
                       "width": "fill_container",
-                      "content": "Back, forward, parent navigation, current location, folder selection, creation, and overflow actions use the shared leading / center / trailing anatomy.",
+                      "content": "Back, forward, parent navigation, current location, folder selection, creation, and overflow actions use the shared leading / center / trailing anatomy. File rows use a native context menu for Open, Show in Finder, and destructive Move to Trash.",
                       "fontFamily": "$font-ui",
                       "fontSize": 11,
                       "fontWeight": "normal"

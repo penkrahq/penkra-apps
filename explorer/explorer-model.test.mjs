@@ -46,6 +46,8 @@ test("classifies supported preview surfaces", () => {
   assert.equal(previewKind({ kind: "file", name: "icon.svg" }), "svg");
   assert.equal(previewKind({ kind: "file", name: "diagram.webp" }), "image");
   assert.equal(previewKind({ kind: "file", name: "brief.pdf" }), "pdf");
+  assert.equal(previewKind({ kind: "file", name: "jobs.csv" }), "table");
+  assert.equal(previewKind({ kind: "file", name: "jobs.tsv" }), "table");
   assert.equal(previewKind({ kind: "file", name: ".env" }), "unsupported");
   assert.equal(previewKind({ kind: "file", name: "Dockerfile" }), "unsupported");
   assert.equal(previewKind({ kind: "file", name: "archive.pkg" }), "unsupported");
@@ -56,6 +58,7 @@ test("maps familiar filenames and extensions to editor-style icons", () => {
   assert.equal(fileIconName({ kind: "file", name: "component.tsx" }), "react_ts");
   assert.equal(fileIconName({ kind: "file", name: "tsconfig.json" }), "settings");
   assert.equal(fileIconName({ kind: "file", name: ".gitignore" }), "git");
+  assert.equal(fileIconName({ kind: "file", name: "jobs.csv" }), "database");
   assert.equal(fileIconName({ kind: "file", name: "unknown.bin" }), null);
 });
 
