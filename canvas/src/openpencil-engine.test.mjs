@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { computeAllLayouts } from "../vendor/open-pencil/engine.mjs";
+import { computeAllLayouts } from "../vendor/open-pencil/engine.source.mjs";
+import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";
 
 import {
   analyzeOpenPencilCompatibility,
@@ -15,11 +16,117 @@ import {
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
   sceneNodeInsertionMutation,
-  sceneNodeToPenNode,
+  sceneNodeToCanvasNode,
+  sceneStyleRunsToMarks,
   sceneTextEditCommitMutations,
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+
+test("references inherit root paint from ordinary Canvas frames without a legacy reusable flag", () => {
+  const graph = createOpenPencilGraph({ children: [
+    { id: "instance", type: "ref", ref: "source", x: 20, y: 280, opacity: 0.5 },
+    { id: "source", type: "frame", layout: "none", width: 300, height: 70, fill: "#0B4A6F", children: [] },
+  ] });
+  const source = graph.getNode("source");
+  const instance = graph.getNode("instance");
+  assert.equal(source.type, "FRAME");
+  assert.deepEqual(instance.fills, source.fills);
+  assert.notEqual(instance.fills, source.fills);
+  assert.equal(instance.x, 20);
+  assert.equal(instance.y, 280);
+  assert.equal(instance.opacity, 0.5);
+});
+
+test("solid fill and stroke paint opacity multiply color alpha", () => {
+  const paint = { type: "color", color: "#33669980", opacity: 0.5 };
+  const graph = createOpenPencilGraph({ children: [{ id: "paint", type: "rectangle", width: 100, height: 100,
+    fill: paint, stroke: { fill: paint, width: 8 },
+  }] });
+  const node = graph.getNode("paint");
+  assert.equal(node.fills[0].opacity, 128 / 255 * 0.5);
+  assert.equal(node.strokes[0].opacity, 128 / 255 * 0.5);
+  assert.equal(node.fills[0].color.a, 1);
+  assert.equal(node.strokes[0].color.a, 1);
+});
+
+test("Canvas stroke descriptors reach the graph as strokes, not nested fill objects", () => {
+  const graph = createOpenPencilGraph({ children: [{ id: "dash-probe", type: "path", width: 300, height: 120, geometry: "M20 20 H260 V100", viewBox: [0, 0, 300, 120], stroke: { fill: "#F4A261", width: 8, dash: [12, 12], cap: "round", join: "bevel" } }] });
+  const node = graph.getNode("dash-probe");
+  assert.equal(node.strokes.length, 1);
+  assert.equal(node.strokes[0].weight, 8);
+  assert.deepEqual(node.strokes[0].dashPattern, [12, 12]);
+  assert.equal(node.strokeCap, "ROUND");
+  assert.equal(node.strokeJoin, "BEVEL");
+});
+
+test("renderer dash normalization repeats odd lists and removes all-zero effects", () => {
+  for (const [dash, expected] of [[[12], [12, 12]], [[0, 0], []], [[0, 12], [0, 12]]]) {
+    const graph = createOpenPencilGraph({ children: [{ id: "probe", type: "path", width: 100, height: 40, geometry: "M10 20 H90", viewBox: [0, 0, 100, 40], stroke: { fill: "#123456", width: 8, dash } }] });
+    assert.deepEqual(graph.getNode("probe").strokes[0].dashPattern, expected);
+  }
+});
+
+test("Material Symbols retain their authored box in auto layout", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      layout: "horizontal",
+      width: 300,
+      height: 50,
+      gap: 10,
+      children: [
+        {
+          id: "spinner",
+          type: "icon",
+          library: "Material Symbols Rounded",
+          icon: "progress_activity",
+          width: 13,
+          height: 13,
+          fill: "#98A2AE",
+        },
+        {
+          id: "label",
+          type: "text",
+          content: "Running",
+          width: 60,
+          height: 20,
+          fontSize: 13,
+          textGrowth: "fixed-width",
+        },
+      ],
+    }],
+  });
+
+  const spinner = graph.getNode("spinner");
+  assert.equal(spinner.width, 13);
+  assert.equal(spinner.height, 13);
+  assert.equal(spinner.textAutoResize, "NONE");
+  assert.equal(graph.getNode("label").x, 23);
+});
+
+test("filled Phosphor icons preserve every implicitly closed SVG subpath", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "spinner",
+      type: "icon",
+      library: "phosphor",
+      icon: "spinner-gap",
+      width: 24,
+      height: 24,
+      fill: "#98A2AE",
+    }],
+  });
+
+  const spinner = graph.getNode("spinner");
+  assert.equal(spinner.type, "VECTOR");
+  assert.equal(spinner.vectorNetwork.regions.length, 1);
+  assert.equal(spinner.vectorNetwork.regions[0].loops.length, 7);
+  assert.ok(spinner.vectorNetwork.vertices.length > 40);
+});
 import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 
 test("binds imported image bytes to their lossless Pencil URL fill", () => {
@@ -54,6 +161,38 @@ test("binds imported image bytes to their lossless Pencil URL fill", () => {
   );
 });
 
+test("binds an SVG renderer cache without replacing its source asset", () => {
+  const sourceBytes = new TextEncoder().encode(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 101"><rect width="72" height="101" fill="#fff"/></svg>',
+  );
+  const renderBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
+  const source = {
+    version: "2.17",
+    children: [{
+      id: "card",
+      type: "rectangle",
+      width: 72,
+      height: 101,
+      fill: { type: "image", url: "images/card.svg", mode: "fit" },
+    }],
+  };
+  const hash = "c".repeat(64);
+  const graph = createOpenPencilGraph(source, new Map([
+    ["images/card.svg", { path: "images/card.svg", mimeType: "image/svg+xml", sha256: hash, bytes: sourceBytes, renderBytes }],
+  ]));
+
+  assert.deepEqual(graph.images.get(hash), renderBytes);
+  assert.deepEqual(
+    { width: graph.vectorImages.get(hash).width, height: graph.vectorImages.get(hash).height },
+    { width: 72, height: 101 },
+  );
+  assert.equal(graph.getPages().length, 1);
+  assert.equal(graph.getPages(true).length, 2);
+  assert.equal(graph.getPages(true).at(-1).internalOnly, true);
+  assert.equal(graph.getNode("card").fills[0].imageHash, hash);
+  assert.equal(source.children[0].fill.url, "images/card.svg");
+});
+
 test("treats image fills as supported while their asset bytes are loading", () => {
   const source = {
     version: "2.17",
@@ -67,6 +206,47 @@ test("treats image fills as supported while their asset bytes are loading", () =
   };
 
   assert.deepEqual(analyzeOpenPencilCompatibility(source), []);
+});
+
+test("Canvas rich-text marks reach OpenPencil character style runs", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "rich", type: "text", width: 400, height: 80, content: "Bold and marked",
+      fontFamily: "Inter", fontSize: 24, paragraphs: [{ from: 0, to: 15 }],
+      marks: [
+        { type: "weight", from: 0, to: 4, value: 700 },
+        { type: "fill", from: 0, to: 4, value: "#123456" },
+        { type: "underline", from: 9, to: 15, value: true },
+        { type: "strikethrough", from: 9, to: 15, value: true },
+        { type: "wordSpacing", from: 5, to: 8, value: 3 },
+      ],
+    }],
+  });
+  const runs = graph.getNode("rich").styleRuns;
+  assert.equal(runs[0].style.fontWeight, 700);
+  assert.deepEqual(runs[0].style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
+  assert.equal(runs.find((run) => run.style.wordSpacing)?.style.wordSpacing, 3);
+  assert.deepEqual(runs.at(-1).style, { underline: true, strikethrough: true });
+});
+
+test("canonical named paragraph styles reach CanvasKit runs and marks override them", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    module: "web",
+    axes: {}, variables: {}, imports: {}, flows: [],
+    paragraphStyles: { body: { fontFamily: "Inter", fontSize: 20, fontWeight: 500, fill: "#123456" } },
+    children: [{
+      id: "styled", type: "text", width: 400, height: 80, content: "Styled",
+      paragraphs: [{ from: 0, to: 6, style: "body" }],
+      marks: [{ type: "weight", from: 0, to: 2, value: 700 }],
+    }],
+  });
+  const runs = graph.getNode("styled").styleRuns;
+  assert.equal(runs[0].style.fontWeight, 700);
+  assert.equal(runs.at(-1).style.fontWeight, 500);
+  assert.equal(runs.at(-1).style.fontSize, 20);
+  assert.deepEqual(runs.at(-1).style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
 });
 
 test("Pencil image opacity and blend mode survive asset binding", () => {
@@ -92,6 +272,7 @@ test("Pencil Linear Burn and Linear Dodge reach their exact renderer blend modes
       { id: "burn", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearBurn" } },
       { id: "dodge", type: "rectangle", fill: { type: "color", color: "#fff", blendMode: "linearDodge" } },
       { id: "shadow", type: "rectangle", effect: { type: "shadow", blendMode: "linearBurn" } },
+      { id: "node-blend", type: "rectangle", blendMode: "multiply", fill: "#336699" },
     ],
   };
   const graph = createOpenPencilGraph(document);
@@ -100,6 +281,51 @@ test("Pencil Linear Burn and Linear Dodge reach their exact renderer blend modes
   assert.equal(graph.getNode("burn").fills[0].blendMode, "LINEAR_BURN");
   assert.equal(graph.getNode("dodge").fills[0].blendMode, "LINEAR_DODGE");
   assert.equal(graph.getNode("shadow").effects[0].blendMode, "LINEAR_BURN");
+  assert.equal(graph.getNode("node-blend").blendMode, "MULTIPLY");
+});
+
+test("the owned engine computes Skia three-sigma shadow visual bounds", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "shadow", type: "rectangle", x: 10, y: 20, width: 100, height: 60,
+      effect: { type: "shadow", blur: 12, spread: 2, offset: { x: 4, y: 6 }, color: "#00000080" },
+    }],
+  });
+  const bounds = computeDescendantVisualBounds(
+    ["shadow"],
+    (id) => graph.getNode(id) ?? undefined,
+    (id) => graph.getAbsolutePosition(id),
+  );
+  assert.deepEqual(bounds, { minX: -6, minY: 6, maxX: 134, maxY: 106 });
+});
+
+test("visual bounds transform a rotated origin exactly once", () => {
+  for (const rotation of [30, 90]) {
+    const graph = createOpenPencilGraph({ children: [{ id: "shape", type: "rectangle", x: 80, y: 70, width: 100, height: 50, rotation }] });
+    const bounds = computeDescendantVisualBounds(["shape"], id => graph.getNode(id), id => graph.getAbsolutePosition(id));
+    const radians = rotation * Math.PI / 180;
+    const width = 100 * Math.abs(Math.cos(radians)) + 50 * Math.abs(Math.sin(radians));
+    const height = 100 * Math.abs(Math.sin(radians)) + 50 * Math.abs(Math.cos(radians));
+    for (const [key, expected] of Object.entries({ minX: 130 - width / 2, maxX: 130 + width / 2, minY: 95 - height / 2, maxY: 95 + height / 2 })) {
+      assert.ok(Math.abs(bounds[key] - expected) < 1e-8, `${rotation}: ${key} ${bounds[key]} != ${expected}`);
+    }
+  }
+});
+
+test("visual bounds include ancestor rotation and reflection", () => {
+  for (const flipX of [false, true]) {
+    const graph = createOpenPencilGraph({ children: [{ id: "parent", type: "frame", layout: "none", x: 40, y: 30, width: 200, height: 150, rotation: 90, flipX,
+      children: [{ id: "child", type: "rectangle", x: 20, y: 30, width: 100, height: 50, rotation: 30 }],
+    }] });
+    const bounds = computeDescendantVisualBounds(["child"], id => graph.getNode(id), id => graph.getAbsolutePosition(id));
+    const width = 50 + 25 * Math.sqrt(3);
+    const height = 50 * Math.sqrt(3) + 25;
+    const centerY = flipX ? 135 : 75;
+    for (const [key, expected] of Object.entries({ minX: 160 - width / 2, maxX: 160 + width / 2, minY: centerY - height / 2, maxY: centerY + height / 2 })) {
+      assert.ok(Math.abs(bounds[key] - expected) < 1e-8, `${flipX}: ${key} ${bounds[key]} != ${expected}`);
+    }
+  }
 });
 
 test("OpenPencil computes nested auto-layout instead of collapsing children at the origin", () => {
@@ -258,7 +484,7 @@ test("auto-sized text keeps hug-content flex layouts compact", () => {
   assert.ok(item.width < 150, `expected compact hug width, got ${item.width}`);
 });
 
-test("stored Pencil sizing fallbacks and fill-width text survive import", () => {
+test("Canvas native fill-width text preserves its declared parent sizing", () => {
   const editor = createOpenPencilEditor({
     version: "2.17",
     children: [{
@@ -394,30 +620,6 @@ test("Pencil 2.17 scene properties survive normalization into the render graph",
   assert.deepEqual(source.children[0].strokeWidth, 2);
 });
 
-test("Pencil slots retain their component and instance visual semantics without changing the source", () => {
-  const source = {
-    version: "2.17",
-    children: [{
-      id: "app-owned",
-      type: "frame",
-      width: 320,
-      height: 180,
-      slot: [],
-    }],
-  };
-
-  source.children.push({ id: "slot-instance", type: "ref", ref: "app-owned" });
-  source.children[0].reusable = true;
-  const before = structuredClone(source);
-  const graph = createOpenPencilGraph(source);
-  assert.deepEqual(graph.getNode("app-owned").fills, []);
-  assert.equal(graph.getNode("app-owned").pencilSlotKind, "component");
-  assert.equal(graph.getNode("slot-instance").pencilSlotKind, "instance");
-  assert.deepEqual(source.children[0].slot, []);
-  assert.equal(source.children[0].fill, undefined);
-  assert.deepEqual(source, before);
-});
-
 test("Pencil alpha colors are applied once and survive SVG export", () => {
   const source = {
     version: "2.17",
@@ -480,15 +682,21 @@ test("inspector properties translate to incremental scene changes", () => {
   });
 });
 
-test("a selected frame edit does not serialize derived geometry onto untouched nodes", async () => {
-  const source = JSON.parse(await readFile(
-    new URL("../compatibility/fixtures/unknown-content-2.15.pen", import.meta.url),
-    "utf8",
-  ));
+test("a selected frame edit does not serialize derived geometry onto untouched nodes", () => {
+  const source = {
+    version: "2.17",
+    module: "web",
+    children: [{
+      id: "known-frame",
+      type: "frame",
+      width: 320,
+      height: 180,
+      children: [{ id: "untouched-child", type: "rectangle", width: 40, height: 20 }],
+    }],
+  };
   const editor = createOpenPencilEditor(source);
   editor.select(["known-frame"]);
   const knownBefore = sceneNodePropertySnapshot(editor.graph.getNode("known-frame"));
-  assert.equal(editor.graph.getNode("future-node"), undefined);
 
   assert.deepEqual(
     sceneEventToPenMutations(
@@ -500,9 +708,6 @@ test("a selected frame edit does not serialize derived geometry onto untouched n
     ),
     [{ kind: "set-property", nodeId: "known-frame", property: "width", value: 322 }],
   );
-  assert.deepEqual(analyzeOpenPencilCompatibility(source).map(({ nodeId, kind }) => [nodeId, kind]), [
-    ["future-node", "node-type"],
-  ]);
   assert.equal(Object.hasOwn(source.children[0].children[0], "x"), false);
   assert.equal(Object.hasOwn(source.children[0].children[0], "y"), false);
 });
@@ -813,40 +1018,6 @@ test("Pencil mesh gradients retain their exact grid and normalized handles", () 
   assert.deepEqual(fill.pencilMesh.points[0].rightHandle, [0.25, 0]);
   assert.deepEqual(fill.pencilMesh.points[3].leftHandle, [-0.4, 0]);
   assert.deepEqual(source, before);
-});
-
-test("Pencil design-library imports provide reusable components without appearing on the page", () => {
-  const library = new TextEncoder().encode(JSON.stringify({
-    version: "2.17",
-    variables: { surface: { type: "color", value: "#abcdef" } },
-    children: [{
-      id: "library-card",
-      type: "frame",
-      reusable: true,
-      width: 120,
-      height: 60,
-      fill: "$surface",
-      children: [{ id: "library-label", type: "text", content: "Library" }],
-    }],
-  }));
-  const document = {
-    version: "2.17",
-    imports: { cards: "libraries/cards.lib.pen" },
-    children: [{ id: "card-instance", type: "ref", ref: "library-card", x: 20, y: 30 }],
-  };
-  const before = structuredClone(document);
-  const assets = new Map([["libraries/cards.lib.pen", { bytes: library, sha256: "c".repeat(64) }]]);
-  const prepared = prepareOpenPencilRenderDocument(document, { assets });
-  const graph = createOpenPencilGraph(document, assets, prepared);
-  const page = graph.getPages()[0];
-
-  assert.deepEqual(prepared.issues, []);
-  assert.equal(graph.getNode("library-card").parentId, graph.rootId);
-  assert.deepEqual(page.childIds, ["card-instance"]);
-  assert.equal(graph.getNode("card-instance").width, 120);
-  assert.equal(graph.getNode("card-instance").fills[0].color.r, 0xab / 255);
-  assert.deepEqual(analyzeOpenPencilCompatibility(document, assets, prepared), []);
-  assert.deepEqual(document, before);
 });
 
 test("Pencil gradient and blended stroke paints reach the renderer semantically", () => {
@@ -1187,8 +1358,8 @@ test("Pencil line nodes stay semantic and preserve horizontal, vertical, and dia
   assert.deepEqual(source, before);
 });
 
-test("new OpenPencil nodes map to explicit .pen nodes", () => {
-  assert.deepEqual(sceneNodeToPenNode({
+test("new engine scene nodes map to explicit Canvas nodes", () => {
+  assert.deepEqual(sceneNodeToCanvasNode({
     id: "shape",
     type: "RECTANGLE",
     name: "Card",
@@ -1266,11 +1437,99 @@ test("committing a newly drawn text edit inserts its final semantic node", () =>
       fontFamily: "Inter",
       fontSize: 14,
       fontWeight: 400,
+      marks: [],
+      paragraphs: [{ from: 0, to: 17 }],
       fill: "#000000",
     },
     parentId: null,
     position: 1,
   }]);
+});
+
+test("rich-text edits persist style runs and remap nonvisual links in UTF-16 offsets", () => {
+  const source = {
+    version: "2.17",
+    module: "web",
+    children: [{
+      id: "label",
+      type: "text",
+      content: "Go now",
+      fontSize: 14,
+      marks: [
+        { type: "link", from: 0, to: 2, value: "https://example.com" },
+        { type: "weight", from: 3, to: 6, value: 700 },
+      ],
+      paragraphs: [{ from: 0, to: 6, style: "body" }],
+    }],
+  };
+  const editor = createOpenPencilEditor(source);
+  editor.select(["label"]);
+  const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
+  editor.graph.updateNode("label", {
+    text: "Go right now",
+    styleRuns: [{
+      start: 3,
+      length: 5,
+      style: { fontWeight: 700, italic: true, underline: false, textLanguage: "fr" },
+    }],
+  });
+
+  assert.deepEqual(sceneTextEditCommitMutations(editor, source, "label", before), [
+    { kind: "set-property", nodeId: "label", property: "content", value: "Go right now" },
+    { kind: "set-property", nodeId: "label", property: "marks", value: [
+      { type: "link", from: 0, to: 2, value: "https://example.com" },
+      { type: "italic", from: 3, to: 8, value: true },
+      { type: "lang", from: 3, to: 8, value: "fr" },
+      { type: "underline", from: 3, to: 8, value: false },
+      { type: "weight", from: 3, to: 8, value: 700 },
+    ] },
+    { kind: "set-property", nodeId: "label", property: "paragraphs", value: [
+      { from: 0, to: 12, style: "body" },
+    ] },
+  ]);
+});
+
+test("scene text edits keep link marks non-inclusive at both boundaries", () => {
+  const source = { content: "abcd", marks: [{ type: "link", from: 1, to: 3, value: "https://example.com" }] };
+  assert.deepEqual(sceneStyleRunsToMarks({ text: "aXbcd", styleRuns: [] }, source, "abcd"), [
+    { type: "link", from: 2, to: 4, value: "https://example.com" },
+  ]);
+  assert.deepEqual(sceneStyleRunsToMarks({ text: "abcXd", styleRuns: [] }, source, "abcd"), [
+    { type: "link", from: 1, to: 3, value: "https://example.com" },
+  ]);
+});
+
+test("paragraph split inherits the split style and merge keeps the second style", () => {
+  const source = {
+    version: "2.17",
+    module: "web",
+    children: [{
+      id: "label",
+      type: "text",
+      content: "One",
+      marks: [],
+      paragraphs: [{ from: 0, to: 3, style: "body" }],
+    }],
+  };
+  const editor = createOpenPencilEditor(source);
+  editor.select(["label"]);
+  const before = sceneNodePropertySnapshot(editor.graph.getNode("label"));
+  editor.graph.updateNode("label", { text: "One\nTwo" });
+  const split = sceneTextEditCommitMutations(editor, source, "label", before);
+  assert.deepEqual(split.find((mutation) => mutation.property === "paragraphs").value, [
+    { from: 0, to: 4, style: "body" },
+    { from: 4, to: 7, style: "body" },
+  ]);
+  const mergeSource = { ...source, children: [{ ...source.children[0], content: "One\nTwo", paragraphs: [
+    { from: 0, to: 4, style: "first" }, { from: 4, to: 7, style: "second" },
+  ] }] };
+  const mergeEditor = createOpenPencilEditor(mergeSource);
+  const mergeBefore = sceneNodePropertySnapshot(mergeEditor.graph.getNode("label"));
+  mergeEditor.graph.updateNode("label", { text: "OneTwo" });
+  const merge = sceneTextEditCommitMutations(mergeEditor, mergeSource, "label", mergeBefore);
+  assert.deepEqual(merge.find((mutation) => mutation.property === "paragraphs").value, [
+    { from: 0, to: 6, style: "second" },
+  ]);
 });
 
 test("selection hit testing advances exactly one frame hierarchy level", () => {
@@ -1369,6 +1628,32 @@ test("component instances expose their immediate authored descendant for hierarc
   assert.equal(graph.hitTest(x, y, "Ue7jf")?.id, instanceRow?.id);
   assert.equal(instanceRow?.componentId, "FEmhW");
   assert.equal(graph.hitTestDeep(x, y, "Ue7jf")?.id, instanceLabel.id);
+});
+
+test("document refresh invalidates retained effect pictures before replacing same-ID nodes", () => {
+  const source = { children: [{ id: "card", type: "rectangle", width: 62, height: 87,
+    fill: "#FFFFFF", stroke: "#80A9FF", strokeWidth: 2,
+    effect: { type: "shadow", shadowType: "outer", color: "#00000044", blur: 5 },
+  }] };
+  const editor = createOpenPencilEditor(source);
+  const pictures = [new Map([["card", { strokeWidth: 2 }]]), new Map([["card", { strokeWidth: 2 }]])];
+  const renderers = pictures.map((cache) => ({ invalidateAllPictures() { cache.clear(); } }));
+  const wrapped = {
+    state: editor.state,
+    canvasRenderers: renderers,
+    get graph() { return editor.graph; },
+    replaceGraph(graph) {
+      for (const cache of pictures) assert.equal(cache.size, 0);
+      editor.replaceGraph(graph);
+    },
+    select: (...args) => editor.select(...args),
+    requestRender: () => editor.requestRender(),
+  };
+  source.children[0].strokeWidth = 1;
+  source.children[0].stroke = "#92B5FF";
+  refreshOpenPencilEditor(wrapped, source, "card");
+  assert.equal(editor.graph.getNode("card").strokes[0].weight, 1);
+  assert.deepEqual([...editor.state.selectedIds], ["card"]);
 });
 
 test("repeated document refresh keeps one editor, viewport, and selection", () => {

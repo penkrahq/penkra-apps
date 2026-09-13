@@ -7,6 +7,7 @@ import {
   transpilePencilShaderWebGL1,
 } from "./pencil-shader-runtime.mjs";
 import { normalizePencilMeshGradient } from "./pencil-mesh-gradient.mjs";
+import { normalizeStrokeDash } from "./stroke-dash.mjs";
 
 const NUMERIC_PROPERTIES = new Set([
   "x",
@@ -66,19 +67,18 @@ const VARIABLE_PROPERTIES = new Set([
 ]);
 
 export function prepareOpenPencilRenderDocument(source, options = {}) {
-  const document = structuredClone(source);
-  const variables = source?.variables && typeof source.variables === "object"
-    ? source.variables
+  const document = lowerCanvasModelForOpenPencil(source);
+  const variables = document?.variables && typeof document.variables === "object"
+    ? document.variables
     : {};
   const defaultTheme = Object.fromEntries(
-    Object.entries(source?.themes ?? {})
+    Object.entries(document?.themes ?? {})
       .filter(([, values]) => Array.isArray(values) && typeof values[0] === "string")
       .map(([axis, values]) => [axis, values[0]]),
   );
   const issues = [];
   const assets = options.assets instanceof Map ? options.assets : new Map();
   const containerPath = typeof options.containerPath === "string" ? options.containerPath : "";
-  const libraryTrail = options.libraryTrail instanceof Set ? options.libraryTrail : new Set();
 
   const resolveReference = (reference, theme, trail = []) => {
     const name = reference.slice(1);
@@ -98,7 +98,52 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   const resolveValue = (value, property, theme, nodeId) => {
-    if (isVariableReference(value, property)) {
+    if (isInterpolatedVariableReference(value, property)) {
+      const references = [...value.matchAll(VARIABLE_INTERPOLATION_PATTERN)];
+      const isWholeReference = references.length === 1 && references[0][0] === value;
+      if (isWholeReference) {
+        const reference = `$${references[0][1]}`;
+        const resolved = resolveReference(reference, theme);
+        if (!resolved.ok) {
+          issues.push(variableIssue(nodeId, value, resolved.reason));
+          return safeFallback(property, value);
+        }
+        if (!validPropertyValue(property, resolved.value)) {
+          issues.push(variableIssue(
+            nodeId,
+            value,
+            `Variable ${value} resolved to an invalid ${property} value.`,
+          ));
+          return safeFallback(property, value);
+        }
+        return resolved.value;
+      }
+      if (!STRING_PROPERTIES.has(property)) return value;
+      let failed = false;
+      const interpolated = value.replace(VARIABLE_INTERPOLATION_PATTERN, (token, name) => {
+        const resolved = resolveReference(`$${name}`, theme);
+        if (!resolved.ok) {
+          issues.push(variableIssue(nodeId, token, resolved.reason));
+          failed = true;
+          return "";
+        }
+        if (!["string", "number", "boolean"].includes(typeof resolved.value)) {
+          issues.push(variableIssue(
+            nodeId,
+            token,
+            `Variable ${token} cannot be interpolated as text.`,
+          ));
+          failed = true;
+          return "";
+        }
+        return String(resolved.value);
+      });
+      return failed && !validPropertyValue(property, interpolated)
+        ? safeFallback(property, value)
+        : interpolated;
+    }
+    // Legacy whole-value references remain readable in unmigrated documents.
+    if (isLegacyVariableReference(value, property)) {
       const resolved = resolveReference(value, theme);
       if (!resolved.ok) {
         issues.push(variableIssue(nodeId, value, resolved.reason));
@@ -171,9 +216,71 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
-  document.children.push(...prepareImportedComponents(source, assets, issues, containerPath, libraryTrail));
   compileDescendantIcons(document.children, issues);
   return { document, issues };
+}
+
+export function lowerCanvasModelForOpenPencil(source) {
+  const document = structuredClone(source);
+  if (isRecord(document.axes)) {
+    document.themes = Object.fromEntries(Object.entries(document.axes).map(([axis, definition]) => [
+      axis,
+      (definition?.modes ?? []).map((mode) => mode.name),
+    ]));
+  }
+  document.variables = Object.fromEntries(Object.entries(document.variables ?? {}).map(([name, definition]) => [
+    name,
+    definition && Array.isArray(definition.cascade)
+      ? {
+          type: definition.tokenType,
+          value: definition.cascade.map((entry) => ({
+            value: structuredClone(entry.value),
+            ...(entry.when ? { theme: structuredClone(entry.when) } : {}),
+          })),
+        }
+      : structuredClone(definition),
+  ]));
+  const nodes = new Map();
+  walkCanvasNodes(document.children, (node) => {
+    if (typeof node?.id === "string") nodes.set(node.id, node);
+    if (isRecord(node?.modes)) {
+      node.theme = structuredClone(node.modes);
+      delete node.modes;
+    }
+  });
+  walkCanvasNodes(document.children, (instance) => {
+    if (instance?.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) return;
+    const target = nodes.get(instance.ref);
+    if (!target) return;
+    const supplied = instance.props ?? {};
+    const props = {};
+    for (const [name, declaration] of Object.entries(target.properties ?? {})) {
+      props[name] = Object.hasOwn(supplied, name)
+        ? structuredClone(supplied[name])
+        : structuredClone(Object.hasOwn(declaration, "default") ? declaration.default : null);
+    }
+    const descendants = { ...(instance.descendants ?? {}) };
+    const visit = (node, path = []) => {
+      for (const [property, binding] of Object.entries(node.bind ?? {})) {
+        if (typeof binding !== "string" || !binding.startsWith("$props.")) continue;
+        const name = binding.slice(7);
+        if (!Object.hasOwn(props, name) || path.length === 0) continue;
+        const key = path.join("/");
+        descendants[key] = { ...(descendants[key] ?? {}), [property]: structuredClone(props[name]) };
+      }
+      for (const child of node.children ?? []) visit(child, [...path, child.id]);
+    };
+    visit(target);
+    if (Object.keys(descendants).length > 0) instance.descendants = descendants;
+  });
+  return document;
+}
+
+function walkCanvasNodes(children, visit) {
+  for (const node of children ?? []) {
+    visit(node);
+    walkCanvasNodes(node?.children, visit);
+  }
 }
 
 function compileDescendantIcons(nodes, issues) {
@@ -367,64 +474,6 @@ function compileShader(fill, assets, issues, nodeId) {
   }
 }
 
-function prepareImportedComponents(source, assets, issues, containerPath, libraryTrail) {
-  const components = [];
-  const knownIds = collectNodeIds(source?.children);
-  const origins = new Set();
-  for (const [alias, reference] of Object.entries(source?.imports ?? {})) {
-    if (typeof alias !== "string" || alias.length === 0) {
-      issues.push(libraryIssue(null, "A Pencil library import has an empty alias."));
-      continue;
-    }
-    let path;
-    try {
-      path = resolvePencilResourcePath(containerPath, reference);
-    } catch (error) {
-      issues.push(libraryIssue(null, error?.message ?? String(error)));
-      continue;
-    }
-    if (libraryTrail.has(path)) {
-      issues.push(libraryIssue(null, `Pencil library import cycle reaches ${path}.`));
-      continue;
-    }
-    const asset = pencilResourceAsset(assets, path);
-    if (!asset) {
-      issues.push(libraryIssue(null, `Pencil library ${alias} resource ${path} is unavailable.`));
-      continue;
-    }
-    let library;
-    try {
-      library = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(asset.bytes));
-      if (!library || typeof library !== "object" || !Array.isArray(library.children)) throw new Error("invalid document");
-    } catch {
-      issues.push(libraryIssue(null, `Pencil library ${alias} at ${path} is not a valid UTF-8 .pen document.`));
-      continue;
-    }
-    const prepared = prepareOpenPencilRenderDocument(library, {
-      assets,
-      containerPath: path,
-      libraryTrail: new Set([...libraryTrail, path]),
-    });
-    issues.push(...prepared.issues);
-    for (const component of prepared.document.children.filter((node) => node?.reusable === true)) {
-      const origin = component.__canvasImportedOrigin ?? path;
-      if (origins.has(`${origin}\0${component.id}`)) continue;
-      const componentIds = collectNodeIds([component]);
-      const collision = [...componentIds].find((id) => knownIds.has(id));
-      if (collision) {
-        issues.push(libraryIssue(collision, `Imported Pencil component ${component.id} conflicts with existing node id ${collision}.`));
-        continue;
-      }
-      for (const id of componentIds) knownIds.add(id);
-      component.__canvasImported = true;
-      component.__canvasImportedOrigin = origin;
-      origins.add(`${origin}\0${component.id}`);
-      components.push(component);
-    }
-  }
-  return components;
-}
-
 function canonicalizeResourceReference(object, containerPath) {
   if ((object.type === "image" || object.type === "shader") && typeof object.url === "string") {
     object.url = resolvePencilResourcePath(containerPath, object.url);
@@ -432,14 +481,6 @@ function canonicalizeResourceReference(object, containerPath) {
   if (object.type === "script" && typeof object.scriptUri === "string") {
     object.scriptUri = resolvePencilResourcePath(containerPath, object.scriptUri);
   }
-}
-
-function collectNodeIds(nodes, output = new Set()) {
-  for (const node of nodes ?? []) {
-    if (typeof node?.id === "string") output.add(node.id);
-    collectNodeIds(node?.children, output);
-  }
-  return output;
 }
 
 function compileScript(node, assets, issues, nodeId, prepareChild) {
@@ -510,6 +551,12 @@ function normalizePencilNode(node, issues, nodeId) {
   if (node.textAlign === "justify") node.textAlign = "justified";
   if (node.textAlignVertical === "middle") node.textAlignVertical = "center";
 
+  if (isRecord(node.stroke) && (Object.hasOwn(node.stroke, "fill") || Object.hasOwn(node.stroke, "fills"))) {
+    // Lower Canvas stroke fields at the owned renderer boundary, without
+    // interpreting a stroke descriptor as if it were itself a fill paint.
+    node.stroke.thickness = node.stroke.width ?? node.stroke.thickness ?? 1;
+    if (node.stroke.dash !== undefined || node.stroke.dashPattern !== undefined) node.stroke.dashPattern = normalizeStrokeDash(node.stroke.dash ?? node.stroke.dashPattern);
+  }
   if (node.stroke !== undefined && !isOpenPencilStroke(node.stroke)) {
     const fills = Array.isArray(node.stroke) ? node.stroke : [node.stroke];
     for (const fill of fills) {
@@ -578,8 +625,18 @@ function selectVariableValue(value, theme) {
   return { ok: false, reason: "Variable has no values." };
 }
 
-function isVariableReference(value, property) {
-  return typeof value === "string" && value.startsWith("$") && VARIABLE_PROPERTIES.has(property);
+const VARIABLE_INTERPOLATION_PATTERN = /\$\{([A-Za-z][\w-]*)\}/g;
+
+function isInterpolatedVariableReference(value, property) {
+  return typeof value === "string"
+    && VARIABLE_PROPERTIES.has(property)
+    && value.match(VARIABLE_INTERPOLATION_PATTERN);
+}
+
+function isLegacyVariableReference(value, property) {
+  return typeof value === "string"
+    && /^\$[A-Za-z][\w-]*$/.test(value)
+    && VARIABLE_PROPERTIES.has(property);
 }
 
 function isKnownVariableReference(value, variables) {
@@ -650,14 +707,6 @@ function meshIssue(nodeId, message) {
     nodeId,
     kind: "mesh-gradient",
     message: `${message} The original mesh gradient fill is preserved in the Canvas document.`,
-  };
-}
-
-function libraryIssue(nodeId, message) {
-  return {
-    nodeId,
-    kind: "library",
-    message: `${message} The original library import is preserved in the Canvas document.`,
   };
 }
 

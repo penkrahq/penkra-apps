@@ -74,7 +74,7 @@ JSON.stringify(__pencilResult);
   try {
     output = JSON.parse(serialized);
   } catch {
-    throw new Error("Pencil script returned a value that cannot be represented in a .pen document.");
+    throw new Error("Canvas script returned a value that cannot be represented in a Canvas document.");
   }
   if (!Array.isArray(output)) throw new Error("Pencil script must return an array of nodes.");
   validateOutputNodes(output);

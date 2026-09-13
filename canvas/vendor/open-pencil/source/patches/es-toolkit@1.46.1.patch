@@ -1,0 +1,35 @@
+diff --git a/dist/_internal/globalThis.js b/dist/_internal/globalThis.js
+index 57dbc873a766bd82daba1bad46b32e65646a8a30..e6048eabef33665e10bf9b3af59ddd89f65d16eb 100644
+--- a/dist/_internal/globalThis.js
++++ b/dist/_internal/globalThis.js
+@@ -2,13 +2,6 @@
+ 
+ Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+ 
+-const globalThis_ = (typeof globalThis === 'object' && globalThis) ||
+-    (typeof window === 'object' && window) ||
+-    (typeof self === 'object' && self) ||
+-    (typeof global === 'object' && global) ||
+-    (function () {
+-        return this;
+-    })() ||
+-    Function('return this')();
++const globalThis_ = globalThis;
+ 
+ exports.globalThis = globalThis_;
+diff --git a/dist/_internal/globalThis.mjs b/dist/_internal/globalThis.mjs
+index 70d2f32eadbb19435f1905282d24d1727c671424..43989d63b3022c321758006ecf9136d8faf0a1b7 100644
+--- a/dist/_internal/globalThis.mjs
++++ b/dist/_internal/globalThis.mjs
+@@ -1,10 +1,3 @@
+-const globalThis_ = (typeof globalThis === 'object' && globalThis) ||
+-    (typeof window === 'object' && window) ||
+-    (typeof self === 'object' && self) ||
+-    (typeof global === 'object' && global) ||
+-    (function () {
+-        return this;
+-    })() ||
+-    Function('return this')();
++const globalThis_ = globalThis;
+ 
+ export { globalThis_ as globalThis };

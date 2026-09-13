@@ -23,12 +23,3 @@ export function encodeJson(value) {
 export function decodeJson(bytes) {
   return JSON.parse(decoder.decode(bytes));
 }
-
-export function safeDocumentName(title) {
-  const cleaned = String(title ?? "Untitled")
-    .replace(/[\\/:*?"<>|\u0000-\u001f]/gu, "-")
-    .replace(/\s+/gu, " ")
-    .trim()
-    .slice(0, 120);
-  return `${cleaned || "Untitled"}.pen`;
-}

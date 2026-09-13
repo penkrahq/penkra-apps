@@ -1,0 +1,13 @@
+Application, 0x101f221b0, pid: 51764, label: 'CanvasSimulatorQA' <App element pid: 51764>
+  Window (Main), 0x101f250e0, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 51764, elementOrHash.elementID: 4324488912.4>
+    Other, 0x101f25640, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 51764, elementOrHash.elementID: 4324505840.5>
+      Other, 0x101f25760, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 51764, elementOrHash.elementID: 4324507920.6>
+        Other, 0x101f25d00, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 51764, elementOrHash.elementID: 4324480896.7>
+          Other, 0x101f25200, {{0.0, 0.0}, {402.0, 874.0}} <AX element pid: 51764, elementOrHash.elementID: 4324531904.8>
+            Other, 0x101f25320, {{4.7, 25.0}, {393.0, 852.0}}, label: 'Canvas mobile export verification screen' <AX element pid: 51764, elementOrHash.elementID: 4324530448.9>
+              StaticText, 0x101f25880, {{24.5, 105.0}, {186.7, 123.7}}, label: 'Native Canvas heading' <AX element pid: 51764, elementOrHash.elementID: 4324544304.10>
+              StaticText, 0x101f259a0, {{24.5, 242.7}, {292.0, 87.3}}, label: 'Responsive type and layout' <AX element pid: 51764, elementOrHash.elementID: 4324503472.11>
+              Other, 0x101f25ac0, {{24.5, 344.0}, {323.7, 37.7}} <AX element pid: 51764, elementOrHash.elementID: 4324525440.12>
+              Other, 0x101f25be0, {{24.7, 398.0}, {96.0, 60.0}}, label: 'Orange circle' <AX element pid: 51764, elementOrHash.elementID: 4324526224.13>
+              Other, 0x101f260e0, {{24.5, 472.0}, {330.2, 90.0}} <AX element pid: 51764, elementOrHash.elementID: 4324528464.14>
+              StaticText, 0x101f26200, {{24.5, 576.0}, {330.2, 90.0}}, label: 'Visible group description' <AX element pid: 51764, elementOrHash.elementID: 4324529248.15>

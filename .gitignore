@@ -7,3 +7,9 @@ dist/
 canvas/build/
 canvas/app.js
 canvas/operations.js
+canvas/output/
+canvas/tmp/
+canvas/research/.openpencil-upstream-audit/
+canvas/compatibility/mobile-fixtures/swiftui/.build/
+tmp/
+*/TODO.md

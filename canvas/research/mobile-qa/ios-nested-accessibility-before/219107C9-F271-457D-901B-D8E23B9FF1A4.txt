@@ -1,0 +1,22 @@
+Attributes: Application, 0x10300ad80, pid: 51658, label: 'CanvasSimulatorQA'
+Element subtree:
+ →Application, 0x10300ad80, pid: 51658, label: 'CanvasSimulatorQA'
+    Window (Main), 0x101f221b0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x101f26380, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x101f264a0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x103308510, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x103333540, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x103309de0, {{4.7, 25.0}, {393.0, 852.0}}, label: 'Canvas mobile export verification screen'
+                StaticText, 0x103308840, {{24.5, 105.0}, {186.7, 123.7}}, label: 'Native Canvas heading'
+                StaticText, 0x103311340, {{24.5, 242.7}, {292.0, 87.3}}, label: 'Responsive type and layout'
+                Other, 0x103311690, {{24.5, 344.0}, {323.7, 37.7}}
+                Other, 0x103311df0, {{24.7, 398.0}, {96.0, 60.0}}, label: 'Orange circle'
+                Other, 0x1033124b0, {{24.5, 472.0}, {330.2, 90.0}}
+                StaticText, 0x103312140, {{24.5, 576.0}, {330.2, 90.0}}, label: 'Visible group description'
+Path to element:
+ →Application, 0x10300ad80, pid: 51658, label: 'CanvasSimulatorQA'
+Query chain:
+ →Find: Target Application 'com.penkra.canvas.qa.simulator'
+  Output: {
+    Application, 0x1068041c0, pid: 51658, label: 'CanvasSimulatorQA'
+  }

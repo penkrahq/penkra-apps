@@ -38,6 +38,10 @@ export async function executeCanvasScript(document, code, inspection = {}) {
   }
 }
 
+export function scriptNeedsInspection(code) {
+  return typeof code === "string" && /\b(?:bounds|problems)\b/u.test(code);
+}
+
 function assertByteLimit(value, limit, label) {
   const bytes = new TextEncoder().encode(value).byteLength;
   if (bytes > limit) {
@@ -68,7 +72,9 @@ const __inspection = JSON.parse(__canvasInspectionJson);
 const __prints = [];
 const __touched = new Set();
 const __generations = [];
+const __svgConversions = [];
 const __screenshots = [];
+let __changed = false;
 let __copyCounter = 0;
 const __containerTypes = new Set(["frame", "group"]);
 const __clone = (value) => JSON.parse(JSON.stringify(value));
@@ -88,7 +94,30 @@ function __walk(nodes = __document.children, parent = null, parentPath = [], out
   return output;
 }
 
+function* __walkEntries(nodes = __document.children, parent = null, parentPath = []) {
+  for (let index = 0; index < (nodes || []).length; index += 1) {
+    const node = nodes[index];
+    const path = [...parentPath, node.id];
+    const entry = { node, parent, index, path };
+    yield entry;
+    yield* __walkEntries(node.children || [], node, path);
+  }
+}
+
+function __assertSelector(selector) {
+  if (selector === "*" || selector === undefined || selector === null) return;
+  if (typeof selector === "object") return;
+  if (typeof selector !== "string") {
+    throw new TypeError("A Canvas selector must be a string, node, or context.");
+  }
+  if (selector.startsWith("#") || selector.startsWith("type:") || selector.startsWith("name:") || selector.includes("/")) return;
+  if (selector.includes(":")) {
+    throw new Error("Unknown Canvas selector " + JSON.stringify(selector) + ". Expected #id, type:<type>, name:<name>, a slash-separated path, or an exact node id.");
+  }
+}
+
 function __matches(entry, selector) {
+  __assertSelector(selector);
   if (selector === "*" || selector === undefined || selector === null) return true;
   if (typeof selector === "object") {
     const selected = selector.node && typeof selector.node === "object" ? selector.node : selector;
@@ -103,7 +132,11 @@ function __matches(entry, selector) {
 }
 
 function __entries(selector) {
-  return __walk().filter((entry) => __matches(entry, selector));
+  const output = [];
+  for (const entry of __walkEntries()) {
+    if (__matches(entry, selector)) output.push(entry);
+  }
+  return output;
 }
 
 function __requireOne(target) {
@@ -163,17 +196,35 @@ function __assertParent(parent) {
 }
 
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
-  const matches = __entries(selector);
+  __assertSelector(selector);
+  if (visitor !== undefined) {
+    if (typeof visitor !== "function") throw new TypeError("Get visitor must be a function.");
+    const limit = options.limit === undefined ? Infinity : Number(options.limit);
+    if (!(limit === Infinity || (Number.isInteger(limit) && limit >= 1))) {
+      throw new RangeError("Get visitor limit must be a positive integer when supplied.");
+    }
+    let count = 0;
+    for (const entry of __walkEntries()) {
+      if (!__matches(entry, selector)) continue;
+      if (count >= limit) break;
+      visitor(__context(entry));
+      count += 1;
+    }
+    return count;
+  }
   const limit = options.limit === undefined ? 1000 : Number(options.limit);
   if (!Number.isInteger(limit) || limit < 1 || limit > 1000) {
     throw new RangeError("Get limit must be an integer from 1 through 1000.");
   }
-  if (matches.length > limit) throw new Error("Get matched " + matches.length + " nodes; narrow the selector or raise the limit.");
-  const contexts = matches.map(__context);
-  if (visitor === undefined) return contexts;
-  if (typeof visitor !== "function") throw new TypeError("Get visitor must be a function.");
-  contexts.forEach(visitor);
-  return contexts.length;
+  const contexts = [];
+  for (const entry of __walkEntries()) {
+    if (!__matches(entry, selector)) continue;
+    if (contexts.length === limit) {
+      throw new Error("Get matched more than " + limit + " nodes; use visitor form for traversal or narrow the selector.");
+    }
+    contexts.push(__context(entry));
+  }
+  return contexts;
 };
 
 globalThis.Insert = function Insert(parent, node, position) {
@@ -185,6 +236,7 @@ globalThis.Insert = function Insert(parent, node, position) {
   const index = position === undefined ? children.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > children.length) throw new RangeError("Insert position is outside the parent.");
   children.splice(index, 0, __clone(node));
+  __changed = true;
   __touchTree(node);
   if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
   return node.id;
@@ -214,11 +266,28 @@ globalThis.Update = function Update(target, properties) {
   }
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
-    if (value === undefined) delete node[key];
-    else node[key] = __clone(value);
+    if (value === undefined) {
+      if (Object.hasOwn(node, key)) {
+        delete node[key];
+        __changed = true;
+      }
+    } else if (JSON.stringify(node[key]) !== JSON.stringify(value)) {
+      node[key] = __clone(value);
+      __changed = true;
+    }
   }
   __touched.add(node.id);
   return node;
+};
+
+globalThis.SetModule = function SetModule(module) {
+  const allowed = new Set(["deck", "web", "mobile"]);
+  if (!allowed.has(module)) throw new Error("SetModule requires deck, web, or mobile.");
+  if (__document.module !== "generic") throw new Error("Only a generic Canvas document can set its module later.");
+  if (__walk().some((entry) => entry.node.role !== undefined)) throw new Error("SetModule requires a document with no role-bearing frames.");
+  __document.module = module;
+  __changed = true;
+  return module;
 };
 
 globalThis.Replace = function Replace(target, replacement) {
@@ -237,7 +306,10 @@ globalThis.Replace = function Replace(target, replacement) {
     new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !replacedIds.has(id))),
   );
   const siblings = entry.parent ? entry.parent.children : __document.children;
-  siblings.splice(entry.index, 1, next);
+  if (JSON.stringify(entry.node) !== JSON.stringify(next)) {
+    siblings.splice(entry.index, 1, next);
+    __changed = true;
+  }
   __touchTree(next);
   if (entry.parent) __touched.add(entry.parent.id);
   return next.id;
@@ -247,6 +319,7 @@ globalThis.Delete = function Delete(target) {
   const entry = __requireOne(target);
   const siblings = entry.parent ? entry.parent.children : __document.children;
   siblings.splice(entry.index, 1);
+  __changed = true;
   __touched.add(entry.node.id);
   if (entry.parent) __touched.add(entry.parent.id);
   return entry.node.id;
@@ -262,6 +335,7 @@ globalThis.Move = function Move(target, parent, position) {
   const index = position === undefined ? destination.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > destination.length) throw new RangeError("Move position is outside the parent.");
   destination.splice(index, 0, entry.node);
+  __changed = true;
   __touched.add(entry.node.id);
   if (entry.parent) __touched.add(entry.parent.id);
   if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
@@ -324,10 +398,44 @@ globalThis.G = function G(target, source, prompt) {
     throw new TypeError("G accepts a prompt only for the 'ai' source.");
   }
   entry.node.fill = { type: "image", url, mode: "fill" };
+  __changed = true;
   __touched.add(entry.node.id);
   return entry.node.id;
 };
 
+globalThis.ConvertSvgToVectors = function ConvertSvgToVectors(target, options = {}) {
+  const entry = __requireOne(target);
+  if (!options || typeof options !== "object" || Array.isArray(options)) {
+    throw new TypeError("ConvertSvgToVectors options must be an object.");
+  }
+  const mode = options.mode === undefined ? "copy" : options.mode;
+  if (mode !== "copy" && mode !== "replace") {
+    throw new Error("ConvertSvgToVectors mode must be copy or replace.");
+  }
+  const fills = (Array.isArray(entry.node.fill) ? entry.node.fill : [entry.node.fill]).filter(Boolean);
+  if (fills.length !== 1 || fills[0]?.type !== "image" || typeof fills[0].url !== "string") {
+    throw new Error("ConvertSvgToVectors requires a node with exactly one image fill.");
+  }
+  const usedIds = new Set(__walk().map((candidate) => candidate.node.id));
+  let createdId = entry.node.id;
+  if (mode === "copy") {
+    const base = entry.node.id + "-editable";
+    createdId = base;
+    let suffix = 1;
+    while (usedIds.has(createdId)) createdId = base + "-" + (++suffix);
+  }
+  __svgConversions.push({
+    sourceNodeId: entry.node.id,
+    createdId,
+    mode,
+    offset: mode === "copy" ? Number(options.offset ?? 24) : 0,
+  });
+  __changed = true;
+  __touched.add(entry.node.id);
+  __touched.add(createdId);
+  return createdId;
+};
+
 const __result = (0, eval)("(function () {\n" + __canvasCode + "\n})()");
-JSON.stringify({ document: __document, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations, screenshots: __screenshots });
+JSON.stringify({ document: __document, changed: __changed, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations, svgConversions: __svgConversions, screenshots: __screenshots });
 `;

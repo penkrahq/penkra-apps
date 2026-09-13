@@ -9,6 +9,27 @@ Keep one execution focused on one coherent design intent. A full slide, screen, 
 focused repair can involve many nodes and still be one intent. Separate unrelated changes so each
 result can be reviewed and, while it remains the document head, undone as one unit.
 
+## Start from the document's module
+
+Every Canvas document has a `module`: `generic`, `deck`, `web`, or `mobile`. A generic document is
+for flexible visual work and can be extracted as images, SVG, or PDF. A deliverable module defines
+what the document eventually exports to. An untouched generic document can use `SetModule` to
+adopt `deck`, `web`, or `mobile`; Canvas rejects that change after role-bearing frames exist.
+
+That module-specific part lives in a Skill. Load the one matching the document before doing
+substantial work:
+
+| Module | Skill | Produces |
+| --- | --- | --- |
+| `generic` | — | Editable visual designs and extracted PNG, SVG, or PDF files |
+| `deck` | `canvas-deck` | A `.pptx` presentation |
+| `web` | `canvas-web` | HTML and CSS |
+| `mobile` | `canvas-mobile` | SwiftUI or Jetpack Compose source |
+
+`documents.list` reports the module. For a deliverable module, skip the Skill only for a change that is plainly local — fixing
+a colour, correcting a typo — and load it before adding, removing, or restructuring the frames that
+export.
+
 ## A productive design loop
 
 1. Inspect the relevant frame and nearby structure before editing an existing design.
@@ -18,8 +39,7 @@ result can be reviewed and, while it remains the document head, undone as one un
 4. Use `TakeScreenshot` after the change and judge the rendered result, not merely the script result.
 5. Correct the underlying layout, hierarchy, sizing, or style when the review exposes a problem.
 
-Preserve approved content, brand choices, reusable structure, and newer collaborative work. When
-creating multiple directions, make their concepts genuinely distinct rather than changing only
+When creating multiple directions, make their concepts genuinely distinct rather than changing only
 colors or spacing.
 
 ## Document structure
@@ -74,6 +94,23 @@ inventing new ones.
 Use top-level frames for slides, screens, pages, and reusable component definitions. A new document
 already contains the `starterFrameId` returned by `documents.create`; update or replace that frame
 for the first design instead of leaving it underneath another frame.
+
+## Frames that export
+
+Some top-level frames carry a `role`, and that role is what makes a frame an export unit — a slide,
+a page, a route, a screen. `documents.create` stamps the role on the starter frame from the module's
+preset. A frame you add yourself has no role unless you set one, and `documents.export` rejects a
+frame whose role does not match the export it was asked for.
+
+Most frames have no role, and that is correct: components, scratch work, and nested structure are
+not export units. Two rules apply to the ones that do:
+
+- A role-bearing frame is a top-level sibling. It must never contain another role-bearing frame.
+- A reusable component must not live inside a role-bearing frame. Keep components at the document
+  root and place `ref` instances into slides, pages, routes, and screens.
+
+The valid roles, the sizing each one needs, and how to add another are module-specific. They are in
+the module's Skill.
 
 ## Layout and sizing
 
@@ -264,6 +301,9 @@ do not use gradients, blur, and shadows as substitutes for hierarchy and composi
 
 Use native `type: "icon"` nodes for interface and symbolic icons. They remain identifiable and
 editable. Supply the exact `library` and `icon`, explicit width and height, and a visible fill.
+When the exact identifier is not already known, use `canvas icons search` first. It searches the
+catalog bundled with the installed Canvas version and returns identifiers that can be copied
+directly into the node. Do not guess a name or approximate a catalog symbol with primitive shapes.
 Supported libraries are:
 
 - `lucide`;
@@ -286,8 +326,10 @@ const continueIcon = {
 };
 ```
 
-If an icon does not render, verify its exact library-specific name or choose a known equivalent
-from the same library. Do not replace ordinary interface icons with generated raster images.
+Lucide and Feather use hyphenated names. Material Symbols use underscore names and accept weights
+from 100 through 700. Phosphor search results include its named variants; base Phosphor icons accept
+weights 100, 300, 400, and 700. Copy search results exactly. If one does not communicate the intended
+meaning when rendered, search for a nearby ordinary term and compare native alternatives.
 
 ## Reusable components and instances
 
@@ -335,10 +377,16 @@ The selector walker traverses source `children`; it does not expand an instance 
 children. Therefore `Get` cannot select a rendered instance descendant. Update the ref's
 `descendants`, or edit the reusable source when every instance should change.
 
+## What this operation leaves alone
+
 Canvas preserves existing variables, themes, imported resources, advanced content, and unknown
 future fields. This operation does not author document-root variables or themes. Keep existing
 `$variable` references and update the smallest supported node rather than replacing surrounding
 structures.
+
+Preserve approved content, brand decisions, reusable structure, and newer collaborative work.
+Prefer the smallest change that achieves the intent: update a property rather than replacing a node,
+and replace a node rather than rebuilding its parent.
 
 ## Selecting and inspecting
 
@@ -350,8 +398,10 @@ structures.
 - `parent-id/child-id` for an exact source hierarchy path;
 - `*` for every source node.
 
-The default and maximum result limit is 1,000. Narrow the selector or pass `{ limit: number }`.
-Operations that require one target reject zero or multiple matches rather than guessing.
+Selectors are strings. Pass `{ limit: number }` to bound how many matches come back; it defaults to
+1,000. Prefer a selector narrow enough that the limit does not matter — an exact ID or source path
+when you know the node, a type or name when you are surveying. Operations that require one target
+reject zero or multiple matches rather than guessing.
 
 Without a visitor, `Get` returns immutable contexts. Each contains a cloned `node`, cloned `parent`
 or `null`, sibling `index`, slash-separated `path`, resolved `bounds`, and reported `problems`.
@@ -416,6 +466,24 @@ asset. Give generation prompts concrete art direction: subject, composition, cam
 style, palette, lighting, negative space, and the intended crop. Avoid requesting text inside an
 image when editable Canvas text would be clearer.
 
+Imported SVGs remain durable SVG assets and render from retained vector geometry at the current
+Canvas scale. They do not need conversion merely to stay sharp. Use
+`ConvertSvgToVectors(target, options?)` only when the artwork itself must become native editable
+Canvas paths. The default creates a copy offset by 24 pixels and preserves the placed SVG; pass a
+numeric `offset` to change that spacing. `{ mode: "replace" }` replaces the selected image node.
+Conversion is fail-closed: if Canvas cannot represent an SVG feature exactly as editable paths, the
+whole execution fails without changing the document.
+
+```js
+const editableLogo = ConvertSvgToVectors("#placed-logo");
+Print({ editableLogo });
+TakeScreenshot(["#placed-logo", editableLogo]);
+```
+
+```js
+ConvertSvgToVectors("#placed-mark", { mode: "replace" });
+```
+
 ```js
 Insert("#image-container", {
   id: "image-target",
@@ -467,6 +535,8 @@ Use the structured result as evidence for what happened:
   `null` for a read-only execution;
 - `touchedNodeIds` lists nodes directly affected by mutation calls;
 - `prints` contains values sent through `Print`, while `result` contains the script's returned value;
+- `svgConversions` reports each converted source, created native node, exact shape count, mode, and
+  fidelity result;
 - `inspection` reports post-execution bounds and problems for touched nodes, including deletion
   markers; the contexts returned by `Get` during the script use pre-execution inspection;
 - `issues` reports problems found while validating or rendering the resulting document;

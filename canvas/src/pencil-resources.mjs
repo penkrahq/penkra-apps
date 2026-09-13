@@ -1,4 +1,4 @@
-const RESOURCE_KINDS = new Set(["image", "script", "shader", "library", "font"]);
+const RESOURCE_KINDS = new Set(["image", "script", "shader", "font"]);
 
 export function collectPencilResourceReferences(document) {
   const references = new Map();
@@ -13,7 +13,6 @@ export function collectPencilResourceReferences(document) {
   };
 
   for (const font of document?.fonts ?? []) add(font?.url, "font");
-  for (const path of Object.values(document?.imports ?? {})) add(path, "library");
   visit(document?.children, (value) => {
     if (value.type === "image") add(value.url, "image");
     if (value.type === "shader") add(value.url, "shader");
@@ -22,7 +21,7 @@ export function collectPencilResourceReferences(document) {
   return [...references].map(([path, kind]) => ({ path, kind }));
 }
 
-export function collectPencilDocumentFonts(document, assets, containerPath = "", trail = new Set()) {
+export function collectPencilDocumentFonts(document, assets, containerPath = "") {
   const fonts = new Map();
   const collect = (source, sourcePath) => {
     for (const definition of source?.fonts ?? []) {
@@ -37,21 +36,6 @@ export function collectPencilDocumentFonts(document, assets, containerPath = "",
         throw new Error(`Pencil document font ${definition.name} resolves to more than one file.`);
       }
       fonts.set(definition.name, { family: definition.name, url, bytes: asset.bytes, sha256: asset.sha256 });
-    }
-    for (const reference of Object.values(source?.imports ?? {})) {
-      const path = resolvePencilResourcePath(sourcePath, reference);
-      if (trail.has(path)) continue;
-      const asset = pencilResourceAsset(assets, path);
-      if (!asset) continue;
-      let library;
-      try {
-        library = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(asset.bytes));
-      } catch {
-        continue;
-      }
-      trail.add(path);
-      collect(library, path);
-      trail.delete(path);
     }
   };
   collect(document, containerPath);
@@ -125,7 +109,6 @@ export function pencilResourceMimeType(path, kind = null) {
     jpg: "image/jpeg",
     js: "text/javascript",
     mjs: "text/javascript",
-    pen: "application/x-pencil+json",
     png: "image/png",
     svg: "image/svg+xml",
     webp: "image/webp",

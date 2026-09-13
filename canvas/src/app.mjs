@@ -3,25 +3,23 @@ import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
 import { IndexeddbPersistence } from "y-indexeddb";
-import { safeDocumentName } from "./codec.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
 import {
   analyzeOpenPencilCompatibility,
   isOpenPencilEditableNode,
   penPropertyToSceneChanges,
 } from "./openpencil-engine.mjs";
-import { mountOpenPencilSurface, prepareOpenPencilEngine } from "./openpencil-surface.mjs";
+import {
+  mountOpenPencilSurface,
+  prepareOpenPencilEngine,
+  rasterizeOpenPencilSvgAsset,
+} from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import {
   isPencilAuthorableNode,
   parsePencilAuthoringValue,
   pencilAuthoringSections,
 } from "./pencil-authoring.mjs";
-import {
-  choosePenDocument,
-  readDroppedPenDocument,
-  savePenDocument,
-} from "./pen-file-access.mjs";
 import { viewportInsetsFromRects } from "./viewport-insets.mjs";
 import {
   canvasSceneLayerAncestorIds,
@@ -38,10 +36,10 @@ import {
 } from "./node-reference.mjs";
 import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
 import { beginSelectedTextEditing } from "./text-editing.mjs";
+import { convertSvgAssetToCanvasNode, inspectSvgVectorCandidate } from "./svg-vectors.mjs";
 import {
   ACCESS_REMOVED_HEADING,
   ACCESS_REMOVED_MESSAGE,
-  assertExportAllowed,
 } from "./access-removed.mjs";
 import {
   collaboratorRemovalConfirmation,
@@ -88,10 +86,20 @@ const performanceMonitor = createPerformanceMonitor();
 configureCanvasFonts(runtime, { performanceMonitor });
 const state = {
   route: "library",
-  libraryFilter: "all",
+  libraryFilter: "recent",
   search: "",
   documents: [],
+  folders: [],
+  recentFolders: [],
+  currentFolder: null,
+  folderDocuments: [],
+  folderChildren: [],
+  folderGrants: new Map(),
+  editorDocuments: [],
+  thumbnails: new Map(),
+  currentProfile: null,
   trashedDocuments: [],
+  trashedFolders: [],
   loading: true,
   error: null,
   document: null,
@@ -110,9 +118,12 @@ const state = {
   dialogReturnFocusSelector: null,
   dialogFocusSelector: null,
   grants: [],
+  shareTarget: null,
   toast: null,
   contextMenu: null,
+  documentSwitcherOpen: false,
   documentUnsubscribe: null,
+  folderUnsubscribe: null,
   updateListener: null,
   lastSequence: 0,
   updatesSinceSnapshot: 0,
@@ -144,7 +155,8 @@ const state = {
   documentNodes: null,
   documentNodeById: null,
   deletedNodeSnapshots: new Map(),
-  assetPanel: "file",
+  thumbnailTimer: null,
+  assetPanel: "layers",
   inspectorTab: "design",
   documentOpenStartedAt: null,
 };
@@ -154,6 +166,7 @@ const routes = createRouteCoordinator({
   openDocument,
   setRoute: (input) => runtime.tab.setRoute(input),
   showDocumentUnavailable,
+  showFolder,
   showLibrary,
   showTrash,
 });
@@ -184,6 +197,7 @@ window.addEventListener("offline", () => {
 window.addEventListener("beforeunload", () => {
   releaseTabVisibility();
   state.documentUnsubscribe?.();
+  state.folderUnsubscribe?.();
   documentCollectionLifecycle.stop();
 });
 window.addEventListener("keydown", handleKeyboardShortcut);
@@ -201,6 +215,7 @@ async function bootstrap() {
       render();
       return;
     }
+    state.currentProfile = await runtime.account.profile();
     await routes.showDefaultLibrary();
   } catch (error) {
     state.loading = false;
@@ -211,30 +226,96 @@ async function bootstrap() {
 
 async function showLibrary() {
   closeDocument();
+  state.currentFolder = null;
   state.route = "library";
   state.loading = true;
   state.error = null;
   render();
+  const [roots, recentFolders] = await Promise.all([
+    loadEveryFolderPage({ view: "roots" }),
+    loadEveryFolderPage({ view: "recent", limit: 10 }),
+  ]);
+  state.folders = roots;
+  state.recentFolders = recentFolders.slice(0, 10);
+  void loadFolderGrants([...state.folders, ...state.recentFolders]).then(() => {
+    if (state.route === "library") render();
+  });
+  startFolderSubscription();
   await documentCollectionLifecycle.start({
     load: () => loadEveryDocumentPage(api.listDocuments),
     apply: (documents) => {
       if (state.route !== "library") return;
-      state.documents = documents;
+      state.documents = documents.map(withModule);
       state.loading = false;
       state.error = null;
       render();
+      void loadDocumentThumbnails(state.documents).then(() => {
+        if (state.route === "library") render();
+      });
     },
     onError: handleDocumentCollectionError,
   });
 }
 
+async function showFolder(folderId) {
+  closeDocument();
+  state.route = "folder";
+  state.loading = true;
+  state.error = null;
+  render();
+  const [folder, children, documents] = await Promise.all([
+    api.openFolder(folderId),
+    loadEveryFolderPage({ view: "children", parentId: folderId }),
+    loadEveryDocumentPage((cursor) => api.listDocuments(cursor, { view: "folder", folderId })),
+  ]);
+  state.currentFolder = folder;
+  state.folderChildren = children;
+  state.folderDocuments = documents.map(withModule);
+  await loadFolderGrants([folder, ...children]);
+  startFolderSubscription(folderId);
+  state.loading = false;
+  await loadDocumentThumbnails(state.folderDocuments);
+  render();
+}
+
+async function loadEveryFolderPage(options) {
+  const folders = [];
+  let cursor;
+  do {
+    const page = await api.listFolders(cursor, options);
+    folders.push(...page.items);
+    cursor = page.pageInfo.nextCursor ?? undefined;
+  } while (cursor && folders.length < (options.limit ?? Number.POSITIVE_INFINITY));
+  return folders;
+}
+
+async function loadFolderGrants(folders) {
+  const unique = [...new Map(folders.map((folder) => [folder.id, folder])).values()]
+    .filter((folder) => folder.access === "owner" && !state.folderGrants.has(folder.id))
+    .slice(0, 20);
+  await Promise.all(unique.map(async (folder) => {
+    try {
+      const grants = await api.listFolderGrants(folder.id);
+      state.folderGrants.set(folder.id, grants.items.filter((grant) => grant.status === "active" && !grant.isCurrentUser));
+    } catch (error) {
+      console.warn(`Canvas could not load collaborators for folder ${folder.id}.`, error);
+    }
+  }));
+}
+
+function withModule(document) {
+  return { ...document, module: document.projection?.module ?? null };
+}
+
 async function showTrash() {
   closeDocument();
+  state.currentFolder = null;
   state.route = "trash";
   state.loading = true;
   state.error = null;
   state.contextMenu = null;
   render();
+  state.trashedFolders = await loadEveryFolderPage({ view: "trash" });
   await documentCollectionLifecycle.start({
     load: () => loadEveryDocumentPage(api.listTrash),
     apply: (documents) => {
@@ -269,6 +350,20 @@ function handleDocumentCollectionError(error, { phase }) {
   render();
 }
 
+function startFolderSubscription(folderId = null) {
+  state.folderUnsubscribe?.();
+  state.folderUnsubscribe = null;
+  void api.subscribeToFolders(() => {
+    if (folderId && state.route === "folder" && state.currentFolder?.id === folderId) {
+      void showFolder(folderId).catch((error) => handleDocumentCollectionError(error, { phase: "load" }));
+    } else if (!folderId && state.route === "library") {
+      void showLibrary().catch((error) => handleDocumentCollectionError(error, { phase: "load" }));
+    }
+  }).then((unsubscribe) => { state.folderUnsubscribe = unsubscribe; }).catch((error) => {
+    console.warn("Canvas folder realtime is unavailable.", error);
+  });
+}
+
 async function showDocumentUnavailable(input) {
   closeDocument();
   state.route = "document-unavailable";
@@ -290,37 +385,19 @@ async function navigateToTrash() {
   await routes.navigateToTrash();
 }
 
-async function createBlankDocument(title = "Untitled") {
-  const source = createBlankDocumentSource();
-  const model = createDocumentModel(source);
-  try {
-    const document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
-    await navigateToDocument(document.id);
-  } finally {
-    model.doc.destroy();
-  }
+async function navigateToFolder(folderId) {
+  await routes.navigateToFolder(folderId);
 }
 
-async function importFromHandle() {
-  const imported = await choosePenDocument();
-  if (!imported) return;
-  await importDocument(imported.source, imported.fallbackTitle, imported.assets);
-}
-
-async function importDocument(source, fallbackTitle = "Imported design", assets = []) {
+async function createBlankDocument(title = "Untitled", module = "generic", destinationFolderId) {
+  const source = createBlankDocumentSource({ module });
   const model = createDocumentModel(source);
-  const title = typeof source.name === "string" && source.name.trim() ? source.name : fallbackTitle;
-  let document = null;
   try {
-    document = await api.createDocument({ title, source, initialUpdate: encodeState(model) });
-    for (const asset of assets) await api.uploadAsset(document.id, asset);
+    const folderId = destinationFolderId === undefined
+      ? state.route === "folder" ? state.currentFolder?.id ?? null : null
+      : destinationFolderId || null;
+    const document = await api.createDocument({ title, folderId, source, initialUpdate: encodeState(model) });
     await navigateToDocument(document.id);
-  } catch (error) {
-    if (document) {
-      await api.deleteDocument(document.id).catch(() => undefined);
-      await api.permanentlyDeleteDocument(document.id).catch(() => undefined);
-    }
-    throw error;
   } finally {
     model.doc.destroy();
   }
@@ -353,14 +430,32 @@ async function openDocument(documentId) {
     const assetDescriptors = payload.assets ?? [];
     const { assets } = await performanceMonitor.measureAsync(
       "document.assets",
-      () => hydrateDocumentAssets(api, documentId, assetDescriptors),
+      () => hydrateDocumentAssets(api, documentId, assetDescriptors, new Map(), {
+        rasterizeSvg: rasterizeOpenPencilSvgAsset,
+      }),
       {
         documentId,
         assets: assetDescriptors.length,
         assetBytes: assetDescriptors.reduce((total, asset) => total + Number(asset.size ?? 0), 0),
       },
     );
-    state.document = payload;
+    state.document = {
+      ...payload,
+      module: payload.snapshot?.source?.module
+        ?? payload.snapshot?.projection?.module
+        ?? payload.module
+        ?? "generic",
+    };
+    state.currentFolder = payload.folderId
+      ? await api.openFolder(payload.folderId)
+      : null;
+    state.editorDocuments = (await loadEveryDocumentPage((cursor) =>
+      api.listDocuments(cursor, payload.folderId
+        ? { view: "folder", folderId: payload.folderId }
+        : { view: "root" }))).map(withModule);
+    state.grants = payload.access === "owner"
+      ? (await api.listGrants(documentId)).items
+      : [];
     state.assets = new Map(assets);
     state.accessRemoved = false;
     state.model = performanceMonitor.measure(
@@ -476,7 +571,9 @@ async function openDocument(documentId) {
       ),
       { documentId },
     );
-    collapseEditorPanels();
+    state.activePanel = null;
+    state.layersOpen = false;
+    state.inspectorOpen = false;
     state.loading = false;
     setSync("saved", "Saved");
     render();
@@ -504,8 +601,28 @@ async function openDocument(documentId) {
   }
 }
 
+async function loadDocumentThumbnails(documents) {
+  const pending = documents.filter((document) =>
+    document.thumbnailUpdatedAt && !state.thumbnails.has(document.id));
+  let next = 0;
+  await Promise.all(Array.from({ length: Math.min(4, pending.length) }, async () => {
+    for (;;) {
+      const document = pending[next++];
+      if (!document) return;
+      try {
+        const result = await api.readThumbnail(document.id);
+        state.thumbnails.set(document.id, `data:image/png;base64,${result.png}`);
+      } catch (error) {
+        console.warn("Canvas could not load a saved design thumbnail.", error);
+      }
+    }
+  }));
+}
+
 function closeDocument() {
   documentCollectionLifecycle.stop();
+  state.folderUnsubscribe?.();
+  state.folderUnsubscribe = null;
   disposeEngineSurface();
   state.documentUnsubscribe?.();
   state.documentUnsubscribe = null;
@@ -522,6 +639,8 @@ function closeDocument() {
   state.incrementalEngineUpdate = false;
   state.reconciling = null;
   state.document = null;
+  state.grants = [];
+  state.shareTarget = null;
   state.model = null;
   state.selectedId = null;
   state.expandedLayerIds.clear();
@@ -529,6 +648,7 @@ function closeDocument() {
   state.realtimeConnection = REALTIME_RECONNECTING;
   state.dialog = null;
   state.contextMenu = null;
+  state.documentSwitcherOpen = false;
   state.activeTool = "select";
   collapseEditorPanels();
   state.spacePressed = false;
@@ -545,6 +665,8 @@ function closeDocument() {
   state.documentNodeById = null;
   state.deletedNodeSnapshots.clear();
   state.documentOpenStartedAt = null;
+  clearTimeout(state.thumbnailTimer);
+  state.thumbnailTimer = null;
   state.fieldDrafts.clear();
   state.fieldErrors.clear();
   state.accessRemoved = false;
@@ -554,7 +676,9 @@ function closeDocument() {
 async function refreshDocumentAssets(documentId) {
   const descriptors = await api.listAssets(documentId);
   if (state.document?.id !== documentId) return;
-  const result = await hydrateDocumentAssets(api, documentId, descriptors, state.assets);
+  const result = await hydrateDocumentAssets(api, documentId, descriptors, state.assets, {
+    rasterizeSvg: rasterizeOpenPencilSvgAsset,
+  });
   if (state.document?.id !== documentId || !result.changed) return;
   state.assets = result.assets;
   invalidateDocumentProjection();
@@ -667,6 +791,7 @@ async function flushPending() {
     } else {
       applyDisconnectedState(false);
     }
+    scheduleThumbnailUpdate(documentId);
   } catch (error) {
     if (error?.status === 403 || error?.status === 404) {
       handleAccessRemoved();
@@ -690,6 +815,23 @@ async function flushPending() {
   } finally {
     state.flushing = false;
     renderSyncStatus();
+  }
+}
+
+function scheduleThumbnailUpdate(documentId) {
+  clearTimeout(state.thumbnailTimer);
+  state.thumbnailTimer = setTimeout(() => void updateOpenDocumentThumbnail(documentId), 2_000);
+}
+
+async function updateOpenDocumentThumbnail(documentId) {
+  state.thumbnailTimer = null;
+  if (state.document?.id !== documentId || state.pendingUpdates.length || state.flushing) return;
+  const png = state.engineSurface?.capturePreview?.(640);
+  if (!png) return;
+  try {
+    await api.writeThumbnail(documentId, state.lastSequence, png);
+  } catch (error) {
+    console.warn("Canvas kept the last saved thumbnail after preview generation failed.", error);
   }
 }
 
@@ -812,7 +954,7 @@ function render() {
     ? renderEditor()
     : state.route === "document-unavailable" && state.documentUnavailable
       ? renderDocumentUnavailable()
-      : state.route === "trash" ? renderTrash() : renderLibrary();
+      : state.route === "trash" ? renderTrash() : state.route === "folder" ? renderFolder() : renderLibrary();
   if (retainedHost) {
     root.querySelector('[data-role="openpencil-surface"]')?.replaceWith(retainedHost);
   }
@@ -863,26 +1005,74 @@ function renderDocumentUnavailable() {
 
 function renderLibrary() {
   const query = state.search.trim().toLowerCase();
-  const documents = state.documents.filter((document) => {
-    const matchesGroup =
-      state.libraryFilter === "all" ||
-      (state.libraryFilter === "owned" ? document.access === "owner" : document.access === "editor");
-    return matchesGroup && (!query || document.title.toLowerCase().includes(query));
-  });
-  return `<main class="shell library" data-drop-target="library"><div class="library-inner">
-    <header class="library-header">
-      <div class="library-title"><h1>Canvas</h1><p>Create, import, and collaborate on design documents.</p></div>
-      <div class="library-actions"><button class="button" data-action="open-trash">Trash</button><button class="button" data-action="import">Import .pen</button><button class="button primary" data-action="new">New design</button></div>
+  const matches = (value) => !query || value.toLowerCase().includes(query);
+  const recentDocuments = [...state.documents]
+    .filter((document) => document.lastOpenedAt && matches(document.title))
+    .sort((a, b) => String(b.lastOpenedAt).localeCompare(String(a.lastOpenedAt)));
+  const rootDocuments = state.documents.filter((document) => document.folderId === null && matches(document.title));
+  const rootFolders = state.folders.filter((folder) => matches(folder.name));
+  const sharedDocuments = state.documents.filter((document) => document.access === "editor" && matches(document.title));
+  const sharedFolders = state.folders.filter((folder) => folder.access === "editor" && matches(folder.name));
+  const filteredRecentFolders = state.recentFolders.filter((folder) => matches(folder.name));
+  const content = state.libraryFilter === "recent"
+    ? `${filteredRecentFolders.length ? folderSection(filteredRecentFolders, "Folders", true) : ""}<section class="library-section"><div class="section-heading"><h2>Recent designs <span>${recentDocuments.length}</span></h2></div>${recentDocuments.length ? `<div class="document-grid">${recentDocuments.map(documentCard).join("")}</div>` : emptyLibrary(query)}</section>`
+    : state.libraryFilter === "shared"
+      ? `<section class="library-section">${sharedFolders.length ? folderSection(sharedFolders, "Folders") : ""}<div class="section-heading"><h2>Shared designs <span>${sharedDocuments.length}</span></h2></div>${sharedDocuments.length ? `<div class="document-grid">${sharedDocuments.map(documentCard).join("")}</div>` : sharedFolders.length ? "" : emptyLibrary(query)}</section>`
+      : `${folderSection(rootFolders, "Folders", false, true)}<section class="library-section"><div class="section-heading"><h2>Designs <span>${rootDocuments.length}</span></h2></div>${rootDocuments.length ? `<div class="document-grid">${rootDocuments.map(documentCard).join("")}</div>` : emptyLibrary(query)}</section>`;
+  return `<main class="shell library"><div class="library-inner">
+    <div class="library-sticky">${libraryTopbar("Search designs and folders")}${libraryTabs(state.libraryFilter)}</div>
+    <div class="library-content">${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
+    ${content}</div>
+  </div></main>${renderDialog()}${renderToast()}`;
+}
+
+function renderFolder() {
+  const folder = state.currentFolder;
+  if (!folder) return `<main class="shell empty"><div><h2>Folder unavailable</h2></div></main>`;
+  const query = state.search.trim().toLowerCase();
+  const matches = (value) => !query || value.toLowerCase().includes(query);
+  const folders = state.folderChildren.filter((item) => matches(item.name));
+  const documents = state.folderDocuments.filter((item) => matches(item.title));
+  return `<main class="shell library"><div class="library-inner">
+    <div class="library-sticky">${folderTopbar(folder)}</div>
+    <div class="folder-content">
+    <header class="folder-overview">
+      <span class="folder-overview-icon">${icon("folder")}</span><div class="library-title"><div class="folder-name-line"><h1>${escapeHtml(folder.name)}</h1>${folder.access === "owner" ? `<button class="icon-button" data-action="rename-current-folder" aria-label="Rename folder">${icon("pencil")}</button>` : ""}</div><div class="folder-detail-line"><p>${folders.length} folder${folders.length === 1 ? "" : "s"} · ${folder.designCount} design${folder.designCount === 1 ? "" : "s"} · Updated ${escapeHtml(relativeTime(folder.updatedAt))}</p>${folderPeopleSummary(folder)}</div></div><div class="folder-header-actions">${collectionControls()}${folder.access === "owner" ? `<button class="button" data-action="share-current-folder">${icon("person-plus")}Share folder</button>` : ""}<button class="icon-button" data-action="current-folder-menu" aria-label="Folder actions">${icon("more")}</button></div>
     </header>
-    <div class="library-toolbar">
-      <input class="search" data-role="search" type="search" value="${escapeHtml(state.search)}" placeholder="Search files" aria-label="Search files" />
-      <div class="segmented" aria-label="Library section">
-        ${segment("all", "All")}${segment("owned", "Your files")}${segment("shared", "Shared with you")}
-      </div>
+    ${folders.length ? folderSection(folders, "Folders", false, false, true) : ""}
+    <section class="library-section"><div class="section-heading"><h2>Designs in ${escapeHtml(folder.name)} <span>${documents.length}</span></h2></div>${documents.length ? `<div class="document-grid">${documents.map(documentCard).join("")}</div>` : emptyLibrary(query)}</section>
     </div>
-    ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
-    ${documents.length ? `<section class="document-grid">${documents.map(documentCard).join("")}</section>` : `<section class="empty"><div>${icon("file")}<h2>No files here yet</h2><p>Create a design or import a .pen file. Shared files appear automatically when another owner adds your verified Account email.</p></div></section>`}
-  </div></main>${renderContextMenu()}${renderDialog()}${renderToast()}`;
+  </div></main>${renderDialog()}${renderToast()}`;
+}
+
+function libraryTopbar(placeholder) {
+  return `<header class="library-topbar"><button class="canvas-brand" data-action="back-to-files" aria-label="Canvas home"><span>${icon("frame")}</span><strong>Canvas</strong></button><div class="topbar-actions">${searchControl(placeholder)}<button class="button" data-action="new-folder">${icon("folder-plus")}New folder</button><button class="button primary" data-action="new">${icon("plus")}New design</button></div></header>`;
+}
+
+function folderTopbar(folder) {
+  return `<header class="library-topbar folder-topbar"><div class="folder-breadcrumb"><button data-action="folder-back">${icon("home")}Home</button><span>${icon("chevron")}</span><strong>${icon("folder")}${escapeHtml(folder.name)}</strong></div><div class="topbar-actions">${searchControl("Search designs and folders", `Search ${folder.name}`)}<button class="button primary" data-action="new">${icon("plus")}New design</button></div></header>`;
+}
+
+function searchControl(placeholder, label = placeholder) {
+  return `<label class="search-wrap">${icon("search")}<input class="search" data-role="search" type="search" value="${escapeHtml(state.search)}" placeholder="${escapeHtml(placeholder)}" aria-label="${escapeHtml(label)}" /><kbd>⌘K</kbd></label>`;
+}
+
+function libraryTabs(active) {
+  return `<nav class="library-tabs" aria-label="Canvas sections"><div class="library-tab-list">${segment("recent", "Recent")}${segment("all", "All designs")}${segment("shared", "Shared with you")}<button class="${active === "trash" ? "active" : ""}" data-action="open-trash">Trash</button></div>${collectionControls()}</nav>`;
+}
+
+function folderSection(folders, title, rail = false, includeNew = false, nested = false) {
+  return `<section class="library-section"><div class="section-heading"><h2>${escapeHtml(title)} <span>${folders.length}</span></h2>${rail && folders.length >= 10 ? `<span class="section-link">See more</span>` : ""}</div><div class="${rail ? "folder-rail" : "folder-grid"}">${folders.map((folder) => folderCard(folder, nested)).join("")}${includeNew ? `<button class="folder-card folder-card-new" data-action="new-folder">${icon("folder-plus")}<span><strong>New folder</strong></span></button>` : ""}</div></section>`;
+}
+
+function collectionControls() {
+  return `<div class="collection-controls" aria-hidden="true"><span class="view-toggle">${icon("grid")}${icon("list")}</span><span class="sort-control">Last edited ${icon("chevron-down")}</span></div>`;
+}
+
+function emptyLibrary(query = "") {
+  return query
+    ? `<section class="empty"><div>${icon("search")}<h2>No results found</h2><p>Try a different name or clear your search.</p></div></section>`
+    : `<section class="empty"><div>${icon("file")}<h2>No designs here yet</h2><p>Create a design to get started.</p><button class="button primary" data-action="new">${icon("plus")}New design</button></div></section>`;
 }
 
 function renderTrash() {
@@ -890,27 +1080,75 @@ function renderTrash() {
   const documents = state.trashedDocuments.filter((document) =>
     !query || document.title.toLowerCase().includes(query));
   return `<main class="shell library"><div class="library-inner">
-    <header class="library-header">
-      <div class="library-title"><h1>Trash</h1><p>Items in Trash are permanently deleted after 30 days.</p></div>
-      <div class="library-actions"><button class="button" data-action="back-to-files">Back to files</button></div>
-    </header>
-    <div class="library-toolbar"><input class="search" data-role="search" type="search" value="${escapeHtml(state.search)}" placeholder="Search Trash" aria-label="Search Trash" /></div>
+    ${libraryTopbar("Search Trash")}
+    ${libraryTabs("trash")}
+    <header class="trash-overview"><div class="library-title"><h1>Trash</h1><p>Items are permanently deleted after 30 days.</p></div></header>
     ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
-    ${documents.length ? `<section class="document-grid">${documents.map(trashCard).join("")}</section>` : `<section class="empty"><div>${icon("trash")}<h2>Trash is empty</h2><p>Files moved to Trash will appear here for 30 days.</p></div></section>`}
+    ${state.trashedFolders.length ? `<section class="library-section"><div class="section-heading"><h2>Folders</h2></div><div class="folder-grid">${state.trashedFolders.map(trashFolderCard).join("")}</div></section>` : ""}
+    ${documents.length ? `<section class="library-section"><div class="section-heading"><h2>Designs</h2></div><div class="document-grid">${documents.map(trashCard).join("")}</div></section>` : state.trashedFolders.length ? "" : `<section class="empty"><div>${icon("trash")}<h2>Trash is empty</h2><p>Items moved to Trash will appear here for 30 days.</p></div></section>`}
   </div></main>${renderDialog()}${renderToast()}`;
 }
 
 function segment(key, label) {
-  return `<button class="${state.libraryFilter === key ? "active" : ""}" data-filter="${key}">${label}</button>`;
+  return `<button class="${state.route === "library" && state.libraryFilter === key ? "active" : ""}" data-filter="${key}">${label}</button>`;
 }
 
 function documentCard(document) {
-  const ownership = document.access === "owner" ? "Your file" : `Shared by ${document.ownerName ?? "another Account"}`;
-  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${icon("frame")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span>${escapeHtml(ownership)} · ${relativeTime(document.updatedAt)}</span></span></button>`;
+  const preview = state.thumbnails.get(document.id);
+  const editor = document.lastEditor && !document.lastEditor.isCurrentUser ? avatar(document.lastEditor) : "";
+  return `<button class="document-card" data-document-id="${document.id}"><span class="document-preview">${preview ? `<img src="${preview}" alt="" />` : `<span class="preview-placeholder">${icon("frame")}</span>`}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span class="document-submeta"><span>${escapeHtml(moduleLabel(document.module))}</span><span>Edited ${escapeHtml(relativeTime(document.updatedAt))}</span>${editor}</span></span></button>`;
+}
+
+function folderCard(folder, nested = false) {
+  const people = folderPeople(folder, { inheritCurrentFolder: nested });
+  const peopleCount = folderPeopleProfiles(folder, { inheritCurrentFolder: nested }).length;
+  const detail = `${folder.designCount} design${folder.designCount === 1 ? "" : "s"}${nested && peopleCount ? ` · inherits ${peopleCount} ${peopleCount === 1 ? "person" : "people"}` : peopleCount ? ` · ${peopleCount} ${peopleCount === 1 ? "person" : "people"}` : ""}`;
+  return `<button class="folder-card ${nested ? "nested-folder-card" : ""}" data-folder-id="${folder.id}">${nested ? `<span class="folder-icon">${icon("folder")}</span>` : ""}<span><strong>${escapeHtml(folder.name)}</strong><small>${escapeHtml(detail)}</small>${nested ? "" : people}</span></button>`;
+}
+
+function folderPeopleProfiles(folder, { inheritCurrentFolder = false } = {}) {
+  const direct = state.folderGrants.get(folder.id) ?? [];
+  if (direct.length || !inheritCurrentFolder || !state.currentFolder) return direct;
+  return state.folderGrants.get(state.currentFolder.id) ?? [];
+}
+
+function folderPeople(folder, options) {
+  const profiles = folderPeopleProfiles(folder, options).slice(0, 4);
+  return profiles.length ? `<span class="folder-people">${profiles.map(avatar).join("")}</span>` : "";
+}
+
+function folderPeopleSummary(folder) {
+  const profiles = [state.currentProfile, ...folderPeopleProfiles(folder)]
+    .filter(Boolean)
+    .filter((profile, index, all) => all.findIndex((candidate) => (candidate.id ?? candidate.accountId ?? candidate.email) === (profile.id ?? profile.accountId ?? profile.email)) === index)
+    .slice(0, 3);
+  if (!profiles.length) return "";
+  const names = profiles.map((profile, index) => index === 0 && profile === state.currentProfile ? "You" : profile.name?.trim() || profile.email).filter(Boolean);
+  const summary = names.length < 2 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names.at(-1)}`;
+  return `<span class="folder-people-summary">${escapeHtml(summary)}</span>`;
+}
+
+function moduleLabel(value) {
+  return ({ generic: "Generic", deck: "Deck", web: "Web", mobile: "Mobile" })[value] ?? "Generic";
+}
+
+function avatar(profile) {
+  const label = profile.name?.trim() || "Collaborator";
+  return profile.avatarUrl
+    ? `<img class="avatar" src="${escapeHtml(profile.avatarUrl)}" alt="${escapeHtml(label)}" />`
+    : `<span class="avatar avatar-fallback" aria-label="${escapeHtml(label)}">${escapeHtml(initials(label))}</span>`;
+}
+
+function initials(value) {
+  return value.split(/\s+/u).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "?";
 }
 
 function trashCard(document) {
   return `<article class="document-card trash-card"><span class="document-preview">${icon("file")}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span>Deleted ${escapeHtml(formatDate(document.deletedAt))}</span><span>Permanently deletes ${escapeHtml(formatDate(document.recoverableUntil))}</span></span><span class="trash-actions"><button class="button" data-restore-document="${document.id}">Restore</button><button class="button danger" data-permanently-delete-document="${document.id}">Delete permanently</button></span></article>`;
+}
+
+function trashFolderCard(folder) {
+  return `<article class="folder-card trash-folder-card"><span class="folder-icon">${icon("folder")}</span><span><strong>${escapeHtml(folder.name)}</strong><small>${folder.designCount} designs</small></span><span class="trash-actions"><button class="button" data-restore-folder="${folder.id}">Restore</button><button class="button danger" data-delete-folder="${folder.id}">Delete permanently</button></span></article>`;
 }
 
 function renderContextMenu() {
@@ -918,7 +1156,7 @@ function renderContextMenu() {
   if (!menu) return "";
   const document = state.documents.find((item) => item.id === menu.documentId);
   if (!document || document.access !== "owner") return "";
-  return `<div class="context-menu-backdrop" data-action="close-context-menu"><div class="context-menu" role="menu" aria-label="${escapeHtml(document.title)} actions" style="left:${menu.x}px;top:${menu.y}px"><button role="menuitem" data-trash-document="${document.id}">${icon("trash")}<span>Move to Trash</span></button></div></div>`;
+  return `<div class="context-menu-backdrop" data-role="context-menu-layer" data-action="close-context-menu"><div class="context-menu" role="menu" aria-label="${escapeHtml(document.title)} actions" style="left:${menu.x}px;top:${menu.y}px"><button role="menuitem" data-trash-document="${document.id}">${icon("trash")}<span>Move to Trash</span></button></div></div>`;
 }
 
 function renderEditor() {
@@ -944,36 +1182,40 @@ function renderEditor() {
   const selection = currentCanvasSelection();
   const unsupported = state.compatibilityIssues;
   const unsupportedNodeCount = state.compatibilityNodeIds.size;
-  const visiblePresence = visiblePresenceCount(state.realtimeConnection, state.presence);
-  const presenceNoun = visiblePresence === 1 ? "person" : "people";
-  const panelClass = state.activePanel ? `show-${state.activePanel}` : "show-none";
   const panelVisibilityClass = `${state.layersOpen ? "layers-open" : "layers-closed"} ${state.inspectorOpen ? "inspector-open" : "inspector-closed"}`;
-  const closedPanelClass = state.layersOpen && state.inspectorOpen ? "" : " has-closed-panel";
-  return `<main class="shell editor${closedPanelClass}">
+  const editorPeople = [state.currentProfile, ...state.grants.filter((grant) => grant.status === "active")]
+    .filter(Boolean)
+    .filter((profile, index, profiles) => profiles.findIndex((candidate) => (candidate.id ?? candidate.email) === (profile.id ?? profile.email)) === index)
+    .slice(0, 3);
+  return `<main class="shell editor">
     <header class="editor-header">
-      <button class="icon-button" data-action="back" aria-label="Back to files">${icon("back")}</button>
-      <div class="panel-switch segmented"><button class="${state.activePanel === "layers" ? "active" : ""}" data-panel="layers">Layers</button><button class="${state.activePanel === "inspector" ? "active" : ""}" data-panel="inspector">Inspect</button></div>
-      <div class="editor-title"><input data-role="title" value="${escapeHtml(state.document.title)}" aria-label="Document title" /></div>
-      <div class="history-controls"><button class="icon-button" data-action="undo" aria-label="Undo" ${state.undo?.canUndo() ? "" : "disabled"}>${icon("undo")}</button><button class="icon-button" data-action="redo" aria-label="Redo" ${state.undo?.canRedo() ? "" : "disabled"}>${icon("redo")}</button></div>
-      <div class="sync" data-state="${state.sync}" title="${escapeHtml(state.syncMessage)}" role="status" aria-live="polite"><i class="sync-dot"></i><span>${escapeHtml(state.syncMessage)}</span></div>
-      ${visiblePresence === null ? "" : `<div class="presence" aria-label="${visiblePresence} ${presenceNoun} here"><span>People </span>${visiblePresence}</div>`}
-      ${state.document.access === "owner" ? `<button class="button" data-action="share">Share</button>` : ""}
-      <button class="icon-button" data-action="menu" aria-label="Document actions">${icon("more")}</button>
+      <div class="editor-header-left">
+        <button class="icon-button editor-panel-toggle" data-action="toggle-layers" aria-label="${state.layersOpen ? "Hide" : "Show"} layers panel">${icon("panel-left")}</button>
+        <button class="icon-button editor-back" data-action="back" aria-label="Back to files">${icon("back")}</button>
+        <div class="editor-title"><input data-role="title" size="${Math.min(42, Math.max(1, state.document.title.length))}" value="${escapeHtml(state.document.title)}" aria-label="Document title" /><button class="document-switcher" data-action="document-switcher" aria-label="Switch design">${icon("chevron-down")}</button></div>
+        <span class="module-badge">${escapeHtml(moduleLabel(state.document.module))}</span>
+        <div class="sync" data-state="${state.sync}" title="${escapeHtml(state.syncMessage)}" role="status" aria-live="polite">${state.sync === "saved" ? icon("check") : `<i class="sync-dot"></i>`}<span>${escapeHtml(state.syncMessage)}</span></div>
+      </div>
+      <div class="editor-header-right">
+        ${editorPeople.length ? `<div class="editor-avatars" aria-label="People with access">${editorPeople.map(avatar).join("")}</div>` : ""}
+        ${state.document.access === "owner" ? `<button class="button editor-share" data-action="share">${icon("person-plus")}<span>Share</span></button>` : ""}
+        <button class="icon-button editor-panel-toggle" data-action="toggle-inspector" aria-label="${state.inspectorOpen ? "Hide" : "Show"} design panel">${icon("panel-right")}</button>
+      </div>
     </header>
-    <div class="editor-body ${panelClass} ${panelVisibilityClass}">
+    <div class="editor-body ${panelVisibilityClass}">
       <aside class="side-panel layers" ${state.layersOpen ? "" : "hidden"}>
-        <div class="panel-tabs"><button class="${state.assetPanel === "file" ? "active" : ""}" data-asset-panel="file">File</button><button class="${state.assetPanel === "assets" ? "active" : ""}" data-asset-panel="assets">Assets</button><button class="icon-button panel-close" data-action="close-layers" aria-label="Close layers">${icon("close")}</button></div>
+        <div class="panel-tabs"><button class="${state.assetPanel === "layers" ? "active" : ""}" data-asset-panel="layers">Layers</button><button class="${state.assetPanel === "assets" ? "active" : ""}" data-asset-panel="assets">Assets</button><button class="${state.assetPanel === "variables" ? "active" : ""}" data-asset-panel="variables">Variables</button></div>
+        ${renderLayersPanelHeader(layerNodes)}
         <div class="panel-scroll">${state.layersOpen ? renderLayersPanelContent(layerNodes) : ""}</div>
       </aside>
       <section class="viewport" data-role="viewport" data-tool="${state.activeTool}" tabindex="0" aria-label="Canvas viewport">
         <div class="openpencil-host" data-role="openpencil-surface"><div class="engine-loading" role="status" aria-live="polite">Rendering design…</div></div>
         ${state.realtimeConnection === REALTIME_RECONNECTING && navigator.onLine ? `<div class="connection-banner">${icon("refresh")}<span>Reconnecting and merging changes</span></div>` : ""}
         ${unsupported.length ? `<div class="compatibility-banner"><span>${unsupportedNodeCount} object${unsupportedNodeCount === 1 ? " needs" : "s need"} compatibility review</span><button class="button" data-action="compatibility">Review</button></div>` : ""}
-        <div class="zoom-controls" aria-label="Canvas zoom"><button class="tool" data-action="zoom-out" aria-label="Zoom out">−</button><button class="zoom-label" data-action="fit" aria-label="Fit design in view">${Math.round((state.engineViewport?.zoom ?? 1) * 100)}%</button><button class="tool" data-action="zoom-in" aria-label="Zoom in">+</button></div>
-        <div class="tool-palette" aria-label="Canvas tools"><button class="tool ${state.activeTool === "select" ? "active" : ""}" data-tool="SELECT" aria-label="Select tool" title="Select (V)">${icon("cursor")}</button><button class="tool ${state.activeTool === "hand" ? "active" : ""}" data-tool="HAND" aria-label="Pan canvas" title="Pan canvas (H or Space)">${icon("hand")}</button><span class="tool-separator"></span><button class="tool" data-tool="FRAME" aria-label="Frame tool" title="Frame (F)">${icon("frame")}</button><button class="tool" data-tool="RECTANGLE" aria-label="Rectangle tool" title="Rectangle (R)">${icon("rectangle")}</button><button class="tool" data-tool="ELLIPSE" aria-label="Ellipse tool" title="Ellipse (O)">${icon("ellipse")}</button><button class="tool" data-tool="TEXT" aria-label="Text tool" title="Text (T)">${icon("text")}</button></div>
       </section>
-      <aside class="side-panel inspector" ${state.inspectorOpen ? "" : "hidden"}><div class="panel-tabs"><button class="${state.inspectorTab === "design" ? "active" : ""}" data-inspector-tab="design">Design</button><button class="${state.inspectorTab === "code" ? "active" : ""}" data-inspector-tab="code">Code</button><button class="icon-button panel-close" data-action="close-inspector" aria-label="Close inspector">${icon("close")}</button></div><div class="panel-scroll">${state.inspectorTab === "design" ? renderInspector(selection) : renderCodeInspector(selection)}</div></aside>
+      <aside class="side-panel inspector" ${state.inspectorOpen ? "" : "hidden"}><div class="panel-tabs"><button class="${state.inspectorTab === "design" ? "active" : ""}" data-inspector-tab="design">Design</button><button class="${state.inspectorTab === "prototype" ? "active" : ""}" data-inspector-tab="prototype">Prototype</button><button class="${state.inspectorTab === "review" ? "active" : ""}" data-inspector-tab="review">Review</button></div><div class="panel-scroll">${renderInspectorPanel(selection)}</div></aside>
     </div>
+    ${state.documentSwitcherOpen ? '<div class="document-switcher-scrim" aria-hidden="true"></div>' : ""}
   </main>${renderDialog()}${renderToast()}`;
 }
 
@@ -987,6 +1229,7 @@ function mountEditorSurface() {
     let surface;
     surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentMaterializedDocument(), {
       visible: state.appTabActive,
+      showRulers: true,
       assets: state.assets,
       preparedDocument: currentPreparedRenderDocument(),
       selectedId: state.selectedId,
@@ -1032,8 +1275,6 @@ function mountEditorSurface() {
       onViewport: (viewport) => {
         if (state.document?.id !== documentId) return;
         state.engineViewport = viewport;
-        const label = root.querySelector('[data-action="fit"]');
-        if (label) label.textContent = `${Math.round(viewport.zoom * 100)}%`;
       },
       onTool: (tool) => {
         state.activeTool = tool.toLowerCase();
@@ -1169,7 +1410,11 @@ function renderLayersTree() {
     scroll.replaceChildren();
     return;
   }
-  scroll.innerHTML = renderLayersPanelContent(currentVisibleLayerNodes());
+  const nodes = currentVisibleLayerNodes();
+  const toolbar = root.querySelector(".side-panel.layers .layers-toolbar");
+  const toolbarHtml = renderLayersPanelHeader(nodes);
+  if (toolbar && toolbarHtml) toolbar.replaceWith(fragment(toolbarHtml));
+  scroll.innerHTML = renderLayersPanelContent(nodes);
   bindLayersTree();
 }
 
@@ -1187,10 +1432,35 @@ function currentVisibleLayerNodes(fallback = currentDocumentNodes()) {
 }
 
 function renderLayersPanelContent(nodes) {
-  if (state.assetPanel !== "file") {
-    return `<div class="inspector-empty">Reusable components and document assets appear here.</div>`;
-  }
-  return `<section class="layer-section"><h3>Pages</h3><button class="page-row active">Page 1</button></section><section class="layer-section"><h3>Layers</h3><div role="tree" aria-label="Document layers">${nodes.map(layerRow).join("")}</div></section>`;
+  if (state.assetPanel === "assets") return `<div class="inspector-empty">Reusable components and document assets appear here.</div>`;
+  if (state.assetPanel === "variables") return `<div class="inspector-empty">Document variables appear here.</div>`;
+  return `<div role="tree" aria-label="Document layers">${nodes.map(layerRow).join("")}</div><div class="components-row">${icon("component")}<span>Components</span><span class="components-count">${componentDefinitionCount()}</span></div>`;
+}
+
+function renderLayersPanelHeader(nodes) {
+  if (state.assetPanel !== "layers") return "";
+  const labels = { deck: "Slides", web: "Routes", mobile: "Screens", generic: "Frames" };
+  const label = labels[state.document?.module] ?? "Frames";
+  const count = nodes.filter(({ depth }) => depth === 0).length;
+  const lower = label.toLowerCase();
+  return `<div class="layers-toolbar"><span>${escapeHtml(label)} <b>${count}</b></span><div><button class="icon-button" aria-label="Search ${escapeHtml(lower)}">${icon("search")}</button><button class="icon-button" aria-label="Add ${escapeHtml(lower)}">${icon("plus")}</button></div></div>`;
+}
+
+function componentDefinitionCount() {
+  const components = currentMaterializedDocument()?.components;
+  return components && typeof components === "object" ? Object.keys(components).length : 0;
+}
+
+function fragment(html) {
+  const template = document.createElement("template");
+  template.innerHTML = html.trim();
+  return template.content.firstElementChild;
+}
+
+function renderInspectorPanel(selection) {
+  if (state.inspectorTab === "prototype") return `<div class="inspector-empty">Prototype settings appear here.</div>`;
+  if (state.inspectorTab === "review") return `<div class="inspector-empty">Review notes appear here.</div>`;
+  return renderInspector(selection);
 }
 
 function renderHistoryControls() {
@@ -1206,7 +1476,15 @@ function layerRow({ node, depth, hasChildren }) {
   const issue = state.compatibilityNodeIds.has(sourceId);
   const type = String(node.type).toLowerCase();
   const expanded = hasChildren && state.expandedLayerIds.has(node.id);
-  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? expanded ? "▾" : "▸" : ""}</button><span class="layer-type">${type === "text" ? "T" : ["frame", "group", "section"].includes(type) ? "□" : "◇"}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}</div>`;
+  return `<div class="layer-row ${node.id === state.selectedId ? "selected" : ""}" style="--depth:${depth}" data-node-id="${escapeHtml(node.id)}" role="treeitem" tabindex="0" aria-level="${depth + 1}" aria-selected="${node.id === state.selectedId}"${hasChildren ? ` aria-expanded="${expanded}"` : ""}><button class="layer-disclosure" data-action="toggle-layer" type="button" aria-label="${expanded ? "Collapse" : "Expand"} ${escapeHtml(node.name ?? node.type)}"${hasChildren ? "" : " disabled"}>${hasChildren ? icon(expanded ? "chevron-down" : "chevron") : ""}</button><span class="layer-type">${layerTypeIcon(type)}</span><span class="layer-name">${escapeHtml(node.name ?? node.content ?? node.text ?? node.type)}</span>${issue ? `<span title="Preserved but not faithfully represented">⚠</span>` : ""}${node.locked ? icon("lock") : ""}${node.visible === false ? icon("eye-off") : ""}</div>`;
+}
+
+function layerTypeIcon(type) {
+  if (type === "text") return icon("type");
+  if (type === "image") return icon("image");
+  if (type === "component" || type === "instance") return icon("component");
+  if (["frame", "group", "section"].includes(type)) return icon("layout-list");
+  return icon("square");
 }
 
 function renderInspector(selection) {
@@ -1222,14 +1500,24 @@ function renderInspector(selection) {
     || node.fill?.type === "color"
     || node.fill?.type === "solid"
     || node.fill == null;
+  const svgCandidate = selection.isInstanceDescendant ? null : inspectSvgVectorCandidate(node, state.assets);
   return `${selectionHeading(selection)}
   <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, fieldNodeId)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("rotation", node.rotation ?? 0, "number", false, fieldNodeId)}</div></section>
   <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("gap", node.gap ?? 0, "number", false, fieldNodeId)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, fieldNodeId)}</div></section>
   <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, fieldNodeId) : ""}${field("opacity", node.opacity ?? 1, "number", false, fieldNodeId)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, fieldNodeId)}</div></section>
   ${node.type === "text" ? `<section class="section"><h3>Typography</h3><div class="field-grid">${field("content", node.content ?? "", "text", true, fieldNodeId)}${field("fontFamily", node.fontFamily ?? "Inter", "text", true, fieldNodeId)}${field("fontSize", node.fontSize ?? 16, "number", false, fieldNodeId)}${field("fontWeight", node.fontWeight ?? "400", "text", false, fieldNodeId)}${field("lineHeight", node.lineHeight ?? 1.2, "number", false, fieldNodeId)}</div></section>` : ""}
   ${pencilAuthoringSections(node).map((section) => renderAuthoringSection(section, fieldNodeId)).join("")}
+  ${svgCandidate ? renderSvgVectorSection(svgCandidate) : ""}
   ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved but not currently represented faithfully. Review compatibility for details.</p></section>` : ""}
   ${selection.isInstanceDescendant ? "" : `<div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`}`;
+}
+
+function renderSvgVectorSection(candidate) {
+  const support = candidate.support;
+  const detail = support.conversionSupported
+    ? "This SVG already renders as retained vector artwork. Create a native-path copy when you need to edit its shapes, fills, or strokes."
+    : `This SVG already renders as retained vector artwork. Editable conversion is unavailable because it would lose ${support.conversionIssues.join(", ")}.`;
+  return `<section class="section svg-vector-section"><h3>SVG artwork</h3><p class="muted">${escapeHtml(detail)}</p><button class="button" data-action="convert-svg-vectors" type="button" ${support.conversionSupported ? "" : "disabled"}>Create editable vector copy</button></section>`;
 }
 
 function renderAuthoringSection(section, nodeId) {
@@ -1261,9 +1549,7 @@ function renderSelection() {
   const inspector = root.querySelector(".side-panel.inspector .panel-scroll");
   if (inspector) {
     const selection = currentCanvasSelection();
-    inspector.innerHTML = state.inspectorTab === "design"
-      ? renderInspector(selection)
-      : renderCodeInspector(selection);
+    inspector.innerHTML = renderInspectorPanel(selection);
     bindInspectorControls();
   }
   performanceMonitor.record("ui.selection", performance.now() - startedAt, {
@@ -1300,23 +1586,18 @@ function currentLayersTree() {
 
 function syncPanelVisibility() {
   const startedAt = performance.now();
-  const editor = root.querySelector(".shell.editor");
   const body = root.querySelector(".editor-body");
-  editor?.classList.toggle("has-closed-panel", !(state.layersOpen && state.inspectorOpen));
   if (body) {
-    body.classList.remove("show-layers", "show-inspector", "show-none", "layers-open", "layers-closed", "inspector-open", "inspector-closed");
-    body.classList.add(state.activePanel ? `show-${state.activePanel}` : "show-none");
+    body.classList.remove("layers-open", "layers-closed", "inspector-open", "inspector-closed");
     body.classList.add(state.layersOpen ? "layers-open" : "layers-closed");
     body.classList.add(state.inspectorOpen ? "inspector-open" : "inspector-closed");
   }
   root.querySelector(".side-panel.layers")?.toggleAttribute("hidden", !state.layersOpen);
   root.querySelector(".side-panel.inspector")?.toggleAttribute("hidden", !state.inspectorOpen);
-  root.querySelectorAll("[data-panel]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.panel === state.activePanel);
-  });
   performanceMonitor.record("ui.panel", performance.now() - startedAt, {
     documentId: state.document?.id,
-    panel: state.activePanel,
+    layersOpen: state.layersOpen,
+    inspectorOpen: state.inspectorOpen,
   });
 }
 
@@ -1368,8 +1649,33 @@ function bindCommon() {
 function bindLibrary() {
   root.querySelector('[data-action="open-trash"]')?.addEventListener("click", () => void navigateToTrash());
   root.querySelector('[data-action="back-to-files"]')?.addEventListener("click", () => void navigateToLibrary());
-  root.querySelector('[data-action="new"]')?.addEventListener("click", () => void act(() => createBlankDocument()));
-  root.querySelector('[data-action="import"]')?.addEventListener("click", () => void act(importFromHandle));
+  root.querySelector('[data-action="folder-back"]')?.addEventListener("click", () => {
+    const parentId = state.currentFolder?.parentId;
+    void (parentId ? navigateToFolder(parentId) : navigateToLibrary());
+  });
+  root.querySelectorAll('[data-action="new-folder"]').forEach((button) => button.addEventListener("click", () => {
+    state.dialog = { kind: "folder-form", mode: "create" };
+    state.dialogFocusSelector = '[data-role="folder-name"]';
+    render();
+  }));
+  root.querySelector('[data-action="rename-current-folder"]')?.addEventListener("click", () => {
+    if (!state.currentFolder) return;
+    state.dialog = { kind: "folder-form", mode: "rename", folderId: state.currentFolder.id, name: state.currentFolder.name };
+    state.dialogFocusSelector = '[data-role="folder-name"]';
+    render();
+  });
+  root.querySelector('[data-action="share-current-folder"]')?.addEventListener("click", () => {
+    const folder = state.currentFolder;
+    if (folder) void openShare({ type: "folder", id: folder.id, name: folder.name });
+  });
+  root.querySelector('[data-action="current-folder-menu"]')?.addEventListener("click", () => {
+    if (state.currentFolder) void openFolderContextMenu(state.currentFolder);
+  });
+  root.querySelectorAll('[data-action="new"]').forEach((button) => button.addEventListener("click", () => {
+    state.dialog = { kind: "new-design" };
+    state.dialogFocusSelector = '[data-role="design-name"]';
+    render();
+  }));
   root.querySelector('[data-role="search"]')?.addEventListener("input", (event) => {
     state.search = event.target.value;
     render();
@@ -1384,39 +1690,41 @@ function bindLibrary() {
   root.querySelectorAll("[data-document-id]").forEach((button) => {
     button.addEventListener("click", () => void navigateToDocument(button.dataset.documentId));
     button.addEventListener("contextmenu", (event) => {
-      const document = state.documents.find((item) => item.id === button.dataset.documentId);
-      if (document?.access !== "owner") return;
+      const document = [...state.documents, ...state.folderDocuments]
+        .find((item) => item.id === button.dataset.documentId);
+      if (!document) return;
       event.preventDefault();
-      state.contextMenu = {
-        documentId: document.id,
-        x: Math.min(event.clientX, Math.max(8, innerWidth - 190)),
-        y: Math.min(event.clientY, Math.max(8, innerHeight - 70)),
-      };
-      render();
+      void openDocumentContextMenu(document);
     });
   });
-  root.querySelector('[data-action="close-context-menu"]')?.addEventListener("click", (event) => {
-    if (event.target !== event.currentTarget) return;
-    state.contextMenu = null;
-    render();
-  });
-  root.querySelectorAll("[data-trash-document]").forEach((button) => button.addEventListener("click", () => {
-    const document = state.documents.find((item) => item.id === button.dataset.trashDocument);
-    if (!document) return;
-    state.contextMenu = null;
-    state.dialog = documentTrashConfirmation(document, {
-      returnDialog: null,
-      returnFocusSelector: `[data-document-id="${document.id}"]`,
+  root.querySelectorAll("[data-folder-id]").forEach((button) => {
+    button.addEventListener("click", () => void navigateToFolder(button.dataset.folderId));
+    button.addEventListener("contextmenu", (event) => {
+      const folder = [...state.folders, ...state.recentFolders, ...state.folderChildren]
+        .find((item) => item.id === button.dataset.folderId);
+      if (!folder) return;
+      event.preventDefault();
+      void openFolderContextMenu(folder);
     });
-    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
-    render();
-  }));
+  });
   root.querySelectorAll("[data-restore-document]").forEach((button) => button.addEventListener("click", () => void act(async () => {
     await api.restoreDocument(button.dataset.restoreDocument);
     state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== button.dataset.restoreDocument);
     setToast("Document restored.");
     render();
   })));
+  root.querySelectorAll("[data-restore-folder]").forEach((button) => button.addEventListener("click", () => void act(async () => {
+    await api.restoreFolder(button.dataset.restoreFolder);
+    state.trashedFolders = state.trashedFolders.filter((item) => item.id !== button.dataset.restoreFolder);
+    render();
+  })));
+  root.querySelectorAll("[data-delete-folder]").forEach((button) => button.addEventListener("click", () => {
+    const folder = state.trashedFolders.find((item) => item.id === button.dataset.deleteFolder);
+    if (!folder) return;
+    state.dialog = { kind: "confirm-permanently-delete-folder", folderId: folder.id, name: folder.name };
+    state.dialogFocusSelector = '[data-action="cancel-folder-delete"]';
+    render();
+  }));
   root.querySelectorAll("[data-permanently-delete-document]").forEach((button) => button.addEventListener("click", () => {
     const document = state.trashedDocuments.find((item) => item.id === button.dataset.permanentlyDeleteDocument);
     if (!document) return;
@@ -1427,56 +1735,144 @@ function bindLibrary() {
   root.querySelector('[data-action="cancel-confirmation"]')?.addEventListener("click", cancelDestructiveConfirmation);
   root.querySelector('[data-action="confirm-trash-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
   root.querySelector('[data-action="confirm-permanently-delete-document"]')?.addEventListener("click", () => void confirmDestructiveAction());
-  const dropTarget = root.querySelector("[data-drop-target=library]");
-  dropTarget?.addEventListener("dragover", (event) => { event.preventDefault(); });
-  dropTarget?.addEventListener("drop", (event) => {
-    event.preventDefault();
-    void act(async () => {
-      const imported = await readDroppedPenDocument(event.dataTransfer);
-      if (!imported) return;
-      await importDocument(imported.source, imported.fallbackTitle, imported.assets);
-    });
+  bindFolderDialogs();
+}
+
+async function openDocumentContextMenu(document) {
+  const folders = await loadFolderTree();
+  const action = await runtime.contextMenu.show([
+    { id: "open", label: "Open" },
+    { id: "duplicate", label: "Duplicate" },
+    { type: "submenu", label: "Move to", items: [
+      { id: "move:root", label: "All Designs", enabled: document.folderId !== null },
+      { type: "separator" },
+      ...folderMoveMenu(folders, document.folderId),
+    ] },
+    ...(document.access === "owner" ? [{ id: "share", label: "Share" }] : []),
+    { type: "separator" },
+    { id: "trash", label: "Move to Trash", destructive: true },
+  ]);
+  if (!action) return;
+  if (action === "open") return navigateToDocument(document.id);
+  if (action === "duplicate") return duplicateDocument(document);
+  if (action.startsWith("move:")) {
+    const folderId = action === "move:root" ? null : action.slice(5);
+    return act(async () => { await api.moveDocument(document.id, folderId); await refreshCurrentCollection(); });
+  }
+  if (action === "share") return openShare({ type: "document", id: document.id, name: document.title });
+  if (action === "trash") {
+    state.dialog = documentTrashConfirmation(document, { returnDialog: null, returnFocusSelector: `[data-document-id="${document.id}"]` });
+    state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
+    render();
+  }
+}
+
+async function duplicateDocument(document) {
+  await act(async () => {
+    const payload = await api.getDocument(document.id);
+    const model = restoreDocumentModel(payload);
+    try {
+      await api.createDocument({ title: `Copy of ${document.title}`, folderId: document.folderId, source: materialize(model), initialUpdate: encodeState(model) });
+    } finally { model.doc.destroy(); }
+    await refreshCurrentCollection();
   });
 }
 
+async function openFolderContextMenu(folder) {
+  const folders = await loadFolderTree();
+  const action = await runtime.contextMenu.show([
+    { id: "open", label: "Open" },
+    ...(folder.access === "owner" ? [
+      { id: "rename", label: "Rename" },
+      { type: "submenu", label: "Move to", items: [
+        { id: "move:root", label: "All Designs", enabled: folder.parentId !== null },
+        { type: "separator" },
+        ...folderMoveMenu(folders, folder.parentId, new Set(folderTreeIds(folders, folder.id))),
+      ] },
+      { id: "share", label: "Share" },
+      { type: "separator" },
+      { id: "trash", label: "Move to Trash", destructive: true },
+    ] : []),
+  ]);
+  if (!action) return;
+  if (action === "open") return navigateToFolder(folder.id);
+  if (action === "rename") {
+    state.dialog = { kind: "folder-form", mode: "rename", folderId: folder.id, name: folder.name };
+    state.dialogFocusSelector = '[data-role="folder-name"]';
+    return render();
+  }
+  if (action.startsWith("move:")) {
+    const parentId = action === "move:root" ? null : action.slice(5);
+    return act(async () => { await api.updateFolder(folder.id, { parentId }); await refreshCurrentCollection(); });
+  }
+  if (action === "share") return openShare({ type: "folder", id: folder.id, name: folder.name });
+  if (action === "trash") {
+    state.dialog = { kind: "confirm-trash-folder", folderId: folder.id, name: folder.name };
+    state.dialogFocusSelector = '[data-action="cancel-folder-trash"]';
+    render();
+  }
+}
+
+async function loadFolderTree(parentId = null) {
+  const folders = await loadEveryFolderPage(parentId === null ? { view: "roots" } : { view: "children", parentId });
+  return Promise.all(folders.map(async (folder) => ({ ...folder, children: await loadFolderTree(folder.id) })));
+}
+
+function folderMoveMenu(folders, selectedId, excluded = new Set()) {
+  return folders.filter((folder) => !excluded.has(folder.id)).map((folder) => ({
+    type: "submenu",
+    label: folder.name,
+    items: [
+      { id: `move:${folder.id}`, label: "Move here", enabled: folder.id !== selectedId },
+      ...(folder.children.length ? [{ type: "separator" }, ...folderMoveMenu(folder.children, selectedId, excluded)] : []),
+    ],
+  }));
+}
+
+function folderTreeIds(folders, targetId) {
+  for (const folder of folders) {
+    if (folder.id === targetId) return [folder.id, ...flattenFolderIds(folder.children)];
+    const nested = folderTreeIds(folder.children, targetId);
+    if (nested.length) return nested;
+  }
+  return [];
+}
+
+function flattenFolderIds(folders) {
+  return folders.flatMap((folder) => [folder.id, ...flattenFolderIds(folder.children)]);
+}
+
+async function refreshCurrentCollection() {
+  if (state.route === "folder" && state.currentFolder) return showFolder(state.currentFolder.id);
+  return showLibrary();
+}
+
 function bindEditor() {
-  root.querySelector('[data-action="back"]')?.addEventListener("click", () => void navigateToLibrary());
+  root.querySelector('[data-action="back"]')?.addEventListener("click", () => void (state.currentFolder ? navigateToFolder(state.currentFolder.id) : navigateToLibrary()));
   if (state.accessRemoved) return;
   root.querySelector('[data-action="undo"]')?.addEventListener("click", undo);
   root.querySelector('[data-action="redo"]')?.addEventListener("click", redo);
-  root.querySelectorAll("[data-panel]").forEach((button) => button.addEventListener("click", () => {
-    const panel = button.dataset.panel;
-    const wasOpen = state[`${panel}Open`];
-    state.activePanel = panel;
-    state[`${panel}Open`] = true;
+  root.querySelector('[data-action="toggle-layers"]')?.addEventListener("click", () => {
+    state.layersOpen = !state.layersOpen;
     syncPanelVisibility();
-    if (panel === "layers" && !wasOpen) {
+    if (state.layersOpen) {
       renderLayersTree();
       scrollSelectedLayerIntoView();
     }
-  }));
+  });
+  root.querySelector('[data-action="toggle-inspector"]')?.addEventListener("click", () => {
+    state.inspectorOpen = !state.inspectorOpen;
+    syncPanelVisibility();
+    if (state.inspectorOpen) renderSelection();
+  });
   root.querySelectorAll("[data-asset-panel]").forEach((button) => button.addEventListener("click", () => {
     state.assetPanel = button.dataset.assetPanel;
-    root.querySelectorAll("[data-asset-panel]").forEach((candidate) => {
-      candidate.classList.toggle("active", candidate.dataset.assetPanel === state.assetPanel);
-    });
-    renderLayersTree();
+    render();
   }));
   root.querySelectorAll("[data-inspector-tab]").forEach((button) => button.addEventListener("click", () => {
     state.inspectorTab = button.dataset.inspectorTab;
     render();
   }));
-  root.querySelector('[data-action="close-layers"]')?.addEventListener("click", () => {
-    state.layersOpen = false;
-    if (state.activePanel === "layers") state.activePanel = null;
-    syncPanelVisibility();
-    renderLayersTree();
-  });
-  root.querySelector('[data-action="close-inspector"]')?.addEventListener("click", () => {
-    state.inspectorOpen = false;
-    if (state.activePanel === "inspector") state.activePanel = null;
-    syncPanelVisibility();
-  });
   root.querySelector('[data-role="title"]')?.addEventListener("change", (event) => void act(async () => {
     const title = event.target.value.trim();
     if (!title || title === state.document.title) return;
@@ -1487,24 +1883,27 @@ function bindEditor() {
   }));
   bindLayersTree();
   bindInspectorControls();
-  root.querySelectorAll("button[data-tool]").forEach((button) => button.addEventListener("click", () => {
-    state.engineSurface?.editor.setTool(button.dataset.tool);
-  }));
-  root.querySelector('[data-action="zoom-in"]')?.addEventListener("click", () => {
-    const editor = state.engineSurface?.editor;
-    if (!editor) return;
-    editor.zoomToLevel(editor.state.zoom * 1.2);
-  });
-  root.querySelector('[data-action="zoom-out"]')?.addEventListener("click", () => {
-    const editor = state.engineSurface?.editor;
-    if (!editor) return;
-    editor.zoomToLevel(editor.state.zoom / 1.2);
-  });
-  root.querySelector('[data-action="fit"]')?.addEventListener("click", () => state.engineSurface?.fitDesignInView());
-  root.querySelector('[data-action="share"]')?.addEventListener("click", () => void openShare());
+  root.querySelector('[data-action="share"]')?.addEventListener("click", () => void openShare({ type: "document", id: state.document.id, name: state.document.title }));
+  root.querySelector('[data-action="document-switcher"]')?.addEventListener("click", () => void (async () => {
+    const items = state.editorDocuments.map((document) => ({
+      id: `open:${document.id}`,
+      label: document.title,
+      checked: document.id === state.document.id,
+    }));
+    state.documentSwitcherOpen = true;
+    render();
+    try {
+      const action = await runtime.contextMenu.show(items);
+      if (action?.startsWith("open:") && action.slice(5) !== state.document.id) await navigateToDocument(action.slice(5));
+    } finally {
+      if (state.route === "editor") {
+        state.documentSwitcherOpen = false;
+        render();
+      }
+    }
+  })());
   root.querySelector('[data-action="compatibility"]')?.addEventListener("click", () => openDialog("compatibility", '[data-action="compatibility"]'));
-  root.querySelector('[data-action="menu"]')?.addEventListener("click", () => openDialog("menu", '[data-action="menu"]'));
-  root.querySelector('[data-action="download"]')?.addEventListener("click", () => void act(downloadDocument));
+  root.querySelector('[data-action="menu"]')?.addEventListener("click", () => void openDocumentContextMenu({ ...state.document, folderId: state.document.folderId ?? null }));
   root.querySelector('[data-action="trash-document"]')?.addEventListener("click", () => {
     state.dialog = documentTrashConfirmation(state.document);
     state.dialogFocusSelector = '[data-action="cancel-confirmation"]';
@@ -1609,6 +2008,44 @@ function bindInspectorControls() {
   root.querySelector('[data-action="delete-node"]')?.addEventListener("click", () => {
     deleteSelectedNode();
   });
+  root.querySelector('[data-action="convert-svg-vectors"]')?.addEventListener("click", () => {
+    convertSelectedSvgToVectors();
+  });
+}
+
+function convertSelectedSvgToVectors() {
+  const selection = currentCanvasSelection();
+  if (!selection?.effectiveNode || selection.isInstanceDescendant) return;
+  try {
+    const candidate = inspectSvgVectorCandidate(selection.effectiveNode, state.assets);
+    if (!candidate) throw new Error("The selected object is not a loaded SVG image.");
+    const entries = currentDocumentNodes();
+    const sourceEntry = entries.find(({ node }) => node.id === selection.referenceId);
+    if (!sourceEntry) throw new Error("The selected SVG is no longer in this document.");
+    const usedIds = new Set(entries.map(({ node }) => node.id));
+    const base = `${sourceEntry.node.id}-editable`;
+    let createdId = base;
+    let suffix = 1;
+    while (usedIds.has(createdId)) createdId = `${base}-${++suffix}`;
+    const converted = convertSvgAssetToCanvasNode({
+      sourceNode: sourceEntry.node,
+      asset: candidate.asset,
+      createdId,
+      usedIds,
+    });
+    converted.x = Number(converted.x ?? 0) + 24;
+    converted.y = Number(converted.y ?? 0) + 24;
+    mutate(state.model, {
+      kind: "insert-node",
+      node: converted,
+      parentId: sourceEntry.parentId,
+      position: sourceEntry.index + 1,
+    }, LOCAL_ORIGIN);
+    queueMicrotask(() => selectNode(createdId));
+    showTransientToast(`Created ${converted.children.length} editable vector shape${converted.children.length === 1 ? "" : "s"}`);
+  } catch (error) {
+    showTransientToast(message(error), true);
+  }
 }
 
 async function copySelectedNodeReference(button = null) {
@@ -1883,15 +2320,43 @@ function visibleViewportInsets(host) {
   return viewportInsetsFromRects(viewport, panels);
 }
 
-async function openShare() {
+async function openShare(target = null) {
+  state.shareTarget = target ?? { type: "document", id: state.document.id, name: state.document.title };
   state.dialogReturnFocusSelector = '[data-action="share"]';
   state.dialog = "share";
   state.dialogFocusSelector = '[data-role="share-email"]';
   render();
   await act(async () => {
-    state.grants = (await api.listGrants(state.document.id)).items;
+    state.grants = await loadShareGrants(state.shareTarget);
     render();
   });
+}
+
+async function loadShareGrants(target) {
+  if (target.type === "folder") return (await api.listFolderGrants(target.id)).items;
+  const direct = (await api.listGrants(target.id)).items;
+  const combined = [...direct];
+  const seen = new Set(direct.map(sharePersonKey));
+  let folder = state.document?.folderId ? await api.openFolder(state.document.folderId) : null;
+  while (folder) {
+    try {
+      const inherited = (await api.listFolderGrants(folder.id)).items;
+      for (const grant of inherited) {
+        const key = sharePersonKey(grant);
+        if (grant.isCurrentUser || seen.has(key)) continue;
+        seen.add(key);
+        combined.push({ ...grant, inheritedFrom: folder.name });
+      }
+    } catch (error) {
+      console.warn(`Canvas could not load inherited access from folder ${folder.id}.`, error);
+    }
+    folder = folder.parentId ? await api.openFolder(folder.parentId) : null;
+  }
+  return combined;
+}
+
+function sharePersonKey(person) {
+  return person.accountId ?? person.email ?? person.id;
 }
 
 function renderDialog() {
@@ -1917,20 +2382,132 @@ function renderDialog() {
       `<button class="button" data-action="cancel-confirmation" autofocus>Cancel</button><button class="button danger" data-action="confirm-remove-collaborator">Remove access</button>`,
     );
   }
+  if (state.dialog.kind === "folder-form") {
+    const creating = state.dialog.mode === "create";
+    return dialog(
+      creating ? "New folder" : "Rename folder",
+      `<div class="field-row"><label for="folder-name">Name</label><input id="folder-name" class="field" data-role="folder-name" value="${escapeHtml(state.dialog.name ?? "")}" /></div>`,
+      `<button class="button" data-action="cancel-folder-form">Cancel</button><button class="button primary" data-action="save-folder">${creating ? "Create" : "Rename"}</button>`,
+    );
+  }
+  if (state.dialog.kind === "new-design") {
+    const selectedFolderId = state.route === "folder" ? state.currentFolder?.id ?? "" : "";
+    const availableFolders = state.currentFolder && !state.folders.some((folder) => folder.id === state.currentFolder.id)
+      ? [...state.folders, state.currentFolder]
+      : state.folders;
+    const folderOptions = availableFolders.map((folder) => `<option value="${escapeHtml(folder.id)}" ${folder.id === selectedFolderId ? "selected" : ""}>${escapeHtml(folder.name)}</option>`).join("");
+    return dialog(
+      "New design",
+      `<p class="dialog-intro">Choose what you’re making. Only Generic can change later.</p><div class="module-picker" role="radiogroup" aria-label="Design type">${moduleChoice("generic", "Generic", "frame", "Free canvas for flyers, social, print, anything.")}${moduleChoice("deck", "Deck", "deck", "Slides with a fixed 16:9 stage.", true)}${moduleChoice("web", "Web", "web", "Responsive routes and sections.")}${moduleChoice("mobile", "Mobile", "mobile", "Phone-sized screens and flows.")}</div><div class="design-fields"><div class="field-row"><label for="design-name">Name</label><input id="design-name" class="field" data-role="design-name" value="Untitled" /></div><div class="field-row"><label for="design-folder">Save in</label><select id="design-folder" class="field" data-role="design-folder"><option value="">All designs</option>${folderOptions}</select></div></div>`,
+      `<button class="button" data-action="cancel-new-design">Cancel</button><button class="button primary" data-action="create-design">${icon("plus")}Create deck</button>`,
+    );
+  }
+  if (state.dialog.kind === "confirm-trash-folder") {
+    return dialog(
+      `Move “${state.dialog.name}” to Trash?`,
+      `<p>The folder, its nested folders, and its designs will move to Trash together. They can be restored for 30 days.</p>`,
+      `<button class="button" data-action="cancel-folder-trash">Cancel</button><button class="button danger" data-action="confirm-folder-trash">Move to Trash</button>`,
+    );
+  }
+  if (state.dialog.kind === "confirm-permanently-delete-folder") {
+    return dialog(
+      `Permanently delete “${state.dialog.name}”?`,
+      `<p>This deletes the folder, its nested folders, and every document you own inside it. It cannot be undone.</p>`,
+      `<button class="button" data-action="cancel-folder-delete">Cancel</button><button class="button danger" data-action="confirm-folder-delete">Delete permanently</button>`,
+    );
+  }
   if (state.dialog === "menu") {
-    return dialog("Document actions", `<div class="grant-list"><button class="button" data-action="download">Download .pen</button>${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
+    return dialog("Document actions", `<div class="grant-list">${state.document?.access === "owner" ? `<button class="button danger" data-action="trash-document">Move to Trash</button>` : ""}</div>`);
   }
   if (state.dialog === "compatibility") {
     return dialog("Compatibility review", `<p class="muted">Canvas preserves the original design data. The objects below are not represented faithfully by the current renderer and are not silently rewritten.</p><div class="grant-list">${state.compatibilityIssues.map((issue) => `<div class="grant-row"><div><strong>${escapeHtml(issue.nodeId)}</strong><span>${escapeHtml(issue.message)}</span></div></div>`).join("") || `<p>No known unsupported visual behavior.</p>`}</div>`);
   }
   if (state.dialog === "share") {
-    return dialog("Share document", `<p class="muted">Add editors by their Penkra Account email. No email will be sent.</p><div class="share-form"><input class="field" data-role="share-email" type="email" placeholder="name@example.com" aria-label="Collaborator email" /><button class="button primary" data-action="grant">Add editor</button></div><div class="grant-list">${state.grants.map((grant) => `<div class="grant-row"><div><strong>${escapeHtml(grant.email)}</strong><span>${grant.status === "active" ? "Editor" : "Pending account"}</span></div><button class="button danger" data-revoke-grant="${grant.id}">Remove</button></div>`).join("") || `<p class="muted">No other editors have access.</p>`}</div>`);
+    const targetName = state.shareTarget?.name ?? "item";
+    return `<div class="modal-backdrop share-backdrop"><section class="dialog share-dialog" role="dialog" aria-modal="true" aria-label="Share ${escapeHtml(targetName)}">
+      <header class="share-dialog-head"><div><h2>Share</h2><p>${escapeHtml(targetName)}</p></div><button class="icon-button" data-action="close-dialog" aria-label="Close">${icon("close")}</button></header>
+      ${renderShareInvite()}
+      <footer class="share-dialog-footer"><button class="button" data-action="close-dialog">Done</button></footer>
+    </section></div>`;
   }
   return "";
 }
 
+function renderShareInvite() {
+  const owner = state.currentProfile ? { ...state.currentProfile, isOwner: true, isCurrentUser: true } : null;
+  const people = [owner, ...state.grants].filter(Boolean);
+  return `<div class="share-dialog-body"><div class="share-form"><div class="share-email-control">${icon("mail")}<input data-role="share-email" type="email" placeholder="Email address" aria-label="Collaborator email" /></div><button class="button primary" data-action="grant">Invite</button></div><div class="share-people"><div class="share-people-heading"><strong>People with access</strong><span>${people.length + 1}</span></div>${people.map(sharePersonRow).join("")}<div class="share-person-row"><span class="avatar avatar-fallback share-agent-avatar">A</span><div class="share-person-copy"><strong>Agent</strong><span>Penkra Agent · works in this Thread</span></div></div></div></div>`;
+}
+
+function sharePersonRow(person) {
+  const name = person.isCurrentUser ? "You" : person.name?.trim() || person.email;
+  const detail = person.email ?? (person.isOwner ? "Owner" : person.status === "pending" ? "Pending invitation" : "Editor");
+  const inherited = person.inheritedFrom ? `<span class="share-inherited">via ${escapeHtml(person.inheritedFrom)}</span>` : "";
+  return `<div class="share-person-row">${avatar(person)}<div class="share-person-copy"><div class="share-person-name"><strong>${escapeHtml(name)}</strong>${inherited}</div><span>${escapeHtml(detail)}</span></div>${person.isOwner ? `<span class="share-access-label">Owner</span>` : person.inheritedFrom ? "" : `<button class="share-remove" data-revoke-grant="${escapeHtml(person.id)}">Remove</button>`}</div>`;
+}
+
+function bindFolderDialogs() {
+  root.querySelectorAll('[data-role="design-module"]').forEach((control) => control.addEventListener("change", () => {
+    const create = root.querySelector('[data-action="create-design"]');
+    if (create) create.innerHTML = `${icon("plus")}Create ${moduleLabel(control.value).toLowerCase()}`;
+  }));
+  root.querySelector('[data-action="cancel-new-design"]')?.addEventListener("click", closeDialog);
+  root.querySelector('[data-action="create-design"]')?.addEventListener("click", () => void act(async () => {
+    const title = root.querySelector('[data-role="design-name"]')?.value.trim();
+    const module = root.querySelector('[data-role="design-module"]:checked')?.value;
+    const folderId = root.querySelector('[data-role="design-folder"]')?.value ?? undefined;
+    if (!title || !["generic", "deck", "web", "mobile"].includes(module)) return;
+    state.dialog = null;
+    await createBlankDocument(title, module, folderId);
+  }));
+  root.querySelector('[data-action="cancel-folder-form"]')?.addEventListener("click", closeDialog);
+  root.querySelector('[data-action="save-folder"]')?.addEventListener("click", () => void act(async () => {
+    const name = root.querySelector('[data-role="folder-name"]')?.value.trim();
+    if (!name) return;
+    const form = state.dialog;
+    if (form.mode === "create") await api.createFolder(name, state.route === "folder" ? state.currentFolder?.id ?? null : null);
+    else await api.updateFolder(form.folderId, { name });
+    state.dialog = null;
+    await refreshCurrentCollection();
+  }));
+  root.querySelector('[data-action="cancel-folder-trash"]')?.addEventListener("click", closeDialog);
+  root.querySelector('[data-action="confirm-folder-trash"]')?.addEventListener("click", () => void act(async () => {
+    const folderId = state.dialog.folderId;
+    state.dialog = null;
+    await api.deleteFolder(folderId);
+    await refreshCurrentCollection();
+  }));
+  root.querySelector('[data-action="cancel-folder-delete"]')?.addEventListener("click", closeDialog);
+  root.querySelector('[data-action="confirm-folder-delete"]')?.addEventListener("click", () => void act(async () => {
+    const folderId = state.dialog.folderId;
+    state.dialog = null;
+    await api.permanentlyDeleteFolder(folderId);
+    state.trashedFolders = state.trashedFolders.filter((item) => item.id !== folderId);
+    render();
+  }));
+  root.querySelector('[data-action="grant"]')?.addEventListener("click", () => void act(async () => {
+    const email = root.querySelector('[data-role="share-email"]')?.value.trim();
+    if (!email || !state.shareTarget) return;
+    if (state.shareTarget.type === "folder") await api.grantFolderAccess(state.shareTarget.id, email);
+    else await api.grantAccess(state.shareTarget.id, email);
+    state.grants = await loadShareGrants(state.shareTarget);
+    render();
+  }));
+  root.querySelectorAll("[data-revoke-grant]").forEach((button) => button.addEventListener("click", () => void act(async () => {
+    if (!state.shareTarget) return;
+    if (state.shareTarget.type === "folder") await api.revokeFolderGrant(state.shareTarget.id, button.dataset.revokeGrant);
+    else await api.revokeGrant(state.shareTarget.id, button.dataset.revokeGrant);
+    state.grants = await loadShareGrants(state.shareTarget);
+    render();
+  })));
+}
+
 function dialog(title, body, actions = '<button class="button" data-action="close-dialog">Done</button>') {
-  return `<div class="modal-backdrop"><section class="dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}"><header class="dialog-head"><h2>${escapeHtml(title)}</h2></header><div class="dialog-body">${body}</div><footer class="dialog-actions">${actions}</footer></section></div>`;
+  return `<div class="modal-backdrop"><section class="dialog" role="dialog" aria-modal="true" aria-label="${escapeHtml(title)}"><header class="dialog-head"><h2>${escapeHtml(title)}</h2><button class="icon-button" data-action="close-dialog" aria-label="Close">${icon("close")}</button></header><div class="dialog-body">${body}</div><footer class="dialog-actions">${actions}</footer></section></div>`;
+}
+
+function moduleChoice(value, label, iconName, description, checked = false) {
+  return `<label class="module-choice"><input type="radio" name="design-module" data-role="design-module" value="${value}" ${checked ? "checked" : ""} /><span><span class="module-choice-top"><i>${icon(iconName)}</i><i class="module-radio">${icon("check")}</i></span><strong>${label}</strong><small>${escapeHtml(description)}</small></span></label>`;
 }
 
 function openDialog(dialogValue, returnFocusSelector) {
@@ -2017,29 +2594,6 @@ function trapDialogFocus(event) {
   }
 }
 
-async function downloadDocument() {
-  if (!state.model) return;
-  assertExportAllowed(state.accessRemoved);
-  await revalidateExportAccess();
-  assertExportAllowed(state.accessRemoved);
-  await revalidateExportAccess();
-  assertExportAllowed(state.accessRemoved);
-  const filename = safeDocumentName(state.document.title);
-  if (!(await savePenDocument(currentMaterializedDocument(), filename))) return;
-  state.dialog = null;
-  setToast(`Downloaded ${filename}.`);
-  render();
-}
-
-async function revalidateExportAccess() {
-  try {
-    await api.getDocument(state.document.id);
-  } catch (error) {
-    if (error?.status === 403 || error?.status === 404) handleAccessRemoved();
-    throw error;
-  }
-}
-
 async function act(action) {
   try {
     state.error = null;
@@ -2118,13 +2672,40 @@ function icon(name) {
     file: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/>',
     trash: '<path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/>',
     frame: '<path d="M5 5h14v14H5z"/><path d="M3 8h4M17 8h4M8 3v4M8 17v4"/>',
+    folder: '<path d="M3 6h7l2 2h9v11H3z"/>',
+    "folder-plus": '<path d="M3 7h7l2 2h9v10H3z"/><path d="M12 12v5M9.5 14.5h5"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    search: '<circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/>',
+    chevron: '<path d="m9 6 6 6-6 6"/>',
+    "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+    pencil: '<path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="m14 7 3 3"/>',
+    grid: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
+    list: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".7"/><circle cx="4" cy="12" r=".7"/><circle cx="4" cy="18" r=".7"/>',
+    canvas: '<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 15 11 9l2 4 2-2 2 4"/>',
+    deck: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h5"/>',
+    web: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M7 7h.01M10 7h.01"/>',
+    mobile: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M10 6h4M11 18h2"/>',
+    home: '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/>',
+    "person-plus": '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-4 2-6 6-6s6 2 6 6M18 8v6M15 11h6"/>',
+    "panel-left": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/>',
+    "panel-right": '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M15 4v16"/>',
+    check: '<path d="m7 12 3 3 7-7"/>',
     hand: '<path d="M7.5 11V6.5a1.5 1.5 0 0 1 3 0V10 5.5a1.5 1.5 0 0 1 3 0V10 7a1.5 1.5 0 0 1 3 0v4-2a1.5 1.5 0 0 1 3 0v5.5c0 4-2.5 6.5-6.5 6.5h-1.2a6 6 0 0 1-4.8-2.4L4.3 15a1.6 1.6 0 0 1 2.4-2.1L9 15"/>',
+    mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/>',
+    download: '<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M5 20h14"/>',
     more: '<circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/>',
     refresh: '<path d="M20 11a8 8 0 0 0-14.9-4M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14.9 4M20 20v-5h-5"/>',
     redo: '<path d="M18 8v5h-5"/><path d="M18 13a7 7 0 1 0-1.7 4.6"/>',
     rectangle: '<rect x="5" y="7" width="14" height="10" rx="1"/>',
     text: '<path d="M5 6h14M12 6v12M8 18h8"/>',
     undo: '<path d="M6 8v5h5"/><path d="M6 13a7 7 0 1 1 1.7 4.6"/>',
+    type: '<path d="M5 6h14M12 6v12M8 18h8"/>',
+    image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m5 17 4-4 3 3 2-2 5 3"/>',
+    component: '<rect x="5" y="5" width="6" height="6" rx="1"/><rect x="13" y="5" width="6" height="6" rx="1"/><rect x="5" y="13" width="6" height="6" rx="1"/><rect x="13" y="13" width="6" height="6" rx="1"/>',
+    "layout-list": '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/>',
+    square: '<rect x="5" y="5" width="14" height="14" rx="2"/>',
+    lock: '<rect x="6" y="10" width="12" height="10" rx="2"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/>',
+    "eye-off": '<path d="m3 3 18 18M10.5 10.7a2 2 0 0 0 2.8 2.8M9.9 4.2A10.7 10.7 0 0 1 21 12a11.8 11.8 0 0 1-2.1 3.3M6.6 6.6A11.5 11.5 0 0 0 3 12s3.3 6 9 6a9.8 9.8 0 0 0 3.4-.6"/>',
   };
   return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${paths[name] ?? paths.file}</svg>`;
 }

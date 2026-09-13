@@ -155,6 +155,21 @@ test("Canvas undo tracks local edits and leaves remote edits intact", () => {
   model.doc.destroy();
 });
 
+test("Canvas undo tracks root axes, variables and flows with node edits", () => {
+  const model = createDocumentModel({ version: "2.17", axes: {}, variables: {}, flows: [], children: [] });
+  const undo = createUndoManager(model);
+  model.doc.transact(() => {
+    model.documentFields.set("axes", { appearance: { modes: [{ name: "light" }, { name: "dark" }] } });
+    model.documentFields.set("variables", { ink: { tokenType: "color", cascade: [{ value: "#111111" }] } });
+    model.documentFields.set("flows", [{ id: "next" }]);
+  }, LOCAL_ORIGIN);
+  assert.equal(undo.canUndo(), true);
+  undo.undo();
+  assert.deepEqual(materialize(model), { version: "2.17", axes: {}, variables: {}, flows: [], children: [] });
+  undo.destroy();
+  model.doc.destroy();
+});
+
 test("Canvas captures an inverse update for one atomic agent document replacement", () => {
   const original = {
     version: "2.15",

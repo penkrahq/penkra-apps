@@ -1,4 +1,4 @@
-import { fontManager } from "../vendor/open-pencil/engine.mjs";
+import { fontManager } from "../vendor/open-pencil/engine.source.mjs";
 
 const DATABASE_NAME = "penkra-canvas-fonts";
 const STORE_NAME = "faces";

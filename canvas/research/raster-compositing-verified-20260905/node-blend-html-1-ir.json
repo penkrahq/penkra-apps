@@ -1,0 +1,193 @@
+{
+  "format": "html",
+  "renderDocument": {
+    "module": "web",
+    "children": [
+      {
+        "id": "root",
+        "name": "Root",
+        "role": "route",
+        "type": "frame",
+        "layout": "none",
+        "width": 300,
+        "height": 200,
+        "physical": {
+          "w": 3.125,
+          "h": 2.0833333333333335,
+          "unit": "in"
+        },
+        "fill": "#FFFFFF",
+        "children": [
+          {
+            "id": "backdrop",
+            "type": "rectangle",
+            "x": 40,
+            "y": 30,
+            "width": 180,
+            "height": 130,
+            "fill": "#F4A261"
+          },
+          {
+            "id": "foreground",
+            "type": "rectangle",
+            "x": 80,
+            "y": 70,
+            "width": 100,
+            "height": 50,
+            "fill": "#336699",
+            "blendMode": "multiply"
+          }
+        ]
+      }
+    ],
+    "paragraphStyles": {},
+    "flows": []
+  },
+  "projection": "semantic",
+  "lang": null,
+  "axes": {},
+  "modes": {},
+  "outputs": [
+    {
+      "kind": "route",
+      "index": 0,
+      "id": "root",
+      "name": "Root",
+      "width": 300,
+      "height": 200,
+      "unit": "px",
+      "physical": {
+        "w": 3.125,
+        "h": 2.0833333333333335,
+        "unit": "in"
+      },
+      "root": {
+        "id": "root:export-container",
+        "type": "frame",
+        "export": "default",
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "localX": 0,
+          "localY": 0,
+          "w": 300,
+          "h": 200,
+          "rotation": 0
+        },
+        "paint": {},
+        "semantics": {
+          "description": null,
+          "decorative": false,
+          "landmark": null
+        },
+        "layout": {
+          "layout": "none"
+        },
+        "variants": {},
+        "capability": {
+          "verdict": "native"
+        }
+      },
+      "nodes": [
+        {
+          "id": "root",
+          "type": "frame",
+          "export": "default",
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "localX": 0,
+            "localY": 0,
+            "w": 300,
+            "h": 200,
+            "rotation": 0
+          },
+          "paint": {
+            "fill": null,
+            "stroke": null,
+            "effect": null,
+            "cornerRadius": null,
+            "opacity": 1,
+            "blendMode": "normal"
+          },
+          "semantics": {
+            "description": null,
+            "decorative": false,
+            "landmark": null
+          },
+          "layout": {
+            "layout": "none",
+            "width": 300,
+            "height": 200
+          },
+          "variants": {},
+          "capability": {
+            "verdict": "raster",
+            "reason": "Raster compositing scope."
+          },
+          "parent": "root:export-container",
+          "z": 0,
+          "isolation": "root",
+          "clip": null
+        }
+      ]
+    }
+  ],
+  "notes": [],
+  "flows": [],
+  "rasters": [
+    {
+      "id": "root",
+      "reason": "Raster compositing scope.",
+      "outset": {
+        "left": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "w": 300,
+        "h": 200
+      },
+      "colorSpace": "sRGB",
+      "alpha": "unpremultiplied",
+      "ppi": 288,
+      "pixelWidth": 900,
+      "pixelHeight": 600,
+      "variants": [
+        {
+          "name": "1x",
+          "ppi": 96,
+          "scale": 1,
+          "pixelWidth": 300,
+          "pixelHeight": 200
+        },
+        {
+          "name": "2x",
+          "ppi": 192,
+          "scale": 2,
+          "pixelWidth": 600,
+          "pixelHeight": 400
+        },
+        {
+          "name": "3x",
+          "ppi": 288,
+          "scale": 3,
+          "pixelWidth": 900,
+          "pixelHeight": 600
+        }
+      ]
+    }
+  ],
+  "consequences": [
+    {
+      "node": "foreground",
+      "kind": "raster",
+      "why": "properties.blendMode: The current HTML/CSS writer has no measured live emission for this construct."
+    }
+  ],
+  "lowered": [],
+  "colorSpace": "sRGB"
+}

@@ -4,6 +4,7 @@ import test from "node:test";
 import { materializeDocumentImages } from "./image-materialization.mjs";
 
 const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const svg = new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"/>');
 
 function fixture(fill) {
   const uploads = [];
@@ -36,6 +37,20 @@ test("materializes an absolute local image into a durable Canvas blob path", asy
   });
   assert.equal(value.uploads.length, 1);
   assert.match(value.document.children[0].fill.url, /^images\/[a-f0-9]{64}\.png$/u);
+});
+
+test("stores imported SVG source bytes without changing their format", async () => {
+  const value = fixture({ type: "image", url: "/tmp/card.svg", mode: "fit" });
+  await materializeDocumentImages({
+    api: value.api,
+    documentId: "document-1",
+    document: value.document,
+    dependencies: { readFile: async () => svg },
+  });
+
+  assert.equal(value.uploads[0].mimeType, "image/svg+xml");
+  assert.deepEqual(value.uploads[0].bytes, svg);
+  assert.match(value.document.children[0].fill.url, /^images\/[a-f0-9]{64}\.svg$/u);
 });
 
 test("keeps existing relative asset paths and rejects new relative paths", async () => {

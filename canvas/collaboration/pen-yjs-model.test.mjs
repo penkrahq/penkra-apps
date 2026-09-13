@@ -1,14 +1,13 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
 import { performance } from "node:perf_hooks";
 import { test } from "node:test";
 
-import { corpusFiles } from "../compatibility/corpus-files.mjs";
 import {
   Y,
   cloneModel,
   createModel,
   deleteNode,
+  editText,
   insertNode,
   materializePen,
   moveNode,
@@ -34,9 +33,32 @@ const fixture = {
   ],
 };
 
-for (const { label, url } of corpusFiles) {
-  test(`${label} round-trips through the normalized Yjs model`, async () => {
-    const document = JSON.parse(await readFile(url, "utf8"));
+const canvasNativeFixtures = [
+  {
+    label: "fixed frame",
+    document: {
+      module: "web",
+      children: [{ id: "fixed", type: "frame", width: 1280, height: 720, children: [] }],
+    },
+  },
+  {
+    label: "intrinsic text in fill-width layout",
+    document: {
+      module: "web",
+      children: [{
+        id: "column",
+        type: "frame",
+        width: 640,
+        height: "fit_content",
+        layout: "vertical",
+        children: [{ id: "copy", type: "text", width: "fill_container", height: "fit_content", content: "Canvas native sizing", paragraphs: [{ from: 0, to: 20 }] }],
+      }],
+    },
+  },
+];
+
+for (const { label, document } of canvasNativeFixtures) {
+  test(`${label} Canvas fixture round-trips through the normalized Yjs model`, () => {
     assert.deepEqual(materializePen(createModel(document)), document);
   });
 }
@@ -144,6 +166,50 @@ test("concurrent property edits converge without collapsing independent properti
   assert.ok([240, 360].includes(left.children[0].width));
   assert.equal(left.children[0].opacity, 0.8);
   assert.equal(left.children[0].fill, "#000000");
+});
+
+test("concurrent character edits survive and preserve rich-text marks", () => {
+  const base = createModel({
+    version: "2.15",
+    children: [{
+      id: "copy",
+      type: "text",
+      content: "Hello world",
+      paragraphs: [{ from: 0, to: 11, align: "start" }],
+      marks: [{ type: "weight", from: 6, to: 11, value: 700 }],
+    }],
+  });
+  const alice = cloneModel(base, { guid: "rich-alice" });
+  const bob = cloneModel(base, { guid: "rich-bob" });
+
+  editText(alice, "copy", 5, 0, " brave", "alice");
+  editText(bob, "copy", 11, 0, "!", "bob");
+  syncModels(alice, bob);
+
+  const left = materializePen(alice);
+  const right = materializePen(bob);
+  assert.deepEqual(left, right);
+  assert.equal(left.children[0].content, "Hello brave world!");
+  assert.deepEqual(left.children[0].marks, [
+    { type: "weight", from: 12, to: 18, value: 700 },
+  ]);
+});
+
+test("collaborative insertions use one inclusive mark policy at both boundaries", () => {
+  for (const [type, inclusive] of [["weight", true], ["link", false], ["lang", false]]) {
+    for (const [index, boundary] of [[2, "start"], [4, "end"]]) {
+      const value = type === "weight" ? 700 : "value";
+      const model = createModel({ version: "2.15", children: [{
+        id: "copy", type: "text", content: "abcdef",
+        marks: [{ type, from: 2, to: 4, value }],
+      }] });
+      editText(model, "copy", index, 0, "X", "alice");
+      const expected = inclusive
+        ? { type, from: 2, to: 5, value }
+        : boundary === "start" ? { type, from: 3, to: 5, value } : { type, from: 2, to: 4, value };
+      assert.deepEqual(materializePen(model).children[0].marks, [expected], `${type} ${boundary}`);
+    }
+  }
 });
 
 test("declared nested object edits merge at field granularity", () => {

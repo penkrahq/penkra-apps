@@ -1,16 +1,16 @@
 # Yjs model validation
 
 This is an isolated research harness, not Canvas runtime code. It tests whether
-Yjs can carry the smallest normalized edit model that still preserves `.pen`
-identifiers, unsupported properties, and deterministic hierarchy materializing.
+Yjs can carry the normalized Canvas edit model while preserving identifiers,
+independent properties, and deterministic hierarchy materialization.
 
 The model stores each node once in an ID-keyed map. Parent and sortable position
 are node properties, so concurrent moves cannot leave the same node in two
 parent child arrays. A deleted node is a tombstone. Unknown properties remain
-independent values and are returned during `.pen` materialization.
+independent values and are returned during Canvas document materialization.
 
 Every collaborator must bootstrap from the same canonical Yjs document update.
-Two peers independently importing the same `.pen` text create unrelated CRDT
+Two peers independently creating the same JSON projection create unrelated CRDT
 histories and are not valid replicas merely because their visible JSON matches.
 The backend/realtime design must distribute one canonical initial update and
 state vector for a Canvas document.
