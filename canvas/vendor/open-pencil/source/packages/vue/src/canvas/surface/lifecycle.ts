@@ -168,6 +168,33 @@ export function useCanvasSurfaceLifecycle({
   options?: UseCanvasOptions
   onReady?: () => void
 }) {
+  let fontLayoutQueued = false
+
+  function graphRootIds(): string[] {
+    return editor.graph
+      .getPages()
+      .flatMap((page) => editor.graph.getChildren(page.id).map((node) => node.id))
+  }
+
+  function recomputeGraphLayout(): void {
+    for (const page of editor.graph.getPages()) computeAllLayouts(editor.graph, page.id)
+  }
+
+  function settleResolvedFontLayout(): void {
+    if (options?.recomputeLayoutAfterFonts === false) {
+      surface.renderNow()
+      return
+    }
+    if (fontLayoutQueued) return
+    fontLayoutQueued = true
+    queueMicrotask(() => {
+      fontLayoutQueued = false
+      if (lifecycle.destroyed) return
+      recomputeGraphLayout()
+      editor.requestRender()
+    })
+  }
+
   useCanvasKitLoader({
     canvasRef,
     lifecycle,
@@ -175,13 +202,17 @@ export function useCanvasSurfaceLifecycle({
     createSurface: surface.createSurface,
     loadFonts: async () => {
       const fontsStartedAt = performance.now()
-      await surface.getRenderer()?.loadFonts(surface.renderNow)
+      const renderer = surface.getRenderer()
+      await renderer?.loadFonts(settleResolvedFontLayout)
+      if (options?.recomputeLayoutAfterFonts !== false) {
+        await renderer?.loadGraphFonts(editor.graph, graphRootIds())
+      }
       options?.onPerformance?.('engine.fonts', performance.now() - fontsStartedAt, {
         graphNodes: editor.graph.nodes.size
       })
       const layoutStartedAt = performance.now()
       if (options?.recomputeLayoutAfterFonts !== false) {
-        for (const page of editor.graph.getPages()) computeAllLayouts(editor.graph, page.id)
+        recomputeGraphLayout()
       }
       options?.onPerformance?.('engine.font-layout', performance.now() - layoutStartedAt, {
         graphNodes: editor.graph.nodes.size,

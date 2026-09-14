@@ -200,7 +200,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       useCanvas(sceneCanvasRef, editor, {
         layer: "scene",
         showRulers: false,
-        recomputeLayoutAfterFonts: false,
+        recomputeLayoutAfterFonts: true,
         onPerformance: (name, duration, details) => callbacks.onPerformance?.(
           name,
           duration,

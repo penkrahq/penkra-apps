@@ -457,6 +457,10 @@ export class SkiaRenderer {
     await RendererFonts.loadFonts(this, onFallbackFontsLoaded)
   }
 
+  async loadGraphFonts(graph: SceneGraph, nodeIds: string[]): Promise<void> {
+    await RendererFonts.loadGraphFonts(this, graph, nodeIds)
+  }
+
   syncFontGeneration(): void {
     RendererFonts.syncFontGeneration(this)
   }

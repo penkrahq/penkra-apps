@@ -107,6 +107,24 @@ export async function loadFonts(
   r.invalidateAllPictures()
 }
 
+export async function loadGraphFonts(
+  r: SkiaRenderer,
+  graph: SceneGraph,
+  nodeIds: string[]
+): Promise<void> {
+  const fontKeys = fontManager.collectFontKeys(graph, nodeIds)
+  const requirements = collectGraphFontRequirements(graph, nodeIds)
+  await Promise.all(
+    fontKeys.map(([family, style]) => fontManager.loadFont(family, style, requirements.characters))
+  )
+  await fontManager.ensureFallbackPack(
+    missingGraphFontScripts(requirements),
+    requirements.characters
+  )
+  syncFontGeneration(r)
+  r.invalidateAllPictures()
+}
+
 export async function prepareForExport(
   r: SkiaRenderer,
   graph: SceneGraph,
@@ -118,16 +136,7 @@ export async function prepareForExport(
   const previousTextMeasurer = getTextMeasurer()
   setTextMeasurer((node, maxWidth) => r.measureTextNode(node, maxWidth))
 
-  const fontKeys = fontManager.collectFontKeys(graph, nodeIds)
-  const requirements = collectGraphFontRequirements(graph, nodeIds)
-  await Promise.all(
-    fontKeys.map(([family, style]) => fontManager.loadFont(family, style, requirements.characters))
-  )
-  await fontManager.ensureFallbackPack(
-    missingGraphFontScripts(requirements),
-    requirements.characters
-  )
-  syncFontGeneration(r)
+  await loadGraphFonts(r, graph, nodeIds)
   computeAllLayouts(graph, pageId)
 
   return () => setTextMeasurer(previousTextMeasurer)

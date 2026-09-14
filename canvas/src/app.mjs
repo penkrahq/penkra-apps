@@ -94,12 +94,20 @@ const state = {
   currentFolder: null,
   folderDocuments: [],
   folderChildren: [],
+  libraryLoaded: false,
+  libraryFolderRefresh: null,
+  folderCollections: new Map(),
+  folderRefreshes: new Map(),
+  folderTree: null,
+  folderTreeRefresh: null,
   folderGrants: new Map(),
   editorDocuments: [],
   thumbnails: new Map(),
   currentProfile: null,
   trashedDocuments: [],
   trashedFolders: [],
+  trashLoaded: false,
+  shellReady: false,
   loading: true,
   error: null,
   document: null,
@@ -216,6 +224,7 @@ async function bootstrap() {
       return;
     }
     state.currentProfile = await runtime.account.profile();
+    state.shellReady = true;
     await routes.showDefaultLibrary();
   } catch (error) {
     state.loading = false;
@@ -228,54 +237,116 @@ async function showLibrary() {
   closeDocument();
   state.currentFolder = null;
   state.route = "library";
-  state.loading = true;
+  state.loading = !state.shellReady;
   state.error = null;
   render();
-  const [roots, recentFolders] = await Promise.all([
-    loadEveryFolderPage({ view: "roots" }),
-    loadEveryFolderPage({ view: "recent", limit: 10 }),
-  ]);
-  state.folders = roots;
-  state.recentFolders = recentFolders.slice(0, 10);
-  void loadFolderGrants([...state.folders, ...state.recentFolders]).then(() => {
-    if (state.route === "library") render();
-  });
   startFolderSubscription();
-  await documentCollectionLifecycle.start({
+  const folders = refreshLibraryFolders();
+  const documents = documentCollectionLifecycle.start({
     load: () => loadEveryDocumentPage(api.listDocuments),
     apply: (documents) => {
       if (state.route !== "library") return;
       state.documents = documents.map(withModule);
-      state.loading = false;
       state.error = null;
-      render();
+      if (state.libraryLoaded) render();
       void loadDocumentThumbnails(state.documents).then(() => {
         if (state.route === "library") render();
       });
     },
     onError: handleDocumentCollectionError,
   });
+  await Promise.all([folders, documents]);
+  if (state.route !== "library") return;
+  state.libraryLoaded = true;
+  state.loading = false;
+  render();
 }
 
 async function showFolder(folderId) {
   closeDocument();
   state.route = "folder";
-  state.loading = true;
   state.error = null;
+  const cached = state.folderCollections.get(folderId);
+  const known = cached?.folder ?? knownFolder(folderId);
+  state.currentFolder = known ?? null;
+  state.folderChildren = cached?.children ?? [];
+  state.folderDocuments = cached?.documents ?? [];
+  state.loading = !known;
   render();
-  const [folder, children, documents] = await Promise.all([
-    api.openFolder(folderId),
+  startFolderSubscription(folderId);
+  const opened = api.openFolder(folderId);
+  await Promise.all([
+    opened.then((folder) => {
+      const cachedCollection = state.folderCollections.get(folderId);
+      if (cachedCollection) state.folderCollections.set(folderId, { ...cachedCollection, folder });
+      if (state.route === "folder" && state.currentFolder?.id === folderId) state.currentFolder = folder;
+    }),
+    refreshFolderCollection(folderId, { folderRequest: opened }),
+  ]);
+}
+
+function knownFolder(folderId) {
+  return [state.currentFolder, ...state.folders, ...state.recentFolders, ...state.folderChildren]
+    .find((folder) => folder?.id === folderId) ?? null;
+}
+
+function refreshLibraryFolders() {
+  if (state.libraryFolderRefresh) return state.libraryFolderRefresh;
+  const refresh = Promise.all([
+    loadEveryFolderPage({ view: "roots" }),
+    loadEveryFolderPage({ view: "recent", limit: 10 }),
+  ]).then(([roots, recentFolders]) => {
+    state.folders = roots;
+    state.recentFolders = recentFolders.slice(0, 10);
+    void loadFolderGrants([...state.folders, ...state.recentFolders]).then(() => {
+      if (state.route === "library") render();
+    });
+    if (state.route === "library" && state.libraryLoaded) render();
+  }).finally(() => {
+    if (state.libraryFolderRefresh === refresh) state.libraryFolderRefresh = null;
+  });
+  state.libraryFolderRefresh = refresh;
+  return refresh;
+}
+
+function refreshFolderCollection(folderId, { folderRequest = null } = {}) {
+  const existing = state.folderRefreshes.get(folderId);
+  if (existing) return existing;
+  const cached = state.folderCollections.get(folderId);
+  const resolvedFolder = folderRequest
+    ?? Promise.resolve(cached?.folder ?? knownFolder(folderId)).then((folder) => folder ?? api.openFolder(folderId));
+  const refresh = Promise.all([
+    resolvedFolder,
     loadEveryFolderPage({ view: "children", parentId: folderId }),
     loadEveryDocumentPage((cursor) => api.listDocuments(cursor, { view: "folder", folderId })),
-  ]);
-  state.currentFolder = folder;
-  state.folderChildren = children;
-  state.folderDocuments = documents.map(withModule);
-  await loadFolderGrants([folder, ...children]);
-  startFolderSubscription(folderId);
-  state.loading = false;
-  await loadDocumentThumbnails(state.folderDocuments);
-  render();
+  ]).then(([folder, children, documents]) => {
+    const collection = { folder, children, documents: documents.map(withModule) };
+    state.folderCollections.set(folderId, collection);
+    if (state.route !== "folder" || state.currentFolder?.id !== folderId) return;
+    state.currentFolder = collection.folder;
+    state.folderChildren = collection.children;
+    state.folderDocuments = collection.documents;
+    state.loading = false;
+    state.error = null;
+    render();
+    void loadFolderGrants([folder, ...children]).then(() => {
+      if (state.route === "folder" && state.currentFolder?.id === folderId) render();
+    });
+    void loadDocumentThumbnails(collection.documents).then(() => {
+      if (state.route === "folder" && state.currentFolder?.id === folderId) render();
+    });
+  }).catch((error) => {
+    if (state.route === "folder" && state.currentFolder?.id === folderId) {
+      state.loading = false;
+      state.error = message(error);
+      render();
+    }
+    throw error;
+  }).finally(() => {
+    if (state.folderRefreshes.get(folderId) === refresh) state.folderRefreshes.delete(folderId);
+  });
+  state.folderRefreshes.set(folderId, refresh);
+  return refresh;
 }
 
 async function loadEveryFolderPage(options) {
@@ -307,11 +378,111 @@ function withModule(document) {
   return { ...document, module: document.projection?.module ?? null };
 }
 
+function knownDocument(documentId) {
+  return [...state.documents, ...state.folderDocuments, ...state.trashedDocuments]
+    .find((document) => document.id === documentId) ?? null;
+}
+
+function upsertFolderSummary(folder) {
+  const replace = (items) => {
+    const next = items.filter((item) => item.id !== folder.id);
+    if (folder.parentId === null) next.unshift(folder);
+    return next;
+  };
+  state.folders = replace(state.folders);
+  state.recentFolders = [folder, ...state.recentFolders.filter((item) => item.id !== folder.id)].slice(0, 10);
+  for (const [id, collection] of state.folderCollections) {
+    const children = collection.children.filter((item) => item.id !== folder.id);
+    if (folder.parentId === id) children.unshift(folder);
+    state.folderCollections.set(id, {
+      ...collection,
+      folder: id === folder.id ? folder : collection.folder,
+      children,
+    });
+  }
+  if (state.currentFolder?.id === folder.id) state.currentFolder = folder;
+  if (state.route === "folder" && state.currentFolder) {
+    state.folderChildren = state.folderCollections.get(state.currentFolder.id)?.children ?? state.folderChildren;
+  }
+  invalidateFolderTree();
+}
+
+function removeFolderSummary(folderId) {
+  state.folders = state.folders.filter((folder) => folder.id !== folderId);
+  state.recentFolders = state.recentFolders.filter((folder) => folder.id !== folderId);
+  state.folderChildren = state.folderChildren.filter((folder) => folder.id !== folderId);
+  state.folderCollections.delete(folderId);
+  for (const [id, collection] of state.folderCollections) {
+    state.folderCollections.set(id, {
+      ...collection,
+      children: collection.children.filter((folder) => folder.id !== folderId),
+    });
+  }
+  invalidateFolderTree();
+}
+
+function upsertDocumentSummary(document, previousFolderId = undefined) {
+  const existing = knownDocument(document.id);
+  const normalized = withModule({ ...(existing ?? {}), ...document });
+  const oldFolderId = previousFolderId === undefined ? existing?.folderId : previousFolderId;
+  state.documents = [normalized, ...state.documents.filter((item) => item.id !== document.id)];
+  for (const [id, collection] of state.folderCollections) {
+    const documents = collection.documents.filter((item) => item.id !== document.id);
+    if (normalized.folderId === id) documents.unshift(normalized);
+    state.folderCollections.set(id, { ...collection, documents });
+  }
+  if (state.route === "folder" && state.currentFolder) {
+    state.folderDocuments = state.folderCollections.get(state.currentFolder.id)?.documents
+      ?? state.folderDocuments.filter((item) => item.id !== document.id);
+    if (normalized.folderId === state.currentFolder.id && !state.folderDocuments.some((item) => item.id === document.id)) {
+      state.folderDocuments.unshift(normalized);
+    }
+  }
+  if (oldFolderId === normalized.folderId) return;
+  adjustFolderDesignCount(oldFolderId, -1);
+  adjustFolderDesignCount(normalized.folderId, 1);
+}
+
+function removeDocumentSummary(documentId) {
+  const existing = knownDocument(documentId);
+  state.documents = state.documents.filter((document) => document.id !== documentId);
+  state.folderDocuments = state.folderDocuments.filter((document) => document.id !== documentId);
+  for (const [id, collection] of state.folderCollections) {
+    state.folderCollections.set(id, {
+      ...collection,
+      documents: collection.documents.filter((document) => document.id !== documentId),
+    });
+  }
+  adjustFolderDesignCount(existing?.folderId, -1);
+}
+
+function adjustFolderDesignCount(folderId, delta) {
+  if (!folderId || delta === 0) return;
+  const update = (folder) => folder.id === folderId
+    ? { ...folder, designCount: Math.max(0, Number(folder.designCount ?? 0) + delta) }
+    : folder;
+  state.folders = state.folders.map(update);
+  state.recentFolders = state.recentFolders.map(update);
+  state.folderChildren = state.folderChildren.map(update);
+  if (state.currentFolder?.id === folderId) state.currentFolder = update(state.currentFolder);
+  for (const [id, collection] of state.folderCollections) {
+    state.folderCollections.set(id, {
+      ...collection,
+      folder: update(collection.folder),
+      children: collection.children.map(update),
+    });
+  }
+}
+
+function invalidateFolderTree() {
+  state.folderTree = null;
+}
+
 async function showTrash() {
   closeDocument();
   state.currentFolder = null;
   state.route = "trash";
-  state.loading = true;
+  state.loading = !state.shellReady;
   state.error = null;
   state.contextMenu = null;
   render();
@@ -322,6 +493,7 @@ async function showTrash() {
       if (state.route !== "trash") return;
       state.trashedDocuments = documents;
       state.loading = false;
+      state.trashLoaded = true;
       state.error = null;
       render();
     },
@@ -354,10 +526,11 @@ function startFolderSubscription(folderId = null) {
   state.folderUnsubscribe?.();
   state.folderUnsubscribe = null;
   void api.subscribeToFolders(() => {
+    invalidateFolderTree();
     if (folderId && state.route === "folder" && state.currentFolder?.id === folderId) {
-      void showFolder(folderId).catch((error) => handleDocumentCollectionError(error, { phase: "load" }));
+      void refreshFolderCollection(folderId).catch((error) => handleDocumentCollectionError(error, { phase: "load" }));
     } else if (!folderId && state.route === "library") {
-      void showLibrary().catch((error) => handleDocumentCollectionError(error, { phase: "load" }));
+      void refreshLibraryFolders().catch((error) => handleDocumentCollectionError(error, { phase: "load" }));
     }
   }).then((unsubscribe) => { state.folderUnsubscribe = unsubscribe; }).catch((error) => {
     console.warn("Canvas folder realtime is unavailable.", error);
@@ -1014,11 +1187,12 @@ function renderLibrary() {
   const sharedDocuments = state.documents.filter((document) => document.access === "editor" && matches(document.title));
   const sharedFolders = state.folders.filter((folder) => folder.access === "editor" && matches(folder.name));
   const filteredRecentFolders = state.recentFolders.filter((folder) => matches(folder.name));
+  const empty = state.libraryLoaded ? emptyLibrary(query) : "";
   const content = state.libraryFilter === "recent"
-    ? `${filteredRecentFolders.length ? folderSection(filteredRecentFolders, "Folders", true) : ""}<section class="library-section"><div class="section-heading"><h2>Recent designs <span>${recentDocuments.length}</span></h2></div>${recentDocuments.length ? `<div class="document-grid">${recentDocuments.map(documentCard).join("")}</div>` : emptyLibrary(query)}</section>`
+    ? `${filteredRecentFolders.length ? folderSection(filteredRecentFolders, "Folders", true) : ""}<section class="library-section"><div class="section-heading"><h2>Recent designs <span>${recentDocuments.length}</span></h2></div>${recentDocuments.length ? `<div class="document-grid">${recentDocuments.map(documentCard).join("")}</div>` : empty}</section>`
     : state.libraryFilter === "shared"
-      ? `<section class="library-section">${sharedFolders.length ? folderSection(sharedFolders, "Folders") : ""}<div class="section-heading"><h2>Shared designs <span>${sharedDocuments.length}</span></h2></div>${sharedDocuments.length ? `<div class="document-grid">${sharedDocuments.map(documentCard).join("")}</div>` : sharedFolders.length ? "" : emptyLibrary(query)}</section>`
-      : `${folderSection(rootFolders, "Folders", false, true)}<section class="library-section"><div class="section-heading"><h2>Designs <span>${rootDocuments.length}</span></h2></div>${rootDocuments.length ? `<div class="document-grid">${rootDocuments.map(documentCard).join("")}</div>` : emptyLibrary(query)}</section>`;
+      ? `<section class="library-section">${sharedFolders.length ? folderSection(sharedFolders, "Folders") : ""}<div class="section-heading"><h2>Shared designs <span>${sharedDocuments.length}</span></h2></div>${sharedDocuments.length ? `<div class="document-grid">${sharedDocuments.map(documentCard).join("")}</div>` : sharedFolders.length ? "" : empty}</section>`
+      : `${folderSection(rootFolders, "Folders", false, true)}<section class="library-section"><div class="section-heading"><h2>Designs <span>${rootDocuments.length}</span></h2></div>${rootDocuments.length ? `<div class="document-grid">${rootDocuments.map(documentCard).join("")}</div>` : empty}</section>`;
   return `<main class="shell library"><div class="library-inner">
     <div class="library-sticky">${libraryTopbar("Search designs and folders")}${libraryTabs(state.libraryFilter)}</div>
     <div class="library-content">${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
@@ -1033,6 +1207,7 @@ function renderFolder() {
   const matches = (value) => !query || value.toLowerCase().includes(query);
   const folders = state.folderChildren.filter((item) => matches(item.name));
   const documents = state.folderDocuments.filter((item) => matches(item.title));
+  const empty = state.folderCollections.has(folder.id) ? emptyLibrary(query) : "";
   return `<main class="shell library"><div class="library-inner">
     <div class="library-sticky">${folderTopbar(folder)}</div>
     <div class="folder-content">
@@ -1040,7 +1215,7 @@ function renderFolder() {
       <span class="folder-overview-icon">${icon("folder")}</span><div class="library-title"><div class="folder-name-line"><h1>${escapeHtml(folder.name)}</h1>${folder.access === "owner" ? `<button class="icon-button" data-action="rename-current-folder" aria-label="Rename folder">${icon("pencil")}</button>` : ""}</div><div class="folder-detail-line"><p>${folders.length} folder${folders.length === 1 ? "" : "s"} · ${folder.designCount} design${folder.designCount === 1 ? "" : "s"} · Updated ${escapeHtml(relativeTime(folder.updatedAt))}</p>${folderPeopleSummary(folder)}</div></div><div class="folder-header-actions">${collectionControls()}${folder.access === "owner" ? `<button class="button" data-action="share-current-folder">${icon("person-plus")}Share folder</button>` : ""}<button class="icon-button" data-action="current-folder-menu" aria-label="Folder actions">${icon("more")}</button></div>
     </header>
     ${folders.length ? folderSection(folders, "Folders", false, false, true) : ""}
-    <section class="library-section"><div class="section-heading"><h2>Designs in ${escapeHtml(folder.name)} <span>${documents.length}</span></h2></div>${documents.length ? `<div class="document-grid">${documents.map(documentCard).join("")}</div>` : emptyLibrary(query)}</section>
+    <section class="library-section"><div class="section-heading"><h2>Designs in ${escapeHtml(folder.name)} <span>${documents.length}</span></h2></div>${documents.length ? `<div class="document-grid">${documents.map(documentCard).join("")}</div>` : empty}</section>
     </div>
   </div></main>${renderDialog()}${renderToast()}`;
 }
@@ -1085,7 +1260,7 @@ function renderTrash() {
     <header class="trash-overview"><div class="library-title"><h1>Trash</h1><p>Items are permanently deleted after 30 days.</p></div></header>
     ${state.error ? `<p class="error-copy">${escapeHtml(state.error)}</p>` : ""}
     ${state.trashedFolders.length ? `<section class="library-section"><div class="section-heading"><h2>Folders</h2></div><div class="folder-grid">${state.trashedFolders.map(trashFolderCard).join("")}</div></section>` : ""}
-    ${documents.length ? `<section class="library-section"><div class="section-heading"><h2>Designs</h2></div><div class="document-grid">${documents.map(trashCard).join("")}</div></section>` : state.trashedFolders.length ? "" : `<section class="empty"><div>${icon("trash")}<h2>Trash is empty</h2><p>Items moved to Trash will appear here for 30 days.</p></div></section>`}
+    ${documents.length ? `<section class="library-section"><div class="section-heading"><h2>Designs</h2></div><div class="document-grid">${documents.map(trashCard).join("")}</div></section>` : state.trashedFolders.length || !state.trashLoaded ? "" : `<section class="empty"><div>${icon("trash")}<h2>Trash is empty</h2><p>Items moved to Trash will appear here for 30 days.</p></div></section>`}
   </div></main>${renderDialog()}${renderToast()}`;
 }
 
@@ -1699,6 +1874,9 @@ function bindLibrary() {
   });
   root.querySelectorAll("[data-folder-id]").forEach((button) => {
     button.addEventListener("click", () => void navigateToFolder(button.dataset.folderId));
+    button.addEventListener("pointerenter", () => {
+      void refreshFolderCollection(button.dataset.folderId).catch(() => undefined);
+    }, { once: true });
     button.addEventListener("contextmenu", (event) => {
       const folder = [...state.folders, ...state.recentFolders, ...state.folderChildren]
         .find((item) => item.id === button.dataset.folderId);
@@ -1708,14 +1886,18 @@ function bindLibrary() {
     });
   });
   root.querySelectorAll("[data-restore-document]").forEach((button) => button.addEventListener("click", () => void act(async () => {
-    await api.restoreDocument(button.dataset.restoreDocument);
+    const document = state.trashedDocuments.find((item) => item.id === button.dataset.restoreDocument);
+    const restored = await api.restoreDocument(button.dataset.restoreDocument);
     state.trashedDocuments = state.trashedDocuments.filter((item) => item.id !== button.dataset.restoreDocument);
+    upsertDocumentSummary({ ...(document ?? {}), ...restored, deletedAt: null });
     setToast("Document restored.");
     render();
   })));
   root.querySelectorAll("[data-restore-folder]").forEach((button) => button.addEventListener("click", () => void act(async () => {
-    await api.restoreFolder(button.dataset.restoreFolder);
+    const folder = state.trashedFolders.find((item) => item.id === button.dataset.restoreFolder);
+    const restored = await api.restoreFolder(button.dataset.restoreFolder);
     state.trashedFolders = state.trashedFolders.filter((item) => item.id !== button.dataset.restoreFolder);
+    upsertFolderSummary({ ...(folder ?? {}), ...restored, deletedAt: null });
     render();
   })));
   root.querySelectorAll("[data-delete-folder]").forEach((button) => button.addEventListener("click", () => {
@@ -1757,7 +1939,11 @@ async function openDocumentContextMenu(document) {
   if (action === "duplicate") return duplicateDocument(document);
   if (action.startsWith("move:")) {
     const folderId = action === "move:root" ? null : action.slice(5);
-    return act(async () => { await api.moveDocument(document.id, folderId); await refreshCurrentCollection(); });
+    return act(async () => {
+      const moved = await api.moveDocument(document.id, folderId);
+      upsertDocumentSummary(moved, document.folderId);
+      render();
+    });
   }
   if (action === "share") return openShare({ type: "document", id: document.id, name: document.title });
   if (action === "trash") {
@@ -1772,9 +1958,10 @@ async function duplicateDocument(document) {
     const payload = await api.getDocument(document.id);
     const model = restoreDocumentModel(payload);
     try {
-      await api.createDocument({ title: `Copy of ${document.title}`, folderId: document.folderId, source: materialize(model), initialUpdate: encodeState(model) });
+      const created = await api.createDocument({ title: `Copy of ${document.title}`, folderId: document.folderId, source: materialize(model), initialUpdate: encodeState(model) });
+      upsertDocumentSummary(created);
     } finally { model.doc.destroy(); }
-    await refreshCurrentCollection();
+    render();
   });
 }
 
@@ -1803,7 +1990,11 @@ async function openFolderContextMenu(folder) {
   }
   if (action.startsWith("move:")) {
     const parentId = action === "move:root" ? null : action.slice(5);
-    return act(async () => { await api.updateFolder(folder.id, { parentId }); await refreshCurrentCollection(); });
+    return act(async () => {
+      const moved = await api.updateFolder(folder.id, { parentId });
+      upsertFolderSummary(moved);
+      render();
+    });
   }
   if (action === "share") return openShare({ type: "folder", id: folder.id, name: folder.name });
   if (action === "trash") {
@@ -1813,9 +2004,22 @@ async function openFolderContextMenu(folder) {
   }
 }
 
-async function loadFolderTree(parentId = null) {
+function loadFolderTree() {
+  if (state.folderTree) return Promise.resolve(state.folderTree);
+  if (state.folderTreeRefresh) return state.folderTreeRefresh;
+  const refresh = loadFolderTreeBranch().then((folders) => {
+    state.folderTree = folders;
+    return folders;
+  }).finally(() => {
+    if (state.folderTreeRefresh === refresh) state.folderTreeRefresh = null;
+  });
+  state.folderTreeRefresh = refresh;
+  return refresh;
+}
+
+async function loadFolderTreeBranch(parentId = null) {
   const folders = await loadEveryFolderPage(parentId === null ? { view: "roots" } : { view: "children", parentId });
-  return Promise.all(folders.map(async (folder) => ({ ...folder, children: await loadFolderTree(folder.id) })));
+  return Promise.all(folders.map(async (folder) => ({ ...folder, children: await loadFolderTreeBranch(folder.id) })));
 }
 
 function folderMoveMenu(folders, selectedId, excluded = new Set()) {
@@ -1843,8 +2047,11 @@ function flattenFolderIds(folders) {
 }
 
 async function refreshCurrentCollection() {
-  if (state.route === "folder" && state.currentFolder) return showFolder(state.currentFolder.id);
-  return showLibrary();
+  if (state.route === "folder" && state.currentFolder) return refreshFolderCollection(state.currentFolder.id);
+  await Promise.all([
+    refreshLibraryFolders(),
+    documentCollectionLifecycle.refresh(),
+  ]);
 }
 
 function bindEditor() {
@@ -2465,17 +2672,25 @@ function bindFolderDialogs() {
     const name = root.querySelector('[data-role="folder-name"]')?.value.trim();
     if (!name) return;
     const form = state.dialog;
-    if (form.mode === "create") await api.createFolder(name, state.route === "folder" ? state.currentFolder?.id ?? null : null);
-    else await api.updateFolder(form.folderId, { name });
     state.dialog = null;
-    await refreshCurrentCollection();
+    render();
+    const folder = form.mode === "create"
+      ? await api.createFolder(name, state.route === "folder" ? state.currentFolder?.id ?? null : null)
+      : await api.updateFolder(form.folderId, { name });
+    upsertFolderSummary(folder);
+    render();
   }));
   root.querySelector('[data-action="cancel-folder-trash"]')?.addEventListener("click", closeDialog);
   root.querySelector('[data-action="confirm-folder-trash"]')?.addEventListener("click", () => void act(async () => {
     const folderId = state.dialog.folderId;
+    const parentId = knownFolder(folderId)?.parentId ?? null;
     state.dialog = null;
+    render();
     await api.deleteFolder(folderId);
-    await refreshCurrentCollection();
+    removeFolderSummary(folderId);
+    if (state.currentFolder?.id === folderId) {
+      await (parentId ? navigateToFolder(parentId) : navigateToLibrary());
+    } else render();
   }));
   root.querySelector('[data-action="cancel-folder-delete"]')?.addEventListener("click", closeDialog);
   root.querySelector('[data-action="confirm-folder-delete"]')?.addEventListener("click", () => void act(async () => {
@@ -2546,7 +2761,7 @@ async function confirmDestructiveAction() {
       state.dialog = null;
       if (state.route === "editor") await navigateToLibrary();
       else {
-        state.documents = state.documents.filter((item) => item.id !== confirmation.documentId);
+        removeDocumentSummary(confirmation.documentId);
         setToast("Moved to Trash.");
         render();
       }

@@ -45509,7 +45509,7 @@ var init_dist3 = __esm(() => {
   JsonSigRx = /^\s*["[{]|^\s*-?\d{1,16}(\.\d{1,17})?([Ee][+-]?\d+)?\s*$/;
 });
 
-// vendor/open-pencil/source/node_modules/.bun/ufo@1.6.4/node_modules/ufo/dist/index.mjs
+// vendor/open-pencil/source/node_modules/.bun/ufo@1.6.3/node_modules/ufo/dist/index.mjs
 function encode4(text) {
   return encodeURI("" + text).replace(ENC_PIPE_RE, "|");
 }
@@ -65975,15 +65975,19 @@ async function loadFonts(r4, onFallbackFontsLoaded) {
   syncFontGeneration(r4);
   r4.invalidateAllPictures();
 }
-async function prepareForExport(r4, graph, pageId, nodeIds) {
-  const { getTextMeasurer: getTextMeasurer2, setTextMeasurer: setTextMeasurer2, computeAllLayouts: computeAllLayouts2 } = await init_layout2().then(() => exports_layout);
-  const previousTextMeasurer = getTextMeasurer2();
-  setTextMeasurer2((node, maxWidth) => r4.measureTextNode(node, maxWidth));
+async function loadGraphFonts(r4, graph, nodeIds) {
   const fontKeys = fontManager.collectFontKeys(graph, nodeIds);
   const requirements = collectGraphFontRequirements(graph, nodeIds);
   await Promise.all(fontKeys.map(([family, style]) => fontManager.loadFont(family, style, requirements.characters)));
   await fontManager.ensureFallbackPack(missingGraphFontScripts(requirements), requirements.characters);
   syncFontGeneration(r4);
+  r4.invalidateAllPictures();
+}
+async function prepareForExport(r4, graph, pageId, nodeIds) {
+  const { getTextMeasurer: getTextMeasurer2, setTextMeasurer: setTextMeasurer2, computeAllLayouts: computeAllLayouts2 } = await init_layout2().then(() => exports_layout);
+  const previousTextMeasurer = getTextMeasurer2();
+  setTextMeasurer2((node, maxWidth) => r4.measureTextNode(node, maxWidth));
+  await loadGraphFonts(r4, graph, nodeIds);
   computeAllLayouts2(graph, pageId);
   return () => setTextMeasurer2(previousTextMeasurer);
 }
@@ -70367,6 +70371,9 @@ class SkiaRenderer {
   }
   async loadFonts(onFallbackFontsLoaded) {
     await loadFonts(this, onFallbackFontsLoaded);
+  }
+  async loadGraphFonts(graph, nodeIds) {
+    await loadGraphFonts(this, graph, nodeIds);
   }
   syncFontGeneration() {
     syncFontGeneration(this);
@@ -91670,6 +91677,30 @@ function createCanvasSurfaceManager({ editor, canvasRef, options, getCanvasKit: 
   };
 }
 function useCanvasSurfaceLifecycle({ canvasRef, surface, setCanvasKit, getCanvasKitValue, lifecycle, editor, options, onReady }) {
+  let fontLayoutQueued = false;
+  function graphRootIds() {
+    return editor.graph.getPages().flatMap((page) => editor.graph.getChildren(page.id).map((node) => node.id));
+  }
+  function recomputeGraphLayout() {
+    for (const page of editor.graph.getPages())
+      computeAllLayouts(editor.graph, page.id);
+  }
+  function settleResolvedFontLayout() {
+    if (options?.recomputeLayoutAfterFonts === false) {
+      surface.renderNow();
+      return;
+    }
+    if (fontLayoutQueued)
+      return;
+    fontLayoutQueued = true;
+    queueMicrotask(() => {
+      fontLayoutQueued = false;
+      if (lifecycle.destroyed)
+        return;
+      recomputeGraphLayout();
+      editor.requestRender();
+    });
+  }
   useCanvasKitLoader({
     canvasRef,
     lifecycle,
@@ -91677,12 +91708,14 @@ function useCanvasSurfaceLifecycle({ canvasRef, surface, setCanvasKit, getCanvas
     createSurface: surface.createSurface,
     loadFonts: async () => {
       const fontsStartedAt = performance.now();
-      await surface.getRenderer()?.loadFonts(surface.renderNow);
+      const renderer = surface.getRenderer();
+      await renderer?.loadFonts(settleResolvedFontLayout);
+      if (options?.recomputeLayoutAfterFonts !== false)
+        await renderer?.loadGraphFonts(editor.graph, graphRootIds());
       options?.onPerformance?.("engine.fonts", performance.now() - fontsStartedAt, { graphNodes: editor.graph.nodes.size });
       const layoutStartedAt = performance.now();
       if (options?.recomputeLayoutAfterFonts !== false)
-        for (const page of editor.graph.getPages())
-          computeAllLayouts(editor.graph, page.id);
+        recomputeGraphLayout();
       options?.onPerformance?.("engine.font-layout", performance.now() - layoutStartedAt, {
         graphNodes: editor.graph.nodes.size,
         skipped: options?.recomputeLayoutAfterFonts === false

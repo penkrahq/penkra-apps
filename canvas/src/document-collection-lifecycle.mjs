@@ -11,22 +11,28 @@ export function createDocumentCollectionLifecycle({ subscribe }) {
       load,
       apply,
       onError,
+      changedWhileSubscribing: false,
     };
     current = session;
     void (async () => {
       try {
         const unsubscribe = await subscribe((event) => {
-          if (event?.event === "projects:changed") void requestRefresh(session);
+          if (event?.event !== "projects:changed") return;
+          if (!session.unsubscribe) {
+            session.changedWhileSubscribing = true;
+            return;
+          }
+          void requestRefresh(session);
         });
         if (!session.active) {
           unsubscribe?.();
           return;
         }
         session.unsubscribe = unsubscribe;
-        // The initial list starts as soon as subscription setup is initiated so a slow or
-        // unavailable realtime transport cannot block Library or Trash. Re-read once the
-        // subscription is authoritative to cover mutations that raced its handshake.
-        await requestRefresh(session);
+        if (session.changedWhileSubscribing) {
+          session.changedWhileSubscribing = false;
+          await requestRefresh(session);
+        }
       } catch (error) {
         if (session.active) onError(error, { phase: "subscribe" });
       }

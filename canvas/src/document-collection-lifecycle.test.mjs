@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 
-test("document collection initiates subscription before loading and reconciles after its handshake", async () => {
+test("document collection initiates subscription before loading without an unconditional second list", async () => {
   const order = [];
   const lifecycle = createDocumentCollectionLifecycle({
     subscribe: async () => {
@@ -20,7 +20,7 @@ test("document collection initiates subscription before loading and reconciles a
     apply: (documents) => order.push(`apply:${documents.length}`),
   });
 
-  assert.deepEqual(order, ["subscribe", "load", "load", "apply:1"]);
+  assert.deepEqual(order, ["subscribe", "load", "apply:1"]);
   lifecycle.stop();
   assert.equal(order.at(-1), "unsubscribe");
 });
@@ -72,8 +72,8 @@ test("initial loading does not wait for subscription completion", async () => {
   assert.deepEqual(applied, [["load-1"]]);
   resolveSubscription(() => undefined);
   await new Promise((resolve) => setImmediate(resolve));
-  assert.equal(loads, 2);
-  assert.deepEqual(applied, [["load-1"], ["load-2"]]);
+  assert.equal(loads, 1);
+  assert.deepEqual(applied, [["load-1"]]);
 });
 
 test("stopping before subscription completion disposes it after the non-blocking load", async () => {
