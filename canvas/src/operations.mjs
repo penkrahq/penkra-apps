@@ -97,6 +97,11 @@ runtime.operations.handle("documents.create", async ({ title, module, preset, fo
   }
 });
 
+runtime.operations.handle("documents.rename", async ({ documentId, title }) => {
+  const document = await api.renameDocument(documentId, title);
+  return { documentId: document.id, title: document.title };
+});
+
 runtime.operations.handle("documents.move", async ({ documentId, folderId = null }) => {
   const result = await api.moveDocument(documentId, folderId);
   return { documentId, folderId: result.folderId };

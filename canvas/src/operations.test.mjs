@@ -62,6 +62,7 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
     "documents.list",
     "documents.move",
     "documents.open",
+    "documents.rename",
     "documents.trash",
     "documents.undo",
     "folders.create",
@@ -93,6 +94,40 @@ test("registers only the public document lifecycle, editing, undo, and sharing s
       truncated: true,
     },
   );
+});
+
+test("documents.rename updates only document metadata and returns the saved title", async () => {
+  const handlers = new Map();
+  const requests = [];
+  globalThis.penkra = {
+    account: {
+      async request(request) {
+        requests.push(request);
+        return response(200, {
+          id: "bbae45e7-a867-42c6-9727-af47f4644c23",
+          title: "Launch system",
+          access: "owner",
+        });
+      },
+      subscribe() {},
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?rename-test=${Date.now()}`);
+
+  const result = await handlers.get("documents.rename")({
+    documentId: "bbae45e7-a867-42c6-9727-af47f4644c23",
+    title: "Launch system",
+  });
+
+  assert.deepEqual(result, {
+    documentId: "bbae45e7-a867-42c6-9727-af47f4644c23",
+    title: "Launch system",
+  });
+  assert.equal(requests.length, 1);
+  assert.equal(requests[0].method, "PATCH");
+  assert.equal(requests[0].path, "/projects/bbae45e7-a867-42c6-9727-af47f4644c23");
+  assert.deepEqual(decodeJson(requests[0].body), { title: "Launch system" });
 });
 
 test("documents.list continues through Account pages until it finds the requested matches", async () => {

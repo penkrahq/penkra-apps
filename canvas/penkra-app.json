@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.2.92",
+  "version": "0.2.93",
   "compatibility": {
     "penkra": ">=0.12.6"
   },
@@ -271,6 +271,30 @@
         }
       ],
       "handler": "documents.create"
+    },
+    {
+      "key": "documents.rename",
+      "summary": "Rename one editable Canvas document without changing its design content.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 255 }
+        },
+        "required": ["documentId", "title"],
+        "additionalProperties": false
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "documentId": { "type": "string", "format": "uuid" },
+          "title": { "type": "string", "minLength": 1, "maxLength": 255 }
+        },
+        "required": ["documentId", "title"],
+        "additionalProperties": false
+      },
+      "examples": [{ "name": "Rename a design", "input": { "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9", "title": "Current direction" } }],
+      "handler": "documents.rename"
     },
     {
       "key": "documents.move",
