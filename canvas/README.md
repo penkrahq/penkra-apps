@@ -1,42 +1,38 @@
 # Canvas
 
-Canvas is Penkra's Account-scoped collaborative editor for cloud-hosted design documents. It owns
-its document model and does not import, export, or preserve Pencil files.
+Canvas is Penkra's collaborative design app. It creates and stores design documents in your Penkra
+Account so you and the people you invite can work on them together.
 
-## Design authority
+Use Canvas for presentations, flyers, posters, letterheads, social graphics, logos, diagrams,
+brand materials, website layouts, mobile layouts, and other visual design work.
 
-[`design/canvas.pen`](./design/canvas.pen) is the approved and authoritative source for Canvas UI
-hierarchy, language, states, and visual composition. Keep implementation behavior and copy
-reconciled with that file; historical design briefs live only in Git history.
+## What Canvas can do
 
-The implemented model and runtime contract are documented in
-[`ARCHITECTURE.md`](./ARCHITECTURE.md). Unfinished Canvas work belongs only in
-the ignored local `TODO.md`; tracked research and QA files are evidence, not
-parallel plans.
+- Create blank design documents and organize them in nested folders.
+- Build layouts with frames, text, shapes, images, icons, gradients, strokes, shadows, and reusable
+  values.
+- Edit designs directly or ask an agent to create, inspect, revise, and review them.
+- Keep recent work available offline and synchronize changes when the connection returns.
+- Invite people to a document or folder and manage their access from one Share dialog.
+- Duplicate, move, rename, restore, and trash folders and documents.
+- Export finished work in the formats supported for that design.
 
-Local CRDT validation lives in [`collaboration/`](./collaboration/). It
-establishes the lossless Yjs document model and convergence/undo behavior.
+## Documents and folders
 
-## Runtime architecture
+Every document and folder has its own stable ID. A document may sit at the top level or inside a
+folder. Folder access applies to the documents and nested folders it contains, while direct document
+access remains available for documents outside a shared folder.
 
-- The Penkra backend owns Account authentication, document access, durable Yjs
-  updates, snapshots, sharing grants, and realtime subscription authorization.
-- The trusted Penkra host mediates the App's declared `account-data` permission;
-  Account cookies and install receipts never enter App renderer code.
-- The App combines its network provider with official `y-indexeddb` persistence
-  so a previously opened document remains editable offline and merges on
-  reconnect.
-- The visible editor uses an audited, locally owned scene/layout/CanvasKit/input
-  engine derived from OpenPencil. Its normalized graph is disposable view state and the Canvas Yjs
-  model remains canonical.
-- Unsupported Canvas behavior fails visibly instead of being silently approximated.
+Recent designs includes documents from across your Account. All designs lets you browse the folder
+structure and open the designs inside each folder.
 
-OpenPencil provenance and the reproducible narrow-bundle entrypoint live in
-[`vendor/open-pencil/`](./vendor/open-pencil/). Canvas does not depend on the
-published 0.13.2 packages or their vulnerable `expr-eval` dependency.
+## Working with agents
 
-Run `bun run test` for the runtime model/API suite and `bun run build` to create
-the package-only `dist/` directory. The build copies the approved
-`penkra-app.json` into that package.
+Tell the agent what you are creating, the intended audience, the content to use, the required
+dimensions or output, and any existing assets or guidelines that matter. The agent can create a new
+document or continue from an exact document ID, inspect the current design, make changes, check the
+result, and export the finished work.
 
-See [`RESEARCH.md`](./RESEARCH.md) for the standards and upstream-project audit.
+For work that must follow existing brand assets or examples, provide those inputs with the task and
+say which parts should be reused. For important wording or facts, provide the approved content or ask
+the agent to confirm it before writing.
