@@ -318,6 +318,8 @@ h1, h2, h3, p { margin: 0; }
 .dialog-head .icon-button { width: 24px; min-height: 24px; margin: -5px -6px 0 0; }
 .dialog-body { min-height: 0; overflow: auto; padding: 9px 21px 19px; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 13px 21px; border-top: 1px solid #2c2e33; }
+.dialog-actions [data-action="create-design"] { min-height: 36px; display: inline-flex; align-items: center; gap: 8px; padding: 0 16px; font-size: 13px; }
+.dialog-actions [data-action="create-design"] .icon { width: 15px; height: 15px; flex: none; }
 .dialog-intro { margin-bottom: 15px; color: #858a93; font-size: 10px; }
 .module-picker { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(120px, 100%), 1fr)); gap: 8px; margin-bottom: 18px; }
 .module-choice { min-width: 0; cursor: pointer; }
@@ -396,7 +398,7 @@ h1, h2, h3, p { margin: 0; }
 @media (max-width: 900px) {
   .library-topbar { gap: 14px; padding: 0 20px; }
   .library-tabs { padding-right: 20px; padding-left: 20px; }
-  .trash-content, .library-content { padding-right: 20px; padding-left: 20px; }
+  .trash-content, .library-content, .folder-content { padding-right: 20px; padding-left: 20px; }
   .search-wrap { width: auto; min-width: 140px; flex: 1 1 260px; }
   .search-wrap kbd { display: none; }
   .trash-banner { align-items: flex-start; flex-wrap: wrap; }
@@ -407,7 +409,7 @@ h1, h2, h3, p { margin: 0; }
 @media (max-width: 620px) {
   .library-topbar { padding: 0 12px; }
   .library-tabs { padding-right: 12px; padding-left: 12px; }
-  .trash-content, .library-content { padding-right: 12px; padding-left: 12px; }
+  .trash-content, .library-content, .folder-content { padding-right: 12px; padding-left: 12px; }
   .topbar-actions { flex: 1; }
   .topbar-actions [data-action="new-folder"] { display: none; }
   .search-wrap { min-width: 0; }
