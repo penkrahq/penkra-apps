@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "sourceEngineSha256": "f139122adbaeb574238a3c465a0b1378ae16a1af75d4ad1ac8b024233215b76b",
+  "sourceEngineSha256": "e12f73d378efe7b96b17ac4face538095a29c0c57de89729dcbd9d5b80c7d846",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -13,6 +13,10 @@
     "Allow Pencil surfaces with authoritative stored geometry to skip the expensive post-font whole-graph layout, matching the upstream Canvas lifecycle.",
     "Adapt an already-materialized Canvas document into the scene graph without a JSON round trip.",
     "Expose the upstream font manager so Canvas can configure host-mediated providers and a persistent downloaded-face cache.",
+    "Coalesce concurrent local-font requests so layered renderers share one in-flight face load.",
+    "Treat renderer-owned layout recomputation as preview state so derived geometry cannot emit authored document updates.",
+    "Defer font-resolution relayout callbacks during initialization and perform one final scene layout after all document fonts settle.",
+    "Cache exact text measurements within one synchronous layout pass while keeping every typography and constraint input distinct.",
     "Relayout deleted-node parents only when the parent actually owns an auto-layout flow.",
     "Map Pencil 2.17 linear, radial, and angular gradients to native scene gradient paints.",
     "Render semantic Pencil icon nodes through provider geometry without changing their document type.",

@@ -58,6 +58,7 @@ export class FontManager {
   private cjkFallbackPromise: Promise<string[]> | null = null
   private arabicFallbackFamilies: string[] = []
   private arabicFallbackPromise: Promise<string[]> | null = null
+  private inFlightLocalFaces = new Map<string, Promise<ArrayBuffer | null>>()
 
   attachProvider(_canvasKit: CanvasKit, provider: TypefaceFontProvider): void {
     this.fontProviders.add(provider)
@@ -93,7 +94,10 @@ export class FontManager {
 
   provider(): TypefaceFontProvider | null {
     if (this.fontProvider && this.isProviderCurrent(this.fontProvider)) return this.fontProvider
-    return Array.from(this.fontProviders).findLast((provider) => this.isProviderCurrent(provider)) ?? null
+    return (
+      Array.from(this.fontProviders).findLast((provider) => this.isProviderCurrent(provider)) ??
+      null
+    )
   }
 
   isProviderCurrent(provider: TypefaceFontProvider): boolean {
@@ -239,6 +243,21 @@ export class FontManager {
   }
 
   async loadLocalFont(family: string, style = 'Regular'): Promise<ArrayBuffer | null> {
+    const key = `${family}|${style}`
+    const inFlight = this.inFlightLocalFaces.get(key)
+    if (inFlight) return inFlight
+
+    const shared = this.loadLocalFontFromSources(family, style).finally(() => {
+      if (this.inFlightLocalFaces.get(key) === shared) this.inFlightLocalFaces.delete(key)
+    })
+    this.inFlightLocalFaces.set(key, shared)
+    return shared
+  }
+
+  private async loadLocalFontFromSources(
+    family: string,
+    style: string
+  ): Promise<ArrayBuffer | null> {
     const cacheKey = `${family}|${style}`
     const loaded = this.loadedFamilies.get(cacheKey)
     if (loaded) {

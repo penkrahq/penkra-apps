@@ -3,11 +3,10 @@ import test from "node:test";
 
 import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
 
-test("layered Canvas finalizes exact-font layout once before its first visible frame", () => {
+test("layered Canvas reveals once after both independently initialized layers are ready", () => {
   const events = [];
   const onLayerReady = createLayeredSurfaceReadiness({
     layerCount: 2,
-    finalizeLayout: () => events.push("layout"),
     prepareViewport: () => events.push("viewport"),
     requestRender: () => events.push("render"),
     scheduleReveal: (reveal) => {
@@ -22,5 +21,5 @@ test("layered Canvas finalizes exact-font layout once before its first visible f
   onLayerReady();
   onLayerReady();
 
-  assert.deepEqual(events, ["layout", "viewport", "render", "schedule-reveal", "reveal"]);
+  assert.deepEqual(events, ["viewport", "render", "schedule-reveal", "reveal"]);
 });

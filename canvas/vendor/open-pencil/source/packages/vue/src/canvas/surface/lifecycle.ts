@@ -4,8 +4,9 @@ import type { Ref } from 'vue'
 
 import { SkiaRenderer } from '@open-pencil/core/canvas'
 import type { Editor } from '@open-pencil/core/editor'
-import { computeAllLayouts } from '@open-pencil/core/layout'
 
+import { recomputeDerivedGraphLayout } from '#vue/canvas/surface/derived-layout'
+import { createFontLayoutScheduler } from '#vue/canvas/surface/font-layout-scheduler'
 import { makeGLSurface, sizeCanvas, type CanvasGLContext } from '#vue/canvas/surface/gl-surface'
 import { useCanvasKitLoader } from '#vue/canvas/surface/kit-loader'
 import { createCanvasRenderLoop } from '#vue/canvas/surface/render-loop'
@@ -168,8 +169,6 @@ export function useCanvasSurfaceLifecycle({
   options?: UseCanvasOptions
   onReady?: () => void
 }) {
-  let fontLayoutQueued = false
-
   function graphRootIds(): string[] {
     return editor.graph
       .getPages()
@@ -177,23 +176,21 @@ export function useCanvasSurfaceLifecycle({
   }
 
   function recomputeGraphLayout(): void {
-    for (const page of editor.graph.getPages()) computeAllLayouts(editor.graph, page.id)
+    recomputeDerivedGraphLayout(editor.graph)
   }
 
-  function settleResolvedFontLayout(): void {
-    if (options?.recomputeLayoutAfterFonts === false) {
-      surface.renderNow()
-      return
+  const fontLayoutScheduler = createFontLayoutScheduler({
+    recomputeLayoutAfterFonts: options?.recomputeLayoutAfterFonts !== false,
+    recomputeLayout: () => {
+      if (!lifecycle.destroyed) recomputeGraphLayout()
+    },
+    requestRender: () => {
+      if (!lifecycle.destroyed) editor.requestRender()
+    },
+    renderNow: () => {
+      if (!lifecycle.destroyed) surface.renderNow()
     }
-    if (fontLayoutQueued) return
-    fontLayoutQueued = true
-    queueMicrotask(() => {
-      fontLayoutQueued = false
-      if (lifecycle.destroyed) return
-      recomputeGraphLayout()
-      editor.requestRender()
-    })
-  }
+  })
 
   useCanvasKitLoader({
     canvasRef,
@@ -203,7 +200,7 @@ export function useCanvasSurfaceLifecycle({
     loadFonts: async () => {
       const fontsStartedAt = performance.now()
       const renderer = surface.getRenderer()
-      await renderer?.loadFonts(settleResolvedFontLayout)
+      await renderer?.loadFonts(fontLayoutScheduler.fontResolutionSettled)
       if (options?.recomputeLayoutAfterFonts !== false) {
         await renderer?.loadGraphFonts(editor.graph, graphRootIds())
       }
@@ -214,6 +211,7 @@ export function useCanvasSurfaceLifecycle({
       if (options?.recomputeLayoutAfterFonts !== false) {
         recomputeGraphLayout()
       }
+      fontLayoutScheduler.finishInitialization()
       options?.onPerformance?.('engine.font-layout', performance.now() - layoutStartedAt, {
         graphNodes: editor.graph.nodes.size,
         skipped: options?.recomputeLayoutAfterFonts === false

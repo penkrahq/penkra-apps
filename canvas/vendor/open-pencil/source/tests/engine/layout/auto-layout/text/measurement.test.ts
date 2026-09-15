@@ -9,6 +9,78 @@ import { autoFrame, loadFixtureGraph, pageId, rect } from '#tests/helpers/layout
 import { HEAVY_TEST_TIMEOUT_MS } from '#tests/helpers/test-utils'
 
 describe('text measurement', () => {
+  test('one layout pass measures identical cloned text inputs once', () => {
+    const graph = new SceneGraph()
+    const page = pageId(graph)
+    const frame = autoFrame(graph, page, {
+      width: 300,
+      height: 100,
+      primaryAxisSizing: 'FIXED',
+      counterAxisSizing: 'FIXED'
+    })
+    for (let index = 0; index < 3; index++) {
+      graph.createNode('TEXT', frame.id, {
+        text: 'Repeated component label',
+        width: 120,
+        height: 20,
+        textAutoResize: 'HEIGHT'
+      })
+    }
+
+    let calls = 0
+    setTextMeasurer(() => {
+      calls += 1
+      return { width: 120, height: 20 }
+    })
+    computeAllLayouts(graph, page)
+    expect(calls).toBe(1)
+
+    computeAllLayouts(graph, page)
+    expect(calls).toBe(2)
+    setTextMeasurer(null)
+  })
+
+  test('layout measurement keeps width and typography inputs distinct', () => {
+    const graph = new SceneGraph()
+    const page = pageId(graph)
+    const frame = autoFrame(graph, page, {
+      width: 400,
+      height: 100,
+      primaryAxisSizing: 'FIXED',
+      counterAxisSizing: 'FIXED'
+    })
+    graph.createNode('TEXT', frame.id, {
+      text: 'Same content',
+      width: 120,
+      height: 20,
+      fontWeight: 400,
+      textAutoResize: 'HEIGHT'
+    })
+    graph.createNode('TEXT', frame.id, {
+      text: 'Same content',
+      width: 180,
+      height: 20,
+      fontWeight: 400,
+      textAutoResize: 'HEIGHT'
+    })
+    graph.createNode('TEXT', frame.id, {
+      text: 'Same content',
+      width: 120,
+      height: 20,
+      fontWeight: 700,
+      textAutoResize: 'HEIGHT'
+    })
+
+    let calls = 0
+    setTextMeasurer((node) => {
+      calls += 1
+      return { width: node.width, height: node.height }
+    })
+    computeAllLayouts(graph, page)
+    setTextMeasurer(null)
+    expect(calls).toBe(3)
+  })
+
   test('derived text layout preserves imported auto-layout text bounds during measurement', () => {
     const graph = new SceneGraph()
     const page = pageId(graph)

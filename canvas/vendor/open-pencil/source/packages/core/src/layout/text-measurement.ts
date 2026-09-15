@@ -43,3 +43,45 @@ export function getTextMeasurer(): TextMeasurer | null {
 export function setTextMeasurer(measurer: TextMeasurer | null): void {
   globalTextMeasurer = measurer
 }
+
+/**
+ * Share exact paragraph measurements only within one synchronous layout pass.
+ * Component instances deliberately clone their text nodes, so node identity is
+ * not part of the key; every input that can affect CanvasKit paragraph metrics is.
+ */
+export function createLayoutPassTextMeasurer(measurer: TextMeasurer): TextMeasurer {
+  const measurements = new Map<string, ReturnType<TextMeasurer>>()
+  return (node, maxWidth) => {
+    const key = JSON.stringify([
+      maxWidth === undefined ? ['undefined'] : ['number', maxWidth],
+      node.text,
+      node.textAutoResize,
+      node.width,
+      node.height,
+      node.fontSize,
+      node.fontFamily,
+      node.fontWeight,
+      node.italic,
+      node.fontVariations,
+      node.fontFeatures,
+      node.textAlignHorizontal,
+      node.textDirection,
+      node.textLanguage,
+      node.leadingTrim,
+      node.lineHeight,
+      node.letterSpacing,
+      node.textDecoration,
+      node.textDecorationStyle,
+      node.textDecorationThickness,
+      node.textDecorationFills,
+      node.textCase,
+      node.textTruncation,
+      node.maxLines,
+      node.styleRuns
+    ])
+    if (measurements.has(key)) return measurements.get(key) ?? null
+    const result = measurer(node, maxWidth)
+    measurements.set(key, result)
+    return result
+  }
+}

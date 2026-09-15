@@ -57,6 +57,28 @@ test("a cumulative remote-font subset retires providers holding the earlier face
   }
 });
 
+test("renderer and resolver requests for one font face share the in-flight source load", async () => {
+  const family = `Canvas concurrent font ${Date.now()}`;
+  const fontData = new ArrayBuffer(16);
+  let release;
+  let loads = 0;
+  fontManager.setHostFontLoader(async (requestedFamily) => {
+    if (requestedFamily !== family) return null;
+    loads += 1;
+    await new Promise((resolve) => { release = resolve; });
+    return fontData;
+  });
+  try {
+    const first = fontManager.loadFont(family, "Regular");
+    const second = fontManager.loadLocalFont(family, "Regular");
+    assert.equal(loads, 1);
+    release();
+    assert.deepEqual(await Promise.all([first, second]), [fontData, fontData]);
+  } finally {
+    fontManager.setHostFontLoader(null);
+  }
+});
+
 test("references inherit root paint from ordinary Canvas frames without a legacy reusable flag", () => {
   const graph = createOpenPencilGraph({ children: [
     { id: "instance", type: "ref", ref: "source", x: 20, y: 280, opacity: 0.5 },

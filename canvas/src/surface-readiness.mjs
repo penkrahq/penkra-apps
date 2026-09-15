@@ -1,6 +1,5 @@
 export function createLayeredSurfaceReadiness({
   layerCount,
-  finalizeLayout,
   prepareViewport,
   requestRender,
   scheduleReveal,
@@ -14,7 +13,6 @@ export function createLayeredSurfaceReadiness({
     readyLayers += 1;
     if (readyLayers < layerCount) return;
     finalized = true;
-    finalizeLayout();
     prepareViewport();
     requestRender();
     scheduleReveal(reveal);

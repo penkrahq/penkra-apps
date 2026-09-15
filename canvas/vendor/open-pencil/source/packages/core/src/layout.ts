@@ -18,13 +18,19 @@ import { buildGridTree, createGridChildNode } from './layout/grid'
 import { resolveNodeLayoutDirection } from './text/direction'
 export {
   estimateTextSize,
+  createLayoutPassTextMeasurer,
   getTextMeasurer,
   setTextMeasurer,
   type TextMeasurer
 } from './layout/text-measurement'
 import type { SceneGraph, SceneNode } from '@open-pencil/scene-graph'
 
-import { estimateTextSize, getTextMeasurer } from './layout/text-measurement'
+import {
+  createLayoutPassTextMeasurer,
+  estimateTextSize,
+  getTextMeasurer,
+  setTextMeasurer
+} from './layout/text-measurement'
 import {
   applyMinMaxConstraints,
   configureAbsoluteChild,
@@ -60,11 +66,16 @@ function resolveComputedLayoutDirection(
 }
 
 export function computeAllLayouts(graph: SceneGraph, scopeId?: string): void {
-  const rootId = scopeId ?? graph.rootId
-  const visited = new Set<string>()
-  computeLayoutsBottomUp(graph, rootId, visited)
-  if (applyEffectiveGeneratedTextLayout(graph, rootId)) {
+  const measurer = getTextMeasurer()
+  if (measurer) setTextMeasurer(createLayoutPassTextMeasurer(measurer))
+  try {
+    const rootId = scopeId ?? graph.rootId
     computeLayoutsBottomUp(graph, rootId, new Set())
+    if (applyEffectiveGeneratedTextLayout(graph, rootId)) {
+      computeLayoutsBottomUp(graph, rootId, new Set())
+    }
+  } finally {
+    if (measurer) setTextMeasurer(measurer)
   }
 }
 

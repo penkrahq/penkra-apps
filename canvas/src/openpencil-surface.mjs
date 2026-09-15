@@ -1,6 +1,5 @@
 import { createApp, h, ref, watch } from "vue";
 import {
-  computeAllLayouts,
   getCanvasKit,
   fontManager,
   provideEditor,
@@ -178,9 +177,6 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const surfaceReady = ref(false);
       const onLayerReady = createLayeredSurfaceReadiness({
         layerCount: 2,
-        finalizeLayout: () => {
-          for (const page of editor.graph.getPages()) computeAllLayouts(editor.graph, page.id);
-        },
         prepareViewport: () => {
           if (callbacks.viewport) return;
           if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
@@ -200,7 +196,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       useCanvas(sceneCanvasRef, editor, {
         layer: "scene",
         showRulers: false,
-        recomputeLayoutAfterFonts: true,
+        recomputeLayoutAfterFonts: callbacks.recomputeLayoutAfterFonts ?? true,
         onPerformance: (name, duration, details) => callbacks.onPerformance?.(
           name,
           duration,
