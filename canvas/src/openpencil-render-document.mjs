@@ -222,6 +222,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
 
 export function lowerCanvasModelForOpenPencil(source) {
   const document = structuredClone(source);
+  compileCanvasConditionsForRendering(document);
   if (isRecord(document.axes)) {
     document.themes = Object.fromEntries(Object.entries(document.axes).map(([axis, definition]) => [
       axis,
@@ -274,6 +275,197 @@ export function lowerCanvasModelForOpenPencil(source) {
     if (Object.keys(descendants).length > 0) instance.descendants = descendants;
   });
   return document;
+}
+
+function compileCanvasConditionsForRendering(document) {
+  const components = new Map();
+  walkCanvasNodes(document.children, (node) => {
+    if (typeof node?.id === "string") components.set(node.id, node);
+  });
+  const rootModes = Object.fromEntries(Object.entries(document.axes ?? {}).map(([name, axis]) => [
+    name,
+    axis?.modes?.[0]?.name,
+  ]));
+
+  const modesFor = (node, inherited) => ({ ...inherited, ...(isRecord(node?.modes) ? node.modes : {}) });
+  const defaultsFor = (declarations) => Object.fromEntries(Object.entries(declarations ?? {}).map(([name, declaration]) => [
+    name,
+    Object.hasOwn(declaration ?? {}, "default") ? structuredClone(declaration.default) : null,
+  ]));
+  const propsFor = (instance, target, outerProps, modes) => {
+    const supplied = { ...(isRecord(instance.props) ? instance.props : {}) };
+    for (const [name, binding] of Object.entries(instance.bind ?? {})) {
+      if (!Object.hasOwn(target.properties ?? {}, name)) continue;
+      supplied[name] = canvasBindingValue(binding, outerProps);
+    }
+    return Object.fromEntries(Object.entries(target.properties ?? {}).map(([name, declaration]) => [
+      name,
+      Object.hasOwn(supplied, name)
+        ? resolveCanvasConditionalValue(supplied[name], { modes, props: outerProps })
+        : Object.hasOwn(declaration ?? {}, "default") ? structuredClone(declaration.default) : null,
+    ]));
+  };
+  const assignOverride = (instance, descendants, path, property, value) => {
+    if (path.length === 0) {
+      if (!Object.hasOwn(instance, property)) instance[property] = structuredClone(value);
+      return;
+    }
+    const key = path.join("/");
+    descendants[key] = { ...(descendants[key] ?? {}), [property]: structuredClone(value) };
+  };
+  const collectTargetOverrides = (instance, descendants, node, context, path, resolving) => {
+    const modes = modesFor(node, context.modes);
+    const localContext = { modes, props: context.props };
+    for (const [property, raw] of Object.entries(node)) {
+      if (["id", "type", "name", "children", "properties", "props", "bind", "descendants", "modes"].includes(property)) continue;
+      if (!containsCanvasCascade(raw)) continue;
+      assignOverride(instance, descendants, path, property, resolveCanvasConditionalValue(raw, localContext));
+    }
+    for (const [property, binding] of Object.entries(node.bind ?? {})) {
+      if (node.type === "ref" && Object.hasOwn(components.get(node.ref)?.properties ?? {}, property)) continue;
+      assignOverride(instance, descendants, path, property, canvasBindingValue(binding, context.props));
+    }
+    if (node.visible?.op) {
+      assignOverride(instance, descendants, path, "enabled", evaluateCanvasRenderCondition(node.visible, context.props));
+    }
+    if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
+      const nestedTarget = components.get(node.ref);
+      if (!nestedTarget || resolving.has(nestedTarget.id)) return;
+      const nestedProps = propsFor(node, nestedTarget, context.props, modes);
+      collectTargetOverrides(
+        instance,
+        descendants,
+        nestedTarget,
+        { modes, props: nestedProps },
+        path,
+        new Set([...resolving, nestedTarget.id]),
+      );
+      for (const child of nestedTarget.children ?? []) {
+        collectTargetOverrides(
+          instance,
+          descendants,
+          child,
+          { modes, props: nestedProps },
+          [...path, child.id],
+          new Set([...resolving, nestedTarget.id]),
+        );
+      }
+      return;
+    }
+    for (const child of node.children ?? []) {
+      collectTargetOverrides(instance, descendants, child, localContext, [...path, child.id], resolving);
+    }
+  };
+  const compileInstance = (instance, context) => {
+    if (typeof instance.ref !== "string" || instance.ref.includes(":")) return;
+    const target = components.get(instance.ref);
+    if (!target) return;
+    const props = propsFor(instance, target, context.props, context.modes);
+    const generated = {};
+    collectTargetOverrides(instance, generated, target, { modes: context.modes, props }, [], new Set([target.id]));
+    const authored = isRecord(instance.descendants) ? instance.descendants : {};
+    const descendants = { ...generated };
+    for (const [path, override] of Object.entries(authored)) {
+      const resolved = resolveCanvasConditionalValue(override, { modes: context.modes, props });
+      descendants[path] = { ...(descendants[path] ?? {}), ...resolved };
+    }
+    if (Object.keys(descendants).length > 0) instance.descendants = descendants;
+  };
+  const compileNodeInstances = (node, context) => {
+    const modes = modesFor(node, context.modes);
+    const props = isRecord(node.properties)
+      ? defaultsFor(node.properties)
+      : context.props;
+    const localContext = { modes, props };
+    if (node.type === "ref") compileInstance(node, localContext);
+    for (const child of node.children ?? []) compileNodeInstances(child, localContext);
+  };
+  const resolveNode = (node, context) => {
+    const modes = modesFor(node, context.modes);
+    const props = isRecord(node.properties)
+      ? defaultsFor(node.properties)
+      : context.props;
+    const localContext = { modes, props };
+    for (const [property, raw] of Object.entries(node)) {
+      if (["children", "properties", "props", "bind", "descendants", "modes"].includes(property)) continue;
+      if (containsCanvasCascade(raw)) node[property] = resolveCanvasConditionalValue(raw, localContext);
+    }
+    for (const [property, binding] of Object.entries(node.bind ?? {})) {
+      if (node.type === "ref" && Object.hasOwn(components.get(node.ref)?.properties ?? {}, property)) continue;
+      node[property] = canvasBindingValue(binding, props);
+    }
+    if (node.visible?.op) node.enabled = evaluateCanvasRenderCondition(node.visible, props);
+    for (const child of node.children ?? []) resolveNode(child, localContext);
+  };
+  for (const node of document.children ?? []) compileNodeInstances(node, { modes: rootModes, props: {} });
+  for (const node of document.children ?? []) resolveNode(node, { modes: rootModes, props: {} });
+}
+
+function containsCanvasCascade(value) {
+  if (isCanvasCascade(value)) return true;
+  if (Array.isArray(value)) return value.some(containsCanvasCascade);
+  if (!isRecord(value)) return false;
+  return Object.entries(value).some(([key, child]) => key !== "when" && containsCanvasCascade(child));
+}
+
+function resolveCanvasConditionalValue(value, context) {
+  if (isCanvasCascade(value)) {
+    let selected = value[0]?.value;
+    for (const entry of value) if (matchesCanvasWhen(entry.when, context)) selected = entry.value;
+    return resolveCanvasConditionalValue(selected, context);
+  }
+  if (Array.isArray(value)) return value.map((item) => resolveCanvasConditionalValue(item, context));
+  if (!isRecord(value)) return structuredClone(value);
+  return Object.fromEntries(Object.entries(value).map(([key, child]) => [
+    key,
+    key === "when" ? structuredClone(child) : resolveCanvasConditionalValue(child, context),
+  ]));
+}
+
+function isCanvasCascade(value) {
+  return Array.isArray(value) && value.length > 0 && value.every((entry) => (
+    isRecord(entry)
+    && Object.hasOwn(entry, "value")
+    && Object.keys(entry).every((key) => key === "value" || key === "when")
+  ));
+}
+
+function matchesCanvasWhen(when, context) {
+  if (!when) return true;
+  for (const [axis, expected] of Object.entries(when)) {
+    if (axis === "props") {
+      for (const [name, value] of Object.entries(expected ?? {})) {
+        if (!Object.is(context.props?.[name], value)) return false;
+      }
+    } else if (context.modes?.[axis] !== expected) return false;
+  }
+  return true;
+}
+
+function canvasBindingValue(binding, props) {
+  if (typeof binding !== "string" || !binding.startsWith("$props.")) {
+    throw new Error(`Invalid component binding ${binding}.`);
+  }
+  const name = binding.slice(7);
+  if (!Object.hasOwn(props ?? {}, name)) throw new Error(`Component binding ${binding} is unavailable.`);
+  return structuredClone(props[name]);
+}
+
+function evaluateCanvasRenderCondition(condition, props) {
+  const value = () => props?.[condition.arg?.prop];
+  switch (condition.op) {
+    case "eq": return Object.is(value(), condition.value);
+    case "neq": return !Object.is(value(), condition.value);
+    case "notNull": return value() !== null && value() !== undefined;
+    case "isNull": return value() === null || value() === undefined;
+    case "in": return Array.isArray(condition.value) && condition.value.some((item) => Object.is(item, value()));
+    case "gt": return value() > condition.value;
+    case "lt": return value() < condition.value;
+    case "and": return condition.args.every((item) => evaluateCanvasRenderCondition(item, props));
+    case "or": return condition.args.some((item) => evaluateCanvasRenderCondition(item, props));
+    case "not": return !evaluateCanvasRenderCondition(condition.arg, props);
+    default: throw new Error(`Unknown condition operator ${condition.op}.`);
+  }
 }
 
 function walkCanvasNodes(children, visit) {

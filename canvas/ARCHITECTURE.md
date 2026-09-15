@@ -57,7 +57,7 @@ and invalid stored overlaps are rejected.
 
 Rich-text editing is character-level collaborative state rather than whole-string last-writer-wins.
 Paragraph split/merge behavior and mark boundaries are shared by editor persistence, interpolation,
-migration, rendering, and export.
+rendering, and export.
 
 Documents are CRDT-backed. The UI undo scope includes node state and root document fields. Durable
 agent-operation undo is separately guarded by document head/sequence semantics.
@@ -69,9 +69,8 @@ local patch ledger live under `vendor/open-pencil/`. The active engine exposes a
 scene-graph adapter; it does not expose the Pencil file parser.
 
 Icons remain semantic library-backed nodes. Images are asset-backed fills, not a separate image node.
-Legacy script nodes are migration input. Migration materializes a recorded output when available and
-otherwise drops the script with an explicit entry in the human-readable migration report. Shader
-fills use document-owned resources and bounded rendering.
+Script nodes render sandboxed derived output without replacing their authored source. Shader fills
+use document-owned resources and bounded rendering.
 
 Bundled or document-owned font files are the controller's exact font-byte source. Browser IndexedDB
 is not available to the Node controller.
@@ -127,10 +126,8 @@ resource use are validated at their owning boundary. Unsupported behavior fails 
 declaration is not evidence of a runtime capability; native controller behavior is verified on each
 advertised platform.
 
-Production document migration, App publication, and destructive lifecycle actions remain separately
-authorized effects. All fifteen current Canvas documents are in the deliberate migration scope, but
-each is migrated separately: create and verify a best-effort copy, write its prose report, then leave
-the original untouched apart from renaming it as superseded. QA documents go to recoverable Trash.
+App publication and destructive lifecycle actions remain separately authorized effects. QA
+documents go to recoverable Trash.
 
 ## Evidence
 
