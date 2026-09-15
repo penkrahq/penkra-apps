@@ -1,5 +1,6 @@
 import { createCanvasApi } from "./canvas-api.mjs";
 import { readCollectionCache, writeCollectionCache } from "./collection-cache.mjs";
+import { createFolderForDocument } from "./folder-actions.mjs";
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 import { createDocumentAssetCache } from "./document-asset-cache.mjs";
@@ -2246,10 +2247,11 @@ async function openDocumentContextMenu(document) {
   const action = await runtime.contextMenu.show([
     { id: "open", label: "Open" },
     { id: "duplicate", label: "Duplicate" },
-    { type: "submenu", label: "Move to", items: [
-      { id: "move:root", label: "All Designs", enabled: document.folderId !== null },
-      { type: "separator" },
+    { type: "submenu", label: "Move to folder", items: [
       ...folderMoveMenu(folders, document.folderId),
+      { type: "separator" },
+      { id: "move:root", label: "Unfiled (Home)", enabled: document.folderId !== null },
+      { id: "new-folder", label: "New folder…" },
     ] },
     ...(document.access === "owner" ? [{ id: "share", label: "Share" }] : []),
     { type: "separator" },
@@ -2258,6 +2260,16 @@ async function openDocumentContextMenu(document) {
   if (!action) return;
   if (action === "open") return navigateToDocument(document.id);
   if (action === "duplicate") return duplicateDocument(document);
+  if (action === "new-folder") {
+    state.dialog = {
+      kind: "folder-form",
+      mode: "create-for-document",
+      document,
+      parentId: document.folderId,
+    };
+    state.dialogFocusSelector = '[data-role="folder-name"]';
+    return render();
+  }
   if (action.startsWith("move:")) {
     const folderId = action === "move:root" ? null : action.slice(5);
     return act(async () => {
@@ -2941,7 +2953,7 @@ function renderDialog() {
     );
   }
   if (state.dialog.kind === "folder-form") {
-    const creating = state.dialog.mode === "create";
+    const creating = state.dialog.mode !== "rename";
     return dialog(
       creating ? "New folder" : "Rename folder",
       `<div class="field-row"><label for="folder-name">Name</label><input id="folder-name" class="field" data-role="folder-name" value="${escapeHtml(state.dialog.name ?? "")}" /></div>`,
@@ -3032,10 +3044,20 @@ function bindFolderDialogs() {
     const form = state.dialog;
     state.dialog = null;
     render();
-    const folder = form.mode === "create"
-      ? await api.createFolder(name, state.route === "folder" ? state.currentFolder?.id ?? null : null)
-      : await api.updateFolder(form.folderId, { name });
-    upsertFolderSummary(folder);
+    if (form.mode === "create-for-document") {
+      const { folder, movedDocument } = await createFolderForDocument(api, {
+        name,
+        parentId: form.parentId,
+        document: form.document,
+      });
+      upsertFolderSummary(folder);
+      upsertDocumentSummary(movedDocument, form.document.folderId);
+    } else {
+      const folder = form.mode === "create"
+        ? await api.createFolder(name, state.route === "folder" ? state.currentFolder?.id ?? null : null)
+        : await api.updateFolder(form.folderId, { name });
+      upsertFolderSummary(folder);
+    }
     render();
   }));
   root.querySelector('[data-action="cancel-folder-trash"]')?.addEventListener("click", closeDialog);
