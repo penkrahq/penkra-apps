@@ -4,7 +4,8 @@ import { resolveVariableReferences } from "./variable-references.mjs";
 export function resolveCanvasDocument(document, options = {}) {
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
   const variableValues = resolveVariables(document.variables ?? {}, modes, options.bindings ?? {});
-  const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, { modes, props: {} }), variableValues)]));
+  const rootContext = { modes, props: {} };
+  const paragraphStyles = Object.fromEntries(Object.entries(document.paragraphStyles ?? {}).map(([name, style]) => [name, resolveValue(resolveCascade(style, rootContext), variableValues, rootContext)]));
   const localNodes = indexNodes(document.children);
   const imports = options.imports ?? {};
   const consequences = [];
@@ -60,10 +61,10 @@ function resolveNode(source, context) {
   for (const [key, raw] of Object.entries(source)) {
     if (["children", "properties", "bind", "varies"].includes(key)) continue;
     const value = resolveCascade(raw, context);
-    output[key] = source.type === "text" && key === "content" ? value : resolveValue(value, context.variableValues);
+    output[key] = source.type === "text" && key === "content" ? value : resolveValue(value, context.variableValues, context);
   }
   for (const [key, binding] of Object.entries(source.bind ?? {}))
-    output[key] = resolveValue(resolveBinding(binding, context.props), context.variableValues);
+    output[key] = resolveValue(resolveBinding(binding, context.props), context.variableValues, context);
   if (source.visible && typeof source.visible === "object" && source.visible.op)
     output.enabled = evaluateCondition(source.visible, context);
   if (output.type === "text") {
@@ -84,7 +85,7 @@ function resolveNode(source, context) {
         const registry = context.styleRegistry;
         let key;
         do { key = `@canvas-resolved-style/${registry.nextId++}`; } while (Object.hasOwn(registry.styles, key));
-        registry.styles[key] = resolveValue(resolveCascade(context.owner.paragraphStyles[name], context), context.variableValues);
+        registry.styles[key] = resolveValue(resolveCascade(context.owner.paragraphStyles[name], context), context.variableValues, context);
         names.set(name, key);
         return key;
       };
@@ -147,10 +148,10 @@ function resolveRef(instance, context) {
   // A component definition's canvas position is not the instance position.
   // Keep instance geometry/compositing and the author's one-way export override
   // when replacing the reference with its resolved visual subtree.
-  output.x = resolveValue(resolveCascade(instance.x ?? 0, instanceContext), instanceContext.variableValues);
-  output.y = resolveValue(resolveCascade(instance.y ?? 0, instanceContext), instanceContext.variableValues);
+  output.x = resolveValue(resolveCascade(instance.x ?? 0, instanceContext), instanceContext.variableValues, instanceContext);
+  output.y = resolveValue(resolveCascade(instance.y ?? 0, instanceContext), instanceContext.variableValues, instanceContext);
   for (const key of ["name", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "layoutPosition", "gridColumn", "gridRow"]) {
-    if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues);
+    if (Object.hasOwn(instance, key)) output[key] = resolveValue(resolveCascade(instance[key], instanceContext), instanceContext.variableValues, instanceContext);
   }
   return output;
 }
@@ -239,11 +240,27 @@ function resolveVariables(variables, modes, bindings) {
   return output;
 }
 
-function resolveValue(value, variables) {
-  return resolveVariableReferences(value, (name) => {
+function resolveValue(value, variables, context) {
+  const cascaded = context ? resolveNestedCascades(value, context) : value;
+  return resolveVariableReferences(cascaded, (name) => {
     if (!Object.hasOwn(variables, name)) throw new Error(`Variable ${name} was not found.`);
     return variables[name];
   });
+}
+
+function resolveNestedCascades(value, context) {
+  const selected = resolveCascade(value, context);
+  if (selected !== value) return resolveNestedCascades(selected, context);
+  if (Array.isArray(value)) return value.map((item) => resolveNestedCascades(item, context));
+  if (!plainObject(value)) return value;
+  return Object.fromEntries(Object.entries(value).map(([key, child]) => [
+    key,
+    key === "when" ? structuredClone(child) : resolveNestedCascades(child, context),
+  ]));
+}
+
+function plainObject(value) {
+  return Boolean(value && typeof value === "object" && !Array.isArray(value));
 }
 
 function matchesWhen(when, context) {

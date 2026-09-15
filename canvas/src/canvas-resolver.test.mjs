@@ -73,6 +73,26 @@ test("node modes override the selected mode for their subtree", () => {
   assert.equal(resolveCanvasDocument(source).document.children[0].fill, "#000");
 });
 
+test("component prop cascades resolve inside compound layout values", () => {
+  const source = {
+    module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],
+    children: [
+      { id: "switch", type: "frame", properties: {
+        state: { type: "enum", values: ["off", "on"], default: "off" },
+      }, padding: [
+        2,
+        [{ value: 18, when: { props: { state: "off" } } }, { value: 2, when: { props: { state: "on" } } }],
+        2,
+        [{ value: 2, when: { props: { state: "off" } } }, { value: 18, when: { props: { state: "on" } } }],
+      ], children: [] },
+      { id: "enabled", type: "ref", ref: "switch", props: { state: "on" } },
+    ],
+  };
+  const resolved = resolveCanvasDocument(source).document;
+  assert.deepEqual(resolved.children[0].padding, [2, 18, 2, 2]);
+  assert.deepEqual(resolved.children[1].padding, [2, 2, 2, 18]);
+});
+
 test("typed flow source paths remap to expanded instance ids", () => {
   const source = { version: "2.17", module: "web", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [
     { id: "go", from: "route-a", to: "route-b", trigger: { kind: "tap", source: { path: ["button"], node: "label" } } },
