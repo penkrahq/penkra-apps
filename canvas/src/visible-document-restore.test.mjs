@@ -74,3 +74,35 @@ test("visible restores stay serialized", async () => {
   await second.promise;
   assert.deepEqual(calls, ["document-1", "document-2"]);
 });
+
+test("a newer visible restore makes the in-flight open stale before it can commit", async () => {
+  const calls = [];
+  const first = deferred();
+  const second = deferred();
+  let firstIsCurrent;
+  const restore = createVisibleDocumentRestore({
+    openDocument: async (documentId, isCurrent) => {
+      calls.push(documentId);
+      if (documentId === "document-1") {
+        firstIsCurrent = isCurrent;
+        await first.promise;
+      } else {
+        assert.equal(isCurrent(), true);
+        second.resolve();
+      }
+    },
+    onQueued: () => undefined,
+    onError: (error) => assert.fail(error),
+  });
+
+  restore.setActive(true);
+  restore.restore("document-1");
+  assert.equal(firstIsCurrent(), true);
+
+  restore.restore("document-2");
+  assert.equal(firstIsCurrent(), false);
+
+  first.resolve();
+  await second.promise;
+  assert.deepEqual(calls, ["document-1", "document-2"]);
+});

@@ -2,14 +2,19 @@ export function createVisibleDocumentRestore({ openDocument, onQueued, onError }
   let active = false;
   let requestedDocumentId = null;
   let opening = false;
+  let requestGeneration = 0;
 
   const drain = () => {
     if (!active || opening || !requestedDocumentId) return;
     const documentId = requestedDocumentId;
+    const generation = requestGeneration;
     requestedDocumentId = null;
     opening = true;
-    void Promise.resolve(openDocument(documentId))
-      .catch(onError)
+    const isCurrent = () => generation === requestGeneration;
+    void Promise.resolve(openDocument(documentId, isCurrent))
+      .catch((error) => {
+        if (isCurrent()) onError(error);
+      })
       .finally(() => {
         opening = false;
         drain();
@@ -18,6 +23,7 @@ export function createVisibleDocumentRestore({ openDocument, onQueued, onError }
 
   return {
     restore(documentId) {
+      requestGeneration += 1;
       requestedDocumentId = documentId;
       onQueued(documentId);
       drain();
@@ -27,6 +33,7 @@ export function createVisibleDocumentRestore({ openDocument, onQueued, onError }
       drain();
     },
     cancel() {
+      requestGeneration += 1;
       requestedDocumentId = null;
     },
   };

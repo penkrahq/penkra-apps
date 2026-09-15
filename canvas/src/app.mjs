@@ -711,7 +711,7 @@ async function navigateToDocument(documentId) {
   await routes.navigateToDocument(documentId);
 }
 
-async function openDocument(documentId) {
+async function openDocument(documentId, isCurrentRequest = () => true) {
   const knownDocument = state.documents.find((document) => document.id === documentId)
     ?? state.editorDocuments.find((document) => document.id === documentId)
     ?? (state.document?.id === documentId ? state.document : null);
@@ -758,6 +758,7 @@ async function openDocument(documentId) {
       }),
       { documentId },
     );
+    if (!isCurrentRequest()) return;
     const cachedAssets = documentAssetCache.take(documentId);
     state.assets = cachedAssets;
     const assetHydration = performanceMonitor.measureAsync(
@@ -951,6 +952,7 @@ async function openDocument(documentId) {
     });
     await flushPending();
   } catch (error) {
+    if (!isCurrentRequest()) return;
     if (state.documentOpenStartedAt !== null) {
       performanceMonitor.record(
         "document.failed",
