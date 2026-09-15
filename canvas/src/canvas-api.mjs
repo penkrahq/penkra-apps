@@ -84,6 +84,10 @@ export function createCanvasApi(runtime = globalThis.penkra) {
       request(`/${encodeURIComponent(id)}`, { method: "PATCH", body: { title } }),
     moveDocument: (id, folderId) =>
       request(`/${encodeURIComponent(id)}/move`, { method: "POST", body: { folderId } }),
+    moveDocumentToNewFolder: async (id, name) => {
+      const result = await request(`/${encodeURIComponent(id)}/move-to-new-folder`, { method: "POST", body: { name } });
+      return { folder: result.folder, movedDocument: result.project };
+    },
     deleteDocument: (id) =>
       request(`/${encodeURIComponent(id)}`, { method: "DELETE" }),
     restoreDocument: (id) =>

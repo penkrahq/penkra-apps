@@ -2265,7 +2265,6 @@ async function openDocumentContextMenu(document) {
       kind: "folder-form",
       mode: "create-for-document",
       document,
-      parentId: document.folderId,
     };
     state.dialogFocusSelector = '[data-role="folder-name"]';
     return render();
@@ -3047,7 +3046,6 @@ function bindFolderDialogs() {
     if (form.mode === "create-for-document") {
       const { folder, movedDocument } = await createFolderForDocument(api, {
         name,
-        parentId: form.parentId,
         document: form.document,
       });
       upsertFolderSummary(folder);

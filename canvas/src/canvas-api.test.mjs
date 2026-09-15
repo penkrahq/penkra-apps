@@ -92,6 +92,28 @@ test("Canvas rename sends a bounded JSON PATCH body", async () => {
   assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), { title: "Renamed" });
 });
 
+test("Canvas creates a folder and moves its document with one request", async () => {
+  const calls = [];
+  const api = createCanvasApi({
+    account: {
+      request: async (input) => {
+        calls.push(input);
+        return response(201, {
+          folder: { id: "folder-id", name: "Campaign" },
+          project: { id: "document-id", folderId: "folder-id" },
+        });
+      },
+      subscribe: async () => () => undefined,
+    },
+  });
+
+  await assert.doesNotReject(api.moveDocumentToNewFolder("document-id", "Campaign"));
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].path, "/projects/document-id/move-to-new-folder");
+  assert.equal(calls[0].method, "POST");
+  assert.deepEqual(JSON.parse(new TextDecoder().decode(calls[0].body)), { name: "Campaign" });
+});
+
 test("Canvas undo posts the exact operation and optimistic head sequence", async () => {
   const calls = [];
   const api = createCanvasApi({
