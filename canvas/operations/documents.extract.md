@@ -6,6 +6,10 @@ Extraction is **not** deliverable export. It answers *"give me this thing as a f
 any node — a frame, a group, a component instance, a shape, a text node — and requires no role, no
 module, and no capability table.
 
+Use extraction only when the user needs a durable PNG, SVG, or PDF file. For visual inspection while
+designing or reviewing, use `TakeScreenshot` inside `documents.execute`; it returns the rendered
+design directly without creating a deliverable file.
+
 ## Usage
 
 ```

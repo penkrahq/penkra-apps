@@ -333,16 +333,20 @@ meaning when rendered, search for a nearby ordinary term and compare native alte
 
 ## Reusable components and instances
 
-A reusable component is a frame with `reusable: true`. An instance is a `ref` node whose `ref`
-points to that frame ID. Put per-instance changes in the ref's `descendants` object, keyed by a
-source descendant ID or slash-separated descendant path.
+A frame becomes a component definition when a `ref` node points to its ID. Declare the values an
+instance may customize in the source frame's typed `properties`. Bind those properties to supported
+fields with `bind`, then supply per-instance values through the ref's `props`. This keeps the
+component interface explicit and type-checked without adding component status to an ordinary frame.
 
 ```js
 Insert(null, {
   id: "labeled-component",
   type: "frame",
   name: "Labeled component",
-  reusable: true,
+  properties: {
+    label: { type: "string", default: "Label" },
+    tone: { type: "enum", values: ["primary", "quiet"], default: "primary" }
+  },
   layout: "horizontal",
   width: "fit_content",
   padding: [12, 18],
@@ -354,7 +358,8 @@ Insert(null, {
   children: [{
     id: "component-label",
     type: "text",
-    content: "Label",
+    content: "",
+    bind: { content: "$props.label" },
     textGrowth: "auto",
     fontFamily: "Inter",
     fontSize: 14,
@@ -367,20 +372,19 @@ Insert("#instance-container", {
   id: "labeled-instance",
   type: "ref",
   ref: "labeled-component",
-  descendants: {
-    "component-label": { content: "Updated label" }
-  }
+  props: { label: "Updated label", tone: "quiet" }
 });
 ```
 
-The selector walker traverses source `children`; it does not expand an instance into synthetic
-children. Therefore `Get` cannot select a rendered instance descendant. Update the ref's
-`descendants`, or edit the reusable source when every instance should change.
+The selector walker traverses authored source `children`; it does not expose the resolved rendering
+of a component instance as editable synthetic children. Update the instance's declared `props`, or
+edit the source frame when every instance should change. If a value needs per-instance control,
+add it to the source frame's typed property interface and bind it deliberately.
 
 ## What this operation leaves alone
 
-Canvas preserves existing variables, themes, imported resources, advanced content, and unknown
-future fields. This operation does not author document-root variables or themes. Keep existing
+Canvas preserves existing variables, axes, imported resources, advanced content, and unknown
+future fields. This operation does not author document-root variables or axes. Keep existing
 `$variable` references and update the smallest supported node rather than replacing surrounding
 structures.
 
