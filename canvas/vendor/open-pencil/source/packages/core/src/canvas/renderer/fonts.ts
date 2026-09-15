@@ -63,7 +63,21 @@ function settleFontDemand(
 }
 
 export function getFontProvider(r: SkiaRenderer) {
+  ensureFontProviderCurrent(r)
   return r.isDestroyed() || !r.fontProvider ? null : r.fontProvider
+}
+
+export function ensureFontProviderCurrent(r: SkiaRenderer): void {
+  if (r.isDestroyed() || (r.fontProvider && fontManager.isProviderCurrent(r.fontProvider))) return
+  const previous = r.fontProvider
+  if (previous) {
+    fontManager.detachProvider(previous)
+    previous.delete()
+  }
+  r.fontProvider = r.ck.TypefaceFontProvider.Make()
+  fontManager.attachProvider(r.ck, r.fontProvider)
+  syncFontGeneration(r)
+  r.invalidateAllPictures()
 }
 
 export async function loadFonts(
@@ -73,6 +87,7 @@ export async function loadFonts(
   if (r.isDestroyed()) return
   r.onFontResolutionSettled = (snapshot, nodeIds) => {
     if (r.isDestroyed()) return
+    ensureFontProviderCurrent(r)
     settleFontDemand(r, snapshot, nodeIds)
     onFallbackFontsLoaded?.()
   }
@@ -102,6 +117,8 @@ export async function loadFonts(
     r.fontMgr = r.ck.FontMgr.FromData(fontData) ?? null
   }
 
+  ensureFontProviderCurrent(r)
+
   r.fontsLoaded = true
   syncFontGeneration(r)
   r.invalidateAllPictures()
@@ -121,6 +138,7 @@ export async function loadGraphFonts(
     missingGraphFontScripts(requirements),
     requirements.characters
   )
+  ensureFontProviderCurrent(r)
   syncFontGeneration(r)
   r.invalidateAllPictures()
 }

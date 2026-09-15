@@ -44,6 +44,8 @@ export class FontManager {
   private blockedNodeIds = new Set<string>()
   private fontProvider: TypefaceFontProvider | null = null
   private fontProviders = new Set<TypefaceFontProvider>()
+  private fontProviderFaceGenerations = new WeakMap<TypefaceFontProvider, number>()
+  private faceGeneration = 0
   private registrationGeneration = 0
   private providerRegistrations = new WeakMap<TypefaceFontProvider, Map<string, Set<ArrayBuffer>>>()
   private localFonts: FontInfo[] | null = null
@@ -61,6 +63,7 @@ export class FontManager {
     this.fontProviders.add(provider)
     this.fontProvider = provider
     this.providerRegistrations.set(provider, new Map())
+    this.fontProviderFaceGenerations.set(provider, this.faceGeneration)
     this.registrationGeneration++
     for (const [cacheKey, data] of this.loadedFamilies) {
       const separator = cacheKey.indexOf('|')
@@ -77,17 +80,24 @@ export class FontManager {
       this.fontProviders.clear()
       this.fontProvider = null
       this.providerRegistrations = new WeakMap()
+      this.fontProviderFaceGenerations = new WeakMap()
       return
     }
     this.fontProviders.delete(provider)
     this.providerRegistrations.delete(provider)
+    this.fontProviderFaceGenerations.delete(provider)
     if (this.fontProvider === provider) {
       this.fontProvider = Array.from(this.fontProviders).at(-1) ?? null
     }
   }
 
   provider(): TypefaceFontProvider | null {
-    return this.fontProvider
+    if (this.fontProvider && this.isProviderCurrent(this.fontProvider)) return this.fontProvider
+    return Array.from(this.fontProviders).findLast((provider) => this.isProviderCurrent(provider)) ?? null
+  }
+
+  isProviderCurrent(provider: TypefaceFontProvider): boolean {
+    return this.fontProviderFaceGenerations.get(provider) === this.faceGeneration
   }
 
   generation(): number {
@@ -524,7 +534,15 @@ export class FontManager {
       this.registerFontInCanvasKit(family, buffer)
       return buffer
     }
-    if (existing) this.registerSupplemental(family, style, existing)
+    if (existing) {
+      // A later remote request can return a new cumulative subset for the same face. CanvasKit's
+      // TypefaceFontProvider cannot replace a registered face: keeping both subsets under the same
+      // family/style can pair shaping from one subset with glyph data from the other. Retire the
+      // complete previous face set and make attached providers rebuild from the new current bytes.
+      this.supplementalFamilyData.delete(key)
+      this.faceGeneration++
+      this.registrationGeneration++
+    }
     this.loadedFamilies.set(key, buffer)
     this.registerFontInCanvasKit(family, buffer)
     this.registerFontInBrowser(family, style, buffer)
@@ -534,6 +552,7 @@ export class FontManager {
   private registerFontInCanvasKit(family: string, data: ArrayBuffer): boolean {
     let registered = false
     for (const provider of this.fontProviders) {
+      if (!this.isProviderCurrent(provider)) continue
       registered = this.registerFontInProvider(provider, family, data) || registered
     }
     return registered

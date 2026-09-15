@@ -37,23 +37,39 @@ describe('font lifecycle', () => {
     expect(registrations).toEqual(['Generation Test'])
   })
 
-  test('keeps cumulative subset registrations under the source family', () => {
+  test('retires a provider when a cumulative subset replaces its face', () => {
     const manager = new FontManager()
-    const registrations: string[] = []
+    const registrations: Array<{ family: string; bytes: ArrayBuffer }> = []
     const provider = {
-      registerFont(_data: ArrayBuffer, family: string) {
-        registrations.push(family)
+      registerFont(bytes: ArrayBuffer, family: string) {
+        registrations.push({ family, bytes })
       }
     } as TypefaceFontProvider
+    const replacementProviderRegistrations: Array<{ family: string; bytes: ArrayBuffer }> = []
+    const replacementProvider = {
+      registerFont(bytes: ArrayBuffer, family: string) {
+        replacementProviderRegistrations.push({ family, bytes })
+      }
+    } as TypefaceFontProvider
+    const first = new ArrayBuffer(8)
+    const cumulative = new ArrayBuffer(12)
 
     manager.attachProvider({} as CanvasKit, provider)
-    manager.markLoaded('Subset Font', 'Regular', new ArrayBuffer(8))
+    manager.markLoaded('Subset Font', 'Regular', first)
     const firstGeneration = manager.generation()
-    manager.markLoaded('Subset Font', 'Regular', new ArrayBuffer(12))
+    manager.markLoaded('Subset Font', 'Regular', cumulative)
 
     expect(manager.renderFamily('Subset Font', 'Regular')).toBe('Subset Font')
     expect(manager.generation()).toBeGreaterThan(firstGeneration)
-    expect(registrations).toEqual(['Subset Font', 'Subset Font'])
+    expect(manager.isProviderCurrent(provider)).toBe(false)
+    expect(manager.provider()).toBeNull()
+    expect(registrations).toEqual([{ family: 'Subset Font', bytes: first }])
+
+    manager.attachProvider({} as CanvasKit, replacementProvider)
+    expect(manager.isProviderCurrent(replacementProvider)).toBe(true)
+    expect(replacementProviderRegistrations).toEqual([
+      { family: 'Subset Font', bytes: cumulative }
+    ])
   })
 
   test('tracks nodes gated by pre-render font resolution', () => {

@@ -627,10 +627,12 @@ export class SkiaRenderer {
   }
 
   measureTextNode(node: SceneNode, maxWidth?: number): { width: number; height: number } | null {
+    RendererFonts.ensureFontProviderCurrent(this)
     return RenderText.measureTextNode(this, node, maxWidth)
   }
 
   nodeFontReadiness(node: SceneNode): RenderText.NodeFontReadiness {
+    RendererFonts.ensureFontProviderCurrent(this)
     return RenderText.nodeFontReadiness(this, node)
   }
 
@@ -639,6 +641,7 @@ export class SkiaRenderer {
   }
 
   buildTextPicture(node: SceneNode): Uint8Array | null {
+    RendererFonts.ensureFontProviderCurrent(this)
     return RenderText.buildTextPicture(this, node)
   }
 
@@ -647,6 +650,7 @@ export class SkiaRenderer {
     color?: Float32Array,
     opts?: { halfLeading?: boolean }
   ): Paragraph {
+    RendererFonts.ensureFontProviderCurrent(this)
     return RenderText.buildParagraph(this, node, color, opts)
   }
 

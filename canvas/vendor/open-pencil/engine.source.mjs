@@ -47976,6 +47976,8 @@ class FontManager {
   blockedNodeIds = new Set;
   fontProvider = null;
   fontProviders = new Set;
+  fontProviderFaceGenerations = new WeakMap;
+  faceGeneration = 0;
   registrationGeneration = 0;
   providerRegistrations = new WeakMap;
   localFonts = null;
@@ -47992,6 +47994,7 @@ class FontManager {
     this.fontProviders.add(provider);
     this.fontProvider = provider;
     this.providerRegistrations.set(provider, new Map);
+    this.fontProviderFaceGenerations.set(provider, this.faceGeneration);
     this.registrationGeneration++;
     for (const [cacheKey, data] of this.loadedFamilies) {
       const separator = cacheKey.indexOf("|");
@@ -48007,16 +48010,23 @@ class FontManager {
       this.fontProviders.clear();
       this.fontProvider = null;
       this.providerRegistrations = new WeakMap;
+      this.fontProviderFaceGenerations = new WeakMap;
       return;
     }
     this.fontProviders.delete(provider);
     this.providerRegistrations.delete(provider);
+    this.fontProviderFaceGenerations.delete(provider);
     if (this.fontProvider === provider) {
       this.fontProvider = Array.from(this.fontProviders).at(-1) ?? null;
     }
   }
   provider() {
-    return this.fontProvider;
+    if (this.fontProvider && this.isProviderCurrent(this.fontProvider))
+      return this.fontProvider;
+    return Array.from(this.fontProviders).findLast((provider) => this.isProviderCurrent(provider)) ?? null;
+  }
+  isProviderCurrent(provider) {
+    return this.fontProviderFaceGenerations.get(provider) === this.faceGeneration;
   }
   generation() {
     return this.registrationGeneration;
@@ -48360,8 +48370,11 @@ class FontManager {
       this.registerFontInCanvasKit(family, buffer);
       return buffer;
     }
-    if (existing)
-      this.registerSupplemental(family, style, existing);
+    if (existing) {
+      this.supplementalFamilyData.delete(key);
+      this.faceGeneration++;
+      this.registrationGeneration++;
+    }
     this.loadedFamilies.set(key, buffer);
     this.registerFontInCanvasKit(family, buffer);
     this.registerFontInBrowser(family, style, buffer);
@@ -48370,6 +48383,8 @@ class FontManager {
   registerFontInCanvasKit(family, data) {
     let registered = false;
     for (const provider of this.fontProviders) {
+      if (!this.isProviderCurrent(provider))
+        continue;
       registered = this.registerFontInProvider(provider, family, data) || registered;
     }
     return registered;
@@ -65936,7 +65951,21 @@ function settleFontDemand(r4, snapshot, nodeIds) {
   }
 }
 function getFontProvider(r4) {
+  ensureFontProviderCurrent(r4);
   return r4.isDestroyed() || !r4.fontProvider ? null : r4.fontProvider;
+}
+function ensureFontProviderCurrent(r4) {
+  if (r4.isDestroyed() || r4.fontProvider && fontManager.isProviderCurrent(r4.fontProvider))
+    return;
+  const previous = r4.fontProvider;
+  if (previous) {
+    fontManager.detachProvider(previous);
+    previous.delete();
+  }
+  r4.fontProvider = r4.ck.TypefaceFontProvider.Make();
+  fontManager.attachProvider(r4.ck, r4.fontProvider);
+  syncFontGeneration(r4);
+  r4.invalidateAllPictures();
 }
 async function loadFonts(r4, onFallbackFontsLoaded) {
   if (r4.isDestroyed())
@@ -65944,6 +65973,7 @@ async function loadFonts(r4, onFallbackFontsLoaded) {
   r4.onFontResolutionSettled = (snapshot, nodeIds) => {
     if (r4.isDestroyed())
       return;
+    ensureFontProviderCurrent(r4);
     settleFontDemand(r4, snapshot, nodeIds);
     onFallbackFontsLoaded?.();
   };
@@ -65971,6 +66001,7 @@ async function loadFonts(r4, onFallbackFontsLoaded) {
     }
     r4.fontMgr = r4.ck.FontMgr.FromData(fontData) ?? null;
   }
+  ensureFontProviderCurrent(r4);
   r4.fontsLoaded = true;
   syncFontGeneration(r4);
   r4.invalidateAllPictures();
@@ -65980,6 +66011,7 @@ async function loadGraphFonts(r4, graph, nodeIds) {
   const requirements = collectGraphFontRequirements(graph, nodeIds);
   await Promise.all(fontKeys.map(([family, style]) => fontManager.loadFont(family, style, requirements.characters)));
   await fontManager.ensureFallbackPack(missingGraphFontScripts(requirements), requirements.characters);
+  ensureFontProviderCurrent(r4);
   syncFontGeneration(r4);
   r4.invalidateAllPictures();
 }
@@ -70468,18 +70500,22 @@ class SkiaRenderer {
     }
   }
   measureTextNode(node, maxWidth) {
+    ensureFontProviderCurrent(this);
     return measureTextNode(this, node, maxWidth);
   }
   nodeFontReadiness(node) {
+    ensureFontProviderCurrent(this);
     return nodeFontReadiness(this, node);
   }
   isNodeFontLoaded(node) {
     return this.nodeFontReadiness(node) === "ready";
   }
   buildTextPicture(node) {
+    ensureFontProviderCurrent(this);
     return buildTextPicture(this, node);
   }
   buildParagraph(node, color, opts) {
+    ensureFontProviderCurrent(this);
     return buildParagraph(this, node, color, opts);
   }
   resolveFillColorInfo(fill3, fillIndex, node, graph) {
