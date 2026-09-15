@@ -109,6 +109,12 @@ higher-level client boundary.
   before classifying the failure. Do not hide a confirmed host defect behind an App workaround.
   Keep App changes in this repository and move any confirmed host/SDK fix and planning to the Penkra
   repository that owns it.
+- Investigation does not authorize implementation. After the evidence is assembled, present and
+  discuss any consequential product, architecture, protocol, data, compatibility, security, or
+  user-visible direction with the user and obtain explicit approval of the proposed direction
+  before implementing it. Do this even when one direction appears technically obvious or no equal
+  alternative remains. Diagnostic logging, observability, and bounded reproduction harnesses may
+  precede that approval only to establish facts; do not let them grow into the product fix.
 - Ask focused questions before implementing whenever the remaining choice is a product decision or
   would materially change user-visible behavior, data, compatibility, or scope. Do not ask the user
   to resolve questions that logs, source, history, experiments, or primary-source research can
