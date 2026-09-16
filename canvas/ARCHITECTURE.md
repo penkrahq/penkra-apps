@@ -49,6 +49,12 @@ Components use typed properties, conditions, lexical nested scopes, cross-docume
 paths, and recursively pinned dependencies. Descendant remapping is deterministic and validated;
 imports must not flatten first-class component or variable semantics heuristically.
 
+The authored component graph remains authoritative in the editor. Reusable definitions are adapted
+once, while ordinary instances begin as compact scene nodes. The interactive surface hydrates
+instance descendants when they become meaningful at the current viewport scale, when selection or
+layer expansion requires them, and preserves hydrated detail across document refreshes. Screenshot,
+extraction, and export paths remain eager so artifact output never depends on an editor viewport.
+
 ## Text and collaboration
 
 Text content uses UTF-16 `[from,to)` ranges for paragraph and mark storage. Paragraphs exactly
@@ -73,7 +79,9 @@ Script nodes render sandboxed derived output without replacing their authored so
 use document-owned resources and bounded rendering.
 
 Bundled or document-owned font files are the controller's exact font-byte source. Browser IndexedDB
-is not available to the Node controller.
+is not available to the Node controller. The scene and overlay renderers share in-flight font loads;
+initial font resolution is followed by one owned layout pass rather than one full-document layout per
+resolved face.
 
 ## Operations and storage
 
@@ -86,10 +94,10 @@ Document collection state subscribes before its initial list load and reconciles
 post-handshake list, covering create/trash races. Sharing and lifecycle operations remain explicit
 rather than side effects of opening or editing.
 
-Migration is a deliberate one-document-at-a-time clean cut, never an open-path side effect. It reads
-the source once, applies best-effort transforms, creates and verifies a copy, copies assets, writes a
-human-readable Markdown loss report, then renames the untouched original as superseded. Migration
-drops the obsolete Pencil format marker; the canonical Canvas schema has no file-format version.
+Canvas has no runtime document-migration subsystem and never rewrites a document while opening it.
+Older designs are rebuilt into the current Canvas schema through normal authoring operations and
+verified as ordinary Canvas documents. The canonical Canvas schema has no external file-format
+version marker.
 
 ## Export
 

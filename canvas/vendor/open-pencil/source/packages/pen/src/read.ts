@@ -695,11 +695,90 @@ function applyIntrinsicOverrideSizing(
   }
 }
 
-function populateInstances(graph: SceneGraph): void {
+function populateInstances(
+  graph: SceneGraph,
+  predicate: (node: SceneNode) => boolean = () => true
+): string[] {
+  const populated: string[] = []
   for (const node of graph.getAllNodes()) {
-    if (node.type === 'INSTANCE' && node.componentId && node.childIds.length === 0) {
+    if (
+      node.type === 'INSTANCE' &&
+      node.componentId &&
+      node.childIds.length === 0 &&
+      predicate(node)
+    ) {
       const component = graph.getNode(node.componentId)
-      if (component) populateInstanceChildren(graph, node.id, node.componentId)
+      if (component) {
+        populateInstanceChildren(graph, node.id, node.componentId)
+        populated.push(node.id)
+      }
+    }
+  }
+  return populated
+}
+
+function populateInstancesUntilStable(
+  graph: SceneGraph,
+  predicate: (node: SceneNode) => boolean
+): string[] {
+  const populated: string[] = []
+  const attempted = new Set<string>()
+  let pass: string[]
+  do {
+    pass = populateInstances(graph, (node) => !attempted.has(node.id) && predicate(node))
+    for (const id of pass) attempted.add(id)
+    populated.push(...pass)
+  } while (pass.length > 0)
+  return populated
+}
+
+function collectRefTargetIds(nodes: PenNode[], output = new Set<string>()): Set<string> {
+  for (const node of nodes) {
+    if (node.type === 'ref' && node.ref) output.add(node.ref)
+    if (node.children) collectRefTargetIds(node.children, output)
+  }
+  return output
+}
+
+function collectPenSources(nodes: PenNode[], output: Map<string, PenNode>): void {
+  for (const node of nodes) {
+    output.set(node.id, node)
+    if (node.children) collectPenSources(node.children, output)
+  }
+}
+
+function isInsideReferencedDefinition(
+  graph: SceneGraph,
+  node: SceneNode,
+  referencedIds: Set<string>
+): boolean {
+  let current: SceneNode | undefined = node
+  const visited = new Set<string>()
+  while (current && !visited.has(current.id)) {
+    visited.add(current.id)
+    if (referencedIds.has(current.id)) return true
+    current = current.parentId ? graph.getNode(current.parentId) : undefined
+  }
+  return false
+}
+
+function applySelectedOverrides(
+  nodes: PenNode[],
+  selectedIds: Set<string>,
+  graph: SceneGraph,
+  ctx: VarContext,
+  componentIds: Map<string, string>,
+  penSources: Map<string, PenNode>
+): void {
+  for (const pen of nodes) {
+    if (pen.theme) applyTheme(pen.theme, ctx)
+    if (selectedIds.has(pen.id)) {
+      applyDescendantOverrides(graph, pen, ctx, componentIds, penSources)
+      const instance = graph.getNode(pen.id)
+      if (instance) resolveNodeVars(instance, graph, ctx)
+    }
+    if (pen.children) {
+      applySelectedOverrides(pen.children, selectedIds, graph, ctx, componentIds, penSources)
     }
   }
 }
@@ -820,7 +899,14 @@ function fixTextWidths(graph: SceneGraph): void {
   }
 }
 
-export function createCanvasSceneGraph(doc: PenDocument): SceneGraph {
+export interface CanvasSceneGraphOptions {
+  deferExternalInstances?: boolean
+}
+
+export function createCanvasSceneGraph(
+  doc: PenDocument,
+  options: CanvasSceneGraphOptions = {}
+): SceneGraph {
   const graph = new SceneGraph()
 
   for (const page of graph.getPages(true)) {
@@ -846,9 +932,16 @@ export function createCanvasSceneGraph(doc: PenDocument): SceneGraph {
   }
 
   applyAllRefProps(doc.children, graph, componentIds, penSources, ctx)
-  populateInstances(graph)
+  if (options.deferExternalInstances) {
+    const referencedIds = collectRefTargetIds(doc.children)
+    populateInstancesUntilStable(graph, (node) =>
+      isInsideReferencedDefinition(graph, node, referencedIds)
+    )
+  } else {
+    populateInstances(graph)
+  }
   walkAndApplyOverrides(doc.children, graph, ctx, componentIds, penSources)
-  populateInstances(graph)
+  if (!options.deferExternalInstances) populateInstances(graph)
   resolveThemeVariables(doc.children, graph, ctx)
   fixInstanceWidths(graph)
   fixTextWidths(graph)
@@ -858,4 +951,26 @@ export function createCanvasSceneGraph(doc: PenDocument): SceneGraph {
   }
 
   return graph
+}
+
+export function hydrateCanvasSceneGraphInstances(
+  graph: SceneGraph,
+  doc: PenDocument,
+  instanceIds: Iterable<string>
+): string[] {
+  const selectedIds = new Set(instanceIds)
+  if (selectedIds.size === 0) return []
+
+  const hydrated = populateInstancesUntilStable(graph, (node) => selectedIds.has(node.id))
+  if (hydrated.length === 0) return []
+
+  const ctx = buildVarContext(graph, doc.variables ?? {}, doc.themes ?? {})
+  const componentIds = new Map<string, string>()
+  const penSources = new Map<string, PenNode>()
+  collectComponentIds(doc.children, componentIds)
+  collectPenSources(doc.children, penSources)
+  applySelectedOverrides(doc.children, new Set(hydrated), graph, ctx, componentIds, penSources)
+  fixInstanceWidths(graph)
+  fixTextWidths(graph)
+  return hydrated
 }

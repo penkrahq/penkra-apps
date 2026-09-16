@@ -1,4 +1,5 @@
 import { createCanvasApi } from "./canvas-api.mjs";
+import { documentCardPeople, folderCardPeople } from "./card-people.mjs";
 import { actionButtonState } from "./interaction-state.mjs";
 import { initials, naviiAvatarUrl, profileLabel, shareAccessPeople } from "./share-people.mjs";
 import { readCollectionCache, writeCollectionCache } from "./collection-cache.mjs";
@@ -17,7 +18,7 @@ import { createSnapshotMaintenance } from "./snapshot-maintenance.mjs";
 import { createRouteCoordinator } from "./route-coordinator.mjs";
 import { activateLibraryTab } from "./library-navigation.mjs";
 import { runCurrentBackgroundTasks } from "./current-background-tasks.mjs";
-import { searchableDocumentText, sortCollection } from "./library-presentation.mjs";
+import { COLLECTION_SORT_OPTIONS, searchableDocumentText, sortCollection } from "./library-presentation.mjs";
 import { trashSummary } from "./trash-summary.mjs";
 import { createVisibleDocumentRestore } from "./visible-document-restore.mjs";
 import {
@@ -1090,9 +1091,8 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       { documentId },
     );
     state.activePanel = null;
-    const showDesktopPanels = window.matchMedia("(min-width: 1100px)").matches;
-    state.layersOpen = showDesktopPanels;
-    state.inspectorOpen = showDesktopPanels;
+    state.layersOpen = false;
+    state.inspectorOpen = false;
     state.loading = false;
     setSync("saved", "Saved");
     render();
@@ -1795,11 +1795,14 @@ function libraryTabs(active) {
 }
 
 function folderSection(folders, title, rail = false, includeNew = false, nested = false) {
-  return `<section class="library-section"><div class="section-heading"><h2>${escapeHtml(title)} <span>${folders.length}</span></h2>${rail && folders.length >= 10 ? `<span class="section-link">See more</span>` : ""}</div><div class="${rail ? "folder-rail" : "folder-grid"}">${folders.map((folder) => folderCard(folder, nested)).join("")}${includeNew ? `<button class="folder-card folder-card-new" data-action="new-folder">${icon("folder-plus")}<span><strong>New folder</strong></span></button>` : ""}</div></section>`;
+  const useRail = rail && state.collectionView === "grid";
+  const layout = useRail ? "folder-rail" : `folder-grid${state.collectionView === "list" ? " folder-list" : ""}`;
+  return `<section class="library-section"><div class="section-heading"><h2>${escapeHtml(title)} <span>${folders.length}</span></h2>${useRail && folders.length >= 10 ? `<span class="section-link">See more</span>` : ""}</div><div class="${layout}">${folders.map((folder) => folderCard(folder, nested)).join("")}${includeNew ? `<button class="folder-card folder-card-new" data-action="new-folder">${icon("folder-plus")}<span><strong>New folder</strong></span></button>` : ""}</div></section>`;
 }
 
 function collectionControls() {
-  return `<div class="collection-controls"><span class="view-toggle" role="group" aria-label="Design view"><button type="button" data-collection-view="grid" aria-label="Grid view" aria-pressed="${state.collectionView === "grid"}" class="${state.collectionView === "grid" ? "active" : ""}">${icon("grid")}</button><button type="button" data-collection-view="list" aria-label="List view" aria-pressed="${state.collectionView === "list"}" class="${state.collectionView === "list" ? "active" : ""}">${icon("list")}</button></span><label class="sort-control"><span class="sr-only">Sort designs</span><select data-collection-sort name="design-sort" aria-label="Sort designs"><option value="updated" ${state.collectionSort === "updated" ? "selected" : ""}>Last edited</option><option value="name" ${state.collectionSort === "name" ? "selected" : ""}>Name</option></select>${icon("chevron-down")}</label></div>`;
+  const sort = COLLECTION_SORT_OPTIONS.find((option) => option.id === state.collectionSort) ?? COLLECTION_SORT_OPTIONS[0];
+  return `<div class="collection-controls"><div class="view-toggle" role="group" aria-label="Choose view"><button class="view-option ${state.collectionView === "grid" ? "active" : ""}" data-action="set-collection-view" data-view="grid" type="button" aria-label="Grid view" aria-pressed="${state.collectionView === "grid"}">${icon("grid")}</button><button class="view-option ${state.collectionView === "list" ? "active" : ""}" data-action="set-collection-view" data-view="list" type="button" aria-label="List view" aria-pressed="${state.collectionView === "list"}">${icon("list")}</button></div><button class="sort-control" data-action="choose-collection-sort" type="button" aria-haspopup="menu">${icon("arrow-up-down")}<span>${escapeHtml(sort.label)}</span></button></div>`;
 }
 
 function documentCollection(documents) {
@@ -1936,8 +1939,8 @@ function segment(key, label) {
 
 function documentCard(document) {
   const preview = state.thumbnails.get(document.id);
-  const editor = document.lastEditor && !document.lastEditor.isCurrentUser ? avatar(document.lastEditor) : "";
-  return `<article class="document-card"><button class="document-card-main" data-document-id="${document.id}" aria-label="Open ${escapeHtml(document.title)}"><span class="document-preview">${preview ? `<img src="${preview}" alt="" width="504" height="300" loading="lazy" />` : `<span class="preview-placeholder">${icon("frame")}</span>`}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span class="document-submeta"><span>${escapeHtml(libraryModuleLabel(document.module))}</span><span>Edited ${escapeHtml(relativeTime(document.updatedAt))}</span>${editor}</span></span></button><button class="icon-button card-menu" data-document-menu="${document.id}" aria-label="Actions for ${escapeHtml(document.title)}">${icon("more")}</button></article>`;
+  const people = cardPeople(documentCardPeople(document, state.currentProfile));
+  return `<article class="document-card"><button class="document-card-main" data-document-id="${document.id}" aria-label="Open ${escapeHtml(document.title)}"><span class="document-preview">${preview ? `<img src="${preview}" alt="" width="504" height="300" loading="lazy" />` : `<span class="preview-placeholder">${icon("frame")}</span>`}</span><span class="document-meta"><strong>${escapeHtml(document.title)}</strong><span class="document-submeta"><span>${escapeHtml(libraryModuleLabel(document.module))}</span><span>Edited ${escapeHtml(relativeTime(document.updatedAt))}</span>${people}</span></span></button><button class="icon-button card-menu" data-document-menu="${document.id}" aria-label="Actions for ${escapeHtml(document.title)}">${icon("more")}</button></article>`;
 }
 
 function folderCard(folder, nested = false) {
@@ -1953,13 +1956,14 @@ function folderCard(folder, nested = false) {
 
 function folderPeopleProfiles(folder, { inheritCurrentFolder = false } = {}) {
   const direct = state.folderGrants.get(folder.id) ?? [];
-  if (direct.length || !inheritCurrentFolder || !state.currentFolder) return direct;
-  return state.folderGrants.get(state.currentFolder.id) ?? [];
+  const grants = direct.length || !inheritCurrentFolder || !state.currentFolder
+    ? direct
+    : state.folderGrants.get(state.currentFolder.id) ?? [];
+  return folderCardPeople(folder, grants, state.currentProfile);
 }
 
 function folderPeople(folder, options) {
-  const profiles = folderPeopleProfiles(folder, options).slice(0, 4);
-  return profiles.length ? `<span class="folder-people">${profiles.map(avatar).join("")}</span>` : "";
+  return cardPeople(folderPeopleProfiles(folder, options), "folder-people");
 }
 
 function folderPeopleSummary(folder) {
@@ -1997,6 +2001,12 @@ function avatar(profile) {
 
 function avatarFallback(label) {
   return `<span class="avatar avatar-fallback" aria-label="${escapeHtml(label)}">${escapeHtml(initials(label))}</span>`;
+}
+
+function cardPeople(profiles, className = "card-people") {
+  if (!profiles.length) return "";
+  const label = profiles.map(profileLabel).join(", ");
+  return `<span class="${className}" aria-label="${escapeHtml(label)}">${profiles.map(avatar).join("")}</span>`;
 }
 
 function renderDocumentSwitcher() {
@@ -2134,6 +2144,9 @@ async function mountEditorSurface(generation, documentId) {
       onViewport: (viewport) => {
         if (state.document?.id !== documentId) return;
         state.engineViewport = viewport;
+      },
+      onGraphHydrated: () => {
+        if (state.document?.id === documentId && state.layersOpen) renderLayersTree();
       },
       onTool: (tool) => {
         state.activeTool = tool.toLowerCase();
@@ -2310,7 +2323,9 @@ function currentLayerNodes(fallback = currentDocumentNodes()) {
   const graph = editor?.graph;
   if (!graph) return fallback;
   const pageId = editor.state.currentPageId ?? graph.getPages()?.[0]?.id;
-  const nodes = listCanvasSceneLayers(graph, pageId);
+  const nodes = listCanvasSceneLayers(graph, pageId, {
+    hasDeferredChildren: (node) => state.engineSurface?.hasDeferredInstanceDetail(node.id) === true,
+  });
   return nodes.length > 0 ? nodes : fallback;
 }
 
@@ -2649,14 +2664,13 @@ function bindLibrary() {
       scheduleDocumentSearch();
     }
   });
-  root.querySelectorAll("[data-collection-view]").forEach((button) => button.addEventListener("click", () => {
-    state.collectionView = button.dataset.collectionView;
+  root.querySelectorAll('[data-action="set-collection-view"]').forEach((button) => button.addEventListener("click", () => {
+    const view = button.dataset.view;
+    if (view !== "grid" && view !== "list") return;
+    state.collectionView = view;
     render();
   }));
-  root.querySelectorAll("[data-collection-sort]").forEach((select) => select.addEventListener("change", () => {
-    state.collectionSort = select.value;
-    render();
-  }));
+  root.querySelector('[data-action="choose-collection-sort"]')?.addEventListener("click", () => void chooseCollectionSort());
   root.querySelectorAll("[data-search-scope]").forEach((button) => button.addEventListener("click", () => {
     state.searchScope = button.dataset.searchScope;
     render();
@@ -2751,6 +2765,18 @@ function bindLibrary() {
     render();
   });
   bindFolderDialogs();
+}
+
+async function chooseCollectionSort() {
+  const action = await runtime.contextMenu.show(COLLECTION_SORT_OPTIONS.map((option) => ({
+    id: `collection-sort:${option.id}`,
+    label: option.label,
+  })));
+  if (!action?.startsWith("collection-sort:")) return;
+  const sort = action.slice("collection-sort:".length);
+  if (!COLLECTION_SORT_OPTIONS.some((option) => option.id === sort)) return;
+  state.collectionSort = sort;
+  render();
 }
 
 async function moveDesignsHere(folder) {
@@ -3092,7 +3118,10 @@ function bindLayersTree() {
     if (event.target.closest('[data-action="toggle-layer"]')) {
       const nodeId = element.dataset.nodeId;
       if (state.expandedLayerIds.has(nodeId)) state.expandedLayerIds.delete(nodeId);
-      else state.expandedLayerIds.add(nodeId);
+      else {
+        state.engineSurface?.ensureInstanceDetail(nodeId);
+        state.expandedLayerIds.add(nodeId);
+      }
       renderLayersTree();
       return;
     }
@@ -3125,6 +3154,7 @@ function bindLayersTree() {
     }
     if (event.key === "ArrowRight" && element.getAttribute("aria-expanded") === "false") {
       event.preventDefault();
+      state.engineSurface?.ensureInstanceDetail(element.dataset.nodeId);
       state.expandedLayerIds.add(element.dataset.nodeId);
       renderLayersTree();
       currentLayersTree()?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)?.focus();
@@ -3496,7 +3526,7 @@ function focusNodeInViewport(nodeId) {
 function visibleViewportInsets(host) {
   const viewport = host.getBoundingClientRect();
   const panels = [];
-  for (const panel of root.querySelectorAll(".side-panel")) {
+  for (const panel of root.querySelectorAll(".side-panel.inspector")) {
     const style = getComputedStyle(panel);
     if (style.display === "none" || style.visibility === "hidden") continue;
     panels.push(panel.getBoundingClientRect());
@@ -4005,6 +4035,7 @@ function icon(name) {
     "search-off": '<circle cx="11" cy="11" r="6"/><path d="m16 16 4 4M8.8 8.8l4.4 4.4m0-4.4-4.4 4.4"/>',
     chevron: '<path d="m9 6 6 6-6 6"/>',
     "chevron-down": '<path d="m6 9 6 6 6-6"/>',
+    "arrow-up-down": '<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
     pencil: '<path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10z"/><path d="m14 7 3 3"/>',
     grid: '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>',
     list: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".7"/><circle cx="4" cy="12" r=".7"/><circle cx="4" cy="18" r=".7"/>',

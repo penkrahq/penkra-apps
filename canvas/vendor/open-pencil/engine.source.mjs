@@ -68460,20 +68460,25 @@ function shouldCullSubpixelDetail(r4, node) {
     return Math.abs((node.fontSize || node.height) * r4.zoom) < 1.25;
   return screenWidth * screenHeight < 0.35;
 }
-function shouldRenderSubtreeDetail(r4, node) {
-  if (!r4.largeSceneDetailCulling || r4.zoom >= 0.25 || node.childIds.length === 0)
+function shouldRenderSceneSubtreeDetail(width, height, zoom, descendantCount, largeSceneDetailCulling = true) {
+  if (!largeSceneDetailCulling || zoom >= 0.25)
     return true;
-  const screenWidth = Math.abs(node.width * r4.zoom);
-  const screenHeight = Math.abs(node.height * r4.zoom);
+  const screenWidth = Math.abs(width * zoom);
+  const screenHeight = Math.abs(height * zoom);
   if (screenWidth === 0 || screenHeight === 0)
     return true;
   const screenArea = screenWidth * screenHeight;
-  const descendantCount = Math.max(1, (r4.subtreeNodeCounts.get(node.id) ?? 1) - 1);
-  if (descendantCount >= 32 && screenArea / descendantCount < 0.75)
+  if (descendantCount >= 32 && screenArea / Math.max(1, descendantCount) < 0.75)
     return false;
-  const minimumScreenDimension = r4.zoom < 0.1 ? 6 : 2;
-  const minimumScreenArea = r4.zoom < 0.1 ? 36 : 8;
+  const minimumScreenDimension = zoom < 0.1 ? 6 : 2;
+  const minimumScreenArea = zoom < 0.1 ? 36 : 8;
   return screenWidth >= minimumScreenDimension && screenHeight >= minimumScreenDimension && screenArea >= minimumScreenArea;
+}
+function shouldRenderSubtreeDetail(r4, node) {
+  if (!r4.largeSceneDetailCulling || r4.zoom >= 0.25 || node.childIds.length === 0)
+    return true;
+  const descendantCount = Math.max(1, (r4.subtreeNodeCounts.get(node.id) ?? 1) - 1);
+  return shouldRenderSceneSubtreeDetail(node.width, node.height, r4.zoom, descendantCount);
 }
 function isCulled(r4, node, absX, absY) {
   if (shouldCullSubpixelDetail(r4, node))
@@ -89322,6 +89327,10 @@ init_fonts();
 
 // vendor/open-pencil/source/packages/core/src/io/index.ts
 init_svg2();
+
+// vendor/open-pencil/source/packages/core/src/index.ts
+init_scene();
+
 // vendor/open-pencil/source/fork-entry.ts
 init_renderer();
 await init_layout2();
@@ -90417,12 +90426,70 @@ function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
     current = current.parentId ? graph.getNode(current.parentId) : undefined;
   }
 }
-function populateInstances2(graph) {
+function populateInstances2(graph, predicate = () => true) {
+  const populated = [];
   for (const node of graph.getAllNodes()) {
-    if (node.type === "INSTANCE" && node.componentId && node.childIds.length === 0) {
+    if (node.type === "INSTANCE" && node.componentId && node.childIds.length === 0 && predicate(node)) {
       const component = graph.getNode(node.componentId);
-      if (component)
+      if (component) {
         populateInstanceChildren(graph, node.id, node.componentId);
+        populated.push(node.id);
+      }
+    }
+  }
+  return populated;
+}
+function populateInstancesUntilStable(graph, predicate) {
+  const populated = [];
+  const attempted = new Set;
+  let pass;
+  do {
+    pass = populateInstances2(graph, (node) => !attempted.has(node.id) && predicate(node));
+    for (const id of pass)
+      attempted.add(id);
+    populated.push(...pass);
+  } while (pass.length > 0);
+  return populated;
+}
+function collectRefTargetIds(nodes, output = new Set) {
+  for (const node of nodes) {
+    if (node.type === "ref" && node.ref)
+      output.add(node.ref);
+    if (node.children)
+      collectRefTargetIds(node.children, output);
+  }
+  return output;
+}
+function collectPenSources(nodes, output) {
+  for (const node of nodes) {
+    output.set(node.id, node);
+    if (node.children)
+      collectPenSources(node.children, output);
+  }
+}
+function isInsideReferencedDefinition(graph, node, referencedIds) {
+  let current = node;
+  const visited = new Set;
+  while (current && !visited.has(current.id)) {
+    visited.add(current.id);
+    if (referencedIds.has(current.id))
+      return true;
+    current = current.parentId ? graph.getNode(current.parentId) : undefined;
+  }
+  return false;
+}
+function applySelectedOverrides(nodes, selectedIds, graph, ctx, componentIds, penSources) {
+  for (const pen of nodes) {
+    if (pen.theme)
+      applyTheme(pen.theme, ctx);
+    if (selectedIds.has(pen.id)) {
+      applyDescendantOverrides(graph, pen, ctx, componentIds, penSources);
+      const instance2 = graph.getNode(pen.id);
+      if (instance2)
+        resolveNodeVars(instance2, graph, ctx);
+    }
+    if (pen.children) {
+      applySelectedOverrides(pen.children, selectedIds, graph, ctx, componentIds, penSources);
     }
   }
 }
@@ -90531,7 +90598,7 @@ function fixTextWidths(graph) {
     node.width = node.text.length * node.fontSize * 0.65;
   }
 }
-function createCanvasSceneGraph(doc) {
+function createCanvasSceneGraph(doc, options = {}) {
   const graph = new SceneGraph;
   for (const page2 of graph.getPages(true)) {
     graph.deleteNode(page2.id);
@@ -90545,9 +90612,15 @@ function createCanvasSceneGraph(doc) {
     createSceneNode(child, child.__canvasImported ? graph.rootId : page.id, graph, ctx, componentIds, penSources);
   }
   applyAllRefProps(doc.children, graph, componentIds, penSources, ctx);
-  populateInstances2(graph);
+  if (options.deferExternalInstances) {
+    const referencedIds = collectRefTargetIds(doc.children);
+    populateInstancesUntilStable(graph, (node) => isInsideReferencedDefinition(graph, node, referencedIds));
+  } else {
+    populateInstances2(graph);
+  }
   walkAndApplyOverrides(doc.children, graph, ctx, componentIds, penSources);
-  populateInstances2(graph);
+  if (!options.deferExternalInstances)
+    populateInstances2(graph);
   resolveThemeVariables(doc.children, graph, ctx);
   fixInstanceWidths(graph);
   fixTextWidths(graph);
@@ -90555,6 +90628,23 @@ function createCanvasSceneGraph(doc) {
     graph.addPage("Page 1");
   }
   return graph;
+}
+function hydrateCanvasSceneGraphInstances(graph, doc, instanceIds) {
+  const selectedIds = new Set(instanceIds);
+  if (selectedIds.size === 0)
+    return [];
+  const hydrated = populateInstancesUntilStable(graph, (node) => selectedIds.has(node.id));
+  if (hydrated.length === 0)
+    return [];
+  const ctx = buildVarContext(graph, doc.variables ?? {}, doc.themes ?? {});
+  const componentIds = new Map;
+  const penSources = new Map;
+  collectComponentIds(doc.children, componentIds);
+  collectPenSources(doc.children, penSources);
+  applySelectedOverrides(doc.children, new Set(hydrated), graph, ctx, componentIds, penSources);
+  fixInstanceWidths(graph);
+  fixTextWidths(graph);
+  return hydrated;
 }
 // vendor/open-pencil/source/packages/scene-graph/src/geometry.ts
 function degToRad4(degrees) {
@@ -95935,6 +96025,7 @@ export {
   computeAllLayouts,
   computeBounds3 as computeBounds,
   computeDescendantVisualBounds3 as computeDescendantVisualBounds,
+  computeLayout,
   createCanvasSceneGraph,
   createDefaultEditorState,
   createEditor,
@@ -95943,9 +96034,11 @@ export {
   getAbsolutePositionFull2 as getAbsolutePositionFull,
   getCanvasKit,
   getWorldMatrix2 as getWorldMatrix,
+  hydrateCanvasSceneGraphInstances,
   parseSVGPath2 as parseSVGPath,
   prepareSVGImport,
   provideEditor,
+  shouldRenderSceneSubtreeDetail,
   useCanvas,
   useCanvasInput,
   useTextEdit,

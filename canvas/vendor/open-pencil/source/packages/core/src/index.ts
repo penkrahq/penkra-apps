@@ -421,6 +421,7 @@ export {
 
 export * from './io'
 export * from './lint'
+export { shouldRenderSceneSubtreeDetail } from './canvas/scene'
 
 export const CODEGEN_PROMPT: string = codegenPrompt
 export const JSX_REFERENCE: string = jsxReference

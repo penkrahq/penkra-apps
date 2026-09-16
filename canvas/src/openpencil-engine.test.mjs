@@ -9,7 +9,9 @@ import {
   analyzeOpenPencilCompatibility,
   createOpenPencilEditor,
   createOpenPencilGraph,
+  createOpenPencilInstanceHydrator,
   fitOpenPencilDesign,
+  hydrateOpenPencilGraphInstances,
   isOpenPencilEditableNode,
   penPropertyToSceneChanges,
   refreshOpenPencilEditor,
@@ -92,6 +94,197 @@ test("references inherit root paint from ordinary Canvas frames without a legacy
   assert.equal(instance.x, 20);
   assert.equal(instance.y, 280);
   assert.equal(instance.opacity, 0.5);
+});
+
+test("ordinary graph creation still expands external component instances", () => {
+  const graph = createOpenPencilGraph({ children: [
+    {
+      id: "component",
+      type: "frame",
+      reusable: true,
+      width: 200,
+      height: 80,
+      children: [{ id: "label", type: "text", content: "Original", fontSize: 16 }],
+    },
+    { id: "instance", type: "ref", ref: "component", x: 300, y: 0 },
+  ] });
+
+  assert.equal(graph.getNode("instance").childIds.length, 1);
+  assert.equal(graph.getNode(graph.getNode("instance").childIds[0]).componentId, "label");
+});
+
+test("deferred graph creation keeps definitions complete and external instances compact", () => {
+  const graph = createOpenPencilGraph({ children: [
+    {
+      id: "component",
+      type: "frame",
+      reusable: true,
+      width: 200,
+      height: 80,
+      children: [
+        {
+          id: "nested-component",
+          type: "frame",
+          reusable: true,
+          width: 120,
+          height: 40,
+          children: [{ id: "nested-label", type: "text", content: "Nested", fontSize: 16 }],
+        },
+        { id: "definition-instance", type: "ref", ref: "nested-component" },
+      ],
+    },
+    { id: "external-instance", type: "ref", ref: "component", x: 300, y: 0 },
+  ] }, new Map(), null, { deferExternalInstances: true });
+
+  assert.equal(graph.getNode("external-instance").childIds.length, 0);
+  assert.equal(graph.getNode("definition-instance").childIds.length, 1);
+  assert.equal(
+    graph.getNode(graph.getNode("definition-instance").childIds[0]).componentId,
+    "nested-label",
+  );
+});
+
+test("deferred graph creation terminates when a definition references an empty component", () => {
+  const graph = createOpenPencilGraph({ children: [
+    { id: "empty-component", type: "frame", reusable: true, width: 20, height: 20, children: [] },
+    {
+      id: "parent-component",
+      type: "frame",
+      reusable: true,
+      width: 100,
+      height: 100,
+      children: [{ id: "empty-definition-instance", type: "ref", ref: "empty-component" }],
+    },
+    { id: "external-instance", type: "ref", ref: "parent-component" },
+  ] }, new Map(), null, { deferExternalInstances: true });
+
+  assert.equal(graph.getNode("empty-definition-instance").childIds.length, 0);
+  assert.equal(graph.getNode("external-instance").childIds.length, 0);
+});
+
+test("hydrating a deferred instance restores canonical descendants and authored overrides", () => {
+  const document = { children: [
+    {
+      id: "component",
+      type: "frame",
+      reusable: true,
+      layout: "vertical",
+      width: 200,
+      height: 80,
+      children: [{ id: "label", type: "text", content: "Original", fontSize: 16 }],
+    },
+    {
+      id: "instance",
+      type: "ref",
+      ref: "component",
+      x: 300,
+      y: 0,
+      descendants: { label: { content: "Overridden" } },
+    },
+  ] };
+  const graph = createOpenPencilGraph(document, new Map(), null, {
+    deferExternalInstances: true,
+  });
+
+  assert.equal(graph.getNode("instance").childIds.length, 0);
+  assert.deepEqual(hydrateOpenPencilGraphInstances(graph, document, ["instance"]), ["instance"]);
+  const child = graph.getNode(graph.getNode("instance").childIds[0]);
+  assert.equal(child.componentId, "label");
+  assert.equal(child.id, "instance/label");
+  assert.equal(child.text, "Overridden");
+  assert.deepEqual(hydrateOpenPencilGraphInstances(graph, document, ["instance"]), []);
+});
+
+test("viewport hydration expands only visible external instances", () => {
+  const document = { children: [
+    {
+      id: "component",
+      type: "frame",
+      reusable: true,
+      width: 200,
+      height: 80,
+      children: [{ id: "label", type: "text", content: "Visible detail", fontSize: 16 }],
+    },
+    { id: "visible-instance", type: "ref", ref: "component", x: 40, y: 40 },
+    { id: "offscreen-instance", type: "ref", ref: "component", x: 4000, y: 40 },
+  ] };
+  const editor = createOpenPencilEditor(document, {
+    deferExternalInstances: true,
+    getViewportSize: () => ({ width: 800, height: 600 }),
+  });
+  const hydrator = createOpenPencilInstanceHydrator({
+    editor,
+    document,
+    getViewportSize: () => ({ width: 800, height: 600 }),
+  });
+
+  assert.deepEqual(hydrator.hydrateVisible(), ["visible-instance"]);
+  assert.equal(editor.graph.getNode("visible-instance").childIds.length, 1);
+  assert.equal(editor.graph.getNode("offscreen-instance").childIds.length, 0);
+});
+
+test("viewport hydration follows the renderer detail rule at fit-all and editing zooms", () => {
+  const children = Array.from({ length: 40 }, (_, index) => ({
+    id: `detail-${index}`,
+    type: "rectangle",
+    x: index % 8 * 10,
+    y: Math.floor(index / 8) * 10,
+    width: 8,
+    height: 8,
+  }));
+  const document = { children: [
+    { id: "component", type: "frame", reusable: true, width: 100, height: 100, children },
+    { id: "instance", type: "ref", ref: "component", x: 10, y: 10 },
+  ] };
+  const editor = createOpenPencilEditor(document, {
+    deferExternalInstances: true,
+    getViewportSize: () => ({ width: 800, height: 600 }),
+  });
+  const hydrator = createOpenPencilInstanceHydrator({
+    editor,
+    document,
+    getViewportSize: () => ({ width: 800, height: 600 }),
+  });
+
+  editor.state.zoom = 0.01;
+  assert.deepEqual(hydrator.hydrateVisible(), []);
+  assert.equal(editor.graph.getNode("instance").childIds.length, 0);
+  editor.state.zoom = 0.3;
+  assert.deepEqual(hydrator.hydrateVisible(), ["instance"]);
+  assert.equal(editor.graph.getNode("instance").childIds.length, 40);
+});
+
+test("a deferred refresh preserves hydrated detail without expanding untouched instances", () => {
+  const source = { children: [
+    {
+      id: "component",
+      type: "frame",
+      reusable: true,
+      width: 200,
+      height: 80,
+      children: [{ id: "label", type: "text", content: "Original", fontSize: 16 }],
+    },
+    {
+      id: "hydrated-instance",
+      type: "ref",
+      ref: "component",
+      descendants: { label: { content: "Before refresh" } },
+    },
+    { id: "compact-instance", type: "ref", ref: "component", x: 500 },
+  ] };
+  const editor = createOpenPencilEditor(source, { deferExternalInstances: true });
+  hydrateOpenPencilGraphInstances(editor.graph, source, ["hydrated-instance"]);
+
+  const refreshed = structuredClone(source);
+  refreshed.children[1].descendants.label.content = "After refresh";
+  refreshOpenPencilEditor(editor, refreshed, "hydrated-instance", new Map(), null, {
+    deferExternalInstances: true,
+    hydrateInstanceIds: ["hydrated-instance"],
+  });
+
+  assert.equal(editor.graph.getNode("hydrated-instance/label").text, "After refresh");
+  assert.equal(editor.graph.getNode("compact-instance").childIds.length, 0);
+  assert.deepEqual([...editor.state.selectedIds], ["hydrated-instance"]);
 });
 
 test("solid fill and stroke paint opacity multiply color alpha", () => {

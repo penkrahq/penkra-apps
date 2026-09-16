@@ -1,9 +1,10 @@
 export { createDefaultEditorState, createEditor } from '@open-pencil/core/editor'
 export { fontManager } from '@open-pencil/core'
-export { computeAllLayouts } from '@open-pencil/core/layout'
+export { shouldRenderSceneSubtreeDetail } from '@open-pencil/core'
+export { computeAllLayouts, computeLayout } from '@open-pencil/core/layout'
 export { getCanvasKit } from '@open-pencil/core/canvaskit'
 export { SkiaRenderer } from '@open-pencil/core/canvas/renderer'
-export { createCanvasSceneGraph } from '@open-pencil/pen'
+export { createCanvasSceneGraph, hydrateCanvasSceneGraphInstances } from '@open-pencil/pen'
 export {
   computeBounds,
   computeDescendantVisualBounds

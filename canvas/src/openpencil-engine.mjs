@@ -1,9 +1,13 @@
 import {
   computeBounds,
+  computeDescendantVisualBounds,
   computeAllLayouts,
+  computeLayout,
   createDefaultEditorState,
   createEditor,
   createCanvasSceneGraph,
+  hydrateCanvasSceneGraphInstances,
+  shouldRenderSceneSubtreeDetail,
 } from "../vendor/open-pencil/engine.source.mjs";
 import { reactive } from "vue";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
@@ -68,7 +72,10 @@ export function createOpenPencilEditor(document, options = {}) {
     document,
     options.assets,
     options.preparedDocument,
-    { computeLayout: options.computeInitialLayout !== false },
+    {
+      computeLayout: options.computeInitialLayout !== false,
+      deferExternalInstances: options.deferExternalInstances === true,
+    },
   );
   return createEditor({
     graph,
@@ -90,7 +97,9 @@ export function createOpenPencilGraph(
   );
   const graph = measureGraphPhase(
     "engine.graph.adapt-model",
-    () => createCanvasSceneGraph(renderDocument),
+    () => createCanvasSceneGraph(renderDocument, {
+      deferExternalInstances: options.deferExternalInstances === true,
+    }),
   );
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
@@ -115,6 +124,152 @@ export function createOpenPencilGraph(
     graphNodes: graph.nodes.size,
   });
   return graph;
+}
+
+export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
+  const startedAt = performance.now();
+  const hydratedIds = hydrateCanvasSceneGraphInstances(graph, document, instanceIds);
+  if (hydratedIds.length === 0) return hydratedIds;
+
+  for (const instanceId of hydratedIds) {
+    computeAllLayouts(graph, instanceId);
+    let node = graph.getNode(instanceId);
+    while (node?.parentId) {
+      node = graph.getNode(node.parentId);
+      if (!node) break;
+      computeLayout(graph, node.id);
+    }
+  }
+  recordGraphPerformance("engine.graph.hydrate-instances", performance.now() - startedAt, {
+    hydratedInstances: hydratedIds.length,
+    graphNodes: graph.nodes.size,
+  });
+  return hydratedIds;
+}
+
+export function createOpenPencilInstanceHydrator({
+  editor,
+  document,
+  getViewportSize,
+  onHydrated = () => {},
+}) {
+  let renderDocument = document;
+  let externalInstanceIds = collectExternalInstanceIds(renderDocument);
+  let hydratedInstanceIds = new Set();
+
+  const hydrate = (instanceIds) => {
+    const requested = [...new Set(instanceIds)].filter((id) => (
+      externalInstanceIds.has(id) && !hydratedInstanceIds.has(id)
+    ));
+    if (requested.length === 0) return [];
+    for (const id of requested) hydratedInstanceIds.add(id);
+    const hydrated = hydrateOpenPencilGraphInstances(editor.graph, renderDocument, requested);
+    if (hydrated.length > 0) {
+      editor.requestRender();
+      onHydrated(hydrated);
+    }
+    return hydrated;
+  };
+
+  return {
+    hydrateInstance(instanceId) {
+      return hydrate([instanceId]);
+    },
+    hydrateVisible() {
+      const size = getViewportSize();
+      const zoom = Math.max(editor.state.zoom, Number.EPSILON);
+      const world = {
+        x: -editor.state.panX / zoom,
+        y: -editor.state.panY / zoom,
+        width: Math.max(1, size.width) / zoom,
+        height: Math.max(1, size.height) / zoom,
+      };
+      const overscanX = world.width * 0.25;
+      const overscanY = world.height * 0.25;
+      const visible = [];
+      for (const instanceId of externalInstanceIds) {
+        if (hydratedInstanceIds.has(instanceId)) continue;
+        const node = editor.graph.getNode(instanceId);
+        if (!node) continue;
+        const bounds = computeDescendantVisualBounds(
+          [instanceId],
+          (id) => editor.graph.getNode(id),
+          (id) => editor.graph.getAbsolutePosition(id),
+        );
+        if (!bounds || !boundsIntersectViewport(bounds, world, overscanX, overscanY)) continue;
+        const descendantCount = countGraphDescendants(editor.graph, node.componentId);
+        if (!shouldRenderSceneSubtreeDetail(
+          node.width,
+          node.height,
+          zoom,
+          descendantCount,
+        )) continue;
+        visible.push(instanceId);
+      }
+      return hydrate(visible);
+    },
+    hydrateForNode(nodeId) {
+      const instanceId = [...externalInstanceIds]
+        .filter((id) => nodeId === id || nodeId.startsWith(`${id}/`))
+        .sort((left, right) => right.length - left.length)[0];
+      return instanceId ? hydrate([instanceId]) : [];
+    },
+    hasDeferredDetail(instanceId) {
+      return externalInstanceIds.has(instanceId) && !hydratedInstanceIds.has(instanceId);
+    },
+    hydratedInstanceIds() {
+      return new Set(hydratedInstanceIds);
+    },
+    replaceDocument(nextDocument, preservedInstanceIds = []) {
+      renderDocument = nextDocument;
+      externalInstanceIds = collectExternalInstanceIds(renderDocument);
+      hydratedInstanceIds = new Set(
+        preservedInstanceIds.filter((id) => externalInstanceIds.has(id)),
+      );
+    },
+  };
+}
+
+function collectExternalInstanceIds(document) {
+  const targetIds = new Set();
+  walkPenNodes(document.children, (node) => {
+    if (node.type === "ref" && typeof node.ref === "string") targetIds.add(node.ref);
+  });
+  const instanceIds = new Set();
+  const visit = (nodes, insideDefinition = false) => {
+    for (const node of nodes ?? []) {
+      const nestedInsideDefinition = insideDefinition || targetIds.has(node.id);
+      if (node.type === "ref" && !insideDefinition) instanceIds.add(node.id);
+      visit(node.children, nestedInsideDefinition);
+    }
+  };
+  visit(document.children);
+  return instanceIds;
+}
+
+function countGraphDescendants(graph, nodeId) {
+  const root = graph.getNode(nodeId);
+  if (!root) return 1;
+  let count = 0;
+  const pending = [...root.childIds];
+  const visited = new Set();
+  while (pending.length > 0) {
+    const id = pending.pop();
+    if (visited.has(id)) continue;
+    visited.add(id);
+    const node = graph.getNode(id);
+    if (!node) continue;
+    count += 1;
+    pending.push(...node.childIds);
+  }
+  return Math.max(1, count);
+}
+
+function boundsIntersectViewport(bounds, viewport, overscanX, overscanY) {
+  return bounds.maxX >= viewport.x - overscanX
+    && bounds.minX <= viewport.x + viewport.width + overscanX
+    && bounds.maxY >= viewport.y - overscanY
+    && bounds.minY <= viewport.y + viewport.height + overscanY;
 }
 
 function applyShaderAssets(graph, document, assets) {
@@ -205,13 +360,23 @@ export function refreshOpenPencilEditor(
   selectedId = null,
   assets = new Map(),
   preparedDocument = null,
+  options = {},
 ) {
   const viewport = {
     panX: editor.state.panX,
     panY: editor.state.panY,
     zoom: editor.state.zoom,
   };
-  const nextGraph = createOpenPencilGraph(document, assets, preparedDocument);
+  const nextGraph = createOpenPencilGraph(document, assets, preparedDocument, {
+    deferExternalInstances: options.deferExternalInstances === true,
+  });
+  if (options.hydrateInstanceIds?.length) {
+    hydrateOpenPencilGraphInstances(
+      nextGraph,
+      (preparedDocument ?? prepareOpenPencilRenderDocument(document, { assets })).document,
+      options.hydrateInstanceIds,
+    );
+  }
   // Effect pictures are keyed by node ID, which survives a document refresh.
   // Replacing the graph emits no per-node updates to invalidate those pictures.
   // Clear them before replaceGraph can request a render of the new scene.
