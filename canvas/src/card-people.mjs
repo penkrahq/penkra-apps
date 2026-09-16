@@ -1,5 +1,9 @@
 export function documentCardPeople(document, currentProfile) {
-  return uniquePeople([document.lastEditor ?? creatorProfile(document, currentProfile)]).slice(0, 4);
+  const lastEditor = document.lastEditor;
+  const editor = lastEditor?.isCurrentUser && currentProfile
+    ? currentUserProfile(currentProfile, lastEditor.accountId)
+    : lastEditor;
+  return uniquePeople([editor ?? creatorProfile(document, currentProfile)]).slice(0, 4);
 }
 
 export function folderCardPeople(folder, grants, currentProfile) {
@@ -9,18 +13,25 @@ export function folderCardPeople(folder, grants, currentProfile) {
 
 function creatorProfile(item, currentProfile) {
   const accountId = String(item?.ownerAccountId ?? "").trim();
-  if (!accountId) {
-    return item?.access === "owner" && currentProfile
-      ? { ...currentProfile, accountId: currentProfile.id, isOwner: true, isCurrentUser: true }
-      : null;
-  }
+  if (item?.access === "owner" && currentProfile) return currentUserProfile(currentProfile, accountId, true);
+  if (!accountId) return null;
   const isCurrentUser = accountId === currentProfile?.id;
+  if (isCurrentUser && currentProfile) return currentUserProfile(currentProfile, accountId, true);
   return {
     accountId,
     name: item.ownerName ?? (isCurrentUser ? currentProfile?.name : null),
     avatarUrl: isCurrentUser ? currentProfile?.avatarUrl ?? null : null,
     isOwner: true,
     isCurrentUser,
+  };
+}
+
+function currentUserProfile(currentProfile, accountId, isOwner = false) {
+  return {
+    ...currentProfile,
+    accountId: String(accountId || currentProfile.accountId || currentProfile.id || "").trim(),
+    isOwner,
+    isCurrentUser: true,
   };
 }
 
