@@ -1090,9 +1090,8 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       { documentId },
     );
     state.activePanel = null;
-    const showDesktopPanels = window.matchMedia("(min-width: 1100px)").matches;
-    state.layersOpen = showDesktopPanels;
-    state.inspectorOpen = showDesktopPanels;
+    state.layersOpen = false;
+    state.inspectorOpen = false;
     state.loading = false;
     setSync("saved", "Saved");
     render();
@@ -2135,6 +2134,9 @@ async function mountEditorSurface(generation, documentId) {
         if (state.document?.id !== documentId) return;
         state.engineViewport = viewport;
       },
+      onGraphHydrated: () => {
+        if (state.document?.id === documentId && state.layersOpen) renderLayersTree();
+      },
       onTool: (tool) => {
         state.activeTool = tool.toLowerCase();
         root.querySelectorAll("button[data-tool]").forEach((button) => {
@@ -2310,7 +2312,9 @@ function currentLayerNodes(fallback = currentDocumentNodes()) {
   const graph = editor?.graph;
   if (!graph) return fallback;
   const pageId = editor.state.currentPageId ?? graph.getPages()?.[0]?.id;
-  const nodes = listCanvasSceneLayers(graph, pageId);
+  const nodes = listCanvasSceneLayers(graph, pageId, {
+    hasDeferredChildren: (node) => state.engineSurface?.hasDeferredInstanceDetail(node.id) === true,
+  });
   return nodes.length > 0 ? nodes : fallback;
 }
 
@@ -3092,7 +3096,10 @@ function bindLayersTree() {
     if (event.target.closest('[data-action="toggle-layer"]')) {
       const nodeId = element.dataset.nodeId;
       if (state.expandedLayerIds.has(nodeId)) state.expandedLayerIds.delete(nodeId);
-      else state.expandedLayerIds.add(nodeId);
+      else {
+        state.engineSurface?.ensureInstanceDetail(nodeId);
+        state.expandedLayerIds.add(nodeId);
+      }
       renderLayersTree();
       return;
     }
@@ -3125,6 +3132,7 @@ function bindLayersTree() {
     }
     if (event.key === "ArrowRight" && element.getAttribute("aria-expanded") === "false") {
       event.preventDefault();
+      state.engineSurface?.ensureInstanceDetail(element.dataset.nodeId);
       state.expandedLayerIds.add(element.dataset.nodeId);
       renderLayersTree();
       currentLayersTree()?.querySelector(`[data-node-id="${CSS.escape(element.dataset.nodeId)}"]`)?.focus();
@@ -3496,7 +3504,7 @@ function focusNodeInViewport(nodeId) {
 function visibleViewportInsets(host) {
   const viewport = host.getBoundingClientRect();
   const panels = [];
-  for (const panel of root.querySelectorAll(".side-panel")) {
+  for (const panel of root.querySelectorAll(".side-panel.inspector")) {
     const style = getComputedStyle(panel);
     if (style.display === "none" || style.visibility === "hidden") continue;
     panels.push(panel.getBoundingClientRect());

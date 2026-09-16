@@ -10,6 +10,7 @@ import {
 
 import {
   createOpenPencilEditor,
+  createOpenPencilInstanceHydrator,
   fitOpenPencilDesign,
   findPenNode,
   isOpenPencilEditableNode,
@@ -20,6 +21,7 @@ import {
   sceneNodePosition,
   sceneTextEditCommitMutations,
 } from "./openpencil-engine.mjs";
+import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { bindCanvasThemeBackground } from "./canvas-theme.mjs";
 import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
@@ -44,14 +46,27 @@ export async function rasterizeOpenPencilSvgAsset(bytes) {
 
 export function mountOpenPencilSurface(element, document, callbacks = {}) {
   let sourceDocument = document;
+  const initialPreparedDocument = callbacks.preparedDocument
+    ?? prepareOpenPencilRenderDocument(document, { assets: callbacks.assets });
+  let renderDocument = initialPreparedDocument.document;
   registerDocumentFonts(document, callbacks.assets);
   const editor = createOpenPencilEditor(document, {
     getViewportSize: () => ({ width: element.clientWidth, height: element.clientHeight }),
     assets: callbacks.assets,
-    preparedDocument: callbacks.preparedDocument,
+    preparedDocument: initialPreparedDocument,
+    deferExternalInstances: true,
   });
   const unbindCanvasTheme = bindCanvasThemeBackground(editor, element);
   let sceneValues = captureSceneValues(editor);
+  const instanceHydrator = createOpenPencilInstanceHydrator({
+    editor,
+    document: renderDocument,
+    getViewportSize: () => ({ width: element.clientWidth, height: element.clientHeight }),
+    onHydrated: (instanceIds) => {
+      sceneValues = captureSceneValues(editor);
+      callbacks.onGraphHydrated?.(instanceIds);
+    },
+  });
   let textEditSession = null;
   let historyMutations = null;
   const emitMutations = (mutations) => {
@@ -67,6 +82,15 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
 
   let refreshingDocument = false;
   let visible = callbacks.visible ?? true;
+  let hydrationFrame = null;
+  const hydrateVisibleInstances = () => {
+    hydrationFrame = null;
+    if (visible) instanceHydrator.hydrateVisible();
+  };
+  const scheduleVisibleInstanceHydration = () => {
+    if (!visible || hydrationFrame !== null) return;
+    hydrationFrame = requestAnimationFrame(hydrateVisibleInstances);
+  };
   let sceneCanvasElement = null;
   const hasTimeShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
     (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
@@ -103,7 +127,10 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     editor.onEditorEvent("selection:changed", (selectedIds) => {
       if (!refreshingDocument) callbacks.onSelection?.(selectedIds);
     }),
-    editor.onEditorEvent("viewport:changed", (viewport) => callbacks.onViewport?.(viewport)),
+    editor.onEditorEvent("viewport:changed", (viewport) => {
+      callbacks.onViewport?.(viewport);
+      scheduleVisibleInstanceHydration();
+    }),
     editor.onEditorEvent("tool:changed", (tool) => callbacks.onTool?.(tool)),
     editor.onEditorEvent("node:updated", (nodeId, changes) => {
       const previous = sceneValues.get(nodeId);
@@ -178,13 +205,18 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const onLayerReady = createLayeredSurfaceReadiness({
         layerCount: 2,
         prepareViewport: () => {
-          if (callbacks.viewport) return;
+          if (callbacks.selectedId) instanceHydrator.hydrateForNode(callbacks.selectedId);
+          if (callbacks.viewport) {
+            hydrateVisibleInstances();
+            return;
+          }
           if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
             editor.select([callbacks.selectedId]);
             editor.zoomToSelection();
           } else {
             fitDesignInView();
           }
+          hydrateVisibleInstances();
         },
         requestRender: () => editor.requestRender(),
         scheduleReveal: (reveal) => requestAnimationFrame(reveal),
@@ -266,6 +298,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   const app = createApp(Surface);
   app.config.errorHandler = (error) => callbacks.onError?.(error);
   app.mount(element);
+  if (callbacks.selectedId) instanceHydrator.hydrateForNode(callbacks.selectedId);
   if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
     editor.select([callbacks.selectedId]);
   }
@@ -284,13 +317,26 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       try {
         sourceDocument = nextDocument;
         registerDocumentFonts(nextDocument, callbacks.assets);
+        const nextPreparedDocument = preparedDocument
+          ?? prepareOpenPencilRenderDocument(nextDocument, { assets: callbacks.assets });
+        const nextRenderDocument = nextPreparedDocument.document;
+        if (selectedId) instanceHydrator.hydrateForNode(selectedId);
+        const preservedInstanceIds = instanceHydrator.hydratedInstanceIds();
         refreshOpenPencilEditor(
           editor,
           nextDocument,
           selectedId,
           callbacks.assets,
-          preparedDocument,
+          nextPreparedDocument,
+          {
+            deferExternalInstances: true,
+            hydrateInstanceIds: [...preservedInstanceIds],
+          },
         );
+        renderDocument = nextRenderDocument;
+        instanceHydrator.replaceDocument(renderDocument, [...preservedInstanceIds]);
+        if (selectedId) instanceHydrator.hydrateForNode(selectedId);
+        instanceHydrator.hydrateVisible();
         sceneValues = captureSceneValues(editor);
         reconcileTimeShaderAnimation();
       } finally {
@@ -300,6 +346,13 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     setVisible(nextVisible) {
       visible = nextVisible;
       reconcileTimeShaderAnimation();
+      if (visible) scheduleVisibleInstanceHydration();
+    },
+    ensureInstanceDetail(nodeId) {
+      return instanceHydrator.hydrateForNode(nodeId);
+    },
+    hasDeferredInstanceDetail(nodeId) {
+      return instanceHydrator.hasDeferredDetail(nodeId);
     },
     capturePreview(maxDimension = 640) {
       if (!sceneCanvasElement?.width || !sceneCanvasElement?.height) return null;
@@ -311,6 +364,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       return preview.toDataURL("image/png").split(",", 2)[1] ?? null;
     },
     unmount() {
+      if (hydrationFrame !== null) cancelAnimationFrame(hydrationFrame);
       timeShaderAnimation.stop();
       unbindCanvasTheme();
       for (const dispose of disposers) dispose?.();

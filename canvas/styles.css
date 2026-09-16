@@ -305,10 +305,10 @@ h1, h2, h3, p { margin: 0; }
 .editor-avatars .avatar { width: 24px; height: 24px; margin-left: -8px; border-color: #000; font-size: 9px; }
 .editor-share { min-height: 30px; height: 30px; display: flex; align-items: center; gap: 7px; padding: 0 12px; border: 0; border-radius: 8px; background: #ffffff0f; font-size: 12px; }
 .editor-share .icon { width: 14px; height: 14px; }
-.editor-body { min-width: 0; min-height: 0; display: grid; grid-template-columns: 260px minmax(0, 1fr) 280px; }
+.editor-body { position: relative; min-width: 0; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 280px; }
 .side-panel { min-width: 0; min-height: 0; display: flex; flex-direction: column; background: var(--panel); }
 .side-panel[hidden] { display: none !important; }
-.side-panel.layers { border-right: 1px solid var(--border); }
+.side-panel.layers { position: absolute; z-index: 4; inset: 0 auto 0 0; width: 260px; border-right: 1px solid var(--border); box-shadow: 12px 0 24px #00000024; }
 .side-panel.inspector { border-left: 1px solid var(--border); }
 .panel-head { height: 38px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
 .panel-tabs { position: relative; height: 40px; flex: none; display: flex; align-items: stretch; gap: 16px; padding: 0 12px; border-bottom: 1px solid var(--border); }
@@ -478,7 +478,7 @@ h1, h2, h3, p { margin: 0; }
 .toast { position: fixed; z-index: 30; right: 16px; bottom: 16px; max-width: 360px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--panel); box-shadow: 0 12px 30px #0005; font-size: 12px; }
 
 .editor-body.layers-closed.inspector-open { grid-template-columns: minmax(0, 1fr) 280px; }
-.editor-body.layers-open.inspector-closed { grid-template-columns: 260px minmax(0, 1fr); }
+.editor-body.layers-open.inspector-closed { grid-template-columns: minmax(0, 1fr); }
 .editor-body.layers-closed.inspector-closed { grid-template-columns: minmax(0, 1fr); }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

@@ -48,6 +48,20 @@ test("Layers excludes renderer-only internal nodes", () => {
     .map(({ node }) => node.id), ["visible"]);
 });
 
+test("Layers keeps a deferred instance expandable before its detail is hydrated", () => {
+  const nodes = new Map([
+    ["page", { id: "page", childIds: ["instance"] }],
+    ["instance", { id: "instance", type: "INSTANCE", childIds: [] }],
+  ]);
+  const layers = listCanvasSceneLayers(
+    { getNode: (id) => nodes.get(id) },
+    "page",
+    { hasDeferredChildren: (node) => node.id === "instance" },
+  );
+
+  assert.equal(layers[0].hasChildren, true);
+});
+
 test("Layers reveals only expanded graph branches", () => {
   const graph = createOpenPencilGraph({
     version: "2.17",

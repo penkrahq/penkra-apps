@@ -1,4 +1,4 @@
-export function listCanvasSceneLayers(graph, pageId) {
+export function listCanvasSceneLayers(graph, pageId, options = {}) {
   if (!graph?.getNode || !pageId) return [];
   const page = graph.getNode(pageId);
   if (!page) return [];
@@ -13,7 +13,8 @@ export function listCanvasSceneLayers(graph, pageId) {
   };
   append(page, 0);
   for (let index = 0; index < output.length; index += 1) {
-    output[index].hasChildren = (output[index + 1]?.depth ?? -1) > output[index].depth;
+    output[index].hasChildren = (output[index + 1]?.depth ?? -1) > output[index].depth
+      || options.hasDeferredChildren?.(output[index].node) === true;
   }
   return output;
 }

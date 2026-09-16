@@ -115,21 +115,32 @@ function shouldCullSubpixelDetail(r: SkiaRenderer, node: SceneNode): boolean {
   return screenWidth * screenHeight < 0.35
 }
 
-function shouldRenderSubtreeDetail(r: SkiaRenderer, node: SceneNode): boolean {
-  if (!r.largeSceneDetailCulling || r.zoom >= 0.25 || node.childIds.length === 0) return true
-  const screenWidth = Math.abs(node.width * r.zoom)
-  const screenHeight = Math.abs(node.height * r.zoom)
+export function shouldRenderSceneSubtreeDetail(
+  width: number,
+  height: number,
+  zoom: number,
+  descendantCount: number,
+  largeSceneDetailCulling = true
+): boolean {
+  if (!largeSceneDetailCulling || zoom >= 0.25) return true
+  const screenWidth = Math.abs(width * zoom)
+  const screenHeight = Math.abs(height * zoom)
   if (screenWidth === 0 || screenHeight === 0) return true
   const screenArea = screenWidth * screenHeight
-  const descendantCount = Math.max(1, (r.subtreeNodeCounts.get(node.id) ?? 1) - 1)
-  if (descendantCount >= 32 && screenArea / descendantCount < 0.75) return false
-  const minimumScreenDimension = r.zoom < 0.1 ? 6 : 2
-  const minimumScreenArea = r.zoom < 0.1 ? 36 : 8
+  if (descendantCount >= 32 && screenArea / Math.max(1, descendantCount) < 0.75) return false
+  const minimumScreenDimension = zoom < 0.1 ? 6 : 2
+  const minimumScreenArea = zoom < 0.1 ? 36 : 8
   return (
     screenWidth >= minimumScreenDimension &&
     screenHeight >= minimumScreenDimension &&
     screenArea >= minimumScreenArea
   )
+}
+
+function shouldRenderSubtreeDetail(r: SkiaRenderer, node: SceneNode): boolean {
+  if (!r.largeSceneDetailCulling || r.zoom >= 0.25 || node.childIds.length === 0) return true
+  const descendantCount = Math.max(1, (r.subtreeNodeCounts.get(node.id) ?? 1) - 1)
+  return shouldRenderSceneSubtreeDetail(node.width, node.height, r.zoom, descendantCount)
 }
 function isCulled(r: SkiaRenderer, node: SceneNode, absX: number, absY: number): boolean {
   if (shouldCullSubpixelDetail(r, node)) return true
