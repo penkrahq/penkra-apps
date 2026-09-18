@@ -54,13 +54,11 @@ describe("resolveCanvasNodeReferenceId", () => {
         {
           id: "badge",
           type: "frame",
-          reusable: true,
           children: [{ id: "badge-label", type: "text", content: "queued" }],
         },
         {
           id: "row",
           type: "frame",
-          reusable: true,
           children: [{ id: "row-status", type: "ref", ref: "badge" }],
         },
         {
@@ -101,13 +99,11 @@ describe("Canvas canonical node identity", () => {
       {
         id: "badge",
         type: "frame",
-        reusable: true,
         children: [{ id: "badge-label", type: "text", content: "queued", fill: "#555555" }],
       },
       {
         id: "row",
         type: "frame",
-        reusable: true,
         children: [{ id: "row-status", type: "ref", ref: "badge" }],
       },
       {

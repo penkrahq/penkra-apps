@@ -28,6 +28,7 @@ import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
 import { createTimeShaderAnimation } from "./time-shader-animation.mjs";
 import { rasterizeSvgWithCanvasKit } from "./svg-rasterization.mjs";
+import { createSurfaceMutationBoundary } from "./surface-mutation-boundary.mjs";
 
 let canvasKitReady;
 export function prepareOpenPencilEngine() {
@@ -68,12 +69,8 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     },
   });
   let textEditSession = null;
-  let historyMutations = null;
-  const emitMutations = (mutations) => {
-    if (!mutations.length) return;
-    if (historyMutations) historyMutations.push(...mutations);
-    else callbacks.onMutations?.(mutations);
-  };
+  const mutationBoundary = createSurfaceMutationBoundary(callbacks.onMutations);
+  const emitMutations = mutationBoundary.emit;
   if (callbacks.viewport) {
     editor.state.panX = callbacks.viewport.panX;
     editor.state.panY = callbacks.viewport.panY;
@@ -85,7 +82,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   let hydrationFrame = null;
   const hydrateVisibleInstances = () => {
     hydrationFrame = null;
-    if (visible) instanceHydrator.hydrateVisible();
+    if (visible) mutationBoundary.runRendererSync(() => instanceHydrator.hydrateVisible());
   };
   const scheduleVisibleInstanceHydration = () => {
     if (!visible || hydrationFrame !== null) return;
@@ -125,7 +122,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   };
   const disposers = [
     editor.onEditorEvent("selection:changed", (selectedIds) => {
-      if (!refreshingDocument) callbacks.onSelection?.(selectedIds);
+      if (!refreshingDocument && !mutationBoundary.isRendererSyncing()) callbacks.onSelection?.(selectedIds);
     }),
     editor.onEditorEvent("viewport:changed", (viewport) => {
       callbacks.onViewport?.(viewport);
@@ -136,6 +133,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const previous = sceneValues.get(nodeId);
       sceneValues.set(nodeId, { ...previous, ...changes });
       reconcileTimeShaderAnimation();
+      if (mutationBoundary.isRendererSyncing()) return;
       if (textEditSession?.nodeId === nodeId) return;
       const sourceNode = findPenNode(sourceDocument, nodeId);
       if (editor.state.selectedIds.has(nodeId) && sourceNode && !isOpenPencilEditableNode(sourceNode)) {
@@ -148,14 +146,15 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
         nodeId,
         changes,
         previous,
-        { requireSelected: historyMutations === null },
+        { requireSelected: !mutationBoundary.isReplayingHistory() },
       );
       emitMutations(mutations);
     }),
     editor.onEditorEvent("node:created", (node) => {
       sceneValues.set(node.id, sceneNodePropertySnapshot(node));
       reconcileTimeShaderAnimation();
-      const insertion = historyMutations
+      if (mutationBoundary.isRendererSyncing()) return;
+      const insertion = mutationBoundary.isReplayingHistory()
         ? callbacks.restoreDeletedNode?.(node.id) ?? sceneNodeInsertionMutation(editor, node)
         : sceneNodeInsertionMutation(editor, node);
       if (!insertion) {
@@ -166,10 +165,12 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     }),
     editor.onEditorEvent("node:deleted", (nodeId) => {
       sceneValues.delete(nodeId);
+      if (mutationBoundary.isRendererSyncing()) return;
       emitMutations([{ kind: "delete-node", nodeId }]);
       reconcileTimeShaderAnimation();
     }),
     editor.onEditorEvent("node:reparented", (nodeId, _oldParentId, newParentId) => {
+      if (mutationBoundary.isRendererSyncing()) return;
       const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
       const node = editor.graph.getNode(nodeId);
       const position = node ? sceneNodePosition(editor, node) : null;
@@ -185,6 +186,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       }]);
     }),
     editor.onEditorEvent("node:reordered", (nodeId, parentId, index) => {
+      if (mutationBoundary.isRendererSyncing()) return;
       const pageIds = new Set(editor.graph.getPages(true).map((page) => page.id));
       emitMutations([{
         kind: "move-node",
@@ -205,7 +207,9 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       const onLayerReady = createLayeredSurfaceReadiness({
         layerCount: 2,
         prepareViewport: () => {
-          if (callbacks.selectedId) instanceHydrator.hydrateForNode(callbacks.selectedId);
+          if (callbacks.selectedId) mutationBoundary.runRendererSync(
+            () => instanceHydrator.hydrateForNode(callbacks.selectedId),
+          );
           if (callbacks.viewport) {
             hydrateVisibleInstances();
             return;
@@ -298,7 +302,9 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
   const app = createApp(Surface);
   app.config.errorHandler = (error) => callbacks.onError?.(error);
   app.mount(element);
-  if (callbacks.selectedId) instanceHydrator.hydrateForNode(callbacks.selectedId);
+  if (callbacks.selectedId) mutationBoundary.runRendererSync(
+    () => instanceHydrator.hydrateForNode(callbacks.selectedId),
+  );
   if (callbacks.selectedId && editor.graph.getNode(callbacks.selectedId)) {
     editor.select([callbacks.selectedId]);
   }
@@ -307,38 +313,40 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     editor,
     fitDesignInView,
     undo() {
-      return replayHistory(() => editor.undoAction());
+      return mutationBoundary.replayHistory(() => editor.undoAction());
     },
     redo() {
-      return replayHistory(() => editor.redoAction());
+      return mutationBoundary.replayHistory(() => editor.redoAction());
     },
     replaceDocument(nextDocument, selectedId, preparedDocument = null) {
       refreshingDocument = true;
       try {
-        sourceDocument = nextDocument;
-        registerDocumentFonts(nextDocument, callbacks.assets);
-        const nextPreparedDocument = preparedDocument
-          ?? prepareOpenPencilRenderDocument(nextDocument, { assets: callbacks.assets });
-        const nextRenderDocument = nextPreparedDocument.document;
-        if (selectedId) instanceHydrator.hydrateForNode(selectedId);
-        const preservedInstanceIds = instanceHydrator.hydratedInstanceIds();
-        refreshOpenPencilEditor(
-          editor,
-          nextDocument,
-          selectedId,
-          callbacks.assets,
-          nextPreparedDocument,
-          {
-            deferExternalInstances: true,
-            hydrateInstanceIds: [...preservedInstanceIds],
-          },
-        );
-        renderDocument = nextRenderDocument;
-        instanceHydrator.replaceDocument(renderDocument, [...preservedInstanceIds]);
-        if (selectedId) instanceHydrator.hydrateForNode(selectedId);
-        instanceHydrator.hydrateVisible();
-        sceneValues = captureSceneValues(editor);
-        reconcileTimeShaderAnimation();
+        mutationBoundary.runRendererSync(() => {
+          sourceDocument = nextDocument;
+          registerDocumentFonts(nextDocument, callbacks.assets);
+          const nextPreparedDocument = preparedDocument
+            ?? prepareOpenPencilRenderDocument(nextDocument, { assets: callbacks.assets });
+          const nextRenderDocument = nextPreparedDocument.document;
+          if (selectedId) instanceHydrator.hydrateForNode(selectedId);
+          const preservedInstanceIds = instanceHydrator.hydratedInstanceIds();
+          refreshOpenPencilEditor(
+            editor,
+            nextDocument,
+            selectedId,
+            callbacks.assets,
+            nextPreparedDocument,
+            {
+              deferExternalInstances: true,
+              hydrateInstanceIds: [...preservedInstanceIds],
+            },
+          );
+          renderDocument = nextRenderDocument;
+          instanceHydrator.replaceDocument(renderDocument, [...preservedInstanceIds]);
+          if (selectedId) instanceHydrator.hydrateForNode(selectedId);
+          instanceHydrator.hydrateVisible();
+          sceneValues = captureSceneValues(editor);
+          reconcileTimeShaderAnimation();
+        });
       } finally {
         refreshingDocument = false;
       }
@@ -349,7 +357,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       if (visible) scheduleVisibleInstanceHydration();
     },
     ensureInstanceDetail(nodeId) {
-      return instanceHydrator.hydrateForNode(nodeId);
+      return mutationBoundary.runRendererSync(() => instanceHydrator.hydrateForNode(nodeId));
     },
     hasDeferredInstanceDetail(nodeId) {
       return instanceHydrator.hasDeferredDetail(nodeId);
@@ -372,17 +380,6 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     },
   };
 
-  function replayHistory(action) {
-    if (historyMutations) return false;
-    historyMutations = [];
-    try {
-      action();
-      if (historyMutations.length) callbacks.onMutations?.(historyMutations);
-      return historyMutations.length > 0;
-    } finally {
-      historyMutations = null;
-    }
-  }
 }
 
 function registerDocumentFonts(document, assets) {

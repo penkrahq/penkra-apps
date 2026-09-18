@@ -24,6 +24,7 @@ import {
   sceneUpdateToMutations,
 } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { createSurfaceMutationBoundary } from "./surface-mutation-boundary.mjs";
 
 test("a cumulative remote-font subset retires providers holding the earlier face", () => {
   const family = `Canvas cumulative subset ${Date.now()}`;
@@ -96,12 +97,28 @@ test("references inherit root paint from ordinary Canvas frames without a legacy
   assert.equal(instance.opacity, 0.5);
 });
 
+test("compatibility review recognizes ordinary local ref targets as native components", () => {
+  const children = [{
+    id: "header",
+    type: "frame",
+    width: 393,
+    height: 56,
+    children: [{ id: "header-title", type: "text", content: "Title", fill: "#111111" }],
+  }];
+  for (let index = 0; index < 9; index += 1) {
+    children.push({ id: `header-${index}`, type: "ref", ref: "header", x: index * 420, y: 100 });
+  }
+
+  assert.deepEqual(analyzeOpenPencilCompatibility({ children }), []);
+  children.push({ id: "missing-instance", type: "ref", ref: "missing" });
+  assert.deepEqual(analyzeOpenPencilCompatibility({ children }).map((issue) => issue.nodeId), ["missing-instance"]);
+});
+
 test("ordinary graph creation still expands external component instances", () => {
   const graph = createOpenPencilGraph({ children: [
     {
       id: "component",
       type: "frame",
-      reusable: true,
       width: 200,
       height: 80,
       children: [{ id: "label", type: "text", content: "Original", fontSize: 16 }],
@@ -118,14 +135,12 @@ test("deferred graph creation keeps definitions complete and external instances 
     {
       id: "component",
       type: "frame",
-      reusable: true,
       width: 200,
       height: 80,
       children: [
         {
           id: "nested-component",
           type: "frame",
-          reusable: true,
           width: 120,
           height: 40,
           children: [{ id: "nested-label", type: "text", content: "Nested", fontSize: 16 }],
@@ -146,11 +161,10 @@ test("deferred graph creation keeps definitions complete and external instances 
 
 test("deferred graph creation terminates when a definition references an empty component", () => {
   const graph = createOpenPencilGraph({ children: [
-    { id: "empty-component", type: "frame", reusable: true, width: 20, height: 20, children: [] },
+    { id: "empty-component", type: "frame", width: 20, height: 20, children: [] },
     {
       id: "parent-component",
       type: "frame",
-      reusable: true,
       width: 100,
       height: 100,
       children: [{ id: "empty-definition-instance", type: "ref", ref: "empty-component" }],
@@ -167,7 +181,6 @@ test("hydrating a deferred instance restores canonical descendants and authored 
     {
       id: "component",
       type: "frame",
-      reusable: true,
       layout: "vertical",
       width: 200,
       height: 80,
@@ -200,7 +213,6 @@ test("viewport hydration expands only visible external instances", () => {
     {
       id: "component",
       type: "frame",
-      reusable: true,
       width: 200,
       height: 80,
       children: [{ id: "label", type: "text", content: "Visible detail", fontSize: 16 }],
@@ -233,7 +245,7 @@ test("viewport hydration follows the renderer detail rule at fit-all and editing
     height: 8,
   }));
   const document = { children: [
-    { id: "component", type: "frame", reusable: true, width: 100, height: 100, children },
+    { id: "component", type: "frame", width: 100, height: 100, children },
     { id: "instance", type: "ref", ref: "component", x: 10, y: 10 },
   ] };
   const editor = createOpenPencilEditor(document, {
@@ -259,7 +271,6 @@ test("a deferred refresh preserves hydrated detail without expanding untouched i
     {
       id: "component",
       type: "frame",
-      reusable: true,
       width: 200,
       height: 80,
       children: [{ id: "label", type: "text", content: "Original", fontSize: 16 }],
@@ -285,6 +296,94 @@ test("a deferred refresh preserves hydrated detail without expanding untouched i
   assert.equal(editor.graph.getNode("hydrated-instance/label").text, "After refresh");
   assert.equal(editor.graph.getNode("compact-instance").childIds.length, 0);
   assert.deepEqual([...editor.state.selectedIds], ["hydrated-instance"]);
+});
+
+test("a deferred native component refresh updates hydrated source structure and preserves instance props", () => {
+  const source = { children: [
+    {
+      id: "component",
+      type: "frame",
+      width: 240,
+      height: 64,
+      properties: { label: { type: "string", default: "Default" } },
+      children: [{
+        id: "label",
+        type: "text",
+        content: "",
+        bind: { content: "$props.label" },
+        fill: "#111111",
+      }],
+    },
+    { id: "hydrated-instance", type: "ref", ref: "component", props: { label: "Account" } },
+    { id: "compact-instance", type: "ref", ref: "component", props: { label: "Settings" }, x: 500 },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const editor = createOpenPencilEditor(prepared.document, { deferExternalInstances: true });
+  hydrateOpenPencilGraphInstances(editor.graph, prepared.document, ["hydrated-instance"]);
+  assert.equal(editor.graph.getNode("hydrated-instance/label").text, "Account");
+
+  const refreshed = structuredClone(source);
+  refreshed.children[0].children.push({ id: "rule", type: "rectangle", width: 240, height: 1, fill: "#CCCCCC" });
+  const refreshedPrepared = prepareOpenPencilRenderDocument(refreshed);
+  refreshOpenPencilEditor(editor, refreshedPrepared.document, "hydrated-instance", new Map(), null, {
+    deferExternalInstances: true,
+    hydrateInstanceIds: ["hydrated-instance"],
+  });
+
+  assert.equal(editor.graph.getNode("hydrated-instance/label").text, "Account");
+  assert.ok(editor.graph.getNode("hydrated-instance/rule"));
+  assert.equal(editor.graph.getNode("compact-instance").childIds.length, 0);
+});
+
+test("a remote component refresh cannot echo renderer lifecycle events as authored updates", () => {
+  const source = { children: [
+    {
+      id: "component",
+      type: "frame",
+      width: 200,
+      height: 80,
+      children: [{ id: "label", type: "text", content: "Before", fontSize: 16 }],
+    },
+    { id: "instance", type: "ref", ref: "component", x: 40, y: 40 },
+  ] };
+  const refreshed = structuredClone(source);
+  refreshed.children[0].children[0].content = "After";
+  refreshed.children[0].children.push({
+    id: "icon",
+    type: "rectangle",
+    width: 16,
+    height: 16,
+    fill: "#2563EB",
+  });
+
+  const editor = createOpenPencilEditor(source, { deferExternalInstances: true });
+  hydrateOpenPencilGraphInstances(editor.graph, source, ["instance"]);
+  const authored = [];
+  const boundary = createSurfaceMutationBoundary((mutations) => authored.push(...mutations));
+  editor.onEditorEvent("node:created", (node) => boundary.emit([{
+    kind: "insert-node",
+    node: { id: node.id },
+  }]));
+  editor.onEditorEvent("node:deleted", (nodeId) => boundary.emit([{ kind: "delete-node", nodeId }]));
+  editor.onEditorEvent("node:updated", (nodeId) => boundary.emit([{
+    kind: "set-property",
+    nodeId,
+    property: "content",
+    value: "renderer-derived",
+  }]));
+
+  boundary.runRendererSync(() => refreshOpenPencilEditor(
+    editor,
+    refreshed,
+    "instance",
+    new Map(),
+    null,
+    { deferExternalInstances: true, hydrateInstanceIds: ["instance"] },
+  ));
+
+  assert.deepEqual(authored, []);
+  assert.equal(editor.graph.getNode("label").text, "After");
+  assert.ok(editor.graph.getNode("icon"));
 });
 
 test("solid fill and stroke paint opacity multiply color alpha", () => {
@@ -1005,7 +1104,6 @@ test("an instance-descendant edit persists at its canonical Pencil descendants p
       {
         id: "row-component",
         type: "frame",
-        reusable: true,
         children: [{ id: "row-label", type: "text", content: "Queued" }],
       },
       { id: "row-instance", type: "ref", ref: "row-component" },
@@ -1338,14 +1436,12 @@ test("component overrides traverse exact nested descendant paths and regenerate 
       {
         id: "badge",
         type: "frame",
-        reusable: true,
         layout: "horizontal",
         children: [{ id: "badge-label", type: "text", content: "queued", fontSize: 12 }],
       },
       {
         id: "row",
         type: "frame",
-        reusable: true,
         layout: "horizontal",
         children: [
           { id: "row-status", type: "ref", ref: "badge" },
@@ -1382,7 +1478,6 @@ test("component text overrides invalidate cloned metrics before hug-content layo
       {
         id: "button",
         type: "frame",
-        reusable: true,
         layout: "horizontal",
         width: "hug_content",
         padding: [8, 12],
@@ -1413,7 +1508,6 @@ test("an omitted instance width grows around an overridden auto-width label", ()
       {
         id: "state-chip",
         type: "frame",
-        reusable: true,
         width: 54,
         height: 20,
         padding: [3, 8],
@@ -1444,7 +1538,6 @@ test("a nested omitted instance grows around overridden text without overlapping
       {
         id: "state-chip",
         type: "frame",
-        reusable: true,
         layout: "horizontal",
         width: 54,
         height: 20,
@@ -1455,7 +1548,6 @@ test("a nested omitted instance grows around overridden text without overlapping
       {
         id: "queue-row",
         type: "frame",
-        reusable: true,
         layout: "horizontal",
         width: 300,
         height: 24,
@@ -1504,7 +1596,6 @@ test("an unfilled frame remains hittable throughout its resolved bounds", () => 
       {
         id: "queue-row",
         type: "frame",
-        reusable: true,
         width: 300,
         height: 24,
         children: [
@@ -1830,7 +1921,6 @@ test("component instances expose their immediate authored descendant for hierarc
       {
         id: "queue-component",
         type: "frame",
-        reusable: true,
         x: 400,
         y: 0,
         width: 320,

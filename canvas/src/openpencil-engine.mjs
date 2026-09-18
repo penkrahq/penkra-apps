@@ -511,12 +511,19 @@ export function analyzeOpenPencilCompatibility(document, assets = new Map(), pre
       });
     }
   });
-  const componentIds = new Set();
-  walkPenNodes(prepared.document.children, (node) => {
-    if (node.reusable === true) componentIds.add(node.id);
-  });
+  const sourceNodeIds = new Set();
+  walkPenNodes(document.children, (node) => sourceNodeIds.add(node.id));
   walkPenNodes(document.children, (node) => {
-    if (node.type !== "ref" || componentIds.has(node.ref)) return;
+    if (node.type !== "ref") return;
+    // Imported refs are resolved by the import loader. Every local frame becomes a
+    // component definition when a ref targets its ID; no marker field is required.
+    if (typeof node.ref === "string") {
+      const [alias] = node.ref.split(":", 1);
+      if (
+        sourceNodeIds.has(node.ref)
+        || (node.ref.includes(":") && Object.hasOwn(document.imports ?? {}, alias))
+      ) return;
+    }
     issues.push({
       nodeId: node.id,
       kind: "component",

@@ -58,11 +58,6 @@ export function pencilAuthoringSections(node) {
   if (node.theme !== undefined) {
     sections.push(section("Theme override", [field("theme", node.theme, "json", true)]));
   }
-  if (node.reusable === true) {
-    sections.push(section("Component", [
-      field("reusable", node.reusable === true, "boolean"),
-    ]));
-  }
   return sections;
 }
 

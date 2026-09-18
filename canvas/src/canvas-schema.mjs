@@ -150,12 +150,22 @@ export function validateCanvasDocument(document, options = {}) {
   validateVariables(document.variables ?? {}, errors);
   validateImports(document.imports ?? {}, errors);
   validateRoleNesting(nodes, parents, errors);
+  validateLayoutSizing(nodes, parents, errors);
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
   validateRefs(nodes, parents, errors);
   validateComponentSemantics(document, nodes, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
+}
+
+function validateLayoutSizing(nodes, parents, errors) {
+  for (const [id, node] of nodes) {
+    if (parents.get(id) !== null) continue;
+    if (node.width === "fill_container" || node.height === "fill_container") {
+      errors.push(`${id} cannot use fill_container without a parent layout container.`);
+    }
+  }
 }
 
 function validateFrameGeometry(node, errors) {
