@@ -128,6 +128,10 @@ Children can use `width: "fill_container"` or `height: "fill_container"`. Contai
 `"fit_content"`. Avoid circular sizing—for example, a fit-content parent whose only child fills
 the parent on the same axis.
 
+`fill_container` requires a parent and is invalid on a top-level screen, slide, route, or component
+definition. Give a top-level component a concrete or fit-content size. When an instance must span a
+specific container, put the `ref` inside that container and size the instance there.
+
 In an auto-layout frame, ordinary child `x` and `y` values do not control placement. Set
 `layoutPosition: "absolute"` only when a child deliberately leaves layout flow, such as a badge or
 decorative overlay. These values are not CSS: percentages, viewport units, `calc()`, margins,

@@ -148,6 +148,17 @@ test("component bindings, conditions and instance props are checked in lexical s
   assert.throws(() => validateCanvasDocument(value), /undeclared property missing/);
 });
 
+test("fill_container requires a parent while nested children may fill their container", () => {
+  const invalid = document();
+  invalid.children[0].width = "fill_container";
+  assert.throws(() => validateCanvasDocument(invalid));
+
+  const valid = document();
+  valid.children[0].width = 1024;
+  valid.children[0].children[0].width = "fill_container";
+  assert.equal(validateCanvasDocument(valid).valid, true);
+});
+
 test("cascades validate axis modes and typed prop conditions", () => {
   const value = document();
   value.axes.appearance = { modes: [{ name: "light" }, { name: "dark" }] };

@@ -15,7 +15,6 @@ test("Layers exposes the canonical hierarchy of component instances", () => {
       {
         id: "queue-component",
         type: "frame",
-        reusable: true,
         children: [{
           id: "row-meta",
           type: "frame",
@@ -73,7 +72,7 @@ test("Layers reveals only expanded graph branches", () => {
         type: "frame",
         children: [{ id: "row", type: "frame", children: [] }],
       }],
-    }, { id: "component", type: "frame", reusable: true, children: [] }],
+    }, { id: "component", type: "frame", children: [] }],
   });
   const pageId = graph.getPages()[0].id;
   const layers = listCanvasSceneLayers(graph, pageId);
@@ -102,7 +101,6 @@ test("Layers derives the exact ancestor chain for a selected canonical instance 
       {
         id: "queue-component",
         type: "frame",
-        reusable: true,
         children: [{
           id: "row-meta",
           type: "frame",

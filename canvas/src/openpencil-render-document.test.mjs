@@ -516,7 +516,6 @@ test("preserves component instances while resolving descendant themes and icons"
       {
         id: "button",
         type: "frame",
-        reusable: true,
         children: [
           { id: "label", type: "text", content: "Continue", fill: "$text" },
           { id: "glyph", type: "icon", library: "lucide", icon: "chevron-right", fill: "$text" },

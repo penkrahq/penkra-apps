@@ -203,6 +203,13 @@ function __assertParent(parent) {
   return entry;
 }
 
+function __assertRootSizing(node, parent) {
+  if (parent !== null && parent !== undefined) return;
+  if (node.width === "fill_container" || node.height === "fill_container") {
+    throw new Error("Top-level nodes cannot use fill_container because they have no parent layout container.");
+  }
+}
+
 globalThis.Get = function Get(selector = "*", visitor, options = {}) {
   __assertSelector(selector);
   const cloneCache = new Map();
@@ -239,21 +246,22 @@ globalThis.Get = function Get(selector = "*", visitor, options = {}) {
 globalThis.Insert = function Insert(parent, node, position) {
   if (!node || typeof node !== "object" || Array.isArray(node)) throw new TypeError("Insert requires one node object.");
   __assertNodeTree(node, new Set(__walk().map((entry) => entry.node.id)));
-  const children = parent === null || parent === undefined
-    ? (__document.children ||= [])
-    : (__assertParent(parent).node.children ||= []);
+  __assertRootSizing(node, parent);
+  const parentEntry = parent === null || parent === undefined ? null : __assertParent(parent);
+  const children = parentEntry ? (parentEntry.node.children ||= []) : (__document.children ||= []);
   const index = position === undefined ? children.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > children.length) throw new RangeError("Insert position is outside the parent.");
   children.splice(index, 0, __clone(node));
   __changed = true;
   __touchTree(node);
-  if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
+  if (parentEntry) __touched.add(parentEntry.node.id);
   return node.id;
 };
 
 globalThis.Update = function Update(target, properties) {
   if (!properties || typeof properties !== "object" || Array.isArray(properties)) throw new TypeError("Update requires a property object.");
-  const node = __requireOne(target).node;
+  const entry = __requireOne(target);
+  const node = entry.node;
   const previousSubtreeIds = new Set();
   const collectPreviousIds = (current) => {
     previousSubtreeIds.add(current.id);
@@ -261,7 +269,8 @@ globalThis.Update = function Update(target, properties) {
   };
   collectPreviousIds(node);
   if (Object.hasOwn(properties, "id") && properties.id !== node.id) throw new Error("Update cannot change a node id.");
-  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")) {
+  if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")
+    || Object.hasOwn(properties, "width") || Object.hasOwn(properties, "height")) {
     const next = __clone(node);
     for (const [key, value] of Object.entries(properties)) {
       if (key === "id") continue;
@@ -272,6 +281,7 @@ globalThis.Update = function Update(target, properties) {
       next,
       new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !previousSubtreeIds.has(id))),
     );
+    __assertRootSizing(next, entry.parent);
   }
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
@@ -314,6 +324,7 @@ globalThis.Replace = function Replace(target, replacement) {
     next,
     new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !replacedIds.has(id))),
   );
+  __assertRootSizing(next, entry.parent);
   const siblings = entry.parent ? entry.parent.children : __document.children;
   if (JSON.stringify(entry.node) !== JSON.stringify(next)) {
     siblings.splice(entry.index, 1, next);
@@ -336,18 +347,18 @@ globalThis.Delete = function Delete(target) {
 
 globalThis.Move = function Move(target, parent, position) {
   const entry = __requireOne(target);
+  __assertRootSizing(entry.node, parent);
+  const parentEntry = parent === null || parent === undefined ? null : __assertParent(parent);
   const source = entry.parent ? entry.parent.children : __document.children;
   source.splice(entry.index, 1);
-  const destination = parent === null || parent === undefined
-    ? __document.children
-    : (__assertParent(parent).node.children ||= []);
+  const destination = parentEntry ? (parentEntry.node.children ||= []) : __document.children;
   const index = position === undefined ? destination.length : Number(position);
   if (!Number.isInteger(index) || index < 0 || index > destination.length) throw new RangeError("Move position is outside the parent.");
   destination.splice(index, 0, entry.node);
   __changed = true;
   __touched.add(entry.node.id);
   if (entry.parent) __touched.add(entry.parent.id);
-  if (parent !== null && parent !== undefined) __touched.add(__requireOne(parent).node.id);
+  if (parentEntry) __touched.add(parentEntry.node.id);
   return entry.node.id;
 };
 

@@ -114,7 +114,6 @@ test("an exact nested component-instance screenshot includes its overridden text
         id: "component",
         x: 0,
         y: 0,
-        reusable: true,
         width: 54,
         height: 20,
         fill: "#f2f2f2",

@@ -45,6 +45,35 @@ test("execute scripts edit only their private JSON document", async () => {
   assert.deepEqual(result.touchedNodeIds, ["heading"]);
 });
 
+test("authoring rejects top-level fill sizing and accepts it inside a parent", async () => {
+  const source = {
+    version: "2.17",
+    children: [{ id: "screen", type: "frame", width: 393, height: 852, children: [
+      { id: "nested", type: "frame", width: "fill_container", height: 40, children: [] },
+    ] }],
+  };
+
+  await assert.rejects(
+    () => executeCanvasScript(source, 'Insert(null, { id: "root", type: "frame", width: "fill_container" });'),
+    /Top-level nodes cannot use fill_container/u,
+  );
+  await assert.rejects(
+    () => executeCanvasScript(source, 'Update("#screen", { width: "fill_container" });'),
+    /Top-level nodes cannot use fill_container/u,
+  );
+  await assert.rejects(
+    () => executeCanvasScript(source, 'Replace("#screen", { id: "screen", type: "frame", width: "fill_container" });'),
+    /Top-level nodes cannot use fill_container/u,
+  );
+  await assert.rejects(
+    () => executeCanvasScript(source, 'Move("#nested", null);'),
+    /Top-level nodes cannot use fill_container/u,
+  );
+
+  const nested = await executeCanvasScript(source, 'Update("#nested", { width: "fill_container" });');
+  assert.equal(nested.document.children[0].children[0].width, "fill_container");
+});
+
 test("Get exposes host-computed source bounds and problems without allowing mutation", async () => {
   const result = await executeCanvasScript(
     { version: "2.15", children: [{ id: "heading", type: "text", content: "Hello" }] },
