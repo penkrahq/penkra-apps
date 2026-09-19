@@ -12,6 +12,7 @@ export const EXPLORER_PACKAGE_FILES = [
   "explorer-model.mjs",
   "INSTRUCTIONS.md",
   "operations.js",
+  "pdf-preview-model.mjs",
   "penkra-app.json",
   "README.md",
   "styles.css",
