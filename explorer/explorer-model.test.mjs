@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  clampPdfPage,
   escapeHtml,
   fileIconName,
   finderRelativePath,
@@ -8,6 +9,7 @@ import {
   looksLikeText,
   matchesQuery,
   parentRelative,
+  pdfRenderScale,
   previewKind,
   sortEntries,
   treeRowIndent,
@@ -51,6 +53,14 @@ test("classifies supported preview surfaces", () => {
   assert.equal(previewKind({ kind: "file", name: ".env" }), "unsupported");
   assert.equal(previewKind({ kind: "file", name: "Dockerfile" }), "unsupported");
   assert.equal(previewKind({ kind: "file", name: "archive.pkg" }), "unsupported");
+});
+
+test("clamps PDF navigation and fits pages without enlarging them", () => {
+  assert.equal(clampPdfPage(0, 3), 1);
+  assert.equal(clampPdfPage(2, 3), 2);
+  assert.equal(clampPdfPage(9, 3), 3);
+  assert.equal(pdfRenderScale(600, 480), 0.8);
+  assert.equal(pdfRenderScale(600, 900), 1);
 });
 
 test("maps familiar filenames and extensions to editor-style icons", () => {
