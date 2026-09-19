@@ -3,12 +3,21 @@
   "slug": "explorer",
   "name": "Explorer",
   "summary": "Browse, search, preview, and manage files through scoped Penkra access.",
-  "version": "0.2.14",
-  "compatibility": { "penkra": ">=0.11.11" },
+  "version": "0.2.15",
+  "compatibility": {
+    "penkra": ">=0.11.11"
+  },
   "icons": [
-    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
   ],
-  "entrypoints": { "tab": "app.html", "controller": "operations.js" },
+  "entrypoints": {
+    "tab": "app.html",
+    "controller": "operations.js"
+  },
   "operations": [
     {
       "key": "resources.open",
@@ -17,18 +26,37 @@
       "input": {
         "type": "object",
         "properties": {
-          "path": { "type": "string", "minLength": 1 }
+          "path": {
+            "type": "string",
+            "minLength": 1
+          }
         },
-        "required": ["path"],
+        "required": [
+          "path"
+        ],
         "additionalProperties": false
       },
       "output": {
         "type": "object",
-        "properties": { "tabId": { "type": "string", "minLength": 1 } },
-        "required": ["tabId"],
+        "properties": {
+          "tabId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "tabId"
+        ],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Open a local project directory", "input": { "path": "/Users/example/Penkra" } }],
+      "examples": [
+        {
+          "name": "Open a local project directory",
+          "input": {
+            "path": "/Users/example/Penkra"
+          }
+        }
+      ],
       "handler": "resources.open"
     }
   ],
@@ -89,7 +117,11 @@
           ".zsh"
         ]
       },
-      { "intent": "open-directory", "operation": "resources.open", "input": "path" }
+      {
+        "intent": "open-directory",
+        "operation": "resources.open",
+        "input": "path"
+      }
     ]
   }
 }
