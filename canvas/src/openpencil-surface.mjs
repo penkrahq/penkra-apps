@@ -242,7 +242,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       });
       const overlayCanvas = useCanvas(overlayCanvasRef, editor, {
         layer: "overlays",
-        showRulers: true,
+        showRulers: callbacks.showRulers ?? true,
         recomputeLayoutAfterFonts: false,
         onPerformance: (name, duration, details) => callbacks.onPerformance?.(
           name,
