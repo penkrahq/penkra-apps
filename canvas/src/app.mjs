@@ -2091,7 +2091,7 @@ async function mountEditorSurface(generation, documentId) {
     let surface;
     surface = performanceMonitor.measure("engine.mount", () => mountOpenPencilSurface(host, currentMaterializedDocument(), {
       visible: state.appTabActive,
-      showRulers: true,
+      showRulers: false,
       assets: state.assets,
       preparedDocument: currentPreparedRenderDocument(),
       selectedId: state.selectedId,
