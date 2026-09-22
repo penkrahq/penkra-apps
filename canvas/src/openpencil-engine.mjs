@@ -3,6 +3,7 @@ import {
   computeDescendantVisualBounds,
   computeAllLayouts,
   computeLayout,
+  computeOverlaps,
   createDefaultEditorState,
   createEditor,
   createCanvasSceneGraph,
@@ -15,6 +16,8 @@ import { pencilResourceAsset } from "./pencil-resources.mjs";
 import { resolveCanvasNodeSelection } from "./node-reference.mjs";
 import { flattenMarks, isMarkInclusive } from "./rich-text.mjs";
 import { finalizeSvgVectorAssets, registerSvgVectorAsset } from "./svg-vectors.mjs";
+
+export { computeOverlaps };
 
 const VISUAL_NODE_TYPES = new Set([
   "frame",

@@ -1,4 +1,4 @@
-import { createOpenPencilGraph } from "./openpencil-engine.mjs";
+import { computeOverlaps, createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { designValidationIssues } from "./document-review.mjs";
 
@@ -6,7 +6,19 @@ export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) 
   const limit = Math.min(1_000, Math.max(1, Number(requestedLimit) || 500));
   const prepared = prepareOpenPencilRenderDocument(document);
   const graph = createOpenPencilGraph(document, new Map(), prepared);
-  const reviewIssues = [...prepared.issues, ...designValidationIssues(document)];
+  const overflowIssues = computeOverlaps(graph, {
+    category: "parent-overflow",
+    include_absolute: true,
+    limit: 10_000,
+  }).overlaps.map((overlap) => ({
+    nodeId: overlap.nodeA.id,
+    kind: "parent-overflow",
+    ancestorId: overlap.nodeB.id,
+    severity: overlap.severity,
+    message: overlap.message,
+    suggestion: overlap.suggestion,
+  }));
+  const reviewIssues = [...prepared.issues, ...designValidationIssues(document), ...overflowIssues];
   const issuesByNode = new Map();
   for (const issue of reviewIssues) {
     if (typeof issue.nodeId !== "string") continue;
