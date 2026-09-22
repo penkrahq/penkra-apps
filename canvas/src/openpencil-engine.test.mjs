@@ -1607,6 +1607,36 @@ test("an omitted instance width grows around an overridden auto-width label", ()
   assert.equal(instance.height, 20);
 });
 
+test("an omitted full-width button instance preserves its fixed component width when the label fits", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "button",
+        type: "frame",
+        layout: "horizontal",
+        width: 361,
+        height: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        children: [{ id: "button-label", type: "text", content: "Continue", fontSize: 17 }],
+      },
+      {
+        id: "invite-button",
+        type: "ref",
+        ref: "button",
+        descendants: { "button-label": { content: "Share invite link" } },
+      },
+    ],
+  });
+  const component = graph.getNode("button");
+  const instance = graph.getNode("invite-button");
+
+  assert.equal(instance.primaryAxisSizing, "FIXED");
+  assert.equal(instance.width, component.width);
+  assert.equal(instance.x, component.x);
+});
+
 test("a nested omitted instance grows around overridden text without overlapping its sibling", () => {
   const graph = createOpenPencilGraph({
     version: "2.17",

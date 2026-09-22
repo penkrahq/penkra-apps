@@ -63,3 +63,40 @@ test('intrinsic descendant overrides preserve an intentionally hug-height compon
   expect(graph.getNode('instance')?.primaryAxisSizing).toBe('HUG')
   expect(graph.getNode('instance')?.counterAxisSizing).toBe('HUG')
 })
+
+test('intrinsic descendant overrides preserve a fixed component width when the label fits', () => {
+  const document = {
+    version: '2.17',
+    children: [
+      {
+        id: 'button',
+        type: 'frame' as const,
+        layout: 'horizontal',
+        width: 361,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        children: [
+          {
+            id: 'button-label',
+            type: 'text' as const,
+            content: 'Continue',
+            fontSize: 17
+          }
+        ]
+      },
+      {
+        id: 'button-instance',
+        type: 'ref' as const,
+        ref: 'button',
+        descendants: { 'button-label': { content: 'Share invite link' } }
+      }
+    ]
+  }
+  const graph = createCanvasSceneGraph(document)
+  const component = graph.getNode('button')
+  const instance = graph.getNode('button-instance')
+
+  expect(instance?.primaryAxisSizing).toBe('FIXED')
+  expect(instance?.width).toBe(component?.width)
+})

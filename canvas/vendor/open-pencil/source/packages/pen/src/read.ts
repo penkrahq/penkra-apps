@@ -676,6 +676,28 @@ function layoutSizingForAxis(node: SceneNode, axis: 'width' | 'height'): LayoutS
   return node[layoutSizingKeyForAxis(node, axis)]
 }
 
+function intrinsicContentSizeForAxis(
+  graph: SceneGraph,
+  node: SceneNode,
+  axis: 'width' | 'height'
+): number | undefined {
+  const children = graph
+    .getChildren(node.id)
+    .filter((child) => child.visible && child.layoutPositioning !== 'ABSOLUTE')
+  if (children.length === 0) return undefined
+
+  const padding =
+    axis === 'width' ? node.paddingLeft + node.paddingRight : node.paddingTop + node.paddingBottom
+  const gap =
+    node.primaryAxisAlign === 'SPACE_BETWEEN'
+      ? 0
+      : node.itemSpacing * Math.max(0, children.length - 1)
+  return children.reduce(
+    (size, child) => size + (axis === 'width' ? child.width : child.height),
+    padding + gap
+  )
+}
+
 function setIntrinsicInstanceAxisToHug(
   graph: SceneGraph,
   instance: SceneNode,
@@ -685,10 +707,16 @@ function setIntrinsicInstanceAxisToHug(
   if (!component) return
 
   const primaryAxis = instance.layoutMode === 'VERTICAL' ? 'height' : 'width'
-  // Bound text may expand the content-flow axis of an instance whose own size
-  // is omitted. The cross axis still inherits the component's authored sizing:
-  // promoting a fixed chip height to HUG collapses it to its tallest child.
-  if (axis !== primaryAxis && layoutSizingForAxis(component, axis) !== 'HUG') return
+  const componentSizing = layoutSizingForAxis(component, axis)
+  if (componentSizing !== 'HUG') {
+    // Fixed component axes remain authoritative while their overridden content
+    // fits. A primary axis may grow only to prevent intrinsic content overflow;
+    // cross-axis promotion would instead collapse fixed-height controls.
+    if (axis !== primaryAxis) return
+    const intrinsicSize = intrinsicContentSizeForAxis(graph, instance, axis)
+    const componentSize = axis === 'width' ? component.width : component.height
+    if (intrinsicSize === undefined || intrinsicSize <= componentSize) return
+  }
 
   instance[layoutSizingKeyForAxis(instance, axis)] = 'HUG'
 }
