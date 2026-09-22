@@ -208,6 +208,82 @@ test("hydrating a deferred instance restores canonical descendants and authored 
   assert.deepEqual(hydrateOpenPencilGraphInstances(graph, document, ["instance"]), []);
 });
 
+test("bound text preserves a component's fixed-height instance axis after font measurement", () => {
+  const source = { children: [
+    {
+      id: "chip",
+      type: "frame",
+      layout: "horizontal",
+      width: "fit_content",
+      height: 32,
+      padding: [0, 14],
+      gap: 6,
+      alignItems: "center",
+      properties: { label: { type: "string", default: "All" } },
+      children: [
+        {
+          id: "label",
+          type: "text",
+          content: "All",
+          fontSize: 16,
+          lineHeight: 1.2,
+          bind: { content: "$props.label" },
+        },
+        { id: "count", type: "frame", layout: "horizontal", width: 20, height: 20 },
+      ],
+    },
+    { id: "instance", type: "ref", ref: "chip", props: { label: "Kaneshie Market" } },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared, {
+    deferExternalInstances: true,
+  });
+
+  graph.updateNode("label", { width: 29.25, height: 19 });
+  hydrateOpenPencilGraphInstances(graph, prepared.document, ["instance"]);
+
+  const instance = graph.getNode("instance");
+  assert.equal(instance.primaryAxisSizing, "HUG");
+  assert.equal(instance.counterAxisSizing, "FIXED");
+  assert.equal(instance.height, 32);
+  assert.ok(instance.width > graph.getNode("chip").width);
+});
+
+test("bound text retains intentionally hug-height component instances", () => {
+  const document = { children: [
+    {
+      id: "badge",
+      type: "frame",
+      layout: "horizontal",
+      width: "fit_content",
+      height: "fit_content",
+      padding: [4, 8],
+      properties: { label: { type: "string", default: "A" } },
+      children: [{
+        id: "badge-label",
+        type: "text",
+        content: "A",
+        fontSize: 16,
+        lineHeight: 1.2,
+        bind: { content: "$props.label" },
+      }],
+    },
+    { id: "badge-instance", type: "ref", ref: "badge", props: { label: "Two lines" } },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(document);
+  const graph = createOpenPencilGraph(document, new Map(), prepared, {
+    deferExternalInstances: true,
+  });
+
+  graph.updateNode("badge-label", { width: 8, height: 19 });
+  hydrateOpenPencilGraphInstances(graph, prepared.document, ["badge-instance"]);
+
+  const instance = graph.getNode("badge-instance");
+  assert.equal(instance.primaryAxisSizing, "HUG");
+  assert.equal(instance.counterAxisSizing, "HUG");
+  assert.ok(instance.height >= 27);
+});
+
 test("viewport hydration expands only visible external instances", () => {
   const document = { children: [
     {
