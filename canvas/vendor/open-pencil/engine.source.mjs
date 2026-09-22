@@ -91171,13 +91171,28 @@ function layoutSizingKeyForAxis(node, axis) {
 function layoutSizingForAxis(node, axis) {
   return node[layoutSizingKeyForAxis(node, axis)];
 }
+function intrinsicContentSizeForAxis(graph, node, axis) {
+  const children = graph.getChildren(node.id).filter((child) => child.visible && child.layoutPositioning !== "ABSOLUTE");
+  if (children.length === 0)
+    return;
+  const padding = axis === "width" ? node.paddingLeft + node.paddingRight : node.paddingTop + node.paddingBottom;
+  const gap = node.primaryAxisAlign === "SPACE_BETWEEN" ? 0 : node.itemSpacing * Math.max(0, children.length - 1);
+  return children.reduce((size, child) => size + (axis === "width" ? child.width : child.height), padding + gap);
+}
 function setIntrinsicInstanceAxisToHug(graph, instance2, axis) {
   const component = instance2.componentId ? graph.getNode(instance2.componentId) : undefined;
   if (!component)
     return;
   const primaryAxis = instance2.layoutMode === "VERTICAL" ? "height" : "width";
-  if (axis !== primaryAxis && layoutSizingForAxis(component, axis) !== "HUG")
-    return;
+  const componentSizing = layoutSizingForAxis(component, axis);
+  if (componentSizing !== "HUG") {
+    if (axis !== primaryAxis)
+      return;
+    const intrinsicSize2 = intrinsicContentSizeForAxis(graph, instance2, axis);
+    const componentSize = axis === "width" ? component.width : component.height;
+    if (intrinsicSize2 === undefined || intrinsicSize2 <= componentSize)
+      return;
+  }
   instance2[layoutSizingKeyForAxis(instance2, axis)] = "HUG";
 }
 function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
