@@ -663,17 +663,34 @@ function applyOverrideProps(
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight }
 }
 
-function setInstanceAxisToHug(instance: SceneNode, axis: 'width' | 'height'): void {
-  const vertical = instance.layoutMode === 'VERTICAL'
-  const key =
-    axis === 'width'
-      ? vertical
-        ? 'counterAxisSizing'
-        : 'primaryAxisSizing'
-      : vertical
-        ? 'primaryAxisSizing'
-        : 'counterAxisSizing'
-  instance[key] = 'HUG'
+function layoutSizingKeyForAxis(
+  node: SceneNode,
+  axis: 'width' | 'height'
+): 'primaryAxisSizing' | 'counterAxisSizing' {
+  const widthIsPrimary = node.layoutMode !== 'VERTICAL'
+  const isPrimary = axis === 'width' ? widthIsPrimary : !widthIsPrimary
+  return isPrimary ? 'primaryAxisSizing' : 'counterAxisSizing'
+}
+
+function layoutSizingForAxis(node: SceneNode, axis: 'width' | 'height'): LayoutSizing {
+  return node[layoutSizingKeyForAxis(node, axis)]
+}
+
+function setIntrinsicInstanceAxisToHug(
+  graph: SceneGraph,
+  instance: SceneNode,
+  axis: 'width' | 'height'
+): void {
+  const component = instance.componentId ? graph.getNode(instance.componentId) : undefined
+  if (!component) return
+
+  const primaryAxis = instance.layoutMode === 'VERTICAL' ? 'height' : 'width'
+  // Bound text may expand the content-flow axis of an instance whose own size
+  // is omitted. The cross axis still inherits the component's authored sizing:
+  // promoting a fixed chip height to HUG collapses it to its tallest child.
+  if (axis !== primaryAxis && layoutSizingForAxis(component, axis) !== 'HUG') return
+
+  instance[layoutSizingKeyForAxis(instance, axis)] = 'HUG'
 }
 
 function applyIntrinsicOverrideSizing(
@@ -687,8 +704,10 @@ function applyIntrinsicOverrideSizing(
   while (current && !visited.has(current.id)) {
     visited.add(current.id)
     if (current.type === 'INSTANCE') {
-      if (changed.width && current.pencilWidthOmitted) setInstanceAxisToHug(current, 'width')
-      if (changed.height && current.pencilHeightOmitted) setInstanceAxisToHug(current, 'height')
+      if (changed.width && current.pencilWidthOmitted)
+        setIntrinsicInstanceAxisToHug(graph, current, 'width')
+      if (changed.height && current.pencilHeightOmitted)
+        setIntrinsicInstanceAxisToHug(graph, current, 'height')
     }
     if (current.id === instance.id) break
     current = current.parentId ? graph.getNode(current.parentId) : undefined

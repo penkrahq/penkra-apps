@@ -91163,10 +91163,22 @@ function applyOverrideProps(target, overrideData, ctx, graph) {
   const intrinsic = textMetricsChanged && target.type === "TEXT" && target.textAutoResize === "WIDTH_AND_HEIGHT";
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight };
 }
-function setInstanceAxisToHug(instance2, axis) {
-  const vertical = instance2.layoutMode === "VERTICAL";
-  const key = axis === "width" ? vertical ? "counterAxisSizing" : "primaryAxisSizing" : vertical ? "primaryAxisSizing" : "counterAxisSizing";
-  instance2[key] = "HUG";
+function layoutSizingKeyForAxis(node, axis) {
+  const widthIsPrimary = node.layoutMode !== "VERTICAL";
+  const isPrimary = axis === "width" ? widthIsPrimary : !widthIsPrimary;
+  return isPrimary ? "primaryAxisSizing" : "counterAxisSizing";
+}
+function layoutSizingForAxis(node, axis) {
+  return node[layoutSizingKeyForAxis(node, axis)];
+}
+function setIntrinsicInstanceAxisToHug(graph, instance2, axis) {
+  const component = instance2.componentId ? graph.getNode(instance2.componentId) : undefined;
+  if (!component)
+    return;
+  const primaryAxis = instance2.layoutMode === "VERTICAL" ? "height" : "width";
+  if (axis !== primaryAxis && layoutSizingForAxis(component, axis) !== "HUG")
+    return;
+  instance2[layoutSizingKeyForAxis(instance2, axis)] = "HUG";
 }
 function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
   let current = target;
@@ -91175,9 +91187,9 @@ function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
     visited.add(current.id);
     if (current.type === "INSTANCE") {
       if (changed.width && current.pencilWidthOmitted)
-        setInstanceAxisToHug(current, "width");
+        setIntrinsicInstanceAxisToHug(graph, current, "width");
       if (changed.height && current.pencilHeightOmitted)
-        setInstanceAxisToHug(current, "height");
+        setIntrinsicInstanceAxisToHug(graph, current, "height");
     }
     if (current.id === instance2.id)
       break;
