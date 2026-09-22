@@ -275,26 +275,35 @@ export function computeOverlaps(
   const { candidates, totalNodes, analyzedNodes } = filterNodes(graph, resolvedArgs)
   const { boundsCache, entries } = buildBoundsCache(candidates, graph)
 
+  const includeParentOverflow = !categoryFilter || categoryFilter.includes('parent-overflow')
+  const includeSiblingOverlap =
+    !categoryFilter ||
+    categoryFilter.includes('sibling-overlap') ||
+    categoryFilter.includes('overlay')
   const overlaps = [
-    ...collectParentOverflows(
-      candidates,
-      graph,
-      boundsCache,
-      scope,
-      minArea,
-      minRatio,
-      categoryFilter,
-      severityFilter
-    ),
-    ...collectSiblingOverlaps(
-      entries,
-      graph,
-      scope,
-      minArea,
-      minRatio,
-      categoryFilter,
-      severityFilter
-    )
+    ...(includeParentOverflow
+      ? collectParentOverflows(
+          candidates,
+          graph,
+          boundsCache,
+          scope,
+          minArea,
+          minRatio,
+          categoryFilter,
+          severityFilter
+        )
+      : []),
+    ...(includeSiblingOverlap
+      ? collectSiblingOverlaps(
+          entries,
+          graph,
+          scope,
+          minArea,
+          minRatio,
+          categoryFilter,
+          severityFilter
+        )
+      : [])
   ]
 
   const sorted = orderBy(

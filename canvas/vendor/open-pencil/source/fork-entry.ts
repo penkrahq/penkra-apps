@@ -4,11 +4,9 @@ export { shouldRenderSceneSubtreeDetail } from '@open-pencil/core'
 export { computeAllLayouts, computeLayout } from '@open-pencil/core/layout'
 export { getCanvasKit } from '@open-pencil/core/canvaskit'
 export { SkiaRenderer } from '@open-pencil/core/canvas/renderer'
+export { computeOverlaps } from '@open-pencil/core/tools/analyze/overlaps'
 export { createCanvasSceneGraph, hydrateCanvasSceneGraphInstances } from '@open-pencil/pen'
-export {
-  computeBounds,
-  computeDescendantVisualBounds
-} from '@open-pencil/scene-graph/geometry'
+export { computeBounds, computeDescendantVisualBounds } from '@open-pencil/scene-graph/geometry'
 export { parseSVGPath } from '@open-pencil/scene-graph/parse-path'
 export { createSVGNodesFromImport, prepareSVGImport } from '@open-pencil/core/io'
 export { vectorNetworkToSVGPaths } from '@open-pencil/core/io'
