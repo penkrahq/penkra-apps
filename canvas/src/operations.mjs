@@ -448,11 +448,16 @@ async function updateThumbnailBestEffort(documentId, sequence, document, assetDe
   }
 }
 
-runtime.operations.handle("sharing.list", async ({ documentId }) =>
-  api.listGrants(documentId),
-);
+function operationGrant({ id, email, status, accountId, createdAt }) {
+  return { id, email, status, accountId, createdAt };
+}
+
+runtime.operations.handle("sharing.list", async ({ documentId }) => {
+  const grants = await api.listGrants(documentId);
+  return { items: grants.items.map(operationGrant) };
+});
 runtime.operations.handle("sharing.add", async ({ documentId, email }) =>
-  api.grantAccess(documentId, email),
+  operationGrant(await api.grantAccess(documentId, email)),
 );
 runtime.operations.handle("sharing.remove", async ({ documentId, grantId }) =>
   api.revokeGrant(documentId, grantId),

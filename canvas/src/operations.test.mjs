@@ -636,3 +636,45 @@ test("documents.undo applies the backend's exact inverse and snapshots the resto
   const projection = decodeJson(snapshotStart.body).projection;
   assert.deepEqual(projection, original);
 });
+
+test("sharing operations return only fields declared in the public operation schema", async () => {
+  const handlers = new Map();
+  const grant = {
+    id: "22d3b50e-2a49-499b-8f3c-8a1587a42247",
+    email: "designer@example.com",
+    status: "active",
+    accountId: "account-1",
+    createdAt: "2026-09-23T02:50:43.033Z",
+    name: "Designer",
+    avatarUrl: "https://example.com/avatar.png",
+    isCurrentUser: false,
+  };
+  globalThis.penkra = {
+    account: {
+      async request(request) {
+        if (request.path !== "/projects/document-1/grants") {
+          throw new Error(`Unexpected request ${request.method} ${request.path}`);
+        }
+        return response(200, request.method === "POST" ? grant : { items: [grant] });
+      },
+      subscribe() {},
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?sharing-schema-test=${Date.now()}`);
+
+  const expected = {
+    id: grant.id,
+    email: grant.email,
+    status: grant.status,
+    accountId: grant.accountId,
+    createdAt: grant.createdAt,
+  };
+  assert.deepEqual(await handlers.get("sharing.list")({ documentId: "document-1" }), {
+    items: [expected],
+  });
+  assert.deepEqual(
+    await handlers.get("sharing.add")({ documentId: "document-1", email: grant.email }),
+    expected,
+  );
+});
