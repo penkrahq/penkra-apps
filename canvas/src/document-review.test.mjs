@@ -66,7 +66,9 @@ test("review skips uncertain or intentionally clipped horizontal rows", () => {
 
 test("review flags inherited fixed component widths in narrower vertical content areas", () => {
   const document = { children: [
-    { id: "title", type: "frame", width: 393, children: [] },
+    { id: "design-system", type: "frame", width: 800, children: [
+      { id: "title", type: "frame", width: 393, children: [] },
+    ] },
     {
       id: "screen", type: "frame", width: 393, layout: "vertical", children: [{
         id: "content", type: "frame", width: "fill_container", layout: "vertical", padding: [12, 16], clip: true,
