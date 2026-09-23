@@ -10,9 +10,25 @@ export function reviewDocumentIssues(document) {
 export function designValidationIssues(document) {
   const issues = [];
   const definitions = new Map((document?.children ?? []).filter((node) => node?.id).map((node) => [node.id, node]));
-  const visit = (nodes = [], parent = null) => {
+  const visit = (nodes = [], parent = null, parentWidth = null) => {
     for (const node of nodes) {
       if (!node || node.enabled === false) continue;
+      const availableWidth = parent?.layout === "vertical" && typeof parentWidth === "number"
+        ? parentWidth - horizontalPadding(parent.padding)
+        : null;
+      const resolvedWidth = typeof node.width === "number" ? node.width
+        : node.width === "fill_container" ? availableWidth : null;
+      if (node.type === "ref" && node.width === undefined && typeof availableWidth === "number"
+        && node.layoutPosition !== "absolute") {
+        const definitionWidth = definitions.get(node.ref)?.width;
+        if (typeof definitionWidth === "number" && definitionWidth > availableWidth + 0.5) {
+          issues.push({
+            nodeId: node.id,
+            kind: "layout-capacity",
+            message: `Component instance inherits ${definitionWidth}px width in a ${availableWidth}px vertical content area; set an explicit instance width.`,
+          });
+        }
+      }
       if (!parent && (node.width === "fill_container" || node.height === "fill_container")) {
         issues.push({
           nodeId: node.id,
@@ -48,7 +64,7 @@ export function designValidationIssues(document) {
           }
         }
       }
-      visit(node.children, node);
+      visit(node.children, node, resolvedWidth);
     }
   };
   visit(document?.children);

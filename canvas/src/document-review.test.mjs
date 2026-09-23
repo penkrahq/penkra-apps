@@ -63,3 +63,23 @@ test("review skips uncertain or intentionally clipped horizontal rows", () => {
 
   assert.equal(designValidationIssues(document).some((issue) => issue.kind === "layout-capacity"), false);
 });
+
+test("review flags inherited fixed component widths in narrower vertical content areas", () => {
+  const document = { children: [
+    { id: "title", type: "frame", width: 393, children: [] },
+    {
+      id: "screen", type: "frame", width: 393, layout: "vertical", children: [{
+        id: "content", type: "frame", width: "fill_container", layout: "vertical", padding: [12, 16], clip: true,
+        children: [
+          { id: "bad-title", type: "ref", ref: "title" },
+          { id: "sized-title", type: "ref", ref: "title", width: 361 },
+        ],
+      }],
+    },
+  ] };
+
+  assert.deepEqual(
+    designValidationIssues(document).filter((issue) => issue.kind === "layout-capacity"),
+    [{ nodeId: "bad-title", kind: "layout-capacity", message: "Component instance inherits 393px width in a 361px vertical content area; set an explicit instance width." }],
+  );
+});
