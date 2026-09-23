@@ -9,7 +9,15 @@ export function reviewDocumentIssues(document) {
 
 export function designValidationIssues(document) {
   const issues = [];
-  const definitions = new Map((document?.children ?? []).filter((node) => node?.id).map((node) => [node.id, node]));
+  const definitions = new Map();
+  const indexDefinitions = (nodes = []) => {
+    for (const node of nodes) {
+      if (!node) continue;
+      if (node.id) definitions.set(node.id, node);
+      indexDefinitions(node.children);
+    }
+  };
+  indexDefinitions(document?.children);
   const visit = (nodes = [], parent = null, parentWidth = null) => {
     for (const node of nodes) {
       if (!node || node.enabled === false) continue;
