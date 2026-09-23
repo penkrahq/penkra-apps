@@ -1,11 +1,12 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "sourceEngineSha256": "483503c0f2b7ede7039d88dae66e3234bec6b2457e863a7ca927ee1af9046e2a",
+  "sourceEngineSha256": "b05880caaf36460aea59c45cbdc337067b84666512fb201b1ac3cdf74d56ee41",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
     "Honor Pencil sizing fallbacks, padding shorthands, flex text growth, and instrument optional post-font layout.",
+    "Give growing text and shape leaves a zero flex basis and shrink allowance so font remeasurement reallocates fixed-width rows.",
     "Keep fill-less Pencil frames transparent instead of inheriting the scene graph's opaque default.",
     "Interpret Kiwi schemas without dynamic JavaScript evaluation so the engine obeys the App CSP.",
     "Render large scenes through cached descendant bounds and bounded subpixel detail culling instead of walking or recording every expanded node at overview zoom.",
