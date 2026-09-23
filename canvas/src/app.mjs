@@ -21,6 +21,7 @@ import { runCurrentBackgroundTasks } from "./current-background-tasks.mjs";
 import { COLLECTION_SORT_OPTIONS, searchableDocumentText, sortCollection } from "./library-presentation.mjs";
 import { trashSummary } from "./trash-summary.mjs";
 import { createVisibleDocumentRestore } from "./visible-document-restore.mjs";
+import { createTabPresentation } from "./tab-presentation.mjs";
 import {
   analyzeOpenPencilCompatibility,
   isOpenPencilEditableNode,
@@ -103,6 +104,10 @@ const documentCollectionLifecycle = createDocumentCollectionLifecycle({
 const performanceMonitor = createPerformanceMonitor();
 const documentAssetCache = createDocumentAssetCache(2);
 const pendingUpdateQueue = createPendingUpdateQueue();
+const tabPresentation = typeof runtime.tab.setPresentation === "function"
+  && typeof runtime.tab.resetPresentation === "function"
+  ? createTabPresentation(runtime.tab)
+  : null;
 configureCanvasFonts(runtime, { performanceMonitor });
 const state = {
   route: "library",
@@ -1613,6 +1618,7 @@ function currentCanvasSelection() {
 }
 
 function render() {
+  void tabPresentation?.update(state.route === "editor" ? state.document?.title : null);
   const renderStartedAt = performance.now();
   const activeSearch = document.activeElement?.matches?.('[data-role="search"]')
     ? {
