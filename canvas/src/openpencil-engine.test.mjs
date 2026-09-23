@@ -249,6 +249,50 @@ test("bound text preserves a component's fixed-height instance axis after font m
   assert.ok(instance.width > graph.getNode("chip").width);
 });
 
+test("nested fixed-width header and footer instances keep their widths after bound text is measured", () => {
+  const source = { version: "2.17", children: [
+    {
+      id: "component-library", type: "frame", layout: "none", width: 500, height: 300,
+      children: [
+        {
+          id: "header", type: "frame", layout: "horizontal", width: 393, height: 56,
+          padding: [0, 8], alignItems: "center",
+          properties: { title: { type: "string", default: "Title" } },
+          children: [
+            { id: "left", type: "frame", layout: "horizontal", width: 96, height: 44, children: [] },
+            { id: "center", type: "frame", layout: "horizontal", width: "fill_container", height: "fit_content", justifyContent: "center", children: [
+              { id: "title", type: "text", content: "Title", bind: { content: "$props.title" }, textGrowth: "auto", fontSize: 17, fill: "#222222" },
+            ] },
+            { id: "right", type: "frame", layout: "horizontal", width: 96, height: 44, children: [] },
+          ],
+        },
+        {
+          id: "footer", type: "frame", layout: "vertical", width: 393, height: "fit_content", padding: [12, 16, 34, 16],
+          properties: { label: { type: "string", default: "Continue" } },
+          children: [{ id: "button", type: "frame", layout: "horizontal", width: "fill_container", height: 50, justifyContent: "center", children: [
+            { id: "button-label", type: "text", content: "Continue", bind: { content: "$props.label" }, textGrowth: "auto", fontSize: 17, fill: "#ffffff" },
+          ] }],
+        },
+      ],
+    },
+    { id: "screen", type: "frame", layout: "vertical", width: 393, height: 852, children: [
+      { id: "screen-header", type: "ref", ref: "header", props: { title: "Mark attendance" } },
+      { id: "screen-footer", type: "ref", ref: "footer", props: { label: "Save attendance" } },
+    ] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+
+  graph.updateNode("title", { width: 140, height: 24 });
+  graph.updateNode("button-label", { width: 138, height: 24 });
+  hydrateOpenPencilGraphInstances(graph, prepared.document, ["screen-header", "screen-footer"]);
+
+  assert.equal(graph.getNode("screen-header").width, 393);
+  assert.equal(graph.getNode("screen-header/center").width, 185);
+  assert.equal(graph.getNode("screen-footer").width, 393);
+  assert.equal(graph.getNode("screen-footer/button").width, 361);
+});
+
 test("bound text retains intentionally hug-height component instances", () => {
   const document = { children: [
     {
