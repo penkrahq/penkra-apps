@@ -128,18 +128,53 @@ export function createOpenPencilGraph(
 
 export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
   const startedAt = performance.now();
-  const hydratedIds = hydrateCanvasSceneGraphInstances(graph, document, instanceIds);
+  const hydratedIds = measureGraphPhase(
+    "engine.graph.hydrate-clones",
+    () => hydrateCanvasSceneGraphInstances(graph, document, instanceIds),
+  );
   if (hydratedIds.length === 0) return hydratedIds;
 
+  let subtreeDurationMs = 0;
+  let ancestorDurationMs = 0;
+  const ancestorCosts = new Map();
+  const ancestorIds = new Set();
   for (const instanceId of hydratedIds) {
+    const subtreeStartedAt = performance.now();
     computeAllLayouts(graph, instanceId);
+    subtreeDurationMs += performance.now() - subtreeStartedAt;
     let node = graph.getNode(instanceId);
     while (node?.parentId) {
       node = graph.getNode(node.parentId);
       if (!node) break;
-      computeLayout(graph, node.id);
+      ancestorIds.add(node.id);
     }
   }
+  const depth = (id) => {
+    let value = 0;
+    let node = graph.getNode(id);
+    while (node?.parentId) {
+      value += 1;
+      node = graph.getNode(node.parentId);
+    }
+    return value;
+  };
+  for (const id of [...ancestorIds].sort((a, b) => depth(b) - depth(a))) {
+    const layoutStartedAt = performance.now();
+    computeLayout(graph, id);
+    const durationMs = performance.now() - layoutStartedAt;
+    ancestorDurationMs += durationMs;
+    ancestorCosts.set(id, { calls: 1, durationMs });
+  }
+  recordGraphPerformance("engine.graph.hydrate-subtree-layout", subtreeDurationMs, {
+    hydratedInstances: hydratedIds.length,
+  });
+  recordGraphPerformance("engine.graph.hydrate-ancestor-layout", ancestorDurationMs, {
+    hydratedInstances: hydratedIds.length,
+    ancestorCalls: [...ancestorCosts.values()].reduce((total, item) => total + item.calls, 0),
+    distinctAncestors: ancestorCosts.size,
+    topAncestors: [...ancestorCosts].sort((a, b) => b[1].durationMs - a[1].durationMs).slice(0, 5)
+      .map(([id, cost]) => ({ id, calls: cost.calls, durationMs: Number(cost.durationMs.toFixed(1)) })),
+  });
   recordGraphPerformance("engine.graph.hydrate-instances", performance.now() - startedAt, {
     hydratedInstances: hydratedIds.length,
     graphNodes: graph.nodes.size,

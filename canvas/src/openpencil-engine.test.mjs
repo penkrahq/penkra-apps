@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { computeAllLayouts, fontManager } from "../vendor/open-pencil/engine.source.mjs";
+import { computeAllLayouts, computeLayout, fontManager, hydrateCanvasSceneGraphInstances } from "../vendor/open-pencil/engine.source.mjs";
 import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";
 
 import {
@@ -208,6 +208,58 @@ test("hydrating a deferred instance restores canonical descendants and authored 
   assert.deepEqual(hydrateOpenPencilGraphInstances(graph, document, ["instance"]), []);
 });
 
+test("batch hydration lays out shared fit-content ancestors once without changing final bounds", () => {
+  const instanceIds = Array.from({ length: 48 }, (_, index) => `row-${index}`);
+  const source = { children: [
+    { id: "library", type: "frame", layout: "none", width: 400, height: 100, children: [
+      { id: "row-definition", type: "frame", layout: "horizontal", width: "fit_content", height: 40,
+        padding: [0, 12], properties: { label: { type: "string", default: "Row" } }, children: [
+          { id: "row-label", type: "text", content: "Row", bind: { content: "$props.label" }, fontSize: 16 },
+        ] },
+    ] },
+    { id: "area", type: "frame", layout: "vertical", width: "fit_content", height: "fit_content", children: [
+      { id: "section", type: "frame", layout: "vertical", width: "fit_content", height: "fit_content",
+        children: instanceIds.map((id, index) => ({ id, type: "ref", ref: "row-definition", props: { label: `Row ${index} with varying text` } })),
+      },
+    ] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const baseline = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+  const batched = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+  const hydrated = hydrateCanvasSceneGraphInstances(baseline, prepared.document, instanceIds);
+  for (const instanceId of hydrated) {
+    computeAllLayouts(baseline, instanceId);
+    let node = baseline.getNode(instanceId);
+    while (node?.parentId) {
+      node = baseline.getNode(node.parentId);
+      if (node) computeLayout(baseline, node.id);
+    }
+  }
+
+  const performanceStore = globalThis.__penkraPerformance ??= {};
+  const previousMonitor = performanceStore.canvas;
+  const records = [];
+  performanceStore.canvas = { record: (name, _duration, details) => records.push({ name, details }) };
+  try {
+    assert.deepEqual(hydrateOpenPencilGraphInstances(batched, prepared.document, instanceIds), hydrated);
+  } finally {
+    if (previousMonitor) performanceStore.canvas = previousMonitor;
+    else delete performanceStore.canvas;
+  }
+
+  const authoredIds = [...baseline.nodes.keys()].filter((id) => !id.startsWith("0:")).sort();
+  const baselineBounds = authoredIds.map((id) => [id, baseline.getAbsoluteBounds(id)]);
+  const batchedBounds = authoredIds.map((id) => [id, batched.getAbsoluteBounds(id)]);
+  const differences = batchedBounds.flatMap(([id, bounds], index) => {
+    const [baselineId, baselineValue] = baselineBounds[index];
+    return id === baselineId && JSON.stringify(bounds) === JSON.stringify(baselineValue)
+      ? [] : [{ id, bounds, baselineId, baselineValue }];
+  });
+  assert.deepEqual(differences.slice(0, 10), []);
+  const layout = records.find((entry) => entry.name === "engine.graph.hydrate-ancestor-layout")?.details;
+  assert.equal(layout.ancestorCalls, layout.distinctAncestors);
+  assert.ok(layout.ancestorCalls < hydrated.length);
+});
 test("viewport hydration expands only visible external instances", () => {
   const document = { children: [
     {
