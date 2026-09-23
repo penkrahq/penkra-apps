@@ -54915,6 +54915,8 @@ function derivedGrowingLeafFitsParent(graph, parent, child, axis) {
 function configureTextLeafWithoutMeasurer(yogaChild, child, parent, fixedDerivedMainAxis) {
   if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
     yogaChild.setFlexGrow(child.layoutGrow);
+    yogaChild.setFlexShrink(1);
+    yogaChild.setFlexBasis(0);
   }
   const hasStoredSize = child.width > 0 && child.height > 0 && !(child.width === 100 && child.height === 100);
   if (child.textAutoResize === "WIDTH_AND_HEIGHT") {
@@ -54972,6 +54974,8 @@ function configureTextLeaf(yogaChild, child, parent, fixedDerivedMainAxis = fals
   const isRow = parent.layoutMode === "HORIZONTAL";
   if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
     yogaChild.setFlexGrow(child.layoutGrow);
+    yogaChild.setFlexShrink(1);
+    yogaChild.setFlexBasis(0);
   }
   const cache = new Map;
   const UNCONSTRAINED_KEY = -1;
@@ -55025,6 +55029,8 @@ function configureNonTextLeaf(yogaChild, child, isRow, stretchCross) {
   const h = child.height;
   if (child.layoutGrow > 0) {
     yogaChild.setFlexGrow(child.layoutGrow);
+    yogaChild.setFlexShrink(1);
+    yogaChild.setFlexBasis(0);
     if (!stretchCross) {
       if (isRow)
         yogaChild.setHeight(h);

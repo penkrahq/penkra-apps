@@ -941,6 +941,104 @@ test("Canvas native fill-width text preserves its declared parent sizing", () =>
   assert.equal(editor.graph.getNode("label").height, 19);
 });
 
+test("fill-width fixed-width text shares a constrained row with fixed siblings", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 297,
+      layout: "horizontal",
+      gap: 8,
+      alignItems: "center",
+      children: [
+        { id: "status", type: "rectangle", width: 17, height: 17 },
+        {
+          id: "preview",
+          type: "text",
+          width: "fill_container",
+          textGrowth: "fixed-width",
+          content: "Akwaaba Ama. Ask me anything, in your own words.",
+          fontSize: 15,
+          lineHeight: 1.4,
+        },
+        { id: "badge", type: "frame", width: 19, height: 22 },
+      ],
+    }],
+  });
+
+  const preview = editor.graph.getNode("preview");
+  const badge = editor.graph.getNode("badge");
+
+  assert.equal(preview.width, 245);
+  assert.equal(badge.x, 278);
+  assert.equal(badge.x + badge.width, 297);
+
+  editor.graph.updateNode("badge", { width: 27 });
+  computeAllLayouts(editor.graph);
+
+  assert.equal(preview.width, 237);
+  assert.equal(badge.x, 270);
+  assert.equal(badge.x + badge.width, 297);
+});
+
+test("a growing text leaf reallocates when its fixed sibling is remeasured", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 297,
+      layout: "horizontal",
+      gap: 8,
+      children: [
+        {
+          id: "name",
+          type: "text",
+          width: "fill_container",
+          textGrowth: "fixed-width",
+          content: "WorkApp Assistant",
+          fontSize: 17,
+        },
+        { id: "time", type: "text", content: "now", fontSize: 13 },
+      ],
+    }],
+  });
+
+  const initialNameWidth = graph.getNode("name").width;
+  graph.updateNode("time", { width: 27 });
+  computeAllLayouts(graph);
+
+  const name = graph.getNode("name");
+  const time = graph.getNode("time");
+  assert.ok(name.width < initialNameWidth);
+  assert.ok(Math.abs(time.x + time.width - 297) < 0.001);
+});
+
+test("a growing shape leaf gives space to a widened fixed sibling", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 100,
+      layout: "horizontal",
+      gap: 5,
+      children: [
+        { id: "track", type: "rectangle", width: "fill_container", height: 4 },
+        { id: "end", type: "rectangle", width: 20, height: 4 },
+      ],
+    }],
+  });
+
+  assert.equal(graph.getNode("track").width, 75);
+  graph.updateNode("end", { width: 30 });
+  computeAllLayouts(graph);
+
+  assert.equal(graph.getNode("track").width, 65);
+  assert.equal(graph.getNode("end").x + graph.getNode("end").width, 100);
+});
+
 test("OpenPencil resolves Pencil-style numeric variables before layout", () => {
   const source = {
     version: "2.17",

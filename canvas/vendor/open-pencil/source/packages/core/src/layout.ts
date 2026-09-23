@@ -419,6 +419,8 @@ function configureTextLeafWithoutMeasurer(
 ): void {
   if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
     yogaChild.setFlexGrow(child.layoutGrow)
+    yogaChild.setFlexShrink(1)
+    yogaChild.setFlexBasis(0)
   }
   const hasStoredSize =
     child.width > 0 && child.height > 0 && !(child.width === 100 && child.height === 100)
@@ -500,6 +502,8 @@ function configureTextLeaf(
 
   if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
     yogaChild.setFlexGrow(child.layoutGrow)
+    yogaChild.setFlexShrink(1)
+    yogaChild.setFlexBasis(0)
   }
 
   const cache = new Map<number, { width: number; height: number }>()
@@ -567,6 +571,8 @@ function configureNonTextLeaf(
 
   if (child.layoutGrow > 0) {
     yogaChild.setFlexGrow(child.layoutGrow)
+    yogaChild.setFlexShrink(1)
+    yogaChild.setFlexBasis(0)
     if (!stretchCross) {
       if (isRow) yogaChild.setHeight(h)
       else yogaChild.setWidth(w)
