@@ -95,6 +95,30 @@ test("node modes override the selected mode for their subtree", () => {
   assert.equal(resolveCanvasDocument(source).document.children[0].fill, "#000");
 });
 
+test("export resolution carries ancestor modes through nested refs and honors a ref override", () => {
+  const source = {
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: {
+      bg: { tokenType: "color", cascade: [{ value: "#fff" }, { value: "#111", when: { appearance: "dark" } }] },
+      ink: { tokenType: "color", cascade: [{ value: "#222" }, { value: "#eee", when: { appearance: "dark" } }] },
+    },
+    paragraphStyles: { label: { fill: "${ink}" } }, children: [
+      { id: "inner", type: "frame", fill: "${bg}", children: [{ id: "caption", type: "text", style: "label", content: "Hi" }] },
+      { id: "outer", type: "frame", children: [{ id: "nested", type: "ref", ref: "inner" }] },
+      { id: "screen", type: "frame", modes: { appearance: "dark" }, children: [
+        { id: "dark", type: "ref", ref: "outer" },
+        { id: "light", type: "ref", ref: "outer", modes: { appearance: "light" } },
+      ] },
+    ],
+  };
+  const resolved = resolveCanvasDocument(source).document;
+  const screen = resolved.children[2];
+  assert.equal(screen.children[0].children[0].fill, "#111");
+  assert.equal(screen.children[1].children[0].fill, "#fff");
+  assert.equal(resolved.paragraphStyles[screen.children[0].children[0].children[0].style].fill, "#eee");
+  assert.equal(resolved.paragraphStyles[screen.children[1].children[0].children[0].style].fill, "#222");
+});
+
 test("component prop cascades resolve inside compound layout values", () => {
   const source = {
     module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [],

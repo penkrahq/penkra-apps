@@ -58,6 +58,37 @@ test("an explicit export bound constrains a raster with far-off descendants", as
   assert.equal(screenshot.height, 88);
 });
 
+test("screenshot renders nested refs in inherited and overridden appearance modes", async () => {
+  const document = {
+    version: "2.17",
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: { bg: { tokenType: "color", cascade: [{ value: "#ffffff" }, { value: "#111214", when: { appearance: "dark" } }] } },
+    children: [
+      { id: "tile", type: "frame", width: 20, height: 20, fill: "${bg}" },
+      { id: "row", type: "frame", width: 20, height: 20, children: [{ id: "nested-tile", type: "ref", ref: "tile" }] },
+      { id: "screen", type: "frame", width: 60, height: 20, modes: { appearance: "dark" }, children: [
+        { id: "dark-row", type: "ref", ref: "row", layoutPosition: "absolute" },
+        { id: "light-row", type: "ref", ref: "row", x: 30, layoutPosition: "absolute", modes: { appearance: "light" } },
+      ] },
+    ],
+  };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["screen"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image);
+  try {
+    const pixels = image.readPixels(0, 0, {
+      width: image.width(), height: image.height(), colorType: ck.ColorType.RGBA_8888,
+      alphaType: ck.AlphaType.Unpremul, colorSpace: ck.ColorSpace.SRGB,
+    });
+    const pixel = (x, y) => [...pixels.subarray((y * image.width() + x) * 4, (y * image.width() + x) * 4 + 4)];
+    assert.deepEqual(pixel(10, 10), [17, 18, 20, 255]);
+    assert.deepEqual(pixel(40, 10), [255, 255, 255, 255]);
+  } finally {
+    image.delete();
+  }
+});
+
 test("renders a placed SVG from retained geometry instead of its raster fallback", async () => {
   const svg = new TextEncoder().encode(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">

@@ -407,7 +407,8 @@ references and update the smallest supported node rather than replacing surround
 Use `${variable}` for new references; exact `$variable` values remain supported for older documents.
 On text, `style` supplies the whole-text default; a paragraph's `style` overrides it, and
 character marks override both. A named style can itself contain variable references, including
-mode-specific colors. A frame's `modes` selects an axis mode for its subtree.
+mode-specific colors. A frame's `modes` selects an axis mode for its subtree, including nested
+component instances. A ref's own `modes` overrides the inherited mode for that instance.
 
 `documents.execute` returns review-issue counts in `issueSummary` when `inspected` is true and up to 20
 prioritized issues in `issues` by default. Set `issueDetail: "all"` for a full audit; the
@@ -460,8 +461,10 @@ return Get("type:text", ({ node, parent, bounds }) => {
 ```
 
 Node data reflects the private clone at the time of that `Get`. Resolved bounds and problems come
-from pre-execution render inspection. After mutations, use `TakeScreenshot` for visual review and a
-following read-only execution when fresh measurements or problem analysis matter.
+from pre-execution inspection using stable source-layout text metrics, independent of renderer font
+load timing. Parent-overflow severity is based on the largest edge protrusion: up to 6px is minor,
+over 6px through 24px is major, and over 24px is critical. After mutations, use `TakeScreenshot` for
+visual review and a following read-only execution when fresh measurements or problem analysis matter.
 
 ## Editing operations
 

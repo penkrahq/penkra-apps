@@ -1,7 +1,7 @@
 export { createDefaultEditorState, createEditor } from '@open-pencil/core/editor'
 export { fontManager } from '@open-pencil/core'
 export { shouldRenderSceneSubtreeDetail } from '@open-pencil/core'
-export { computeAllLayouts, computeLayout } from '@open-pencil/core/layout'
+export { computeAllLayouts, computeLayout, getTextMeasurer, setTextMeasurer } from '@open-pencil/core/layout'
 export { getCanvasKit } from '@open-pencil/core/canvaskit'
 export { SkiaRenderer } from '@open-pencil/core/canvas/renderer'
 export { computeOverlaps } from '@open-pencil/core/tools/analyze/overlaps'

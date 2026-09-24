@@ -17,6 +17,25 @@ test("measured PDF text preserves author image overrides and unrelated raster re
   assert.deepEqual(buildExtractionIR(source, { ...request, format: "svg" }).rasters.map((item) => item.id), ["text"]);
 });
 
+test("SVG extraction keeps ancestor modes across nested component refs", () => {
+  const source = {
+    version: "2.17", axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: { bg: { tokenType: "color", cascade: [{ value: "#ffffff" }, { value: "#111214", when: { appearance: "dark" } }] } },
+    children: [
+      { id: "tile", type: "frame", width: 20, height: 20, fill: "${bg}" },
+      { id: "row", type: "frame", width: 20, height: 20, children: [{ id: "nested", type: "ref", ref: "tile" }] },
+      { id: "screen", type: "frame", width: 60, height: 20, layout: "none", modes: { appearance: "dark" }, children: [
+        { id: "dark", type: "ref", ref: "row" },
+        { id: "light", type: "ref", ref: "row", x: 30, modes: { appearance: "light" } },
+      ] },
+    ],
+  };
+  const ir = buildExtractionIR(source, { nodeId: "screen", format: "svg" });
+  const svg = exportSvg(ir, ir.outputs[0]);
+  assert.match(svg, /id="dark\/nested"[^>]*fill="#111214"/u);
+  assert.match(svg, /id="light\/nested"[^>]*fill="#ffffff"/u);
+});
+
 test("root image override rasterizes the complete frame and default never forces native", () => {
   const source = { module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "slide", type: "frame", role: "slide", export: "image", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, children: [] },

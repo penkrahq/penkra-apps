@@ -799,6 +799,38 @@ test("component text instances keep named styles and resolve their own appearanc
   assert.deepEqual(run.style.fills[0].color, { r: 0xee / 255, g: 0xee / 255, b: 0xee / 255, a: 1 });
 });
 
+test("nested component instances inherit the nearest ancestor appearance mode", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: {
+      bg: { tokenType: "color", cascade: [{ value: "#ffffff" }, { value: "#111214", when: { appearance: "dark" } }] },
+      ink: { tokenType: "color", cascade: [{ value: "#1f2329" }, { value: "#f4f4f4", when: { appearance: "dark" } }] },
+    },
+    paragraphStyles: { title: { fontSize: 22, fill: "${ink}" } },
+    children: [
+      { id: "label-component", type: "frame", width: 100, height: 40, children: [
+        { id: "label", type: "text", width: 80, height: 30, content: "Chats", style: "title" },
+      ] },
+      { id: "row-component", type: "frame", width: 120, height: 50, fill: "${bg}", children: [
+        { id: "nested-label", type: "ref", ref: "label-component" },
+      ] },
+      { id: "dark-screen", type: "frame", width: 300, height: 300, modes: { appearance: "dark" }, children: [
+        { id: "row", type: "ref", ref: "row-component" },
+        { id: "light-row", type: "ref", ref: "row-component", modes: { appearance: "light" } },
+      ] },
+    ],
+  });
+  const row = graph.getNode("row");
+  assert.deepEqual(row.fills[0].color, { r: 0x11 / 255, g: 0x12 / 255, b: 0x14 / 255, a: 1 });
+  const label = graph.getNode("row/nested-label/label");
+  assert.ok(label?.styleRuns?.length, JSON.stringify(label));
+  assert.deepEqual(label.styleRuns[0].style.fills[0].color, { r: 0xf4 / 255, g: 0xf4 / 255, b: 0xf4 / 255, a: 1 });
+  assert.deepEqual(graph.getNode("light-row").fills[0].color, { r: 1, g: 1, b: 1, a: 1 });
+  assert.deepEqual(graph.getNode("light-row/nested-label/label").styleRuns[0].style.fills[0].color,
+    { r: 0x1f / 255, g: 0x23 / 255, b: 0x29 / 255, a: 1 });
+});
+
 test("explicit auto-growth text with a whole-text style never keeps the 10000px placeholder", () => {
   const graph = createOpenPencilGraph({
     version: "2.17", axes: {}, variables: { size: { tokenType: "number", cascade: [{ value: 15 }] } },
