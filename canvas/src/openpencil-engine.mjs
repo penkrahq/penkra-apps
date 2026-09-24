@@ -367,16 +367,18 @@ function applyInstanceTextStyles(graph, document, instanceIds = null) {
   for (const sceneNode of graph.nodes.values()) {
     if (sceneNode.type !== "TEXT" || !sceneNode.componentId || sceneNode.id === sceneNode.componentId) continue;
     if (instanceIds && !instanceIds.some((id) => sceneNode.id.startsWith(`${id}/`))) continue;
-    const source = sources.get(sceneNode.componentId);
+    const source = sources.get(sceneNode.pencilNodeId) ?? sources.get(sceneNode.componentId);
     if (!source || !(source.style || source.paragraphs?.some((paragraph) => paragraph.style) || source.marks?.length)) continue;
     const theme = {};
     let ancestor = sceneNode.parentId ? graph.getNode(sceneNode.parentId) : null;
-    const instanceAncestors = [];
+    const themeAncestors = [];
     while (ancestor) {
-      if (ancestor.type === "INSTANCE") instanceAncestors.unshift(ancestor);
+      themeAncestors.unshift(ancestor);
       ancestor = ancestor.parentId ? graph.getNode(ancestor.parentId) : null;
     }
-    for (const instance of instanceAncestors) Object.assign(theme, sources.get(instance.id)?.theme ?? {});
+    for (const parent of themeAncestors) {
+      Object.assign(theme, (sources.get(parent.pencilNodeId) ?? sources.get(parent.id))?.theme ?? {});
+    }
     Object.assign(theme, source.theme ?? {});
     const key = JSON.stringify(theme);
     let styles = styleCache.get(key);

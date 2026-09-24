@@ -1,8 +1,21 @@
+import { getTextMeasurer, setTextMeasurer } from "../vendor/open-pencil/engine.source.mjs";
 import { computeOverlaps, createOpenPencilGraph } from "./openpencil-engine.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { designValidationIssues } from "./document-review.mjs";
 
 export function inspectDocument(document, nodes, requestedLimit = 500, nodeIds) {
+  // The editor and screenshot renderer install a process-wide text measurer as
+  // fonts become available. Inspection must not change for an unchanged source.
+  const previousTextMeasurer = getTextMeasurer();
+  try {
+    setTextMeasurer(null);
+    return inspectWithStableText(document, nodes, requestedLimit, nodeIds);
+  } finally {
+    setTextMeasurer(previousTextMeasurer);
+  }
+}
+
+function inspectWithStableText(document, nodes, requestedLimit, nodeIds) {
   const limit = Math.min(1_000, Math.max(1, Number(requestedLimit) || 500));
   const prepared = prepareOpenPencilRenderDocument(document);
   const graph = createOpenPencilGraph(document, new Map(), prepared);

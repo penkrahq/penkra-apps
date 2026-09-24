@@ -89394,10 +89394,10 @@ function matchesScope(rel2, scope) {
 function scoredSeverity(severity) {
   return SEVERITY_RANK[severity];
 }
-function parentOverflowSeverity(outRatio) {
-  if (outRatio > 0.25)
+function parentOverflowSeverity(maxOutset) {
+  if (maxOutset > 24)
     return "critical";
-  if (outRatio > 0.05)
+  if (maxOutset > 6)
     return "major";
   return "minor";
 }
@@ -89613,9 +89613,8 @@ function buildParentOverflowResult(child, childBounds, parent, parentBounds) {
   const outArea = intersection2 ? childArea - visualBoundsArea(intersection2) : childArea;
   if (outArea <= 0)
     return null;
-  const outRatio = outArea / childArea;
-  const severity = parentOverflowSeverity(outRatio);
   const maxOutset = Math.max(0, parentBounds.minX - childBounds.minX, childBounds.maxX - parentBounds.maxX, parentBounds.minY - childBounds.minY, childBounds.maxY - parentBounds.maxY);
+  const severity = parentOverflowSeverity(maxOutset);
   const message = `${child.type === "TEXT" ? "Text" : `Node`} "${child.name}" extends ${Math.round(maxOutset)}px outside parent "${parent.name}"`;
   const suggestion = child.type === "TEXT" ? "Set the parent to clip content or constrain text sizing (textAutoResize, maxLines)." : `Reposition inside "${parent.name}" or enable clip content on the parent.`;
   return makeOverlapItem("parent-overflow", severity, child, childBounds, parent, parentBounds, intersection2 ?? EMPTY_BOUNDS, message, suggestion, "overflow");
@@ -96819,11 +96818,13 @@ export {
   fontManager,
   getAbsolutePositionFull2 as getAbsolutePositionFull,
   getCanvasKit,
+  getTextMeasurer,
   getWorldMatrix2 as getWorldMatrix,
   hydrateCanvasSceneGraphInstances,
   parseSVGPath2 as parseSVGPath,
   prepareSVGImport,
   provideEditor,
+  setTextMeasurer,
   shouldRenderSceneSubtreeDetail,
   useCanvas,
   useCanvasInput,

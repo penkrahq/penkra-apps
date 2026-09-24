@@ -332,7 +332,7 @@ function compileCanvasConditionsForRendering(document) {
     const localContext = { modes, props: context.props };
     for (const [property, raw] of Object.entries(node)) {
       if (["id", "type", "name", "children", "properties", "props", "bind", "descendants", "modes"].includes(property)) continue;
-      if (!containsCanvasCascade(raw)) continue;
+      if (!containsCanvasCascade(raw) && !containsCanvasVariable(raw, property)) continue;
       assignOverride(rootOverrides, descendants, path, property, resolveCanvasConditionalValue(raw, localContext));
     }
     for (const [property, binding] of Object.entries(node.bind ?? {})) {
@@ -430,6 +430,15 @@ function containsCanvasCascade(value) {
   if (Array.isArray(value)) return value.some(containsCanvasCascade);
   if (!isRecord(value)) return false;
   return Object.entries(value).some(([key, child]) => key !== "when" && containsCanvasCascade(child));
+}
+
+function containsCanvasVariable(value, property) {
+  if (typeof value === "string") {
+    return Boolean(isInterpolatedVariableReference(value, property) || isLegacyVariableReference(value, property));
+  }
+  if (Array.isArray(value)) return value.some((item) => containsCanvasVariable(item, property));
+  if (!isRecord(value)) return false;
+  return Object.entries(value).some(([key, child]) => containsCanvasVariable(child, key));
 }
 
 function resolveCanvasConditionalValue(value, context) {

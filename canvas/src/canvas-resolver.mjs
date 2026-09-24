@@ -117,6 +117,13 @@ function namespaceAssetReferences(value, prefix) {
 }
 
 function resolveRef(instance, context) {
+  if (instance.modes) {
+    const axes = context.owner.axes ?? {};
+    const inherited = Object.fromEntries(Object.entries(context.modes).filter(([name]) => Object.hasOwn(axes, name)));
+    const modes = { ...context.modes, ...selectModes(axes, { ...inherited, ...instance.modes }) };
+    const bindings = Object.fromEntries(Object.entries(context.variableValues).filter(([name]) => !Object.hasOwn(context.owner.variables ?? {}, name)));
+    context = { ...context, modes, scopedModes: true, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings) };
+  }
   const instanceContext = context;
   const qualified = instance.ref.split(":");
   let owner = context.owner; let target; let localNodes = context.localNodes; let variableValues = context.variableValues;

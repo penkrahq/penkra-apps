@@ -153,9 +153,9 @@ export function scoredSeverity(severity: OverlapSeverity): number {
   return SEVERITY_RANK[severity]
 }
 
-function parentOverflowSeverity(outRatio: number): OverlapSeverity {
-  if (outRatio > 0.25) return 'critical'
-  if (outRatio > 0.05) return 'major'
+function parentOverflowSeverity(maxOutset: number): OverlapSeverity {
+  if (maxOutset > 24) return 'critical'
+  if (maxOutset > 6) return 'major'
   return 'minor'
 }
 
@@ -447,8 +447,6 @@ export function buildParentOverflowResult(
   const outArea = intersection ? childArea - visualBoundsArea(intersection) : childArea
   if (outArea <= 0) return null
 
-  const outRatio = outArea / childArea
-  const severity = parentOverflowSeverity(outRatio)
   const maxOutset = Math.max(
     0,
     parentBounds.minX - childBounds.minX,
@@ -456,6 +454,7 @@ export function buildParentOverflowResult(
     parentBounds.minY - childBounds.minY,
     childBounds.maxY - parentBounds.maxY
   )
+  const severity = parentOverflowSeverity(maxOutset)
   const message = `${child.type === 'TEXT' ? 'Text' : `Node`} "${child.name}" extends ${Math.round(maxOutset)}px outside parent "${parent.name}"`
   const suggestion =
     child.type === 'TEXT'

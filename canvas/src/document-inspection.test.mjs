@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { getTextMeasurer, setTextMeasurer } from "../vendor/open-pencil/engine.source.mjs";
 import { inspectDocument } from "./document-inspection.mjs";
 
 function documentWithOverflow({ clip = false } = {}) {
@@ -41,7 +42,7 @@ test("document inspection reports a child extending beyond a non-clipping parent
       nodeId: "wide-child",
       kind: "parent-overflow",
       ancestorId: "fixed-parent",
-      severity: "critical",
+      severity: "major",
       message: 'Node "rectangle" extends 20px outside parent "frame"',
       suggestion: 'Reposition inside "frame" or enable clip content on the parent.',
     }],
@@ -65,4 +66,57 @@ test("document inspection does not report visible overflow through a clipping pa
     inspection.issues.some((issue) => issue.kind === "parent-overflow"),
     false,
   );
+});
+
+test("small text protrusion ranks below a much larger frame protrusion", () => {
+  const { document, nodes } = documentWithOverflow();
+  const child = document.children[0].children[0];
+  child.type = "text";
+  child.content = "12";
+  child.fill = "#000000";
+  child.x = 86;
+  child.width = 20;
+  child.height = 20;
+  const issue = inspectDocument(document, nodes).issues.find((item) => item.kind === "parent-overflow");
+  assert.equal(issue?.severity, "minor");
+  assert.match(issue?.message ?? "", /extends 4px outside/u);
+});
+
+test("parent overflow severity increases with protrusion distance", () => {
+  const { document, nodes } = documentWithOverflow();
+  const child = document.children[0].children[0];
+  for (const [x, severity] of [[65, "minor"], [71, "major"], [90, "critical"]]) {
+    child.x = x;
+    const issue = inspectDocument(document, nodes).issues.find((item) => item.kind === "parent-overflow");
+    assert.equal(issue?.severity, severity);
+  }
+});
+
+test("inspection geometry does not drift when the editor installs a text measurer", () => {
+  const caption = {
+    id: "caption", type: "text", content: "Input with a fixed part · currency, unit, or phone code (prefixMenu opens a picker)",
+    fontFamily: "Inter", fontSize: 12, fontWeight: "500", lineHeight: 1.43, textGrowth: "auto",
+  };
+  const slot = { id: "slot", type: "frame", layout: "vertical", width: "fit_content", height: "fit_content", children: [caption] };
+  const parent = { id: "parent", type: "frame", layout: "vertical", width: 400, height: "fit_content", padding: 24, children: [slot] };
+  const document = { version: "2.17", children: [parent] };
+  const nodes = [
+    { node: parent, depth: 0, parentId: null, index: 0 },
+    { node: slot, depth: 1, parentId: "parent", index: 0 },
+    { node: caption, depth: 2, parentId: "slot", index: 0 },
+  ];
+  const previous = getTextMeasurer();
+  try {
+    setTextMeasurer(null);
+    const baseline = inspectDocument(document, nodes);
+    assert.equal(baseline.issues.find((item) => item.kind === "parent-overflow")?.severity, "critical");
+    setTextMeasurer(() => ({ width: 471, height: 19 }));
+    const afterEditorInitialization = inspectDocument(document, nodes);
+    assert.deepEqual(afterEditorInitialization.items.find((item) => item.id === "slot").bounds,
+      baseline.items.find((item) => item.id === "slot").bounds);
+    assert.deepEqual(afterEditorInitialization.issues, baseline.issues);
+    assert.equal(typeof getTextMeasurer(), "function");
+  } finally {
+    setTextMeasurer(previous);
+  }
 });
