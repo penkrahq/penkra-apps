@@ -90736,7 +90736,7 @@ function applyAutoLayout(overrides, layoutMode, pen, widthSizing, heightSizing, 
   overrides.layoutMode = layoutMode;
   overrides.primaryAxisAlign = mapJustifyContent(pen.justifyContent);
   overrides.counterAxisAlign = mapAlignItems(pen.alignItems);
-  overrides.itemSpacing = typeof pen.gap === "string" && isVarRef(pen.gap) && ctx ? ctx.resolveNumber(pen.gap) : pen.gap ?? 0;
+  overrides.itemSpacing = resolveGap(pen.gap, ctx);
   if (layoutMode === "VERTICAL") {
     overrides.primaryAxisSizing = heightSizing;
     overrides.counterAxisSizing = widthSizing;
@@ -90744,6 +90744,9 @@ function applyAutoLayout(overrides, layoutMode, pen, widthSizing, heightSizing, 
     overrides.primaryAxisSizing = widthSizing;
     overrides.counterAxisSizing = heightSizing;
   }
+}
+function resolveGap(gap, ctx) {
+  return typeof gap === "string" && isVarRef(gap) && ctx ? ctx.resolveNumber(gap) : gap ?? 0;
 }
 function applyTextProps(node, pen, ctx) {
   node.text = pen.type === "icon_font" ? pen.iconFontName ?? "" : pen.content ?? "";
@@ -90793,7 +90796,7 @@ function resolveSizing(pen, ctx) {
     h.sizing = "HUG";
   return { w, h, layout, isTextLike };
 }
-function inheritLayoutFromComp(node, pen, comp) {
+function inheritLayoutFromComp(node, pen, comp, ctx) {
   const wasRow = node.layoutMode === "HORIZONTAL";
   node.layoutMode = comp.layoutMode;
   node.primaryAxisAlign = comp.primaryAxisAlign;
@@ -90810,8 +90813,7 @@ function inheritLayoutFromComp(node, pen, comp) {
     node[widthAxis] = comp[widthAxis];
   if (pen.height === undefined)
     node[heightAxis] = comp[heightAxis];
-  if (pen.gap === undefined)
-    node.itemSpacing = comp.itemSpacing;
+  node.itemSpacing = pen.gap === undefined ? comp.itemSpacing : resolveGap(pen.gap, ctx);
   if (pen.padding === undefined) {
     node.paddingTop = comp.paddingTop;
     node.paddingRight = comp.paddingRight;
@@ -90848,7 +90850,7 @@ function applyRefProps(node, pen, graph, componentIds, penSources, ctx) {
   if (pen.height === undefined)
     node.height = comp.height;
   if (pen.layout === undefined)
-    inheritLayoutFromComp(node, pen, comp);
+    inheritLayoutFromComp(node, pen, comp, ctx);
   applyRefVisuals(node, pen, penSources.get(pen.ref), ctx);
 }
 function applyAllRefProps(penNodes, graph, componentIds, penSources, ctx) {
