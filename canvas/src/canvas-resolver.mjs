@@ -1,5 +1,6 @@
 import { interpolateRichText } from "./rich-text.mjs";
 import { resolveVariableReferences } from "./variable-references.mjs";
+import { variantMemberProperties, variantSelection } from "./component-variants.mjs";
 
 export function resolveCanvasDocument(document, options = {}) {
   const modes = selectModes(document.axes ?? {}, options.modes ?? {});
@@ -12,7 +13,7 @@ export function resolveCanvasDocument(document, options = {}) {
   const lowered = [];
   const resolving = [];
   const styleRegistry = { styles: paragraphStyles, nextId: 0 };
-  const baseContext = { owner: document, rootOwner: document, styleRegistry, props: {}, modes, variableValues, localNodes, imports, consequences, lowered, resolving };
+  const baseContext = { owner: document, rootOwner: document, styleRegistry, props: {}, modes, variableValues, localNodes, memberProperties: variantMemberProperties(document), imports, consequences, lowered, resolving };
   const children = document.children.map((node) => resolveNode(node, baseContext)).filter(Boolean);
   const flows = (document.flows ?? []).map(remapResolvedFlowSource);
   return { document: { ...document, paragraphStyles, children, flows }, modes, consequences, lowered };
@@ -52,14 +53,15 @@ function resolveNode(source, context) {
     const bindings = Object.fromEntries(Object.entries(context.variableValues).filter(([name]) => !Object.hasOwn(context.owner.variables ?? {}, name)));
     context = { ...context, modes, scopedModes: true, variableValues: resolveVariables(context.owner.variables ?? {}, modes, bindings) };
   }
-  if (source.properties) {
+  const declarations = source.properties ?? context.memberProperties?.get(source.id);
+  if (declarations) {
     context = context.componentRoot
       ? { ...context, componentRoot: false }
-      : { ...context, props: resolveProps(source.properties, {}), componentRoot: false };
+      : { ...context, props: resolveProps(declarations, {}), componentRoot: false };
   } else if (context.componentRoot) context = { ...context, componentRoot: false };
   const output = {};
   for (const [key, raw] of Object.entries(source)) {
-    if (["children", "properties", "bind", "varies"].includes(key)) continue;
+    if (["children", "properties", "variantSet", "bind", "varies"].includes(key)) continue;
     const value = resolveCascade(raw, context);
     output[key] = source.type === "text" && key === "content" ? value : resolveValue(value, context.variableValues, context);
   }
@@ -142,13 +144,19 @@ function resolveRef(instance, context) {
       ...context,
       modes,
       imports: imported.imports ?? {},
+      memberProperties: variantMemberProperties(owner),
       assetPrefix: [context.assetPrefix, "imports", alias].filter(Boolean).join("/"),
     };
   } else target = localNodes.get(instance.ref);
   if (!target) throw new Error(`Ref ${instance.id} target ${instance.ref} was not found.`);
+  const props = resolveProps(target.properties ?? {}, instance.props ?? {}, context.consequences, instance.id);
+  const selection = variantSelection(target, props);
+  if (selection) {
+    target = localNodes.get(selection.sourceId);
+    if (!target) throw new Error(`Component ${instance.ref} variant target ${selection.sourceId} was not found.`);
+  }
   const cycleKey = `${owner === context.owner ? "local" : instance.ref}:${target.id}`;
   if (context.resolving.includes(cycleKey)) throw new Error(`Ref cycle: ${[...context.resolving, cycleKey].join(" -> ")}.`);
-  const props = resolveProps(target.properties ?? {}, instance.props ?? {}, context.consequences, instance.id);
   const resolved = resolveNode(target, { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] });
   context.lowered.push({ node: instance.id, from: instance.ref, why: "Reference expanded into target-native nodes." });
   const output = prefixResolvedNode(resolved, instance.id, target.id, props);

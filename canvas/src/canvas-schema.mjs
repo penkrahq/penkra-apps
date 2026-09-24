@@ -1,4 +1,5 @@
 import { validateRichText } from "./rich-text.mjs";
+import { validateVariantSets, variantMemberProperties, variantSelection } from "./component-variants.mjs";
 
 export const CANVAS_MODULES = Object.freeze(["generic", "deck", "web", "mobile"]);
 export const CANVAS_ROLES = Object.freeze({ deck: ["slide"], web: ["route"], mobile: ["ios", "android"] });
@@ -62,7 +63,7 @@ export const CANVAS_SCHEMA = deepFreeze({
   node: {
     required: ["id", "type"],
     groups: {
-      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "bleed", "safeMargin", "folds", "properties", "bind", "visible", "varies", "modes", "notesFor"], {
+      common: fields(["id", "type", "name", "x", "y", "width", "height", "rotation", "flipX", "flipY", "opacity", "enabled", "export", "description", "decorative", "role", "size", "physical", "bleed", "safeMargin", "folds", "properties", "variantSet", "bind", "visible", "varies", "modes", "notesFor"], {
         id: { type: "string" }, type: { type: "enum", values: CANVAS_NODE_TYPES },
         name: { type: "string" }, x: { type: "number" }, y: { type: "number" },
         width: { type: "dimension" }, height: { type: "dimension" }, rotation: { type: "number" },
@@ -71,6 +72,7 @@ export const CANVAS_SCHEMA = deepFreeze({
         role: { type: "enum", values: Object.values(CANVAS_ROLES).flat() }, size: { type: "string" }, physical: { ref: "physical" },
         bleed: { type: "number" }, safeMargin: { type: "number" }, folds: { type: "array", items: { type: "number" } },
         properties: { type: "record", values: { ref: "property" } }, bind: { type: "record", values: { type: "string" } },
+        variantSet: { type: "object", capability: false },
         visible: { type: "object" }, varies: { type: "array", items: { type: "string" } }, modes: { type: "record", values: { type: "string" } }, notesFor: { type: "string" },
       }),
       layout: fields(["layout", "gap", "rowGap", "columnGap", "padding", "justifyContent", "alignItems", "wrap", "minWidth", "maxWidth", "minHeight", "maxHeight", "gridTemplateColumns", "gridTemplateRows", "gridColumn", "gridRow", "layoutPosition", "clip"], {
@@ -154,6 +156,7 @@ export function validateCanvasDocument(document, options = {}) {
   validateNotes(nodes, parents, errors);
   validateAccessibility(document, nodes, errors);
   validateRefs(nodes, parents, errors);
+  errors.push(...validateVariantSets(document));
   validateComponentSemantics(document, nodes, errors);
   validateFlows(document.flows ?? [], nodes, parents, errors);
   return invalid(errors, options);
@@ -319,8 +322,9 @@ function validateRefs(nodes, parents, errors) {
 }
 
 function validateComponentSemantics(document, nodes, errors) {
+  const memberProperties = variantMemberProperties(document);
   const visit = (node, inheritedDeclarations = {}) => {
-    const declarations = node.properties ?? inheritedDeclarations;
+    const declarations = node.properties ?? memberProperties.get(node.id) ?? inheritedDeclarations;
     for (const [property, binding] of Object.entries(node.bind ?? {})) {
       if (typeof binding !== "string" || !binding.startsWith("$props.")) {
         errors.push(`${node.id}.bind.${property} must be a $props name.`);
@@ -343,7 +347,13 @@ function validateComponentSemantics(document, nodes, errors) {
     }
     if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
       const target = nodes.get(node.ref);
-      if (target) validateSuppliedProps(node, target.properties ?? {}, errors);
+      if (target) {
+        validateSuppliedProps(node, target.properties ?? {}, errors);
+        if (target.variantSet && !target.variantSet.properties.some((name) => Object.hasOwn(node.bind ?? {}, name))) {
+          try { variantSelection(target, node.props ?? {}); }
+          catch (error) { errors.push(`${node.id}: ${error.message}`); }
+        }
+      }
     }
     for (const child of node.children ?? []) visit(child, declarations);
   };

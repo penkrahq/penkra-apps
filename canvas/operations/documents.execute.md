@@ -391,6 +391,12 @@ not just text content. It does not accept expressions such as `!$props.filled`. 
 conditions to show or hide complementary layers, and property-conditional values for visual
 states. For example, one input component can use:
 
+Choose one mechanism for each change. Use a **variant set** when states have distinct authored
+layouts or child structure. Use a **conditional property** for a simple color, spacing, or other
+value change. Use `visible` with `not` or `eq` for a simple layer swap. Do not duplicate a component
+into variants merely to recolor it, and do not mix variants and conditions to control the same
+change.
+
 ```js
 properties: {
   state: { type: "enum", values: ["default", "focus", "invalid"], default: "default" },
@@ -418,6 +424,38 @@ instances atomically.
 Older instances that still carry a removed property are reported by inspection; rendering and
 extraction ignore that stale value and report an export consequence instead of failing. New edits
 cannot introduce an undeclared instance property.
+
+For distinct layouts, put `variantSet` on one leader frame. The leader's own tree is its default
+layout; each other authored layout is a separate, roleless frame in the same document. Every mapping
+must name **all** variant properties and point to an authored frame. Member frames inherit the
+leader's property interface; do not declare duplicate `properties` on them. Refs always target the
+leader and choose their state through `props`:
+
+```js
+// On the leader frame `input-field`, with its default visual children:
+properties: {
+  state: { type: "enum", values: ["default", "focus", "invalid"], default: "default" },
+  size: { type: "enum", values: ["regular", "small"], default: "regular" },
+  label: { type: "string", default: "Name" }
+},
+variantSet: {
+  properties: ["state", "size"],
+  variants: [
+    { when: { state: "default", size: "regular" }, ref: "input-field" },
+    { when: { state: "focus", size: "regular" }, ref: "input-field-focus" },
+    { when: { state: "invalid", size: "regular" }, ref: "input-field-invalid" }
+  ]
+}
+// A separate roleless frame `input-field-focus` authors the focus layout.
+// An instance uses: { type: "ref", ref: "input-field", props: { state: "focus", size: "regular" } }
+```
+
+Combinations are intentionally sparse: `focus + small` in this example is **not** available. Canvas
+requires an exact authored match and reports a clear error for a missing combination; it never
+selects a nearest variant. The instance picker offers only values compatible with the other current
+choices. This explicit rule also makes the design safe to port to code, where every supported state
+combination must exist. If a simple visual difference does not warrant another layout, use the
+conditional mechanisms above instead.
 
 ## What this operation leaves alone
 

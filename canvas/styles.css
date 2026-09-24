@@ -388,6 +388,7 @@ h1, h2, h3, p { margin: 0; }
 .field-row { display: grid; gap: 4px; min-width: 0; }
 .field-row.full { grid-column: 1 / -1; }
 .field-row label { color: var(--tertiary); font-size: 10px; }
+.field-row > span:first-child { color: var(--tertiary); font-size: 10px; }
 .field { width: 100%; min-width: 0; height: 29px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; outline: 0; background: var(--control); font-size: 11px; }
 .field-area { min-height: 72px; height: auto; padding: 7px 8px; resize: vertical; font: 10px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
 .field-check { width: 16px; height: 16px; padding: 0; accent-color: var(--accent); }

@@ -5,6 +5,31 @@ import test from "node:test";
 import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
 import { rasterizeSvgImage, takeDocumentScreenshots } from "./document-screenshot.mjs";
 
+test("screenshot renders only the exact nested component variant", async () => {
+  const document = { version: "2.17", children: [
+    { id: "mark", type: "frame", width: 20, height: 20,
+      properties: { state: { type: "enum", values: ["idle", "busy"], default: "idle" } },
+      variantSet: { properties: ["state"], variants: [
+        { when: { state: "idle" }, ref: "mark" }, { when: { state: "busy" }, ref: "mark-busy" },
+      ] }, children: [{ id: "idle-art", type: "rectangle", width: 20, height: 20, fill: "#ff0000" }] },
+    { id: "mark-busy", type: "frame", width: 20, height: 20,
+      children: [{ id: "busy-art", type: "rectangle", width: 20, height: 20, fill: "#00ff00" }] },
+    { id: "row", type: "frame", width: 20, height: 20,
+      properties: { state: { type: "enum", values: ["idle", "busy"], default: "idle" } },
+      children: [{ id: "nested-mark", type: "ref", ref: "mark", bind: { state: "$props.state" } }] },
+    { id: "busy-row", type: "ref", ref: "row", props: { state: "busy" } },
+  ] };
+  const [screenshot] = await takeDocumentScreenshots(document, [{ nodeIds: ["busy-row"] }]);
+  const ck = await getCanvasKit();
+  const bitmap = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(bitmap);
+  try {
+    const pixels = bitmap.readPixels(0, 0, { width: bitmap.width(), height: bitmap.height(),
+      colorType: ck.ColorType.RGBA_8888, alphaType: ck.AlphaType.Unpremul, colorSpace: ck.ColorSpace.SRGB });
+    assert.deepEqual([...pixels.subarray(0, 4)], [0, 255, 0, 255]);
+  } finally { bitmap.delete(); }
+});
+
 test("rasterizes SVG geometry into a CanvasKit-decodable PNG", async () => {
   const svg = new TextEncoder().encode(`
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 8">

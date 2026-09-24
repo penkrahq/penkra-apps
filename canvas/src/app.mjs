@@ -33,6 +33,7 @@ import {
   rasterizeOpenPencilSvgAsset,
 } from "./openpencil-surface.mjs";
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { availableVariantValues, componentDefinitions, variantSelection } from "./component-variants.mjs";
 import {
   isPencilAuthorableNode,
   parsePencilAuthoringValue,
@@ -2341,10 +2342,10 @@ function currentVisibleLayerNodes(fallback = currentDocumentNodes()) {
 
 function renderLayersPanelContent(nodes) {
   if (state.assetPanel === "assets") {
-    const components = Object.keys(currentMaterializedDocument()?.components ?? {});
+    const components = componentDefinitions(currentMaterializedDocument());
     const assets = [...state.assets.keys()];
     const rows = [
-      ...components.map((name) => `<li>${icon("component")}<span>${escapeHtml(name)}</span><small>Component</small></li>`),
+      ...components.map((component) => `<li>${icon("component")}<span>${escapeHtml(component.name ?? component.id)}</span><small>${component.variantSet ? "Variant set" : "Component"}</small></li>`),
       ...assets.map((name) => `<li>${icon("image")}<span>${escapeHtml(name)}</span><small>Asset</small></li>`),
     ];
     return rows.length ? `<ul class="panel-resource-list">${rows.join("")}</ul>` : panelEmpty("No components or assets yet.");
@@ -2379,8 +2380,7 @@ function variablePreview(value) {
 }
 
 function componentDefinitionCount() {
-  const components = currentMaterializedDocument()?.components;
-  return components && typeof components === "object" ? Object.keys(components).length : 0;
+  return componentDefinitions(currentMaterializedDocument()).length;
 }
 
 function fragment(html) {
@@ -2443,6 +2443,7 @@ function renderInspector(selection) {
     || node.fill == null;
   const svgCandidate = selection.isInstanceDescendant ? null : inspectSvgVectorCandidate(node, state.assets);
   return `${selectionHeading(selection)}
+  ${renderVariantPicker(selection)}
   <section class="section"><h3>Position</h3><div class="field-grid">${field("name", node.name ?? "", "text", true, fieldNodeId)}${numeric.slice(0, 2).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("rotation", node.rotation ?? 0, "number", false, fieldNodeId)}</div></section>
   <section class="section"><h3>Layout</h3><div class="field-grid">${numeric.slice(2, 4).map((property) => field(property, node[property] ?? 0, "number", false, fieldNodeId)).join("")}${field("gap", node.gap ?? 0, "number", false, fieldNodeId)}${field("padding", Array.isArray(node.padding) ? node.padding.join(", ") : node.padding ?? 0, "text", false, fieldNodeId)}</div></section>
   <section class="section"><h3>Appearance</h3><div class="field-grid">${simpleFill ? field("fill", fillValue(node.fill), "text", true, fieldNodeId) : ""}${field("opacity", node.opacity ?? 1, "number", false, fieldNodeId)}${field("cornerRadius", node.cornerRadius ?? 0, "number", false, fieldNodeId)}</div></section>
@@ -2451,6 +2452,25 @@ function renderInspector(selection) {
   ${svgCandidate ? renderSvgVectorSection(svgCandidate) : ""}
   ${state.compatibilityNodeIds.has(node.id) ? `<section class="section"><h3>Compatibility</h3><p class="muted">Some visual behavior on this object is preserved but not currently represented faithfully. Review compatibility for details.</p></section>` : ""}
   ${selection.isInstanceDescendant ? "" : `<div class="danger-zone"><button class="button danger" data-action="delete-node">Delete object</button></div>`}`;
+}
+
+function renderVariantPicker(selection) {
+  const instance = selection?.sourceNode;
+  if (selection?.isInstanceDescendant || instance?.type !== "ref") return "";
+  const component = currentDocumentNode(instance.ref);
+  if (!component?.variantSet) return "";
+  const props = instance.props ?? {};
+  let error = "";
+  try { variantSelection(component, props); }
+  catch (cause) { error = cause.message; }
+  const fields = component.variantSet.properties.map((name) => {
+    const declaration = component.properties[name];
+    const value = Object.hasOwn(props, name) ? props[name] : declaration.default;
+    const options = availableVariantValues(component, props, name);
+    const bound = Object.hasOwn(instance.bind ?? {}, name);
+    return `<label class="field-row full"><span>${escapeHtml(name)}</span><select class="field" data-variant-property="${escapeHtml(name)}" aria-label="${escapeHtml(name)} variant" ${bound ? "disabled" : ""}>${options.map((choice) => `<option value="${escapeHtml(JSON.stringify(choice))}" ${Object.is(choice, value) ? "selected" : ""}>${escapeHtml(String(choice))}</option>`).join("")}</select></label>`;
+  }).join("");
+  return `<section class="section"><h3>Variant</h3><div class="field-grid">${fields}</div>${error ? `<p class="muted" role="alert">${escapeHtml(error)}</p>` : ""}</section>`;
 }
 
 function renderSvgVectorSection(candidate) {
@@ -3192,6 +3212,24 @@ function bindInspectorControls() {
       render();
     });
     input.addEventListener("change", () => commitInspectorField(input));
+  });
+  root.querySelectorAll("[data-variant-property]").forEach((input) => {
+    input.addEventListener("change", () => {
+      const selection = currentCanvasSelection();
+      const instance = selection?.sourceNode;
+      const component = instance?.type === "ref" ? currentDocumentNode(instance.ref) : null;
+      if (!instance || selection.isInstanceDescendant || !component?.variantSet) return;
+      const name = input.dataset.variantProperty;
+      const value = JSON.parse(input.value);
+      const props = { ...(instance.props ?? {}), [name]: value };
+      try {
+        variantSelection(component, props);
+        mutate(state.model, { kind: "set-property", nodeId: instance.id, property: "props", value: props }, LOCAL_ORIGIN);
+      } catch (error) {
+        showTransientToast(message(error), true);
+        renderSelection();
+      }
+    });
   });
   root.querySelector('[data-action="delete-node"]')?.addEventListener("click", () => {
     deleteSelectedNode();
