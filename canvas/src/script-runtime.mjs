@@ -309,6 +309,42 @@ globalThis.SetModule = function SetModule(module) {
   return module;
 };
 
+globalThis.GetVariables = function GetVariables() {
+  return __readonly(__clone(__document.variables || {}));
+};
+
+globalThis.GetAxes = function GetAxes() {
+  return __readonly(__clone(__document.axes || {}));
+};
+
+globalThis.SetVariable = function SetVariable(name, definition) {
+  if (typeof name !== "string" || !name.trim()) throw new TypeError("SetVariable requires a non-empty name.");
+  if (!definition || typeof definition !== "object" || Array.isArray(definition)) {
+    throw new TypeError("SetVariable requires a variable definition object.");
+  }
+  const next = __clone(definition);
+  __document.variables ||= {};
+  if (JSON.stringify(__document.variables[name]) !== JSON.stringify(next)) {
+    __document.variables[name] = next;
+    __changed = true;
+  }
+  return name;
+};
+
+globalThis.SetAxis = function SetAxis(name, definition) {
+  if (typeof name !== "string" || !name.trim()) throw new TypeError("SetAxis requires a non-empty name.");
+  if (!definition || typeof definition !== "object" || Array.isArray(definition)) {
+    throw new TypeError("SetAxis requires an axis definition object.");
+  }
+  const next = __clone(definition);
+  __document.axes ||= {};
+  if (JSON.stringify(__document.axes[name]) !== JSON.stringify(next)) {
+    __document.axes[name] = next;
+    __changed = true;
+  }
+  return name;
+};
+
 globalThis.Replace = function Replace(target, replacement) {
   const entry = __requireOne(target);
   if (!replacement || typeof replacement !== "object" || Array.isArray(replacement)) throw new TypeError("Replace requires one node object.");

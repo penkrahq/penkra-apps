@@ -27,6 +27,7 @@ import { preparePencilScriptRuntime } from "./pencil-script-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 import { createLayeredSurfaceReadiness } from "./surface-readiness.mjs";
 import { createTimeShaderAnimation } from "./time-shader-animation.mjs";
+import { createShaderPresence } from "./shader-presence.mjs";
 import { rasterizeSvgWithCanvasKit } from "./svg-rasterization.mjs";
 import { createSurfaceMutationBoundary } from "./surface-mutation-boundary.mjs";
 
@@ -89,14 +90,9 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     hydrationFrame = requestAnimationFrame(hydrateVisibleInstances);
   };
   let sceneCanvasElement = null;
-  const hasTimeShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
-    (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "time"),
-  ));
-  const hasMouseShader = () => [...editor.graph.nodes.values()].some((node) => node.fills?.some(
-    (fill) => fill.pencilShader?.uniforms?.some(({ automatic }) => automatic === "mouse"),
-  ));
+  const shaderPresence = createShaderPresence(editor.graph);
   const updateShaderMouse = (event) => {
-    if (!hasMouseShader()) return;
+    if (!shaderPresence.hasMouse()) return;
     const bounds = event.currentTarget.getBoundingClientRect();
     const point = {
       x: (event.clientX - bounds.left - editor.state.panX) / editor.state.zoom,
@@ -109,7 +105,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     requestRepaint: () => editor.requestRepaint(),
   });
   const reconcileTimeShaderAnimation = () => {
-    timeShaderAnimation.setActive(visible && hasTimeShader());
+    timeShaderAnimation.setActive(visible && shaderPresence.hasTime());
   };
   reconcileTimeShaderAnimation();
   const fitDesignInView = () => {
@@ -132,7 +128,9 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     editor.onEditorEvent("node:updated", (nodeId, changes) => {
       const previous = sceneValues.get(nodeId);
       sceneValues.set(nodeId, { ...previous, ...changes });
-      reconcileTimeShaderAnimation();
+      if (Object.hasOwn(changes, "fills") && shaderPresence.update(editor.graph.getNode(nodeId))) {
+        reconcileTimeShaderAnimation();
+      }
       if (mutationBoundary.isRendererSyncing()) return;
       if (textEditSession?.nodeId === nodeId) return;
       const sourceNode = findPenNode(sourceDocument, nodeId);
@@ -152,7 +150,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     }),
     editor.onEditorEvent("node:created", (node) => {
       sceneValues.set(node.id, sceneNodePropertySnapshot(node));
-      reconcileTimeShaderAnimation();
+      if (shaderPresence.update(node)) reconcileTimeShaderAnimation();
       if (mutationBoundary.isRendererSyncing()) return;
       const insertion = mutationBoundary.isReplayingHistory()
         ? callbacks.restoreDeletedNode?.(node.id) ?? sceneNodeInsertionMutation(editor, node)
@@ -165,9 +163,10 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
     }),
     editor.onEditorEvent("node:deleted", (nodeId) => {
       sceneValues.delete(nodeId);
+      const changedTimeShader = shaderPresence.remove(nodeId);
+      if (changedTimeShader) reconcileTimeShaderAnimation();
       if (mutationBoundary.isRendererSyncing()) return;
       emitMutations([{ kind: "delete-node", nodeId }]);
-      reconcileTimeShaderAnimation();
     }),
     editor.onEditorEvent("node:reparented", (nodeId, _oldParentId, newParentId) => {
       if (mutationBoundary.isRendererSyncing()) return;
@@ -345,6 +344,7 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
           if (selectedId) instanceHydrator.hydrateForNode(selectedId);
           instanceHydrator.hydrateVisible();
           sceneValues = captureSceneValues(editor);
+          shaderPresence.replaceGraph(editor.graph);
           reconcileTimeShaderAnimation();
         });
       } finally {

@@ -362,7 +362,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100000,
-            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
+            "description": "JavaScript using Get, GetVariables, GetAxes, SetVariable, SetAxis, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
           }
         },
         "required": ["documentId", "code"],

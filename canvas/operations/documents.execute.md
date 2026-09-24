@@ -388,9 +388,21 @@ add it to the source frame's typed property interface and bind it deliberately.
 ## What this operation leaves alone
 
 Canvas preserves existing variables, axes, imported resources, advanced content, and unknown
-future fields. This operation does not author document-root variables or axes. Keep existing
-`$variable` references and update the smallest supported node rather than replacing surrounding
-structures.
+future fields. Use `GetVariables()` and `GetAxes()` to inspect document-root definitions;
+`SetVariable(name, definition)` and `SetAxis(name, definition)` create or update one definition
+without replacing unrelated definitions. For example:
+
+```js
+SetAxis("appearance", { modes: [{ name: "light" }, { name: "dark" }] });
+SetVariable("ink", {
+  tokenType: "color",
+  cascade: [{ value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } }]
+});
+Update("#heading", { fill: "$ink" });
+```
+
+Variable types and axis modes are validated before the edit commits. Keep existing `$variable`
+references and update the smallest supported node rather than replacing surrounding structures.
 
 Preserve approved content, brand decisions, reusable structure, and newer collaborative work.
 Prefer the smallest change that achieves the intent: update a property rather than replacing a node,
