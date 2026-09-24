@@ -317,6 +317,10 @@ globalThis.GetAxes = function GetAxes() {
   return __readonly(__clone(__document.axes || {}));
 };
 
+globalThis.GetParagraphStyles = function GetParagraphStyles() {
+  return __readonly(__clone(__document.paragraphStyles || {}));
+};
+
 globalThis.SetVariable = function SetVariable(name, definition) {
   if (typeof name !== "string" || !name.trim()) throw new TypeError("SetVariable requires a non-empty name.");
   if (!definition || typeof definition !== "object" || Array.isArray(definition)) {
@@ -340,6 +344,20 @@ globalThis.SetAxis = function SetAxis(name, definition) {
   __document.axes ||= {};
   if (JSON.stringify(__document.axes[name]) !== JSON.stringify(next)) {
     __document.axes[name] = next;
+    __changed = true;
+  }
+  return name;
+};
+
+globalThis.SetParagraphStyle = function SetParagraphStyle(name, definition) {
+  if (typeof name !== "string" || !name.trim()) throw new TypeError("SetParagraphStyle requires a non-empty name.");
+  if (!definition || typeof definition !== "object" || Array.isArray(definition)) {
+    throw new TypeError("SetParagraphStyle requires a style definition object.");
+  }
+  const next = __clone(definition);
+  __document.paragraphStyles ||= {};
+  if (JSON.stringify(__document.paragraphStyles[name]) !== JSON.stringify(next)) {
+    __document.paragraphStyles[name] = next;
     __changed = true;
   }
   return name;

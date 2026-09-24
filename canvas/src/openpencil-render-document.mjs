@@ -47,7 +47,6 @@ const BOOLEAN_PROPERTIES = new Set([
 ]);
 const STRING_PROPERTIES = new Set([
   "fontFamily",
-  "fontWeight",
   "fontStyle",
   "content",
   "model",
@@ -55,11 +54,13 @@ const STRING_PROPERTIES = new Set([
   "icon",
   "color",
 ]);
+const NUMBER_OR_STRING_PROPERTIES = new Set(["fontWeight"]);
 const NUMERIC_ARRAY_PROPERTIES = new Set(["cornerRadius", "padding"]);
 const VARIABLE_PROPERTIES = new Set([
   ...NUMERIC_PROPERTIES,
   ...BOOLEAN_PROPERTIES,
   ...STRING_PROPERTIES,
+  ...NUMBER_OR_STRING_PROPERTIES,
   ...NUMERIC_ARRAY_PROPERTIES,
   "fill",
   "stroke",
@@ -118,7 +119,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
         }
         return resolved.value;
       }
-      if (!STRING_PROPERTIES.has(property)) return value;
+      if (!STRING_PROPERTIES.has(property) && !NUMBER_OR_STRING_PROPERTIES.has(property)) return value;
       let failed = false;
       const interpolated = value.replace(VARIABLE_INTERPOLATION_PATTERN, (token, name) => {
         const resolved = resolveReference(`$${name}`, theme);
@@ -200,6 +201,18 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
         continue;
       }
       object[property] = resolveValue(value, property, theme, nodeId);
+    }
+    if (object.type === "text") {
+      const styleNames = new Set([object.style, ...(object.paragraphs ?? []).map((paragraph) => paragraph.style)].filter(Boolean));
+      if (styleNames.size) {
+        object.__canvasResolvedParagraphStyles = Object.fromEntries([...styleNames].filter((name) => document.paragraphStyles?.[name]).map((name) => [name, resolveObject(structuredClone(document.paragraphStyles[name]), theme, nodeId)]));
+        const wholeStyle = object.style && object.__canvasResolvedParagraphStyles[object.style];
+        if (wholeStyle) {
+          for (const property of ["fontFamily", "fontSize", "fontWeight", "fontStyle", "lineHeight", "letterSpacing", "fill", "underline", "strikethrough"]) {
+            if (wholeStyle[property] !== undefined) object[property] = wholeStyle[property];
+          }
+        }
+      }
     }
     if (object.type === "icon") compileIcon(object, issues, nodeId);
     normalizePencilNode(object, issues, nodeId);
@@ -852,6 +865,7 @@ function validPropertyValue(property, value) {
     return typeof value === "number" && Number.isFinite(value);
   }
   if (BOOLEAN_PROPERTIES.has(property)) return typeof value === "boolean";
+  if (NUMBER_OR_STRING_PROPERTIES.has(property)) return typeof value === "string" || typeof value === "number" && Number.isFinite(value);
   if (STRING_PROPERTIES.has(property)) return typeof value === "string";
   if (NUMERIC_ARRAY_PROPERTIES.has(property)) {
     return typeof value === "number" && Number.isFinite(value)
@@ -867,6 +881,7 @@ function safeFallback(property, original) {
     return 0;
   }
   if (BOOLEAN_PROPERTIES.has(property)) return property === "enabled";
+  if (NUMBER_OR_STRING_PROPERTIES.has(property)) return 400;
   if (STRING_PROPERTIES.has(property)) return property === "color" ? "#00000000" : "";
   if (NUMERIC_ARRAY_PROPERTIES.has(property)) return 0;
   if (property === "fill" || property === "stroke") return null;

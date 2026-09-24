@@ -770,6 +770,49 @@ test("canonical named paragraph styles reach CanvasKit runs and marks override t
   assert.deepEqual(runs.at(-1).style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
 });
 
+test("whole-text named style reaches live graph without character marks", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17", module: "web", axes: {},
+    variables: { ink: { tokenType: "color", cascade: [{ value: "#123456" }] } },
+    paragraphStyles: { title: { fontSize: 22, fontWeight: 600, fill: "$ink" } },
+    children: [{ id: "title", type: "text", width: 200, height: 50, content: "Hello", style: "title", paragraphs: [{ from: 0, to: 5 }] }],
+  });
+  const runs = graph.getNode("title").styleRuns;
+  assert.equal(runs[0].style.fontSize, 22);
+  assert.equal(runs[0].style.fontWeight, 600);
+  assert.deepEqual(runs[0].style.fills[0].color, { r: 0x12 / 255, g: 0x34 / 255, b: 0x56 / 255, a: 1 });
+});
+
+test("component text instances keep named styles and resolve their own appearance mode", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: { ink: { tokenType: "color", cascade: [{ value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } }] } },
+    paragraphStyles: { title: { fontSize: 22, fill: "$ink" } },
+    children: [
+      { id: "component", type: "frame", width: 100, height: 40, children: [{ id: "label", type: "text", width: 80, height: 30, content: "Hi", style: "title", paragraphs: [{ from: 0, to: 2 }] }] },
+      { id: "instance", type: "ref", ref: "component", x: 200, modes: { appearance: "dark" } },
+    ],
+  });
+  const run = graph.getNode("instance/label").styleRuns[0];
+  assert.equal(run.style.fontSize, 22);
+  assert.deepEqual(run.style.fills[0].color, { r: 0xee / 255, g: 0xee / 255, b: 0xee / 255, a: 1 });
+});
+
+test("explicit auto-growth text with a whole-text style never keeps the 10000px placeholder", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17", axes: {}, variables: { size: { tokenType: "number", cascade: [{ value: 15 }] } },
+    paragraphStyles: { label: { fontSize: "${size}", fontFamily: "Inter", fontWeight: 600 } },
+    children: [{ id: "button", type: "frame", layout: "horizontal", width: "fit_content", height: 44, padding: [0, 16], children: [
+      { id: "label", type: "text", content: "Button", style: "label", textGrowth: "auto", bind: { content: "$props.label" } },
+    ], properties: { label: { type: "string", default: "Button" } } }],
+  });
+  const text = graph.getNode("label");
+  assert.equal(text.fontSize, 15);
+  assert.ok(text.width > 35 && text.width < 80, `unexpected width ${text.width}`);
+  assert.ok(graph.getNode("button").width < 120);
+});
+
 test("Pencil image opacity and blend mode survive asset binding", () => {
   const graph = createOpenPencilGraph({
     version: "2.17",

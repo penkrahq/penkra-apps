@@ -116,7 +116,10 @@ export function interpolateRichText(node, values) {
   let content = node.content;
   let marks = [...node.marks ?? []];
   let paragraphs = [...node.paragraphs ?? []];
-  const tokens = interpolationTokens(content).reverse();
+  const legacy = /^\$([A-Za-z][\w-]*(?:\.[\w-]+)*)$/u.exec(content);
+  const tokens = legacy && Object.hasOwn(values, legacy[1])
+    ? [{ name: legacy[1], from: 0, to: content.length }]
+    : interpolationTokens(content).reverse();
   for (const token of tokens) {
     if (!Object.hasOwn(values, token.name)) throw new Error(`Variable ${token.name} was not found.`);
     const replacement = String(values[token.name]);

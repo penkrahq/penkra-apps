@@ -3,6 +3,27 @@ import test from "node:test";
 
 import { lowerCanvasModelForOpenPencil, prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 
+test("whole-text styles resolve per frame mode and numeric font weights remain numeric", () => {
+  const source = {
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: {
+      ink: { tokenType: "color", cascade: [{ value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } }] },
+      weight: { tokenType: "number", cascade: [{ value: 600 }] },
+    },
+    paragraphStyles: { title: { fill: "$ink", fontSize: 20, fontWeight: "$weight" } },
+    children: [
+      { id: "light", type: "frame", children: [{ id: "light-text", type: "text", style: "title", content: "Hello" }] },
+      { id: "dark", type: "frame", modes: { appearance: "dark" }, children: [{ id: "dark-text", type: "text", style: "title", content: "Hello" }] },
+    ],
+  };
+  const result = prepareOpenPencilRenderDocument(source);
+  assert.deepEqual(result.issues, []);
+  assert.equal(result.document.children[0].children[0].__canvasResolvedParagraphStyles.title.fill, "#111111");
+  assert.equal(result.document.children[1].children[0].__canvasResolvedParagraphStyles.title.fill, "#eeeeee");
+  assert.equal(result.document.children[0].children[0].__canvasResolvedParagraphStyles.title.fontWeight, 600);
+  assert.equal(source.children[0].children[0].__canvasResolvedParagraphStyles, undefined);
+});
+
 test("Canvas stroke width and dash lower into renderer fields without mutating the source", () => {
   const source = { children: [{ id: "path", type: "path", width: 100, height: 100, geometry: "M0 0 H100", viewBox: [0, 0, 100, 100], stroke: { fill: "#123456", width: 8, dash: [12, 6], cap: "round" } }] };
   const result = prepareOpenPencilRenderDocument(source);

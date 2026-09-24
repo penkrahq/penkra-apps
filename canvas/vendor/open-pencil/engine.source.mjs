@@ -89489,7 +89489,7 @@ function aabbFromCorners(corners) {
   }
   return { minX, minY, maxX, maxY };
 }
-function computeNodeVisualBounds(node, graph) {
+function computeNodeVisualBounds(node, graph, includeEffects = true) {
   const matrix = getWorldMatrix(node, graph);
   const stroke = strokeOverflow(node.strokes);
   const baseCorners = Matrix.mapPoints(matrix, [
@@ -89508,11 +89508,13 @@ function computeNodeVisualBounds(node, graph) {
     { x: baseCorners[4], y: baseCorners[5] },
     { x: baseCorners[6], y: baseCorners[7] }
   ]);
-  const effects = effectOverflow(node.effects);
-  bounds.minX -= effects.left;
-  bounds.minY -= effects.top;
-  bounds.maxX += effects.right;
-  bounds.maxY += effects.bottom;
+  if (includeEffects) {
+    const effects = effectOverflow(node.effects);
+    bounds.minX -= effects.left;
+    bounds.minY -= effects.top;
+    bounds.maxX += effects.right;
+    bounds.maxY += effects.bottom;
+  }
   const hasNonInsideStroke = node.strokes.some((stroke2) => stroke2.visible && stroke2.align !== "INSIDE");
   const localGeometry = geometryBlobBounds([
     ...node.fillGeometry,
@@ -89613,7 +89615,8 @@ function buildParentOverflowResult(child, childBounds, parent, parentBounds) {
     return null;
   const outRatio = outArea / childArea;
   const severity = parentOverflowSeverity(outRatio);
-  const message = `${child.type === "TEXT" ? "Text" : `Node`} "${child.name}" extends ${Math.round(outArea)}px outside parent "${parent.name}"`;
+  const maxOutset = Math.max(0, parentBounds.minX - childBounds.minX, childBounds.maxX - parentBounds.maxX, parentBounds.minY - childBounds.minY, childBounds.maxY - parentBounds.maxY);
+  const message = `${child.type === "TEXT" ? "Text" : `Node`} "${child.name}" extends ${Math.round(maxOutset)}px outside parent "${parent.name}"`;
   const suggestion = child.type === "TEXT" ? "Set the parent to clip content or constrain text sizing (textAutoResize, maxLines)." : `Reposition inside "${parent.name}" or enable clip content on the parent.`;
   return makeOverlapItem("parent-overflow", severity, child, childBounds, parent, parentBounds, intersection2 ?? EMPTY_BOUNDS, message, suggestion, "overflow");
 }
@@ -89749,18 +89752,9 @@ function collectParentOverflows(candidates, graph, boundsCache, scope, minArea, 
     const parent = graph.getNode(child.parentId);
     if (!parent || parent.type === "CANVAS")
       continue;
-    const childEntry = boundsCache.get(child.id);
-    if (!childEntry || childEntry.area <= 0)
-      continue;
-    let parentEntry = boundsCache.get(parent.id);
-    if (!parentEntry) {
-      const computed = computeNodeBounds(parent, graph);
-      if (computed.area <= 0)
-        continue;
-      parentEntry = { node: parent, ...computed };
-      boundsCache.set(parent.id, parentEntry);
-    }
-    const item = buildParentOverflowResult(child, childEntry.bounds, parent, parentEntry.bounds);
+    const childBounds = computeNodeVisualBounds(child, graph, false);
+    const parentBounds = computeNodeVisualBounds(parent, graph, false);
+    const item = buildParentOverflowResult(child, childBounds, parent, parentBounds);
     if (item && matchesParentOverflowScope(scope) && passesThresholds(item, minArea, minRatio, categoryFilter, severityFilter)) {
       overlaps.push(item);
     }
@@ -90996,7 +90990,7 @@ function createSceneNode(pen, parentId, graph, ctx, componentIds, penSources) {
     if (pen.height === undefined) {
       node.height = node.fontSize * (node.lineHeight ? node.lineHeight / node.fontSize : 1.2);
     }
-    if (pen.width === undefined && !pen.textGrowth)
+    if (pen.width === undefined && (pen.textGrowth === undefined || pen.textGrowth === "auto"))
       node.width = estimatePenTextWidth(node.text, node.fontSize, node.letterSpacing);
   }
   if (pen.type === "icon" && pen.__canvasIcon) {

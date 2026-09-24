@@ -31,6 +31,25 @@ test("root token authoring rejects invalid definitions and does not report no-op
   assert.equal(second.changed, false);
 });
 
+test("scripts author and read named paragraph styles without replacing other styles", async () => {
+  const source = { version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: { body: { fontSize: 14 } }, imports: {}, flows: [], children: [
+    { id: "heading", type: "text", content: "Hello", paragraphs: [{ from: 0, to: 5 }], marks: [] },
+  ] };
+  const result = await executeCanvasScript(source, `
+    SetParagraphStyle("title", { fontSize: 24, fontWeight: 600, fill: "#123456" });
+    Update("#heading", { style: "title" });
+    return GetParagraphStyles();
+  `);
+  assert.equal(result.changed, true);
+  assert.deepEqual(result.result, result.document.paragraphStyles);
+  assert.deepEqual(result.document.paragraphStyles.body, source.paragraphStyles.body);
+  assert.equal(validateCanvasDocument(result.document).valid, true);
+  const unchanged = await executeCanvasScript(result.document, 'SetParagraphStyle("title", { fontSize: 24, fontWeight: 600, fill: "#123456" });');
+  assert.equal(unchanged.changed, false);
+  await assert.rejects(() => executeCanvasScript(source, 'SetParagraphStyle("", {});'), /non-empty name/u);
+  await assert.rejects(() => executeCanvasScript(source, 'SetParagraphStyle("title", []);'), /definition object/u);
+});
+
 test("generic module assignment preserves artwork and is one-way", async () => {
   const source = { version: "2.17", module: "generic", children: [{ id: "art", type: "rectangle", width: 40, height: 20, fill: "#123456" }] };
   for (const module of ["deck", "web", "mobile"]) {

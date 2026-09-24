@@ -42,10 +42,19 @@ test("document inspection reports a child extending beyond a non-clipping parent
       kind: "parent-overflow",
       ancestorId: "fixed-parent",
       severity: "critical",
-      message: 'Node "rectangle" extends 400px outside parent "frame"',
+      message: 'Node "rectangle" extends 20px outside parent "frame"',
       suggestion: 'Reposition inside "frame" or enable clip content on the parent.',
     }],
   );
+});
+
+test("outer shadow bleed is not reported as structural parent overflow", () => {
+  const { document, nodes } = documentWithOverflow();
+  const child = document.children[0].children[0];
+  child.x = 20;
+  child.effect = { type: "shadow", shadowType: "outer", blur: 24, offset: { x: 8, y: 8 }, color: "#00000080" };
+  const inspection = inspectDocument(document, nodes);
+  assert.equal(inspection.issues.some((issue) => issue.kind === "parent-overflow"), false);
 });
 
 test("document inspection does not report visible overflow through a clipping parent", () => {

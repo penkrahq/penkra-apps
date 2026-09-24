@@ -423,7 +423,8 @@ export function richTextRuns(node, paragraphStyles, documentLanguage = null) {
       const from = Math.max(mark.from, paragraph.from); const to = Math.min(mark.to, paragraph.to);
       return from < to ? [{ ...mark, from: from - paragraph.from, to: to - paragraph.from }] : [];
     });
-    const base = { ...textBase(node), ...(paragraph.style ? paragraphStyles[paragraph.style] : {}) };
+    const styleName = paragraph.style ?? node.style;
+    const base = { ...textBase(node), ...(styleName ? paragraphStyles[styleName] : {}) };
     return flattenMarks(paragraphContent, marks, base).map((run) => ({ ...run, from: run.from + paragraph.from, to: run.to + paragraph.from }));
   }).map((run) => {
     if (run.lang === undefined) return run.language === undefined && documentLanguage ? { ...run, language: documentLanguage } : run;
