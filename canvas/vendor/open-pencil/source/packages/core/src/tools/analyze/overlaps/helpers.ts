@@ -272,7 +272,7 @@ function aabbFromCorners(corners: Vector[]): VisualBounds {
  * fill/stroke geometry (transformed through the world matrix), and
  * text-decoration overflow (approximate: adds to canvas maxY).
  */
-function computeNodeVisualBounds(node: SceneNode, graph: SceneGraph): VisualBounds {
+export function computeNodeVisualBounds(node: SceneNode, graph: SceneGraph, includeEffects = true): VisualBounds {
   const matrix = getWorldMatrix(node, graph)
   // Expand the local rectangle by the stroke overflow *before* transforming
   // through the world matrix. Expanding the already-rotated AABB by `stroke`
@@ -298,11 +298,13 @@ function computeNodeVisualBounds(node: SceneNode, graph: SceneGraph): VisualBoun
 
   // Effects (drop shadow, blur) radiate in screen space, so expanding the
   // canvas-space AABB by the directional overflow is correct regardless of rotation.
-  const effects = effectOverflow(node.effects)
-  bounds.minX -= effects.left
-  bounds.minY -= effects.top
-  bounds.maxX += effects.right
-  bounds.maxY += effects.bottom
+  if (includeEffects) {
+    const effects = effectOverflow(node.effects)
+    bounds.minX -= effects.left
+    bounds.minY -= effects.top
+    bounds.maxX += effects.right
+    bounds.maxY += effects.bottom
+  }
 
   const hasNonInsideStroke = node.strokes.some(
     (stroke) => stroke.visible && stroke.align !== 'INSIDE'
@@ -447,7 +449,14 @@ export function buildParentOverflowResult(
 
   const outRatio = outArea / childArea
   const severity = parentOverflowSeverity(outRatio)
-  const message = `${child.type === 'TEXT' ? 'Text' : `Node`} "${child.name}" extends ${Math.round(outArea)}px outside parent "${parent.name}"`
+  const maxOutset = Math.max(
+    0,
+    parentBounds.minX - childBounds.minX,
+    childBounds.maxX - parentBounds.maxX,
+    parentBounds.minY - childBounds.minY,
+    childBounds.maxY - parentBounds.maxY
+  )
+  const message = `${child.type === 'TEXT' ? 'Text' : `Node`} "${child.name}" extends ${Math.round(maxOutset)}px outside parent "${parent.name}"`
   const suggestion =
     child.type === 'TEXT'
       ? 'Set the parent to clip content or constrain text sizing (textAutoResize, maxLines).'

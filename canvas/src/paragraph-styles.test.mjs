@@ -15,3 +15,16 @@ test("named paragraph styles resolve variables and feed text runs", () => {
   const runs = richTextRuns({ content: "Hello", paragraphs: [{ from: 0, to: 5, style: "body" }], marks: [] }, resolved.paragraphStyles);
   assert.deepEqual(runs, [{ from: 0, to: 5, fontFamily: "Inter", fontSize: 18, fill: "#123456" }]);
 });
+
+test("whole-text style supplies defaults, paragraph style overrides it, and marks override both", () => {
+  const styles = { title: { fontSize: 24, fill: "#111111" }, accent: { fontSize: 18, fill: "#222222" } };
+  const runs = richTextRuns({
+    content: "Hello World", style: "title",
+    paragraphs: [{ from: 0, to: 5 }, { from: 5, to: 11, style: "accent" }],
+    marks: [{ from: 6, to: 11, type: "fill", value: "#333333" }],
+  }, styles);
+  assert.equal(runs[0].fontSize, 24);
+  assert.equal(runs[0].fill, "#111111");
+  assert.equal(runs.at(-1).fontSize, 18);
+  assert.equal(runs.at(-1).fill, "#333333");
+});

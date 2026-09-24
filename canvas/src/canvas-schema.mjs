@@ -263,6 +263,7 @@ function validateNotes(nodes, parents, errors) {
 
 function validateAccessibility(document, nodes, errors) {
   for (const node of nodes.values()) {
+    if (node.type === "text" && node.style !== undefined && !Object.hasOwn(document.paragraphStyles ?? {}, node.style)) errors.push(`${node.id}.style references missing paragraph style ${node.style}.`);
     if (node.lang !== undefined && !validLanguage(node.lang)) errors.push(`${node.id}.lang must be a valid BCP-47 language tag.`);
     for (const [index, mark] of (node.marks ?? []).entries()) if (mark.type === "lang" && !validLanguage(mark.value)) errors.push(`${node.id}.marks[${index}] lang must be a valid BCP-47 tag.`);
     for (const [index, paragraph] of (node.paragraphs ?? []).entries()) {

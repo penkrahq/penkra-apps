@@ -16,6 +16,28 @@ test("component expansion preserves instance placement, sizing, opacity and imag
 });
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
 
+test("legacy whole-value tokens export as typed values without changing literals or component bindings", () => {
+  const source = { axes: {}, variables: {
+    ink: { tokenType: "color", cascade: [{ value: "#123456" }] },
+    radius: { tokenType: "number", cascade: [{ value: 12 }] },
+    alias: { tokenType: "number", cascade: [{ value: "$radius" }] },
+    name: { tokenType: "string", cascade: [{ value: "Ayo" }] },
+  }, paragraphStyles: {}, imports: {}, flows: [], children: [
+    { id: "button", type: "frame", fill: "$ink", cornerRadius: "$alias", gap: "$radius", children: [
+      { id: "label", type: "text", content: "$name", paragraphs: [{ from: 0, to: 5 }], marks: [] },
+      { id: "price", type: "text", content: "$18.40", paragraphs: [{ from: 0, to: 6 }], marks: [] },
+      { id: "binding", type: "text", content: "$props.label", paragraphs: [{ from: 0, to: 12 }], marks: [] },
+    ] },
+  ] };
+  const resolved = resolveCanvasDocument(source).document.children[0];
+  assert.equal(resolved.fill, "#123456");
+  assert.equal(resolved.cornerRadius, 12);
+  assert.equal(resolved.gap, 12);
+  assert.equal(resolved.children[0].content, "Ayo");
+  assert.equal(resolved.children[1].content, "$18.40");
+  assert.equal(resolved.children[2].content, "$props.label");
+});
+
 test("dotted aliases retain numeric types and rich-text ranges follow interpolation", () => {
   const token = (value) => ({ tokenType: "number", cascade: [{ value }] });
   const content = "Size ${space.600}";

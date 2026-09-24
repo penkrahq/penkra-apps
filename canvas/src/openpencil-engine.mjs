@@ -106,6 +106,7 @@ export function createOpenPencilGraph(
   );
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
+    applyInstanceTextStyles(graph, renderDocument);
     applyImageAssets(graph, renderDocument, assets);
     applyShaderAssets(graph, renderDocument, assets);
     walkPenNodes(renderDocument.children, (renderNode) => {
@@ -136,6 +137,7 @@ export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
     () => hydrateCanvasSceneGraphInstances(graph, document, instanceIds),
   );
   if (hydratedIds.length === 0) return hydratedIds;
+  applyInstanceTextStyles(graph, document, hydratedIds);
 
   let subtreeDurationMs = 0;
   let ancestorDurationMs = 0;
@@ -339,8 +341,8 @@ function applyPencilSceneProperties(graph, document) {
     if (sourceNode.type === "text" && sourceNode.textGrowth === "fixed-width-height") {
       changes.textAutoResize = "NONE";
     }
-    if (sourceNode.type === "text" && Array.isArray(sourceNode.marks)) {
-      changes.styleRuns = canvasStyleRuns(sourceNode, document.paragraphStyles ?? {});
+    if (sourceNode.type === "text" && (Array.isArray(sourceNode.marks) || sourceNode.style || sourceNode.paragraphs?.some((paragraph) => paragraph.style))) {
+      changes.styleRuns = canvasStyleRuns(sourceNode, sourceNode.__canvasResolvedParagraphStyles ?? document.paragraphStyles ?? {});
     }
     if (sourceNode.type === "ellipse" && (
       sourceNode.innerRadius !== undefined
@@ -358,6 +360,48 @@ function applyPencilSceneProperties(graph, document) {
   });
 }
 
+function applyInstanceTextStyles(graph, document, instanceIds = null) {
+  const sources = new Map();
+  walkPenNodes(document.children, (node) => sources.set(node.id, node));
+  const styleCache = new Map();
+  for (const sceneNode of graph.nodes.values()) {
+    if (sceneNode.type !== "TEXT" || !sceneNode.componentId || sceneNode.id === sceneNode.componentId) continue;
+    if (instanceIds && !instanceIds.some((id) => sceneNode.id.startsWith(`${id}/`))) continue;
+    const source = sources.get(sceneNode.componentId);
+    if (!source || !(source.style || source.paragraphs?.some((paragraph) => paragraph.style) || source.marks?.length)) continue;
+    const theme = {};
+    let ancestor = sceneNode.parentId ? graph.getNode(sceneNode.parentId) : null;
+    const instanceAncestors = [];
+    while (ancestor) {
+      if (ancestor.type === "INSTANCE") instanceAncestors.unshift(ancestor);
+      ancestor = ancestor.parentId ? graph.getNode(ancestor.parentId) : null;
+    }
+    for (const instance of instanceAncestors) Object.assign(theme, sources.get(instance.id)?.theme ?? {});
+    Object.assign(theme, source.theme ?? {});
+    const key = JSON.stringify(theme);
+    let styles = styleCache.get(key);
+    if (!styles) {
+      const styleNames = Object.keys(document.paragraphStyles ?? {});
+      const probes = prepareOpenPencilRenderDocument({
+        axes: document.axes, variables: document.variables, paragraphStyles: document.paragraphStyles,
+        children: styleNames.map((name, index) => ({ id: `__canvas_style_probe_${index}`, type: "text", content: "x", style: name, theme })),
+      }).document.children;
+      styles = Object.fromEntries(probes.map((probe, index) => [styleNames[index], probe.__canvasResolvedParagraphStyles?.[styleNames[index]] ?? {}]));
+      styleCache.set(key, styles);
+    }
+    const content = sceneNode.text ?? source.content ?? "";
+    const unchangedContent = content === source.content;
+    const styledSource = {
+      ...source,
+      content,
+      paragraphs: unchangedContent ? source.paragraphs : paragraphPartition(content),
+      marks: unchangedContent ? source.marks : [],
+    };
+    const runs = canvasStyleRuns(styledSource, styles);
+    if (runs.length) graph.updateNode(sceneNode.id, { styleRuns: runs });
+  }
+}
+
 function canvasStyleRuns(node, paragraphStyles) {
   const content = node.content ?? "";
   const paragraphs = node.paragraphs?.length ? node.paragraphs : content ? [{ from: 0, to: content.length }] : [];
@@ -367,7 +411,8 @@ function canvasStyleRuns(node, paragraphStyles) {
       const to = Math.min(mark.to, paragraph.to);
       return from < to ? [{ ...mark, from: from - paragraph.from, to: to - paragraph.from }] : [];
     });
-    const base = paragraph.style ? paragraphStyles[paragraph.style] ?? {} : {};
+    const styleName = paragraph.style ?? node.style;
+    const base = styleName ? paragraphStyles[styleName] ?? {} : {};
     return flattenMarks(content.slice(paragraph.from, paragraph.to), marks, base)
       .map((run) => ({ ...run, from: run.from + paragraph.from, to: run.to + paragraph.from }));
   });

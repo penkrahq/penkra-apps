@@ -284,6 +284,7 @@ test("read-only execute reports real inspection without advancing the source seq
   });
 
   assert.equal(result.changed, false);
+  assert.equal(result.issueSummary.inspected, true);
   assert.equal(result.operationId, null);
   assert.equal(result.sequence, 7);
   assert.deepEqual(result.touchedNodeIds, []);
@@ -295,6 +296,7 @@ test("read-only execute reports real inspection without advancing the source seq
     code: 'return Get("#frame")[0].node.id;',
   });
   assert.equal(repeated.result, "frame");
+  assert.equal(repeated.issueSummary.inspected, false);
   assert.equal(
     requests.filter((request) => request.path === "/projects/document-1?chunked=auto").length,
     1,
@@ -303,6 +305,31 @@ test("read-only execute reports real inspection without advancing the source seq
     requests.filter((request) => request.path === "/projects/document-1/updates?afterSequence=7").length,
     1,
   );
+});
+
+test("execute summarizes review issues by default and permits an explicit full audit", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const source = { version: "2.17", children: [{
+    id: "frame", type: "frame", width: 100, height: 100, children: Array.from({ length: 25 }, (_, index) => ({
+      id: `out-${index}`, type: "rectangle", layoutPosition: "absolute", x: 120 + index, y: 0, width: 10, height: 10,
+    })),
+  }] };
+  globalThis.penkra = {
+    account: readableDocumentAccount(source, requests),
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?issues-test=${Date.now()}`);
+  const input = { documentId: "document-1", code: 'return Get("#frame")[0].bounds;' };
+  const summary = await handlers.get("documents.execute")(input);
+  assert.equal(summary.issueSummary.total, 25);
+  assert.equal(summary.issueSummary.inspected, true);
+  assert.equal(summary.issues.length, 20);
+  assert.equal(summary.issueSummary.omitted, 5);
+  const full = await handlers.get("documents.execute")({ ...input, issueDetail: "all" });
+  assert.equal(full.issues.length, 25);
+  assert.equal(full.issueSummary.omitted, 0);
+  assert.equal(requests.some((request) => request.method === "POST"), false);
 });
 
 test("a projection-based edit rehydrates once and rejects a newer authoritative sequence", async () => {

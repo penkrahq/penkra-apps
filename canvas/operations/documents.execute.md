@@ -188,7 +188,7 @@ Insert("#container", {
 
 ## Typography
 
-Text must have visible `fill`. Use `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`,
+Text must have a visible `fill`, either directly or through a named style. Use `fontFamily`, `fontSize`, `fontWeight`, `fontStyle`,
 `letterSpacing`, `lineHeight`, `textAlign`, and `textAlignVertical` deliberately. `lineHeight` is a
 multiplier such as `1.2`, not a pixel measurement.
 
@@ -387,9 +387,9 @@ add it to the source frame's typed property interface and bind it deliberately.
 
 ## What this operation leaves alone
 
-Canvas preserves existing variables, axes, imported resources, advanced content, and unknown
-future fields. Use `GetVariables()` and `GetAxes()` to inspect document-root definitions;
-`SetVariable(name, definition)` and `SetAxis(name, definition)` create or update one definition
+Canvas preserves existing variables, axes, paragraph styles, imported resources, advanced content, and unknown
+future fields. Use `GetVariables()`, `GetAxes()`, and `GetParagraphStyles()` to inspect document-root definitions;
+`SetVariable(name, definition)`, `SetAxis(name, definition)`, and `SetParagraphStyle(name, definition)` create or update one definition
 without replacing unrelated definitions. For example:
 
 ```js
@@ -398,11 +398,20 @@ SetVariable("ink", {
   tokenType: "color",
   cascade: [{ value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } }]
 });
-Update("#heading", { fill: "$ink" });
+SetParagraphStyle("title", { fontSize: 24, fontWeight: 600, fill: "$ink" });
+Update("#heading", { style: "title" });
 ```
 
 Variable types and axis modes are validated before the edit commits. Keep existing `$variable`
 references and update the smallest supported node rather than replacing surrounding structures.
+Use `${variable}` for new references; exact `$variable` values remain supported for older documents.
+On text, `style` supplies the whole-text default; a paragraph's `style` overrides it, and
+character marks override both. A named style can itself contain variable references, including
+mode-specific colors. A frame's `modes` selects an axis mode for its subtree.
+
+`documents.execute` returns review-issue counts in `issueSummary` when `inspected` is true and up to 20
+prioritized issues in `issues` by default. Set `issueDetail: "all"` for a full audit; the
+default sample does not mean omitted issues were resolved.
 
 Preserve approved content, brand decisions, reusable structure, and newer collaborative work.
 Prefer the smallest change that achieves the intent: update a property rather than replacing a node,
@@ -570,7 +579,9 @@ Use the structured result as evidence for what happened:
   fidelity result;
 - `inspection` reports post-execution bounds and problems for touched nodes, including deletion
   markers; the contexts returned by `Get` during the script use pre-execution inspection;
-- `issues` reports problems found while validating or rendering the resulting document;
+- `issueSummary.inspected` says whether review ran; when true, it reports complete counts,
+  while `issues` returns a prioritized sample
+  unless `issueDetail: "all"` was requested;
 - `screenshots` describes the rendered PNG returned as image content.
 
 Do not infer visual correctness from `changed`, touched IDs, or an empty script error. Check

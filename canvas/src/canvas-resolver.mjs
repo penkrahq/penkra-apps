@@ -233,7 +233,7 @@ function resolveVariables(variables, modes, bindings) {
     const definition = variables[name];
     if (!definition || typeof definition !== "object" || !Array.isArray(definition.cascade)) throw new Error(`Variable ${name} must declare tokenType and cascade.`);
     const raw = resolveCascade(definition.cascade, { modes, props: {} });
-    const value = resolveVariableReferences(raw, resolve);
+    const value = resolveVariableReferences(raw, resolve, (alias) => Object.hasOwn(variables, alias));
     visiting.delete(name); output[name] = value; return value;
   };
   for (const name of Object.keys(variables)) resolve(name);
@@ -245,7 +245,7 @@ function resolveValue(value, variables, context) {
   return resolveVariableReferences(cascaded, (name) => {
     if (!Object.hasOwn(variables, name)) throw new Error(`Variable ${name} was not found.`);
     return variables[name];
-  });
+  }, (name) => Object.hasOwn(variables, name));
 }
 
 function resolveNestedCascades(value, context) {

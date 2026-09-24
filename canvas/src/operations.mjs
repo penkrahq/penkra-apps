@@ -164,7 +164,7 @@ runtime.operations.handle("documents.open", async ({ documentId }, context) => {
   return { documentId, tabId: tab.id };
 });
 
-runtime.operations.handle("documents.execute", async ({ documentId, code }, context) =>
+runtime.operations.handle("documents.execute", async ({ documentId, code, issueDetail = "summary" }, context) =>
   operationDocuments.run(documentId, async (documentState) => {
     const signal = context?.signal ?? new AbortController().signal;
     const { executeCanvasScript, scriptNeedsInspection } = await import("./script-runtime.mjs");
@@ -267,6 +267,13 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         execution.screenshots,
         await readDocumentAssets(api, documentId, [...(assetDescriptors ??= await api.listAssets(documentId)), ...uploadedAssets]),
       );
+    const issueSummary = summarizeExecutionIssues(issues, touchedNodeIds);
+    const returnedIssues = issueDetail === "all" ? issues : issueSummary.sample;
+    const returnedIssueSummary = {
+      ...issueSummary.counts,
+      inspected: Boolean(changedByScript || touchedNodeIds.length > 0 || inspectDocument),
+      omitted: issues.length - returnedIssues.length,
+    };
     if (!changedByScript) {
       return operationResult({
         documentId,
@@ -278,7 +285,8 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
         touchedNodeIds,
         svgConversions,
         inspection,
-        issues,
+        issues: returnedIssues,
+        issueSummary: returnedIssueSummary,
       }, screenshots);
     }
     signal.throwIfAborted();
@@ -325,7 +333,8 @@ runtime.operations.handle("documents.execute", async ({ documentId, code }, cont
       touchedNodeIds,
       svgConversions,
       inspection,
-      issues,
+      issues: returnedIssues,
+      issueSummary: returnedIssueSummary,
     }, screenshots);
   }),
 );
@@ -463,6 +472,25 @@ function authoritativeSequence(payload) {
     Number(payload.snapshot?.throughSequence ?? 0),
     ...(payload.updates ?? []).map((update) => Number(update.sequence ?? 0)),
   );
+}
+
+function summarizeExecutionIssues(issues, touchedNodeIds) {
+  const byKind = {};
+  const bySeverity = {};
+  for (const issue of issues) {
+    const kind = issue.kind ?? "other";
+    const severity = issue.severity ?? "unspecified";
+    byKind[kind] = (byKind[kind] ?? 0) + 1;
+    bySeverity[severity] = (bySeverity[severity] ?? 0) + 1;
+  }
+  const touched = new Set(touchedNodeIds);
+  const rank = { critical: 0, major: 1, minor: 2, info: 3 };
+  const sample = issues.map((issue, index) => ({ issue, index }))
+    .sort((a, b) => Number(touched.has(b.issue.nodeId)) - Number(touched.has(a.issue.nodeId))
+      || (rank[a.issue.severity] ?? 4) - (rank[b.issue.severity] ?? 4)
+      || a.index - b.index)
+    .slice(0, 20).map(({ issue }) => issue);
+  return { sample, counts: { total: issues.length, omitted: issues.length - sample.length, byKind, bySeverity } };
 }
 
 function resolveExportDestinations(pattern, sets) {

@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "compatibility": {
     "penkra": ">=0.12.6"
   },
@@ -362,7 +362,11 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100000,
-            "description": "JavaScript using Get, GetVariables, GetAxes, SetVariable, SetAxis, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
+            "description": "JavaScript using Get, GetVariables, GetAxes, GetParagraphStyles, SetVariable, SetAxis, SetParagraphStyle, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
+          },
+          "issueDetail": {
+            "enum": ["summary", "all"],
+            "description": "Return a 20-issue severity-aware sample by default, or all review issues for a full audit. issueSummary always reports complete counts."
           }
         },
         "required": ["documentId", "code"],
@@ -430,6 +434,18 @@
               "additionalProperties": true
             }
           },
+          "issueSummary": {
+            "type": "object",
+            "properties": {
+              "total": { "type": "integer", "minimum": 0 },
+              "inspected": { "type": "boolean" },
+              "omitted": { "type": "integer", "minimum": 0 },
+              "byKind": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+              "bySeverity": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } }
+            },
+            "required": ["total", "inspected", "omitted", "byKind", "bySeverity"],
+            "additionalProperties": false
+          },
           "screenshots": {
             "type": "array",
             "maxItems": 1,
@@ -457,6 +473,7 @@
           "svgConversions",
           "inspection",
           "issues",
+          "issueSummary",
           "screenshots"
         ],
         "additionalProperties": false

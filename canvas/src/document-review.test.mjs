@@ -19,6 +19,14 @@ test("review accepts bound component text and ignores disabled source content", 
   assert.deepEqual(designValidationIssues(document), []);
 });
 
+test("review accepts text whose named style supplies its visible fill", () => {
+  const document = {
+    paragraphStyles: { title: { fill: "$ink", fontSize: 24 } },
+    children: [{ id: "title", type: "text", content: "Hello", style: "title", paragraphs: [{ from: 0, to: 5 }] }],
+  };
+  assert.deepEqual(designValidationIssues(document), []);
+});
+
 test("review reports only genuine empty text and invalid top-level fill sizing", () => {
   const document = { children: [
     { id: "component", type: "frame", width: "fill_container", children: [] },

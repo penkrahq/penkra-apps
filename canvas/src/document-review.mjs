@@ -49,7 +49,12 @@ export function designValidationIssues(document) {
         if (!hasBoundContent && (typeof node.content !== "string" || node.content.length === 0)) {
           issues.push({ nodeId: node.id, kind: "text-content", message: "This text node has no visible content." });
         }
-        if (!hasVisibleFill(node.fill)) {
+        const paragraphs = node.paragraphs?.length ? node.paragraphs : [{ style: node.style }];
+        const stylesSupplyFill = paragraphs.every((paragraph) => {
+          const styleName = paragraph.style ?? node.style;
+          return styleName && hasVisibleFill(document.paragraphStyles?.[styleName]?.fill);
+        });
+        if (!hasVisibleFill(node.fill) && !stylesSupplyFill) {
           issues.push({ nodeId: node.id, kind: "text-fill", message: "This text node has no enabled visible fill." });
         }
       }

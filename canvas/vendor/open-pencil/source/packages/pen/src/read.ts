@@ -459,7 +459,7 @@ function createSceneNode(
     if (pen.height === undefined) {
       node.height = node.fontSize * (node.lineHeight ? node.lineHeight / node.fontSize : 1.2)
     }
-    if (pen.width === undefined && !pen.textGrowth)
+    if (pen.width === undefined && (pen.textGrowth === undefined || pen.textGrowth === 'auto'))
       node.width = estimatePenTextWidth(node.text, node.fontSize, node.letterSpacing)
   }
 

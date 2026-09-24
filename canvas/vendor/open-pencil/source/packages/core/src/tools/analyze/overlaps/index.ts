@@ -9,6 +9,7 @@ import {
   buildParentOverflowResult,
   buildSiblingOverlapResult,
   computeNodeBounds,
+  computeNodeVisualBounds,
   filterNodes,
   findPageId,
   findPageIdByName,
@@ -137,16 +138,11 @@ function collectParentOverflows(
     if (!child.parentId) continue
     const parent = graph.getNode(child.parentId)
     if (!parent || parent.type === 'CANVAS') continue
-    const childEntry = boundsCache.get(child.id)
-    if (!childEntry || childEntry.area <= 0) continue
-    let parentEntry = boundsCache.get(parent.id)
-    if (!parentEntry) {
-      const computed = computeNodeBounds(parent, graph)
-      if (computed.area <= 0) continue
-      parentEntry = { node: parent, ...computed }
-      boundsCache.set(parent.id, parentEntry)
-    }
-    const item = buildParentOverflowResult(child, childEntry.bounds, parent, parentEntry.bounds)
+    // Structural containment is about painted geometry, not shadows or blurs.
+    // Visual bounds remain in the cache for sibling-overlap analysis.
+    const childBounds = computeNodeVisualBounds(child, graph, false)
+    const parentBounds = computeNodeVisualBounds(parent, graph, false)
+    const item = buildParentOverflowResult(child, childBounds, parent, parentBounds)
     if (
       item &&
       matchesParentOverflowScope(scope) &&
