@@ -31,6 +31,7 @@ const BUNDLED_FONT_FILES = new Map([
   ["Material Symbols Outlined|Regular", "material-symbols-outlined.woff2"],
   ["Material Symbols Rounded|Regular", "material-symbols-rounded.woff2"],
   ["Material Symbols Sharp|Regular", "material-symbols-sharp.woff2"],
+  ["Noto Color Emoji|Regular", "NotoColorEmoji.ttf"],
 ]);
 let fontsConfigured = false;
 let canvasKitWasmPath;
@@ -52,6 +53,7 @@ export async function takeDocumentScreenshots(document, requests, assets = new M
 }
 
 export async function rasterizeSvgImage(bytes, options = {}) {
+  configureScreenshotFonts();
   let source;
   try {
     source = new TextDecoder("utf-8", { fatal: true }).decode(bytes);

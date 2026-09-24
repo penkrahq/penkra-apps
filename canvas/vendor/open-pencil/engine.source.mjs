@@ -18980,6 +18980,11 @@ function fontFallbackManifest(userAgent) {
       script: "arabic",
       localFamilies: [...ARABIC_LOCAL_FALLBACK_FAMILIES],
       remoteFamilies: [...ARABIC_REMOTE_FALLBACK_FAMILIES]
+    },
+    emoji: {
+      script: "emoji",
+      localFamilies: ["Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji"],
+      remoteFamilies: []
     }
   };
 }
@@ -34151,6 +34156,8 @@ function collectGraphFontKeys(graph, nodeIds) {
   return Array.from(fontKeys, (key) => key.split("\x00"));
 }
 function fallbackScriptForCharacter(character, language) {
+  if (/[\p{Extended_Pictographic}\p{Regional_Indicator}]/u.test(character))
+    return "emoji";
   if (/\p{Script=Arabic}/u.test(character))
     return "arabic";
   if (/\p{Script=Hangul}/u.test(character))
@@ -48087,6 +48094,7 @@ class FontManager {
   cjkFallbackPromise = null;
   arabicFallbackFamilies = [];
   arabicFallbackPromise = null;
+  emojiFallbackFamilies = [];
   inFlightLocalFaces = new Map;
   attachProvider(_canvasKit, provider) {
     this.fontProviders.add(provider);
@@ -48377,7 +48385,7 @@ class FontManager {
       else if (script === "cjk" && !characters)
         result[script] = await this.ensureCJKFallback();
       else {
-        const target = script === "arabic" ? this.arabicFallbackFamilies : this.cjkFallbackFamilies;
+        const target = script === "arabic" ? this.arabicFallbackFamilies : script === "emoji" ? this.emojiFallbackFamilies : this.cjkFallbackFamilies;
         result[script] = await this.ensureFallbackFamilies(script, target, {}, characters);
       }
     }));
@@ -48385,6 +48393,9 @@ class FontManager {
   }
   getArabicFallbackFamilies() {
     return this.arabicFallbackFamilies;
+  }
+  getEmojiFallbackFamilies() {
+    return this.emojiFallbackFamilies;
   }
   setArabicFallbackFamily(family) {
     if (!this.arabicFallbackFamilies.includes(family)) {
@@ -48394,7 +48405,7 @@ class FontManager {
   async ensureFallbackFamilies(script, targetFamilies, options = {}, characters = "") {
     const manifest = fontFallbackEntry(script, this.fallbackUserAgent);
     for (const family of manifest.localFamilies) {
-      const buffer = await this.loadHostFont(family, "Regular") ?? await this.findLocalFont(family, undefined, {
+      const buffer = await this.loadHostFont(family, "Regular") ?? (script === "emoji" ? await this.loadLocalFont(family, "Regular") : null) ?? await this.findLocalFont(family, undefined, {
         allowVariable: options.allowVariableLocalFonts
       });
       if (buffer && this.registerAndCache(family, "Regular", buffer) && !targetFamilies.includes(family)) {
@@ -48546,7 +48557,8 @@ var init_fonts = __esm(() => {
     "Inter|SemiBold": "/Inter-SemiBold.ttf",
     "Inter|Bold": "/Inter-Bold.ttf",
     "Inter|ExtraBold": "/Inter-ExtraBold.ttf",
-    "Noto Naskh Arabic|Regular": "/NotoNaskhArabic-Regular.ttf"
+    "Noto Naskh Arabic|Regular": "/NotoNaskhArabic-Regular.ttf",
+    "Noto Color Emoji|Regular": "/NotoColorEmoji.ttf"
   };
   fontManager = new FontManager;
 });
@@ -48627,6 +48639,8 @@ function scriptCharRegex(script) {
   switch (script) {
     case "arabic":
       return ARABIC_CHAR_RE;
+    case "emoji":
+      return EMOJI_CHAR_RE;
     case "cjk-jp":
       return CJK_HIRAGANA_KATAKANA_RE;
     case "cjk-kr":
@@ -48638,6 +48652,8 @@ function scriptCharRegex(script) {
   }
 }
 function fontFallbackScriptForCharacter(char, language) {
+  if (EMOJI_CHAR_RE.test(char))
+    return "emoji";
   if (ARABIC_CHAR_RE.test(char))
     return "arabic";
   if (CJK_HANGUL_RE.test(char))
@@ -48685,6 +48701,8 @@ function textNeedsFallbackScript(node, script) {
 }
 function textNeededFallbackScripts(node) {
   const scripts = new Set;
+  if (textNeedsFallbackScript(node, "emoji"))
+    scripts.add("emoji");
   if (textNeedsFallbackScript(node, "arabic"))
     scripts.add("arabic");
   let missingIdeograph = false;
@@ -48716,7 +48734,7 @@ function textNeededFallbackScripts(node) {
     scripts.add(missingTraditionalIdeograph ? "cjk-tc" : "cjk-sc");
   return [...scripts];
 }
-var CJK_IDEOGRAPH_CHAR_RE, CJK_HIRAGANA_KATAKANA_RE, CJK_HANGUL_RE, CJK_CHAR_RE, ARABIC_CHAR_RE, TRADITIONAL_CJK_CHAR_RE;
+var CJK_IDEOGRAPH_CHAR_RE, CJK_HIRAGANA_KATAKANA_RE, CJK_HANGUL_RE, CJK_CHAR_RE, ARABIC_CHAR_RE, EMOJI_CHAR_RE, TRADITIONAL_CJK_CHAR_RE;
 var init_coverage = __esm(() => {
   init_constants8();
   init_fallbacks();
@@ -48727,6 +48745,7 @@ var init_coverage = __esm(() => {
   CJK_HANGUL_RE = /[\uac00-\ud7af]/u;
   CJK_CHAR_RE = /[\p{Script=Han}\u3040-\u30ff\uac00-\ud7af]/u;
   ARABIC_CHAR_RE = /[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/u;
+  EMOJI_CHAR_RE = /[\p{Extended_Pictographic}\p{Regional_Indicator}]/u;
   TRADITIONAL_CJK_CHAR_RE = /[萬與專業叢東絲丟兩嚴喪個豐臨為麗舉麼義烏樂喬習鄉書買亂爭於虧雲亞產畝親褻褸億僅從侖倉儀們價眾優會傘偉傳傷倫偽體餘傭僉俠侶僥偵側僑儈儕儂億儉儐儔儕償儘兒兌黨蘭關興茲養獸內岡冊寫軍農冪凍淨準涼減湊凜幾鳳凱別刪剛創劃劉則剎剗剛劑剮劍劇勸辦務動勵勁勞勢勛勝匯匱區協華單賣盧衛卻卽廠廳歷厲壓厭厙厠廈廚廄縣參雙發變敘葉號嘆嘍嘔嘖嘗嘜嘩嘮嘯嘰囑圍園圓圖團聖場壞塊堅壇壩壯聲殼壺處備複夠頭夾奪奮奧婦媽妝姍姦娛婁婦嬰孫學孿宮寬賓寢實寧審寫寶將專尋導壽對爾塵嘗堯尷屆屍屜屢層屨歲歸當錄彥徹徑從復恥悅悵悶惡惱惲愛愜愷態慘慚慟慣慪慫慮慳慶憂憊憐憑憒憚憤憫憮憲憶懇應懶懷懸懺懼懾戀戇戔戧戰戲戶拋挾捨捫掃掄掗掙掛採揀揚換揮損搖搗搶摑摜摟摯摳摶摻撈撐撓撚撝撟撣撥撫撲撳撻撾撿擁擄擇擊擋擠擡擬擯擰擱擲擴擺擾攏攔攖攙攜攝攢敵斂斃斕斬斷於時晉晝暈暉暘暢暫曄曆曇曉曏曖曠曨會朧東棟棧棲樣欄樹樺橋機橢橫檔檢樓標樞樞樂樅歐殲殮毆氣氫氬氳決況洶浹涇涼淒淚淥淵淶淺漁漚漢滿滯滲滷滸滻滾滿漬漸漿潁潑潔潛潤潯潰潷潿澀澆澇澗澠澤澦澩澮濁濃濕濟濤濫濰濱濺濾瀆瀉瀋瀏瀕瀘瀝瀟瀠瀦瀧瀨瀰瀲灑灘灝灣灤災為烏無煉煒煙煩煬熱熾燁燈燒燙燜營燦燭爍爐爛爭爺牆牘犧狀獨狹獅獎獄獵獸獻獺璣瑪瑋環現琺琿瑤瑩瑪璉璦璫璽瓊瓏瓔甌產畝畢異畫當疇疊痙痾瘂瘋瘍瘞瘡瘧瘮瘲瘺瘻療癆癇癉癐癒癘癟癢癤癥癧癩癬癭癮癰癱癲發皚皺盜盞盡監盤盧眥眾睏睜睞瞘瞜瞞瞭瞼矚矯硃硤硨確碼磚磣磧磯礎礙礦礪礫礬祿禍禎禦禪禮禰禱禿秈稅稈稜稟種稱穀穌積穎穡穢穩穫窩窪窮竄竅竇竊競筆筍筧箋箏節範築篋篔篤篩簀簍簞簡簣簫簽簾籃籌籙籠籤籩籬粵糝糞糧糲糴糶糾紀紂約紅紆紇紈紉紋納紐紓純紕紗紙級紛紜紡紥細紱紲紳紹紺紿終組絆絎結絕絛絞絡給絨絰統絲絳絹綁綃綆綈綏經綜綞綠綢綣綫綬維綯綰綱網綴綵綸綹綺綻綽綾綿緄緇緊緋緑緒緓緔緗緘緙線緜緝緞締緡緣緦編緩緬緯緲練緶緹緻縈縉縊縋縐縑縗縛縝縞縟縣縧縫縭縮縱縲縳縴縵縶縷縹總績繃繅繆繈繒織繕繞繚繡繢繩繪繫繭繮繯繰繳繹繼纈纊續纍纏纓纖纘纜缽罈罌罰罵罷羅羆羈羋羥義習翬翹耬聖聞聯聰聲聳職聶聾肅脅脈脛脫脹腎腖腡腦腫腳腸膃膚膠膩膽膾膿臉臍臏臘臚臟臠臨臺與興舉舊艙艤艦艫艱艷芻苧茲荊莊莖莢莧華萇萊萬萵葉葒著葦葷蒓蒔蒞蒼蓀蓋蓮蓯蓴蓽蔔蔞蔣蔥蔦蔭蕁蕆蕎蕒蕓蕕蕘蕢蕩蕪蕭蕷薈薊薌薔薘薟薦薩薳薴薺藍藎藝藥藪蘄蘆蘇蘊蘋蘚蘞蘢蘭蘺處虛虜號虧蟲蟄蟈蟎蟣蟥蟬蟯蟲蟻蠅蠆蠍蠐蠑蠟蠣蠱蠶蠻衆術衛衝袞裊裡補裝裡製複褲褳褸襇襠襤襪襬襯襲見覎規覓視覘覡覥覦親覬覯覲覷覺覽覿觀觴觸訁訂訃計訊訌討訐訕訖託記訛訝訟訣訥訪設許訴訶診註詁詆詎詐詔評詖詗詘詛詞詠詡詢詣試詩詫詬詭詮詰話該詳詵詼詿誄誅誆誇誌認誑誒誕誘誚語誠誡誣誤誥誦誨說誰課誶誹誼誾調諂諄談諉請諍諏諑諒論諗諛諜諝諞諡諢諤諦諧諫諭諮諱諳諶諷諸諺諾謀謁謂謄謅謊謎謐謔謖謗謙謚講謝謠謨謫謬謳謹謾譁證譎譏譔譖識譙譚譜譟警譫譯議譴護譽讀變讌讎讒讓讖讚讜讞豈豎豬貓貝貞負財責賢敗賬貨質販貪貧貶購貯貫貳賁貴貶買貸費貼貽貿賀賁賂賃賄資賈賊賑賒賓賕賙賚賜賞賠賡賢賣賤賦質賬賭賴賵賺賻購賽贄贅贇贈贊贋贍贏贐贓贔贖贗贛趕趙趨趲跡踐踴蹌蹕蹣蹤蹺躂躉躊躋躍躑躒躓躕躚躥躦躪軀車軋軌軍軒軔軛軟軤軫軲軸軹軺軻軼軾較輅載輊輒輓輔輕輛輜輝輞輟輥輦輩輪輯輸輻輾輿轂轄轅輿轉轍轎轔轟轡轢轤辦辭辮辯農迴逕這連週進遊運過達違遙遞遠適遲遷選遺遼邁還邇邊邏邐郟郵鄆鄉鄒鄔鄖鄧鄭鄰鄲鄴鄶鄺酈醜醞醫醬釀釁釃釅釋釐鈔鈕鈞鈣鈧鈮鈽鈾鈿鉀鉅鉈鉉鉋鉑鈴鉍鉗鉚鉛鉞鉦鉬鉭鉸鉺鉻鉿銀銃銅銑銓銖銘銚銛銜銠銣銥銦銨銩銪銫銬銱銳銷銹銻銼鋁鋃鋅鋇鋌鋏鋒鋙鋝鋟鋣鋤鋥鋦鋨鋪鋯鋰鋱鋶鋸鋼錄錆錇錈錏錐錒錕錘錙錚錛錟錠錡錢錦錨錫錮錯錳錶鍀鍁鍃鍆鍇鍊鍍鍔鍘鍛鍠鍤鍥鍩鍬鍰鍵鍶鍾鎂鎄鎇鎊鎔鎖鎗鎘鎚鎛鎝鎡鎢鎣鎦鎧鎩鎪鎬鎮鎰鎵鎿鏃鏇鏈鏌鏍鏑鏗鏘鏜鏝鏞鏟鏡鏢鏤鏨鏰鏵鏷鏹鐃鐋鐐鐒鐓鐔鐘鐙鐝鐠鐦鐧鐨鐫鐮鐲鐳鐵鐶鐸鐺鐿鑄鑊鑌鑒鑔鑞鑠鑣鑥鑭鑰鑲鑷鑽鑾鑿長門閂閃閉開閌閎閏閑間閔閘閡閣閥閨閩閫閬閭閱閶閹閻閼閽閾閿闃闆闈闊闋闌闍闐闓闔闕闖關闞闠闡闢闥闧阜陘陝陣陰陳陸陽隉隊階隕際隨險隱隴隸隻雋雙雛雜雞離難雲電霧霽靂靄靆靈靚靜靦鞏鞦韁韃韆韉韋韌韓韙韜韞韻響頁頂頃項順須頊頌頎預頑頒頓頗領頜頡頤頦頭頰頲頸頻頼題額顎顏顒顓願顙顛類顢顥顧顫顯顰顱風颭颮颯颱颳颶颼飄飆飛飠飢飣飥飩飪飫飭飯飲飴飼飽飾餃餄餅餉養餌餎餏餑餒餓餕餘餚餛餜餞餡館餱餳餵餶餷餺餼餾餿饁饃饅饈饉饋饌饑饒饗饜饞饢馬馭馮馱馳馴駁駐駑駒駔駕駙駛駝駟駡駢駭駰駱駿騁騅騎騏騖騙騚騷騶騾驀驁驂驃驄驅驊驍驏驕驗驚驛驟驢驥驦驪驫骯髏髒體髕髖鬆鬍鬚鬥鬧鬨鬩鬮魚魯魴鮁鮃鮑鮒鮚鮞鮦鮪鮫鮭鮮鯁鯉鯊鯒鯖鯗鯛鯝鯡鯢鯤鯧鯨鯪鯫鯰鯴鯷鯽鰂鰈鰉鰍鰒鰓鰜鰟鰠鰣鰥鰨鰩鰭鰱鰲鰳鰵鰷鰹鰺鰻鰾鱈鱉鱒鱔鱖鱗鱘鱝鱟鱠鱣鱤鱧鱨鱭鱯鱷鱸鳥鳧鳩鳳鳴鳶鴆鴇鴉鴒鴕鴛鴝鴞鴟鴣鴦鴨鴯鴰鴻鴿鵂鵃鵑鵒鵓鵜鵝鵠鵡鵪鵬鵮鵯鵲鶇鶉鶓鶘鶚鶩鶯鶲鶴鶺鶻鷂鷓鷗鷙鷚鷥鷦鷫鷯鷲鷸鷹鷺鸚鸛鹵鹹鹺鹼鹽麗麥麼黃黌點黨黲黷黽鼇鼉鼴齊齋齎齏齒齔齕齙齜齟齡齠齣齦齧齪齬齲齶齷龍龐龔龕龜]/u;
 });
 
@@ -49164,18 +49183,19 @@ function buildTruncateOpts(node, baseFontSize) {
   }
   return opts;
 }
-function resolveParagraphFontFamilies(primary, style, arabicFallbacks, cjkFallbacks) {
+function resolveParagraphFontFamilies(primary, style, arabicFallbacks, cjkFallbacks, emojiFallbacks) {
   const renderPrimary = fontManager.renderFamily(primary, style);
   const renderArabicFallbacks = arabicFallbacks.map((family) => fontManager.renderFamily(family, "Regular"));
   const renderCJKFallbacks = cjkFallbacks.map((family) => fontManager.renderFamily(family, "Regular"));
-  const key = `${renderPrimary}\x00${renderArabicFallbacks.join("\x00")}\x00${renderCJKFallbacks.join("\x00")}`;
+  const renderEmojiFallbacks = emojiFallbacks.map((family) => fontManager.renderFamily(family, "Regular"));
+  const key = `${renderPrimary}\x00${renderArabicFallbacks.join("\x00")}\x00${renderCJKFallbacks.join("\x00")}\x00${renderEmojiFallbacks.join("\x00")}`;
   const cached = fontFamilyCache.get(key);
   if (cached)
     return cached;
   const families = [renderPrimary];
   if (primary !== DEFAULT_FONT_FAMILY2)
     families.push(DEFAULT_FONT_FAMILY2);
-  families.push(...renderArabicFallbacks, ...renderCJKFallbacks);
+  families.push(...renderArabicFallbacks, ...renderCJKFallbacks, ...renderEmojiFallbacks);
   const resolved = uniq(families);
   fontFamilyCache.set(key, resolved);
   if (fontFamilyCache.size > FONT_FAMILY_CACHE_LIMIT) {
@@ -49306,9 +49326,10 @@ function buildParagraph(r4, node, color, { halfLeading = false } = {}) {
   const baseFontSize = node.fontSize || DEFAULT_FONT_SIZE;
   const cjkFallbacks = fontManager.getCJKFallbackFamilies();
   const arabicFallbacks = fontManager.getArabicFallbackFamilies();
+  const emojiFallbacks = fontManager.getEmojiFallbackFamilies();
   const textDirection = resolveNodeTextDirection(node);
   const truncateOpts = buildTruncateOpts(node, baseFontSize);
-  const fontFamilies = (primary, weight, italic = false) => resolveParagraphFontFamilies(primary, weightToStyle(weight, italic), arabicFallbacks, cjkFallbacks);
+  const fontFamilies = (primary, weight, italic = false) => resolveParagraphFontFamilies(primary, weightToStyle(weight, italic), arabicFallbacks, cjkFallbacks, emojiFallbacks);
   const paraStyle = new ck.ParagraphStyle({
     textAlign: getParagraphTextAlign(ck, node),
     textDirection: textDirection === "RTL" ? ck.TextDirection.RTL : ck.TextDirection.LTR,
@@ -90296,6 +90317,21 @@ function convertFill(fill3, ctx, node) {
         pencilMesh: item.__canvasMesh
       };
     }
+    if (item && typeof item === "object" && item.type === "image") {
+      return {
+        type: "SOLID",
+        visible: false,
+        opacity: 0,
+        color: { r: 0, g: 0, b: 0, a: 0 },
+        pencilImage: {
+          url: item.url,
+          mode: item.mode,
+          opacity: item.opacity,
+          blendMode: item.blendMode,
+          enabled: item.enabled
+        }
+      };
+    }
     if (item && typeof item === "object" && item.type && !["color", "solid"].includes(item.type))
       return { type: "SOLID", visible: false, opacity: 0, color: { r: 0, g: 0, b: 0, a: 0 } };
     const visible = typeof item === "string" ? true : item.enabled !== false;
@@ -90685,20 +90721,28 @@ function scaleVectorNetwork2(vn3, targetW, targetH, viewBox) {
   let maxX = -Infinity;
   let minY = Infinity;
   let maxY = -Infinity;
-  for (const v of vn3.vertices) {
-    minX = Math.min(minX, v.x);
-    maxX = Math.max(maxX, v.x);
-    minY = Math.min(minY, v.y);
-    maxY = Math.max(maxY, v.y);
+  const include = (x2, y) => {
+    minX = Math.min(minX, x2);
+    maxX = Math.max(maxX, x2);
+    minY = Math.min(minY, y);
+    maxY = Math.max(maxY, y);
+  };
+  for (const v of vn3.vertices)
+    include(v.x, v.y);
+  for (const segment of vn3.segments) {
+    const start = vn3.vertices[segment.start];
+    const end = vn3.vertices[segment.end];
+    const xs = [start.x, start.x + segment.tangentStart.x, end.x + segment.tangentEnd.x, end.x];
+    const ys = [start.y, start.y + segment.tangentStart.y, end.y + segment.tangentEnd.y, end.y];
+    for (const t of [...cubicAxisExtrema(xs), ...cubicAxisExtrema(ys)]) {
+      const inverse = 1 - t;
+      include(inverse ** 3 * xs[0] + 3 * inverse ** 2 * t * xs[1] + 3 * inverse * t ** 2 * xs[2] + t ** 3 * xs[3], inverse ** 3 * ys[0] + 3 * inverse ** 2 * t * ys[1] + 3 * inverse * t ** 2 * ys[2] + t ** 3 * ys[3]);
+    }
   }
   const vnW = maxX - minX;
   const vnH = maxY - minY;
-  if (vnW < 0.01 || vnH < 0.01)
-    return;
-  const sx = targetW / vnW;
-  const sy = targetH / vnH;
-  if (Math.abs(sx - 1) < 0.01 && Math.abs(sy - 1) < 0.01)
-    return;
+  const sx = vnW > 0.000000001 ? targetW / vnW : 1;
+  const sy = vnH > 0.000000001 ? targetH / vnH : 1;
   for (const v of vn3.vertices) {
     v.x = (v.x - minX) * sx;
     v.y = (v.y - minY) * sy;
@@ -90707,6 +90751,21 @@ function scaleVectorNetwork2(vn3, targetW, targetH, viewBox) {
     s.tangentStart = { x: s.tangentStart.x * sx, y: s.tangentStart.y * sy };
     s.tangentEnd = { x: s.tangentEnd.x * sx, y: s.tangentEnd.y * sy };
   }
+}
+function cubicAxisExtrema([p0, p1, p22, p32]) {
+  const a = -p0 + 3 * p1 - 3 * p22 + p32;
+  const b = 2 * (p0 - 2 * p1 + p22);
+  const c3 = p1 - p0;
+  if (Math.abs(a) < 0.000000000001) {
+    if (Math.abs(b) <= 0.000000000001)
+      return [];
+    const t = -c3 / b;
+    return t > 0 && t < 1 ? [t] : [];
+  }
+  const discriminant = b * b - 4 * a * c3;
+  if (discriminant < 0)
+    return [];
+  return [(-b + Math.sqrt(discriminant)) / (2 * a), (-b - Math.sqrt(discriminant)) / (2 * a)].filter((t) => t > 0 && t < 1);
 }
 function resolveFontFamily(raw, ctx) {
   if (!raw)
@@ -90811,8 +90870,12 @@ function inheritLayoutFromComp(node, pen, comp, ctx) {
   const heightAxis = isRow ? "counterAxisSizing" : "primaryAxisSizing";
   if (pen.width === undefined)
     node[widthAxis] = comp[widthAxis];
+  else
+    node[widthAxis] = parseSize(pen.width, node.width, ctx).sizing;
   if (pen.height === undefined)
     node[heightAxis] = comp[heightAxis];
+  else
+    node[heightAxis] = parseSize(pen.height, node.height, ctx).sizing;
   node.itemSpacing = pen.gap === undefined ? comp.itemSpacing : resolveGap(pen.gap, ctx);
   if (pen.padding === undefined) {
     node.paddingTop = comp.paddingTop;

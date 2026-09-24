@@ -24,6 +24,28 @@ test("Canvas API stays inside the generic project namespace", async () => {
   assert.equal(calls[0].method, "GET");
 });
 
+test("Canvas retries a transient read transport failure but never replays a write", async () => {
+  let reads = 0;
+  let writes = 0;
+  const api = createCanvasApi({ account: {
+    request: async ({ method }) => {
+      if (method === "GET") {
+        reads++;
+        if (reads === 1) throw new TypeError("fetch failed");
+        return response(200, { items: [], pageInfo: { nextCursor: null } });
+      }
+      writes++;
+      throw new TypeError("fetch failed");
+    },
+  } });
+  assert.deepEqual((await api.listDocuments()).items, []);
+  assert.equal(reads, 2);
+  await assert.rejects(api.renameDocument("doc", "New"), (error) =>
+    error.code === "CANVAS_TRANSPORT_FAILURE" &&
+    error.message.includes("PATCH /projects/doc") && error.cause?.message === "fetch failed");
+  assert.equal(writes, 1);
+});
+
 test("Canvas API keeps recoverable and permanent document deletion separate", async () => {
   const calls = [];
   const api = createCanvasApi({

@@ -124,6 +124,8 @@ await cp(
 for (const font of ["Inter-Regular.ttf", "Inter-Medium.ttf", "Inter-SemiBold.ttf", "Inter-Bold.ttf", "Inter-ExtraBold.ttf", "Inter-OFL.txt"]) {
   await cp(new URL(`vendor/open-pencil/fonts/${font}`, root), new URL(font, output));
 }
+await cp(new URL("vendor/open-pencil/fonts/NotoColorEmoji.ttf", root), new URL("NotoColorEmoji.ttf", output));
+await cp(new URL("licenses/Noto-Emoji-OFL.txt", root), new URL("licenses/Noto-Emoji-OFL.txt", output));
 for (const weight of [400, 500]) {
   await cp(
     new URL(`node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-${weight}-normal.woff2`, root),

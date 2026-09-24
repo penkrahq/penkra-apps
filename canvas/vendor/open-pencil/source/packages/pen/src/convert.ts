@@ -353,6 +353,18 @@ export function convertFill(fill: PenFill | undefined, ctx: VarContext, node?: S
         pencilMesh: item.__canvasMesh
       } as Fill
     }
+    if (item && typeof item === 'object' && item.type === 'image') {
+      // Keep the image reference on the scene paint through instance cloning and
+      // descendant overrides. Canvas binds durable asset bytes after conversion.
+      return {
+        type: 'SOLID', visible: false, opacity: 0,
+        color: { r: 0, g: 0, b: 0, a: 0 },
+        pencilImage: {
+          url: item.url, mode: item.mode, opacity: item.opacity,
+          blendMode: item.blendMode, enabled: item.enabled
+        }
+      } as Fill
+    }
     if (item && typeof item === 'object' && item.type && !['color', 'solid'].includes(item.type))
       return { type: 'SOLID', visible: false, opacity: 0, color: { r: 0, g: 0, b: 0, a: 0 } }
     const visible = typeof item === 'string' ? true : item.enabled !== false

@@ -32,6 +32,56 @@ test("rasterizes SVG geometry into a CanvasKit-decodable PNG", async () => {
   }
 });
 
+test("text uses a color emoji fallback in the screenshot renderer", async () => {
+  const [screenshot] = await takeDocumentScreenshots({ version: "2.17", children: [
+    { id: "screen", type: "frame", width: 200, height: 80, fill: "#ffffff", children: [
+      { id: "label", type: "text", x: 10, y: 10, width: 170, height: 50,
+        fontSize: 32, content: "Hello 👋🏽 🌍" },
+    ] },
+  ] }, [{ nodeIds: ["screen"] }]);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image);
+  try {
+    const pixels = image.readPixels(0, 0, { width: image.width(), height: image.height(),
+      colorType: ck.ColorType.RGBA_8888, alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB });
+    let colored = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      const [red, green, blue] = pixels.subarray(index, index + 3);
+      if (Math.max(red, green, blue) - Math.min(red, green, blue) > 40) colored++;
+    }
+    assert.ok(colored > 100, `expected color emoji pixels, found ${colored}`);
+  } finally { image.delete(); }
+});
+
+test("an image-filled component child appears in a ref screenshot", async () => {
+  const source = new TextEncoder().encode(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><rect width="20" height="20" fill="#ef4444"/></svg>',
+  );
+  const png = await rasterizeSvgImage(source);
+  const assets = new Map([["images/red.svg", {
+    path: "images/red.svg", mimeType: "image/svg+xml", sha256: "f".repeat(64),
+    bytes: source, renderBytes: png,
+  }]]);
+  const [screenshot] = await takeDocumentScreenshots({ version: "2.17", children: [
+    { id: "source", type: "frame", reusable: true, width: 20, height: 20, children: [
+      { id: "art", type: "rectangle", width: 20, height: 20,
+        fill: { type: "image", url: "images/red.svg", mode: "fit" } },
+    ] },
+    { id: "instance", type: "ref", ref: "source", x: 30 },
+  ] }, [{ nodeIds: ["instance"] }], assets);
+  const ck = await getCanvasKit();
+  const image = ck.MakeImageFromEncoded(Buffer.from(screenshot.data, "base64"));
+  assert.ok(image);
+  try {
+    const pixels = image.readPixels(0, 0, { width: image.width(), height: image.height(),
+      colorType: ck.ColorType.RGBA_8888, alphaType: ck.AlphaType.Unpremul,
+      colorSpace: ck.ColorSpace.SRGB });
+    assert.deepEqual([...pixels.subarray(0, 4)], [239, 68, 68, 255]);
+  } finally { image.delete(); }
+});
+
 test("an explicit export bound constrains a raster with far-off descendants", async () => {
   const [screenshot] = await takeDocumentScreenshots({
     version: "2.17",
