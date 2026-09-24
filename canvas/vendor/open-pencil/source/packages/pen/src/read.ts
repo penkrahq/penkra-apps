@@ -166,10 +166,7 @@ function applyAutoLayout(
   overrides.layoutMode = layoutMode
   overrides.primaryAxisAlign = mapJustifyContent(pen.justifyContent)
   overrides.counterAxisAlign = mapAlignItems(pen.alignItems)
-  overrides.itemSpacing =
-    typeof pen.gap === 'string' && isVarRef(pen.gap) && ctx
-      ? ctx.resolveNumber(pen.gap)
-      : ((pen.gap ?? 0) as number)
+  overrides.itemSpacing = resolveGap(pen.gap, ctx)
 
   if (layoutMode === 'VERTICAL') {
     overrides.primaryAxisSizing = heightSizing
@@ -178,6 +175,12 @@ function applyAutoLayout(
     overrides.primaryAxisSizing = widthSizing
     overrides.counterAxisSizing = heightSizing
   }
+}
+
+function resolveGap(gap: PenNode['gap'], ctx?: VarContext): number {
+  return typeof gap === 'string' && isVarRef(gap) && ctx
+    ? ctx.resolveNumber(gap)
+    : ((gap ?? 0) as number)
 }
 
 function applyTextProps(node: SceneNode, pen: PenNode, ctx: VarContext): void {
@@ -233,7 +236,7 @@ function resolveSizing(pen: PenNode, ctx: VarContext) {
   return { w, h, layout, isTextLike }
 }
 
-function inheritLayoutFromComp(node: SceneNode, pen: PenNode, comp: SceneNode): void {
+function inheritLayoutFromComp(node: SceneNode, pen: PenNode, comp: SceneNode, ctx: VarContext): void {
   const wasRow = node.layoutMode === 'HORIZONTAL'
   node.layoutMode = comp.layoutMode
   node.primaryAxisAlign = comp.primaryAxisAlign
@@ -248,7 +251,7 @@ function inheritLayoutFromComp(node: SceneNode, pen: PenNode, comp: SceneNode): 
   const heightAxis = isRow ? 'counterAxisSizing' : 'primaryAxisSizing'
   if (pen.width === undefined) node[widthAxis] = comp[widthAxis]
   if (pen.height === undefined) node[heightAxis] = comp[heightAxis]
-  if (pen.gap === undefined) node.itemSpacing = comp.itemSpacing
+  node.itemSpacing = pen.gap === undefined ? comp.itemSpacing : resolveGap(pen.gap, ctx)
   if (pen.padding === undefined) {
     node.paddingTop = comp.paddingTop
     node.paddingRight = comp.paddingRight
@@ -290,7 +293,7 @@ function applyRefProps(
   if (!comp) return
   if (pen.width === undefined) node.width = comp.width
   if (pen.height === undefined) node.height = comp.height
-  if (pen.layout === undefined) inheritLayoutFromComp(node, pen, comp)
+  if (pen.layout === undefined) inheritLayoutFromComp(node, pen, comp, ctx)
   applyRefVisuals(node, pen, penSources.get(pen.ref), ctx)
 }
 

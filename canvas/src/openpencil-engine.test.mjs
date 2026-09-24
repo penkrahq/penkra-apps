@@ -97,6 +97,39 @@ test("references inherit root paint from ordinary Canvas frames without a legacy
   assert.equal(instance.opacity, 0.5);
 });
 
+test("component instances apply resolved root gaps without losing inherited or explicit spacing", () => {
+  const source = {
+    axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },
+    variables: {
+      spacing: { tokenType: "number", cascade: [{ value: 12 }, { value: 20, when: { appearance: "dark" } }] },
+    },
+    children: [
+      { id: "pair", type: "frame", layout: "horizontal", width: "fit_content", height: 20,
+        gap: "${spacing}", children: [
+          { id: "first", type: "rectangle", width: 20, height: 20 },
+          { id: "second", type: "rectangle", width: 20, height: 20 },
+        ] },
+      { id: "inherited", type: "ref", ref: "pair" },
+      { id: "fixed", type: "ref", ref: "pair", gap: 8 },
+      { id: "zero", type: "ref", ref: "pair", gap: 0 },
+      { id: "dark", type: "frame", layout: "vertical", modes: { appearance: "dark" }, children: [
+        { id: "dark-instance", type: "ref", ref: "pair" },
+      ] },
+    ],
+  };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared);
+
+  for (const [id, expectedGap] of [["pair", 12], ["inherited", 12], ["fixed", 8], ["zero", 0], ["dark-instance", 20]]) {
+    const parent = graph.getNode(id);
+    const first = graph.getNode(parent.childIds[0]);
+    const second = graph.getNode(parent.childIds[1]);
+    assert.equal(parent.itemSpacing, expectedGap, id);
+    assert.equal(second.x - first.x - first.width, expectedGap, `${id} child positions`);
+  }
+  assert.equal(source.children[1].gap, undefined);
+});
+
 test("compatibility review recognizes ordinary local ref targets as native components", () => {
   const children = [{
     id: "header",
