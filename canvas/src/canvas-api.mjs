@@ -9,17 +9,40 @@ const ACCOUNT_DATA_MAX_REQUEST_BYTES = 24 * 1024 * 1024;
 // when their complete JSON request would still fit through the host bridge.
 const DIRECT_SNAPSHOT_STATE_MAX_CHARACTERS = 11_200_000;
 
+function isTransientTransportError(error) {
+  const message = String(error?.message ?? error).toLowerCase();
+  return message.includes("fetch failed") || message.includes("network error") ||
+    message.includes("connection reset") || message.includes("timed out");
+}
+
 export function createCanvasApi(runtime = globalThis.penkra) {
   if (!runtime?.account) throw new Error("Canvas requires Penkra Account data support.");
 
   const request = async (path, options = {}) => {
-    const response = await runtime.account.request({
+    const method = options.method ?? "GET";
+    const input = {
       path: `/projects${path}`,
-      method: options.method ?? "GET",
+      method,
       ...(options.body === undefined
         ? {}
         : { body: encodeJson(options.body), contentType: "application/json" }),
-    });
+    };
+    let response;
+    for (let attempt = 0; attempt < (method === "GET" ? 2 : 1); attempt++) {
+      try {
+        response = await runtime.account.request(input);
+        break;
+      } catch (cause) {
+        // Only reads are replayable: a failed write can have committed remotely.
+        if (method === "GET" && attempt === 0 && isTransientTransportError(cause)) {
+          await new Promise((resolve) => setTimeout(resolve, 150));
+          continue;
+        }
+        const error = new Error(`Canvas transport failed (${method} /projects${path}): ${cause?.message ?? cause}`, { cause });
+        error.code = "CANVAS_TRANSPORT_FAILURE";
+        throw error;
+      }
+    }
     let value;
     try { value = response.body.byteLength > 0 ? decodeJson(response.body) : null; }
     catch (cause) { throw new Error(`Invalid JSON response for /projects${path} (${response.body.byteLength} bytes): ${cause.message}`, { cause }); }

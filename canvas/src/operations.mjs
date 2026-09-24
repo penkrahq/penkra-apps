@@ -312,7 +312,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code, issueD
       },
     });
     operationDocuments.recordCommittedUpdate(documentState, operationUpdates.forward, appended.sequence);
-    await api.createSnapshot(documentId, {
+    await saveSnapshotBestEffort(documentId, {
       throughSequence: appended.sequence,
       state: encodeState(model),
       source: materialize(model),
@@ -349,7 +349,7 @@ runtime.operations.handle("documents.undo", async ({ documentId, operationId }) 
       expectedSequence: authoritativeSequence(payload),
     });
     applyRemoteUpdate(model, undone.update);
-    await api.createSnapshot(documentId, {
+    await saveSnapshotBestEffort(documentId, {
       throughSequence: undone.sequence,
       state: encodeState(model),
       source: materialize(model),
@@ -454,6 +454,16 @@ async function updateThumbnailBestEffort(documentId, sequence, document, assetDe
     if (thumbnail?.data) await api.writeThumbnail(documentId, sequence, thumbnail.data);
   } catch (error) {
     console.warn("Canvas kept the last saved thumbnail after preview generation failed.", error);
+  }
+}
+
+async function saveSnapshotBestEffort(documentId, snapshot) {
+  try {
+    await api.createSnapshot(documentId, snapshot);
+  } catch (error) {
+    // The append/undo has already committed. A failed compaction must not turn
+    // its acknowledgement into an error that invites the caller to repeat it.
+    console.warn(`Canvas kept committed sequence ${snapshot.throughSequence} without a new snapshot.`, error);
   }
 }
 

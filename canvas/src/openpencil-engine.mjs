@@ -107,7 +107,7 @@ export function createOpenPencilGraph(
   measureGraphPhase("engine.graph.adapt", () => {
     applyPencilSceneProperties(graph, renderDocument);
     applyInstanceTextStyles(graph, renderDocument);
-    applyImageAssets(graph, renderDocument, assets);
+    applyImageAssets(graph, assets);
     applyShaderAssets(graph, renderDocument, assets);
     walkPenNodes(renderDocument.children, (renderNode) => {
       if (renderNode.__canvasGenerated && graph.getNode(renderNode.id)) {
@@ -477,33 +477,31 @@ export function refreshOpenPencilEditor(
   return editor;
 }
 
-function applyImageAssets(graph, document, assets) {
+function applyImageAssets(graph, assets) {
   const svgState = {};
-  walkPenNodes(document.children, (sourceNode) => {
-    const sourceFills = Array.isArray(sourceNode.fill) ? sourceNode.fill : [sourceNode.fill];
-    if (!sourceFills.some((fill) => fill?.type === "image")) return;
-    const sceneNode = graph.getNode(sourceNode.id);
-    if (!sceneNode) return;
-    const fills = sourceFills.map((fill, index) => {
-      if (fill?.type !== "image") return sceneNode.fills[index];
-      const asset = pencilResourceAsset(assets, fill.url);
-      if (!asset) return sceneNode.fills[index];
+  for (const node of graph.getAllNodes()) {
+    if (!node.fills.some((fill) => fill.pencilImage)) continue;
+    const fills = node.fills.map((fill) => {
+      const image = fill.pencilImage;
+      if (!image) return fill;
+      const asset = pencilResourceAsset(assets, image.url);
+      if (!asset) return fill;
       registerSvgVectorAsset(graph, asset, svgState);
       graph.images.set(asset.sha256, asset.renderBytes ?? asset.bytes);
       return {
         type: "IMAGE",
         imageHash: asset.sha256,
-        imageScaleMode: imageScaleMode(fill.mode),
+        imageScaleMode: imageScaleMode(image.mode),
         // Skia modulates shader output by the paint color. Keep image pixels
         // fully visible instead of multiplying them by transparent black.
         color: { r: 1, g: 1, b: 1, a: 1 },
-        opacity: Number(fill.opacity ?? 1),
-        blendMode: pencilBlendMode(fill.blendMode),
-        visible: fill.enabled !== false,
+        opacity: Number(image.opacity ?? 1),
+        blendMode: pencilBlendMode(image.blendMode),
+        visible: image.enabled !== false,
       };
     });
-    graph.updateNode(sourceNode.id, { fills });
-  });
+    graph.updateNode(node.id, { fills });
+  }
   finalizeSvgVectorAssets(graph, svgState);
 }
 

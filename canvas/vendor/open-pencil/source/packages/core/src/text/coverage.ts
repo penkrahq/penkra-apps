@@ -10,6 +10,7 @@ const CJK_HIRAGANA_KATAKANA_RE = /[\u3040-\u30ff]/u
 const CJK_HANGUL_RE = /[\uac00-\ud7af]/u
 const CJK_CHAR_RE = /[\p{Script=Han}\u3040-\u30ff\uac00-\ud7af]/u
 const ARABIC_CHAR_RE = /[\u0600-\u06ff\u0750-\u077f\u08a0-\u08ff\ufb50-\ufdff\ufe70-\ufeff]/u
+const EMOJI_CHAR_RE = /[\p{Extended_Pictographic}\p{Regional_Indicator}]/u
 
 // Common Traditional-only characters. This is a heuristic for fallback order, not language ID.
 const TRADITIONAL_CJK_CHAR_RE =
@@ -19,6 +20,8 @@ function scriptCharRegex(script: FontFallbackScript): RegExp {
   switch (script) {
     case 'arabic':
       return ARABIC_CHAR_RE
+    case 'emoji':
+      return EMOJI_CHAR_RE
     case 'cjk-jp':
       return CJK_HIRAGANA_KATAKANA_RE
     case 'cjk-kr':
@@ -34,6 +37,7 @@ export function fontFallbackScriptForCharacter(
   char: string,
   language?: string | null
 ): FontFallbackScript | null {
+  if (EMOJI_CHAR_RE.test(char)) return 'emoji'
   if (ARABIC_CHAR_RE.test(char)) return 'arabic'
   if (CJK_HANGUL_RE.test(char)) return 'cjk-kr'
   if (CJK_HIRAGANA_KATAKANA_RE.test(char)) return 'cjk-jp'
@@ -87,6 +91,7 @@ export function textNeedsFallbackScript(node: SceneNode, script: FontFallbackScr
 
 export function textNeededFallbackScripts(node: SceneNode): FontFallbackScript[] {
   const scripts = new Set<FontFallbackScript>()
+  if (textNeedsFallbackScript(node, 'emoji')) scripts.add('emoji')
   if (textNeedsFallbackScript(node, 'arabic')) scripts.add('arabic')
 
   let missingIdeograph = false

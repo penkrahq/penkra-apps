@@ -33,6 +33,7 @@ function fallbackScriptForCharacter(
   character: string,
   language?: string | null
 ): FontFallbackScript | null {
+  if (/[\p{Extended_Pictographic}\p{Regional_Indicator}]/u.test(character)) return 'emoji'
   if (/\p{Script=Arabic}/u.test(character)) return 'arabic'
   if (/\p{Script=Hangul}/u.test(character)) return 'cjk-kr'
   if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(character)) return 'cjk-jp'

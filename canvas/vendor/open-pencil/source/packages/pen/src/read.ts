@@ -109,18 +109,33 @@ function scaleVectorNetwork(
   let maxX = -Infinity
   let minY = Infinity
   let maxY = -Infinity
-  for (const v of vn.vertices) {
-    minX = Math.min(minX, v.x)
-    maxX = Math.max(maxX, v.x)
-    minY = Math.min(minY, v.y)
-    maxY = Math.max(maxY, v.y)
+  const include = (x: number, y: number) => {
+    minX = Math.min(minX, x)
+    maxX = Math.max(maxX, x)
+    minY = Math.min(minY, y)
+    maxY = Math.max(maxY, y)
+  }
+  for (const v of vn.vertices) include(v.x, v.y)
+  // Pencil's implicit viewBox is the geometry's *tight* box. Cubic control
+  // points may extend beyond the curve, while the curve may extend beyond its
+  // endpoints, so vertices alone are insufficient.
+  for (const segment of vn.segments) {
+    const start = vn.vertices[segment.start]
+    const end = vn.vertices[segment.end]
+    const xs = [start.x, start.x + segment.tangentStart.x, end.x + segment.tangentEnd.x, end.x]
+    const ys = [start.y, start.y + segment.tangentStart.y, end.y + segment.tangentEnd.y, end.y]
+    for (const t of [...cubicAxisExtrema(xs), ...cubicAxisExtrema(ys)]) {
+      const inverse = 1 - t
+      include(
+        inverse ** 3 * xs[0] + 3 * inverse ** 2 * t * xs[1] + 3 * inverse * t ** 2 * xs[2] + t ** 3 * xs[3],
+        inverse ** 3 * ys[0] + 3 * inverse ** 2 * t * ys[1] + 3 * inverse * t ** 2 * ys[2] + t ** 3 * ys[3]
+      )
+    }
   }
   const vnW = maxX - minX
   const vnH = maxY - minY
-  if (vnW < 0.01 || vnH < 0.01) return
-  const sx = targetW / vnW
-  const sy = targetH / vnH
-  if (Math.abs(sx - 1) < 0.01 && Math.abs(sy - 1) < 0.01) return
+  const sx = vnW > 1e-9 ? targetW / vnW : 1
+  const sy = vnH > 1e-9 ? targetH / vnH : 1
   for (const v of vn.vertices) {
     v.x = (v.x - minX) * sx
     v.y = (v.y - minY) * sy
@@ -129,6 +144,21 @@ function scaleVectorNetwork(
     s.tangentStart = { x: s.tangentStart.x * sx, y: s.tangentStart.y * sy }
     s.tangentEnd = { x: s.tangentEnd.x * sx, y: s.tangentEnd.y * sy }
   }
+}
+
+function cubicAxisExtrema([p0, p1, p2, p3]: number[]): number[] {
+  const a = -p0 + 3 * p1 - 3 * p2 + p3
+  const b = 2 * (p0 - 2 * p1 + p2)
+  const c = p1 - p0
+  if (Math.abs(a) < 1e-12) {
+    if (Math.abs(b) <= 1e-12) return []
+    const t = -c / b
+    return t > 0 && t < 1 ? [t] : []
+  }
+  const discriminant = b * b - 4 * a * c
+  if (discriminant < 0) return []
+  return [(-b + Math.sqrt(discriminant)) / (2 * a), (-b - Math.sqrt(discriminant)) / (2 * a)]
+    .filter((t) => t > 0 && t < 1)
 }
 
 function resolveFontFamily(raw: string | undefined, ctx: VarContext): string {
@@ -250,7 +280,9 @@ function inheritLayoutFromComp(node: SceneNode, pen: PenNode, comp: SceneNode, c
   const widthAxis = isRow ? 'primaryAxisSizing' : 'counterAxisSizing'
   const heightAxis = isRow ? 'counterAxisSizing' : 'primaryAxisSizing'
   if (pen.width === undefined) node[widthAxis] = comp[widthAxis]
+  else node[widthAxis] = parseSize(pen.width, node.width, ctx).sizing
   if (pen.height === undefined) node[heightAxis] = comp[heightAxis]
+  else node[heightAxis] = parseSize(pen.height, node.height, ctx).sizing
   node.itemSpacing = pen.gap === undefined ? comp.itemSpacing : resolveGap(pen.gap, ctx)
   if (pen.padding === undefined) {
     node.paddingTop = comp.paddingTop

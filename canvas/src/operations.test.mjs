@@ -515,6 +515,39 @@ test("invalid execute output fails before any shared update or snapshot write", 
   assert.equal(requests.some((request) => request.method === "POST"), false);
 });
 
+test("a failed post-commit snapshot does not turn a saved edit into a failed execute", async () => {
+  const handlers = new Map();
+  const requests = [];
+  const base = readableDocumentAccount({ version: "2.17", children: [
+    { id: "hero", type: "frame", width: 100, height: 100, children: [] },
+  ] }, requests);
+  globalThis.penkra = {
+    account: {
+      ...base,
+      async request(request) {
+        if (request.method === "GET") return base.request(request);
+        requests.push(request);
+        if (request.path === "/projects/document-1/updates") return response(200, { sequence: 8 });
+        if (request.path === "/projects/document-1/snapshots") throw new TypeError("fetch failed");
+        throw new Error(`Unexpected request ${request.method} ${request.path}`);
+      },
+    },
+    operations: { handle: (name, handler) => handlers.set(name, handler) },
+  };
+  await import(`./operations.mjs?post-commit-test=${Date.now()}`);
+  const previousWarn = console.warn;
+  console.warn = () => {};
+  try {
+    const result = await handlers.get("documents.execute")({
+      documentId: "document-1", code: 'Update("#hero", { x: 5 });',
+    });
+    assert.equal(result.changed, true);
+    assert.equal(result.sequence, 8);
+    assert.equal(requests.filter((request) => request.path === "/projects/document-1/updates").length, 1);
+    assert.equal(requests.filter((request) => request.path === "/projects/document-1/snapshots").length, 1);
+  } finally { console.warn = previousWarn; }
+});
+
 test("execute uploads a direct image before committing its durable asset path", async () => {
   const handlers = new Map();
   const requests = [];

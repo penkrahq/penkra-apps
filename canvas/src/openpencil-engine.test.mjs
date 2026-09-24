@@ -715,6 +715,75 @@ test("binds imported image bytes to their lossless Pencil URL fill", () => {
   );
 });
 
+test("path geometry uses its own tight viewBox before node placement and sizing", () => {
+  const graph = createOpenPencilGraph({ version: "2.17", children: [
+    { id: "scaled", type: "path", x: 30, y: 40, width: 20, height: 20,
+      geometry: "M 10 10 L 58 10 L 58 58 L 10 58 Z" },
+    { id: "offset", type: "path", x: 15, y: 17, width: 48, height: 48,
+      geometry: "M 10 10 L 58 10 L 58 58 L 10 58 Z" },
+    { id: "explicit", type: "path", x: 11, y: 13, width: 20, height: 20,
+      viewBox: [0, 0, 48, 48], geometry: "M 10 10 L 58 10 L 58 58 L 10 58 Z" },
+    { id: "curve", type: "path", width: 20, height: 20,
+      geometry: "M 10 10 C 20 40 40 40 50 10" },
+  ] });
+  const bounds = (id) => {
+    const vertices = graph.getNode(id).vectorNetwork.vertices;
+    return [Math.min(...vertices.map((v) => v.x)), Math.max(...vertices.map((v) => v.x)),
+      Math.min(...vertices.map((v) => v.y)), Math.max(...vertices.map((v) => v.y))];
+  };
+  assert.deepEqual(bounds("scaled"), [0, 20, 0, 20]);
+  assert.deepEqual(bounds("offset"), [0, 48, 0, 48]);
+  assert.equal(graph.getNode("offset").x, 15);
+  assert.equal(graph.getNode("offset").y, 17);
+  for (const [actual, expected] of bounds("explicit").map((value, index) => [value,
+    [10 / 48 * 20, 58 / 48 * 20, 10 / 48 * 20, 58 / 48 * 20][index]])) {
+    assert.ok(Math.abs(actual - expected) < 1e-9);
+  }
+  // The curve's apex is above its endpoints; fitting uses cubic extrema, not vertex bounds.
+  assert.equal(graph.getNode("curve").vectorNetwork.vertices[0].y, 0);
+  assert.equal(graph.getNode("curve").vectorNetwork.vertices.at(-1).y, 0);
+});
+
+test("image paints hydrate component instances without replacing descendant overrides", () => {
+  const hash = "e".repeat(64);
+  const bytes = new Uint8Array([1, 2, 3]);
+  const graph = createOpenPencilGraph({ version: "2.17", children: [
+    { id: "source", type: "frame", reusable: true, width: 100, height: 40,
+      children: [{ id: "image", type: "rectangle", width: 20, height: 20,
+        fill: { type: "image", url: "images/icon.svg", mode: "fit" } }] },
+    { id: "instance", type: "ref", ref: "source" },
+    { id: "overridden", type: "ref", ref: "source", descendants: {
+      image: { fill: "#ff0000" },
+    } },
+    { id: "image-override", type: "ref", ref: "source", descendants: {
+      image: { fill: { type: "image", url: "images/other.svg", mode: "stretch" } },
+    } },
+  ] }, new Map([
+    ["images/icon.svg", { sha256: hash, bytes }],
+    ["images/other.svg", { sha256: "d".repeat(64), bytes }],
+  ]));
+  assert.equal(graph.getNode("image").fills[0].imageHash, hash);
+  assert.equal(graph.getNode("instance/image").fills[0].imageHash, hash);
+  assert.notEqual(graph.getNode("overridden/image").fills[0].imageHash, hash);
+  assert.equal(graph.getNode("image-override/image").fills[0].imageHash, "d".repeat(64));
+  assert.equal(graph.getNode("image-override/image").fills[0].imageScaleMode, "STRETCH");
+});
+
+test("explicit fill_container ref width fills a vertical parent, not the 100px fallback", () => {
+  const graph = createOpenPencilGraph({ version: "2.17", children: [
+    { id: "source", type: "frame", reusable: true, width: "fit_content", height: 44,
+      layout: "row", children: [{ id: "label", type: "text", content: "Continue" }] },
+    { id: "screen", type: "frame", width: 353, height: 200, layout: "column", children: [
+      { id: "buttons", type: "frame", width: "fill_container", layout: "column", children: [
+        { id: "button", type: "ref", ref: "source", width: "fill_container" },
+      ] },
+    ] },
+  ] });
+  assert.equal(graph.getNode("buttons").width, 353);
+  assert.equal(graph.getNode("button").width, 353);
+  assert.equal(graph.getNode("button").primaryAxisSizing, "FILL");
+});
+
 test("binds an SVG renderer cache without replacing its source asset", () => {
   const sourceBytes = new TextEncoder().encode(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 101"><rect width="72" height="101" fill="#fff"/></svg>',

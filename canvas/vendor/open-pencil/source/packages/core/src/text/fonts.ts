@@ -34,7 +34,8 @@ const BUNDLED_FONTS: Record<string, string> = {
   'Inter|SemiBold': '/Inter-SemiBold.ttf',
   'Inter|Bold': '/Inter-Bold.ttf',
   'Inter|ExtraBold': '/Inter-ExtraBold.ttf',
-  'Noto Naskh Arabic|Regular': '/NotoNaskhArabic-Regular.ttf'
+  'Noto Naskh Arabic|Regular': '/NotoNaskhArabic-Regular.ttf',
+  'Noto Color Emoji|Regular': '/NotoColorEmoji.ttf'
 }
 
 export class FontManager {
@@ -58,6 +59,7 @@ export class FontManager {
   private cjkFallbackPromise: Promise<string[]> | null = null
   private arabicFallbackFamilies: string[] = []
   private arabicFallbackPromise: Promise<string[]> | null = null
+  private emojiFallbackFamilies: string[] = []
   private inFlightLocalFaces = new Map<string, Promise<ArrayBuffer | null>>()
 
   attachProvider(_canvasKit: CanvasKit, provider: TypefaceFontProvider): void {
@@ -415,7 +417,8 @@ export class FontManager {
         else if (script === 'cjk' && !characters) result[script] = await this.ensureCJKFallback()
         else {
           const target =
-            script === 'arabic' ? this.arabicFallbackFamilies : this.cjkFallbackFamilies
+            script === 'arabic' ? this.arabicFallbackFamilies
+              : script === 'emoji' ? this.emojiFallbackFamilies : this.cjkFallbackFamilies
           result[script] = await this.ensureFallbackFamilies(script, target, {}, characters)
         }
       })
@@ -425,6 +428,10 @@ export class FontManager {
 
   getArabicFallbackFamilies(): string[] {
     return this.arabicFallbackFamilies
+  }
+
+  getEmojiFallbackFamilies(): string[] {
+    return this.emojiFallbackFamilies
   }
 
   setArabicFallbackFamily(family: string): void {
@@ -444,6 +451,7 @@ export class FontManager {
     for (const family of manifest.localFamilies) {
       const buffer =
         (await this.loadHostFont(family, 'Regular')) ??
+        (script === 'emoji' ? await this.loadLocalFont(family, 'Regular') : null) ??
         (await this.findLocalFont(family, undefined, {
           allowVariable: options.allowVariableLocalFonts
         }))
