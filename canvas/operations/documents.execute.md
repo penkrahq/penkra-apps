@@ -385,6 +385,40 @@ of a component instance as editable synthetic children. Update the instance's de
 edit the source frame when every instance should change. If a value needs per-instance control,
 add it to the source frame's typed property interface and bind it deliberately.
 
+Component properties may be `string`, `number`, `boolean`, `color`, `enum`, `icon`, or `node`.
+`bind` accepts a direct `$props.name` reference; a `color` property can drive `fill` or `stroke`,
+not just text content. It does not accept expressions such as `!$props.filled`. Use `visible`
+conditions to show or hide complementary layers, and property-conditional values for visual
+states. For example, one input component can use:
+
+```js
+properties: {
+  state: { type: "enum", values: ["default", "focus", "invalid"], default: "default" },
+  filled: { type: "boolean", default: false },
+  ink: { type: "color", default: "#1F2329" }
+}
+// On the placeholder text:
+visible: { op: "eq", arg: { prop: "filled" }, value: false }
+// On the entered text:
+visible: { op: "eq", arg: { prop: "filled" }, value: true },
+bind: { fill: "$props.ink" }
+// On the outline shape:
+stroke: [
+  { value: "#C8CBD1" },
+  { value: "#3675F5", when: { props: { state: "focus" } } },
+  { value: "#D73742", when: { props: { state: "invalid" } } }
+]
+```
+
+Conditions support `eq`, `neq`, `in`, `not`, `and`, and `or`, along with null and numeric
+comparisons. Keep the enum values explicit so invalid states fail validation. Removing a property
+through `Update` or `Replace` requires removing its source bindings and conditions in the same
+edit; otherwise the edit fails without saving. An accepted edit removes that property from local
+instances atomically.
+Older instances that still carry a removed property are reported by inspection; rendering and
+extraction ignore that stale value and report an export consequence instead of failing. New edits
+cannot introduce an undeclared instance property.
+
 ## What this operation leaves alone
 
 Canvas preserves existing variables, axes, paragraph styles, imported resources, advanced content, and unknown

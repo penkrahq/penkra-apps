@@ -148,7 +148,7 @@ function resolveRef(instance, context) {
   if (!target) throw new Error(`Ref ${instance.id} target ${instance.ref} was not found.`);
   const cycleKey = `${owner === context.owner ? "local" : instance.ref}:${target.id}`;
   if (context.resolving.includes(cycleKey)) throw new Error(`Ref cycle: ${[...context.resolving, cycleKey].join(" -> ")}.`);
-  const props = resolveProps(target.properties ?? {}, instance.props ?? {});
+  const props = resolveProps(target.properties ?? {}, instance.props ?? {}, context.consequences, instance.id);
   const resolved = resolveNode(target, { ...context, owner, localNodes, variableValues, props, componentRoot: true, resolving: [...context.resolving, cycleKey] });
   context.lowered.push({ node: instance.id, from: instance.ref, why: "Reference expanded into target-native nodes." });
   const output = prefixResolvedNode(resolved, instance.id, target.id, props);
@@ -163,7 +163,7 @@ function resolveRef(instance, context) {
   return output;
 }
 
-function resolveProps(declarations, supplied) {
+function resolveProps(declarations, supplied, consequences, instanceId) {
   const result = {};
   for (const [name, declaration] of Object.entries(declarations)) {
     const has = Object.hasOwn(supplied, name);
@@ -172,7 +172,14 @@ function resolveProps(declarations, supplied) {
     if (!compatible(value, declaration)) throw new Error(`Component property ${name} does not satisfy ${declaration.type}.`);
     result[name] = value;
   }
-  for (const name of Object.keys(supplied)) if (!Object.hasOwn(declarations, name)) throw new Error(`Unknown component property ${name}.`);
+  for (const name of Object.keys(supplied)) {
+    if (Object.hasOwn(declarations, name)) continue;
+    consequences?.push({
+      node: instanceId,
+      kind: "ignore",
+      why: `Instance property ${name} is not declared by its component and was ignored.`,
+    });
+  }
   return result;
 }
 

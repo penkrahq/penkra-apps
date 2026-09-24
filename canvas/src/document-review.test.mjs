@@ -19,6 +19,25 @@ test("review accepts bound component text and ignores disabled source content", 
   assert.deepEqual(designValidationIssues(document), []);
 });
 
+test("review reports stale local instance properties, including disabled instances", () => {
+  const document = { children: [
+    { id: "component", type: "frame", properties: { label: { type: "string", default: "Label" } }, children: [] },
+    { id: "instance", type: "ref", ref: "component", props: { label: "Hi", filled: true } },
+    { id: "disabled", type: "ref", ref: "component", enabled: false, props: { filled: false } },
+  ] };
+  assert.deepEqual(
+    designValidationIssues(document).filter((issue) => issue.kind === "component-property").map((issue) => ({ id: issue.nodeId, severity: issue.severity })),
+    [{ id: "instance", severity: "major" }, { id: "disabled", severity: "major" }],
+  );
+});
+
+test("review accepts a text fill bound to a declared component colour", () => {
+  const document = { children: [{ id: "component", type: "frame", properties: { ink: { type: "color", default: "#123456" } }, children: [
+    { id: "label", type: "text", content: "Hi", bind: { fill: "$props.ink" } },
+  ] }] };
+  assert.deepEqual(designValidationIssues(document), []);
+});
+
 test("review accepts text whose named style supplies its visible fill", () => {
   const document = {
     paragraphStyles: { title: { fill: "$ink", fontSize: 24 } },
