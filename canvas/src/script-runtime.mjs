@@ -112,6 +112,22 @@ function* __walkEntries(nodes = __document.children, parent = null, parentPath =
   }
 }
 
+function __unknownComponentProps() {
+  const entries = __walk();
+  const definitions = new Map(entries.map(({ node }) => [node.id, node]));
+  const unknown = new Set();
+  for (const { node } of entries) {
+    if (node.type !== "ref" || typeof node.ref !== "string" || node.ref.includes(":")) continue;
+    const target = definitions.get(node.ref);
+    if (!target) continue;
+    for (const name of Object.keys(node.props || {})) {
+      if (!Object.hasOwn(target.properties || {}, name)) unknown.add(node.id + "\u0000" + name);
+    }
+  }
+  return unknown;
+}
+const __initialUnknownComponentProps = __unknownComponentProps();
+
 function __assertSelector(selector) {
   if (selector === "*" || selector === undefined || selector === null) return;
   if (typeof selector === "object") return;
@@ -262,6 +278,7 @@ globalThis.Update = function Update(target, properties) {
   if (!properties || typeof properties !== "object" || Array.isArray(properties)) throw new TypeError("Update requires a property object.");
   const entry = __requireOne(target);
   const node = entry.node;
+  const previousProperties = Object.keys(node.properties || {});
   const previousSubtreeIds = new Set();
   const collectPreviousIds = (current) => {
     previousSubtreeIds.add(current.id);
@@ -270,7 +287,8 @@ globalThis.Update = function Update(target, properties) {
   collectPreviousIds(node);
   if (Object.hasOwn(properties, "id") && properties.id !== node.id) throw new Error("Update cannot change a node id.");
   if (Object.hasOwn(properties, "children") || Object.hasOwn(properties, "type")
-    || Object.hasOwn(properties, "width") || Object.hasOwn(properties, "height")) {
+    || Object.hasOwn(properties, "width") || Object.hasOwn(properties, "height")
+    || Object.hasOwn(properties, "properties")) {
     const next = __clone(node);
     for (const [key, value] of Object.entries(properties)) {
       if (key === "id") continue;
@@ -282,6 +300,7 @@ globalThis.Update = function Update(target, properties) {
       new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !previousSubtreeIds.has(id))),
     );
     __assertRootSizing(next, entry.parent);
+    if (Object.hasOwn(properties, "properties")) __assertRemovedComponentPropsUnused(next, previousProperties);
   }
   for (const [key, value] of Object.entries(properties)) {
     if (key === "id") continue;
@@ -295,9 +314,51 @@ globalThis.Update = function Update(target, properties) {
       __changed = true;
     }
   }
+  if (Object.hasOwn(properties, "properties")) __pruneRemovedComponentProps(node.id, previousProperties, node.properties);
   __touched.add(node.id);
   return node;
 };
+
+function __pruneRemovedComponentProps(componentId, previousProperties, nextProperties) {
+  const removed = previousProperties.filter((name) => !Object.hasOwn(nextProperties || {}, name));
+  if (removed.length === 0) return;
+  for (const { node } of __walk()) {
+    if (node.type !== "ref" || node.ref !== componentId || !node.props) continue;
+    for (const name of removed) {
+      if (!Object.hasOwn(node.props, name)) continue;
+      delete node.props[name];
+      __changed = true;
+      __touched.add(node.id);
+    }
+    if (Object.keys(node.props).length === 0) delete node.props;
+  }
+}
+
+function __assertRemovedComponentPropsUnused(source, previousProperties) {
+  const removed = new Set(previousProperties.filter((name) => !Object.hasOwn(source.properties || {}, name)));
+  if (removed.size === 0) return;
+  const referencesRemoved = (value) => {
+    if (!value || typeof value !== "object") return false;
+    if (Object.keys(value.when?.props || {}).some((name) => removed.has(name))) return true;
+    if (typeof value.arg?.prop === "string" && removed.has(value.arg.prop)) return true;
+    return Object.values(value).some(referencesRemoved);
+  };
+  const inspect = (node, isRoot = false) => {
+    if (!isRoot && node.properties) return;
+    for (const binding of Object.values(node.bind || {})) {
+      if (typeof binding === "string" && binding.startsWith("$props.") && removed.has(binding.slice(7))) {
+        throw new Error("Component " + source.id + " still binds removed property " + binding.slice(7) + ".");
+      }
+    }
+    if (referencesRemoved(node.visible)) throw new Error("Component " + source.id + " still has a condition using a removed property.");
+    for (const [key, value] of Object.entries(node)) {
+      if (["children", "properties", "bind", "visible"].includes(key)) continue;
+      if (referencesRemoved(value)) throw new Error("Component " + source.id + " still has a conditional value using a removed property.");
+    }
+    for (const child of node.children || []) inspect(child);
+  };
+  inspect(source, true);
+}
 
 globalThis.SetModule = function SetModule(module) {
   const allowed = new Set(["deck", "web", "mobile"]);
@@ -365,6 +426,7 @@ globalThis.SetParagraphStyle = function SetParagraphStyle(name, definition) {
 
 globalThis.Replace = function Replace(target, replacement) {
   const entry = __requireOne(target);
+  const previousProperties = Object.keys(entry.node.properties || {});
   if (!replacement || typeof replacement !== "object" || Array.isArray(replacement)) throw new TypeError("Replace requires one node object.");
   const next = __clone(replacement);
   next.id ??= entry.node.id;
@@ -379,11 +441,13 @@ globalThis.Replace = function Replace(target, replacement) {
     new Set(__walk().map((candidate) => candidate.node.id).filter((id) => !replacedIds.has(id))),
   );
   __assertRootSizing(next, entry.parent);
+  if (next.id === entry.node.id) __assertRemovedComponentPropsUnused(next, previousProperties);
   const siblings = entry.parent ? entry.parent.children : __document.children;
   if (JSON.stringify(entry.node) !== JSON.stringify(next)) {
     siblings.splice(entry.index, 1, next);
     __changed = true;
   }
+  if (next.id === entry.node.id) __pruneRemovedComponentProps(next.id, previousProperties, next.properties);
   __touchTree(next);
   if (entry.parent) __touched.add(entry.parent.id);
   return next.id;
@@ -511,5 +575,10 @@ globalThis.ConvertSvgToVectors = function ConvertSvgToVectors(target, options = 
 };
 
 const __result = (0, eval)("(function () {\n" + __canvasCode + "\n})()");
+for (const entry of __unknownComponentProps()) {
+  if (__initialUnknownComponentProps.has(entry)) continue;
+  const [instanceId, name] = entry.split("\u0000");
+  throw new Error("Instance " + instanceId + " supplies undeclared component property " + name + ".");
+}
 JSON.stringify({ document: __document, changed: __changed, prints: __prints, result: __result === undefined ? null : __result, touchedNodeIds: [...__touched], generations: __generations, svgConversions: __svgConversions, screenshots: __screenshots });
 `;

@@ -36,6 +36,18 @@ test("SVG extraction keeps ancestor modes across nested component refs", () => {
   assert.match(svg, /id="light\/nested"[^>]*fill="#ffffff"/u);
 });
 
+test("SVG extraction tolerates a removed component property and reports it", () => {
+  const source = { version: "2.17", axes: {}, variables: {}, children: [
+    { id: "field", type: "frame", width: 100, height: 40, properties: { tone: { type: "color", default: "#123456" } }, children: [
+      { id: "outline", type: "rectangle", width: 100, height: 40, bind: { fill: "$props.tone" } },
+    ] },
+    { id: "instance", type: "ref", ref: "field", props: { tone: "#abcdef", filled: true } },
+  ] };
+  const ir = buildExtractionIR(source, { nodeId: "instance", format: "svg" });
+  assert.match(exportSvg(ir, ir.outputs[0]), /fill="#abcdef"/u);
+  assert.ok(ir.consequences.some((entry) => entry.node === "instance" && entry.kind === "ignore"));
+});
+
 test("root image override rasterizes the complete frame and default never forces native", () => {
   const source = { module: "deck", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
     { id: "slide", type: "frame", role: "slide", export: "image", width: 400, height: 300, physical: { w: 4, h: 3, unit: "in" }, children: [] },

@@ -31,6 +31,55 @@ test("root token authoring rejects invalid definitions and does not report no-op
   assert.equal(second.changed, false);
 });
 
+test("removing a component property cleans local instances in the same edit", async () => {
+  const source = { version: "2.17", children: [
+    { id: "component", type: "frame", properties: { filled: { type: "boolean", default: false }, label: { type: "string", default: "Text" } }, children: [] },
+    { id: "one", type: "ref", ref: "component", props: { filled: true, label: "One" } },
+    { id: "two", type: "frame", children: [{ id: "nested", type: "ref", ref: "component", props: { filled: false } }] },
+    { id: "other", type: "ref", ref: "another-component", props: { filled: true } },
+  ] };
+  const updated = await executeCanvasScript(source, 'Update("#component", { properties: { label: { type: "string", default: "Text" } } });');
+  assert.deepEqual(updated.document.children[1].props, { label: "One" });
+  assert.equal(Object.hasOwn(updated.document.children[2].children[0], "props"), false);
+  assert.deepEqual(updated.document.children[3].props, { filled: true });
+  assert.deepEqual(updated.touchedNodeIds, ["one", "nested", "component"]);
+  assert.deepEqual(source.children[1].props, { filled: true, label: "One" });
+
+  const replaced = await executeCanvasScript(source, 'Replace("#component", { type: "frame", properties: { label: { type: "string", default: "Text" } }, children: [] });');
+  assert.deepEqual(replaced.document.children[1].props, { label: "One" });
+  assert.equal(Object.hasOwn(replaced.document.children[2].children[0], "props"), false);
+});
+
+test("removing a still-used component property fails without a partial edit", async () => {
+  const source = { version: "2.17", children: [
+    { id: "field", type: "frame", properties: { filled: { type: "boolean", default: false } }, children: [
+      { id: "label", type: "text", content: "Text", visible: { op: "eq", arg: { prop: "filled" }, value: true } },
+    ] },
+    { id: "instance", type: "ref", ref: "field", props: { filled: true } },
+  ] };
+  await assert.rejects(() => executeCanvasScript(source, 'Update("#field", { properties: {} });'), /still has a condition/u);
+  await assert.rejects(() => executeCanvasScript(source, 'Replace("#field", { type: "frame", properties: {}, children: [{ id: "label", type: "text", content: "Text", visible: { op: "eq", arg: { prop: "filled" }, value: true } }] });'), /still has a condition/u);
+  source.children[0].children[0] = { id: "label", type: "text", content: "Text", bind: { enabled: "$props.filled" } };
+  await assert.rejects(() => executeCanvasScript(source, 'Update("#field", { properties: {} });'), /still binds removed property/u);
+  source.children[0].children[0] = { id: "label", type: "text", content: "Text", fill: [
+    { value: "#111111" }, { value: "#ffffff", when: { props: { filled: true } } },
+  ] };
+  await assert.rejects(() => executeCanvasScript(source, 'Update("#field", { properties: {} });'), /still has a conditional value/u);
+  assert.deepEqual(source.children[1].props, { filled: true });
+});
+
+test("new undeclared instance properties fail while pre-existing stale values remain readable", async () => {
+  const source = { version: "2.17", children: [
+    { id: "field", type: "frame", properties: { label: { type: "string", default: "Label" } }, children: [] },
+    { id: "instance", type: "ref", ref: "field", props: { label: "One", legacy: true } },
+  ] };
+  const inspected = await executeCanvasScript(source, 'return Get("#instance")[0].node.props;');
+  assert.deepEqual(inspected.result, { label: "One", legacy: true });
+  await assert.rejects(() => executeCanvasScript(source, 'Update("#instance", { props: { label: "One", legacy: true, unknown: true } });'), /undeclared component property unknown/u);
+  const expanded = await executeCanvasScript(source, 'Update("#field", { properties: { label: { type: "string", default: "Label" }, unknown: { type: "boolean", default: false } } }); Update("#instance", { props: { label: "One", legacy: true, unknown: true } });');
+  assert.equal(expanded.document.children[1].props.unknown, true);
+});
+
 test("scripts author and read named paragraph styles without replacing other styles", async () => {
   const source = { version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: { body: { fontSize: 14 } }, imports: {}, flows: [], children: [
     { id: "heading", type: "text", content: "Hello", paragraphs: [{ from: 0, to: 5 }], marks: [] },

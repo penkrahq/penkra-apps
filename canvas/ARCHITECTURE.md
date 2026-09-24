@@ -42,8 +42,10 @@ The layout model exposes horizontal, vertical, free-positioned, wrapping, min/ma
 grid layout through the owned OpenPencil/Yoga boundary. Independent row and column gaps, explicit
 tracks, and placement are part of the typed model.
 
-Axes are the shared conditional mechanism for themes, component states and variants, and responsive
-modes. Static targets resolve them at export; responsive targets retain the applicable behavior.
+Document axes are the shared conditional mechanism for appearance themes and responsive viewport
+modes. Typed component properties and conditions represent local states such as focused or invalid;
+document axes must not be used as a substitute for component-local state. Static targets resolve
+applicable conditions at export; responsive targets retain the applicable behavior.
 
 Components use typed properties, conditions, lexical nested scopes, cross-document imports, instance
 paths, and recursively pinned dependencies. Descendant remapping is deterministic and validated;

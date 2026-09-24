@@ -20,6 +20,21 @@ export function designValidationIssues(document) {
   indexDefinitions(document?.children);
   const visit = (nodes = [], parent = null, parentWidth = null) => {
     for (const node of nodes) {
+      if (node?.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
+        const definition = definitions.get(node.ref);
+        if (definition && node.props && typeof node.props === "object") {
+          for (const name of Object.keys(node.props)) {
+            if (Object.hasOwn(definition.properties ?? {}, name)) continue;
+            issues.push({
+              nodeId: node.id,
+              kind: "component-property",
+              severity: "major",
+              message: `Instance supplies undeclared property ${name}; its value is ignored.`,
+              suggestion: `Remove ${name} from this instance's props or restore it on component ${definition.id}.`,
+            });
+          }
+        }
+      }
       if (!node || node.enabled === false) continue;
       const availableWidth = parent?.layout === "vertical" && typeof parentWidth === "number"
         ? parentWidth - horizontalPadding(parent.padding)
@@ -54,7 +69,8 @@ export function designValidationIssues(document) {
           const styleName = paragraph.style ?? node.style;
           return styleName && hasVisibleFill(document.paragraphStyles?.[styleName]?.fill);
         });
-        if (!hasVisibleFill(node.fill) && !stylesSupplyFill) {
+        const hasBoundFill = typeof node.bind?.fill === "string" && node.bind.fill.startsWith("$props.");
+        if (!hasVisibleFill(node.fill) && !stylesSupplyFill && !hasBoundFill) {
           issues.push({ nodeId: node.id, kind: "text-fill", message: "This text node has no enabled visible fill." });
         }
       }

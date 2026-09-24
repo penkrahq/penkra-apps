@@ -14,6 +14,21 @@ test("component expansion preserves instance placement, sizing, opacity and imag
   assert.deepEqual([two.x, two.y, two.width, two.height, two.opacity], [0, 0, 300, 70, 1]);
   assert.deepEqual([component.x, component.y, component.opacity], [1000, 2000, 1]);
 });
+
+test("stale instance properties are ignored with an export consequence", () => {
+  const source = { axes: {}, variables: {}, children: [
+    { id: "field", type: "frame", properties: { label: { type: "string", default: "Default" } }, children: [
+      { id: "label", type: "text", content: "", bind: { content: "$props.label" } },
+    ] },
+    { id: "instance", type: "ref", ref: "field", props: { label: "Current", filled: true } },
+  ] };
+  const result = resolveCanvasDocument(source);
+  assert.equal(result.document.children[1].children[0].content, "Current");
+  assert.deepEqual(result.document.children[1].provenance.props, { label: "Current" });
+  assert.equal(result.consequences.length, 1);
+  assert.equal(result.consequences[0].node, "instance");
+  assert.equal(result.consequences[0].kind, "ignore");
+});
 import { evaluateCondition, resolveCanvasDocument } from "./canvas-resolver.mjs";
 
 test("legacy whole-value tokens export as typed values without changing literals or component bindings", () => {
