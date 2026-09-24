@@ -1572,6 +1572,68 @@ function computeDescendantVisualBounds(nodeIds, getNode, getAbsolutePosition2) {
     bounds = unionVisualBounds(bounds, collectDescendantVisualBounds(nodeId, getNode, getAbsolutePosition2));
   return bounds;
 }
+function crossProduct(a, b, p) {
+  return (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+}
+function lineSegmentIntersect(p1, p2, p3, p4) {
+  const dx1 = p2.x - p1.x;
+  const dy1 = p2.y - p1.y;
+  const dx2 = p4.x - p3.x;
+  const dy2 = p4.y - p3.y;
+  const denom = dx1 * dy2 - dy1 * dx2;
+  if (denom === 0)
+    return p1;
+  const t = ((p3.x - p1.x) * dy2 - (p3.y - p1.y) * dx2) / denom;
+  return {
+    x: p1.x + t * dx1,
+    y: p1.y + t * dy1
+  };
+}
+function clipHalfPlane(polygon, a, b, wantPositive) {
+  const output = [];
+  const isInside = (p) => {
+    const cross = crossProduct(a, b, p);
+    return wantPositive ? cross >= 0 : cross <= 0;
+  };
+  for (let i = 0;i < polygon.length; i++) {
+    const curr = polygon[i];
+    const prev = polygon[i === 0 ? polygon.length - 1 : i - 1];
+    const currInside = isInside(curr);
+    const prevInside = isInside(prev);
+    if (currInside) {
+      if (!prevInside)
+        output.push(lineSegmentIntersect(prev, curr, a, b));
+      output.push(curr);
+    } else if (prevInside)
+      output.push(lineSegmentIntersect(prev, curr, a, b));
+  }
+  return output;
+}
+function clipPolygon(subject, clipCorners) {
+  if (clipCorners.length < 3)
+    return subject;
+  let cx = 0;
+  let cy = 0;
+  for (const c of clipCorners) {
+    cx += c.x;
+    cy += c.y;
+  }
+  cx /= clipCorners.length;
+  cy /= clipCorners.length;
+  let polygon = subject;
+  for (let i = 0;i < clipCorners.length; i++) {
+    if (polygon.length === 0)
+      return null;
+    const a = clipCorners[i];
+    const b = clipCorners[(i + 1) % clipCorners.length];
+    const centroidCross = crossProduct(a, b, {
+      x: cx,
+      y: cy
+    });
+    polygon = clipHalfPlane(polygon, a, b, centroidCross >= 0);
+  }
+  return polygon.length === 0 ? null : polygon;
+}
 var init_geometry = () => {};
 
 // vendor/open-pencil/source/node_modules/.bun/es-toolkit@1.46.1/node_modules/es-toolkit/dist/object/omit.mjs
@@ -14207,6 +14269,40 @@ var init_bytes = __esm(() => {
   init_base642();
 });
 
+// vendor/open-pencil/source/node_modules/.bun/es-toolkit@1.46.1/node_modules/es-toolkit/dist/_internal/compareValues.mjs
+function compareValues(a, b, order) {
+  if (a < b) {
+    return order === "asc" ? -1 : 1;
+  }
+  if (a > b) {
+    return order === "asc" ? 1 : -1;
+  }
+  return 0;
+}
+var init_compareValues = () => {};
+
+// vendor/open-pencil/source/node_modules/.bun/es-toolkit@1.46.1/node_modules/es-toolkit/dist/array/orderBy.mjs
+function orderBy(arr, criteria, orders) {
+  return arr.slice().sort((a, b) => {
+    const ordersLength = orders.length;
+    for (let i2 = 0;i2 < criteria.length; i2++) {
+      const order = ordersLength > i2 ? orders[i2] : orders[ordersLength - 1];
+      const criterion = criteria[i2];
+      const criterionIsFunction = typeof criterion === "function";
+      const valueA = criterionIsFunction ? criterion(a) : a[criterion];
+      const valueB = criterionIsFunction ? criterion(b) : b[criterion];
+      const result = compareValues(valueA, valueB, order);
+      if (result !== 0) {
+        return result;
+      }
+    }
+    return 0;
+  });
+}
+var init_orderBy = __esm(() => {
+  init_compareValues();
+});
+
 // vendor/open-pencil/source/node_modules/.bun/es-toolkit@1.46.1/node_modules/es-toolkit/dist/array/uniq.mjs
 function uniq(arr) {
   return [...new Set(arr)];
@@ -14215,6 +14311,7 @@ var init_uniq = () => {};
 
 // vendor/open-pencil/source/node_modules/.bun/es-toolkit@1.46.1/node_modules/es-toolkit/dist/array/index.mjs
 var init_array = __esm(() => {
+  init_orderBy();
   init_uniq();
 });
 
@@ -54818,6 +54915,8 @@ function derivedGrowingLeafFitsParent(graph, parent, child, axis) {
 function configureTextLeafWithoutMeasurer(yogaChild, child, parent, fixedDerivedMainAxis) {
   if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
     yogaChild.setFlexGrow(child.layoutGrow);
+    yogaChild.setFlexShrink(1);
+    yogaChild.setFlexBasis(0);
   }
   const hasStoredSize = child.width > 0 && child.height > 0 && !(child.width === 100 && child.height === 100);
   if (child.textAutoResize === "WIDTH_AND_HEIGHT") {
@@ -54875,6 +54974,8 @@ function configureTextLeaf(yogaChild, child, parent, fixedDerivedMainAxis = fals
   const isRow = parent.layoutMode === "HORIZONTAL";
   if (child.layoutGrow > 0 && !fixedDerivedMainAxis) {
     yogaChild.setFlexGrow(child.layoutGrow);
+    yogaChild.setFlexShrink(1);
+    yogaChild.setFlexBasis(0);
   }
   const cache = new Map;
   const UNCONSTRAINED_KEY = -1;
@@ -54928,6 +55029,8 @@ function configureNonTextLeaf(yogaChild, child, isRow, stretchCross) {
   const h = child.height;
   if (child.layoutGrow > 0) {
     yogaChild.setFlexGrow(child.layoutGrow);
+    yogaChild.setFlexShrink(1);
+    yogaChild.setFlexBasis(0);
     if (!stretchCross) {
       if (isRow)
         yogaChild.setHeight(h);
@@ -64263,17 +64366,16 @@ function makeArcPath(r4, node) {
   const sweepDeg = endDeg - startDeg;
   const path = new r4.ck.Path;
   const oval = r4.ck.LTRBRect(0, 0, node.width, node.height);
+  const isFullCircle = Math.abs(sweepDeg) >= 359.99;
   if (arc.innerRadius > 0) {
-    path.addArc(oval, startDeg, sweepDeg);
     const innerOval = r4.ck.LTRBRect(cx - innerRx, cy - innerRy, cx + innerRx, cy + innerRy);
-    const innerPath = new r4.ck.Path;
-    innerPath.addArc(innerOval, startDeg + sweepDeg, -sweepDeg);
-    path.addPath(innerPath);
+    path.addArc(oval, startDeg, sweepDeg);
+    const endAngle = arc.endingAngle;
+    path.lineTo(cx + innerRx * Math.cos(endAngle), cy + innerRy * Math.sin(endAngle));
+    path.arcToOval(innerOval, endDeg, -sweepDeg, false);
     path.close();
-    innerPath.delete();
     return path;
   }
-  const isFullCircle = Math.abs(sweepDeg) >= 359.99;
   if (isFullCircle) {
     path.addOval(oval);
   } else {
@@ -89167,6 +89269,668 @@ function createEditor(options) {
 // vendor/open-pencil/source/packages/core/src/index.ts
 init_constants8();
 
+// vendor/open-pencil/source/packages/core/src/tools/schema.ts
+function defineTool(def) {
+  return def;
+}
+
+// vendor/open-pencil/source/packages/core/src/tools/analyze/overlaps/index.ts
+init_array();
+
+// vendor/open-pencil/source/packages/core/src/tools/analyze/overlaps/helpers.ts
+init_coordinate2();
+init_geometry();
+init_matrix();
+var SEVERITY_RANK = {
+  critical: 4,
+  major: 3,
+  minor: 2,
+  info: 1
+};
+function parseNodeTypes(raw) {
+  if (!raw)
+    return;
+  const types4 = raw.split(",").map((v) => v.trim().toUpperCase()).filter((v) => v.length > 0);
+  return types4.length > 0 ? new Set(types4) : undefined;
+}
+function visualBoundsArea(bounds) {
+  const width = bounds.maxX - bounds.minX;
+  const height = bounds.maxY - bounds.minY;
+  return width > 0 && height > 0 ? width * height : 0;
+}
+function boundsToRect2(bounds) {
+  return {
+    x: bounds.minX,
+    y: bounds.minY,
+    width: bounds.maxX - bounds.minX,
+    height: bounds.maxY - bounds.minY
+  };
+}
+function toNodeSummary(node) {
+  return {
+    id: node.id,
+    name: node.name,
+    type: node.type,
+    parentId: node.parentId,
+    x: Math.round(node.x),
+    y: Math.round(node.y),
+    width: Math.round(node.width),
+    height: Math.round(node.height),
+    rotation: Math.round(node.rotation),
+    opacity: node.opacity,
+    visible: node.visible,
+    locked: node.locked
+  };
+}
+function isEffectivelyHidden(graph, node) {
+  let current = node;
+  while (current) {
+    if (!current.visible)
+      return true;
+    current = current.parentId ? graph.getNode(current.parentId) : undefined;
+  }
+  return false;
+}
+function isEffectivelyLocked(graph, node) {
+  let current = node;
+  while (current) {
+    if (current.locked)
+      return true;
+    current = current.parentId ? graph.getNode(current.parentId) : undefined;
+  }
+  return false;
+}
+function findPageId(graph, node) {
+  let current = node;
+  while (current) {
+    if (current.type === "CANVAS")
+      return current.id;
+    if (current.parentId === null)
+      return null;
+    current = graph.getNode(current.parentId);
+  }
+  return null;
+}
+function findPageIdByName(graph, name50) {
+  if (!name50)
+    return;
+  const page = graph.getPages().find((p4) => p4.name === name50);
+  return page?.id;
+}
+function pairRelationship(nodeA, nodeB, graph) {
+  const sameParent = nodeA.parentId === nodeB.parentId && nodeA.parentId !== null;
+  const parentA = nodeA.parentId ? graph.getNode(nodeA.parentId) : undefined;
+  const parentB = nodeB.parentId ? graph.getNode(nodeB.parentId) : undefined;
+  const topLevel = parentA?.type === "CANVAS" && parentB?.type === "CANVAS";
+  const insideParent = sameParent && parentA?.type !== "CANVAS";
+  let ancestor = "neither";
+  if (nodeA.id !== nodeB.id) {
+    if (graph.isDescendant(nodeB.id, nodeA.id))
+      ancestor = "a-ancestor";
+    else if (graph.isDescendant(nodeA.id, nodeB.id))
+      ancestor = "b-ancestor";
+  }
+  return { sameParent, topLevel, insideParent, ancestor };
+}
+function matchesParentOverflowScope(scope) {
+  return scope === "all" || scope === "inside-parent";
+}
+function matchesScope(rel2, scope) {
+  switch (scope) {
+    case "all":
+      return true;
+    case "same-parent":
+      return rel2.sameParent;
+    case "cross-parent":
+      return !rel2.sameParent;
+    case "top-level":
+      return rel2.topLevel;
+    case "inside-parent":
+      return rel2.insideParent;
+    default:
+      return true;
+  }
+}
+function scoredSeverity(severity) {
+  return SEVERITY_RANK[severity];
+}
+function parentOverflowSeverity(outRatio) {
+  if (outRatio > 0.25)
+    return "critical";
+  if (outRatio > 0.05)
+    return "major";
+  return "minor";
+}
+function siblingOverlapSeverity(intersectionArea, smallerArea) {
+  if (smallerArea <= 0)
+    return "info";
+  const ratio = intersectionArea / smallerArea;
+  if (ratio > 0.5)
+    return "major";
+  if (ratio > 0.08)
+    return "minor";
+  return "info";
+}
+function isCandidate(node, graph, options) {
+  if (node.type === "CANVAS")
+    return false;
+  if (!options.includeHidden && isEffectivelyHidden(graph, node))
+    return false;
+  if (!options.includeLocked && isEffectivelyLocked(graph, node))
+    return false;
+  if (!options.includeAbsolute && node.layoutPositioning === "ABSOLUTE")
+    return false;
+  if (options.pageId && findPageId(graph, node) !== options.pageId)
+    return false;
+  return true;
+}
+function filterNodes(graph, args) {
+  const includeHidden = args.include_hidden === true;
+  const includeLocked = args.include_locked === true;
+  const includeAbsolute = args.include_absolute === true;
+  const pageIdFilter = args.page_id?.trim();
+  const typeFilter = parseNodeTypes(args.type);
+  const allNodes = [...graph.getAllNodes()];
+  const candidates = [];
+  let totalNodes = 0;
+  for (const node of allNodes) {
+    if (node.type === "CANVAS")
+      continue;
+    if (pageIdFilter && findPageId(graph, node) !== pageIdFilter)
+      continue;
+    totalNodes++;
+    if (!isCandidate(node, graph, {
+      includeHidden,
+      includeLocked,
+      includeAbsolute,
+      pageId: undefined
+    }))
+      continue;
+    if (typeFilter && !typeFilter.has(node.type))
+      continue;
+    candidates.push(node);
+  }
+  return { candidates, totalNodes, analyzedNodes: candidates.length };
+}
+var EMPTY_BOUNDS = { minX: 0, maxX: 0, minY: 0, maxY: 0 };
+function nodeWorldCorners(node, graph) {
+  const matrix = getWorldMatrix(node, graph);
+  const pts = Matrix.mapPoints(matrix, [
+    0,
+    0,
+    node.width,
+    0,
+    node.width,
+    node.height,
+    0,
+    node.height
+  ]);
+  return [
+    { x: pts[0], y: pts[1] },
+    { x: pts[2], y: pts[3] },
+    { x: pts[4], y: pts[5] },
+    { x: pts[6], y: pts[7] }
+  ];
+}
+function aabbFromCorners(corners) {
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const c3 of corners) {
+    if (c3.x < minX)
+      minX = c3.x;
+    if (c3.y < minY)
+      minY = c3.y;
+    if (c3.x > maxX)
+      maxX = c3.x;
+    if (c3.y > maxY)
+      maxY = c3.y;
+  }
+  return { minX, minY, maxX, maxY };
+}
+function computeNodeVisualBounds(node, graph) {
+  const matrix = getWorldMatrix(node, graph);
+  const stroke = strokeOverflow(node.strokes);
+  const baseCorners = Matrix.mapPoints(matrix, [
+    -stroke,
+    -stroke,
+    node.width + stroke,
+    -stroke,
+    node.width + stroke,
+    node.height + stroke,
+    -stroke,
+    node.height + stroke
+  ]);
+  let bounds = aabbFromCorners([
+    { x: baseCorners[0], y: baseCorners[1] },
+    { x: baseCorners[2], y: baseCorners[3] },
+    { x: baseCorners[4], y: baseCorners[5] },
+    { x: baseCorners[6], y: baseCorners[7] }
+  ]);
+  const effects = effectOverflow(node.effects);
+  bounds.minX -= effects.left;
+  bounds.minY -= effects.top;
+  bounds.maxX += effects.right;
+  bounds.maxY += effects.bottom;
+  const hasNonInsideStroke = node.strokes.some((stroke2) => stroke2.visible && stroke2.align !== "INSIDE");
+  const localGeometry = geometryBlobBounds([
+    ...node.fillGeometry,
+    ...hasNonInsideStroke ? node.strokeGeometry : []
+  ]);
+  if (localGeometry) {
+    const geomCorners = Matrix.mapPoints(matrix, [
+      localGeometry.x,
+      localGeometry.y,
+      localGeometry.x + localGeometry.width,
+      localGeometry.y,
+      localGeometry.x + localGeometry.width,
+      localGeometry.y + localGeometry.height,
+      localGeometry.x,
+      localGeometry.y + localGeometry.height
+    ]);
+    const geomBounds = aabbFromCorners([
+      { x: geomCorners[0], y: geomCorners[1] },
+      { x: geomCorners[2], y: geomCorners[3] },
+      { x: geomCorners[4], y: geomCorners[5] },
+      { x: geomCorners[6], y: geomCorners[7] }
+    ]);
+    bounds = unionVisualBounds(bounds, geomBounds) ?? bounds;
+  }
+  if (node.type === "TEXT" && node.textDecoration !== "NONE") {
+    const fontSize = node.fontSize;
+    const underlineOffset = node.textUnderlineOffset ?? fontSize * 0.18;
+    const thickness = node.textDecorationThickness ?? Math.max(1, fontSize / 16);
+    bounds.maxY += underlineOffset + thickness + fontSize * 0.35;
+  }
+  return bounds;
+}
+function collectClipChain(graph, node) {
+  const clips = [];
+  let currentId = node.parentId;
+  while (currentId) {
+    const current = graph.getNode(currentId);
+    if (!current)
+      break;
+    if (current.type === "CANVAS")
+      break;
+    if (current.clipsContent && (current.type === "FRAME" || current.type === "COMPONENT" || current.type === "INSTANCE")) {
+      clips.push(nodeWorldCorners(current, graph));
+    }
+    currentId = current.parentId;
+  }
+  return clips;
+}
+function computeNodeBounds(node, graph) {
+  const visual = computeNodeVisualBounds(node, graph);
+  const clips = collectClipChain(graph, node);
+  if (clips.length === 0) {
+    return { bounds: visual, area: visualBoundsArea(visual) };
+  }
+  let polygon = [
+    { x: visual.minX, y: visual.minY },
+    { x: visual.maxX, y: visual.minY },
+    { x: visual.maxX, y: visual.maxY },
+    { x: visual.minX, y: visual.maxY }
+  ];
+  for (const clip of clips) {
+    polygon = clipPolygon(polygon, clip);
+    if (!polygon) {
+      return { bounds: EMPTY_BOUNDS, area: 0 };
+    }
+  }
+  const bounds = aabbFromCorners(polygon);
+  return { bounds, area: visualBoundsArea(bounds) };
+}
+function makeOverlapItem(category, severity, nodeA, boundsA, nodeB, boundsB, intersection2, message, suggestion, areaField = "intersection") {
+  const intersectionRect = boundsToRect2(intersection2);
+  const area = areaField === "intersection" ? visualBoundsArea(intersection2) : visualBoundsArea(boundsA) - visualBoundsArea(intersection2);
+  const ratio = areaField === "intersection" ? area / Math.max(1, Math.min(visualBoundsArea(boundsA), visualBoundsArea(boundsB))) : area / Math.max(1, visualBoundsArea(boundsA));
+  return {
+    category,
+    severity,
+    message,
+    suggestion,
+    area: Math.round(area),
+    ratio: Math.round(ratio * 1000) / 1000,
+    nodeA: toNodeSummary(nodeA),
+    nodeB: toNodeSummary(nodeB),
+    intersection: {
+      ...intersectionRect,
+      area: Math.round(visualBoundsArea(intersection2))
+    }
+  };
+}
+function buildParentOverflowResult(child, childBounds, parent, parentBounds) {
+  if (parent.clipsContent)
+    return null;
+  const childArea = visualBoundsArea(childBounds);
+  if (childArea <= 0)
+    return null;
+  const intersection2 = intersectVisualBounds(childBounds, parentBounds);
+  const outArea = intersection2 ? childArea - visualBoundsArea(intersection2) : childArea;
+  if (outArea <= 0)
+    return null;
+  const outRatio = outArea / childArea;
+  const severity = parentOverflowSeverity(outRatio);
+  const message = `${child.type === "TEXT" ? "Text" : `Node`} "${child.name}" extends ${Math.round(outArea)}px outside parent "${parent.name}"`;
+  const suggestion = child.type === "TEXT" ? "Set the parent to clip content or constrain text sizing (textAutoResize, maxLines)." : `Reposition inside "${parent.name}" or enable clip content on the parent.`;
+  return makeOverlapItem("parent-overflow", severity, child, childBounds, parent, parentBounds, intersection2 ?? EMPTY_BOUNDS, message, suggestion, "overflow");
+}
+function isNodeAbove(ancestorGraph, above, below) {
+  if (above.parentId !== below.parentId || above.parentId === null)
+    return false;
+  const parent = ancestorGraph.getNode(above.parentId);
+  if (!parent)
+    return false;
+  const aboveIndex = parent.childIds.indexOf(above.id);
+  const belowIndex = parent.childIds.indexOf(below.id);
+  return aboveIndex > belowIndex;
+}
+function detectSiblingOverlay(nodeA, boundsA, nodeB, boundsB, graph) {
+  const areaA = visualBoundsArea(boundsA);
+  const areaB = visualBoundsArea(boundsB);
+  const smallerArea = Math.min(areaA, areaB);
+  const largerArea = Math.max(areaA, areaB);
+  const intersection2 = intersectVisualBounds(boundsA, boundsB);
+  if (!intersection2 || smallerArea <= 0)
+    return "sibling-overlap";
+  const overlapArea = visualBoundsArea(intersection2);
+  const coversSmall = overlapArea / smallerArea > 0.85;
+  const sizeRatio = largerArea / Math.max(1, smallerArea);
+  if (sizeRatio < 5 || !coversSmall)
+    return "sibling-overlap";
+  const larger = areaA >= areaB ? nodeA : nodeB;
+  const smaller = areaA >= areaB ? nodeB : nodeA;
+  return isNodeAbove(graph, larger, smaller) ? "overlay" : "sibling-overlap";
+}
+function buildSiblingOverlapResult(nodeA, boundsA, nodeB, boundsB, graph) {
+  const intersection2 = intersectVisualBounds(boundsA, boundsB);
+  if (!intersection2)
+    return null;
+  const areaA = visualBoundsArea(boundsA);
+  const areaB = visualBoundsArea(boundsB);
+  const smallerArea = Math.min(areaA, areaB);
+  const category = detectSiblingOverlay(nodeA, boundsA, nodeB, boundsB, graph);
+  const intersectionArea = visualBoundsArea(intersection2);
+  let severity;
+  if (category === "overlay") {
+    severity = smallerArea > 0 && intersectionArea / smallerArea > 0.98 ? "info" : "minor";
+  } else {
+    severity = siblingOverlapSeverity(intersectionArea, smallerArea);
+  }
+  const larger = areaA >= areaB ? nodeA : nodeB;
+  const smaller = areaA >= areaB ? nodeB : nodeA;
+  const message = category === "overlay" ? `"${larger.name}" appears to be an overlay covering "${smaller.name}"` : `"${nodeA.name}" overlaps "${nodeB.name}"`;
+  const suggestion = category === "overlay" ? "If intentional (modal/backdrop/dropdown), no action needed. Otherwise reposition or adjust z-order." : "Review stacking and spacing — this overlap is likely unintended.";
+  return makeOverlapItem(category, severity, nodeA, boundsA, nodeB, boundsB, intersection2, message, suggestion);
+}
+function passesThresholds(item, minArea, minRatio, categoryFilter, severityFilter) {
+  if (item.area < minArea)
+    return false;
+  if (item.ratio < minRatio)
+    return false;
+  if (categoryFilter && !categoryFilter.includes(item.category))
+    return false;
+  if (severityFilter && scoredSeverity(item.severity) < scoredSeverity(severityFilter))
+    return false;
+  return true;
+}
+
+// vendor/open-pencil/source/packages/core/src/tools/analyze/overlaps/params.ts
+var VALID_OVERLAP_SCOPES = [
+  "all",
+  "same-parent",
+  "cross-parent",
+  "top-level",
+  "inside-parent"
+];
+var VALID_OVERLAP_CATEGORIES = [
+  "sibling-overlap",
+  "parent-overflow",
+  "overlay"
+];
+var VALID_OVERLAP_SEVERITIES = [
+  "critical",
+  "major",
+  "minor",
+  "info"
+];
+function parseOverlapScope(raw) {
+  if (!raw)
+    return;
+  const normalized = raw.trim().toLowerCase();
+  if (!normalized)
+    return;
+  return VALID_OVERLAP_SCOPES.find((scope) => scope === normalized);
+}
+function parseOverlapCategories(raw) {
+  if (!raw)
+    return;
+  const values = raw.split(",").map((v) => v.trim().toLowerCase()).filter((v) => v.length > 0);
+  if (values.length === 0)
+    return;
+  const categories = values.filter((v) => VALID_OVERLAP_CATEGORIES.includes(v));
+  return categories.length > 0 ? categories : undefined;
+}
+function parseOverlapSeverity(raw) {
+  if (!raw)
+    return;
+  const normalized = raw.trim().toLowerCase();
+  if (!normalized)
+    return;
+  return VALID_OVERLAP_SEVERITIES.find((severity) => severity === normalized);
+}
+
+// vendor/open-pencil/source/packages/core/src/tools/analyze/overlaps/index.ts
+function buildBoundsCache(candidates, graph) {
+  const boundsCache = new Map;
+  const entries = [];
+  for (const node of candidates) {
+    const cached = boundsCache.get(node.id);
+    if (cached) {
+      entries.push(cached);
+      continue;
+    }
+    const computed = computeNodeBounds(node, graph);
+    if (computed.area <= 0)
+      continue;
+    const entry = { node, ...computed };
+    boundsCache.set(node.id, entry);
+    entries.push(entry);
+  }
+  return { boundsCache, entries };
+}
+function collectParentOverflows(candidates, graph, boundsCache, scope, minArea, minRatio, categoryFilter, severityFilter) {
+  const overlaps = [];
+  for (const child of candidates) {
+    if (!child.parentId)
+      continue;
+    const parent = graph.getNode(child.parentId);
+    if (!parent || parent.type === "CANVAS")
+      continue;
+    const childEntry = boundsCache.get(child.id);
+    if (!childEntry || childEntry.area <= 0)
+      continue;
+    let parentEntry = boundsCache.get(parent.id);
+    if (!parentEntry) {
+      const computed = computeNodeBounds(parent, graph);
+      if (computed.area <= 0)
+        continue;
+      parentEntry = { node: parent, ...computed };
+      boundsCache.set(parent.id, parentEntry);
+    }
+    const item = buildParentOverflowResult(child, childEntry.bounds, parent, parentEntry.bounds);
+    if (item && matchesParentOverflowScope(scope) && passesThresholds(item, minArea, minRatio, categoryFilter, severityFilter)) {
+      overlaps.push(item);
+    }
+  }
+  return overlaps;
+}
+function collectSiblingOverlaps(entries, graph, scope, minArea, minRatio, categoryFilter, severityFilter) {
+  const overlaps = [];
+  entries.sort((a, b) => a.bounds.minX - b.bounds.minX);
+  for (let i2 = 0;i2 < entries.length; i2++) {
+    const entryA = entries[i2];
+    if (entryA.area <= 0)
+      continue;
+    const maxX = entryA.bounds.maxX;
+    for (let j = i2 + 1;j < entries.length; j++) {
+      const entryB = entries[j];
+      if (entryB.bounds.minX > maxX)
+        break;
+      if (entryB.bounds.maxY <= entryA.bounds.minY || entryB.bounds.minY >= entryA.bounds.maxY) {
+        continue;
+      }
+      const rel2 = pairRelationship(entryA.node, entryB.node, graph);
+      if (rel2.ancestor !== "neither")
+        continue;
+      if (!matchesScope(rel2, scope))
+        continue;
+      const item = buildSiblingOverlapResult(entryA.node, entryA.bounds, entryB.node, entryB.bounds, graph);
+      if (item && passesThresholds(item, minArea, minRatio, categoryFilter, severityFilter)) {
+        overlaps.push(item);
+      }
+    }
+  }
+  return overlaps;
+}
+function emptyByCategory() {
+  return {
+    "sibling-overlap": 0,
+    "parent-overflow": 0,
+    overlay: 0
+  };
+}
+function emptyBySeverity() {
+  return {
+    critical: 0,
+    major: 0,
+    minor: 0,
+    info: 0
+  };
+}
+function computeOverlaps(graph, args = {}) {
+  const scope = parseOverlapScope(args.scope) ?? "all";
+  const categoryFilter = parseOverlapCategories(args.category);
+  const severityFilter = parseOverlapSeverity(args.severity);
+  const minArea = Math.max(0, Number.isFinite(Number(args.min_area)) ? Number(args.min_area) : 0);
+  const minRatio = Math.max(0, Math.min(1, Number.isFinite(Number(args.min_ratio)) ? Number(args.min_ratio) : 0));
+  const explicitPageName = args.page?.trim();
+  const explicitPageId = args.page_id?.trim();
+  let resolvedPageId;
+  if (explicitPageId) {
+    resolvedPageId = explicitPageId;
+  } else if (explicitPageName) {
+    resolvedPageId = findPageIdByName(graph, explicitPageName);
+  } else {
+    resolvedPageId = graph.getPages()[0]?.id;
+  }
+  if (!resolvedPageId) {
+    return {
+      overlaps: [],
+      summary: {
+        totalNodes: 0,
+        analyzedNodes: 0,
+        overlapCount: 0,
+        byCategory: emptyByCategory(),
+        bySeverity: emptyBySeverity()
+      }
+    };
+  }
+  const resolvedArgs = { ...args, page_id: resolvedPageId };
+  const { candidates, totalNodes, analyzedNodes } = filterNodes(graph, resolvedArgs);
+  const { boundsCache, entries } = buildBoundsCache(candidates, graph);
+  const includeParentOverflow = !categoryFilter || categoryFilter.includes("parent-overflow");
+  const includeSiblingOverlap = !categoryFilter || categoryFilter.includes("sibling-overlap") || categoryFilter.includes("overlay");
+  const overlaps = [
+    ...includeParentOverflow ? collectParentOverflows(candidates, graph, boundsCache, scope, minArea, minRatio, categoryFilter, severityFilter) : [],
+    ...includeSiblingOverlap ? collectSiblingOverlaps(entries, graph, scope, minArea, minRatio, categoryFilter, severityFilter) : []
+  ];
+  const sorted = orderBy(overlaps, [(o) => scoredSeverity(o.severity), (o) => o.area], ["desc", "desc"]);
+  const limit = Math.max(0, Number.isFinite(Number(args.limit)) ? Number(args.limit) : 100);
+  const trimmed = sorted.slice(0, limit);
+  const byCategory = emptyByCategory();
+  const bySeverity = emptyBySeverity();
+  for (const item of sorted) {
+    byCategory[item.category]++;
+    bySeverity[item.severity]++;
+  }
+  return {
+    overlaps: trimmed,
+    summary: {
+      totalNodes,
+      analyzedNodes,
+      overlapCount: sorted.length,
+      byCategory,
+      bySeverity
+    }
+  };
+}
+var analyzeOverlaps = defineTool({
+  name: "analyze_overlaps",
+  description: "Detect visual overlaps and layout overflows across the current page. Useful for finding content that covers footers, text that bleeds outside frames, and accidental sibling overlaps.",
+  params: {
+    scope: {
+      type: "string",
+      description: "Which pairs to inspect: all, same-parent, cross-parent, top-level, inside-parent (default: all)",
+      enum: ["all", "same-parent", "cross-parent", "top-level", "inside-parent"],
+      default: "all"
+    },
+    category: {
+      type: "string",
+      description: "Comma-separated categories: sibling-overlap, parent-overflow, overlay (default: all)"
+    },
+    severity: {
+      type: "string",
+      description: "Minimum severity to include: critical, major, minor, info (default: info)",
+      enum: ["critical", "major", "minor", "info"],
+      default: "info"
+    },
+    min_area: {
+      type: "number",
+      description: "Minimum overlap area in square pixels (default: 0)"
+    },
+    min_ratio: {
+      type: "number",
+      description: "Minimum overlap ratio relative to the smaller node, 0.0–1.0 (default: 0)"
+    },
+    include_hidden: {
+      type: "boolean",
+      description: "Include hidden nodes in the analysis"
+    },
+    include_locked: {
+      type: "boolean",
+      description: "Include locked nodes in the analysis"
+    },
+    include_absolute: {
+      type: "boolean",
+      description: "Include absolutely-positioned nodes in the analysis"
+    },
+    page: {
+      type: "string",
+      description: "Limit analysis to nodes on the named page"
+    },
+    page_id: {
+      type: "string",
+      description: "Limit analysis to nodes on the page with this stable ID (takes precedence over page)"
+    },
+    type: {
+      type: "string",
+      description: "Comma-separated node types to analyze, e.g. FRAME,TEXT"
+    },
+    limit: {
+      type: "number",
+      description: "Maximum overlap findings to return (default: 100)",
+      default: 100
+    }
+  },
+  execute: (figma, args) => {
+    const page_id = args.page_id ?? (args.page ? undefined : figma.currentPageId);
+    return computeOverlaps(figma.graph, { ...args, page_id });
+  }
+});
+
 // vendor/open-pencil/source/packages/core/src/text/style-runs.ts
 init_object();
 function getStyleAt(runs, index) {
@@ -90405,10 +91169,37 @@ function applyOverrideProps(target, overrideData, ctx, graph) {
   const intrinsic = textMetricsChanged && target.type === "TEXT" && target.textAutoResize === "WIDTH_AND_HEIGHT";
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight };
 }
-function setInstanceAxisToHug(instance2, axis) {
-  const vertical = instance2.layoutMode === "VERTICAL";
-  const key = axis === "width" ? vertical ? "counterAxisSizing" : "primaryAxisSizing" : vertical ? "primaryAxisSizing" : "counterAxisSizing";
-  instance2[key] = "HUG";
+function layoutSizingKeyForAxis(node, axis) {
+  const widthIsPrimary = node.layoutMode !== "VERTICAL";
+  const isPrimary = axis === "width" ? widthIsPrimary : !widthIsPrimary;
+  return isPrimary ? "primaryAxisSizing" : "counterAxisSizing";
+}
+function layoutSizingForAxis(node, axis) {
+  return node[layoutSizingKeyForAxis(node, axis)];
+}
+function intrinsicContentSizeForAxis(graph, node, axis) {
+  const children = graph.getChildren(node.id).filter((child) => child.visible && child.layoutPositioning !== "ABSOLUTE");
+  if (children.length === 0)
+    return;
+  const padding = axis === "width" ? node.paddingLeft + node.paddingRight : node.paddingTop + node.paddingBottom;
+  const gap = node.primaryAxisAlign === "SPACE_BETWEEN" ? 0 : node.itemSpacing * Math.max(0, children.length - 1);
+  return children.reduce((size, child) => size + (axis === "width" ? child.width : child.height), padding + gap);
+}
+function setIntrinsicInstanceAxisToHug(graph, instance2, axis) {
+  const component = instance2.componentId ? graph.getNode(instance2.componentId) : undefined;
+  if (!component)
+    return;
+  const primaryAxis = instance2.layoutMode === "VERTICAL" ? "height" : "width";
+  const componentSizing = layoutSizingForAxis(component, axis);
+  if (componentSizing !== "HUG") {
+    if (axis !== primaryAxis)
+      return;
+    const intrinsicSize2 = intrinsicContentSizeForAxis(graph, instance2, axis);
+    const componentSize = axis === "width" ? component.width : component.height;
+    if (intrinsicSize2 === undefined || intrinsicSize2 <= componentSize)
+      return;
+  }
+  instance2[layoutSizingKeyForAxis(instance2, axis)] = "HUG";
 }
 function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
   let current = target;
@@ -90417,9 +91208,9 @@ function applyIntrinsicOverrideSizing(graph, target, instance2, changed) {
     visited.add(current.id);
     if (current.type === "INSTANCE") {
       if (changed.width && current.pencilWidthOmitted)
-        setInstanceAxisToHug(current, "width");
+        setIntrinsicInstanceAxisToHug(graph, current, "width");
       if (changed.height && current.pencilHeightOmitted)
-        setInstanceAxisToHug(current, "height");
+        setIntrinsicInstanceAxisToHug(graph, current, "height");
     }
     if (current.id === instance2.id)
       break;
@@ -90703,7 +91494,7 @@ function includeRect2(bounds, rect) {
   includePoint2(bounds, rect.x, rect.y);
   includePoint2(bounds, rect.x + rect.width, rect.y + rect.height);
 }
-function boundsToRect2(bounds) {
+function boundsToRect3(bounds) {
   return bounds.minX === Infinity ? { x: 0, y: 0, width: 0, height: 0 } : {
     x: bounds.minX,
     y: bounds.minY,
@@ -90715,7 +91506,7 @@ function computeBounds3(items) {
   const bounds = createBoundsAccumulator2();
   for (const item of items)
     includeRect2(bounds, item);
-  return boundsToRect2(bounds);
+  return boundsToRect3(bounds);
 }
 function strokeOverflow3(strokes) {
   let overflow = 0;
@@ -90763,7 +91554,7 @@ function computeVisualBounds3(nodes, getAbsolutePosition2) {
     includePoint2(bounds, bbox.left - stroke - effects.left, bbox.top - stroke - effects.top);
     includePoint2(bounds, bbox.right + stroke + effects.right, bbox.bottom + stroke + effects.bottom);
   }
-  return boundsToRect2(bounds);
+  return boundsToRect3(bounds);
 }
 function unionVisualBounds3(a, b) {
   if (!a)
@@ -90814,7 +91605,7 @@ function geometryBlobBounds3(paths) {
       }
     }
   }
-  return bounds.minX === Infinity ? null : boundsToRect2(bounds);
+  return bounds.minX === Infinity ? null : boundsToRect3(bounds);
 }
 function transformLocalPoint2(node, point) {
   let x2 = node.flipX ? node.width - point.x : point.x;
@@ -96026,6 +96817,7 @@ export {
   computeBounds3 as computeBounds,
   computeDescendantVisualBounds3 as computeDescendantVisualBounds,
   computeLayout,
+  computeOverlaps,
   createCanvasSceneGraph,
   createDefaultEditorState,
   createEditor,

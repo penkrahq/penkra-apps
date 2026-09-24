@@ -2,6 +2,34 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { executeCanvasScript, scriptNeedsInspection } from "./script-runtime.mjs";
+import { validateCanvasDocument } from "./canvas-schema.mjs";
+
+test("scripts author root colour variables and appearance modes atomically", async () => {
+  const source = { version: "2.17", module: "mobile", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
+    { id: "swatch", type: "rectangle", width: 20, height: 20, fill: "#fff" },
+  ] };
+  const result = await executeCanvasScript(source, `
+    SetAxis("appearance", { modes: [{ name: "light" }, { name: "dark" }] });
+    SetVariable("ink", { tokenType: "color", cascade: [{ value: "#111111" }, { value: "#eeeeee", when: { appearance: "dark" } }] });
+    Update("#swatch", { fill: "$ink" });
+    return { variables: GetVariables(), axes: GetAxes() };
+  `);
+  assert.equal(result.changed, true);
+  assert.equal(result.document.children[0].fill, "$ink");
+  assert.deepEqual(result.result.variables, result.document.variables);
+  assert.deepEqual(result.result.axes, result.document.axes);
+  assert.deepEqual(source.variables, {});
+  assert.equal(validateCanvasDocument(result.document).valid, true);
+});
+
+test("root token authoring rejects invalid definitions and does not report no-op changes", async () => {
+  const source = { version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [] };
+  await assert.rejects(() => executeCanvasScript(source, 'SetVariable("", {});'), /non-empty name/u);
+  await assert.rejects(() => executeCanvasScript(source, 'SetAxis("appearance", []);'), /definition object/u);
+  const first = await executeCanvasScript(source, 'SetVariable("ink", { tokenType: "color", cascade: [{ value: "#111111" }] });');
+  const second = await executeCanvasScript(first.document, 'SetVariable("ink", { tokenType: "color", cascade: [{ value: "#111111" }] });');
+  assert.equal(second.changed, false);
+});
 
 test("generic module assignment preserves artwork and is one-way", async () => {
   const source = { version: "2.17", module: "generic", children: [{ id: "art", type: "rectangle", width: 40, height: 20, fill: "#123456" }] };

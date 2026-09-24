@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-import { computeAllLayouts, fontManager } from "../vendor/open-pencil/engine.source.mjs";
+import { computeAllLayouts, computeLayout, fontManager, hydrateCanvasSceneGraphInstances } from "../vendor/open-pencil/engine.source.mjs";
 import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";
 
 import {
@@ -206,6 +206,179 @@ test("hydrating a deferred instance restores canonical descendants and authored 
   assert.equal(child.id, "instance/label");
   assert.equal(child.text, "Overridden");
   assert.deepEqual(hydrateOpenPencilGraphInstances(graph, document, ["instance"]), []);
+});
+
+test("bound text preserves a component's fixed-height instance axis after font measurement", () => {
+  const source = { children: [
+    {
+      id: "chip",
+      type: "frame",
+      layout: "horizontal",
+      width: "fit_content",
+      height: 32,
+      padding: [0, 14],
+      gap: 6,
+      alignItems: "center",
+      properties: { label: { type: "string", default: "All" } },
+      children: [
+        {
+          id: "label",
+          type: "text",
+          content: "All",
+          fontSize: 16,
+          lineHeight: 1.2,
+          bind: { content: "$props.label" },
+        },
+        { id: "count", type: "frame", layout: "horizontal", width: 20, height: 20 },
+      ],
+    },
+    { id: "instance", type: "ref", ref: "chip", props: { label: "Kaneshie Market" } },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared, {
+    deferExternalInstances: true,
+  });
+
+  graph.updateNode("label", { width: 29.25, height: 19 });
+  hydrateOpenPencilGraphInstances(graph, prepared.document, ["instance"]);
+
+  const instance = graph.getNode("instance");
+  assert.equal(instance.primaryAxisSizing, "HUG");
+  assert.equal(instance.counterAxisSizing, "FIXED");
+  assert.equal(instance.height, 32);
+  assert.ok(instance.width > graph.getNode("chip").width);
+});
+
+test("nested fixed-width header and footer instances keep their widths after bound text is measured", () => {
+  const source = { version: "2.17", children: [
+    {
+      id: "component-library", type: "frame", layout: "none", width: 500, height: 300,
+      children: [
+        {
+          id: "header", type: "frame", layout: "horizontal", width: 393, height: 56,
+          padding: [0, 8], alignItems: "center",
+          properties: { title: { type: "string", default: "Title" } },
+          children: [
+            { id: "left", type: "frame", layout: "horizontal", width: 96, height: 44, children: [] },
+            { id: "center", type: "frame", layout: "horizontal", width: "fill_container", height: "fit_content", justifyContent: "center", children: [
+              { id: "title", type: "text", content: "Title", bind: { content: "$props.title" }, textGrowth: "auto", fontSize: 17, fill: "#222222" },
+            ] },
+            { id: "right", type: "frame", layout: "horizontal", width: 96, height: 44, children: [] },
+          ],
+        },
+        {
+          id: "footer", type: "frame", layout: "vertical", width: 393, height: "fit_content", padding: [12, 16, 34, 16],
+          properties: { label: { type: "string", default: "Continue" } },
+          children: [{ id: "button", type: "frame", layout: "horizontal", width: "fill_container", height: 50, justifyContent: "center", children: [
+            { id: "button-label", type: "text", content: "Continue", bind: { content: "$props.label" }, textGrowth: "auto", fontSize: 17, fill: "#ffffff" },
+          ] }],
+        },
+      ],
+    },
+    { id: "screen", type: "frame", layout: "vertical", width: 393, height: 852, children: [
+      { id: "screen-header", type: "ref", ref: "header", props: { title: "Mark attendance" } },
+      { id: "screen-footer", type: "ref", ref: "footer", props: { label: "Save attendance" } },
+    ] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+
+  graph.updateNode("title", { width: 140, height: 24 });
+  graph.updateNode("button-label", { width: 138, height: 24 });
+  hydrateOpenPencilGraphInstances(graph, prepared.document, ["screen-header", "screen-footer"]);
+
+  assert.equal(graph.getNode("screen-header").width, 393);
+  assert.equal(graph.getNode("screen-header/center").width, 185);
+  assert.equal(graph.getNode("screen-footer").width, 393);
+  assert.equal(graph.getNode("screen-footer/button").width, 361);
+});
+
+test("batch hydration lays out shared fit-content ancestors once without changing final bounds", () => {
+  const instanceIds = Array.from({ length: 48 }, (_, index) => `row-${index}`);
+  const source = { children: [
+    { id: "library", type: "frame", layout: "none", width: 400, height: 100, children: [
+      { id: "row-definition", type: "frame", layout: "horizontal", width: "fit_content", height: 40,
+        padding: [0, 12], properties: { label: { type: "string", default: "Row" } }, children: [
+          { id: "row-label", type: "text", content: "Row", bind: { content: "$props.label" }, fontSize: 16 },
+        ] },
+    ] },
+    { id: "area", type: "frame", layout: "vertical", width: "fit_content", height: "fit_content", children: [
+      { id: "section", type: "frame", layout: "vertical", width: "fit_content", height: "fit_content",
+        children: instanceIds.map((id, index) => ({ id, type: "ref", ref: "row-definition", props: { label: `Row ${index} with varying text` } })),
+      },
+    ] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const baseline = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+  const batched = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+  const hydrated = hydrateCanvasSceneGraphInstances(baseline, prepared.document, instanceIds);
+  for (const instanceId of hydrated) {
+    computeAllLayouts(baseline, instanceId);
+    let node = baseline.getNode(instanceId);
+    while (node?.parentId) {
+      node = baseline.getNode(node.parentId);
+      if (node) computeLayout(baseline, node.id);
+    }
+  }
+
+  const performanceStore = globalThis.__penkraPerformance ??= {};
+  const previousMonitor = performanceStore.canvas;
+  const records = [];
+  performanceStore.canvas = { record: (name, _duration, details) => records.push({ name, details }) };
+  try {
+    assert.deepEqual(hydrateOpenPencilGraphInstances(batched, prepared.document, instanceIds), hydrated);
+  } finally {
+    if (previousMonitor) performanceStore.canvas = previousMonitor;
+    else delete performanceStore.canvas;
+  }
+
+  const authoredIds = [...baseline.nodes.keys()].filter((id) => !id.startsWith("0:")).sort();
+  const baselineBounds = authoredIds.map((id) => [id, baseline.getAbsoluteBounds(id)]);
+  const batchedBounds = authoredIds.map((id) => [id, batched.getAbsoluteBounds(id)]);
+  const differences = batchedBounds.flatMap(([id, bounds], index) => {
+    const [baselineId, baselineValue] = baselineBounds[index];
+    return id === baselineId && JSON.stringify(bounds) === JSON.stringify(baselineValue)
+      ? [] : [{ id, bounds, baselineId, baselineValue }];
+  });
+  assert.deepEqual(differences.slice(0, 10), []);
+  const layout = records.find((entry) => entry.name === "engine.graph.hydrate-ancestor-layout")?.details;
+  assert.equal(layout.ancestorCalls, layout.distinctAncestors);
+  assert.ok(layout.ancestorCalls < hydrated.length);
+});
+
+test("bound text retains intentionally hug-height component instances", () => {
+  const document = { children: [
+    {
+      id: "badge",
+      type: "frame",
+      layout: "horizontal",
+      width: "fit_content",
+      height: "fit_content",
+      padding: [4, 8],
+      properties: { label: { type: "string", default: "A" } },
+      children: [{
+        id: "badge-label",
+        type: "text",
+        content: "A",
+        fontSize: 16,
+        lineHeight: 1.2,
+        bind: { content: "$props.label" },
+      }],
+    },
+    { id: "badge-instance", type: "ref", ref: "badge", props: { label: "Two lines" } },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(document);
+  const graph = createOpenPencilGraph(document, new Map(), prepared, {
+    deferExternalInstances: true,
+  });
+
+  graph.updateNode("badge-label", { width: 8, height: 19 });
+  hydrateOpenPencilGraphInstances(graph, prepared.document, ["badge-instance"]);
+
+  const instance = graph.getNode("badge-instance");
+  assert.equal(instance.primaryAxisSizing, "HUG");
+  assert.equal(instance.counterAxisSizing, "HUG");
+  assert.ok(instance.height >= 27);
 });
 
 test("viewport hydration expands only visible external instances", () => {
@@ -863,6 +1036,104 @@ test("Canvas native fill-width text preserves its declared parent sizing", () =>
   assert.equal(editor.graph.getNode("row").width, 608);
   assert.equal(editor.graph.getNode("label").width, 588);
   assert.equal(editor.graph.getNode("label").height, 19);
+});
+
+test("fill-width fixed-width text shares a constrained row with fixed siblings", () => {
+  const editor = createOpenPencilEditor({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 297,
+      layout: "horizontal",
+      gap: 8,
+      alignItems: "center",
+      children: [
+        { id: "status", type: "rectangle", width: 17, height: 17 },
+        {
+          id: "preview",
+          type: "text",
+          width: "fill_container",
+          textGrowth: "fixed-width",
+          content: "Akwaaba Ama. Ask me anything, in your own words.",
+          fontSize: 15,
+          lineHeight: 1.4,
+        },
+        { id: "badge", type: "frame", width: 19, height: 22 },
+      ],
+    }],
+  });
+
+  const preview = editor.graph.getNode("preview");
+  const badge = editor.graph.getNode("badge");
+
+  assert.equal(preview.width, 245);
+  assert.equal(badge.x, 278);
+  assert.equal(badge.x + badge.width, 297);
+
+  editor.graph.updateNode("badge", { width: 27 });
+  computeAllLayouts(editor.graph);
+
+  assert.equal(preview.width, 237);
+  assert.equal(badge.x, 270);
+  assert.equal(badge.x + badge.width, 297);
+});
+
+test("a growing text leaf reallocates when its fixed sibling is remeasured", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 297,
+      layout: "horizontal",
+      gap: 8,
+      children: [
+        {
+          id: "name",
+          type: "text",
+          width: "fill_container",
+          textGrowth: "fixed-width",
+          content: "WorkApp Assistant",
+          fontSize: 17,
+        },
+        { id: "time", type: "text", content: "now", fontSize: 13 },
+      ],
+    }],
+  });
+
+  const initialNameWidth = graph.getNode("name").width;
+  graph.updateNode("time", { width: 27 });
+  computeAllLayouts(graph);
+
+  const name = graph.getNode("name");
+  const time = graph.getNode("time");
+  assert.ok(name.width < initialNameWidth);
+  assert.ok(Math.abs(time.x + time.width - 297) < 0.001);
+});
+
+test("a growing shape leaf gives space to a widened fixed sibling", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [{
+      id: "row",
+      type: "frame",
+      width: 100,
+      layout: "horizontal",
+      gap: 5,
+      children: [
+        { id: "track", type: "rectangle", width: "fill_container", height: 4 },
+        { id: "end", type: "rectangle", width: 20, height: 4 },
+      ],
+    }],
+  });
+
+  assert.equal(graph.getNode("track").width, 75);
+  graph.updateNode("end", { width: 30 });
+  computeAllLayouts(graph);
+
+  assert.equal(graph.getNode("track").width, 65);
+  assert.equal(graph.getNode("end").x + graph.getNode("end").width, 100);
 });
 
 test("OpenPencil resolves Pencil-style numeric variables before layout", () => {
@@ -1529,6 +1800,36 @@ test("an omitted instance width grows around an overridden auto-width label", ()
   assert.ok(instance.width > component.width);
   assert.equal(instance.width, label.width + instance.paddingLeft + instance.paddingRight);
   assert.equal(instance.height, 20);
+});
+
+test("an omitted full-width button instance preserves its fixed component width when the label fits", () => {
+  const graph = createOpenPencilGraph({
+    version: "2.17",
+    children: [
+      {
+        id: "button",
+        type: "frame",
+        layout: "horizontal",
+        width: 361,
+        height: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        children: [{ id: "button-label", type: "text", content: "Continue", fontSize: 17 }],
+      },
+      {
+        id: "invite-button",
+        type: "ref",
+        ref: "button",
+        descendants: { "button-label": { content: "Share invite link" } },
+      },
+    ],
+  });
+  const component = graph.getNode("button");
+  const instance = graph.getNode("invite-button");
+
+  assert.equal(instance.primaryAxisSizing, "FIXED");
+  assert.equal(instance.width, component.width);
+  assert.equal(instance.x, component.x);
 });
 
 test("a nested omitted instance grows around overridden text without overlapping its sibling", () => {

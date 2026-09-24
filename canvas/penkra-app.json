@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "compatibility": {
     "penkra": ">=0.12.6"
   },
@@ -362,7 +362,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 100000,
-            "description": "JavaScript using Get, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
+            "description": "JavaScript using Get, GetVariables, GetAxes, SetVariable, SetAxis, Insert, Copy, Update, Replace, Delete, Move, G, ConvertSvgToVectors, TakeScreenshot, and Print."
           }
         },
         "required": ["documentId", "code"],

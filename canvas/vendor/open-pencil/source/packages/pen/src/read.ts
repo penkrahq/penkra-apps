@@ -663,17 +663,62 @@ function applyOverrideProps(
   return { width: intrinsic, height: intrinsic && target.height !== previousIntrinsicHeight }
 }
 
-function setInstanceAxisToHug(instance: SceneNode, axis: 'width' | 'height'): void {
-  const vertical = instance.layoutMode === 'VERTICAL'
-  const key =
-    axis === 'width'
-      ? vertical
-        ? 'counterAxisSizing'
-        : 'primaryAxisSizing'
-      : vertical
-        ? 'primaryAxisSizing'
-        : 'counterAxisSizing'
-  instance[key] = 'HUG'
+function layoutSizingKeyForAxis(
+  node: SceneNode,
+  axis: 'width' | 'height'
+): 'primaryAxisSizing' | 'counterAxisSizing' {
+  const widthIsPrimary = node.layoutMode !== 'VERTICAL'
+  const isPrimary = axis === 'width' ? widthIsPrimary : !widthIsPrimary
+  return isPrimary ? 'primaryAxisSizing' : 'counterAxisSizing'
+}
+
+function layoutSizingForAxis(node: SceneNode, axis: 'width' | 'height'): LayoutSizing {
+  return node[layoutSizingKeyForAxis(node, axis)]
+}
+
+function intrinsicContentSizeForAxis(
+  graph: SceneGraph,
+  node: SceneNode,
+  axis: 'width' | 'height'
+): number | undefined {
+  const children = graph
+    .getChildren(node.id)
+    .filter((child) => child.visible && child.layoutPositioning !== 'ABSOLUTE')
+  if (children.length === 0) return undefined
+
+  const padding =
+    axis === 'width' ? node.paddingLeft + node.paddingRight : node.paddingTop + node.paddingBottom
+  const gap =
+    node.primaryAxisAlign === 'SPACE_BETWEEN'
+      ? 0
+      : node.itemSpacing * Math.max(0, children.length - 1)
+  return children.reduce(
+    (size, child) => size + (axis === 'width' ? child.width : child.height),
+    padding + gap
+  )
+}
+
+function setIntrinsicInstanceAxisToHug(
+  graph: SceneGraph,
+  instance: SceneNode,
+  axis: 'width' | 'height'
+): void {
+  const component = instance.componentId ? graph.getNode(instance.componentId) : undefined
+  if (!component) return
+
+  const primaryAxis = instance.layoutMode === 'VERTICAL' ? 'height' : 'width'
+  const componentSizing = layoutSizingForAxis(component, axis)
+  if (componentSizing !== 'HUG') {
+    // Fixed component axes remain authoritative while their overridden content
+    // fits. A primary axis may grow only to prevent intrinsic content overflow;
+    // cross-axis promotion would instead collapse fixed-height controls.
+    if (axis !== primaryAxis) return
+    const intrinsicSize = intrinsicContentSizeForAxis(graph, instance, axis)
+    const componentSize = axis === 'width' ? component.width : component.height
+    if (intrinsicSize === undefined || intrinsicSize <= componentSize) return
+  }
+
+  instance[layoutSizingKeyForAxis(instance, axis)] = 'HUG'
 }
 
 function applyIntrinsicOverrideSizing(
@@ -687,8 +732,10 @@ function applyIntrinsicOverrideSizing(
   while (current && !visited.has(current.id)) {
     visited.add(current.id)
     if (current.type === 'INSTANCE') {
-      if (changed.width && current.pencilWidthOmitted) setInstanceAxisToHug(current, 'width')
-      if (changed.height && current.pencilHeightOmitted) setInstanceAxisToHug(current, 'height')
+      if (changed.width && current.pencilWidthOmitted)
+        setIntrinsicInstanceAxisToHug(graph, current, 'width')
+      if (changed.height && current.pencilHeightOmitted)
+        setIntrinsicInstanceAxisToHug(graph, current, 'height')
     }
     if (current.id === instance.id) break
     current = current.parentId ? graph.getNode(current.parentId) : undefined

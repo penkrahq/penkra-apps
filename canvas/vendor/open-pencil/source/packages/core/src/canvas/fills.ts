@@ -462,16 +462,9 @@ export function applyImageFill(
       recorder.delete()
       r.vectorImageCache.set(hash, picture)
     }
-    const localMatrix = makeImageFillLocalMatrix(
-      r,
-      fill,
-      node,
-      vector.width,
-      vector.height
-    )
-    const tileMode = (fill.imageScaleMode ?? 'FILL') === 'TILE'
-      ? r.ck.TileMode.Repeat
-      : r.ck.TileMode.Decal
+    const localMatrix = makeImageFillLocalMatrix(r, fill, node, vector.width, vector.height)
+    const tileMode =
+      (fill.imageScaleMode ?? 'FILL') === 'TILE' ? r.ck.TileMode.Repeat : r.ck.TileMode.Decal
     const shader = picture.makeShader(
       tileMode,
       tileMode,
@@ -538,19 +531,18 @@ export function makeArcPath(r: SkiaRenderer, node: SceneNode) {
 
   const path = new r.ck.Path()
   const oval = r.ck.LTRBRect(0, 0, node.width, node.height)
+  const isFullCircle = Math.abs(sweepDeg) >= 359.99
 
   if (arc.innerRadius > 0) {
-    path.addArc(oval, startDeg, sweepDeg)
     const innerOval = r.ck.LTRBRect(cx - innerRx, cy - innerRy, cx + innerRx, cy + innerRy)
-    const innerPath = new r.ck.Path()
-    innerPath.addArc(innerOval, startDeg + sweepDeg, -sweepDeg)
-    path.addPath(innerPath)
+    path.addArc(oval, startDeg, sweepDeg)
+    const endAngle = arc.endingAngle
+    path.lineTo(cx + innerRx * Math.cos(endAngle), cy + innerRy * Math.sin(endAngle))
+    path.arcToOval(innerOval, endDeg, -sweepDeg, false)
     path.close()
-    innerPath.delete()
     return path
   }
 
-  const isFullCircle = Math.abs(sweepDeg) >= 359.99
   if (isFullCircle) {
     path.addOval(oval)
   } else {
