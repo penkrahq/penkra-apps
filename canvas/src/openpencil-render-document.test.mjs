@@ -3,6 +3,28 @@ import test from "node:test";
 
 import { lowerCanvasModelForOpenPencil, prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 
+test("variant instances lower to exact authored layouts, including nested instances", () => {
+  const source = { axes: {}, variables: {}, children: [
+    { id: "badge", type: "frame", properties: { state: { type: "enum", values: ["idle", "busy"], default: "idle" } },
+      variantSet: { properties: ["state"], variants: [
+        { when: { state: "idle" }, ref: "badge" }, { when: { state: "busy" }, ref: "badge-busy" },
+      ] }, children: [{ id: "idle-mark", type: "rectangle", width: 8, height: 8 }] },
+    { id: "badge-busy", type: "frame", children: [{ id: "busy-mark", type: "ellipse", width: 8, height: 8 }] },
+    { id: "row", type: "frame", properties: { state: { type: "enum", values: ["idle", "busy"], default: "idle" } },
+      children: [{ id: "nested-badge", type: "ref", ref: "badge", bind: { state: "$props.state" } }] },
+    { id: "busy-row", type: "ref", ref: "row", props: { state: "busy" } },
+    { id: "busy-badge", type: "ref", ref: "badge", props: { state: "busy" } },
+  ] };
+  const lowered = lowerCanvasModelForOpenPencil(source);
+  assert.equal(lowered.children[4].ref, "badge-busy");
+  assert.equal(lowered.children[3].descendants["nested-badge"].ref, "badge-busy");
+  assert.equal(lowered.children[1].properties.state.default, "idle");
+  assert.equal(source.children[1].properties, undefined);
+  assert.throws(() => lowerCanvasModelForOpenPencil({ ...source, children: [
+    ...source.children.slice(0, 4), { ...source.children[4], props: { state: "missing" } },
+  ] }), (error) => error.code === "CANVAS_VARIANT_COMBINATION_MISSING");
+});
+
 test("whole-text styles resolve per frame mode and numeric font weights remain numeric", () => {
   const source = {
     axes: { appearance: { modes: [{ name: "light" }, { name: "dark" }] } },

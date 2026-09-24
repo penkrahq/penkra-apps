@@ -48,9 +48,15 @@ precise edits, and export the result. A Canvas document can contain:
   conversion to editable native paths when the artwork itself needs modification;
 - exact icon discovery across the bundled Lucide, Feather, Material Symbols, and Phosphor catalogs;
 - solid colors, gradients, strokes, opacity, blur, and shadows;
-- reusable components and instances with per-instance overrides;
+- reusable components and instances with per-instance overrides and exact authored variant sets;
 - variables and appearance axes that resolve differently per mode;
 - review screenshots that show the saved design without editor controls.
+
+For component states, use variant sets only for distinct authored layouts. Use conditional properties
+for simple color/value changes and `visible` conditions for simple layer swaps; do not mix these
+mechanisms for the same change. Variant combinations must be authored explicitly—Canvas never
+substitutes a nearest match. The instance picker offers only combinations compatible with its
+other current choices.
 
 Agents can also share an owned document with another Penkra Account, inspect current sharing, and
 remove access. Sharing grants editor access, notifies nobody, and is only ever done when the user

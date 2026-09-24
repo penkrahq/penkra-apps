@@ -26,6 +26,30 @@ import {
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { createSurfaceMutationBoundary } from "./surface-mutation-boundary.mjs";
 
+test("nested variant switches replace cloned instance artwork exactly", () => {
+  const source = { children: [
+    { id: "mark", type: "frame", width: 20, height: 20,
+      properties: { state: { type: "enum", values: ["idle", "busy"], default: "idle" } },
+      variantSet: { properties: ["state"], variants: [
+        { when: { state: "idle" }, ref: "mark" }, { when: { state: "busy" }, ref: "mark-busy" },
+      ] }, children: [{ id: "idle-art", type: "rectangle", width: 20, height: 20 }] },
+    { id: "mark-busy", type: "frame", width: 30, height: 24, fill: "#00ff00",
+      children: [{ id: "busy-art", type: "ellipse", width: 20, height: 20 }] },
+    { id: "row", type: "frame", width: 100, height: 40,
+      properties: { state: { type: "enum", values: ["idle", "busy"], default: "idle" } },
+      children: [{ id: "nested-mark", type: "ref", ref: "mark", bind: { state: "$props.state" } }] },
+    { id: "busy-row", type: "ref", ref: "row", props: { state: "busy" } },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared);
+  assert.equal(graph.getNode("busy-row/nested-mark").componentId, "mark-busy");
+  assert.equal(graph.getNode("busy-row/nested-mark").width, 30);
+  assert.equal(graph.getNode("busy-row/nested-mark").height, 24);
+  assert.ok(graph.getNode("busy-row/nested-mark").fills.length > 0);
+  assert.ok(graph.getNode("busy-row/nested-mark/busy-art"));
+  assert.equal(graph.getNode("busy-row/nested-mark/idle-art"), undefined);
+});
+
 test("a cumulative remote-font subset retires providers holding the earlier face", () => {
   const family = `Canvas cumulative subset ${Date.now()}`;
   const first = new ArrayBuffer(8);

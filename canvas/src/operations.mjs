@@ -16,6 +16,7 @@ import { searchCanvasIcons } from "./pencil-icon-provider.mjs";
 import { isSvgAsset, prepareAssetForRendering } from "./document-assets.mjs";
 import { applySvgConversionRequests } from "./svg-vectors.mjs";
 import { createOperationDocumentStore } from "./operation-document-store.mjs";
+import { assertVariantSets } from "./component-variants.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.operations) throw new Error("Canvas operations require the Penkra App runtime.");
@@ -211,6 +212,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code, issueD
       error.code = "CANVAS_EXECUTION_RESULT_LIMIT";
       throw error;
     }
+    if (execution.changed) assertVariantSets(execution.document);
     const structuralModel = createDocumentModel(execution.document);
     structuralModel.doc.destroy();
     const changedByScript = execution.changed;

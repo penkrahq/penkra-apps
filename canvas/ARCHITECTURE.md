@@ -47,6 +47,12 @@ modes. Typed component properties and conditions represent local states such as 
 document axes must not be used as a substitute for component-local state. Static targets resolve
 applicable conditions at export; responsive targets retain the applicable behavior.
 
+Variant sets map explicit enum/boolean property combinations to distinct authored component
+layouts. A leader frame owns the property interface and default layout; roleless member frames own
+other layouts. Selection is exact, with no nearest-match fallback. The inspector filters each
+property's choices against the other current choices. Conditions remain the single mechanism for
+simple color/value changes or visibility swaps, not a second way to author distinct layouts.
+
 Components use typed properties, conditions, lexical nested scopes, cross-document imports, instance
 paths, and recursively pinned dependencies. Descendant remapping is deterministic and validated;
 imports must not flatten first-class component or variable semantics heuristically.

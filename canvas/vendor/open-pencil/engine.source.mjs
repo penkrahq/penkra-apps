@@ -91351,6 +91351,26 @@ function applyDescendantOverrides(graph, pen, ctx, componentIds, penSources) {
   for (const [origId, overrideData] of Object.entries(pen.descendants)) {
     const clone2 = findCloneByComponentPath(graph, instanceNode.id, origId);
     if (clone2) {
+      if (overrideData.ref !== undefined && clone2.type === "INSTANCE") {
+        const componentId = componentIds.get(overrideData.ref) ?? overrideData.ref;
+        if (clone2.componentId !== componentId) {
+          for (const childId of clone2.childIds.slice())
+            graph.deleteNode(childId);
+          const authoredRef = penSources.get(origId.split("/").at(-1) ?? "");
+          const nextRef = { ...authoredRef ?? { id: clone2.id, type: "ref" }, ref: overrideData.ref };
+          const targetSource = penSources.get(overrideData.ref);
+          if (nextRef.fill === undefined && targetSource?.fill === undefined)
+            clone2.fills = [];
+          if (nextRef.stroke === undefined && targetSource?.stroke === undefined)
+            clone2.strokes = [];
+          if (nextRef.effect === undefined && targetSource?.effect === undefined)
+            clone2.effects = [];
+          applyRefProps(clone2, nextRef, graph, componentIds, penSources, ctx);
+          const component = graph.getNode(componentId);
+          if (component)
+            populateInstanceChildren(graph, clone2.id, componentId);
+        }
+      }
       if (overrideData.children) {
         const toDelete = clone2.childIds.slice();
         for (const childId of toDelete)

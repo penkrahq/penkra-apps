@@ -8,6 +8,7 @@ import {
 } from "./pencil-shader-runtime.mjs";
 import { normalizePencilMeshGradient } from "./pencil-mesh-gradient.mjs";
 import { normalizeStrokeDash } from "./stroke-dash.mjs";
+import { variantMemberProperties, variantSelection } from "./component-variants.mjs";
 
 const NUMERIC_PROPERTIES = new Set([
   "x",
@@ -235,6 +236,10 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
 
 export function lowerCanvasModelForOpenPencil(source) {
   const document = structuredClone(source);
+  const memberProperties = variantMemberProperties(document);
+  walkCanvasNodes(document.children, (node) => {
+    if (memberProperties.has(node.id) && !node.properties) node.properties = structuredClone(memberProperties.get(node.id));
+  });
   compileCanvasConditionsForRendering(document);
   if (isRecord(document.axes)) {
     document.themes = Object.fromEntries(Object.entries(document.axes).map(([axis, definition]) => [
@@ -263,6 +268,7 @@ export function lowerCanvasModelForOpenPencil(source) {
     }
   });
   walkCanvasNodes(document.children, (instance) => {
+    delete instance.__canvasOriginalRef;
     if (instance?.type !== "ref" || typeof instance.ref !== "string" || instance.ref.includes(":")) return;
     const target = nodes.get(instance.ref);
     if (!target) return;
@@ -319,6 +325,13 @@ function compileCanvasConditionsForRendering(document) {
         : Object.hasOwn(declaration ?? {}, "default") ? structuredClone(declaration.default) : null,
     ]));
   };
+  const originalRef = (instance) => instance.__canvasOriginalRef ?? instance.ref;
+  const targetFor = (instance, props) => {
+    const leader = components.get(originalRef(instance));
+    if (!leader) return null;
+    const selected = variantSelection(leader, props);
+    return selected ? components.get(selected.sourceId) : leader;
+  };
   const assignOverride = (rootOverrides, descendants, path, property, value) => {
     if (path.length === 0) {
       rootOverrides[property] = structuredClone(value);
@@ -336,16 +349,18 @@ function compileCanvasConditionsForRendering(document) {
       assignOverride(rootOverrides, descendants, path, property, resolveCanvasConditionalValue(raw, localContext));
     }
     for (const [property, binding] of Object.entries(node.bind ?? {})) {
-      if (node.type === "ref" && Object.hasOwn(components.get(node.ref)?.properties ?? {}, property)) continue;
+      if (node.type === "ref" && Object.hasOwn(components.get(originalRef(node))?.properties ?? {}, property)) continue;
       assignOverride(rootOverrides, descendants, path, property, canvasBindingValue(binding, context.props));
     }
     if (node.visible?.op) {
       assignOverride(rootOverrides, descendants, path, "enabled", evaluateCanvasRenderCondition(node.visible, context.props));
     }
     if (node.type === "ref" && typeof node.ref === "string" && !node.ref.includes(":")) {
-      const nestedTarget = components.get(node.ref);
+      const leader = components.get(originalRef(node));
+      const nestedProps = leader ? propsFor(node, leader, context.props, modes) : {};
+      const nestedTarget = targetFor(node, nestedProps);
       if (!nestedTarget || resolving.has(nestedTarget.id)) return;
-      const nestedProps = propsFor(node, nestedTarget, context.props, modes);
+      if (nestedTarget.id !== node.ref) assignOverride(rootOverrides, descendants, path, "ref", nestedTarget.id);
       collectTargetOverrides(
         rootOverrides,
         descendants,
@@ -372,9 +387,15 @@ function compileCanvasConditionsForRendering(document) {
   };
   const compileInstance = (instance, context) => {
     if (typeof instance.ref !== "string" || instance.ref.includes(":")) return;
-    const target = components.get(instance.ref);
-    if (!target) return;
-    const props = propsFor(instance, target, context.props, context.modes);
+    const leader = components.get(originalRef(instance));
+    if (!leader) return;
+    const props = propsFor(instance, leader, context.props, context.modes);
+    const target = targetFor(instance, props);
+    if (!target) throw new Error(`Component ${leader.id} has an invalid variant target.`);
+    if (target.id !== instance.ref) {
+      instance.__canvasOriginalRef = originalRef(instance);
+      instance.ref = target.id;
+    }
     const cacheKey = JSON.stringify([target.id, context.modes, props]);
     let compiled = compiledInstanceCache.get(cacheKey);
     if (!compiled) {
@@ -415,7 +436,7 @@ function compileCanvasConditionsForRendering(document) {
       if (containsCanvasCascade(raw)) node[property] = resolveCanvasConditionalValue(raw, localContext);
     }
     for (const [property, binding] of Object.entries(node.bind ?? {})) {
-      if (node.type === "ref" && Object.hasOwn(components.get(node.ref)?.properties ?? {}, property)) continue;
+      if (node.type === "ref" && Object.hasOwn(components.get(originalRef(node))?.properties ?? {}, property)) continue;
       node[property] = canvasBindingValue(binding, props);
     }
     if (node.visible?.op) node.enabled = evaluateCanvasRenderCondition(node.visible, props);
