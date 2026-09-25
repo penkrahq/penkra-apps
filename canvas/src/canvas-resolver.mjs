@@ -67,8 +67,13 @@ function resolveNode(source, context) {
   }
   for (const [key, binding] of Object.entries(source.bind ?? {}))
     output[key] = resolveValue(resolveBinding(binding, context.props), context.variableValues, context);
-  if (source.visible && typeof source.visible === "object" && source.visible.op)
+  if (source.visible && typeof source.visible === "object" && source.visible.op) {
     output.enabled = evaluateCondition(source.visible, context);
+    // The export projection is fully resolved. Keeping the condition would
+    // make the renderer evaluate it again after component properties have been
+    // removed, incorrectly hiding text whose condition was true here.
+    delete output.visible;
+  }
   if (output.type === "text") {
     const textSource = { ...output, content: String(output.content ?? ""), marks: source.marks ?? [], paragraphs: source.paragraphs ?? [] };
     const resolvedText = interpolateRichText(textSource, context.variableValues);

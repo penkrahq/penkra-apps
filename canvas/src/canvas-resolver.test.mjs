@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { createOpenPencilGraph } from "./openpencil-engine.mjs";
 
 test("component expansion preserves instance placement, sizing, opacity and image override", () => {
   const component = { id: "component", type: "frame", x: 1000, y: 2000, width: 300, height: 70, opacity: 1, fill: "#123456", children: [{ id: "ink", type: "rectangle", x: 50, y: 15, width: 200, height: 40 }] };
@@ -85,6 +86,34 @@ test("resolver selects axes, binds typed props, expands refs and interpolates va
 test("condition AST has a closed evaluated operator set", () => {
   assert.equal(evaluateCondition({ op: "and", args: [{ op: "eq", arg: { prop: "tone" }, value: "primary" }, { op: "notNull", arg: { prop: "icon" } }] }, { props: { tone: "primary", icon: "check" } }), true);
   assert.throws(() => evaluateCondition({ op: "eval" }, { props: {} }), /Unknown condition/);
+});
+
+test("resolved component visibility is not re-evaluated after props are removed", () => {
+  const shown = { op: "eq", arg: { prop: "unread" }, value: true };
+  const hidden = { op: "eq", arg: { prop: "unread" }, value: false };
+  const source = { version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: {}, children: [
+    { id: "avatar", type: "frame", width: 40, height: 40,
+      properties: { unread: { type: "boolean", default: true } },
+      children: [{ id: "initials", type: "text", content: "AO", fill: "#333333", visible: shown }],
+    },
+    { id: "chat-row", type: "frame", width: 280, height: 60,
+      properties: { unread: { type: "boolean", default: true }, preview: { type: "string", default: "Preview" }, time: { type: "string", default: "9:41" } },
+      children: [
+        { id: "row-avatar", type: "ref", ref: "avatar" },
+        { id: "preview", type: "text", content: "", fill: "#777777", bind: { content: "$props.preview" }, visible: shown },
+        { id: "time", type: "text", content: "", fill: "#777777", bind: { content: "$props.time" }, visible: shown },
+        { id: "quiet-time", type: "text", content: "", fill: "#777777", bind: { content: "$props.time" }, visible: hidden },
+      ],
+    },
+  ] };
+  const resolved = resolveCanvasDocument(source).document;
+  const row = resolved.children[1];
+  assert.deepEqual(row.children.slice(1).map((node) => [node.content, node.enabled, node.visible]), [
+    ["Preview", true, undefined], ["9:41", true, undefined], ["9:41", false, undefined],
+  ]);
+  const graph = createOpenPencilGraph(resolved);
+  for (const id of ["row-avatar/initials", "preview", "time"]) assert.equal(graph.getNode(id).visible, true, id);
+  assert.equal(graph.getNode("quiet-time").visible, false);
 });
 
 test("marks are not cascades and nested component properties are lexically scoped", () => {
