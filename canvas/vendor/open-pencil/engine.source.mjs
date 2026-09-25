@@ -66213,6 +66213,10 @@ var init_fonts2 = __esm(() => {
 
 // vendor/open-pencil/source/packages/core/src/canvas/renderer/state.ts
 function invalidateScenePicture(r4) {
+  discardRetainedSceneState(r4);
+  invalidateSceneTiles(r4);
+}
+function discardRetainedSceneState(r4) {
   r4.scenePicture?.delete();
   r4.scenePicture = null;
   r4.scenePictureVersion = -1;
@@ -66221,6 +66225,30 @@ function invalidateScenePicture(r4) {
   r4.sceneBacking = null;
   r4.sceneBackingBuild?.surface.delete();
   r4.sceneBackingBuild = null;
+  r4.sceneBackingNeedsCrispRender = false;
+  r4.sceneBackingPreviewUntil = 0;
+}
+function invalidateSceneTiles(r4) {
+  r4.sceneTileCache?.clear();
+  r4.sceneTileCacheGraph = null;
+  r4.sceneTileCacheVersion = -1;
+}
+function invalidateSceneTilesForNode(r4, graph, nodeId, changes) {
+  if (r4.sceneTileCache.size === 0)
+    return;
+  if (r4.sceneTileCacheGraph !== graph || Object.keys(changes).some((key) => SceneGraph.LAYOUT_AFFECTING_KEYS.has(key))) {
+    invalidateSceneTiles(r4);
+    return;
+  }
+  const before = r4.subtreeCullBounds.get(nodeId);
+  if (!before) {
+    invalidateSceneTiles(r4);
+    return;
+  }
+  r4.sceneTileCache.invalidate(before);
+  const after = computeDescendantVisualBounds([nodeId], (id) => graph.getNode(id), (id) => graph.getAbsolutePosition(id));
+  if (after)
+    r4.sceneTileCache.invalidate(after);
 }
 function clearSubtreePictureCache(r4) {
   for (const entry of r4.subtreePictureCache.values())
@@ -66283,6 +66311,10 @@ function aiClearAll(r4) {
 function hasActiveFlashes(r4) {
   return r4._flashes.length > 0 || r4._aiActiveNodes.size > 0 || r4._aiDoneFlashes.length > 0;
 }
+var init_state = __esm(() => {
+  init_dist();
+  init_geometry();
+});
 
 // vendor/open-pencil/source/packages/core/src/canvas/renderer/lifecycle.ts
 function clearRetainedSceneState(r4) {
@@ -66291,6 +66323,7 @@ function clearRetainedSceneState(r4) {
   r4.sceneBacking = null;
   r4.sceneBackingBuild?.surface.delete();
   r4.sceneBackingBuild = null;
+  r4.sceneTileCache.clear();
 }
 function destroyRenderer(r4) {
   if (r4.destroyed)
@@ -66379,6 +66412,7 @@ function destroyRenderer(r4) {
   r4.surface.delete();
 }
 var init_lifecycle = __esm(() => {
+  init_state();
   init_fonts();
 });
 
@@ -69870,6 +69904,9 @@ var init_page_guides = __esm(() => {
   init_constants8();
 });
 
+// vendor/open-pencil/source/packages/core/src/canvas/renderer/types.ts
+var MAX_RETAINED_SCENE_NODES = 1e4;
+
 // vendor/open-pencil/source/packages/core/src/canvas/renderer/retained-backing.ts
 function clamp2(value, min, max2) {
   return Math.min(max2, Math.max(min, value));
@@ -70209,9 +70246,206 @@ function renderSceneBacking(r4, canvas, graph, sceneVersion) {
 var now2, SCENE_BACKING_SCALE = 3, MAX_SCENE_BACKING_DEVICE_PIXELS = 16000000, FRAME_BUDGET_60HZ_MS, MIN_SCENE_BACKING_IDLE_FRAMES = 2, MAX_SCENE_BACKING_IDLE_FRAMES = 18, MAX_SCENE_BACKING_QUIET_INPUT_INTERVALS = 4, SCENE_BACKING_BUILD_BUDGET_MS = 6;
 var init_retained_backing = __esm(() => {
   init_geometry();
-  init_pipeline();
+  init_state();
   now2 = typeof performance !== "undefined" ? () => performance.now() : () => 0;
   FRAME_BUDGET_60HZ_MS = 1000 / 60;
+});
+
+// vendor/open-pencil/source/packages/core/src/canvas/renderer/tiles.ts
+function visibleTileCoordinates(viewport, deviceScale, tilePixels) {
+  if (!Number.isFinite(deviceScale) || deviceScale <= 0)
+    return [];
+  if (!Number.isFinite(tilePixels) || tilePixels <= 0)
+    return [];
+  const worldSize = tilePixels / deviceScale;
+  const firstX = Math.floor(viewport.minX / worldSize);
+  const lastX = Math.ceil(viewport.maxX / worldSize) - 1;
+  const firstY = Math.floor(viewport.minY / worldSize);
+  const lastY = Math.ceil(viewport.maxY / worldSize) - 1;
+  const tiles = [];
+  for (let y = firstY;y <= lastY; y++) {
+    for (let x2 = firstX;x2 <= lastX; x2++) {
+      tiles.push({ x: x2, y, worldX: x2 * worldSize, worldY: y * worldSize, worldSize });
+    }
+  }
+  return tiles;
+}
+function tileIntersectsBounds(tile, bounds) {
+  return tile.worldX < bounds.maxX && tile.worldX + tile.worldSize > bounds.minX && tile.worldY < bounds.maxY && tile.worldY + tile.worldSize > bounds.minY;
+}
+
+class SceneTileCache {
+  byteBudget;
+  tiles = new Map;
+  usedBytes = 0;
+  tick = 0;
+  constructor(byteBudget) {
+    this.byteBudget = byteBudget;
+    if (!Number.isFinite(byteBudget) || byteBudget < 0) {
+      throw new RangeError("Tile cache byte budget must be finite and non-negative");
+    }
+  }
+  get bytes() {
+    return this.usedBytes;
+  }
+  get size() {
+    return this.tiles.size;
+  }
+  get(key) {
+    const tile = this.tiles.get(key);
+    if (tile)
+      tile.lastUsedAt = ++this.tick;
+    return tile;
+  }
+  put(tile) {
+    if (tile.bytes <= 0 || tile.bytes > this.byteBudget) {
+      tile.image.delete();
+      return false;
+    }
+    this.delete(tile.key);
+    this.tiles.set(tile.key, { ...tile, lastUsedAt: ++this.tick });
+    this.usedBytes += tile.bytes;
+    while (this.usedBytes > this.byteBudget) {
+      let oldest;
+      for (const candidate of this.tiles.values()) {
+        if (!oldest || candidate.lastUsedAt < oldest.lastUsedAt)
+          oldest = candidate;
+      }
+      if (!oldest)
+        break;
+      this.delete(oldest.key);
+    }
+    return this.tiles.has(tile.key);
+  }
+  invalidate(bounds) {
+    for (const tile of this.tiles.values()) {
+      if (tileIntersectsBounds(tile, bounds))
+        this.delete(tile.key);
+    }
+  }
+  delete(key) {
+    const tile = this.tiles.get(key);
+    if (!tile)
+      return;
+    this.tiles.delete(key);
+    this.usedBytes -= tile.bytes;
+    tile.image.delete();
+  }
+  clear() {
+    for (const key of this.tiles.keys())
+      this.delete(key);
+  }
+}
+function tileCacheScopeMatches(r4, graph, sceneVersion) {
+  return r4.sceneTileCacheGraph === graph && r4.sceneTileCacheVersion === sceneVersion && r4.sceneTileCacheFontGeneration === r4.fontGeneration && r4.sceneTileCachePageId === r4.pageId && r4.sceneTileCachePositionPreviewVersion === graph.positionPreviewVersion && r4.sceneTileCachePageColor === `${r4.pageColor.r}:${r4.pageColor.g}:${r4.pageColor.b}`;
+}
+function recordSceneTile(r4, graph, coordinate2) {
+  const tilePixels = TILE_DEVICE_PIXELS;
+  let surface;
+  try {
+    surface = r4.surface.makeSurface({
+      width: tilePixels,
+      height: tilePixels,
+      colorType: r4.ck.ColorType.RGBA_8888,
+      alphaType: r4.ck.AlphaType.Premul,
+      colorSpace: r4.ck.ColorSpace.SRGB
+    });
+  } catch {
+    surface = null;
+  }
+  if (!surface) {
+    r4.sceneTileAllocationFailed = true;
+    r4.sceneTileCache.clear();
+    console.warn("Canvas tile allocation failed; using direct scene rendering for this surface");
+    return null;
+  }
+  const canvas = surface.getCanvas();
+  const oldViewport = r4.worldViewport;
+  try {
+    canvas.clear(r4.ck.Color4f(r4.pageColor.r, r4.pageColor.g, r4.pageColor.b, 1));
+    r4.worldViewport = {
+      x: coordinate2.worldX,
+      y: coordinate2.worldY,
+      w: coordinate2.worldSize,
+      h: coordinate2.worldSize
+    };
+    canvas.save();
+    canvas.scale(r4.dpr, r4.dpr);
+    canvas.translate(-coordinate2.worldX * r4.zoom, -coordinate2.worldY * r4.zoom);
+    canvas.scale(r4.zoom, r4.zoom);
+    const page = graph.getNode(r4.pageId ?? graph.rootId);
+    for (const childId of page?.childIds ?? [])
+      r4.renderNode(canvas, graph, childId, {});
+    canvas.restore();
+    surface.flush();
+    return surface.makeImageSnapshot();
+  } finally {
+    r4.worldViewport = oldViewport;
+    surface.delete();
+  }
+}
+function renderSceneTiles(r4, canvas, graph, sceneVersion) {
+  if (r4.sceneTileAllocationFailed)
+    return false;
+  prepareSubtreeCullBounds(r4, graph, sceneVersion);
+  if (!tileCacheScopeMatches(r4, graph, sceneVersion)) {
+    r4.sceneTileCache.clear();
+    r4.sceneTileCacheGraph = graph;
+    r4.sceneTileCacheVersion = sceneVersion;
+    r4.sceneTileCacheFontGeneration = r4.fontGeneration;
+    r4.sceneTileCachePageId = r4.pageId;
+    r4.sceneTileCachePositionPreviewVersion = graph.positionPreviewVersion;
+    r4.sceneTileCachePageColor = `${r4.pageColor.r}:${r4.pageColor.g}:${r4.pageColor.b}`;
+  }
+  const viewport = {
+    minX: r4.worldViewport.x,
+    minY: r4.worldViewport.y,
+    maxX: r4.worldViewport.x + r4.worldViewport.w,
+    maxY: r4.worldViewport.y + r4.worldViewport.h
+  };
+  const coordinates = visibleTileCoordinates(viewport, r4.zoom * r4.dpr, TILE_DEVICE_PIXELS);
+  const tileBytes = TILE_DEVICE_PIXELS * TILE_DEVICE_PIXELS * 4;
+  if (coordinates.length * tileBytes > r4.sceneTileCache.byteBudget)
+    return false;
+  const visibleTiles = [];
+  const startedAt = performance.now();
+  let misses = 0;
+  for (const coordinate2 of coordinates) {
+    const key = `${r4.zoom}:${r4.dpr}:${coordinate2.x}:${coordinate2.y}`;
+    let tile = r4.sceneTileCache.get(key);
+    if (!tile) {
+      misses++;
+      const image = recordSceneTile(r4, graph, coordinate2);
+      if (!image)
+        return false;
+      r4.sceneTileCache.put({ ...coordinate2, key, image, bytes: tileBytes });
+      tile = r4.sceneTileCache.get(key);
+    }
+    if (!tile)
+      return false;
+    visibleTiles.push(tile);
+  }
+  r4.opacityPaint.setAlphaf(1);
+  for (const tile of visibleTiles) {
+    const x2 = tile.worldX * r4.zoom + r4.panX;
+    const y = tile.worldY * r4.zoom + r4.panY;
+    const size = tile.worldSize * r4.zoom;
+    canvas.drawImageRectOptions(tile.image, r4.ck.LTRBRect(0, 0, TILE_DEVICE_PIXELS, TILE_DEVICE_PIXELS), r4.ck.LTRBRect(x2, y, x2 + size, y + size), r4.ck.FilterMode.Nearest, r4.ck.MipmapMode.None, r4.opacityPaint);
+  }
+  if (misses > 0) {
+    const monitor = globalThis.__penkraPerformance?.canvas;
+    monitor?.record("renderer.scene-tiles", performance.now() - startedAt, {
+      misses,
+      visibleTiles: coordinates.length,
+      graphNodes: graph.nodes.size,
+      zoom: r4.zoom
+    });
+  }
+  return true;
+}
+var TILE_DEVICE_PIXELS = 512;
+var init_tiles = __esm(() => {
+  init_scene();
 });
 
 // vendor/open-pencil/source/packages/core/src/canvas/renderer/pipeline.ts
@@ -70280,6 +70514,15 @@ function scenePictureMissReason(r4, graph, overlays, sceneVersion, hasPositionPr
 function canUseScenePicture(r4, graph, sceneVersion, hasVolatileOverlays) {
   return !hasVolatileOverlays && !!r4.scenePicture && graph.positionPreviewVersion === r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion && r4.fontGeneration === r4.scenePictureFontGeneration && r4.pageId === r4.scenePicturePageId;
 }
+function prepareRetainedSceneState(r4, nodeCount, layer) {
+  const retainFullScene = nodeCount <= MAX_RETAINED_SCENE_NODES;
+  if (retainFullScene)
+    updateSceneBackingPreviewState(r4, layer);
+  else if (r4.scenePicture || r4.sceneBacking || r4.sceneBackingBuild || r4.sceneBackingNeedsCrispRender) {
+    invalidateScenePicture(r4);
+  }
+  return retainFullScene;
+}
 function measure(fn5) {
   const start = now3();
   const value = fn5();
@@ -70293,7 +70536,7 @@ function render(r4, graph, selectedIds, overlays = {}, sceneVersion = -1, layer 
   p4.setScenePictureRecordTime(0);
   p4.setFlushTime(0);
   graph.clearAbsPosCache();
-  r4.largeSceneDetailCulling = graph.nodes.size > MAX_RETAINED_SCENE_NODES;
+  r4.largeSceneDetailCulling = r4.zoom < 0.25;
   if (r4.largeSceneDetailCulling)
     prepareSubtreeCullBounds(r4, graph, sceneVersion);
   const canvas = r4.surface.getCanvas();
@@ -70308,21 +70551,21 @@ function render(r4, graph, selectedIds, overlays = {}, sceneVersion = -1, layer 
     w: r4.viewportWidth / r4.zoom,
     h: r4.viewportHeight / r4.zoom
   };
-  updateSceneBackingPreviewState(r4, layer);
+  const retainFullScene = layer === "scene" ? false : prepareRetainedSceneState(r4, graph.nodes.size, layer);
   const hasPositionPreview = graph.positionPreviewVersion !== r4.scenePicturePositionPreviewVersion && sceneVersion === r4.scenePictureVersion;
   const hasVolatileOverlays = hasPositionPreview || hasVolatileOverlay(overlays);
-  const retainFullScene = graph.nodes.size <= MAX_RETAINED_SCENE_NODES;
-  if (!retainFullScene && r4.scenePicture) {
-    r4.scenePicture.delete();
-    r4.scenePicture = null;
-  }
   const canUsePicture = retainFullScene && canUseScenePicture(r4, graph, sceneVersion, hasVolatileOverlays);
-  const cacheMissReason = retainFullScene ? scenePictureMissReason(r4, graph, overlays, sceneVersion, hasPositionPreview) : "large-scene";
+  const cacheMissReason = retainFullScene ? scenePictureMissReason(r4, graph, overlays, sceneVersion, hasPositionPreview) : "tile-unavailable";
   if (layer !== "overlays") {
     canvas.save();
     canvas.scale(r4.dpr, r4.dpr);
     p4.beginPhase("render:scene");
-    if (layer === "scene" && retainFullScene && !hasVolatileOverlays && renderSceneBacking(r4, canvas, graph, sceneVersion)) {
+    if (layer === "scene" && !hasVolatileOverlays && renderSceneTiles(r4, canvas, graph, sceneVersion)) {
+      if (r4.scenePicture || r4.sceneBacking || r4.sceneBackingBuild || r4.sceneBackingNeedsCrispRender) {
+        discardRetainedSceneState(r4);
+      }
+      p4.setScenePictureMode("hit", "tiles");
+    } else if (layer === "scene" && retainFullScene && !hasVolatileOverlays && renderSceneBacking(r4, canvas, graph, sceneVersion)) {
       p4.setScenePictureMode("hit", "backing");
     } else {
       canvas.translate(r4.panX, r4.panY);
@@ -70440,12 +70683,14 @@ function recordScenePicture(r4, canvas, graph, sceneVersion) {
   r4.scenePicturePageId = r4.pageId;
   canvas.drawPicture(r4.scenePicture);
 }
-var now3, MAX_RETAINED_SCENE_NODES = 1e4;
+var now3;
 var init_pipeline = __esm(() => {
   init_geometry();
   init_page_guides();
   init_scene();
   init_retained_backing();
+  init_state();
+  init_tiles();
   now3 = typeof performance !== "undefined" ? () => performance.now() : () => 0;
 });
 
@@ -70497,6 +70742,14 @@ class SkiaRenderer {
   sceneBackingAverageRecordMs = 40;
   sceneBackingAverageViewportIntervalMs = 80;
   sceneBackingLastViewportEventAt = 0;
+  sceneTileCache = new SceneTileCache(128 * 1024 * 1024);
+  sceneTileCacheGraph = null;
+  sceneTileCacheVersion = -1;
+  sceneTileCacheFontGeneration = -1;
+  sceneTileCachePageId = null;
+  sceneTileCachePositionPreviewVersion = -1;
+  sceneTileCachePageColor = "";
+  sceneTileAllocationFailed = false;
   lastSceneViewport = null;
   nodePictureCache = new Map;
   nodePictureCacheGenerations = new Map;
@@ -70619,6 +70872,12 @@ class SkiaRenderer {
   }
   invalidateNodePicture(nodeId) {
     invalidateNodePicture(this, nodeId);
+  }
+  invalidateSceneTiles() {
+    invalidateSceneTiles(this);
+  }
+  invalidateSceneTilesForNode(graph, nodeId, changes) {
+    invalidateSceneTilesForNode(this, graph, nodeId, changes);
   }
   flashNode(nodeId) {
     flashNode(this, nodeId);
@@ -70765,6 +71024,8 @@ var init_renderer = __esm(() => {
   init_methods();
   init_paints();
   init_pipeline();
+  init_state();
+  init_tiles();
   init_text();
   installRendererDomainMethods(SkiaRenderer.prototype);
 });
@@ -86356,17 +86617,24 @@ function createGraphEventSubscription(options) {
   let unbindGraphEvents = null;
   function onNodeUpdated(id, changes) {
     invalidateRenderersForChange(options.getRenderers(), id, changes, true);
-    options.emitEditorEvent("node:updated", id, changes);
-    options.scheduleComponentSync(id);
-    options.requestRender();
+    if (!options.isDerivedGraphMutation()) {
+      for (const renderer of options.getRenderers()) {
+        renderer.invalidateSceneTilesForNode?.(options.getGraph(), id, changes);
+      }
+      options.emitEditorEvent("node:updated", id, changes);
+      options.scheduleComponentSync(id);
+      options.requestRender(true);
+    }
   }
   function onNodePreviewUpdated(id, changes) {
     const { nodePicture } = rendererInvalidationForChanges(changes, { preview: true });
     invalidateRenderersForChange(options.getRenderers(), id, changes, nodePicture);
   }
   function onNodeStructureChanged(nodeId) {
-    options.scheduleComponentSync(nodeId);
-    options.requestRender();
+    if (!options.isDerivedGraphMutation()) {
+      options.scheduleComponentSync(nodeId);
+      options.requestRender();
+    }
   }
   function subscribeToGraph() {
     unbindGraphEvents?.();
@@ -86374,19 +86642,25 @@ function createGraphEventSubscription(options) {
       updated: onNodeUpdated,
       previewUpdated: onNodePreviewUpdated,
       created: (node) => {
-        options.emitEditorEvent("node:created", node);
+        if (!options.isDerivedGraphMutation())
+          options.emitEditorEvent("node:created", node);
         onNodeStructureChanged(node.id);
       },
       deleted: (id) => {
-        options.emitEditorEvent("node:deleted", id);
+        if (!options.isDerivedGraphMutation())
+          options.emitEditorEvent("node:deleted", id);
         onNodeStructureChanged(id);
       },
       reparented: (nodeId, oldParentId, newParentId) => {
-        options.emitEditorEvent("node:reparented", nodeId, oldParentId, newParentId);
+        if (!options.isDerivedGraphMutation()) {
+          options.emitEditorEvent("node:reparented", nodeId, oldParentId, newParentId);
+        }
         onNodeStructureChanged(nodeId);
       },
       reordered: (nodeId, parentId, index) => {
-        options.emitEditorEvent("node:reordered", nodeId, parentId, index);
+        if (!options.isDerivedGraphMutation()) {
+          options.emitEditorEvent("node:reordered", nodeId, parentId, index);
+        }
         onNodeStructureChanged(nodeId);
       }
     });
@@ -89137,9 +89411,16 @@ function createEditor(options) {
   function onEditorEvent(event, handler) {
     return events.on(event, handler);
   }
-  function requestRender() {
+  function requestRender(preserveSceneTiles = false) {
     state.renderVersion++;
     state.sceneVersion++;
+    for (const renderer of _renderers) {
+      if (preserveSceneTiles && renderer.sceneTileCacheGraph === _graph) {
+        renderer.sceneTileCacheVersion = state.sceneVersion;
+      } else {
+        renderer.invalidateSceneTiles?.();
+      }
+    }
     emitEditorEvent("render:requested", {
       renderVersion: state.renderVersion,
       sceneVersion: state.sceneVersion
@@ -89169,10 +89450,20 @@ function createEditor(options) {
   const graphReads = createGraphReadActions(() => _graph);
   const { runLayoutForNode } = createLayoutRunner(() => _graph);
   const { scheduleComponentSync } = createComponentSyncScheduler(() => _graph, requestRender);
+  let derivedGraphMutationDepth = 0;
+  function runDerivedGraphMutation(action) {
+    derivedGraphMutationDepth++;
+    try {
+      return action();
+    } finally {
+      derivedGraphMutationDepth--;
+    }
+  }
   const { subscribeToGraph } = createGraphEventSubscription({
     getGraph: () => _graph,
     getRenderers: () => _renderers,
     scheduleComponentSync,
+    isDerivedGraphMutation: () => derivedGraphMutationDepth > 0,
     requestRender,
     emitEditorEvent
   });
@@ -89265,6 +89556,7 @@ function createEditor(options) {
     ...graphReads,
     requestRender,
     requestRepaint,
+    runDerivedGraphMutation,
     onEditorEvent,
     setCanvasKit,
     removeCanvasRenderer,
@@ -92724,7 +93016,7 @@ function createCanvasSurfaceManager({ editor, canvasRef, options, getCanvasKit: 
     }
     renderLoop.markRendered();
     clearSceneBackingRenderTimer();
-    if (options?.layer === "scene" && state.renderer.sceneBackingNeedsCrispRender) {
+    if (options?.layer === "scene" && !state.renderer.largeSceneDetailCulling && state.renderer.sceneBackingNeedsCrispRender) {
       const delay = Math.max(0, state.renderer.sceneBackingPreviewUntil - performance.now());
       sceneBackingRenderTimer = setTimeout(() => renderLoop.markDirty(), delay);
     }

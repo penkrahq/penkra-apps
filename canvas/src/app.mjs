@@ -12,6 +12,11 @@ import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 import { createDocumentAssetCache } from "./document-asset-cache.mjs";
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
+import {
+  collectPencilDocumentFonts,
+  collectPencilResourceReferences,
+  resolvePencilResourcePath,
+} from "./pencil-resources.mjs";
 import { migrateLegacyOfflineCache } from "./legacy-offline-cache.mjs";
 import { createPendingUpdateQueue } from "./pending-update-queue.mjs";
 import { createSnapshotMaintenance } from "./snapshot-maintenance.mjs";
@@ -924,19 +929,9 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       (error) => ({ error }),
     );
     const cachedAssets = documentAssetCache.take(documentId);
-    const assetHydrationTask = performanceMonitor.measureAsync(
-      "document.assets",
-      async () => {
-        const assetDescriptors = await api.listAssets(documentId);
-        return hydrateDocumentAssets(api, documentId, assetDescriptors, cachedAssets, {
-          rasterizeSvg: rasterizeOpenPencilSvgAsset,
-        });
-      },
-      { documentId },
-    ).then(
-      (value) => ({ value, error: null }),
-      (error) => ({ value: null, error }),
-    );
+    // Cached assets are immediately usable. Network and SVG preparation must
+    // not hold the document model or editor behind the slowest image.
+    state.assets = cachedAssets;
     const payload = await performanceMonitor.measureAsync(
       "document.fetch",
       () => api.getDocument(documentId, {
@@ -958,18 +953,6 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       { documentId },
     );
     if (!isCurrentRequest()) return;
-    const assetHydrationResult = await assetHydrationTask;
-    if (assetHydrationResult.error) throw assetHydrationResult.error;
-    const assetHydration = assetHydrationResult.value;
-    if (!isCurrentRequest()) return;
-    documentAssetCache.remember(documentId, assetHydration.assets);
-    state.assets = assetHydration.assets;
-    for (const failure of assetHydration.failures) {
-      console.warn(
-        `Canvas could not load document asset ${failure.descriptor.path}.`,
-        failure.error,
-      );
-    }
     state.document = {
       ...payload,
       module: payload.snapshot?.source?.module
@@ -1015,6 +998,21 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       applyRemoteUpdate(state.model, item.update);
       state.localUpdateSequences.set(item.clientUpdateId, null);
     }
+    const documentFontPaths = (currentMaterializedDocument().fonts ?? [])
+      .map((font) => resolvePencilResourcePath("", font.url));
+    if (documentFontPaths.some((path) => !state.assets.has(path))) {
+      const descriptors = await api.listAssets(documentId);
+      if (!isCurrentRequest()) return;
+      const required = new Set(documentFontPaths);
+      const fonts = await hydrateDocumentAssets(
+        api, documentId, descriptors.filter((item) => required.has(item.path)), new Map(),
+      );
+      for (const [path, asset] of fonts.assets) state.assets.set(path, asset);
+      // Font metrics affect layout, so these resources must be present before
+      // mounting the editor. Images can arrive after its first paint.
+      collectPencilDocumentFonts(currentMaterializedDocument(), state.assets);
+    }
+    if (!isCurrentRequest()) return;
     state.undo = createUndoManager(state.model);
     state.lastSequence = Math.max(
       payload.snapshot.throughSequence,
@@ -1102,6 +1100,32 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
     state.loading = false;
     setSync("saved", "Saved");
     render();
+    // Paint the model before starting potentially dozens of image requests.
+    // Otherwise those reads compete with the snapshot and block cold open.
+    void performanceMonitor.measureAsync(
+      "document.assets",
+      async () => {
+        const assetDescriptors = await api.listAssets(documentId);
+        return hydrateDocumentAssets(api, documentId, assetDescriptors, cachedAssets, {
+          rasterizeSvg: rasterizeOpenPencilSvgAsset,
+        });
+      },
+      { documentId },
+    ).then((value) => {
+      if (!isCurrentRequest() || state.document?.id !== documentId) return;
+      documentAssetCache.remember(documentId, value.assets);
+      state.assets = value.assets;
+      for (const failure of value.failures) {
+        console.warn(`Canvas could not load document asset ${failure.descriptor.path}.`, failure.error);
+      }
+      if (!value.changed) return;
+      applyHydratedDocumentAssets(documentId, value, "document-assets-hydrated");
+      render();
+    }).catch((error) => {
+      if (isCurrentRequest() && state.document?.id === documentId) {
+        console.warn("Canvas could not load document assets.", error);
+      }
+    });
     if (state.catchUpAfterOpen) {
       state.catchUpAfterOpen = false;
       void restoreConnectedState(documentId);
@@ -1244,11 +1268,27 @@ async function refreshDocumentAssets(documentId) {
     rasterizeSvg: rasterizeOpenPencilSvgAsset,
   });
   if (state.document?.id !== documentId || !result.changed) return;
+  applyHydratedDocumentAssets(documentId, result, "document-assets-refreshed");
+}
+
+function applyHydratedDocumentAssets(documentId, result, fallbackReason) {
   state.assets = result.assets;
-  invalidateDocumentProjection();
   state.compatibilityDocument = null;
-  state.engineDocumentDirty = true;
-  state.engineDocumentDirtyReason = "document-assets-refreshed";
+  const resourceKinds = new Map(collectPencilResourceReferences(currentMaterializedDocument())
+    .map(({ path, kind }) => [path, kind]));
+  const imageOnly = [...result.changedPaths].every((path) =>
+    !resourceKinds.has(path) || resourceKinds.get(path) === "image");
+  if (state.engineSurface && !state.engineDocumentDirty && imageOnly) {
+    performanceMonitor.measure(
+      "engine.refresh-image-assets",
+      () => state.engineSurface.refreshImageAssets(),
+      { documentId },
+    );
+  } else {
+    invalidateDocumentProjection();
+    state.engineDocumentDirty = true;
+    state.engineDocumentDirtyReason = fallbackReason;
+  }
 }
 
 function collapseEditorPanels() {

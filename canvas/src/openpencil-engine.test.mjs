@@ -15,6 +15,7 @@ import {
   isOpenPencilEditableNode,
   penPropertyToSceneChanges,
   refreshOpenPencilEditor,
+  refreshOpenPencilImageAssets,
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
   sceneNodeInsertionMutation,
@@ -403,6 +404,64 @@ test("batch hydration lays out shared fit-content ancestors once without changin
   assert.ok(layout.ancestorCalls < hydrated.length);
 });
 
+test("fixed-size instance hydration does not recompute unchanged ancestor layouts", () => {
+  const source = { children: [
+    { id: "source", type: "frame", layout: "horizontal", width: 100, height: 40,
+      children: [{ id: "label", type: "text", content: "Fixed", fontSize: 14 }] },
+    { id: "area", type: "frame", layout: "vertical", width: 300, height: 300,
+      children: [{ id: "row", type: "ref", ref: "source", width: 100, height: 40 }] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+  const before = graph.getAbsoluteBounds("row");
+  const performanceStore = globalThis.__penkraPerformance ??= {};
+  const previousMonitor = performanceStore.canvas;
+  const records = [];
+  performanceStore.canvas = { record: (name, _duration, details) => records.push({ name, details }) };
+  try {
+    assert.deepEqual(hydrateOpenPencilGraphInstances(graph, prepared.document, ["row"]), ["row"]);
+  } finally {
+    if (previousMonitor) performanceStore.canvas = previousMonitor;
+    else delete performanceStore.canvas;
+  }
+  assert.deepEqual(graph.getAbsoluteBounds("row"), before);
+  assert.ok(graph.getNode("row/label"));
+  assert.equal(records.find((entry) => entry.name === "engine.graph.hydrate-ancestor-layout")?.details.ancestorCalls, 0);
+});
+
+test("an intrinsic instance resize stops layout propagation at its fixed-size parent", () => {
+  const source = { children: [
+    { id: "source", type: "frame", layout: "horizontal", width: "fit_content", height: 40,
+      properties: { label: { type: "string", default: "Short" } }, children: [
+        { id: "label", type: "text", content: "Short", fontSize: 16, bind: { content: "$props.label" } },
+      ] },
+    { id: "area", type: "frame", layout: "vertical", width: 400, height: 300, children: [
+      { id: "section", type: "frame", layout: "vertical", width: 300, height: 200, children: [
+        { id: "row", type: "ref", ref: "source", props: { label: "A much longer label" } },
+      ] },
+    ] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const graph = createOpenPencilGraph(source, new Map(), prepared, { deferExternalInstances: true });
+  const initialRowWidth = graph.getNode("row").width;
+  const areaBefore = graph.getAbsoluteBounds("area");
+  const performanceStore = globalThis.__penkraPerformance ??= {};
+  const previousMonitor = performanceStore.canvas;
+  const records = [];
+  performanceStore.canvas = { record: (name, _duration, details) => records.push({ name, details }) };
+  try {
+    hydrateOpenPencilGraphInstances(graph, prepared.document, ["row"]);
+  } finally {
+    if (previousMonitor) performanceStore.canvas = previousMonitor;
+    else delete performanceStore.canvas;
+  }
+  assert.notEqual(graph.getNode("row").width, initialRowWidth);
+  assert.deepEqual(graph.getAbsoluteBounds("area"), areaBefore);
+  const layout = records.find((entry) => entry.name === "engine.graph.hydrate-ancestor-layout")?.details;
+  assert.equal(layout.ancestorCalls, 1);
+  assert.equal(layout.topAncestors[0].id, "section");
+});
+
 test("bound text retains intentionally hug-height component instances", () => {
   const document = { children: [
     {
@@ -463,6 +522,44 @@ test("viewport hydration expands only visible external instances", () => {
   assert.deepEqual(hydrator.hydrateVisible(), ["visible-instance"]);
   assert.equal(editor.graph.getNode("visible-instance").childIds.length, 1);
   assert.equal(editor.graph.getNode("offscreen-instance").childIds.length, 0);
+});
+
+test("hydration requests one render without scheduling a global component sync", async () => {
+  const document = { children: [
+    {
+      id: "component",
+      type: "frame",
+      reusable: true,
+      width: 200,
+      height: 80,
+      children: [{ id: "label", type: "text", content: "Original", fontSize: 16 }],
+    },
+    { id: "instance", type: "ref", ref: "component", x: 40, y: 40 },
+  ] };
+  const editor = createOpenPencilEditor(document, {
+    deferExternalInstances: true,
+    getViewportSize: () => ({ width: 800, height: 600 }),
+  });
+  const hydrator = createOpenPencilInstanceHydrator({
+    editor,
+    document,
+    getViewportSize: () => ({ width: 800, height: 600 }),
+  });
+  const beforeHydration = editor.state.sceneVersion;
+  let authoredEvents = 0;
+  editor.onEditorEvent("node:created", () => authoredEvents++);
+  editor.onEditorEvent("node:updated", () => authoredEvents++);
+  assert.deepEqual(hydrator.hydrateVisible(), ["instance"]);
+  await Promise.resolve();
+  assert.equal(editor.state.sceneVersion, beforeHydration + 1);
+  assert.equal(authoredEvents, 0);
+  assert.equal(editor.graph.getNode("instance").childIds.length, 1);
+
+  const beforeAuthorEdit = editor.state.sceneVersion;
+  editor.graph.updateNode("label", { text: "Changed" });
+  await Promise.resolve();
+  assert.ok(editor.state.sceneVersion > beforeAuthorEdit + 1);
+  assert.ok(authoredEvents > 0);
 });
 
 test("viewport hydration follows the renderer detail rule at fit-all and editing zooms", () => {
@@ -791,6 +888,43 @@ test("image paints hydrate component instances without replacing descendant over
   assert.notEqual(graph.getNode("overridden/image").fills[0].imageHash, hash);
   assert.equal(graph.getNode("image-override/image").fills[0].imageHash, "d".repeat(64));
   assert.equal(graph.getNode("image-override/image").fills[0].imageScaleMode, "STRETCH");
+});
+
+test("late image assets update the current graph and future component clones without authored edits", () => {
+  const source = { version: "2.17", children: [
+    { id: "source", type: "frame", width: 100, height: 40, children: [
+      { id: "art", type: "rectangle", width: 20, height: 20,
+        fill: { type: "image", url: "images/art.png", mode: "fit" } },
+    ] },
+    { id: "first", type: "ref", ref: "source" },
+    { id: "second", type: "ref", ref: "source" },
+  ] };
+  const assets = new Map();
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const editor = createOpenPencilEditor(source, {
+    assets, preparedDocument: prepared, deferExternalInstances: true,
+  });
+  const graph = editor.graph;
+  const authoredUpdates = [];
+  editor.onEditorEvent("node:updated", (id) => authoredUpdates.push(id));
+  editor.runDerivedGraphMutation(() =>
+    hydrateOpenPencilGraphInstances(graph, prepared.document, ["first"]));
+  assert.equal(graph.getNode("first/art").fills[0].visible, false);
+  assets.set("images/art.png", { sha256: "a".repeat(64), bytes: new Uint8Array([1]) });
+  assert.equal(refreshOpenPencilImageAssets(editor, prepared.document, assets), 2);
+  assert.equal(editor.graph, graph);
+  assert.deepEqual(authoredUpdates, []);
+  assert.equal(graph.getNode("art").fills[0].imageHash, "a".repeat(64));
+  assert.equal(graph.getNode("first/art").fills[0].imageHash, "a".repeat(64));
+  editor.runDerivedGraphMutation(() =>
+    hydrateOpenPencilGraphInstances(graph, prepared.document, ["second"]));
+  assert.equal(graph.getNode("second/art").fills[0].imageHash, "a".repeat(64));
+  assets.set("images/art.png", { sha256: "b".repeat(64), bytes: new Uint8Array([2]) });
+  assert.equal(refreshOpenPencilImageAssets(editor, prepared.document, assets), 3);
+  assert.equal(graph.getNode("second/art").fills[0].imageHash, "b".repeat(64));
+  assets.delete("images/art.png");
+  assert.equal(refreshOpenPencilImageAssets(editor, prepared.document, assets), 3);
+  assert.equal(graph.getNode("second/art").fills[0].visible, false);
 });
 
 test("explicit fill_container ref width fills a vertical parent, not the 100px fallback", () => {

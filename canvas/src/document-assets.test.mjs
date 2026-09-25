@@ -33,6 +33,7 @@ test("hydrates new or changed assets into the live document asset map", async ()
 
   assert.deepEqual(reads, ["images/new.png"]);
   assert.equal(result.changed, true);
+  assert.deepEqual(result.changedPaths, new Set(["images/removed.png", "images/new.png"]));
   assert.equal(result.assets, current);
   assert.equal(result.assets.size, 2);
   assert.equal(result.assets.has("images/removed.png"), false);

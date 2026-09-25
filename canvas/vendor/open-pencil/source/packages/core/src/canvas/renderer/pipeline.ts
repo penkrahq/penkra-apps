@@ -4,11 +4,16 @@ import type { SceneGraph } from '@open-pencil/scene-graph'
 import { computeDescendantVisualBounds } from '@open-pencil/scene-graph/geometry'
 
 import { drawPageGuides } from '#core/canvas/page-guides'
-import { prepareSubtreeCullBounds } from '#core/canvas/scene'
 import type { RenderOverlays, SkiaRenderer } from '#core/canvas/renderer'
+import { prepareSubtreeCullBounds } from '#core/canvas/scene'
 import type { EditorState } from '#core/editor/types'
 
 import { renderSceneBacking, updateSceneBackingPreviewState } from './retained-backing'
+import { discardRetainedSceneState, invalidateScenePicture } from './state'
+import { renderSceneTiles } from './tiles'
+import { MAX_RETAINED_SCENE_NODES, type RenderLayer } from './types'
+
+export { MAX_RETAINED_SCENE_NODES, type RenderLayer } from './types'
 
 export function renderSceneToCanvas(
   r: SkiaRenderer,
@@ -26,8 +31,6 @@ export function renderSceneToCanvas(
   }
   r.worldViewport = prevViewport
 }
-
-export type RenderLayer = 'full' | 'scene' | 'overlays'
 
 export function renderFromEditorState(
   r: SkiaRenderer,
@@ -124,7 +127,24 @@ function canUseScenePicture(
 }
 
 const now = typeof performance !== 'undefined' ? () => performance.now() : () => 0
-export const MAX_RETAINED_SCENE_NODES = 10_000
+export function prepareRetainedSceneState(
+  r: SkiaRenderer,
+  nodeCount: number,
+  layer: RenderLayer
+): boolean {
+  const retainFullScene = nodeCount <= MAX_RETAINED_SCENE_NODES
+  if (retainFullScene) updateSceneBackingPreviewState(r, layer)
+  else if (
+    r.scenePicture ||
+    r.sceneBacking ||
+    r.sceneBackingBuild ||
+    r.sceneBackingNeedsCrispRender
+  ) {
+    // Direct rendering cannot satisfy a pending retained-backing crisp pass.
+    invalidateScenePicture(r)
+  }
+  return retainFullScene
+}
 
 function measure<T>(fn: () => T): { value: T; duration: number } {
   const start = now()
@@ -132,6 +152,7 @@ function measure<T>(fn: () => T): { value: T; duration: number } {
   return { value, duration: now() - start }
 }
 
+// eslint-disable-next-line complexity -- this is the renderer's layer orchestration boundary
 export function render(
   r: SkiaRenderer,
   graph: SceneGraph,
@@ -148,7 +169,8 @@ export function render(
   p.setFlushTime(0)
 
   graph.clearAbsPosCache()
-  r.largeSceneDetailCulling = graph.nodes.size > MAX_RETAINED_SCENE_NODES
+  // Detail is a screen-space decision, not a function of total document size.
+  r.largeSceneDetailCulling = r.zoom < 0.25
   if (r.largeSceneDetailCulling) prepareSubtreeCullBounds(r, graph, sceneVersion)
 
   const canvas = r.surface.getCanvas()
@@ -164,22 +186,21 @@ export function render(
     w: r.viewportWidth / r.zoom,
     h: r.viewportHeight / r.zoom
   }
-  updateSceneBackingPreviewState(r, layer)
+  // The interactive scene uses viewport tiles. Keep the legacy full-scene
+  // picture only for full/export rendering and as an exceptional fallback.
+  const retainFullScene =
+    layer === 'scene' ? false : prepareRetainedSceneState(r, graph.nodes.size, layer)
 
   const hasPositionPreview =
     graph.positionPreviewVersion !== r.scenePicturePositionPreviewVersion &&
     sceneVersion === r.scenePictureVersion
   const hasVolatileOverlays = hasPositionPreview || hasVolatileOverlay(overlays)
 
-  const retainFullScene = graph.nodes.size <= MAX_RETAINED_SCENE_NODES
-  if (!retainFullScene && r.scenePicture) {
-    r.scenePicture.delete()
-    r.scenePicture = null
-  }
-  const canUsePicture = retainFullScene && canUseScenePicture(r, graph, sceneVersion, hasVolatileOverlays)
+  const canUsePicture =
+    retainFullScene && canUseScenePicture(r, graph, sceneVersion, hasVolatileOverlays)
   const cacheMissReason = retainFullScene
     ? scenePictureMissReason(r, graph, overlays, sceneVersion, hasPositionPreview)
-    : 'large-scene'
+    : 'tile-unavailable'
 
   if (layer !== 'overlays') {
     canvas.save()
@@ -187,7 +208,22 @@ export function render(
 
     p.beginPhase('render:scene')
     if (
-      layer === 'scene' && retainFullScene &&
+      layer === 'scene' &&
+      !hasVolatileOverlays &&
+      renderSceneTiles(r, canvas, graph, sceneVersion)
+    ) {
+      if (
+        r.scenePicture ||
+        r.sceneBacking ||
+        r.sceneBackingBuild ||
+        r.sceneBackingNeedsCrispRender
+      ) {
+        discardRetainedSceneState(r)
+      }
+      p.setScenePictureMode('hit', 'tiles')
+    } else if (
+      layer === 'scene' &&
+      retainFullScene &&
       !hasVolatileOverlays &&
       renderSceneBacking(r, canvas, graph, sceneVersion)
     ) {

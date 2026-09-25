@@ -1,6 +1,6 @@
 import type { SceneNode, SceneGraph, Fill, Stroke } from '@open-pencil/scene-graph'
-import type { Color, Rect, Vector } from '@open-pencil/scene-graph/primitives'
 import type { VisualBounds } from '@open-pencil/scene-graph/geometry'
+import type { Color, Rect, Vector } from '@open-pencil/scene-graph/primitives'
 import type { SnapGuide } from '@open-pencil/scene-graph/snap'
 
 import { decodeBase64 } from '#core/bytes'
@@ -30,6 +30,7 @@ import { installRendererDomainMethods } from './renderer/methods'
 import { initializeRendererPaints } from './renderer/paints'
 import * as RenderPipeline from './renderer/pipeline'
 import * as RendererState from './renderer/state'
+import { SceneTileCache } from './renderer/tiles'
 import * as RenderText from './text'
 export type { RenderOverlays, RulerTheme } from './renderer/types'
 import type {
@@ -98,18 +99,24 @@ export class SkiaRenderer {
   vectorImageCache = new Map<string, SkPicture>()
   pencilShaderCanvas: HTMLCanvasElement | null = null
   pencilShaderGL: WebGLRenderingContext | null = null
-  pencilShaderPrograms = new Map<string, {
-    program: WebGLProgram
-    position: number
-    buffer: WebGLBuffer | null
-    uv?: number
-  }>()
-  pencilShaderTextures = new Map<string, {
-    texture: WebGLTexture | null
-    width: number
-    height: number
-    transient?: boolean
-  }>()
+  pencilShaderPrograms = new Map<
+    string,
+    {
+      program: WebGLProgram
+      position: number
+      buffer: WebGLBuffer | null
+      uv?: number
+    }
+  >()
+  pencilShaderTextures = new Map<
+    string,
+    {
+      texture: WebGLTexture | null
+      width: number
+      height: number
+      transient?: boolean
+    }
+  >()
   pencilShaderImages = new Map<string, CKImage>()
   pencilShaderEpoch = typeof performance === 'undefined' ? 0 : performance.now()
   pencilShaderMouseCanvas: { x: number; y: number } | null = null
@@ -168,6 +175,14 @@ export class SkiaRenderer {
   sceneBackingAverageRecordMs = 40
   sceneBackingAverageViewportIntervalMs = 80
   sceneBackingLastViewportEventAt = 0
+  sceneTileCache = new SceneTileCache<CKImage>(128 * 1024 * 1024)
+  sceneTileCacheGraph: SceneGraph | null = null
+  sceneTileCacheVersion = -1
+  sceneTileCacheFontGeneration = -1
+  sceneTileCachePageId: string | null = null
+  sceneTileCachePositionPreviewVersion = -1
+  sceneTileCachePageColor = ''
+  sceneTileAllocationFailed = false
   lastSceneViewport: { panX: number; panY: number; zoom: number } | null = null
   nodePictureCache = new Map<string, SkPicture | null>()
   nodePictureCacheGenerations = new Map<string, number>()
@@ -498,6 +513,18 @@ export class SkiaRenderer {
 
   invalidateNodePicture(nodeId: string): void {
     RendererState.invalidateNodePicture(this, nodeId)
+  }
+
+  invalidateSceneTiles(): void {
+    RendererState.invalidateSceneTiles(this)
+  }
+
+  invalidateSceneTilesForNode(
+    graph: SceneGraph,
+    nodeId: string,
+    changes: Partial<SceneNode>
+  ): void {
+    RendererState.invalidateSceneTilesForNode(this, graph, nodeId, changes)
   }
 
   flashNode(nodeId: string): void {

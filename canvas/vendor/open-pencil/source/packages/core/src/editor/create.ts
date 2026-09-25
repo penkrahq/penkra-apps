@@ -77,9 +77,16 @@ export function createEditor(options?: EditorOptions) {
     return events.on(event, handler)
   }
 
-  function requestRender() {
+  function requestRender(preserveSceneTiles = false) {
     state.renderVersion++
     state.sceneVersion++
+    for (const renderer of _renderers) {
+      if (preserveSceneTiles && renderer.sceneTileCacheGraph === _graph) {
+        renderer.sceneTileCacheVersion = state.sceneVersion
+      } else {
+        renderer.invalidateSceneTiles?.()
+      }
+    }
     emitEditorEvent('render:requested', {
       renderVersion: state.renderVersion,
       sceneVersion: state.sceneVersion
@@ -115,11 +122,22 @@ export function createEditor(options?: EditorOptions) {
   const graphReads = createGraphReadActions(() => _graph)
   const { runLayoutForNode } = createLayoutRunner(() => _graph)
   const { scheduleComponentSync } = createComponentSyncScheduler(() => _graph, requestRender)
+  let derivedGraphMutationDepth = 0
+
+  function runDerivedGraphMutation<T>(action: () => T): T {
+    derivedGraphMutationDepth++
+    try {
+      return action()
+    } finally {
+      derivedGraphMutationDepth--
+    }
+  }
 
   const { subscribeToGraph } = createGraphEventSubscription({
     getGraph: () => _graph,
     getRenderers: () => _renderers,
     scheduleComponentSync,
+    isDerivedGraphMutation: () => derivedGraphMutationDepth > 0,
     requestRender,
     emitEditorEvent
   })
@@ -229,6 +247,7 @@ export function createEditor(options?: EditorOptions) {
     // Lifecycle
     requestRender,
     requestRepaint,
+    runDerivedGraphMutation,
     onEditorEvent,
     setCanvasKit,
     removeCanvasRenderer,

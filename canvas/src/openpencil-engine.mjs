@@ -132,9 +132,14 @@ export function createOpenPencilGraph(
 
 export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
   const startedAt = performance.now();
+  const requestedIds = [...instanceIds];
+  const beforeGeometry = new Map(requestedIds.map((id) => {
+    const node = graph.getNode(id);
+    return [id, node ? [node.x, node.y, node.width, node.height] : null];
+  }));
   const hydratedIds = measureGraphPhase(
     "engine.graph.hydrate-clones",
-    () => hydrateCanvasSceneGraphInstances(graph, document, instanceIds),
+    () => hydrateCanvasSceneGraphInstances(graph, document, requestedIds),
   );
   if (hydratedIds.length === 0) return hydratedIds;
   applyInstanceTextStyles(graph, document, hydratedIds);
@@ -142,17 +147,16 @@ export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
   let subtreeDurationMs = 0;
   let ancestorDurationMs = 0;
   const ancestorCosts = new Map();
-  const ancestorIds = new Set();
+  const pendingAncestors = new Set();
   for (const instanceId of hydratedIds) {
     const subtreeStartedAt = performance.now();
     computeAllLayouts(graph, instanceId);
     subtreeDurationMs += performance.now() - subtreeStartedAt;
     let node = graph.getNode(instanceId);
-    while (node?.parentId) {
-      node = graph.getNode(node.parentId);
-      if (!node) break;
-      ancestorIds.add(node.id);
-    }
+    const previous = beforeGeometry.get(instanceId);
+    if (node && previous && previous[0] === node.x && previous[1] === node.y
+      && previous[2] === node.width && previous[3] === node.height) continue;
+    if (node?.parentId) pendingAncestors.add(node.parentId);
   }
   const depth = (id) => {
     let value = 0;
@@ -163,12 +167,25 @@ export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
     }
     return value;
   };
-  for (const id of [...ancestorIds].sort((a, b) => depth(b) - depth(a))) {
+  const visitedAncestors = new Set();
+  while (pendingAncestors.size > 0) {
+    const id = [...pendingAncestors].sort((a, b) => depth(b) - depth(a))[0];
+    pendingAncestors.delete(id);
+    if (visitedAncestors.has(id)) continue;
+    visitedAncestors.add(id);
+    const before = graph.getNode(id);
+    if (!before) continue;
+    const geometry = [before.x, before.y, before.width, before.height];
     const layoutStartedAt = performance.now();
     computeLayout(graph, id);
     const durationMs = performance.now() - layoutStartedAt;
     ancestorDurationMs += durationMs;
     ancestorCosts.set(id, { calls: 1, durationMs });
+    const after = graph.getNode(id);
+    if (after?.parentId && (after.x !== geometry[0] || after.y !== geometry[1]
+      || after.width !== geometry[2] || after.height !== geometry[3])) {
+      pendingAncestors.add(after.parentId);
+    }
   }
   recordGraphPerformance("engine.graph.hydrate-subtree-layout", subtreeDurationMs, {
     hydratedInstances: hydratedIds.length,
@@ -203,7 +220,9 @@ export function createOpenPencilInstanceHydrator({
     ));
     if (requested.length === 0) return [];
     for (const id of requested) hydratedInstanceIds.add(id);
-    const hydrated = hydrateOpenPencilGraphInstances(editor.graph, renderDocument, requested);
+    const hydrated = editor.runDerivedGraphMutation(() => (
+      hydrateOpenPencilGraphInstances(editor.graph, renderDocument, requested)
+    ));
     if (hydrated.length > 0) {
       editor.requestRender();
       onHydrated(hydrated);
@@ -479,17 +498,22 @@ export function refreshOpenPencilEditor(
 
 function applyImageAssets(graph, assets) {
   const svgState = {};
+  const changedIds = [];
   for (const node of graph.getAllNodes()) {
     if (!node.fills.some((fill) => fill.pencilImage)) continue;
     const fills = node.fills.map((fill) => {
       const image = fill.pencilImage;
       if (!image) return fill;
       const asset = pencilResourceAsset(assets, image.url);
-      if (!asset) return fill;
+      if (!asset) return fill.type === "IMAGE"
+        ? { type: "SOLID", visible: false, opacity: 0, color: { r: 0, g: 0, b: 0, a: 0 }, pencilImage: image }
+        : fill;
+      if (fill.type === "IMAGE" && fill.imageHash === asset.sha256) return fill;
       registerSvgVectorAsset(graph, asset, svgState);
       graph.images.set(asset.sha256, asset.renderBytes ?? asset.bytes);
       return {
         type: "IMAGE",
+        pencilImage: image,
         imageHash: asset.sha256,
         imageScaleMode: imageScaleMode(image.mode),
         // Skia modulates shader output by the paint color. Keep image pixels
@@ -500,9 +524,33 @@ function applyImageAssets(graph, assets) {
         visible: image.enabled !== false,
       };
     });
-    graph.updateNode(node.id, { fills });
+    if (fills.some((fill, index) => fill !== node.fills[index])) {
+      graph.updateNode(node.id, { fills });
+      changedIds.push(node.id);
+    }
   }
   finalizeSvgVectorAssets(graph, svgState);
+  return changedIds;
+}
+
+export function refreshOpenPencilImageAssets(editor, document, assets) {
+  const { changedIds, shaderChanged } = editor.runDerivedGraphMutation(() => {
+    const changedIds = applyImageAssets(editor.graph, assets);
+    const before = editor.graph.images.size;
+    applyShaderAssets(editor.graph, document, assets);
+    return { changedIds, shaderChanged: editor.graph.images.size !== before };
+  });
+  if (shaderChanged) {
+    editor.requestRender();
+  } else if (changedIds.length > 0) {
+    for (const renderer of editor.canvasRenderers ?? []) {
+      for (const nodeId of changedIds) {
+        renderer.invalidateSceneTilesForNode(editor.graph, nodeId, { fills: [] });
+      }
+    }
+    editor.requestRender(true);
+  }
+  return changedIds.length;
 }
 
 function imageScaleMode(mode) {

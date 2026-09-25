@@ -6,7 +6,7 @@ import { computeDescendantVisualBounds } from '@open-pencil/scene-graph/geometry
 import type { SkiaRenderer } from '#core/canvas/renderer'
 import { clearSubtreePictureCache } from '#core/canvas/renderer/state'
 
-import { MAX_RETAINED_SCENE_NODES, type RenderLayer } from './pipeline'
+import { MAX_RETAINED_SCENE_NODES, type RenderLayer } from './types'
 
 const now = typeof performance !== 'undefined' ? () => performance.now() : () => 0
 const SCENE_BACKING_SCALE = 3

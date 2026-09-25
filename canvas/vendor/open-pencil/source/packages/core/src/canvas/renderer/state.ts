@@ -1,6 +1,14 @@
+import { SceneGraph, type SceneNode } from '@open-pencil/scene-graph'
+import { computeDescendantVisualBounds } from '@open-pencil/scene-graph/geometry'
+
 import type { SkiaRenderer } from '#core/canvas/renderer'
 
 export function invalidateScenePicture(r: SkiaRenderer): void {
+  discardRetainedSceneState(r)
+  invalidateSceneTiles(r)
+}
+
+export function discardRetainedSceneState(r: SkiaRenderer): void {
   r.scenePicture?.delete()
   r.scenePicture = null
   r.scenePictureVersion = -1
@@ -9,6 +17,42 @@ export function invalidateScenePicture(r: SkiaRenderer): void {
   r.sceneBacking = null
   r.sceneBackingBuild?.surface.delete()
   r.sceneBackingBuild = null
+  r.sceneBackingNeedsCrispRender = false
+  r.sceneBackingPreviewUntil = 0
+}
+
+export function invalidateSceneTiles(r: SkiaRenderer): void {
+  r.sceneTileCache?.clear()
+  r.sceneTileCacheGraph = null
+  r.sceneTileCacheVersion = -1
+}
+
+export function invalidateSceneTilesForNode(
+  r: SkiaRenderer,
+  graph: SceneGraph,
+  nodeId: string,
+  changes: Partial<SceneNode>
+): void {
+  if (r.sceneTileCache.size === 0) return
+  if (
+    r.sceneTileCacheGraph !== graph ||
+    Object.keys(changes).some((key) => SceneGraph.LAYOUT_AFFECTING_KEYS.has(key))
+  ) {
+    invalidateSceneTiles(r)
+    return
+  }
+  const before = r.subtreeCullBounds.get(nodeId)
+  if (!before) {
+    invalidateSceneTiles(r)
+    return
+  }
+  r.sceneTileCache.invalidate(before)
+  const after = computeDescendantVisualBounds(
+    [nodeId],
+    (id) => graph.getNode(id),
+    (id) => graph.getAbsolutePosition(id)
+  )
+  if (after) r.sceneTileCache.invalidate(after)
 }
 
 export function clearSubtreePictureCache(r: SkiaRenderer): void {
