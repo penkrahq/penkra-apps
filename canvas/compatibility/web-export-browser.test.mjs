@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { once } from "node:events";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -65,8 +66,12 @@ test("web export preserves responsive semantics and accessibility in Chrome", { 
     "about:blank",
   ], { stdio: ["ignore", "ignore", "pipe"] });
   t.after(async () => {
-    chrome.kill("SIGTERM");
-    await rm(directory, { recursive: true, force: true });
+    if (chrome.exitCode === null && chrome.signalCode === null) {
+      const exited = once(chrome, "exit");
+      chrome.kill("SIGTERM");
+      await exited;
+    }
+    await rm(directory, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   });
 
   const browserWs = await devtoolsUrl(chrome);

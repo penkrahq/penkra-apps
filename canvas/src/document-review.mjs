@@ -1,4 +1,5 @@
 import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { isCascade } from "./canvas-resolver.mjs";
 
 export function reviewDocumentIssues(document) {
   return [
@@ -108,6 +109,9 @@ function horizontalPadding(padding) {
 }
 
 function hasVisibleFill(fill) {
+  // A conditional value list selects one paint value; it is not a list of
+  // paint objects. Every authored branch must provide a visible text fill.
+  if (isCascade(fill)) return fill.every((entry) => hasVisibleFill(entry.value));
   const fills = Array.isArray(fill) ? fill : [fill];
   return fills.some((candidate) => {
     if (typeof candidate === "string") return candidate.length > 0;
