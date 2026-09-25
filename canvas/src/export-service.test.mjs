@@ -6,6 +6,7 @@ import test from "node:test";
 import { PDFDocument } from "pdf-lib";
 
 import { extractDocumentNode, extractDocumentNodes } from "./export-service.mjs";
+import { takeDocumentScreenshots } from "./document-screenshot.mjs";
 
 const document = {
   version: "2.17",
@@ -32,6 +33,27 @@ test("documents.extract writes one scaled PNG and one roleless SVG subtree", asy
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+test("PNG extraction matches TakeScreenshot for bound conditional text in a component", async () => {
+  const fixture = { version: "2.17", module: "generic", axes: {}, variables: {}, paragraphStyles: {}, imports: {}, flows: [], children: [
+    { id: "row-source", type: "frame", width: 240, height: 80,
+      properties: { preview: { type: "string", default: "Preview" }, unread: { type: "boolean", default: true } },
+      children: [
+        { id: "name", type: "text", content: "Name", fill: "#111111" },
+        { id: "preview", type: "text", content: "", fill: "#666666", bind: { content: "$props.preview" }, visible: { op: "eq", arg: { prop: "unread" }, value: true } },
+      ],
+    },
+    { id: "sample", type: "frame", width: 240, height: 80, children: [{ id: "row", type: "ref", ref: "row-source" }] },
+  ] };
+  const directory = await mkdtemp(join(tmpdir(), "canvas-png-parity-"));
+  try {
+    const [screenshot] = await takeDocumentScreenshots(fixture, [{ nodeIds: ["sample"] }]);
+    const destination = join(directory, "sample.png");
+    const extracted = await extractDocumentNode(fixture, { nodeId: "sample", format: "png", destination });
+    assert.deepEqual([extracted.width, extracted.height], [screenshot.width, screenshot.height]);
+    assert.deepEqual(await readFile(destination), Buffer.from(screenshot.data, "base64"));
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
 
 test("documents.extract requires one exact node", async () => {

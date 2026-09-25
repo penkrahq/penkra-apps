@@ -123,7 +123,12 @@ async function renderExtractionNode(document, request, options) {
     return { bytes: artifact, report: { format: "pdf", consequences: ir.consequences } };
   }
   if (request.format === "png") {
-    const renderDocument = resolveCanvasDocument(document, { modes: request.modes, imports: options.imports }).document;
+    // Without an explicit export mode or imported library, PNG extraction is
+    // the same operation as TakeScreenshot. Rendering the authored graph also
+    // avoids expanding unrelated components elsewhere in a large document.
+    const renderDocument = request.modes || Object.keys(options.imports ?? {}).length
+      ? resolveCanvasDocument(document, { modes: request.modes, imports: options.imports }).document
+      : document;
     const [image] = await takeDocumentScreenshots(renderDocument, [{ nodeIds: [request.nodeId] }], options.assets, { scale: request.scale ?? 1, maxDimension: 8192, failOnDownscale: true });
     return { bytes: Buffer.from(image.data, "base64"), report: { width: image.width, height: image.height, format: "png" } };
   }
