@@ -211,6 +211,9 @@ export function createEditor(options?: EditorOptions) {
   }
 
   function replaceGraph(newGraph: SceneGraph) {
+    // Vector and effect caches use node IDs, which may be reused with different
+    // content in a replacement graph. Tiles alone cannot invalidate them.
+    for (const renderer of _renderers) renderer.invalidateGraphCaches()
     _graph = newGraph
     subscribeToGraph()
     const previousPageId = state.currentPageId

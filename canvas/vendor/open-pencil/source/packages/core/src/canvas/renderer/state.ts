@@ -72,6 +72,23 @@ export function invalidateAllPictures(r: SkiaRenderer): void {
   clearSubtreePictureCache(r)
 }
 
+export function invalidateGraphCaches(r: SkiaRenderer): void {
+  invalidateAllPictures(r)
+  for (const cache of [
+    r.vectorPathCache,
+    r.vectorStrokePathCache,
+    r.vectorStrokeOutlineCache,
+    r.fillGeometryCache,
+    r.strokeGeometryCache
+  ]) {
+    for (const paths of cache.values()) for (const path of paths) path.delete()
+    cache.clear()
+  }
+  r.subtreeCullBounds.clear()
+  r.subtreeNodeCounts.clear()
+  r.subtreeCullBoundsGraph = null
+}
+
 export function invalidateNodePicture(r: SkiaRenderer, nodeId: string): void {
   const pic = r.nodePictureCache.get(nodeId)
   if (pic) {

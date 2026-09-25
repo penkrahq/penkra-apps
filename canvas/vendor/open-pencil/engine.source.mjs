@@ -66267,6 +66267,24 @@ function invalidateAllPictures(r4) {
   r4.nodePictureCacheGenerations.clear();
   clearSubtreePictureCache(r4);
 }
+function invalidateGraphCaches(r4) {
+  invalidateAllPictures(r4);
+  for (const cache of [
+    r4.vectorPathCache,
+    r4.vectorStrokePathCache,
+    r4.vectorStrokeOutlineCache,
+    r4.fillGeometryCache,
+    r4.strokeGeometryCache
+  ]) {
+    for (const paths of cache.values())
+      for (const path of paths)
+        path.delete();
+    cache.clear();
+  }
+  r4.subtreeCullBounds.clear();
+  r4.subtreeNodeCounts.clear();
+  r4.subtreeCullBoundsGraph = null;
+}
 function invalidateNodePicture(r4, nodeId) {
   const pic = r4.nodePictureCache.get(nodeId);
   if (pic) {
@@ -70869,6 +70887,9 @@ class SkiaRenderer {
   }
   invalidateAllPictures() {
     invalidateAllPictures(this);
+  }
+  invalidateGraphCaches() {
+    invalidateGraphCaches(this);
   }
   invalidateNodePicture(nodeId) {
     invalidateNodePicture(this, nodeId);
@@ -89525,6 +89546,8 @@ function createEditor(options) {
     }
   }
   function replaceGraph(newGraph) {
+    for (const renderer of _renderers)
+      renderer.invalidateGraphCaches();
     _graph = newGraph;
     subscribeToGraph();
     const previousPageId = state.currentPageId;

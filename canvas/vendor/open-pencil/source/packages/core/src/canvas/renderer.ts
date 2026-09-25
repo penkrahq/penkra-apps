@@ -511,6 +511,10 @@ export class SkiaRenderer {
     RendererState.invalidateAllPictures(this)
   }
 
+  invalidateGraphCaches(): void {
+    RendererState.invalidateGraphCaches(this)
+  }
+
   invalidateNodePicture(nodeId: string): void {
     RendererState.invalidateNodePicture(this, nodeId)
   }

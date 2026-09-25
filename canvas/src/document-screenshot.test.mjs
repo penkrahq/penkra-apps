@@ -2,8 +2,74 @@ import assert from "node:assert/strict";
 import { Buffer } from "node:buffer";
 import test from "node:test";
 
-import { getCanvasKit } from "../vendor/open-pencil/engine.source.mjs";
+import { getCanvasKit, SkiaRenderer } from "../vendor/open-pencil/engine.source.mjs";
 import { rasterizeSvgImage, takeDocumentScreenshots } from "./document-screenshot.mjs";
+import { createOpenPencilGraph } from "./openpencil-engine.mjs";
+
+test("large viewBox multi-subpath paths match in editor tiles and document export", async () => {
+  const width = 1260;
+  const height = 1886;
+  const green = Array.from({ length: 10 }, (_, index) => {
+    const y = 118 + index * 188;
+    return `M440 ${y} C340 ${y} 340 ${y} 240 ${y} M760 ${y + 24} C880 ${y + 24} 880 1008 1000 1008`;
+  }).join(" ");
+  const document = { version: "2.17", children: [{
+    id: "board", type: "frame", x: 0, y: 0, width, height, layout: "none", clip: true,
+    fill: "#ffffff", children: [
+      { id: "green", type: "path", x: 0, y: 0, width, height,
+        viewBox: [0, 0, width, height], geometry: green, stroke: "#16A34A", strokeWidth: 1.25 },
+      { id: "grey", type: "path", x: 0, y: 0, width, height,
+        viewBox: [0, 0, width, height],
+        geometry: "M440 1758 C340 1758 340 1676 240 1676 M760 1782 C880 1782 880 1008 1000 1008",
+        stroke: "#A1A1AA", strokeWidth: 1.25, strokeDashPattern: [4, 4] },
+    ],
+  }] };
+  const [exported] = await takeDocumentScreenshots(document, [{ nodeIds: ["board"] }]);
+  const ck = await getCanvasKit();
+  const exportImage = ck.MakeImageFromEncoded(Buffer.from(exported.data, "base64"));
+  assert.ok(exportImage);
+  const surface = ck.MakeSurface(width, height);
+  assert.ok(surface);
+  const renderer = new SkiaRenderer(ck, surface);
+  try {
+    const graph = createOpenPencilGraph(document);
+    renderer.pageId = graph.getPages()[0].id;
+    renderer.pageColor = { r: 1, g: 1, b: 1 };
+    renderer.viewportWidth = width;
+    renderer.viewportHeight = height;
+    renderer.zoom = 1;
+    renderer.dpr = 1;
+    renderer.render(graph, new Set(), {}, 1, "scene");
+    assert.ok(renderer.sceneTileCache.size > 1);
+    surface.flush();
+    const editorImage = surface.makeImageSnapshot();
+    try {
+      const pixelInfo = { width, height, colorType: ck.ColorType.RGBA_8888,
+        alphaType: ck.AlphaType.Unpremul, colorSpace: ck.ColorSpace.SRGB };
+      const expected = exportImage.readPixels(0, 0, pixelInfo);
+      const actual = editorImage.readPixels(0, 0, pixelInfo);
+      assert.ok(expected && actual);
+      let mismatches = 0;
+      let ink = 0;
+      let missingInk = 0;
+      for (let index = 0; index < expected.length; index += 4) {
+        const expectedInk = expected[index] < 200 || expected[index + 1] < 200 || expected[index + 2] < 200;
+        const actualInk = actual[index] < 200 || actual[index + 1] < 200 || actual[index + 2] < 200;
+        if (expectedInk) ink++;
+        if (expectedInk && !actualInk) missingInk++;
+        if (Math.abs(expected[index] - actual[index]) > 3
+          || Math.abs(expected[index + 1] - actual[index + 1]) > 3
+          || Math.abs(expected[index + 2] - actual[index + 2]) > 3) mismatches++;
+      }
+      assert.ok(ink > 500);
+      assert.ok(missingInk < 50, `${missingInk} curve pixels were missing`);
+      assert.ok(mismatches < 1200, `${mismatches} pixels differed`);
+    } finally { editorImage.delete(); }
+  } finally {
+    renderer.destroy();
+    exportImage.delete();
+  }
+});
 
 test("screenshot renders only the exact nested component variant", async () => {
   const document = { version: "2.17", children: [

@@ -3,6 +3,7 @@ import { expect, mock, test } from 'bun:test'
 import type { Canvas, Image as CKImage } from 'canvaskit-wasm'
 
 import { SceneGraph } from '@open-pencil/scene-graph'
+import { parseSVGPath } from '@open-pencil/scene-graph/parse-path'
 
 import { initCanvasKit } from '#cli/headless'
 import type { SkiaRenderer } from '#core/canvas/renderer'
@@ -12,6 +13,7 @@ import {
   renderSceneTiles,
   visibleTileCoordinates
 } from '#core/canvas/renderer/tiles'
+import { createEditor } from '#core/editor'
 
 import { expectDefined } from '#tests/helpers/assert'
 
@@ -229,6 +231,139 @@ test('tiled rendering matches direct rendering across a tile boundary', async ()
       const index = (40 * width + x) * 4
       expect(actual.slice(index, index + 4)).toEqual(expected.slice(index, index + 4))
     }
+  } finally {
+    direct.destroy()
+    tiled.destroy()
+  }
+})
+
+test('tiled editor rendering matches direct export for board-sized multi-subpath curves', async () => {
+  const ck = await initCanvasKit()
+  const width = 940
+  const height = 1043
+  const zoom = 0.5
+  const viewportX = 2960
+  const viewportY = 1300
+  const curves = Array.from({ length: 10 }, (_, index) => {
+    const y = 118 + index * 188
+    return `M440 ${y} C340 ${y} 340 ${y} 240 ${y} M760 ${y + 24} C880 ${y + 24} 880 1008 1000 1008`
+  }).join(' ')
+  const makeGraph = (outdated: boolean) => {
+    const graph = new SceneGraph()
+    const page = graph.getPages()[0]
+    graph.createNodeWithId('outer', 'FRAME', page.id, {
+      x: viewportX,
+      y: viewportY,
+      width: 1880,
+      height: 2086
+    })
+    graph.createNodeWithId('board', 'FRAME', 'outer', {
+      x: 580,
+      y: 150,
+      width: 1260,
+      height: 1886,
+      clipsContent: true
+    })
+    graph.createNodeWithId('green', 'VECTOR', 'board', {
+      width: 1260,
+      height: 1886,
+      vectorNetwork: parseSVGPath(outdated ? 'M760 142 C880 142 880 260 1000 260' : curves),
+      strokes: [
+        {
+          color: { r: 0.09, g: 0.64, b: 0.29, a: 1 },
+          weight: 1.25,
+          opacity: 1,
+          visible: true,
+          align: 'CENTER'
+        }
+      ]
+    })
+    graph.createNodeWithId('grey', 'VECTOR', 'board', {
+      width: 1260,
+      height: 1886,
+      vectorNetwork: parseSVGPath(
+        outdated
+          ? 'M760 1782 C880 1782 880 260 1000 260'
+          : 'M440 1758 C340 1758 340 1676 240 1676 M760 1782 C880 1782 880 1008 1000 1008'
+      ),
+      strokes: [
+        {
+          color: { r: 0.63, g: 0.63, b: 0.67, a: 1 },
+          weight: 1.25,
+          opacity: 1,
+          visible: true,
+          align: 'CENTER',
+          dashPattern: [4, 4]
+        }
+      ]
+    })
+    return graph
+  }
+  const graph = makeGraph(false)
+  const oldGraph = makeGraph(true)
+  const page = graph.getPages()[0]
+  const directSurface = expectDefined(ck.MakeSurface(width, height), 'direct surface')
+  const tiledSurface = expectDefined(ck.MakeSurface(width, height), 'tiled surface')
+  const direct = new Renderer(ck, directSurface)
+  const tiled = new Renderer(ck, tiledSurface)
+  const capture = (surface: typeof directSurface) => {
+    const image = surface.makeImageSnapshot()
+    const pixels = expectDefined(
+      image.readPixels(0, 0, {
+        width,
+        height,
+        colorType: ck.ColorType.RGBA_8888,
+        alphaType: ck.AlphaType.Unpremul,
+        colorSpace: ck.ColorSpace.SRGB
+      }),
+      'pixels'
+    )
+    image.delete()
+    return pixels
+  }
+  try {
+    for (const renderer of [direct, tiled]) {
+      renderer.pageId = page.id
+      renderer.pageColor = { r: 1, g: 1, b: 1 }
+      renderer.viewportWidth = width
+      renderer.viewportHeight = height
+      renderer.worldViewport = { x: viewportX, y: viewportY, w: width / zoom, h: height / zoom }
+      renderer.zoom = zoom
+      renderer.dpr = 1
+      renderer.panX = -viewportX * zoom
+      renderer.panY = -viewportY * zoom
+    }
+    tiled.pageId = oldGraph.getPages()[0].id
+    expect(renderSceneTiles(tiled, tiledSurface.getCanvas(), oldGraph, 1)).toBe(true)
+    const editor = createEditor({ graph: oldGraph })
+    editor.setCanvasKit(ck, tiled)
+    editor.replaceGraph(graph)
+    tiled.pageId = page.id
+    const directCanvas = directSurface.getCanvas()
+    directCanvas.clear(ck.WHITE)
+    directCanvas.save()
+    directCanvas.translate(direct.panX, direct.panY)
+    directCanvas.scale(zoom, zoom)
+    for (const childId of page.childIds) direct.renderNode(directCanvas, graph, childId, {})
+    directCanvas.restore()
+    const tiledCanvas = tiledSurface.getCanvas()
+    tiledCanvas.clear(ck.WHITE)
+    expect(renderSceneTiles(tiled, tiledCanvas, graph, 2)).toBe(true)
+    directSurface.flush()
+    tiledSurface.flush()
+    const expected = capture(directSurface)
+    const actual = capture(tiledSurface)
+    let mismatched = 0
+    for (let index = 0; index < expected.length; index += 4) {
+      if (
+        Math.abs(actual[index] - expected[index]) > 3 ||
+        Math.abs(actual[index + 1] - expected[index + 1]) > 3 ||
+        Math.abs(actual[index + 2] - expected[index + 2]) > 3
+      )
+        mismatched++
+    }
+    // A few antialiasing pixels differ at tile boundaries, not whole curves.
+    expect(mismatched).toBeLessThan(300)
   } finally {
     direct.destroy()
     tiled.destroy()

@@ -481,12 +481,7 @@ export function refreshOpenPencilEditor(
       options.hydrateInstanceIds,
     );
   }
-  // Effect pictures are keyed by node ID, which survives a document refresh.
-  // Replacing the graph emits no per-node updates to invalidate those pictures.
-  // Clear them before replaceGraph can request a render of the new scene.
-  for (const renderer of editor.canvasRenderers ?? []) {
-    renderer.invalidateAllPictures();
-  }
+  // The editor owns graph-scoped renderer cache invalidation on replacement.
   editor.replaceGraph(nextGraph);
   editor.state.panX = viewport.panX;
   editor.state.panY = viewport.panY;
