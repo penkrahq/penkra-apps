@@ -46,6 +46,36 @@ test("review accepts text whose named style supplies its visible fill", () => {
   assert.deepEqual(designValidationIssues(document), []);
 });
 
+test("review accepts visible base and matching component-property text fills", () => {
+  const avatarFill = [
+    { value: "$ink-2" },
+    { value: "$avatar-blue-ink", when: { props: { tone: "blue" } } },
+    { value: "$avatar-pink-ink", when: { props: { tone: "pink" } } },
+  ];
+  const document = { children: [
+    { id: "input", type: "frame", properties: { filled: { type: "boolean", default: false } }, children: [
+      { id: "placeholder", type: "text", content: "Placeholder", fill: [
+        { value: "${ink-2}" },
+        { value: "${ink}", when: { props: { filled: true } } },
+      ] },
+    ] },
+    { id: "avatar", type: "frame", properties: { tone: { type: "enum", values: ["neutral", "blue", "pink"], default: "neutral" } }, children: [
+      { id: "initials", type: "text", content: "AO", fill: avatarFill },
+    ] },
+  ] };
+  assert.deepEqual(designValidationIssues(document).filter((issue) => issue.kind === "text-fill"), []);
+  document.children[1].children[0].fill[2].value = null;
+  assert.deepEqual(designValidationIssues(document).filter((issue) => issue.kind === "text-fill").map((issue) => issue.nodeId), ["initials"]);
+});
+
+test("review retains ordinary paint-list behavior beside conditional fills", () => {
+  const document = { children: [
+    { id: "visible", type: "text", content: "Visible", fill: [{ enabled: false, fill: "#111111" }, { fill: "#222222" }] },
+    { id: "missing", type: "text", content: "Missing", fill: [{ enabled: false, fill: "#111111" }] },
+  ] };
+  assert.deepEqual(designValidationIssues(document).filter((issue) => issue.kind === "text-fill").map((issue) => issue.nodeId), ["missing"]);
+});
+
 test("review reports only genuine empty text and invalid top-level fill sizing", () => {
   const document = { children: [
     { id: "component", type: "frame", width: "fill_container", children: [] },

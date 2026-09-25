@@ -4,6 +4,27 @@ import test from "node:test";
 import { getTextMeasurer, setTextMeasurer } from "../vendor/open-pencil/engine.source.mjs";
 import { inspectDocument } from "./document-inspection.mjs";
 
+test("inspection does not flag a rendered conditional text fill", () => {
+  const label = { id: "label", type: "text", content: "AO", width: 40, height: 20, fill: [
+    { value: "$ink-2" },
+    { value: "$ink", when: { props: { filled: true } } },
+  ] };
+  const component = { id: "component", type: "frame", width: 60, height: 30,
+    properties: { filled: { type: "boolean", default: false } }, children: [label] };
+  const document = { version: "2.17", variables: {
+    "ink-2": { tokenType: "color", cascade: [{ value: "#666666" }] },
+    ink: { tokenType: "color", cascade: [{ value: "#111111" }] },
+  }, children: [component, { id: "filled", type: "ref", ref: "component", props: { filled: true } }] };
+  const nodes = [
+    { node: component, depth: 0, parentId: null, index: 0 },
+    { node: label, depth: 1, parentId: "component", index: 0 },
+    { node: document.children[1], depth: 0, parentId: null, index: 1 },
+  ];
+  const inspection = inspectDocument(document, nodes);
+  assert.deepEqual(inspection.items.find((item) => item.id === "label").problems.filter((issue) => issue.kind === "text-fill"), []);
+  assert.equal(inspection.issues.some((issue) => issue.kind === "text-fill"), false);
+});
+
 function documentWithOverflow({ clip = false } = {}) {
   const child = {
     id: "wide-child",
