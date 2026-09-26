@@ -942,6 +942,40 @@ test("explicit fill_container ref width fills a vertical parent, not the 100px f
   assert.equal(graph.getNode("button").primaryAxisSizing, "FILL");
 });
 
+test("deferred editor refs match export layout with fill width and conditional trailing pills", () => {
+  const source = { version: "2.17", children: [
+    { id: "heading", type: "frame", reusable: true, width: 316, height: 26,
+      layout: "horizontal", gap: 6, properties: { tag: { type: "enum", values: ["none", "end"], default: "none" } },
+      children: [
+        { id: "label", type: "text", content: "Outpatients", width: "fill_container", height: 20,
+          textGrowth: "fixed-width" },
+        { id: "pill", type: "frame", layout: "horizontal", width: 40, height: 20,
+          visible: { op: "eq", arg: { prop: "tag" }, value: "end" },
+          children: [{ id: "pill-text", type: "text", content: "End", width: 30, height: 18 }] },
+      ] },
+    { id: "board", type: "frame", width: 800, height: 300, children: [
+      { id: "card", type: "frame", width: 340, layout: "vertical", padding: [10, 12], children: [
+        { id: "instance", type: "ref", ref: "heading", width: "fill_container", props: { tag: "end" } },
+        { id: "plain", type: "ref", ref: "heading", width: "fill_container", props: { tag: "none" } },
+      ] },
+    ] },
+  ] };
+  const prepared = prepareOpenPencilRenderDocument(source);
+  const exported = createOpenPencilGraph(source, new Map(), prepared);
+  const editor = createOpenPencilEditor(source, { preparedDocument: prepared, deferExternalInstances: true });
+  hydrateOpenPencilGraphInstances(editor.graph, prepared.document, ["instance", "plain"]);
+  for (const id of ["instance", "instance/label", "instance/pill", "plain", "plain/label", "plain/pill"]) {
+    const actual = editor.graph.getNode(id);
+    const expected = exported.getNode(id);
+    assert.ok(actual && expected, id);
+    assert.deepEqual([actual.x, actual.y, actual.width, actual.height],
+      [expected.x, expected.y, expected.width, expected.height], id);
+  }
+  assert.ok(editor.graph.getNode("instance/pill").x + editor.graph.getNode("instance/pill").width <= 316);
+  assert.equal(editor.graph.getNode("plain/pill").visible, false);
+  assert.equal(editor.graph.getNode("plain/label").width, 316);
+});
+
 test("binds an SVG renderer cache without replacing its source asset", () => {
   const sourceBytes = new TextEncoder().encode(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 101"><rect width="72" height="101" fill="#fff"/></svg>',

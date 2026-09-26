@@ -148,11 +148,16 @@ export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
   let ancestorDurationMs = 0;
   const ancestorCosts = new Map();
   const pendingAncestors = new Set();
+  const laidOutGeometry = new Map();
   for (const instanceId of hydratedIds) {
     const subtreeStartedAt = performance.now();
-    computeAllLayouts(graph, instanceId);
+    // The instance was already sized by its parent while its children were deferred.
+    // A detached Yoga pass otherwise treats FILL as unconstrained and gives its
+    // fill-width descendants zero space, even though the parent assigned a width.
+    computeHydratedInstanceLayout(graph, instanceId);
     subtreeDurationMs += performance.now() - subtreeStartedAt;
     let node = graph.getNode(instanceId);
+    if (node) laidOutGeometry.set(instanceId, [node.width, node.height]);
     const previous = beforeGeometry.get(instanceId);
     if (node && previous && previous[0] === node.x && previous[1] === node.y
       && previous[2] === node.width && previous[3] === node.height) continue;
@@ -187,6 +192,15 @@ export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
       pendingAncestors.add(after.parentId);
     }
   }
+  // A hug-sized ancestor can change the instance's available space after the
+  // first pass. Reconcile only those hydrated subtrees, not the whole document.
+  for (const instanceId of hydratedIds) {
+    const node = graph.getNode(instanceId);
+    const laidOut = laidOutGeometry.get(instanceId);
+    if (node && laidOut && (node.width !== laidOut[0] || node.height !== laidOut[1])) {
+      computeHydratedInstanceLayout(graph, instanceId);
+    }
+  }
   recordGraphPerformance("engine.graph.hydrate-subtree-layout", subtreeDurationMs, {
     hydratedInstances: hydratedIds.length,
   });
@@ -202,6 +216,21 @@ export function hydrateOpenPencilGraphInstances(graph, document, instanceIds) {
     graphNodes: graph.nodes.size,
   });
   return hydratedIds;
+}
+
+function computeHydratedInstanceLayout(graph, instanceId) {
+  const instance = graph.getNode(instanceId);
+  if (!instance) return;
+  const primary = instance.primaryAxisSizing;
+  const counter = instance.counterAxisSizing;
+  if (primary === "FILL") instance.primaryAxisSizing = "FIXED";
+  if (counter === "FILL") instance.counterAxisSizing = "FIXED";
+  try {
+    computeAllLayouts(graph, instanceId);
+  } finally {
+    instance.primaryAxisSizing = primary;
+    instance.counterAxisSizing = counter;
+  }
 }
 
 export function createOpenPencilInstanceHydrator({
