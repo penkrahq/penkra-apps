@@ -3,6 +3,8 @@ import { createHash } from "node:crypto";
 import { join } from "node:path";
 
 const root = new URL("../", import.meta.url);
+const { generateIconChunks } = await import("./generate-icon-chunks.mjs");
+await generateIconChunks();
 const output = new URL("../dist/", import.meta.url);
 const { assertAllCapabilityTables } = await import(new URL("src/capability-tables.mjs", root));
 const developmentBuildWithUnverifiedCapabilities =
@@ -40,6 +42,7 @@ const builds = await Promise.all([
     format: "esm",
     naming: "app.js",
     minify: true,
+    splitting: true,
     plugins: [dedupeYjsPlugin],
   }),
   Bun.build({
@@ -58,6 +61,7 @@ const builds = await Promise.all([
     format: "esm",
     naming: "operations.js",
     minify: true,
+    splitting: true,
     plugins: [dedupeYjsPlugin, lazyOperationModulesPlugin],
   }),
   Bun.build({
@@ -109,6 +113,25 @@ for (const file of [
   await cp(new URL(file, root), new URL(file, output));
 }
 await cp(new URL("assets/icon.svg", root), new URL("assets/icon.svg", output));
+await cp(new URL("src/icon-chunks/", root), new URL("icon-chunks/", output), { recursive: true });
+const packagedIconIndex = JSON.parse(await readFile(new URL("icon-chunks/search-index.json", output)));
+const packagedIconRouting = (await import(new URL("src/icon-chunk-routing.mjs", root))).default;
+for (const [family, names] of Object.entries(packagedIconIndex)) {
+  const chunkNames = new Map();
+  for (const name of names) {
+    const base = name.slice(0, 3).padEnd(3, "_");
+    const length = packagedIconRouting[family]?.[base] ?? 3;
+    const prefix = name.slice(0, length).padEnd(length, "_");
+    if (!chunkNames.has(prefix)) chunkNames.set(prefix, []);
+    chunkNames.get(prefix).push(name);
+  }
+  for (const [prefix, expectedNames] of chunkNames) {
+    const packaged = JSON.parse(await readFile(new URL(`icon-chunks/${family}/${prefix}.json`, output)));
+    for (const name of expectedNames) {
+      if (!Object.hasOwn(packaged, name)) throw new Error(`Packaged icon missing: ${family}:${name}`);
+    }
+  }
+}
 await mkdir(new URL("assets/color/", output), { recursive: true });
 await cp(new URL("assets/color/sRGB2014.icc", root), new URL("assets/color/sRGB2014.icc", output));
 await cp(new URL("operations/", root), new URL("operations/", output), { recursive: true });

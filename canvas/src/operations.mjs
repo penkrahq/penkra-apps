@@ -12,7 +12,7 @@ import {
 import { createBlankDocumentSource } from "./blank-document.mjs";
 import { collectImageFills, materializeDocumentImages } from "./image-materialization.mjs";
 import { loadCanvasImports } from "./canvas-imports.mjs";
-import { searchCanvasIcons } from "./pencil-icon-provider.mjs";
+import { ensurePencilDocumentIconCatalogs, searchCanvasIcons } from "./pencil-icon-provider.mjs";
 import { isSvgAsset, prepareAssetForRendering } from "./document-assets.mjs";
 import { applySvgConversionRequests } from "./svg-vectors.mjs";
 import { createOperationDocumentStore } from "./operation-document-store.mjs";
@@ -23,8 +23,9 @@ if (!runtime?.operations) throw new Error("Canvas operations require the Penkra 
 const api = createCanvasApi(runtime);
 const operationDocuments = createOperationDocumentStore(api);
 
-runtime.operations.handle("icons.search", async ({ query, library, limit }) =>
-  searchCanvasIcons(query, { library, limit }));
+runtime.operations.handle("icons.search", async ({ query, library, limit }) => {
+  return await searchCanvasIcons(query, { library, limit });
+});
 
 runtime.operations.handle("documents.list", async (input = {}) => {
   const items = [];
@@ -177,6 +178,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code, issueD
       : null;
     let beforeInspection = { items: [] };
     if (inspectDocument) {
+      await ensurePencilDocumentIconCatalogs(before);
       const inspectionModel = model ?? createDocumentModel(before);
       try { beforeInspection = inspectDocument(before, listNodes(inspectionModel), 1_000); }
       finally { if (!model) inspectionModel.doc.destroy(); }
@@ -233,6 +235,7 @@ runtime.operations.handle("documents.execute", async ({ documentId, code, issueD
     let existingInspection = [];
     let issues = beforeInspection.issues ?? [];
     if (changedByScript || touchedNodeIds.length > 0) {
+      await ensurePencilDocumentIconCatalogs(execution.document);
       const inspect = inspectDocument ?? (await import("./document-inspection.mjs")).inspectDocument;
       const validationModel = createDocumentModel(execution.document);
       try {

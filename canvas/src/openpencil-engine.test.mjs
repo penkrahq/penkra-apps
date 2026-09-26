@@ -1,6 +1,13 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { ensurePencilIconDefinitions } from "./pencil-icon-provider.mjs";
+
+test.before(async () => ensurePencilIconDefinitions([
+  { library: "Material Symbols Rounded", icon: "progress_activity" },
+  { library: "Material Symbols Rounded", icon: "home" },
+  { library: "phosphor", icon: "spinner-gap" },
+]));
 
 import { computeAllLayouts, computeLayout, fontManager, hydrateCanvasSceneGraphInstances } from "../vendor/open-pencil/engine.source.mjs";
 import { computeDescendantVisualBounds } from "../vendor/open-pencil/engine.source.mjs";

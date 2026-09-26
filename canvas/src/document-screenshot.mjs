@@ -15,6 +15,7 @@ import {
   SkiaRenderer,
 } from "../vendor/open-pencil/engine.source.mjs";
 import { createOpenPencilGraph } from "./openpencil-engine.mjs";
+import { ensurePencilDocumentIconCatalogs } from "./pencil-icon-provider.mjs";
 import { configureCanvasFonts } from "./font-runtime.mjs";
 import { collectPencilDocumentFonts } from "./pencil-resources.mjs";
 
@@ -38,6 +39,7 @@ let canvasKitWasmPath;
 
 export async function takeDocumentScreenshots(document, requests, assets = new Map(), options = {}) {
   if (requests.length === 0) return [];
+  await ensurePencilDocumentIconCatalogs(document);
   configureScreenshotFonts();
   for (const font of collectPencilDocumentFonts(document, assets)) {
     fontManager.registerDocumentFont(font.family, font.bytes);
@@ -158,6 +160,7 @@ async function withPreparedRenderer(graph, pageId, nodeIds, visit) {
 // Use the same fonts, line breaking, shaping and half-leading as the visible
 // Canvas renderer. Consumers receive plain values, never live WASM objects.
 export async function measureDocumentText(document, nodeIds, assets = new Map()) {
+  await ensurePencilDocumentIconCatalogs(document);
   configureScreenshotFonts();
   for (const font of collectPencilDocumentFonts(document, assets)) {
     fontManager.registerDocumentFont(font.family, font.bytes);

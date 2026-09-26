@@ -2,6 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { lowerCanvasModelForOpenPencil, prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
+import { ensurePencilIconDefinitions } from "./pencil-icon-provider.mjs";
+
+test.before(async () => ensurePencilIconDefinitions([
+  { library: "Material Symbols Outlined", icon: "auto_awesome" },
+  { library: "Material Symbols Rounded", icon: "chat_bubble" },
+  { library: "phosphor", icon: "push-pin-fill" },
+]));
 
 test("variant instances lower to exact authored layouts, including nested instances", () => {
   const source = { axes: {}, variables: {}, children: [

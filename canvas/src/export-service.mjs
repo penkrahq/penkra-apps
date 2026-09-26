@@ -10,8 +10,10 @@ import { exportCompose, exportSwiftUI } from "./exporters/mobile.mjs";
 import { exportSvg } from "./exporters/svg.mjs";
 import { measureDocumentText, takeDocumentScreenshots } from "./document-screenshot.mjs";
 import { resolveCanvasDocument } from "./canvas-resolver.mjs";
+import { ensurePencilDocumentIconCatalogs } from "./pencil-icon-provider.mjs";
 
 export async function exportDocument(document, request, options = {}) {
+  await ensureDocumentAndImportedIcons(document, request.imports);
   const measuredDocument = resolveCanvasDocument(document, {
     modes: request.modes,
     bindings: request.bindings,
@@ -71,6 +73,7 @@ function validateExtractionRequest(request) {
 }
 
 export async function extractDocumentNodes(document, request, options = {}) {
+  await ensureDocumentAndImportedIcons(document, options.imports);
   if (!Array.isArray(request.node) || request.node.length === 0 || request.node.some((id) => typeof id !== "string" || !id)) throw new Error("Extraction needs a non-empty node array.");
   validateExtractionRequest(request);
   if (typeof request.destination === "string" && request.destination.endsWith("/")) {
@@ -107,7 +110,15 @@ export async function extractDocumentNodes(document, request, options = {}) {
   return { artifacts: [request.destination], format: "pdf", units: request.node.length, consequences: ir.consequences };
 }
 
+async function ensureDocumentAndImportedIcons(document, imports = {}) {
+  await ensurePencilDocumentIconCatalogs(document);
+  for (const imported of Object.values(imports)) {
+    if (imported?.document) await ensureDocumentAndImportedIcons(imported.document, imported.imports);
+  }
+}
+
 export async function extractDocumentNode(document, request, options = {}) {
+  await ensureDocumentAndImportedIcons(document, options.imports);
   if (typeof request.nodeId !== "string" || !request.nodeId) throw new Error("Extraction needs one nodeId.");
   validateExtractionRequest(request);
   if (typeof request.destination === "string" && request.destination.endsWith("/")) return extractDocumentNodes(document, { ...request, node: [request.nodeId] }, options);
