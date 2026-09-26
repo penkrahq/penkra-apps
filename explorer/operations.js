@@ -22,10 +22,11 @@ export async function openResource(input, context) {
     },
   };
   if (context.tab) {
-    await context.tab.navigate(navigation);
+    await context.tab.invoke({ operation: "resources.open", input: navigation.state });
     return { tabId: context.tab.id };
   }
-  const tab = await context.tabs.open(navigation);
+  const tab = await context.tabs.open({ route: "/" });
+  await tab.invoke({ operation: "resources.open", input: navigation.state });
   return { tabId: tab.id };
 }
 
@@ -75,11 +76,11 @@ runtime.controller.handle("explorer.writeText", async ({ rootPath, relativePath,
   if (Buffer.byteLength(source) > 16 * 1024 * 1024) {
     throw new Error("Text file exceeds the 16 MB limit.");
   }
-  await FS.promises.writeFile(await resolveWritable(rootPath, relativePath), source, "utf8");
+  await FS.promises.writeFile(resolveWritable(rootPath, relativePath), source, "utf8");
 });
 
 runtime.controller.handle("explorer.createDirectory", async ({ rootPath, relativePath }) => {
-  const path = await resolveWritable(rootPath, relativePath);
+  const path = resolveWritable(rootPath, relativePath);
   await FS.promises.mkdir(path);
   return entry(rootPath, path);
 });
@@ -117,9 +118,9 @@ function requireAbsolutePath(value) {
   return Path.resolve(value);
 }
 
-function candidateWithin(root, relativePath = "") {
-  if (typeof relativePath !== "string") throw new Error("Explorer relative path is invalid.");
-  const candidate = Path.resolve(root, relativePath);
+function resolveWritable(rootPath, relativePath = "") {
+  const root = requireAbsolutePath(rootPath);
+  const candidate = Path.resolve(root, typeof relativePath === "string" ? relativePath : "");
   if (candidate !== root && !candidate.startsWith(`${root}${Path.sep}`)) {
     throw new Error("Explorer path escapes its root.");
   }
@@ -128,32 +129,11 @@ function candidateWithin(root, relativePath = "") {
 
 async function resolveExisting(rootPath, relativePath = "") {
   const root = await FS.promises.realpath(requireAbsolutePath(rootPath));
-  const candidate = await FS.promises.realpath(candidateWithin(root, relativePath));
+  const candidate = await FS.promises.realpath(resolveWritable(root, relativePath));
   if (candidate !== root && !candidate.startsWith(`${root}${Path.sep}`)) {
     throw new Error("Explorer path escapes its root.");
   }
   return candidate;
-}
-
-async function resolveWritable(rootPath, relativePath = "") {
-  const root = await FS.promises.realpath(requireAbsolutePath(rootPath));
-  const unresolved = candidateWithin(root, relativePath);
-  if (unresolved === root) return root;
-  const parent = await FS.promises.realpath(Path.dirname(unresolved));
-  if (parent !== root && !parent.startsWith(`${root}${Path.sep}`)) {
-    throw new Error("Explorer path escapes its root.");
-  }
-  const candidate = Path.join(parent, Path.basename(unresolved));
-  try {
-    const existing = await FS.promises.realpath(candidate);
-    if (existing !== root && !existing.startsWith(`${root}${Path.sep}`)) {
-      throw new Error("Explorer path escapes its root.");
-    }
-    return existing;
-  } catch (error) {
-    if (error?.code === "ENOENT") return candidate;
-    throw error;
-  }
 }
 
 async function entry(rootPath, path) {
