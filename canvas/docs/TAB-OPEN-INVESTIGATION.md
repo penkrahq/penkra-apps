@@ -97,8 +97,8 @@ concurrent loads and subsequent uses. Editor-only engine, CanvasKit, Yjs, and
 QuickJS code is behind a document-route dynamic import. No host deadline was
 changed.
 
-The packaged library entry and its three *static* imports total **161,962 B
-raw, 46,275 B gzip, 39,998 B Brotli**, versus the baseline `app.js` alone at
+The packaged library entry and its three *static* imports total **162,155 B
+raw, 46,360 B gzip, 40,169 B Brotli**, versus the baseline `app.js` alone at
 15,539,268 B raw, 3,067,202 B gzip, 2,743,136 B Brotli. The icon package
 contains 24,395 Material names in 859 files, 9,198 Phosphor names in 769 files,
 and 286 Feather names in 166 files. The largest rendering chunk is 32,718 B.
@@ -153,6 +153,8 @@ refinement; all 13 icon-provider and icon-chunk tests passed afterward,
 including catalog-to-file coverage, picker search, a real Yjs remote update,
 a script insertion, ref overrides, unknown names, offline local-file loading,
 and 100-icon preparation.
+All 141 affected renderer, screenshot, and icon tests passed on the final
+source, and the final packaged build passed its host smoke test.
 Canvas currently exposes icon selection through `icons.search`; it has no
 in-editor graphical icon picker, so the picker-selection test exercises that
 search API and the resulting first-frame render, not a UI click. A graphical
