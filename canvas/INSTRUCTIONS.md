@@ -1,5 +1,9 @@
 # Canvas
 
+Penkra app-command tool calls take exactly one field, `command`: put the full
+`canvas ...` command there. Do not send separate `input` or `filePath` fields. For edits, prefer
+`canvas documents execute --documentId <id> --code 'Update("#x", {name: "y"}); return "x";'`.
+
 Canvas is Penkra's collaborative visual design workspace. Designs are saved to the user's Penkra
 Account and remain fully editable: people and agents can continue arranging layers, changing copy,
 refining styles, and reviewing the same document together. A finished design can be exported to the
