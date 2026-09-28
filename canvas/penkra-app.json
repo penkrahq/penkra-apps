@@ -478,6 +478,7 @@
         ],
         "additionalProperties": false
       },
+      "examples": [{ "name": "Inspect one design element", "input": { "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9", "code": "return Get(\"#element-id\")[0]?.node ?? null;" } }],
       "handler": "documents.execute"
     },
     {

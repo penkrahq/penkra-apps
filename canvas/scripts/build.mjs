@@ -11,25 +11,12 @@ const developmentBuildWithUnverifiedCapabilities =
   process.env.CANVAS_DEV_BUILD_WITH_UNVERIFIED_CAPABILITIES === "1";
 if (!developmentBuildWithUnverifiedCapabilities) assertAllCapabilityTables();
 const yjsEntry = new URL("node_modules/yjs/dist/yjs.mjs", root).pathname;
-const lazyOperationModules = ["document-inspection", "script-runtime", "document-screenshot"];
 const dedupeYjsPlugin = {
   name: "dedupe-yjs",
   setup(build) {
     build.onResolve({ filter: /^yjs$/ }, () => ({ path: yjsEntry }));
   },
 };
-const lazyOperationModulesPlugin = {
-  name: "lazy-operation-modules",
-  setup(build) {
-    for (const module of lazyOperationModules) {
-      build.onResolve({ filter: new RegExp(`^\\./${module}\\.mjs$`) }, (args) => ({
-        path: args.path,
-        external: true,
-      }));
-    }
-  },
-};
-
 await rm(output, { recursive: true, force: true });
 await mkdir(new URL("assets/", output), { recursive: true });
 await mkdir(new URL("licenses/", output), { recursive: true });
@@ -55,26 +42,16 @@ const builds = await Promise.all([
     plugins: [dedupeYjsPlugin],
   }),
   Bun.build({
-    entrypoints: [new URL("src/operations.mjs", root).pathname],
-    outdir: output.pathname,
-    target: "node",
-    format: "esm",
-    naming: "operations.js",
-    minify: true,
-    splitting: true,
-    plugins: [dedupeYjsPlugin, lazyOperationModulesPlugin],
-  }),
-  Bun.build({
     entrypoints: [
+      new URL("src/operations.mjs", root).pathname,
       new URL("src/document-inspection.mjs", root).pathname,
       new URL("src/script-runtime.mjs", root).pathname,
       new URL("src/document-screenshot.mjs", root).pathname,
     ],
     outdir: output.pathname,
-    // These lazy operation modules execute in Penkra's dedicated Node
-    // controller, not in the Canvas renderer. A browser target makes WASM
-    // dependencies choose fetch-based loaders that cannot start after the App
-    // has been packaged and installed.
+    // All operation entrypoints share one module graph and one icon-chunk cache.
+    // Bun still keeps the dynamic imports lazy. The Node target is required for
+    // WASM loaders in Penkra's packaged App controller.
     target: "node",
     format: "esm",
     naming: "[name].js",
@@ -86,21 +63,6 @@ const builds = await Promise.all([
 for (const build of builds) {
   if (!build.success) throw new AggregateError(build.logs, "Canvas bundle failed.");
 }
-
-const operationsBundleUrl = new URL("operations.js", output);
-let operationsBundle = await readFile(operationsBundleUrl, "utf8");
-for (const module of lazyOperationModules) {
-  const sourceSpecifier = `./${module}.mjs`;
-  const packagedSpecifier = `./${module}.js`;
-  if (!operationsBundle.includes(sourceSpecifier)) {
-    throw new Error(`Canvas operations bundle is missing the expected ${sourceSpecifier} import.`);
-  }
-  operationsBundle = operationsBundle.replaceAll(sourceSpecifier, packagedSpecifier);
-  if (!operationsBundle.includes(packagedSpecifier)) {
-    throw new Error(`Canvas operations bundle did not retain the packaged ${packagedSpecifier} import.`);
-  }
-}
-await writeFile(operationsBundleUrl, operationsBundle);
 await writeFile(new URL("package.json", output), '{"type":"module"}\n');
 
 for (const file of [
@@ -227,6 +189,61 @@ await writeFile(new URL("build-info.json", output), `${JSON.stringify(buildInfo,
 // Exercise the installed shape, not only the source module. This catches
 // target/asset regressions such as a packaged controller bundle selecting a
 // browser-only WASM loader while all source-level tests remain green.
+const iconDocument = {
+  version: "2.17",
+  children: [{
+    id: "build-icon-frame",
+    type: "frame",
+    width: 100,
+    height: 100,
+    children: [{
+      id: "build-icon",
+      type: "icon",
+      library: "phosphor",
+      icon: "apple-logo-fill",
+      width: 20,
+      height: 20,
+      fill: "#000000",
+    }],
+  }],
+};
+const handlers = new Map();
+globalThis.penkra = {
+  account: {
+    async request(request) {
+      if (request.path === "/projects/build-icon-document?chunked=auto") {
+        return {
+          status: 200,
+          headers: {},
+          body: new TextEncoder().encode(JSON.stringify({
+            id: "build-icon-document",
+            title: "Icon smoke",
+            access: "owner",
+            ownerAccountId: "build-account",
+            snapshot: { throughSequence: 1, projection: iconDocument },
+            updates: [],
+          })),
+        };
+      }
+      throw new Error(`Unexpected packaged Canvas smoke request ${request.method} ${request.path}`);
+    },
+    subscribe() {},
+  },
+  operations: { handle: (name, handler) => handlers.set(name, handler) },
+};
+await import(new URL("operations.js", output));
+const packagedIconRead = await handlers.get("documents.execute")({
+  documentId: "build-icon-document",
+  code: 'return Get("#build-icon")[0].bounds;',
+});
+if (
+  packagedIconRead?.changed !== false ||
+  !packagedIconRead?.issueSummary?.inspected ||
+  !Number.isFinite(packagedIconRead?.result?.width)
+) {
+  throw new Error("Packaged Canvas icon inspection did not resolve bounds.");
+}
+
 const { executeCanvasScript } = await import(new URL("script-runtime.js", output));
 const packagedRuntimeSmoke = await executeCanvasScript(
   { children: [] },
@@ -236,10 +253,6 @@ if (packagedRuntimeSmoke?.result !== 0) {
   throw new Error("Packaged Canvas script runtime smoke test returned an unexpected result.");
 }
 
-const packagedScreenshotSource = await readFile(new URL("document-screenshot.js", output), "utf8");
-if (!packagedScreenshotSource.includes("./canvaskit.wasm")) {
-  throw new Error("Packaged Canvas screenshots do not resolve CanvasKit from the installed App.");
-}
 const { takeDocumentScreenshots } = await import(new URL("document-screenshot.js", output));
 const [packagedScreenshotSmoke] = await takeDocumentScreenshots(
   {
