@@ -1,5 +1,6 @@
 node_modules/
 dist/
+/canvas/src/icon-chunks/
 /build/
 .DS_Store
 *.local

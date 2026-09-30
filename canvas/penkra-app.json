@@ -3,7 +3,7 @@
   "slug": "canvas",
   "name": "Canvas",
   "summary": "Create, edit, review, and share Account-owned collaborative design documents.",
-  "version": "0.3.8",
+  "version": "0.3.13",
   "compatibility": {
     "penkra": ">=0.12.6"
   },
@@ -478,50 +478,7 @@
         ],
         "additionalProperties": false
       },
-      "examples": [
-        {
-          "name": "Inspect frames with resolved bounds and problems",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "return Get(\"type:frame\", ({ node, parent, bounds, problems }) => Print({ id: node.id, name: node.name ?? null, parentId: parent?.id ?? null, bounds, problems }), { limit: 100 });"
-          }
-        },
-        {
-          "name": "Update one exact frame name",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Update(\"#frame-id\", { name: \"Updated frame name\" });\nreturn \"frame-id\";"
-          }
-        },
-        {
-          "name": "Insert one layout container",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Insert(null, { id: \"content-frame\", type: \"frame\", name: \"Content frame\", x: 0, y: 0, width: 800, height: 600, layout: \"vertical\", padding: 24, gap: 16, fill: \"#ffffff\", children: [] });\nreturn \"content-frame\";"
-          }
-        },
-        {
-          "name": "Generate an image for an exact target",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "G(\"#image-target\", \"ai\", \"Specific subject and setting, intentional composition, defined visual style and palette, clear lighting, useful negative space, exact crop, no text\");\nreturn \"image-target\";"
-          }
-        },
-        {
-          "name": "Insert a standard library icon",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "Insert(\"#icon-container\", { id: \"help-icon\", type: \"icon\", library: \"lucide\", icon: \"circle-help\", width: 20, height: 20, fill: \"#20211d\" });\nreturn \"help-icon\";"
-          }
-        },
-        {
-          "name": "Replace a starter frame and visually verify it",
-          "input": {
-            "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9",
-            "code": "const starter = Get(\"type:frame\")[0];\nconst frame = Replace(`#${starter.node.id}`, { id: \"content-frame\", type: \"frame\", name: \"Content frame\", x: 0, y: 0, width: 800, height: 600, layout: \"none\", fill: \"#ffffff\", children: [] });\nTakeScreenshot([frame]);\nreturn frame;"
-          }
-        }
-      ],
+      "examples": [{ "name": "Inspect one design element", "input": { "documentId": "092d8d0f-8a53-4e95-b9ff-7ec6e222ddf9", "code": "return Get(\"#element-id\")[0]?.node ?? null;" } }],
       "handler": "documents.execute"
     },
     {

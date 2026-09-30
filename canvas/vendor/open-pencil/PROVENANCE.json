@@ -1,7 +1,7 @@
 {
   "repository": "https://github.com/open-pencil/open-pencil",
   "commit": "4a5e7d557064d941fbac88bd492586db5257ff5f",
-  "sourceEngineSha256": "b4df44c3ab4fb6e28ff21febf0724122299ff17eae5c6c18014eba3f21e9c93d",
+  "sourceEngineSha256": "f09c63be41f3207e6fa66b1e71f2ed018a48bc995ac48abf211924d834414390",
   "localPatches": [
     "Map Pencil path vertices and tangents through an explicit viewBox before rendering.",
     "Apply Pencil color alpha exactly once in CanvasKit while preserving combined alpha in SVG export.",
@@ -10,6 +10,7 @@
     "Keep fill-less Pencil frames transparent instead of inheriting the scene graph's opaque default.",
     "Interpret Kiwi schemas without dynamic JavaScript evaluation so the engine obeys the App CSP.",
     "Render large scenes through cached descendant bounds and bounded subpixel detail culling instead of walking or recording every expanded node at overview zoom.",
+    "Drop graph-scoped vector geometry and stroke-outline caches when an editor document graph is replaced, so reused node IDs cannot retain obsolete paths.",
     "Report first-render, font-loading, post-font layout, and ready-render timings through the Canvas lifecycle callback.",
     "Allow Pencil surfaces with authoritative stored geometry to skip the expensive post-font whole-graph layout, matching the upstream Canvas lifecycle.",
     "Adapt an already-materialized Canvas document into the scene graph without a JSON round trip.",

@@ -8,8 +8,10 @@ function clearRetainedSceneState(r: SkiaRenderer): void {
   r.sceneBacking = null
   r.sceneBackingBuild?.surface.delete()
   r.sceneBackingBuild = null
+  r.sceneTileCache.clear()
 }
 
+// eslint-disable-next-line complexity -- disposal must cover every owned CanvasKit resource
 export function destroyRenderer(r: SkiaRenderer): void {
   if (r.destroyed) return
   r.destroyed = true

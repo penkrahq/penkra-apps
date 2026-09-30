@@ -1,7 +1,44 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { pencilIconDefinition, searchCanvasIcons } from "./pencil-icon-provider.mjs";
+import {
+  ensurePencilIconDefinitions,
+  pencilIconDefinition,
+  searchCanvasIcons,
+} from "./pencil-icon-provider.mjs";
+
+test("loads only document-needed icon chunks, once, before synchronous rendering", async () => {
+  const lazy = await import("./pencil-icon-provider.mjs?lazy-test");
+  const document = { children: [
+    { id: "component", type: "frame", children: [
+      { id: "glyph", type: "icon", library: "Material Symbols Rounded", icon: "home" },
+    ] },
+    { id: "instance", type: "ref", descendants: {
+      "component/glyph": { library: "phosphor", icon: "push-pin" },
+    } },
+  ] };
+  assert.deepEqual(lazy.missingPencilIconCatalogs({ children: [] }), []);
+  assert.deepEqual(lazy.missingPencilIconCatalogs(document), ["material/hom", "phosphor/pus"]);
+  assert.throws(() => lazy.pencilIconDefinition("phosphor", "push-pin"), /not loaded/u);
+  await Promise.all([lazy.ensurePencilDocumentIconCatalogs(document), lazy.ensurePencilDocumentIconCatalogs(document)]);
+  assert.deepEqual(lazy.missingPencilIconCatalogs(document), []);
+  assert.ok(lazy.pencilIconDefinition("phosphor", "push-pin"));
+});
+
+test.before(async () => {
+  await ensurePencilIconDefinitions([
+    { library: "feather", icon: "arrow-left" },
+    ...["Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp"]
+      .map((library) => ({ library, icon: "arrow-back" })),
+    { library: "Material Symbols Rounded", icon: "home" },
+    { library: "Material Symbols Outlined", icon: "auto_awesome" },
+    { library: "Material Symbols Rounded", icon: "chat_bubble" },
+    ...["push-pin-fill", "push-pin-duotone", "push-pin"].map((icon) => ({ library: "phosphor", icon })),
+    ...[100, 300, 700].map((weight) => ({ library: "phosphor", icon: "push-pin", weight })),
+    ...["Material Symbols Outlined", "Material Symbols Rounded", "Material Symbols Sharp"]
+      .map((library) => ({ library, icon: "progress_activity" })),
+  ]);
+});
 
 test("every Pencil 2.17 icon library resolves through a catalog provider", () => {
   const cases = [
@@ -55,8 +92,8 @@ test("Material Symbols canonical ligature names resolve through Iconify catalog 
   assert.equal(rounded.fontFamily, "Material Symbols Rounded");
 });
 
-test("icon search returns exact identifiers accepted by every matching provider", () => {
-  const result = searchCanvasIcons("progress activity", { limit: 10 });
+test("icon search returns exact identifiers accepted by every matching provider", async () => {
+  const result = await searchCanvasIcons("progress activity", { limit: 10 });
   assert.equal(result.total, 3);
   assert.equal(result.truncated, false);
   assert.deepEqual(result.items.map(({ library }) => library), [

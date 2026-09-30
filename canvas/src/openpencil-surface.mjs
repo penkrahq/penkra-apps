@@ -15,6 +15,7 @@ import {
   findPenNode,
   isOpenPencilEditableNode,
   refreshOpenPencilEditor,
+  refreshOpenPencilImageAssets,
   sceneEventToPenMutations,
   sceneNodePropertySnapshot,
   sceneNodeInsertionMutation,
@@ -350,6 +351,13 @@ export function mountOpenPencilSurface(element, document, callbacks = {}) {
       } finally {
         refreshingDocument = false;
       }
+    },
+    refreshImageAssets() {
+      return mutationBoundary.runRendererSync(() => {
+        const changed = refreshOpenPencilImageAssets(editor, renderDocument, callbacks.assets);
+        if (changed > 0) sceneValues = captureSceneValues(editor);
+        return changed;
+      });
     },
     setVisible(nextVisible) {
       visible = nextVisible;

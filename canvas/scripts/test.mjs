@@ -1,6 +1,9 @@
 import { run } from "node:test";
 import { spec } from "node:test/reporters";
 import { finished } from "node:stream/promises";
+import { generateIconChunks } from "./generate-icon-chunks.mjs";
+
+await generateIconChunks();
 
 // Own the exit status: a cancelled test is an incomplete gate, never a pass.
 const files = process.argv.slice(2);

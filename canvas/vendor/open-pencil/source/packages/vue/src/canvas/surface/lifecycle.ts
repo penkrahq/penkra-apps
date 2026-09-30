@@ -103,7 +103,11 @@ export function createCanvasSurfaceManager({
     }
     renderLoop.markRendered()
     clearSceneBackingRenderTimer()
-    if (options?.layer === 'scene' && state.renderer.sceneBackingNeedsCrispRender) {
+    if (
+      options?.layer === 'scene' &&
+      !state.renderer.largeSceneDetailCulling &&
+      state.renderer.sceneBackingNeedsCrispRender
+    ) {
       const delay = Math.max(0, state.renderer.sceneBackingPreviewUntil - performance.now())
       sceneBackingRenderTimer = setTimeout(() => renderLoop.markDirty(), delay)
     }

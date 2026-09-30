@@ -8,7 +8,8 @@ type GraphEventOptions = {
   getGraph: () => SceneGraph
   getRenderers: () => Iterable<SkiaRenderer>
   scheduleComponentSync: (nodeId: string) => void
-  requestRender: () => void
+  isDerivedGraphMutation: () => boolean
+  requestRender: (preserveSceneTiles?: boolean) => void
   emitEditorEvent: <K extends EmittedGraphEventName>(
     event: K,
     ...args: Parameters<SceneGraphEvents[K]>
@@ -65,9 +66,14 @@ export function createGraphEventSubscription(options: GraphEventOptions) {
 
   function onNodeUpdated(id: string, changes: Partial<SceneNode>) {
     invalidateRenderersForChange(options.getRenderers(), id, changes, true)
-    options.emitEditorEvent('node:updated', id, changes)
-    options.scheduleComponentSync(id)
-    options.requestRender()
+    if (!options.isDerivedGraphMutation()) {
+      for (const renderer of options.getRenderers()) {
+        renderer.invalidateSceneTilesForNode?.(options.getGraph(), id, changes)
+      }
+      options.emitEditorEvent('node:updated', id, changes)
+      options.scheduleComponentSync(id)
+      options.requestRender(true)
+    }
   }
 
   function onNodePreviewUpdated(id: string, changes: Partial<SceneNode>) {
@@ -76,8 +82,10 @@ export function createGraphEventSubscription(options: GraphEventOptions) {
   }
 
   function onNodeStructureChanged(nodeId: string) {
-    options.scheduleComponentSync(nodeId)
-    options.requestRender()
+    if (!options.isDerivedGraphMutation()) {
+      options.scheduleComponentSync(nodeId)
+      options.requestRender()
+    }
   }
 
   function subscribeToGraph() {
@@ -86,19 +94,23 @@ export function createGraphEventSubscription(options: GraphEventOptions) {
       updated: onNodeUpdated,
       previewUpdated: onNodePreviewUpdated,
       created: (node) => {
-        options.emitEditorEvent('node:created', node)
+        if (!options.isDerivedGraphMutation()) options.emitEditorEvent('node:created', node)
         onNodeStructureChanged(node.id)
       },
       deleted: (id) => {
-        options.emitEditorEvent('node:deleted', id)
+        if (!options.isDerivedGraphMutation()) options.emitEditorEvent('node:deleted', id)
         onNodeStructureChanged(id)
       },
       reparented: (nodeId, oldParentId, newParentId) => {
-        options.emitEditorEvent('node:reparented', nodeId, oldParentId, newParentId)
+        if (!options.isDerivedGraphMutation()) {
+          options.emitEditorEvent('node:reparented', nodeId, oldParentId, newParentId)
+        }
         onNodeStructureChanged(nodeId)
       },
       reordered: (nodeId, parentId, index) => {
-        options.emitEditorEvent('node:reordered', nodeId, parentId, index)
+        if (!options.isDerivedGraphMutation()) {
+          options.emitEditorEvent('node:reordered', nodeId, parentId, index)
+        }
         onNodeStructureChanged(nodeId)
       }
     })

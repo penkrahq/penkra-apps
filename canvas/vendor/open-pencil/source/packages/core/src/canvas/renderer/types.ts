@@ -4,6 +4,9 @@ import type { SnapGuide } from '@open-pencil/scene-graph/snap'
 
 import type { TextEditor } from '#core/text/editor'
 
+export const MAX_RETAINED_SCENE_NODES = 10_000
+export type RenderLayer = 'full' | 'scene' | 'overlays'
+
 export interface RulerTheme {
   background: Color
   tick: Color

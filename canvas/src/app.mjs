@@ -12,6 +12,11 @@ import { createBlankDocumentSource } from "./blank-document.mjs";
 import { createDocumentCollectionLifecycle } from "./document-collection-lifecycle.mjs";
 import { createDocumentAssetCache } from "./document-asset-cache.mjs";
 import { hasUnloadedDocumentImages, hydrateDocumentAssets } from "./document-assets.mjs";
+import {
+  collectPencilDocumentFonts,
+  collectPencilResourceReferences,
+  resolvePencilResourcePath,
+} from "./pencil-resources.mjs";
 import { migrateLegacyOfflineCache } from "./legacy-offline-cache.mjs";
 import { createPendingUpdateQueue } from "./pending-update-queue.mjs";
 import { createSnapshotMaintenance } from "./snapshot-maintenance.mjs";
@@ -22,17 +27,6 @@ import { COLLECTION_SORT_OPTIONS, searchableDocumentText, sortCollection } from 
 import { trashSummary } from "./trash-summary.mjs";
 import { createVisibleDocumentRestore } from "./visible-document-restore.mjs";
 import { createTabPresentation } from "./tab-presentation.mjs";
-import {
-  analyzeOpenPencilCompatibility,
-  isOpenPencilEditableNode,
-  penPropertyToSceneChanges,
-} from "./openpencil-engine.mjs";
-import {
-  mountOpenPencilSurface,
-  prepareOpenPencilEngine,
-  rasterizeOpenPencilSvgAsset,
-} from "./openpencil-surface.mjs";
-import { prepareOpenPencilRenderDocument } from "./openpencil-render-document.mjs";
 import { availableVariantValues, componentDefinitions, variantSelection } from "./component-variants.mjs";
 import {
   isPencilAuthorableNode,
@@ -46,7 +40,6 @@ import {
   visibleCanvasSceneLayers,
 } from "./scene-layer-tree.mjs";
 import { createPerformanceMonitor } from "./performance-monitor.mjs";
-import { configureCanvasFonts } from "./font-runtime.mjs";
 import {
   copyTextToClipboard,
   formatCanvasNodeReference,
@@ -55,7 +48,6 @@ import {
 } from "./node-reference.mjs";
 import { applyMutationsToProjection, compactDeletionMutations } from "./document-projection.mjs";
 import { beginSelectedTextEditing } from "./text-editing.mjs";
-import { convertSvgAssetToCanvasNode, inspectSvgVectorCandidate } from "./svg-vectors.mjs";
 import {
   ACCESS_REMOVED_HEADING,
   ACCESS_REMOVED_MESSAGE,
@@ -76,23 +68,39 @@ import {
   realtimeStateAfterSignal,
   visiblePresenceCount,
 } from "./collaboration-status.mjs";
-import {
-  ENGINE_ORIGIN,
-  LOCAL_ORIGIN,
-  REMOTE_ORIGIN,
-  Y,
-  applyRemoteUpdate,
-  applyIncrementalDocumentPayload,
-  createDocumentModel,
-  createUndoManager,
-  encodeState,
-  encodeUpdate,
-  listDocumentNodes,
-  materialize,
-  mutate,
-  reconcileDocumentPayload,
-  restoreDocumentModel,
-} from "./document-model.mjs";
+let ENGINE_ORIGIN, LOCAL_ORIGIN, REMOTE_ORIGIN, Y, applyRemoteUpdate,
+  applyIncrementalDocumentPayload, createDocumentModel, createUndoManager,
+  encodeState, encodeUpdate, listDocumentNodes, materialize, mutate,
+  reconcileDocumentPayload, restoreDocumentModel, analyzeOpenPencilCompatibility,
+  isOpenPencilEditableNode, penPropertyToSceneChanges, mountOpenPencilSurface,
+  prepareOpenPencilEngine, rasterizeOpenPencilSvgAsset, prepareOpenPencilRenderDocument,
+  configureCanvasFonts, convertSvgAssetToCanvasNode, inspectSvgVectorCandidate,
+  ensurePencilDocumentIconCatalogs;
+let editorRuntimePromise;
+let fontsConfigured = false;
+let iconCatalogWait = null;
+let checkedIconDocument = null;
+
+async function loadEditorRuntime() {
+  editorRuntimePromise ??= import("./editor-runtime.mjs").catch((error) => {
+    editorRuntimePromise = null;
+    throw error;
+  });
+  ({
+    ENGINE_ORIGIN, LOCAL_ORIGIN, REMOTE_ORIGIN, Y, applyRemoteUpdate,
+    applyIncrementalDocumentPayload, createDocumentModel, createUndoManager,
+    encodeState, encodeUpdate, listDocumentNodes, materialize, mutate,
+    reconcileDocumentPayload, restoreDocumentModel, analyzeOpenPencilCompatibility,
+    isOpenPencilEditableNode, penPropertyToSceneChanges, mountOpenPencilSurface,
+    prepareOpenPencilEngine, rasterizeOpenPencilSvgAsset, prepareOpenPencilRenderDocument,
+    configureCanvasFonts, convertSvgAssetToCanvasNode, inspectSvgVectorCandidate,
+    ensurePencilDocumentIconCatalogs,
+  } = await editorRuntimePromise);
+  if (!fontsConfigured) {
+    configureCanvasFonts(runtime, { performanceMonitor });
+    fontsConfigured = true;
+  }
+}
 
 const runtime = globalThis.penkra;
 const root = document.querySelector("#app");
@@ -109,7 +117,6 @@ const tabPresentation = typeof runtime.tab.setPresentation === "function"
   && typeof runtime.tab.resetPresentation === "function"
   ? createTabPresentation(runtime.tab)
   : null;
-configureCanvasFonts(runtime, { performanceMonitor });
 const state = {
   route: "library",
   libraryFilter: "recent",
@@ -878,6 +885,7 @@ async function navigateToFolder(folderId) {
 }
 
 async function createBlankDocument(title = "Untitled", module = "generic", destinationFolderId) {
+  await loadEditorRuntime();
   const source = createBlankDocumentSource({ module });
   const model = createDocumentModel(source);
   try {
@@ -915,6 +923,8 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
   state.error = null;
   render();
   try {
+    await loadEditorRuntime();
+    if (!isCurrentRequest()) return;
     state.enginePreparation = performanceMonitor.measureAsync(
       "engine.canvaskit-ready",
       () => prepareOpenPencilEngine(),
@@ -924,19 +934,9 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       (error) => ({ error }),
     );
     const cachedAssets = documentAssetCache.take(documentId);
-    const assetHydrationTask = performanceMonitor.measureAsync(
-      "document.assets",
-      async () => {
-        const assetDescriptors = await api.listAssets(documentId);
-        return hydrateDocumentAssets(api, documentId, assetDescriptors, cachedAssets, {
-          rasterizeSvg: rasterizeOpenPencilSvgAsset,
-        });
-      },
-      { documentId },
-    ).then(
-      (value) => ({ value, error: null }),
-      (error) => ({ value: null, error }),
-    );
+    // Cached assets are immediately usable. Network and SVG preparation must
+    // not hold the document model or editor behind the slowest image.
+    state.assets = cachedAssets;
     const payload = await performanceMonitor.measureAsync(
       "document.fetch",
       () => api.getDocument(documentId, {
@@ -958,18 +958,6 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       { documentId },
     );
     if (!isCurrentRequest()) return;
-    const assetHydrationResult = await assetHydrationTask;
-    if (assetHydrationResult.error) throw assetHydrationResult.error;
-    const assetHydration = assetHydrationResult.value;
-    if (!isCurrentRequest()) return;
-    documentAssetCache.remember(documentId, assetHydration.assets);
-    state.assets = assetHydration.assets;
-    for (const failure of assetHydration.failures) {
-      console.warn(
-        `Canvas could not load document asset ${failure.descriptor.path}.`,
-        failure.error,
-      );
-    }
     state.document = {
       ...payload,
       module: payload.snapshot?.source?.module
@@ -1015,6 +1003,28 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
       applyRemoteUpdate(state.model, item.update);
       state.localUpdateSequences.set(item.clientUpdateId, null);
     }
+    const documentFontPaths = (currentMaterializedDocument().fonts ?? [])
+      .map((font) => resolvePencilResourcePath("", font.url));
+    if (documentFontPaths.some((path) => !state.assets.has(path))) {
+      const descriptors = await api.listAssets(documentId);
+      if (!isCurrentRequest()) return;
+      const required = new Set(documentFontPaths);
+      const fonts = await hydrateDocumentAssets(
+        api, documentId, descriptors.filter((item) => required.has(item.path)), new Map(),
+      );
+      for (const [path, asset] of fonts.assets) state.assets.set(path, asset);
+      // Font metrics affect layout, so these resources must be present before
+      // mounting the editor. Images can arrive after its first paint.
+      collectPencilDocumentFonts(currentMaterializedDocument(), state.assets);
+    }
+    if (!isCurrentRequest()) return;
+    // Icon definitions are synchronous during graph construction. Resolve
+    // the effective names and preload only their local chunks before the
+    // first editor frame.
+    const openingIconDocument = currentMaterializedDocument();
+    await ensurePencilDocumentIconCatalogs(openingIconDocument);
+    if (!isCurrentRequest()) return;
+    checkedIconDocument = openingIconDocument;
     state.undo = createUndoManager(state.model);
     state.lastSequence = Math.max(
       payload.snapshot.throughSequence,
@@ -1102,6 +1112,32 @@ async function openDocument(documentId, isCurrentRequest = () => true) {
     state.loading = false;
     setSync("saved", "Saved");
     render();
+    // Paint the model before starting potentially dozens of image requests.
+    // Otherwise those reads compete with the snapshot and block cold open.
+    void performanceMonitor.measureAsync(
+      "document.assets",
+      async () => {
+        const assetDescriptors = await api.listAssets(documentId);
+        return hydrateDocumentAssets(api, documentId, assetDescriptors, cachedAssets, {
+          rasterizeSvg: rasterizeOpenPencilSvgAsset,
+        });
+      },
+      { documentId },
+    ).then((value) => {
+      if (!isCurrentRequest() || state.document?.id !== documentId) return;
+      documentAssetCache.remember(documentId, value.assets);
+      state.assets = value.assets;
+      for (const failure of value.failures) {
+        console.warn(`Canvas could not load document asset ${failure.descriptor.path}.`, failure.error);
+      }
+      if (!value.changed) return;
+      applyHydratedDocumentAssets(documentId, value, "document-assets-hydrated");
+      render();
+    }).catch((error) => {
+      if (isCurrentRequest() && state.document?.id === documentId) {
+        console.warn("Canvas could not load document assets.", error);
+      }
+    });
     if (state.catchUpAfterOpen) {
       state.catchUpAfterOpen = false;
       void restoreConnectedState(documentId);
@@ -1177,6 +1213,7 @@ async function loadDocumentThumbnails(documents) {
 }
 
 function closeDocument() {
+  checkedIconDocument = null;
   clearTimeout(state.trashSearchTimer);
   state.trashSearchTimer = null;
   snapshotMaintenance.cancel();
@@ -1244,11 +1281,27 @@ async function refreshDocumentAssets(documentId) {
     rasterizeSvg: rasterizeOpenPencilSvgAsset,
   });
   if (state.document?.id !== documentId || !result.changed) return;
+  applyHydratedDocumentAssets(documentId, result, "document-assets-refreshed");
+}
+
+function applyHydratedDocumentAssets(documentId, result, fallbackReason) {
   state.assets = result.assets;
-  invalidateDocumentProjection();
   state.compatibilityDocument = null;
-  state.engineDocumentDirty = true;
-  state.engineDocumentDirtyReason = "document-assets-refreshed";
+  const resourceKinds = new Map(collectPencilResourceReferences(currentMaterializedDocument())
+    .map(({ path, kind }) => [path, kind]));
+  const imageOnly = [...result.changedPaths].every((path) =>
+    !resourceKinds.has(path) || resourceKinds.get(path) === "image");
+  if (state.engineSurface && !state.engineDocumentDirty && imageOnly) {
+    performanceMonitor.measure(
+      "engine.refresh-image-assets",
+      () => state.engineSurface.refreshImageAssets(),
+      { documentId },
+    );
+  } else {
+    invalidateDocumentProjection();
+    state.engineDocumentDirty = true;
+    state.engineDocumentDirtyReason = fallbackReason;
+  }
 }
 
 function collapseEditorPanels() {
@@ -1620,6 +1673,32 @@ function currentCanvasSelection() {
 
 function render() {
   void tabPresentation?.update(state.route === "editor" ? state.document?.title : null);
+  if (state.route === "editor" && !state.loading && state.model && !state.fatalError) {
+    const source = currentMaterializedDocument();
+    if (checkedIconDocument !== source) {
+      // All effective icon names, including bound props and ref overrides,
+      // must be loaded before the next frame. Keep the previous frame while
+      // a local edit, script or sync update resolves its small icon chunks.
+      if (!iconCatalogWait) {
+        const documentId = state.document?.id;
+        iconCatalogWait = ensurePencilDocumentIconCatalogs(source)
+          .then(() => {
+            iconCatalogWait = null;
+            checkedIconDocument = source;
+            if (state.route === "editor" && state.model) render();
+          })
+          .catch((error) => {
+            iconCatalogWait = null;
+            if (state.document?.id === documentId) {
+              state.fatalError = true;
+              state.error = `Canvas could not load the icon library: ${message(error)}`;
+              render();
+            } else if (state.route === "editor" && state.model) render();
+          });
+      }
+      return;
+    }
+  }
   const renderStartedAt = performance.now();
   const activeSearch = document.activeElement?.matches?.('[data-role="search"]')
     ? {
@@ -1640,7 +1719,7 @@ function render() {
     bindCommon();
     return;
   }
-  if (state.fatalError && state.error && !state.document) {
+  if (state.fatalError && state.error) {
     root.innerHTML = `<main class="shell empty"><div><h2>Canvas couldn’t open</h2><p>${escapeHtml(state.error)}</p><button class="button" data-action="retry">Try again</button></div></main>`;
     bindCommon();
     return;
@@ -2250,6 +2329,9 @@ function disposeEngineSurface() {
 }
 
 let pendingEngineBatch = null;
+function subtreeIncludesIcon(node) {
+  return node?.type === "icon" || (node?.children ?? []).some(subtreeIncludesIcon);
+}
 function queueEngineMutations(documentId, surface, mutations, { prepend = false } = {}) {
   if (state.engineSurface !== surface || state.document?.id !== documentId) return;
   pendingEngineBatch ??= { documentId, surface, mutations: [] };
@@ -2298,10 +2380,20 @@ function queueEngineMutations(documentId, surface, mutations, { prepend = false 
     }
     if (appliedMutations.length) {
       applyMutationsToProjection(state.materializedDocument, appliedMutations);
+      const iconsMayHaveChanged = appliedMutations.some((mutation) =>
+        subtreeIncludesIcon(mutation.node)
+        || ["icon", "library", "weight", "descendants", "props"].includes(mutation.property)
+      );
+      if (iconsMayHaveChanged) {
+        // Incremental editor mutations preserve the projection object's
+        // identity. Invalidate the icon-readiness marker explicitly.
+        checkedIconDocument = null;
+      }
       state.documentNodes = null;
       state.documentNodeById = null;
       state.preparedRenderDocument = null;
       state.compatibilityDocument = null;
+      if (iconsMayHaveChanged) render();
       renderSelection();
       renderLayersTree();
       renderHistoryControls();
@@ -2605,7 +2697,10 @@ function field(property, value, type = "text", full = false, nodeId = "", option
 
 function bindCommon() {
   bindAvatarFallbacks();
-  root.querySelector('[data-action="retry"]')?.addEventListener("click", () => void bootstrap());
+  root.querySelector('[data-action="retry"]')?.addEventListener("click", () => {
+    if (state.document?.id) void openDocument(state.document.id);
+    else void bootstrap();
+  });
   if (state.route === "document-unavailable") {
     root.querySelector('[data-action="back"]')?.addEventListener("click", () => void navigateToLibrary());
   }
@@ -2891,6 +2986,7 @@ async function openDocumentContextMenu(document) {
 }
 
 async function duplicateDocument(document) {
+  await loadEditorRuntime();
   await act(async () => {
     const payload = await api.getDocument(document.id);
     const model = restoreDocumentModel(payload);

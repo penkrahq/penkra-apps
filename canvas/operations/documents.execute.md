@@ -1,5 +1,14 @@
 # Creating and editing Canvas designs
 
+The Penkra app-command tool call has exactly one field: `command`. Put the full Canvas command in
+that string; do not send separate `input`, `filePath`, `documentId`, or `code` fields. Prefer flags:
+
+```text
+canvas documents execute --documentId <document-id> --code 'Update("#x", {name: "y"}); return "x";'
+```
+
+For a read-only check, use the same form with `--code 'return Get("#x")[0]?.node.name;'`.
+
 Use `documents.execute` to inspect or change the contents of one Canvas document. It can create and
 edit complete visual compositions, generate or place images, and render exact document nodes for
 review. It runs one bounded JavaScript program against a private document clone and commits all

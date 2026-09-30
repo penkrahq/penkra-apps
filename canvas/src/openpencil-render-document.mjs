@@ -79,6 +79,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
       .map(([axis, values]) => [axis, values[0]]),
   );
   const issues = [];
+  const iconRequests = options.iconRequests;
   const assets = options.assets instanceof Map ? options.assets : new Map();
   const containerPath = typeof options.containerPath === "string" ? options.containerPath : "";
 
@@ -215,7 +216,7 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
         }
       }
     }
-    if (object.type === "icon") compileIcon(object, issues, nodeId);
+    if (object.type === "icon") compileIcon(object, issues, nodeId, iconRequests);
     normalizePencilNode(object, issues, nodeId);
     canonicalizeResourceReference(object, containerPath);
     if (object.type === "shader") compileShader(object, assets, issues, nodeId);
@@ -230,8 +231,14 @@ export function prepareOpenPencilRenderDocument(source, options = {}) {
   };
 
   for (const node of document.children ?? []) resolveObject(node, defaultTheme);
-  compileDescendantIcons(document.children, issues);
+  compileDescendantIcons(document.children, issues, iconRequests);
   return { document, issues };
+}
+
+export function collectPencilRenderIconRequests(source) {
+  const iconRequests = [];
+  prepareOpenPencilRenderDocument(source, { iconRequests });
+  return iconRequests;
 }
 
 export function lowerCanvasModelForOpenPencil(source) {
@@ -529,7 +536,7 @@ function walkCanvasNodes(children, visit) {
   }
 }
 
-function compileDescendantIcons(nodes, issues) {
+function compileDescendantIcons(nodes, issues, iconRequests) {
   const byId = new Map();
   const visit = (node) => {
     if (typeof node?.id === "string") byId.set(node.id, node);
@@ -549,6 +556,10 @@ function compileDescendantIcons(nodes, issues) {
           icon: override.icon ?? source.icon,
           weight: override.weight ?? source.weight,
         };
+        if (iconRequests) {
+          iconRequests.push(effective);
+          continue;
+        }
         const definition = pencilIconDefinition(effective.library, effective.icon, effective.weight);
         if (definition) {
           override.__canvasIcon = definition;
@@ -839,7 +850,11 @@ function isOpenPencilStroke(value) {
     && Object.hasOwn(value, "thickness");
 }
 
-function compileIcon(node, issues, nodeId) {
+function compileIcon(node, issues, nodeId, iconRequests) {
+  if (iconRequests) {
+    iconRequests.push({ library: node.library, icon: node.icon, weight: node.weight });
+    return;
+  }
   const definition = pencilIconDefinition(node.library, node.icon, node.weight);
   if (!definition) {
     issues.push(iconIssue(

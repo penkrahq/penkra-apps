@@ -1,6 +1,7 @@
 import type { Canvas } from 'canvaskit-wasm'
 
 import type { SceneNode, SceneGraph } from '@open-pencil/scene-graph'
+import type { Color } from '@open-pencil/scene-graph/primitives'
 import { getAbsolutePosition, getWorldMatrix } from '@open-pencil/scene-graph/coordinate'
 import { rotatedCorners } from '@open-pencil/scene-graph/geometry'
 
@@ -65,7 +66,7 @@ export function drawSingleFrameTitle(
   node: SceneNode,
   overlays: RenderOverlays,
   labelFont: NonNullable<SkiaRenderer['labelFont']>,
-  color = r.selColor()
+  color?: Color
 ): void {
   const parentNode = node.parentId ? graph.getNode(node.parentId) : null
   const isTopLevel = !parentNode || parentNode.type === 'CANVAS' || parentNode.type === 'SECTION'
@@ -77,7 +78,7 @@ export function drawSingleFrameTitle(
 
   const origin = r.ck.Matrix.mapPoints(world, [0, 0])
 
-  r.auxFill.setColor(r.ck.Color4f(color.r, color.g, color.b, color.a))
+  r.auxFill.setColor(color ? r.ck.Color4f(color.r, color.g, color.b, color.a) : r.selColor())
 
   const displayText = ellipsizeLabelText(labelFont, frameTitleText(node), node.width * r.zoom)
   if (!displayText) return
