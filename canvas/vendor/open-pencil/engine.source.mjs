@@ -66518,7 +66518,7 @@ function accumulateSelectionBounds(graph, selectedIds, overlays) {
   }
   return { nodes, minX, minY, maxX, maxY };
 }
-function drawSingleFrameTitle(r4, canvas, graph, node, overlays, labelFont, color = r4.selColor()) {
+function drawSingleFrameTitle(r4, canvas, graph, node, overlays, labelFont, color) {
   const parentNode = node.parentId ? graph.getNode(node.parentId) : null;
   const isTopLevel = !parentNode || parentNode.type === "CANVAS" || parentNode.type === "SECTION";
   if (node.type !== "FRAME" || !isTopLevel)
@@ -66526,7 +66526,7 @@ function drawSingleFrameTitle(r4, canvas, graph, node, overlays, labelFont, colo
   const overlayRotation = getOverlayRotation(node, overlays);
   const world = getWorldMatrix({ ...node, rotation: overlayRotation }, graph);
   const origin = r4.ck.Matrix.mapPoints(world, [0, 0]);
-  r4.auxFill.setColor(r4.ck.Color4f(color.r, color.g, color.b, color.a));
+  r4.auxFill.setColor(color ? r4.ck.Color4f(color.r, color.g, color.b, color.a) : r4.selColor());
   const displayText = ellipsizeLabelText(labelFont, frameTitleText(node), node.width * r4.zoom);
   if (!displayText)
     return;
