@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build:vendor": "node scripts/build-vendor.mjs",
-    "test": "node --test csv-preview.test.mjs explorer-files.test.mjs explorer-model.test.mjs operations.test.mjs"
+    "test": "node --test csv-preview.test.mjs explorer-files.test.mjs explorer-model.test.mjs operations.test.mjs pdf-preview.test.mjs scripts/build.test.mjs",
+    "build": "node scripts/build.mjs"
   },
   "dependencies": {
     "@codemirror/commands": "6.11.0",
@@ -25,7 +26,8 @@
     "codemirror": "6.0.2",
     "markdown-it": "15.0.0",
     "markdown-it-task-lists": "2.1.1",
-    "papaparse": "5.7.0"
+    "papaparse": "5.7.0",
+    "pdfjs-dist": "6.3.289"
   },
   "devDependencies": {
     "esbuild": "0.28.2"

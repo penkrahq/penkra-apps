@@ -23,6 +23,19 @@ export function previewKind(entry) {
   return "unsupported";
 }
 
+export function clampPdfPage(page, pageCount) {
+  const count = Number.isFinite(pageCount) ? Math.max(1, Math.floor(pageCount)) : 1;
+  const candidate = Number.isFinite(page) ? Math.floor(page) : 1;
+  return Math.min(count, Math.max(1, candidate));
+}
+
+export function pdfRenderScale(pageWidth, availableWidth, zoom = 1) {
+  const width = Number.isFinite(pageWidth) && pageWidth > 0 ? pageWidth : 1;
+  const available = Number.isFinite(availableWidth) && availableWidth > 0 ? availableWidth : width;
+  const normalizedZoom = Number.isFinite(zoom) ? Math.min(3, Math.max(0.5, zoom)) : 1;
+  return Math.min(1, available / width) * normalizedZoom;
+}
+
 export function looksLikeText(bytes, truncated = false) {
   if (!(bytes instanceof Uint8Array)) return false;
   if (bytes.includes(0)) return false;

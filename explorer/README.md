@@ -14,7 +14,7 @@ filesystem API.
 
 Host paths never enter the renderer. A picker or explicit host handoff grants an opaque handle to
 Explorer in one Space for the current desktop session; tabs in that App and Space can reuse it. The
-Canvas document named `Explorer - App` is the authoritative design artifact.
+approved Explorer design in Penkra Canvas is authoritative.
 
 The file tree watches loaded directories, preserves both scroll axes, supports conventional tree
 keyboard navigation, and uses a resizable rail. Editable text uses a bundled CodeMirror 6 surface;
@@ -23,6 +23,8 @@ icons are local package assets, so the App does not require renderer network acc
 in a checkerboard-backed visual viewer with a Source/Preview switch and remain editable as XML. CSV
 and TSV files are parsed with bundled Papa Parse and open as scrollable data grids with sticky
 headings while retaining editable source views.
+PDFs are rendered locally with bundled pdf.js and include page navigation without relying on a
+browser PDF plugin or network access.
 
 ## Local verification
 
@@ -31,5 +33,6 @@ npm test
 ```
 
 The files under `vendor/` are committed package output. When changing pinned dependencies, run
-`npm install` followed by `npm run build:vendor`, review the generated bundle and notices, and package
-from a clean App directory without `node_modules`.
+`npm install` followed by `npm run build:vendor` and review the generated bundle and notices.
+`npm run build` creates the distributable `dist/` directory from an explicit file set; package that
+directory rather than the development source tree.

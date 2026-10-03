@@ -4,6 +4,10 @@ import {
 } from "./explorer-model.mjs";
 import { parseDelimited } from "./vendor/csv-runtime.mjs";
 import {
+  changePdfZoom, createPdfView, rotatePdf, setPdfPage, togglePdfFit,
+} from "./pdf-preview-model.mjs";
+import { createPdfLoadingTask } from "./vendor/pdf-runtime.mjs";
+import {
   chooseExplorerRoot, createDirectory, forgetExplorerRoot, listDirectory, readEntry,
   rememberExplorerRoot, resolveEntryPath, restoreExplorerRoot, statEntry, watchEntry, writeTextEntry,
 } from "./explorer-files.mjs";
@@ -27,6 +31,8 @@ const icons = {
   refresh: '<path d="M20 12a8 8 0 1 1-2.4-5.7L20 8"/><path d="M20 3v5h-5"/>',
   warning: '<path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5m0 3h.01"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
+  minus: '<path d="M5 12h14"/>', plus: '<path d="M12 5v14M5 12h14"/>',
+  rotate: '<path d="M20 11a8 8 0 1 0-2.34 5.66"/><path d="M20 4v7h-7"/>',
 };
 
 const savedRailWidth = Number(localStorage.getItem("explorer.railWidth"));
@@ -44,6 +50,10 @@ let objectUrl = null;
 let markdownUrls = new Set();
 let editorView = null;
 let editorPath = null;
+let pdfLoadingTask = null;
+let pdfRenderTask = null;
+let pdfResizeObserver = null;
+let pdfRenderSequence = 0;
 let searchSequence = 0;
 let activationSequence = 0;
 let searchTimer = null;
@@ -65,6 +75,19 @@ function entryIcon(entry, expanded = false) {
 function cleanupObjectUrl() {
   if (objectUrl) URL.revokeObjectURL(objectUrl);
   objectUrl = null;
+}
+
+function cleanupPdfPreview() {
+  pdfRenderSequence += 1;
+  pdfResizeObserver?.disconnect();
+  pdfResizeObserver = null;
+  pdfRenderTask?.cancel();
+  pdfRenderTask = null;
+  const loadingTask = pdfLoadingTask ?? (state.preview?.kind === "pdf" ? state.preview.loadingTask : null);
+  loadingTask?.destroy();
+  pdfLoadingTask = null;
+  const document = state.preview?.kind === "pdf" ? state.preview.document : null;
+  if (document?.cleanup) void document.cleanup().catch(() => undefined);
 }
 
 function cleanupMarkdownUrls() {
@@ -113,7 +136,7 @@ async function activateHandle(handle) {
   const sameRoot = handle.path
     ? state.handle?.path === handle.path
     : Boolean(handle.id && state.handle?.id === handle.id);
-  cleanupObjectUrl(); cleanupMarkdownUrls(); cleanupEditor();
+  cleanupObjectUrl(); cleanupPdfPreview(); cleanupMarkdownUrls(); cleanupEditor();
   if (!sameRoot) cleanupWatchers();
   Object.assign(state, {
     handle, root: null, directoryCache: new Map(), expanded: new Set(), selected: null,
@@ -211,7 +234,7 @@ async function refreshRootFile() {
   catch {
     const draft = draftFor("");
     if (draft?.dirty) { draft.conflict = { kind: "deleted", diskSource: null }; draft.showDiff = false; }
-    else { state.error = `“${state.root.name}” was removed.`; state.preview = null; }
+    else { cleanupPdfPreview(); state.error = `“${state.root.name}” was removed.`; state.preview = null; }
     render();
     return;
   }
@@ -259,7 +282,7 @@ async function reconcileSelectedEntry(parentPath, entries) {
   const draft = draftFor(selected.relativePath);
   if (!replacement) {
     if (draft?.dirty) { draft.conflict = { kind: "deleted", diskSource: null }; draft.showDiff = false; }
-    else { state.error = `“${selected.name}” was removed from this folder.`; state.preview = null; }
+    else { cleanupPdfPreview(); state.error = `“${selected.name}” was removed from this folder.`; state.preview = null; }
     return;
   }
   state.error = null;
@@ -283,6 +306,7 @@ async function reconcileSelectedEntry(parentPath, entries) {
 }
 
 async function selectEntry(entry, recordHistory = true) {
+  cleanupPdfPreview();
   state.selected = entry; state.focusedPath = entry.relativePath; state.error = null;
   pendingRevealPath = entry.relativePath;
   state.preview = null; state.menuOpen = false;
@@ -329,13 +353,49 @@ async function loadPreview(entry) {
     state.preview = { kind, source };
     return;
   }
-  if (kind === "image" || kind === "pdf") {
+  if (kind === "image") {
     const file = await readEntry(handle, entry.relativePath);
     const bytes = new Uint8Array(await file.arrayBuffer());
     if (sequence !== activationSequence || handle !== state.handle) return;
     cleanupObjectUrl();
     objectUrl = URL.createObjectURL(new Blob([bytes], { type: mimeFor(entry.name) }));
     state.preview = { kind, url: objectUrl };
+    return;
+  }
+  if (kind === "pdf") {
+    const file = await readEntry(handle, entry.relativePath);
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (sequence !== activationSequence || handle !== state.handle) return;
+    cleanupObjectUrl();
+    state.preview = { kind: "pdf", loading: true, error: null, document: null, progress: null };
+    render();
+    const task = createPdfLoadingTask(bytes);
+    pdfLoadingTask = task;
+    task.onProgress = ({ loaded, total }) => {
+      if (task !== pdfLoadingTask || state.preview?.kind !== "pdf") return;
+      state.preview.progress = total > 0 ? Math.min(1, loaded / total) : null;
+    };
+    task.onPassword = () => {
+      if (task !== pdfLoadingTask || state.preview?.kind !== "pdf") return;
+      state.preview.loading = false;
+      state.preview.error = "This PDF is password protected. Open it with the system viewer to enter its password.";
+      render();
+      void task.destroy();
+    };
+    try {
+      const document = await task.promise;
+      if (sequence !== activationSequence || handle !== state.handle || task !== pdfLoadingTask) {
+        await task.destroy();
+        return;
+      }
+      pdfLoadingTask = null;
+      state.preview = { kind: "pdf", loading: false, error: null, document, loadingTask: task, ...createPdfView(document.numPages) };
+    } catch (error) {
+      if (sequence !== activationSequence || handle !== state.handle || state.preview?.kind !== "pdf") return;
+      pdfLoadingTask = null;
+      state.preview.loading = false;
+      state.preview.error ??= friendlyError(error, "Explorer could not render this PDF.");
+    }
     return;
   }
   cleanupObjectUrl();
@@ -474,7 +534,15 @@ function previewBody() {
   if (!preview) return mainStateContent("refresh", "Loading preview…", "");
   if (preview.kind === "unsupported") return mainStateContent("warning", "Unsupported file type", "Open it with another App or the system.");
   if (preview.kind === "image") return `<div class="media-preview"><img src="${escapeHtml(preview.url)}" alt="${escapeHtml(state.selected.name)}" /></div>`;
-  if (preview.kind === "pdf") return `<object class="pdf-preview" data="${escapeHtml(preview.url)}" type="application/pdf"><p>PDF preview is unavailable.</p></object>`;
+  if (preview.kind === "pdf") {
+    if (preview.loading) {
+      const progress = preview.progress === null ? "" : `${Math.round(preview.progress * 100)}%`;
+      return mainStateContent("refresh", "Loading PDF…", progress, true);
+    }
+    if (preview.error) return mainStateContent("warning", "Couldn’t render this PDF", preview.error);
+    const view = preview;
+    return `<div class="pdf-preview"><nav class="pdf-toolbar" aria-label="PDF controls"><div class="pdf-control-group"><button class="pdf-icon-button" data-pdf-action="previous" aria-label="Previous page" ${view.page <= 1 ? "disabled" : ""}>${icon("back")}</button><label class="pdf-page-control"><span class="sr-only">Page</span><input data-pdf-page inputmode="numeric" value="${view.page}" aria-label="Page number" /><span>of ${view.pageCount}</span></label><button class="pdf-icon-button" data-pdf-action="next" aria-label="Next page" ${view.page >= view.pageCount ? "disabled" : ""}>${icon("forward")}</button></div><div class="pdf-control-group"><button class="pdf-icon-button" data-pdf-action="zoom-out" aria-label="Zoom out">${icon("minus")}</button><button class="pdf-zoom-label" data-pdf-action="fit" aria-label="Toggle fit to width" aria-pressed="${view.fit === "width"}">${view.fit === "width" ? "Fit width" : `${Math.round(view.zoom * 100)}%`}</button><button class="pdf-icon-button" data-pdf-action="zoom-in" aria-label="Zoom in">${icon("plus")}</button><button class="pdf-icon-button" data-pdf-action="rotate" aria-label="Rotate clockwise">${icon("rotate")}</button></div></nav><div class="pdf-scroll" data-pdf-scroll tabindex="0" aria-label="PDF page ${view.page} of ${view.pageCount}"><figure class="pdf-page"><canvas data-pdf-canvas aria-label="Page ${view.page} of ${view.pageCount}"></canvas></figure></div></div>`;
+  }
   const draft = draftFor();
   if (preview.kind === "table" && state.tableMode === "preview") return tablePreview(draft?.source ?? preview.source);
   if (preview.kind === "markdown" && state.markdownMode === "preview") return `<article class="markdown-preview">${renderMarkdown(draft?.source ?? preview.source)}</article>`;
@@ -515,6 +583,53 @@ function render() {
   mountEditor();
   void hydrateMarkdownPreview();
   hydrateSvgPreview();
+  void hydratePdfPreview();
+}
+
+async function hydratePdfPreview() {
+  const preview = state.preview;
+  const canvas = root.querySelector("[data-pdf-canvas]");
+  const scroller = root.querySelector("[data-pdf-scroll]");
+  if (preview?.kind !== "pdf" || !preview.document || !canvas || !scroller) return;
+  const sequence = ++pdfRenderSequence;
+  pdfRenderTask?.cancel();
+  pdfRenderTask = null;
+  try {
+    const page = await preview.document.getPage(preview.page);
+    if (sequence !== pdfRenderSequence || state.preview !== preview || !canvas.isConnected) return;
+    const baseViewport = page.getViewport({ scale: 1, rotation: preview.rotation });
+    const availableWidth = Math.max(160, scroller.clientWidth);
+    const scale = preview.fit === "width" ? Math.min(3, availableWidth / baseViewport.width) : preview.zoom;
+    const viewport = page.getViewport({ scale, rotation: preview.rotation });
+    const outputScale = Math.min(2, Math.max(1, globalThis.devicePixelRatio || 1));
+    canvas.width = Math.floor(viewport.width * outputScale);
+    canvas.height = Math.floor(viewport.height * outputScale);
+    canvas.style.width = `${Math.floor(viewport.width)}px`;
+    canvas.style.height = `${Math.floor(viewport.height)}px`;
+    pdfRenderTask = page.render({
+      canvas,
+      viewport,
+      transform: outputScale === 1 ? null : [outputScale, 0, 0, outputScale, 0, 0],
+    });
+    await pdfRenderTask.promise;
+    if (sequence === pdfRenderSequence) pdfRenderTask = null;
+    if (preview.fit === "width") {
+      let observedWidth = null;
+      pdfResizeObserver?.disconnect();
+      pdfResizeObserver = new ResizeObserver((entries) => {
+        const width = Math.round(entries[0]?.contentRect.width ?? scroller.clientWidth);
+        if (observedWidth === null) { observedWidth = width; return; }
+        if (width === observedWidth) return;
+        observedWidth = width;
+        void hydratePdfPreview();
+      });
+      pdfResizeObserver.observe(scroller);
+    }
+  } catch (error) {
+    if (error?.name === "RenderingCancelledException" || sequence !== pdfRenderSequence || state.preview !== preview) return;
+    preview.error = friendlyError(error, "Explorer could not draw this PDF page.");
+    render();
+  }
 }
 
 const SVG_ELEMENTS = new Set([
@@ -679,7 +794,7 @@ async function trashEntry(entry) {
   const path = await resolveEntryPath(state.handle, entry.relativePath);
   await runtime.shell.trashItem(path);
   if (state.selected && affects(state.selected.relativePath)) {
-    cleanupObjectUrl(); cleanupEditor();
+    cleanupObjectUrl(); cleanupPdfPreview(); cleanupEditor();
     state.selected = null; state.preview = null;
   }
   for (const path of state.drafts.keys()) if (affects(path)) state.drafts.delete(path);
@@ -761,6 +876,17 @@ root.addEventListener("click", (event) => {
   }
   const button = event.target.closest("button");
   if (!button) return;
+  const pdfAction = button.dataset.pdfAction;
+  if (pdfAction && state.preview?.kind === "pdf" && state.preview.document) {
+    if (pdfAction === "previous") Object.assign(state.preview, setPdfPage(state.preview, state.preview.page - 1));
+    if (pdfAction === "next") Object.assign(state.preview, setPdfPage(state.preview, state.preview.page + 1));
+    if (pdfAction === "zoom-out") Object.assign(state.preview, changePdfZoom(state.preview, -1));
+    if (pdfAction === "zoom-in") Object.assign(state.preview, changePdfZoom(state.preview, 1));
+    if (pdfAction === "fit") Object.assign(state.preview, togglePdfFit(state.preview));
+    if (pdfAction === "rotate") Object.assign(state.preview, rotatePdf(state.preview));
+    render();
+    return;
+  }
   const action = button.dataset.action;
   if (action === "back") void moveHistory(-1);
   if (action === "forward") void moveHistory(1);
@@ -770,7 +896,7 @@ root.addEventListener("click", (event) => {
   if (action === "cancel-new-folder") { state.newFolder = false; render(); }
   if (action === "menu") { state.menuOpen = !state.menuOpen; render(); }
   if (action === "refresh") { state.menuOpen = false; void refreshAll(); }
-  if (action === "forget" && state.handle) void forgetExplorerRoot(state.handle).then(() => { cleanupWatchers(); state.handle = null; state.root = null; state.selected = null; render(); });
+  if (action === "forget" && state.handle) void forgetExplorerRoot(state.handle).then(() => { cleanupWatchers(); cleanupPdfPreview(); state.handle = null; state.root = null; state.selected = null; render(); });
   if (action === "save") void savePath();
   if (action === "reload-disk") {
     const draft = draftFor();
@@ -780,7 +906,7 @@ root.addEventListener("click", (event) => {
   }
   if (action === "keep-mine") { const draft = draftFor(); if (draft) { draft.conflict = null; draft.showDiff = false; draft.dirty = true; render(); } }
   if (action === "compare-disk") { const draft = draftFor(); if (draft) { draft.showDiff = !draft.showDiff; render(); } }
-  if (action === "close-deleted") { state.drafts.delete(currentPath()); state.selected = null; state.preview = null; render(); }
+  if (action === "close-deleted") { state.drafts.delete(currentPath()); cleanupPdfPreview(); state.selected = null; state.preview = null; render(); }
   if (button.dataset.mode) {
     if (state.preview?.kind === "svg") state.svgMode = button.dataset.mode;
     else if (state.preview?.kind === "table") state.tableMode = button.dataset.mode;
@@ -799,7 +925,27 @@ root.addEventListener("input", (event) => {
   searchTimer = setTimeout(() => void runSearch(event.target.value), 160);
 });
 
+root.addEventListener("change", (event) => {
+  if (!event.target.matches("[data-pdf-page]") || state.preview?.kind !== "pdf") return;
+  Object.assign(state.preview, setPdfPage(state.preview, event.target.value));
+  render();
+});
+
 root.addEventListener("keydown", (event) => {
+  if (event.target.matches("[data-pdf-page]") && event.key === "Enter" && state.preview?.kind === "pdf") {
+    event.preventDefault();
+    Object.assign(state.preview, setPdfPage(state.preview, event.target.value));
+    render();
+    return;
+  }
+  if (event.target.matches("[data-pdf-scroll]") && state.preview?.kind === "pdf") {
+    if (["PageUp", "ArrowLeft"].includes(event.key)) {
+      event.preventDefault(); Object.assign(state.preview, setPdfPage(state.preview, state.preview.page - 1)); render(); return;
+    }
+    if (["PageDown", "ArrowRight"].includes(event.key)) {
+      event.preventDefault(); Object.assign(state.preview, setPdfPage(state.preview, state.preview.page + 1)); render(); return;
+    }
+  }
   if (event.target.matches("[data-search]")) {
     if (event.key === "Escape" && state.query) { event.preventDefault(); clearTimeout(searchTimer); state.query = ""; state.searchResults = []; render(); }
     else if (event.key === "Enter" && state.searchResults[0]) { event.preventDefault(); void selectPath(state.searchResults[0].relativePath, true); }
