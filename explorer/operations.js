@@ -1,5 +1,9 @@
-import * as FS from "node:fs";
+import FS from "node:fs";
 import * as Path from "node:path";
+
+const MAX_BINARY_READ_BYTES = 1024 * 1024;
+const MAX_PREVIEW_BYTES = 64 * 1024 * 1024;
+const MAX_TEXT_WRITE_BYTES = 16 * 1024 * 1024;
 
 const runtime = globalThis.penkra;
 
@@ -21,93 +25,135 @@ export async function openResource(input, context) {
       ...(stats.isFile() ? { selectedRelativePath: Path.basename(sourcePath) } : {}),
     },
   };
-  if (context.tab) {
-    await context.tab.navigate(navigation);
-    return { tabId: context.tab.id };
-  }
-  const tab = await context.tabs.open(navigation);
+  const tab = context.tab ?? (await context.tabs.open({ route: "/" }));
+  await tab.invoke({ operation: "resources.open", input: navigation.state });
   return { tabId: tab.id };
 }
 
 runtime.operations.handle("resources.open", openResource);
 
-runtime.controller.handle("explorer.stat", async ({ rootPath, relativePath }) =>
-  entry(rootPath, await resolveExisting(rootPath, relativePath)),
-);
+runtime.controller.handle("explorer.location", async ({ rootPath, path }) => {
+  if (typeof path !== "string" || !path.trim()) throw new Error("Enter a file or folder path.");
+  const sourcePath = await FS.promises.realpath(
+    Path.resolve(requireAbsolutePath(rootPath), path.trim()),
+  );
+  const stats = await FS.promises.stat(sourcePath);
+  if (!stats.isFile() && !stats.isDirectory())
+    throw new Error("Explorer can open only regular files and directories.");
+  const directory = stats.isDirectory() ? sourcePath : Path.dirname(sourcePath);
+  return {
+    path: directory,
+    name: Path.basename(directory) || directory,
+    ...(stats.isFile() ? { selectedRelativePath: Path.basename(sourcePath) } : {}),
+  };
+});
 
-runtime.controller.handle("explorer.resolvePath", ({ rootPath, relativePath }) =>
-  resolveExisting(rootPath, relativePath),
-);
+runtime.controller.handle("explorer.parent", async ({ rootPath }) => {
+  const path = await FS.promises.realpath(requireAbsolutePath(rootPath));
+  const parent = Path.dirname(path);
+  if (parent === path) return null;
+  return { path: parent, name: Path.basename(parent) || parent, childName: Path.basename(path) };
+});
+
+runtime.controller.handle("explorer.stat", async ({ rootPath, relativePath }) => {
+  const root = await resolveRoot(rootPath);
+  return entry(root, resolveRelative(root, relativePath));
+});
+
+runtime.controller.handle("explorer.resolvePath", async ({ rootPath, relativePath }) => {
+  const root = await resolveRoot(rootPath);
+  return resolveExisting(root, relativePath);
+});
 
 runtime.controller.handle("explorer.listDirectory", async ({ rootPath, relativePath }) => {
-  const path = await resolveExisting(rootPath, relativePath);
+  const root = await resolveRoot(rootPath);
+  const path = await resolveExisting(root, relativePath);
   const entries = await FS.promises.readdir(path, { withFileTypes: true });
-  const resolved = await Promise.allSettled(
-    entries.map((item) => entry(rootPath, Path.join(path, item.name))),
+  return Promise.all(
+    entries.map(async (item) => {
+      const entryPath = Path.join(path, item.name);
+      try {
+        return await entry(root, entryPath);
+      } catch (error) {
+        return {
+          kind: "unavailable",
+          name: item.name,
+          relativePath: Path.relative(root, entryPath).split(Path.sep).join("/"),
+          error: error.message,
+        };
+      }
+    }),
   );
-  return resolved.flatMap((item) => (item.status === "fulfilled" ? [item.value] : []));
 });
 
-runtime.controller.handle("explorer.readBinary", async ({ rootPath, relativePath, offset = 0, length = 1024 * 1024 }) => {
-  const path = await resolveExisting(rootPath, relativePath);
-  const stats = await FS.promises.stat(path);
-  if (!stats.isFile()) throw new Error("The selected Explorer entry is not a file.");
-  if (stats.size > 64 * 1024 * 1024) throw new Error("Preview exceeds Explorer's 64 MB limit.");
-  if (!Number.isInteger(offset) || offset < 0 || !Number.isInteger(length) || length < 1 || length > 1024 * 1024) {
-    throw new Error("Explorer binary read range is invalid.");
-  }
-  const file = await FS.promises.open(path, "r");
-  try {
-    const buffer = Buffer.alloc(Math.max(0, Math.min(length, stats.size - offset)));
-    const { bytesRead } = await file.read(buffer, 0, buffer.length, offset);
-    return {
-      base64: buffer.subarray(0, bytesRead).toString("base64"),
-      totalBytes: stats.size,
-      complete: offset + bytesRead >= stats.size,
-    };
-  } finally {
-    await file.close();
-  }
-});
+runtime.controller.handle(
+  "explorer.readBinary",
+  async ({ rootPath, relativePath, offset, length }) => {
+    const root = await resolveRoot(rootPath);
+    const path = await resolveExisting(root, relativePath);
+    const stats = await FS.promises.stat(path);
+    if (!stats.isFile()) throw new Error("The selected Explorer entry is not a file.");
+    if (stats.size > MAX_PREVIEW_BYTES) throw new Error("Preview exceeds Explorer's 64 MiB limit.");
+    if (
+      !Number.isInteger(offset) ||
+      offset < 0 ||
+      !Number.isInteger(length) ||
+      length < 1 ||
+      length > MAX_BINARY_READ_BYTES
+    ) {
+      throw new Error(
+        "Explorer binary read requires a non-negative offset and a length from 1 byte to 1 MiB.",
+      );
+    }
+    const file = await FS.promises.open(path, "r");
+    try {
+      const buffer = Buffer.alloc(Math.max(0, Math.min(length, stats.size - offset)));
+      const { bytesRead } = await file.read(buffer, 0, buffer.length, offset);
+      return {
+        base64: buffer.subarray(0, bytesRead).toString("base64"),
+        totalBytes: stats.size,
+        complete: offset + bytesRead >= stats.size,
+      };
+    } finally {
+      await file.close();
+    }
+  },
+);
 
 runtime.controller.handle("explorer.writeText", async ({ rootPath, relativePath, source }) => {
   if (typeof source !== "string") throw new Error("File contents must be text.");
-  if (Buffer.byteLength(source) > 16 * 1024 * 1024) {
-    throw new Error("Text file exceeds the 16 MB limit.");
+  if (Buffer.byteLength(source) > MAX_TEXT_WRITE_BYTES) {
+    throw new Error("Text file exceeds the 16 MiB limit.");
   }
-  await FS.promises.writeFile(await resolveWritable(rootPath, relativePath), source, "utf8");
+  const root = await resolveRoot(rootPath);
+  await FS.promises.writeFile(await resolveWritable(root, relativePath), source, "utf8");
 });
 
 runtime.controller.handle("explorer.createDirectory", async ({ rootPath, relativePath }) => {
-  const path = await resolveWritable(rootPath, relativePath);
+  const root = await resolveRoot(rootPath);
+  const path = await resolveWritable(root, relativePath);
   await FS.promises.mkdir(path);
-  return entry(rootPath, path);
+  return entry(root, path);
 });
 
-runtime.controller.handle("explorer.watch", async ({ rootPath, relativePath }, context) => {
-  const path = await resolveExisting(rootPath, relativePath);
-  return new Promise((resolve, reject) => {
-    let settled = false;
-    let timeout;
-    const watcher = FS.watch(path, { persistent: false }, () => finish(true));
-    const finish = (changed) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeout);
-      watcher.close();
-      context.signal.removeEventListener("abort", abort);
-      resolve({ changed });
-    };
-    const abort = () => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeout);
-      watcher.close();
-      reject(context.signal.reason ?? new Error("Explorer watch cancelled."));
-    };
-    timeout = setTimeout(() => finish(false), 25_000);
-    context.signal.addEventListener("abort", abort, { once: true });
+runtime.controller.subscription("explorer.watch", async ({ rootPath, relativePath }, context) => {
+  context.signal.throwIfAborted();
+  const root = await resolveRoot(rootPath);
+  const path = await resolveExisting(root, relativePath);
+  context.signal.throwIfAborted();
+  const watcher = FS.watch(path, { persistent: false }, () => {
+    if (!context.signal.aborted) context.send({ changed: true });
   });
+  const cleanup = () => {
+    watcher.close();
+    context.signal.removeEventListener("abort", cleanup);
+  };
+  context.signal.addEventListener("abort", cleanup, { once: true });
+  watcher.on("error", (error) => {
+    console.warn("[explorer] Watch ended.", error);
+    context.end();
+  });
+  if (context.signal.aborted) cleanup();
 });
 
 function requireAbsolutePath(value) {
@@ -117,51 +163,50 @@ function requireAbsolutePath(value) {
   return Path.resolve(value);
 }
 
-function candidateWithin(root, relativePath = "") {
-  if (typeof relativePath !== "string") throw new Error("Explorer relative path is invalid.");
-  const candidate = Path.resolve(root, relativePath);
-  if (candidate !== root && !candidate.startsWith(`${root}${Path.sep}`)) {
+function requireInsideRoot(root, candidate) {
+  const relative = Path.relative(root, candidate);
+  if (relative === ".." || relative.startsWith(`..${Path.sep}`) || Path.isAbsolute(relative)) {
     throw new Error("Explorer path escapes its root.");
   }
   return candidate;
 }
 
-async function resolveExisting(rootPath, relativePath = "") {
-  const root = await FS.promises.realpath(requireAbsolutePath(rootPath));
-  const candidate = await FS.promises.realpath(candidateWithin(root, relativePath));
-  if (candidate !== root && !candidate.startsWith(`${root}${Path.sep}`)) {
-    throw new Error("Explorer path escapes its root.");
+function resolveRelative(root, relativePath) {
+  if (typeof relativePath !== "string" || Path.isAbsolute(relativePath)) {
+    throw new Error("Explorer requires a relative entry path.");
   }
-  return candidate;
+  return requireInsideRoot(root, Path.resolve(root, relativePath));
 }
 
-async function resolveWritable(rootPath, relativePath = "") {
-  const root = await FS.promises.realpath(requireAbsolutePath(rootPath));
-  const unresolved = candidateWithin(root, relativePath);
-  if (unresolved === root) return root;
-  const parent = await FS.promises.realpath(Path.dirname(unresolved));
-  if (parent !== root && !parent.startsWith(`${root}${Path.sep}`)) {
-    throw new Error("Explorer path escapes its root.");
-  }
-  const candidate = Path.join(parent, Path.basename(unresolved));
+function resolveRoot(rootPath) {
+  return FS.promises.realpath(requireAbsolutePath(rootPath));
+}
+
+async function resolveWritable(root, relativePath) {
+  const candidate = resolveRelative(root, relativePath);
+  const parent = requireInsideRoot(root, await FS.promises.realpath(Path.dirname(candidate)));
   try {
-    const existing = await FS.promises.realpath(candidate);
-    if (existing !== root && !existing.startsWith(`${root}${Path.sep}`)) {
-      throw new Error("Explorer path escapes its root.");
-    }
-    return existing;
+    await FS.promises.lstat(candidate);
   } catch (error) {
-    if (error?.code === "ENOENT") return candidate;
-    throw error;
+    if (error.code !== "ENOENT") throw error;
+    // Only the new entry may be absent; its existing parent is resolved above.
+    return requireInsideRoot(root, Path.join(parent, Path.basename(candidate)));
   }
+  return requireInsideRoot(root, await FS.promises.realpath(candidate));
 }
 
-async function entry(rootPath, path) {
-  const stats = await FS.promises.stat(path);
+async function resolveExisting(root, relativePath) {
+  return requireInsideRoot(root, await FS.promises.realpath(resolveRelative(root, relativePath)));
+}
+
+async function entry(root, path) {
+  const linkStats = await FS.promises.lstat(path);
+  const target = await resolveExisting(root, Path.relative(root, path));
+  const stats = linkStats.isSymbolicLink() ? await FS.promises.stat(target) : linkStats;
   return {
     kind: stats.isDirectory() ? "directory" : "file",
     name: Path.basename(path),
-    relativePath: Path.relative(rootPath, path).split(Path.sep).join("/"),
+    relativePath: Path.relative(root, path).split(Path.sep).join("/"),
     size: stats.size,
     modifiedAt: stats.mtime.toISOString(),
   };

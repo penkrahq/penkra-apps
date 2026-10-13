@@ -4,100 +4,100 @@ const BINARY_CHUNK_BYTES = 512 * 1024;
 const MAX_PREVIEW_BYTES = 64 * 1024 * 1024;
 
 export async function chooseExplorerRoot(files = runtimeFiles()) {
-  return files.pick("directory");
+  const selected = await files.pick("directory");
+  return selected === null ? null : { path: selected.path, name: selected.name };
 }
 
 export async function restoreExplorerRoot(files = runtimeFiles()) {
-  const handles = await files.list();
-  return handles.find((handle) => handle.kind === "directory") ?? handles[0] ?? null;
+  const selected = (await files.list()).find((file) => file.kind === "directory");
+  return selected ? { path: selected.path, name: selected.name } : null;
 }
 
-export async function rememberExplorerRoot() {
-  // Runtime v2 handles already survive iframe reloads for the current desktop session.
+export async function forgetExplorerRoot(root, files = runtimeFiles()) {
+  const selected = (await files.list()).find((file) => file.path === root.path);
+  if (selected) await files.revoke(selected.id);
 }
 
-export async function forgetExplorerRoot(handle, files = runtimeFiles()) {
-  if (handle?.id) await files.revoke(handle.id);
+export function listDirectory(root, relativePath = "") {
+  return invoke("explorer.listDirectory", root, relativePath);
 }
 
-export function listDirectory(root, relativePath = "", files) {
-  if (root?.path) return invoke("explorer.listDirectory", root, relativePath);
-  return (files ?? runtimeFiles()).listDirectory(root.id, relativePath || undefined);
+export function statEntry(root, relativePath = "") {
+  return invoke("explorer.stat", root, relativePath);
 }
 
-export function statEntry(root, relativePath = "", files) {
-  if (root?.path) return invoke("explorer.stat", root, relativePath);
-  return (files ?? runtimeFiles()).stat(root.id, relativePath || undefined);
-}
-
-export async function readEntry(root, relativePath, files) {
-  if (root?.path) {
-    const chunks = [];
-    let offset = 0;
-    do {
-      const result = await invoke("explorer.readBinary", root, relativePath, {
-        offset,
-        length: BINARY_CHUNK_BYTES,
-      });
-      const bytes = decodeControllerChunk(result.base64);
-      chunks.push(bytes);
-      offset += bytes.byteLength;
-      if (result.complete) break;
-      if (bytes.byteLength === 0) throw new Error("Explorer could not finish reading this file.");
-    } while (offset <= MAX_PREVIEW_BYTES);
-    return new Blob(chunks);
-  }
-  const scopedFiles = files ?? runtimeFiles();
-  const metadata = await scopedFiles.stat(root.id, relativePath || undefined);
-  if (metadata.kind !== "file") throw new TypeError(`${relativePath} is not a file.`);
-  if (metadata.size > MAX_PREVIEW_BYTES) throw new Error("Preview exceeds Explorer's 64 MB limit.");
+export async function readEntry(root, relativePath) {
   const chunks = [];
   let offset = 0;
   do {
-    const result = await scopedFiles.readBinary({
-      handleId: root.id,
-      relativePath: relativePath || undefined,
+    const result = await invoke("explorer.readBinary", root, relativePath, {
       offset,
       length: BINARY_CHUNK_BYTES,
     });
-    chunks.push(result.bytes);
-    offset += result.bytes.byteLength;
-    if (result.complete) break;
-    if (result.bytes.byteLength === 0) throw new Error("Explorer could not finish reading this file.");
+    const bytes = decodeControllerChunk(result.base64);
+    chunks.push(bytes);
+    offset += bytes.byteLength;
+    if (result.complete) return new Blob(chunks);
+    if (bytes.byteLength === 0) throw new Error("Explorer could not finish reading this file.");
   } while (offset <= MAX_PREVIEW_BYTES);
-  return new Blob(chunks);
+  throw new Error("Preview exceeds Explorer's 64 MiB limit.");
 }
 
-export function writeTextEntry(root, relativePath, source, files) {
-  if (root?.path) return invoke("explorer.writeText", root, relativePath, { source });
-  return (files ?? runtimeFiles()).writeText(root.id, source, relativePath || undefined);
+export function writeTextEntry(root, relativePath, source) {
+  return invoke("explorer.writeText", root, relativePath, { source });
 }
 
-export function createDirectory(root, parentPath, name, files) {
-  if (root?.path) return invoke("explorer.createDirectory", root, join(parentPath, name));
-  return (files ?? runtimeFiles()).createDirectory(root.id, join(parentPath, name));
+export function createDirectory(root, parentPath, name) {
+  return invoke("explorer.createDirectory", root, join(parentPath, name));
 }
 
-export function watchEntry(root, relativePath, listener, files) {
-  if (root?.path) {
-    let stopped = false;
-    const watch = async () => {
-      while (!stopped) {
-        const result = await invoke("explorer.watch", root, relativePath);
-        if (stopped) return;
-        if (result.changed) listener();
+export function watchEntry(root, relativePath, listener, ended) {
+  const controller = globalThis.penkra?.controller;
+  if (!controller) throw new Error("Explorer requires its Node controller.");
+  let stopped = false;
+  let refreshing = false;
+  let pending = false;
+  const refresh = async () => {
+    if (stopped) return;
+    if (refreshing) {
+      pending = true;
+      return;
+    }
+    refreshing = true;
+    try {
+      await listener();
+    } catch (error) {
+      console.warn("[explorer] Watch refresh failed.", error);
+    } finally {
+      refreshing = false;
+      if (pending && !stopped) {
+        pending = false;
+        void refresh();
       }
-    };
-    void watch().catch((error) => {
-      if (!stopped) console.warn("[explorer] Controller watch stopped.", error);
-    });
-    return Promise.resolve(() => { stopped = true; });
-  }
-  return (files ?? runtimeFiles()).watch(root.id, relativePath || undefined, listener);
+    }
+  };
+  const stop = controller.subscribe(
+    "explorer.watch",
+    { rootPath: root.path, relativePath },
+    {
+      message: () => {
+        void refresh();
+      },
+      end: (error) => {
+        if (stopped) return;
+        stopped = true;
+        if (error) console.warn("[explorer] Controller watch ended.", error);
+        ended?.();
+      },
+    },
+  );
+  return () => {
+    stopped = true;
+    stop();
+  };
 }
 
 export function resolveEntryPath(root, relativePath = "") {
-  if (!root?.path) throw new Error("This Explorer location does not expose a filesystem path.");
   return invoke("explorer.resolvePath", root, relativePath);
 }
 
@@ -115,7 +115,7 @@ function decodeControllerChunk(value) {
 
 function runtimeFiles() {
   const files = globalThis.penkra?.files;
-  if (!files) throw new Error("Explorer requires Penkra's scoped file service.");
+  if (!files) throw new Error("Explorer requires Penkra's file picker.");
   return files;
 }
 
@@ -124,7 +124,7 @@ function invoke(handler, root, relativePath, extra = {}) {
   if (!controller) throw new Error("Explorer requires its Node controller.");
   return controller.invoke(handler, {
     rootPath: root.path,
-    ...(relativePath ? { relativePath } : {}),
+    relativePath,
     ...extra,
   });
 }

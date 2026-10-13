@@ -1,13 +1,38 @@
 import {
-  escapeHtml, extensionOf, fileIconName, finderRelativePath, joinRelative, looksLikeText,
-  matchesQuery, parentRelative, previewKind, sortEntries, treeRowIndent,
+  clampPdfPage,
+  createTreeTypeahead,
+  escapeHtml,
+  extensionOf,
+  fileIconName,
+  joinRelative,
+  looksLikeText,
+  matchesQuery,
+  parentRelative,
+  pdfRenderScale,
+  previewKind,
+  sortEntries,
+  treeRowIndent,
+  VIDEO_MIME_TYPES,
 } from "./explorer-model.mjs";
 import { parseDelimited } from "./vendor/csv-runtime.mjs";
+import { loadPdfDocument } from "./vendor/pdf-runtime.mjs";
 import {
-  chooseExplorerRoot, createDirectory, forgetExplorerRoot, listDirectory, readEntry,
-  rememberExplorerRoot, resolveEntryPath, restoreExplorerRoot, statEntry, watchEntry, writeTextEntry,
+  chooseExplorerRoot,
+  createDirectory,
+  forgetExplorerRoot,
+  listDirectory,
+  readEntry,
+  resolveEntryPath,
+  restoreExplorerRoot,
+  statEntry,
+  watchEntry,
+  writeTextEntry,
 } from "./explorer-files.mjs";
-import { createEditor, renderMarkdown, runEditorHistoryShortcut } from "./vendor/editor-runtime.mjs";
+import {
+  createEditor,
+  renderMarkdown,
+  runEditorHistoryShortcut,
+} from "./vendor/editor-runtime.mjs";
 
 const runtime = globalThis.penkra;
 if (!runtime?.files || !runtime?.tab || !runtime?.controller || !runtime?.shell) {
@@ -15,10 +40,13 @@ if (!runtime?.files || !runtime?.tab || !runtime?.controller || !runtime?.shell)
 }
 
 const icons = {
-  back: '<path d="m15 18-6-6 6-6"/>', forward: '<path d="m9 18 6-6-6-6"/>',
-  up: '<path d="m18 15-6-6-6 6"/>', folder: '<path d="M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/>',
+  back: '<path d="m15 18-6-6 6-6"/>',
+  forward: '<path d="m9 18 6-6-6-6"/>',
+  up: '<path d="m18 15-6-6-6 6"/>',
+  folder: '<path d="M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/>',
   folderOpen: '<path d="M3 7h6l2 2h10l-2 9H5L3 7Z"/>',
-  folderPlus: '<path d="M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M12 11v6m-3-3h6"/>',
+  folderPlus:
+    '<path d="M3 6h6l2 2h10v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6Z"/><path d="M12 11v6m-3-3h6"/>',
   file: '<path d="M6 2h8l4 4v16H6V2Z"/><path d="M14 2v5h5"/>',
   image: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 4 4 2-2 7 7"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
@@ -31,10 +59,27 @@ const icons = {
 
 const savedRailWidth = Number(localStorage.getItem("explorer.railWidth"));
 const state = {
-  handle: null, root: null, directoryCache: new Map(), expanded: new Set(), selected: null,
-  query: "", searchResults: [], searchBusy: false, loading: true, error: null, preview: null,
-  markdownMode: "preview", svgMode: "preview", tableMode: "preview", history: [], historyIndex: -1, newFolder: false, menuOpen: false,
-  drafts: new Map(), watchers: new Map(), watchTimers: new Map(), railScroll: new Map(),
+  location: null,
+  root: null,
+  directoryCache: new Map(),
+  expanded: new Set(),
+  selected: null,
+  query: "",
+  searchResults: [],
+  searchBusy: false,
+  loading: true,
+  error: null,
+  preview: null,
+  markdownMode: "preview",
+  svgMode: "preview",
+  tableMode: "preview",
+  history: [],
+  historyIndex: -1,
+  newFolder: false,
+  menuOpen: false,
+  drafts: new Map(),
+  watchers: new Map(),
+  railScroll: new Map(),
   railWidth: Number.isFinite(savedRailWidth) ? Math.min(520, Math.max(180, savedRailWidth)) : 240,
   focusedPath: null,
 };
@@ -46,10 +91,17 @@ let editorView = null;
 let editorPath = null;
 let searchSequence = 0;
 let activationSequence = 0;
-let searchTimer = null;
-let typeahead = { value: "", timer: null };
+const typeahead = createTreeTypeahead();
 let resizing = null;
 let pendingRevealPath = null;
+const locationDrafts = new Map();
+let pdfDocument = null;
+let pdfLoadingTask = null;
+let pdfLoadingPromise = null;
+let pdfSource = null;
+let pdfRenderTask = null;
+let pdfResizeObserver = null;
+let pdfRenderSequence = 0;
 
 function icon(name, className = "") {
   return `<svg class="${className}" aria-hidden="true" viewBox="0 0 24 24">${icons[name]}</svg>`;
@@ -59,10 +111,19 @@ function entryIcon(entry, expanded = false) {
   const name = fileIconName(entry, expanded);
   return name
     ? `<img class="file-type-icon" src="assets/file-icons/${name}.svg" alt="" />`
-    : icon(entry.kind === "directory" ? (expanded ? "folderOpen" : "folder") : "file", "tree-file-icon");
+    : icon(
+        entry.kind === "directory" ? (expanded ? "folderOpen" : "folder") : "file",
+        "tree-file-icon",
+      );
 }
 
 function cleanupObjectUrl() {
+  const video = root.querySelector("video");
+  if (video) {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+  }
   if (objectUrl) URL.revokeObjectURL(objectUrl);
   objectUrl = null;
 }
@@ -70,9 +131,26 @@ function cleanupObjectUrl() {
 function cleanupMarkdownUrls() {
   for (const url of markdownUrls) {
     URL.revokeObjectURL(url);
-    void runtime.files.closeUrl(url).catch(() => undefined);
   }
   markdownUrls = new Set();
+}
+
+function cleanupPdfView() {
+  pdfRenderSequence += 1;
+  pdfRenderTask?.cancel();
+  pdfRenderTask = null;
+  pdfResizeObserver?.disconnect();
+  pdfResizeObserver = null;
+}
+
+function cleanupPdf() {
+  cleanupPdfView();
+  pdfLoadingTask?.destroy();
+  pdfLoadingTask = null;
+  pdfLoadingPromise = null;
+  void pdfDocument?.destroy();
+  pdfDocument = null;
+  pdfSource = null;
 }
 
 function cleanupEditor() {
@@ -86,54 +164,98 @@ function cleanupEditor() {
 
 function cleanupWatchers() {
   for (const unsubscribe of state.watchers.values()) unsubscribe();
-  for (const timer of state.watchTimers.values()) clearTimeout(timer);
   state.watchers.clear();
-  state.watchTimers.clear();
 }
 
-function currentPath() { return state.selected?.relativePath ?? ""; }
+function currentPath() {
+  return state.selected?.relativePath ?? "";
+}
+
+function currentFolderPath() {
+  return state.selected?.kind === "file" ? parentRelative(currentPath()) : currentPath();
+}
 
 function pushHistory(path) {
-  if (state.history[state.historyIndex] === path) return;
+  const previous = state.history[state.historyIndex];
+  if (previous?.path === path && previous.location.path === state.location.path) return;
   state.history = state.history.slice(0, state.historyIndex + 1);
-  state.history.push(path);
+  state.history.push({ location: { ...state.location }, path });
   state.historyIndex = state.history.length - 1;
 }
 
-function draftFor(path = currentPath()) { return state.drafts.get(path) ?? null; }
-function hasDirtyDrafts() { return [...state.drafts.values()].some((draft) => draft.dirty); }
-
-function makeDraft(source) {
-  return { source, savedSource: source, dirty: false, saving: false, saveError: null, editorState: null, conflict: null, showDiff: false };
+function draftFor(path = currentPath()) {
+  return state.drafts.get(path) ?? null;
+}
+function hasDirtyDrafts() {
+  return [...state.drafts.values(), ...locationDrafts.values()].some((draft) => draft.dirty);
 }
 
-async function activateHandle(handle) {
-  if (!handle) return;
+function absoluteEntryPath(location, path = "") {
+  return path ? `${location.path.replace(/[\\/]+$/, "")}/${path}` : location.path;
+}
+
+function makeDraft(source) {
+  return {
+    source,
+    savedSource: source,
+    dirty: false,
+    saving: false,
+    saveError: null,
+    editorState: null,
+    conflict: null,
+    showDiff: false,
+  };
+}
+
+async function activateLocation(location, preserveHistory = false) {
+  if (!location) return;
   const sequence = ++activationSequence;
-  const sameRoot = handle.path
-    ? state.handle?.path === handle.path
-    : Boolean(handle.id && state.handle?.id === handle.id);
-  cleanupObjectUrl(); cleanupMarkdownUrls(); cleanupEditor();
+  const sameRoot = state.location?.path === location.path;
+  cleanupObjectUrl();
+  cleanupMarkdownUrls();
+  cleanupEditor();
+  cleanupPdf();
+  if (state.location?.path) {
+    for (const [path, draft] of state.drafts)
+      locationDrafts.set(absoluteEntryPath(state.location, path), draft);
+  }
   if (!sameRoot) cleanupWatchers();
   Object.assign(state, {
-    handle, root: null, directoryCache: new Map(), expanded: new Set(), selected: null,
-    preview: null, error: null, loading: true, history: [], historyIndex: -1, drafts: new Map(),
+    location,
+    root: null,
+    directoryCache: new Map(),
+    expanded: new Set(),
+    selected: null,
+    preview: null,
+    error: null,
+    loading: true,
+    drafts: new Map(),
   });
+  if (!preserveHistory) {
+    state.history = [];
+    state.historyIndex = -1;
+  }
+  if (location.path) {
+    const prefix = `${location.path.replace(/[\\/]+$/, "")}/`;
+    for (const [path, draft] of locationDrafts) {
+      if (path.startsWith(prefix)) state.drafts.set(path.slice(prefix.length), draft);
+    }
+  }
   render();
   try {
-    const nextRoot = await statEntry(handle);
+    const nextRoot = await statEntry(location);
     if (sequence !== activationSequence) return;
     state.root = nextRoot;
     if (state.root.kind === "directory") {
       state.expanded.add("");
       await loadDirectory("", false, true);
-      if (handle.selectedRelativePath) {
-        const selected = await statEntry(handle, handle.selectedRelativePath);
+      if (location.selectedRelativePath) {
+        const selected = await statEntry(location, location.selectedRelativePath);
         if (sequence !== activationSequence) return;
         state.selected = selected;
         state.focusedPath = selected.relativePath;
         pendingRevealPath = selected.relativePath;
-        pushHistory(selected.relativePath);
+        if (!preserveHistory) pushHistory(selected.relativePath);
         if (selected.kind === "directory") {
           state.expanded.add(selected.relativePath);
           await loadDirectory(selected.relativePath, false, true);
@@ -142,9 +264,10 @@ async function activateHandle(handle) {
           void ensureWatcher(parentRelative(selected.relativePath));
         }
       }
+      if (!preserveHistory && !location.selectedRelativePath) pushHistory("");
     } else {
       state.selected = state.root;
-      pushHistory("");
+      if (!preserveHistory) pushHistory("");
       await loadPreview(state.root);
       void ensureWatcher("");
     }
@@ -160,58 +283,71 @@ async function activateHandle(handle) {
 }
 
 async function refreshAll() {
-  if (!state.handle || state.root?.kind !== "directory") return;
-  await Promise.all([...state.directoryCache.keys()].map((path) => refreshDirectory(path).catch(() => undefined)));
+  if (!state.location || state.root?.kind !== "directory") return;
+  await Promise.all(
+    [...state.directoryCache.keys()].map((path) => refreshDirectory(path).catch(() => undefined)),
+  );
   if (state.query) await runSearch(state.query);
   render();
 }
 
-async function loadDirectory(path, refresh = false, observe = state.expanded.has(path) || path === "") {
-  const handle = state.handle;
+async function loadDirectory(
+  path,
+  refresh = false,
+  observe = state.expanded.has(path) || path === "",
+) {
+  const location = state.location;
   const sequence = activationSequence;
-  if (!handle || (!refresh && state.directoryCache.has(path))) {
+  if (!location || (!refresh && state.directoryCache.has(path))) {
     if (observe) void ensureWatcher(path);
     return;
   }
-  const entries = sortEntries(await listDirectory(handle, path));
-  if (sequence !== activationSequence || handle !== state.handle) return;
+  const entries = sortEntries(await listDirectory(location, path));
+  if (sequence !== activationSequence || location !== state.location) return;
   state.directoryCache.set(path, entries);
-  if (path === "" && state.focusedPath === null && entries[0]) state.focusedPath = entries[0].relativePath;
+  if (path === "" && state.focusedPath === null && entries[0])
+    state.focusedPath = entries[0].relativePath;
   if (observe) void ensureWatcher(path);
 }
 
-async function ensureWatcher(path) {
-  if (!state.handle || state.watchers.has(path)) return;
-  const handle = state.handle;
+function ensureWatcher(path) {
+  if (!state.location || state.watchers.has(path)) return;
+  const location = state.location;
   const sequence = activationSequence;
   state.watchers.set(path, () => undefined);
   try {
-    const listener = state.root?.kind === "file" && path === "" ? scheduleRootFileRefresh : () => scheduleDirectoryRefresh(path);
-    const unsubscribe = await watchEntry(handle, path, listener);
-    if (sequence !== activationSequence || handle !== state.handle) { unsubscribe(); return; }
-    state.watchers.set(path, unsubscribe);
+    const listener =
+      state.root?.kind === "file" && path === "" ? refreshRootFile : () => refreshDirectory(path);
+    const unsubscribe = watchEntry(location, path, listener, () => {
+      if (sequence === activationSequence && location === state.location)
+        state.watchers.delete(path);
+    });
+    if (sequence !== activationSequence || location !== state.location) {
+      unsubscribe();
+      return;
+    }
+    if (state.watchers.has(path)) state.watchers.set(path, unsubscribe);
+    else unsubscribe();
   } catch (error) {
     state.watchers.delete(path);
     console.warn("[explorer] Could not watch directory.", path, error);
   }
 }
 
-function scheduleRootFileRefresh() {
-  clearTimeout(state.watchTimers.get("@root-file"));
-  state.watchTimers.set("@root-file", setTimeout(() => {
-    state.watchTimers.delete("@root-file");
-    void refreshRootFile().catch((error) => console.warn("[explorer] Could not refresh watched file.", error));
-  }, 120));
-}
-
 async function refreshRootFile() {
-  if (!state.handle || state.root?.kind !== "file") return;
+  if (!state.location || state.root?.kind !== "file") return;
   let replacement;
-  try { replacement = await statEntry(state.handle); }
-  catch {
+  try {
+    replacement = await statEntry(state.location);
+  } catch {
     const draft = draftFor("");
-    if (draft?.dirty) { draft.conflict = { kind: "deleted", diskSource: null }; draft.showDiff = false; }
-    else { state.error = `“${state.root.name}” was removed.`; state.preview = null; }
+    if (draft?.dirty) {
+      draft.conflict = { kind: "deleted", diskSource: null };
+      draft.showDiff = false;
+    } else {
+      state.error = `“${state.root.name}” was removed.`;
+      state.preview = null;
+    }
     render();
     return;
   }
@@ -219,37 +355,41 @@ async function refreshRootFile() {
   render();
 }
 
-function scheduleDirectoryRefresh(path) {
-  clearTimeout(state.watchTimers.get(path));
-  state.watchTimers.set(path, setTimeout(() => {
-    state.watchTimers.delete(path);
-    void refreshDirectory(path).catch((error) => console.warn("[explorer] Could not refresh watched directory.", path, error));
-  }, 120));
-}
-
 function discardCachedBranch(path) {
   for (const cachedPath of [...state.directoryCache.keys()]) {
-    if (cachedPath === path || cachedPath.startsWith(`${path}/`)) state.directoryCache.delete(cachedPath);
+    if (cachedPath === path || cachedPath.startsWith(`${path}/`))
+      state.directoryCache.delete(cachedPath);
   }
   for (const [watchedPath, unsubscribe] of [...state.watchers]) {
-    if (watchedPath === path || watchedPath.startsWith(`${path}/`)) { unsubscribe(); state.watchers.delete(watchedPath); }
+    if (watchedPath === path || watchedPath.startsWith(`${path}/`)) {
+      unsubscribe();
+      state.watchers.delete(watchedPath);
+    }
   }
   for (const expandedPath of [...state.expanded]) {
-    if (expandedPath === path || expandedPath.startsWith(`${path}/`)) state.expanded.delete(expandedPath);
+    if (expandedPath === path || expandedPath.startsWith(`${path}/`))
+      state.expanded.delete(expandedPath);
   }
 }
 
 async function refreshDirectory(path) {
-  if (!state.handle) return;
+  if (!state.location) return;
   const before = state.directoryCache.get(path) ?? [];
   let after;
-  try { after = sortEntries(await listDirectory(state.handle, path)); }
-  catch (error) { if (path) discardCachedBranch(path); throw error; }
+  try {
+    after = sortEntries(await listDirectory(state.location, path));
+  } catch (error) {
+    if (path) discardCachedBranch(path);
+    throw error;
+  }
   state.directoryCache.set(path, after);
   const nextPaths = new Set(after.map((entry) => entry.relativePath));
-  for (const entry of before) if (entry.kind === "directory" && !nextPaths.has(entry.relativePath)) discardCachedBranch(entry.relativePath);
+  for (const entry of before)
+    if (entry.kind === "directory" && !nextPaths.has(entry.relativePath))
+      discardCachedBranch(entry.relativePath);
   await reconcileSelectedEntry(path, after);
-  if (state.query) await runSearch(state.query); else render();
+  if (state.query) await runSearch(state.query);
+  else render();
 }
 
 async function reconcileSelectedEntry(parentPath, entries) {
@@ -258,8 +398,18 @@ async function reconcileSelectedEntry(parentPath, entries) {
   const replacement = entries.find((entry) => entry.relativePath === selected.relativePath);
   const draft = draftFor(selected.relativePath);
   if (!replacement) {
-    if (draft?.dirty) { draft.conflict = { kind: "deleted", diskSource: null }; draft.showDiff = false; }
-    else { state.error = `“${selected.name}” was removed from this folder.`; state.preview = null; }
+    if (draft?.dirty) {
+      draft.conflict = { kind: "deleted", diskSource: null };
+      draft.showDiff = false;
+    } else {
+      state.error = `“${selected.name}” was removed from this folder.`;
+      state.preview = null;
+    }
+    return;
+  }
+  if (replacement.kind === "unavailable") {
+    state.error = replacement.error;
+    state.preview = null;
     return;
   }
   state.error = null;
@@ -267,15 +417,22 @@ async function reconcileSelectedEntry(parentPath, entries) {
   state.selected = replacement;
   if (selected.kind !== "file") return;
   const kind = state.preview?.kind ?? previewKind(replacement);
-  if (kind !== "text" && kind !== "markdown" && kind !== "svg") { await loadPreview(replacement); return; }
-  const diskSource = await (await readEntry(state.handle, replacement.relativePath)).text();
+  if (kind !== "text" && kind !== "markdown" && kind !== "svg") {
+    await loadPreview(replacement);
+    return;
+  }
+  const diskSource = await (await readEntry(state.location, replacement.relativePath)).text();
   if (draft?.saving && diskSource === draft.source) {
-    draft.savedSource = diskSource; draft.dirty = false; draft.conflict = null;
+    draft.savedSource = diskSource;
+    draft.dirty = false;
+    draft.conflict = null;
     state.preview = { kind, source: diskSource };
     return;
   }
   if (draft?.dirty && diskSource !== draft.savedSource) {
-    draft.conflict = { kind: "modified", diskSource }; draft.showDiff = false; return;
+    draft.conflict = { kind: "modified", diskSource };
+    draft.showDiff = false;
+    return;
   }
   if (editorPath === replacement.relativePath) cleanupEditor();
   state.drafts.set(replacement.relativePath, makeDraft(diskSource));
@@ -283,9 +440,15 @@ async function reconcileSelectedEntry(parentPath, entries) {
 }
 
 async function selectEntry(entry, recordHistory = true) {
-  state.selected = entry; state.focusedPath = entry.relativePath; state.error = null;
+  if (entry.kind === "unavailable") return;
+  if (state.preview?.kind === "video") cleanupObjectUrl();
+  if (state.preview?.kind === "pdf") cleanupPdf();
+  state.selected = entry;
+  state.focusedPath = entry.relativePath;
+  state.error = null;
   pendingRevealPath = entry.relativePath;
-  state.preview = null; state.menuOpen = false;
+  state.preview = null;
+  state.menuOpen = false;
   if (recordHistory) pushHistory(entry.relativePath);
   if (entry.kind === "directory") {
     state.expanded.add(entry.relativePath);
@@ -298,44 +461,101 @@ async function selectEntry(entry, recordHistory = true) {
 }
 
 async function selectPath(path, recordHistory = false) {
-  if (!state.handle) return;
-  try { await selectEntry(await statEntry(state.handle, path), recordHistory); }
-  catch (error) { state.error = friendlyError(error, "This item is no longer available."); render(); }
+  if (!state.location) return;
+  try {
+    await selectEntry(await statEntry(state.location, path), recordHistory);
+  } catch (error) {
+    state.error = friendlyError(error, "This item is no longer available.");
+    render();
+  }
 }
 
 async function moveHistory(delta) {
   const next = state.historyIndex + delta;
   if (next < 0 || next >= state.history.length) return;
+  const destination = state.history[next];
+  if (destination.location.path !== state.location.path) {
+    await activateLocation({ ...destination.location, selectedRelativePath: undefined }, true);
+  }
   state.historyIndex = next;
-  await selectPath(state.history[next]);
+  await selectPath(destination.path);
+  await runtime.tab.setRoute({
+    route: "/open",
+    state: { ...state.location, selectedRelativePath: destination.path || undefined },
+  });
+}
+
+async function navigateLocation(path) {
+  if (!state.location?.path) return;
+  try {
+    const destination = await runtime.controller.invoke("explorer.location", {
+      rootPath: state.location.path,
+      path,
+    });
+    searchSequence += 1;
+    state.query = "";
+    state.searchResults = [];
+    await activateLocation(destination, true);
+    pushHistory(destination.selectedRelativePath || "");
+    await runtime.tab.setRoute({ route: "/open", state: destination });
+    render();
+  } catch (error) {
+    state.error = friendlyError(error, "Explorer could not open this location.");
+    render();
+  }
+}
+
+async function moveUp() {
+  if (currentFolderPath()) return selectPath(parentRelative(currentFolderPath()), true);
+  if (!state.location?.path) return;
+  try {
+    const parent = await runtime.controller.invoke("explorer.parent", {
+      rootPath: state.location.path,
+    });
+    if (!parent) return;
+    await navigateLocation(parent.path);
+  } catch (error) {
+    state.error = friendlyError(error, "Explorer could not open the parent folder.");
+    render();
+  }
 }
 
 async function loadPreview(entry) {
-  const handle = state.handle;
+  const location = state.location;
   const sequence = activationSequence;
-  if (!handle) return;
+  if (!location) return;
   let kind = previewKind(entry);
   if (kind === "unsupported") {
-    const file = await readEntry(handle, entry.relativePath);
+    const file = await readEntry(location, entry.relativePath);
     const bytes = new Uint8Array(await file.slice(0, 64 * 1024).arrayBuffer());
-    if (sequence !== activationSequence || handle !== state.handle) return;
+    if (sequence !== activationSequence || location !== state.location) return;
     if (looksLikeText(bytes, bytes.byteLength < file.size)) kind = "text";
   }
+  cleanupPdf();
   if (kind === "text" || kind === "markdown" || kind === "svg" || kind === "table") {
-    const source = await (await readEntry(handle, entry.relativePath)).text();
-    if (sequence !== activationSequence || handle !== state.handle) return;
+    const source = await (await readEntry(location, entry.relativePath)).text();
+    if (sequence !== activationSequence || location !== state.location) return;
     cleanupObjectUrl();
-    if (!state.drafts.has(entry.relativePath)) state.drafts.set(entry.relativePath, makeDraft(source));
+    if (!state.drafts.has(entry.relativePath))
+      state.drafts.set(entry.relativePath, makeDraft(source));
     state.preview = { kind, source };
     return;
   }
-  if (kind === "image" || kind === "pdf") {
-    const file = await readEntry(handle, entry.relativePath);
+  if (kind === "image" || kind === "video") {
+    const file = await readEntry(location, entry.relativePath);
     const bytes = new Uint8Array(await file.arrayBuffer());
-    if (sequence !== activationSequence || handle !== state.handle) return;
+    if (sequence !== activationSequence || location !== state.location) return;
     cleanupObjectUrl();
     objectUrl = URL.createObjectURL(new Blob([bytes], { type: mimeFor(entry.name) }));
     state.preview = { kind, url: objectUrl };
+    return;
+  }
+  if (kind === "pdf") {
+    const file = await readEntry(location, entry.relativePath);
+    const data = new Uint8Array(await file.arrayBuffer());
+    if (sequence !== activationSequence || location !== state.location) return;
+    cleanupObjectUrl();
+    state.preview = { kind, data, page: 1, pageCount: 0, zoom: 1, error: null };
     return;
   }
   cleanupObjectUrl();
@@ -343,15 +563,29 @@ async function loadPreview(entry) {
 }
 
 function mimeFor(name) {
-  return ({ gif: "image/gif", jpeg: "image/jpeg", jpg: "image/jpeg", png: "image/png", svg: "image/svg+xml", webp: "image/webp", pdf: "application/pdf" })[extensionOf(name)] ?? "application/octet-stream";
+  if (Object.hasOwn(VIDEO_MIME_TYPES, extensionOf(name)))
+    return VIDEO_MIME_TYPES[extensionOf(name)];
+  return (
+    {
+      gif: "image/gif",
+      jpeg: "image/jpeg",
+      jpg: "image/jpeg",
+      png: "image/png",
+      svg: "image/svg+xml",
+      webp: "image/webp",
+      pdf: "application/pdf",
+    }[extensionOf(name)] ?? "application/octet-stream"
+  );
 }
 
 async function enumerate(path = "", output = [], seen = { count: 0 }) {
   if (seen.count >= 5000) return output;
   await loadDirectory(path, false, false);
   for (const entry of state.directoryCache.get(path) ?? []) {
-    output.push(entry); seen.count += 1;
-    if (entry.kind === "directory" && seen.count < 5000) await enumerate(entry.relativePath, output, seen);
+    output.push(entry);
+    seen.count += 1;
+    if (entry.kind === "directory" && seen.count < 5000)
+      await enumerate(entry.relativePath, output, seen);
   }
   return output;
 }
@@ -359,8 +593,14 @@ async function enumerate(path = "", output = [], seen = { count: 0 }) {
 async function runSearch(query) {
   const sequence = ++searchSequence;
   state.query = query;
-  if (!query.trim()) { state.searchResults = []; state.searchBusy = false; renderRailBody(); return; }
-  state.searchBusy = true; renderRailBody();
+  if (!query.trim()) {
+    state.searchResults = [];
+    state.searchBusy = false;
+    renderRailBody();
+    return;
+  }
+  state.searchBusy = true;
+  renderRailBody();
   try {
     const entries = await enumerate();
     if (sequence !== searchSequence) return;
@@ -368,33 +608,42 @@ async function runSearch(query) {
   } catch (error) {
     if (sequence === searchSequence) state.error = friendlyError(error, "Search could not finish.");
   } finally {
-    if (sequence === searchSequence) { state.searchBusy = false; renderRailBody(); }
+    if (sequence === searchSequence) {
+      state.searchBusy = false;
+      renderRailBody();
+    }
   }
 }
 
 function treeRows(path = "", depth = 0) {
-  return (state.directoryCache.get(path) ?? []).map((entry) => {
-    const selected = state.selected?.relativePath === entry.relativePath;
-    const expanded = entry.kind === "directory" && state.expanded.has(entry.relativePath);
-    const row = `<button class="tree-row${selected ? " is-selected" : ""}" style="--indent:${treeRowIndent(depth)}" data-path="${escapeHtml(entry.relativePath)}" data-kind="${entry.kind}" role="treeitem" aria-level="${depth + 1}" ${entry.kind === "directory" ? `aria-expanded="${expanded}"` : ""} aria-selected="${selected}" tabindex="${state.focusedPath === entry.relativePath ? "0" : "-1"}"><span class="disclosure">${entry.kind === "directory" ? icon("chevron", expanded ? "is-open" : "") : ""}</span>${entryIcon(entry, expanded)}<span class="tree-label">${escapeHtml(entry.name)}</span></button>`;
-    return row + (expanded ? treeRows(entry.relativePath, depth + 1) : "");
-  }).join("");
+  return (state.directoryCache.get(path) ?? [])
+    .map((entry) => {
+      const selected = state.selected?.relativePath === entry.relativePath;
+      const expanded = entry.kind === "directory" && state.expanded.has(entry.relativePath);
+      const row = `<button class="tree-row${selected ? " is-selected" : ""}" style="--indent:${treeRowIndent(depth)}" data-path="${escapeHtml(entry.relativePath)}" data-kind="${entry.kind}" ${entry.kind === "unavailable" ? `disabled aria-disabled="true" title="${escapeHtml(entry.error)}"` : ""} role="treeitem" aria-level="${depth + 1}" ${entry.kind === "directory" ? `aria-expanded="${expanded}"` : ""} aria-selected="${selected}" tabindex="${state.focusedPath === entry.relativePath ? "0" : "-1"}"><span class="disclosure">${entry.kind === "directory" ? icon("chevron", expanded ? "is-open" : "") : ""}</span>${entryIcon(entry, expanded)}<span class="tree-label">${escapeHtml(entry.name)}${entry.kind === "unavailable" ? `<small class="entry-error">${escapeHtml(entry.error)}</small>` : ""}</span></button>`;
+      return row + (expanded ? treeRows(entry.relativePath, depth + 1) : "");
+    })
+    .join("");
 }
 
 function appBar() {
-  const label = state.handle ? [state.handle.name, currentPath()].filter(Boolean).join(" / ") : "Choose a folder";
-  return `<header class="app-bar"><nav class="bar-group" aria-label="History"><button class="icon-button" data-action="back" aria-label="Back" ${state.historyIndex <= 0 ? "disabled" : ""}>${icon("back")}</button><button class="icon-button" data-action="forward" aria-label="Forward" ${state.historyIndex >= state.history.length - 1 ? "disabled" : ""}>${icon("forward")}</button><button class="icon-button" data-action="up" aria-label="Parent folder" ${!currentPath() ? "disabled" : ""}>${icon("up")}</button></nav><div class="location">${icon("folder")}<span>${escapeHtml(label)}</span></div><nav class="bar-group" aria-label="Explorer actions"><button class="icon-button" data-action="choose" aria-label="Choose folder">${icon("folderOpen")}</button><button class="icon-button" data-action="new-folder" aria-label="New folder" ${state.root?.kind !== "directory" ? "disabled" : ""}>${icon("folderPlus")}</button><button class="icon-button" data-action="menu" aria-label="More actions" aria-expanded="${state.menuOpen}">${icon("more")}</button></nav>${state.menuOpen ? `<div class="menu"><button data-action="refresh">${icon("refresh")}Refresh</button>${state.handle ? `<button data-action="forget">${icon("close")}Forget this location</button>` : ""}</div>` : ""}</header>`;
+  const label = state.location ? absoluteEntryPath(state.location, currentFolderPath()) : "";
+  return `<header class="app-bar"><nav class="bar-group" aria-label="History"><button class="icon-button" data-action="back" aria-label="Back" ${state.historyIndex <= 0 ? "disabled" : ""}>${icon("back")}</button><button class="icon-button" data-action="forward" aria-label="Forward" ${state.historyIndex >= state.history.length - 1 ? "disabled" : ""}>${icon("forward")}</button><button class="icon-button" data-action="up" aria-label="Parent folder" ${!currentPath() && (!state.location?.path || /^(?:\/|[a-z]:[\\/])$/i.test(state.location.path)) ? "disabled" : ""}>${icon("up")}</button></nav><form class="location" data-location-form>${icon("folder")}<input data-location aria-label="File or folder path" value="${escapeHtml(label)}" placeholder="Choose a folder" ${state.location?.path ? "" : "readonly"} /></form><nav class="bar-group" aria-label="Explorer actions"><button class="icon-button" data-action="choose" aria-label="Choose folder">${icon("folderOpen")}</button><button class="icon-button" data-action="new-folder" aria-label="New folder" ${state.root?.kind !== "directory" ? "disabled" : ""}>${icon("folderPlus")}</button><button class="icon-button" data-action="menu" aria-label="More actions" aria-expanded="${state.menuOpen}">${icon("more")}</button></nav>${state.menuOpen ? `<div class="menu"><button data-action="refresh">${icon("refresh")}Refresh</button>${state.location ? `<button data-action="forget">${icon("close")}Forget this location</button>` : ""}</div>` : ""}</header>`;
 }
 
 function rail() {
-  if (!state.handle) return `<aside class="tree-rail"><div class="search-box">${icon("search")}<input disabled placeholder="Search files…" /></div>${railState("folder", "No workspace", "Open a folder to browse files.")}</aside>`;
+  if (!state.location)
+    return `<aside class="tree-rail"><div class="search-box">${icon("search")}<input disabled placeholder="Search files…" /></div>${railState("folder", "No workspace", "Open a folder to browse files.")}</aside>`;
   return `<aside class="tree-rail"><label class="search-box">${icon("search")}<input data-search value="${escapeHtml(state.query)}" placeholder="Search files…" aria-label="Search files" /></label>${state.newFolder ? `<form class="new-folder-form" data-new-folder><input name="name" autofocus placeholder="Folder name" /><button>Save</button><button type="button" data-action="cancel-new-folder">Cancel</button></form>` : ""}<div class="tree-scroll" role="tree" aria-label="Files">${railBody()}</div></aside>`;
 }
 
 function railBody() {
-  return state.query ? searchRows() : state.root?.kind === "file"
-    ? `<button class="tree-row is-selected" data-path="" data-kind="file" role="treeitem" aria-selected="true" tabindex="0">${entryIcon(state.root)}<span class="tree-label">${escapeHtml(state.root.name)}</span></button>`
-    : treeRows() || railState("folder", "Empty folder", "This folder doesn’t contain any files yet.");
+  return state.query
+    ? searchRows()
+    : state.root?.kind === "file"
+      ? `<button class="tree-row is-selected" data-path="" data-kind="file" role="treeitem" aria-selected="true" tabindex="0">${entryIcon(state.root)}<span class="tree-label">${escapeHtml(state.root.name)}</span></button>`
+      : treeRows() ||
+        railState("folder", "Empty folder", "This folder doesn’t contain any files yet.");
 }
 
 function renderRailBody() {
@@ -402,25 +651,43 @@ function renderRailBody() {
   if (!treeScroll) return;
   const { scrollTop, scrollLeft } = treeScroll;
   treeScroll.innerHTML = railBody();
-  treeScroll.scrollTop = scrollTop; treeScroll.scrollLeft = scrollLeft;
+  treeScroll.scrollTop = scrollTop;
+  treeScroll.scrollLeft = scrollLeft;
 }
 
-function railState(iconName, title, detail) { return `<div class="rail-state">${icon(iconName)}<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div>`; }
+function railState(iconName, title, detail) {
+  return `<div class="rail-state">${icon(iconName)}<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span></div>`;
+}
 
 function searchRows() {
   if (state.searchBusy) return railState("refresh", "Searching…", "Checking this location.");
-  if (!state.searchResults.length) return railState("search", "No results", "Try another file name or path.");
-  return state.searchResults.map((entry, index) => `<button class="search-row${state.selected?.relativePath === entry.relativePath ? " is-selected" : ""}" data-path="${escapeHtml(entry.relativePath)}" data-kind="${entry.kind}" role="treeitem" aria-selected="${state.selected?.relativePath === entry.relativePath}" tabindex="${index === 0 ? "0" : "-1"}">${entryIcon(entry)}<span><strong>${escapeHtml(entry.name)}</strong><small>${escapeHtml(entry.relativePath)}</small></span></button>`).join("");
+  if (!state.searchResults.length)
+    return railState("search", "No results", "Try another file name or path.");
+  return state.searchResults
+    .map(
+      (entry, index) =>
+        `<button class="search-row${state.selected?.relativePath === entry.relativePath ? " is-selected" : ""}" data-path="${escapeHtml(entry.relativePath)}" data-kind="${entry.kind}" ${entry.kind === "unavailable" ? `disabled aria-disabled="true" title="${escapeHtml(entry.error)}"` : ""} role="treeitem" aria-selected="${state.selected?.relativePath === entry.relativePath}" tabindex="${index === 0 ? "0" : "-1"}">${entryIcon(entry)}<span><strong>${escapeHtml(entry.name)}</strong><small>${escapeHtml(entry.kind === "unavailable" ? entry.error : entry.relativePath)}</small></span></button>`,
+    )
+    .join("");
 }
 
 function preview() {
-  if (state.loading) return mainState("refresh", "Loading Explorer", "Restoring scoped file access.", true);
+  if (state.loading)
+    return mainState("refresh", "Loading Explorer", "Restoring scoped file access.", true);
   if (state.error) return mainState("warning", "Couldn’t open this item", state.error);
-  if (!state.handle) return `<main class="preview-pane centered"><div class="main-state"><img class="app-logo" src="assets/logo.svg" alt="" /><strong>No workspace is open</strong><span>Choose a folder to browse and preview its files.</span></div></main>`;
-  if (!state.selected) return mainState("file", "Select a file", "Choose a file from the tree to view it.");
+  if (!state.location)
+    return `<main class="preview-pane centered"><div class="main-state"><img class="app-logo" src="assets/logo.svg" alt="" /><strong>No workspace is open</strong><span>Choose a folder to browse and preview its files.</span></div></main>`;
+  if (!state.selected)
+    return mainState("file", "Select a file", "Choose a file from the tree to view it.");
   if (state.selected.kind === "directory") {
     const entries = state.directoryCache.get(state.selected.relativePath) ?? [];
-    return entries.length ? mainState("folderOpen", state.selected.name, `${entries.length} item${entries.length === 1 ? "" : "s"}`) : mainState("folder", "This folder is empty", "Create a folder or add files to begin.");
+    return entries.length
+      ? mainState(
+          "folderOpen",
+          state.selected.name,
+          `${entries.length} item${entries.length === 1 ? "" : "s"}`,
+        )
+      : mainState("folder", "This folder is empty", "Create a folder or add files to begin.");
   }
   return `<main class="preview-pane">${previewHeader()}<section class="preview-content">${previewBody()}</section></main>`;
 }
@@ -433,7 +700,15 @@ function previewHeader() {
   const mode = svg ? state.svgMode : table ? state.tableMode : state.markdownMode;
   const editable = state.preview?.kind === "text" || switchable;
   const draft = draftFor();
-  const status = draft?.saving ? "Saving…" : draft?.saveError ? "Save failed" : draft?.dirty ? "Unsaved" : editable ? "Saved" : "";
+  const status = draft?.saving
+    ? "Saving…"
+    : draft?.saveError
+      ? "Save failed"
+      : draft?.dirty
+        ? "Unsaved"
+        : editable
+          ? "Saved"
+          : "";
   return `<header class="preview-header"><div class="file-path">${escapeHtml(state.selected.relativePath || state.selected.name)}</div><div class="preview-actions">${draft?.dirty ? '<span class="dirty-dot" aria-label="Unsaved changes"></span>' : ""}${status ? `<span class="editor-status${draft?.saveError ? " is-error" : ""}" data-editor-status>${escapeHtml(status)}</span>` : ""}${switchable ? `<div class="view-switch"><button data-mode="source" class="${mode === "source" ? "is-active" : ""}">Source</button><button data-mode="preview" class="${mode === "preview" ? "is-active" : ""}">Preview</button></div>` : ""}${editable ? `<button class="save-button" data-action="save" ${draft?.saving || draft?.conflict || !draft?.dirty ? "disabled" : ""}>Save</button>` : ""}</div></header>`;
 }
 
@@ -444,7 +719,10 @@ function conflictBanner(draft) {
 }
 
 function numberedSource(source) {
-  return String(source).split("\n").map((line, index) => `<span data-line="${index + 1}">${escapeHtml(line) || " "}</span>`).join("");
+  return String(source)
+    .split("\n")
+    .map((line, index) => `<span data-line="${index + 1}">${escapeHtml(line) || " "}</span>`)
+    .join("");
 }
 
 function conflictDiff(draft) {
@@ -455,15 +733,29 @@ function conflictDiff(draft) {
 function tablePreview(source) {
   const delimiter = extensionOf(state.selected?.name ?? "") === "tsv" ? "\t" : ",";
   const parsed = parseDelimited(source, { delimiter });
-  if (!parsed.rows.length) return mainStateContent("file", "Empty table", "This file does not contain any rows.");
+  if (!parsed.rows.length)
+    return mainStateContent("file", "Empty table", "This file does not contain any rows.");
   const [header, ...body] = parsed.rows;
   const width = Math.max(header.length, ...body.map((row) => row.length));
-  const heading = Array.from({ length: width }, (_, index) => `<th scope="col">${escapeHtml(header[index] ?? "") || `<span class="empty-cell">Column ${index + 1}</span>`}</th>`).join("");
-  const rows = body.map((row, rowIndex) => `<tr><th class="row-number" scope="row">${rowIndex + 1}</th>${Array.from({ length: width }, (_, index) => `<td>${escapeHtml(row[index] ?? "") || '<span class="empty-cell">empty</span>'}</td>`).join("")}</tr>`).join("");
+  const heading = Array.from(
+    { length: width },
+    (_, index) =>
+      `<th scope="col">${escapeHtml(header[index] ?? "") || `<span class="empty-cell">Column ${index + 1}</span>`}</th>`,
+  ).join("");
+  const rows = body
+    .map(
+      (row, rowIndex) =>
+        `<tr><th class="row-number" scope="row">${rowIndex + 1}</th>${Array.from({ length: width }, (_, index) => `<td>${escapeHtml(row[index] ?? "") || '<span class="empty-cell">empty</span>'}</td>`).join("")}</tr>`,
+    )
+    .join("");
   const warnings = [
     parsed.issue,
-    parsed.truncatedRows ? `Showing the first ${parsed.rows.length.toLocaleString()} of ${parsed.totalRows.toLocaleString()} rows.` : null,
-    parsed.truncatedColumns ? `Showing the first ${width.toLocaleString()} of ${parsed.columnCount.toLocaleString()} columns.` : null,
+    parsed.truncatedRows
+      ? `Showing the first ${parsed.rows.length.toLocaleString()} of ${parsed.totalRows.toLocaleString()} rows.`
+      : null,
+    parsed.truncatedColumns
+      ? `Showing the first ${width.toLocaleString()} of ${parsed.columnCount.toLocaleString()} columns.`
+      : null,
   ].filter(Boolean);
   const dataRows = Math.max(0, parsed.totalRows - 1);
   return `<div class="table-preview"><div class="table-summary"><span>${dataRows.toLocaleString()} data row${dataRows === 1 ? "" : "s"} · ${parsed.columnCount.toLocaleString()} column${parsed.columnCount === 1 ? "" : "s"}</span>${warnings.map((warning) => `<span class="table-warning">${icon("warning")}${escapeHtml(warning)}</span>`).join("")}</div><div class="table-scroll"><table class="data-grid"><thead><tr><th class="row-number" aria-label="Row number"></th>${heading}</tr></thead><tbody>${rows}</tbody></table></div></div>`;
@@ -472,12 +764,28 @@ function tablePreview(source) {
 function previewBody() {
   const preview = state.preview;
   if (!preview) return mainStateContent("refresh", "Loading preview…", "");
-  if (preview.kind === "unsupported") return mainStateContent("warning", "Unsupported file type", "Open it with another App or the system.");
-  if (preview.kind === "image") return `<div class="media-preview"><img src="${escapeHtml(preview.url)}" alt="${escapeHtml(state.selected.name)}" /></div>`;
-  if (preview.kind === "pdf") return `<object class="pdf-preview" data="${escapeHtml(preview.url)}" type="application/pdf"><p>PDF preview is unavailable.</p></object>`;
+  if (preview.kind === "unsupported")
+    return mainStateContent(
+      "warning",
+      "Unsupported file type",
+      "Open it with another App or the system.",
+    );
+  if (preview.kind === "image")
+    return `<div class="media-preview"><img src="${escapeHtml(preview.url)}" alt="${escapeHtml(state.selected.name)}" /></div>`;
+  if (preview.kind === "video")
+    return `<div class="media-preview video-preview"><video controls playsinline preload="metadata" src="${escapeHtml(preview.url)}" aria-label="${escapeHtml(state.selected.name)}"></video><div data-video-error hidden role="alert"></div></div>`;
+  if (preview.kind === "pdf") {
+    if (preview.error)
+      return mainStateContent("warning", "Couldn’t preview this PDF", preview.error);
+    const page = clampPdfPage(preview.page, preview.pageCount || 1);
+    const pageCount = preview.pageCount || 0;
+    return `<div class="pdf-preview"><div class="pdf-toolbar" aria-label="PDF controls"><button class="pdf-tool-button pdf-previous" data-action="pdf-previous" aria-label="Previous page" ${page <= 1 ? "disabled" : ""}>${icon("chevron")}</button><span class="pdf-page-indicator" data-pdf-page>${page} / ${pageCount || "…"}</span><button class="pdf-tool-button" data-action="pdf-next" aria-label="Next page" ${!pageCount || page >= pageCount ? "disabled" : ""}>${icon("chevron")}</button><span class="pdf-toolbar-divider" aria-hidden="true"></span><span class="pdf-zoom">${Math.round(preview.zoom * 100)}%</span></div><div class="pdf-canvas" data-pdf-stage><div class="pdf-loading" data-pdf-loading>${icon("refresh", "spin")}<span>Rendering page…</span></div><canvas class="pdf-page" data-pdf-canvas aria-label="Page ${page}"></canvas></div></div>`;
+  }
   const draft = draftFor();
-  if (preview.kind === "table" && state.tableMode === "preview") return tablePreview(draft?.source ?? preview.source);
-  if (preview.kind === "markdown" && state.markdownMode === "preview") return `<article class="markdown-preview">${renderMarkdown(draft?.source ?? preview.source)}</article>`;
+  if (preview.kind === "table" && state.tableMode === "preview")
+    return tablePreview(draft?.source ?? preview.source);
+  if (preview.kind === "markdown" && state.markdownMode === "preview")
+    return `<article class="markdown-preview">${renderMarkdown(draft?.source ?? preview.source)}</article>`;
   if (preview.kind === "svg" && state.svgMode === "preview") {
     cleanupObjectUrl();
     return `<figure class="svg-preview"><div class="svg-canvas"><div class="svg-document" data-svg-preview aria-label="Preview of ${escapeHtml(state.selected.name)}"></div></div><figcaption>Scalable vector graphic</figcaption></figure>`;
@@ -486,26 +794,55 @@ function previewBody() {
   return `<div class="editor-shell">${conflictBanner(draft)}${conflictDiff(draft)}<div class="source-editor" data-editor></div></div>`;
 }
 
-function mainState(iconName, title, detail, spinning = false) { return `<main class="preview-pane centered">${mainStateContent(iconName, title, detail, spinning)}</main>`; }
-function mainStateContent(iconName, title, detail, spinning = false) { return `<div class="main-state">${icon(iconName, spinning ? "spin" : "")}<strong>${escapeHtml(title)}</strong>${detail ? `<span>${escapeHtml(detail)}</span>` : ""}</div>`; }
-function scrollKey() { return `${state.handle?.id ?? "none"}:${state.query ? "search" : "tree"}`; }
+function mainState(iconName, title, detail, spinning = false) {
+  return `<main class="preview-pane centered">${mainStateContent(iconName, title, detail, spinning)}</main>`;
+}
+function mainStateContent(iconName, title, detail, spinning = false) {
+  return `<div class="main-state">${icon(iconName, spinning ? "spin" : "")}<strong>${escapeHtml(title)}</strong>${detail ? `<span>${escapeHtml(detail)}</span>` : ""}</div>`;
+}
+function scrollKey() {
+  return `${state.location?.path ?? "none"}:${state.query ? "search" : "tree"}`;
+}
 
 function render() {
+  const retainedVideo = state.preview?.kind === "video" ? root.querySelector("video") : null;
+  const retainVideo = Boolean(
+    retainedVideo && retainedVideo.getAttribute("src") === state.preview?.url,
+  );
+  const resumeVideo = retainVideo && !retainedVideo.paused && !retainedVideo.ended;
+  if (retainVideo) retainedVideo.remove();
   const treeScroll = root.querySelector(".tree-scroll");
-  if (treeScroll) state.railScroll.set(scrollKey(), { top: treeScroll.scrollTop, left: treeScroll.scrollLeft });
+  if (treeScroll)
+    state.railScroll.set(scrollKey(), { top: treeScroll.scrollTop, left: treeScroll.scrollLeft });
   const activeSearch = root.querySelector("[data-search]:focus");
-  const searchSelection = activeSearch ? { start: activeSearch.selectionStart, end: activeSearch.selectionEnd, direction: activeSearch.selectionDirection } : null;
+  const searchSelection = activeSearch
+    ? {
+        start: activeSearch.selectionStart,
+        end: activeSearch.selectionEnd,
+        direction: activeSearch.selectionDirection,
+      }
+    : null;
   const activePath = document.activeElement?.dataset?.path;
   if (activePath !== undefined) state.focusedPath = activePath;
-  cleanupEditor(); cleanupMarkdownUrls();
+  cleanupEditor();
+  cleanupMarkdownUrls();
+  cleanupPdfView();
   root.innerHTML = `${appBar()}<div class="surface" style="--rail-width:${state.railWidth}px">${rail()}<div class="rail-resizer" data-resizer role="separator" aria-label="Resize file tree" aria-orientation="vertical" tabindex="0"></div>${preview()}</div>`;
   const nextTree = root.querySelector(".tree-scroll");
   const savedScroll = state.railScroll.get(scrollKey());
-  if (nextTree && savedScroll) { nextTree.scrollTop = savedScroll.top; nextTree.scrollLeft = savedScroll.left; }
+  if (nextTree && savedScroll) {
+    nextTree.scrollTop = savedScroll.top;
+    nextTree.scrollLeft = savedScroll.left;
+  }
   if (searchSelection) {
     const nextSearch = root.querySelector("[data-search]");
     nextSearch?.focus({ preventScroll: true });
-    if (nextSearch && searchSelection.start !== null && searchSelection.end !== null) nextSearch.setSelectionRange(searchSelection.start, searchSelection.end, searchSelection.direction ?? "none");
+    if (nextSearch && searchSelection.start !== null && searchSelection.end !== null)
+      nextSearch.setSelectionRange(
+        searchSelection.start,
+        searchSelection.end,
+        searchSelection.direction ?? "none",
+      );
   } else if (state.focusedPath !== null) focusTreePath(state.focusedPath, false);
   if (pendingRevealPath !== null) {
     const revealPath = pendingRevealPath;
@@ -513,36 +850,195 @@ function render() {
     treeRowForPath(revealPath)?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }
   mountEditor();
+  const video = root.querySelector("video");
+  if (video) {
+    if (retainVideo) {
+      video.replaceWith(retainedVideo);
+      if (resumeVideo) void retainedVideo.play().catch(() => undefined);
+    } else
+      video.addEventListener("error", () => {
+        const message = root.querySelector("[data-video-error]");
+        if (!video.isConnected || !message) return;
+        video.hidden = true;
+        message.hidden = false;
+        message.innerHTML = mainStateContent(
+          "warning",
+          "Couldn’t play this video",
+          "This video’s format or codec isn’t supported. Open it with the system to play it.",
+        );
+      });
+    if (retainVideo && retainedVideo.error) retainedVideo.dispatchEvent(new Event("error"));
+  }
   void hydrateMarkdownPreview();
   hydrateSvgPreview();
+  void hydratePdfPreview();
+}
+
+async function ensurePdfDocument(preview) {
+  if (pdfSource === preview && pdfDocument) return pdfDocument;
+  if (pdfSource === preview && pdfLoadingPromise) return pdfLoadingPromise;
+  cleanupPdf();
+  pdfSource = preview;
+  const loaded = loadPdfDocument(preview.data.slice());
+  pdfLoadingTask = loaded.loadingTask;
+  pdfLoadingPromise = loaded.promise.then((document) => {
+    if (pdfSource !== preview) {
+      void document.destroy();
+      throw new Error("PDF preview changed while loading.");
+    }
+    pdfDocument = document;
+    pdfLoadingTask = null;
+    return document;
+  });
+  return pdfLoadingPromise;
+}
+
+async function hydratePdfPreview() {
+  const preview = state.preview;
+  const stage = root.querySelector("[data-pdf-stage]");
+  const canvas = root.querySelector("[data-pdf-canvas]");
+  if (preview?.kind !== "pdf" || !stage || !canvas) return;
+  try {
+    const document = await ensurePdfDocument(preview);
+    if (state.preview !== preview || !canvas.isConnected) return;
+    const sequence = ++pdfRenderSequence;
+    preview.pageCount = document.numPages;
+    preview.page = clampPdfPage(preview.page, preview.pageCount);
+    syncPdfToolbar(preview);
+    const page = await document.getPage(preview.page);
+    if (sequence !== pdfRenderSequence || !canvas.isConnected) {
+      page.cleanup();
+      return;
+    }
+    const baseViewport = page.getViewport({ scale: 1 });
+    const availableWidth = Math.max(1, stage.clientWidth - 52);
+    const scale = pdfRenderScale(baseViewport.width, availableWidth, preview.zoom);
+    const viewport = page.getViewport({ scale });
+    const pixelRatio = Math.min(2, Math.max(1, globalThis.devicePixelRatio || 1));
+    canvas.width = Math.max(1, Math.floor(viewport.width * pixelRatio));
+    canvas.height = Math.max(1, Math.floor(viewport.height * pixelRatio));
+    canvas.style.width = `${Math.floor(viewport.width)}px`;
+    canvas.style.height = `${Math.floor(viewport.height)}px`;
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) throw new Error("Canvas rendering is unavailable.");
+    pdfRenderTask = page.render({
+      canvasContext: context,
+      viewport,
+      transform: pixelRatio === 1 ? undefined : [pixelRatio, 0, 0, pixelRatio, 0, 0],
+    });
+    await pdfRenderTask.promise;
+    if (sequence !== pdfRenderSequence || !canvas.isConnected) return;
+    canvas.classList.add("is-ready");
+    root.querySelector("[data-pdf-loading]")?.remove();
+    pdfRenderTask = null;
+    page.cleanup();
+    let observedWidth = stage.clientWidth;
+    pdfResizeObserver = new ResizeObserver((entries) => {
+      const nextWidth = entries.at(-1)?.contentRect.width ?? stage.clientWidth;
+      if (Math.abs(nextWidth - observedWidth) < 1) return;
+      observedWidth = nextWidth;
+      if (state.preview === preview && root.querySelector("[data-pdf-canvas]") === canvas) {
+        cleanupPdfView();
+        void hydratePdfPreview();
+      }
+    });
+    pdfResizeObserver.observe(stage);
+  } catch (error) {
+    if (state.preview !== preview || error?.name === "RenderingCancelledException") return;
+    preview.error = friendlyError(error, "Explorer could not render this PDF.");
+    render();
+  }
+}
+
+function syncPdfToolbar(preview) {
+  const page = clampPdfPage(preview.page, preview.pageCount);
+  const indicator = root.querySelector("[data-pdf-page]");
+  if (indicator) indicator.textContent = `${page} / ${preview.pageCount}`;
+  const previous = root.querySelector('[data-action="pdf-previous"]');
+  const next = root.querySelector('[data-action="pdf-next"]');
+  if (previous) previous.disabled = page <= 1;
+  if (next) next.disabled = page >= preview.pageCount;
 }
 
 const SVG_ELEMENTS = new Set([
-  "circle", "clippath", "defs", "desc", "ellipse", "feblend", "fecolormatrix",
-  "fecomponenttransfer", "fecomposite", "feconvolvematrix", "fediffuselighting",
-  "fedisplacementmap", "fedistantlight", "fedropshadow", "feflood", "fefunca", "fefuncb",
-  "fefuncg", "fefuncr", "fegaussianblur", "feimage", "femerge", "femergenode",
-  "femorphology", "feoffset", "fepointlight", "fespecularlighting", "fespotlight", "fetile",
-  "feturbulence", "filter", "g", "line", "lineargradient", "marker", "mask", "path",
-  "pattern", "polygon", "polyline", "radialgradient", "rect", "stop", "svg", "symbol",
-  "text", "textpath", "title", "tspan", "use",
+  "circle",
+  "clippath",
+  "defs",
+  "desc",
+  "ellipse",
+  "feblend",
+  "fecolormatrix",
+  "fecomponenttransfer",
+  "fecomposite",
+  "feconvolvematrix",
+  "fediffuselighting",
+  "fedisplacementmap",
+  "fedistantlight",
+  "fedropshadow",
+  "feflood",
+  "fefunca",
+  "fefuncb",
+  "fefuncg",
+  "fefuncr",
+  "fegaussianblur",
+  "feimage",
+  "femerge",
+  "femergenode",
+  "femorphology",
+  "feoffset",
+  "fepointlight",
+  "fespecularlighting",
+  "fespotlight",
+  "fetile",
+  "feturbulence",
+  "filter",
+  "g",
+  "line",
+  "lineargradient",
+  "marker",
+  "mask",
+  "path",
+  "pattern",
+  "polygon",
+  "polyline",
+  "radialgradient",
+  "rect",
+  "stop",
+  "svg",
+  "symbol",
+  "text",
+  "textpath",
+  "title",
+  "tspan",
+  "use",
 ]);
 
 function unsafeSvgValue(value) {
   if (/(?:javascript|vbscript|data|https?|file):|@import|expression\s*\(/i.test(value)) return true;
-  return [...value.matchAll(/url\(\s*(['"]?)(.*?)\1\s*\)/gi)].some((match) => !match[2].startsWith("#"));
+  return [...value.matchAll(/url\(\s*(['"]?)(.*?)\1\s*\)/gi)].some(
+    (match) => !match[2].startsWith("#"),
+  );
 }
 
 function sanitizedSvg(source) {
   const parsed = new DOMParser().parseFromString(String(source), "image/svg+xml");
   const svg = parsed.documentElement;
-  if (svg.localName.toLowerCase() !== "svg" || parsed.querySelector("parsererror")) throw new Error("Invalid SVG");
+  if (svg.localName.toLowerCase() !== "svg" || parsed.querySelector("parsererror"))
+    throw new Error("Invalid SVG");
   for (const element of [svg, ...svg.querySelectorAll("*")]) {
-    if (!SVG_ELEMENTS.has(element.localName.toLowerCase())) { element.remove(); continue; }
+    if (!SVG_ELEMENTS.has(element.localName.toLowerCase())) {
+      element.remove();
+      continue;
+    }
     for (const attribute of [...element.attributes]) {
       const name = attribute.name.toLowerCase();
       const value = attribute.value.trim();
-      if (name.startsWith("on") || name === "src" || (["href", "xlink:href"].includes(name) && !value.startsWith("#")) || unsafeSvgValue(value)) {
+      if (
+        name.startsWith("on") ||
+        name === "src" ||
+        (["href", "xlink:href"].includes(name) && !value.startsWith("#")) ||
+        unsafeSvgValue(value)
+      ) {
         element.removeAttribute(attribute.name);
       }
     }
@@ -556,8 +1052,9 @@ function hydrateSvgPreview() {
   const target = root.querySelector("[data-svg-preview]");
   const draft = draftFor();
   if (!target || state.preview?.kind !== "svg") return;
-  try { target.append(sanitizedSvg(draft?.source ?? state.preview.source)); }
-  catch {
+  try {
+    target.append(sanitizedSvg(draft?.source ?? state.preview.source));
+  } catch {
     target.classList.add("is-invalid");
     target.textContent = "This SVG could not be rendered. Open Source to inspect or repair it.";
   }
@@ -571,25 +1068,45 @@ function mountEditor() {
   const path = selected.relativePath;
   editorPath = path;
   editorView = createEditor({
-    parent, name: selected.name, doc: draft.source, editorState: draft.editorState,
+    parent,
+    name: selected.name,
+    doc: draft.source,
+    editorState: draft.editorState,
     onChange(source, editorState) {
       const current = state.drafts.get(path);
       if (!current) return;
-      current.source = source; current.editorState = editorState; current.dirty = source !== current.savedSource; current.saveError = null;
+      current.source = source;
+      current.editorState = editorState;
+      current.dirty = source !== current.savedSource;
+      current.saveError = null;
       syncEditorStatus(current);
     },
-    onSave() { void savePath(path); },
+    onSave() {
+      void savePath(path);
+    },
   });
 }
 
 function syncEditorStatus(draft) {
   const status = root.querySelector("[data-editor-status]");
   if (status) {
-    status.textContent = draft.saving ? "Saving…" : draft.saveError ? "Save failed" : draft.dirty ? "Unsaved" : "Saved";
+    status.textContent = draft.saving
+      ? "Saving…"
+      : draft.saveError
+        ? "Save failed"
+        : draft.dirty
+          ? "Unsaved"
+          : "Saved";
     status.classList.toggle("is-error", Boolean(draft.saveError));
   }
   const dirtyDot = root.querySelector(".dirty-dot");
-  if (draft.dirty && !dirtyDot) root.querySelector(".preview-actions")?.insertAdjacentHTML("afterbegin", '<span class="dirty-dot" aria-label="Unsaved changes"></span>');
+  if (draft.dirty && !dirtyDot)
+    root
+      .querySelector(".preview-actions")
+      ?.insertAdjacentHTML(
+        "afterbegin",
+        '<span class="dirty-dot" aria-label="Unsaved changes"></span>',
+      );
   else if (!draft.dirty) dirtyDot?.remove();
   const save = root.querySelector('[data-action="save"]');
   if (save) save.disabled = draft.saving || Boolean(draft.conflict) || !draft.dirty;
@@ -597,36 +1114,50 @@ function syncEditorStatus(draft) {
 
 async function hydrateMarkdownPreview() {
   const article = root.querySelector(".markdown-preview");
-  if (!article || !state.handle || !state.selected) return;
+  if (!article || !state.location || !state.selected) return;
   const base = parentRelative(state.selected.relativePath);
   const sequence = activationSequence;
   for (const image of article.querySelectorAll("img[src]")) {
     const source = image.getAttribute("src") ?? "";
     if (!isRelativeUrl(source)) {
-      image.removeAttribute("src"); image.classList.add("is-unavailable"); image.title = "Remote images are not loaded in Explorer."; continue;
+      image.removeAttribute("src");
+      image.classList.add("is-unavailable");
+      image.title = "Remote images are not loaded in Explorer.";
+      continue;
     }
     const relativePath = resolveMarkdownPath(base, source);
     if (!relativePath) continue;
     try {
-      const localUrl = Boolean(state.handle.path);
-      const url = localUrl
-        ? URL.createObjectURL(await readEntry(state.handle, relativePath))
-        : await runtime.files.open(state.handle.id, relativePath);
+      const url = URL.createObjectURL(await readEntry(state.location, relativePath));
       if (sequence !== activationSequence || !image.isConnected) {
-        if (localUrl) URL.revokeObjectURL(url);
-        else await runtime.files.closeUrl(url).catch(() => undefined);
+        URL.revokeObjectURL(url);
         continue;
       }
-      markdownUrls.add(url); image.src = url;
-    } catch { image.removeAttribute("src"); image.classList.add("is-unavailable"); }
+      markdownUrls.add(url);
+      image.src = url;
+    } catch {
+      image.removeAttribute("src");
+      image.classList.add("is-unavailable");
+    }
   }
   for (const anchor of article.querySelectorAll("a[href]")) {
     const href = anchor.getAttribute("href") ?? "";
-    if (!href.startsWith("#") && !isRelativeUrl(href)) { anchor.target = "_blank"; anchor.rel = "noreferrer noopener"; }
+    if (!href.startsWith("#") && !isRelativeUrl(href)) {
+      anchor.target = "_blank";
+      anchor.rel = "noreferrer noopener";
+    }
   }
 }
 
-function isRelativeUrl(value) { return Boolean(value) && !value.startsWith("#") && !value.startsWith("/") && !value.startsWith("//") && !/^[a-z][a-z\d+.-]*:/i.test(value); }
+function isRelativeUrl(value) {
+  return (
+    Boolean(value) &&
+    !value.startsWith("#") &&
+    !value.startsWith("/") &&
+    !value.startsWith("//") &&
+    !/^[a-z][a-z\d+.-]*:/i.test(value)
+  );
+}
 
 function resolveMarkdownPath(base, value) {
   const plain = value.split(/[?#]/, 1)[0];
@@ -634,53 +1165,61 @@ function resolveMarkdownPath(base, value) {
     const parts = [];
     for (const part of `${base}/${decodeURIComponent(plain)}`.split("/")) {
       if (!part || part === ".") continue;
-      if (part === "..") parts.pop(); else parts.push(part);
+      if (part === "..") parts.pop();
+      else parts.push(part);
     }
     return joinRelative(parts);
-  } catch { return ""; }
+  } catch {
+    return "";
+  }
 }
 
 function friendlyError(error, fallback) {
   const message = error instanceof Error ? error.message : String(error ?? "");
-  if (/revok|handle|access|permission/i.test(message)) return state.handle?.kind === "file" ? "Open this file again to restore access." : "Choose this folder again to restore access.";
   return message || fallback;
 }
 
 async function chooseFolder() {
-  const handle = await chooseExplorerRoot();
-  if (!handle) return;
-  await rememberExplorerRoot(handle); await activateHandle(handle);
+  const location = await chooseExplorerRoot();
+  if (!location) return;
+  await activateLocation(location);
+  await runtime.tab.setRoute({ route: "/open", state: location });
 }
 
 async function createFolder(form) {
   const name = String(new FormData(form).get("name") ?? "").trim();
   if (!name || name.includes("/") || name.includes("\\")) return;
-  const base = state.selected?.kind === "directory" ? state.selected.relativePath : parentRelative(currentPath());
-  await createDirectory(state.handle, base, name);
-  state.newFolder = false; await loadDirectory(base, true, true); render();
+  const base =
+    state.selected?.kind === "directory"
+      ? state.selected.relativePath
+      : parentRelative(currentPath());
+  await createDirectory(state.location, base, name);
+  state.newFolder = false;
+  await loadDirectory(base, true, true);
+  render();
 }
 
 async function showInFinder(entry) {
-  if (!state.handle) return;
-  if (state.handle.path) {
-    await runtime.shell.showItemInFolder(await resolveEntryPath(state.handle, entry.relativePath));
-    return;
-  }
-  const relativePath = finderRelativePath(entry);
-  await runtime.open({ handleId: state.handle.id, ...(relativePath ? { relativePath } : {}), with: "system" });
+  if (!state.location) return;
+  await runtime.shell.showItemInFolder(await resolveEntryPath(state.location, entry.relativePath));
 }
 
 async function trashEntry(entry) {
-  if (!state.handle?.path) throw new Error("This location must be reopened before it can be moved to Trash.");
-  const affects = (candidate) => candidate === entry.relativePath || candidate.startsWith(`${entry.relativePath}/`);
+  if (!state.location?.path)
+    throw new Error("This location must be reopened before it can be moved to Trash.");
+  const affects = (candidate) =>
+    candidate === entry.relativePath || candidate.startsWith(`${entry.relativePath}/`);
   if ([...state.drafts].some(([path, draft]) => affects(path) && draft.dirty)) {
     throw new Error("Save or discard changes before moving this item to Trash.");
   }
-  const path = await resolveEntryPath(state.handle, entry.relativePath);
+  const path = await resolveEntryPath(state.location, entry.relativePath);
   await runtime.shell.trashItem(path);
   if (state.selected && affects(state.selected.relativePath)) {
-    cleanupObjectUrl(); cleanupEditor();
-    state.selected = null; state.preview = null;
+    cleanupObjectUrl();
+    cleanupEditor();
+    cleanupPdf();
+    state.selected = null;
+    state.preview = null;
   }
   for (const path of state.drafts.keys()) if (affects(path)) state.drafts.delete(path);
   discardCachedBranch(entry.relativePath);
@@ -690,21 +1229,33 @@ async function trashEntry(entry) {
 
 async function savePath(path = currentPath()) {
   const draft = state.drafts.get(path);
-  if (!draft || !state.handle || draft.saving || draft.conflict || !draft.dirty) return;
-  draft.saving = true; draft.saveError = null; syncEditorStatus(draft);
+  if (!draft || !state.location || draft.saving || draft.conflict || !draft.dirty) return;
+  draft.saving = true;
+  draft.saveError = null;
+  syncEditorStatus(draft);
   try {
-    await writeTextEntry(state.handle, path, draft.source);
-    draft.savedSource = draft.source; draft.dirty = false;
-    if (state.selected?.relativePath === path) { state.preview = { ...state.preview, source: draft.source }; state.selected = await statEntry(state.handle, path); }
-  } catch (error) { draft.saveError = friendlyError(error, "Explorer could not save this file."); }
-  finally { draft.saving = false; syncEditorStatus(draft); }
+    await writeTextEntry(state.location, path, draft.source);
+    draft.savedSource = draft.source;
+    draft.dirty = false;
+    if (state.selected?.relativePath === path) {
+      state.preview = { ...state.preview, source: draft.source };
+      state.selected = await statEntry(state.location, path);
+    }
+  } catch (error) {
+    draft.saveError = friendlyError(error, "Explorer could not save this file.");
+  } finally {
+    draft.saving = false;
+    syncEditorStatus(draft);
+  }
 }
 
 function focusTreePath(path, scroll = true) {
   const target = treeRowForPath(path);
   if (!target) return;
-  for (const row of root.querySelectorAll("button[data-path]")) row.tabIndex = row === target ? 0 : -1;
-  target.focus({ preventScroll: !scroll }); state.focusedPath = path;
+  for (const row of root.querySelectorAll("button[data-path]"))
+    row.tabIndex = row === target ? 0 : -1;
+  target.focus({ preventScroll: !scroll });
+  state.focusedPath = path;
 }
 
 function treeRowForPath(path) {
@@ -713,49 +1264,73 @@ function treeRowForPath(path) {
 
 async function toggleDirectory(path, forceOpen) {
   const shouldOpen = forceOpen ?? !state.expanded.has(path);
-  if (shouldOpen) { state.expanded.add(path); await loadDirectory(path, false, true); }
-  else state.expanded.delete(path);
-  state.focusedPath = path; render();
+  if (shouldOpen) {
+    state.expanded.add(path);
+    await loadDirectory(path, false, true);
+  } else state.expanded.delete(path);
+  state.focusedPath = path;
+  render();
 }
 
 function handleTreeKeydown(event, row) {
-  const rows = [...root.querySelectorAll(".tree-row, .search-row")];
+  const rows = [...root.querySelectorAll(".tree-row:not(:disabled), .search-row:not(:disabled)")];
   const index = rows.indexOf(row);
   const path = row.dataset.path ?? "";
+  const match = typeahead.keydown(
+    event,
+    rows.map((candidate) => ({
+      name: candidate.querySelector(".tree-label, strong")?.textContent ?? "",
+      path: candidate.dataset.path ?? "",
+    })),
+    index,
+  );
+  if (match) focusTreePath(match.path);
   if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) {
     event.preventDefault();
-    const next = event.key === "Home" ? rows[0] : event.key === "End" ? rows.at(-1) : rows[index + (event.key === "ArrowDown" ? 1 : -1)];
-    if (next) focusTreePath(next.dataset.path ?? ""); return;
+    const next =
+      event.key === "Home"
+        ? rows[0]
+        : event.key === "End"
+          ? rows.at(-1)
+          : rows[index + (event.key === "ArrowDown" ? 1 : -1)];
+    if (next) focusTreePath(next.dataset.path ?? "");
+    return;
   }
   if (event.key === "ArrowRight" && row.dataset.kind === "directory") {
     event.preventDefault();
-    if (!state.expanded.has(path)) void toggleDirectory(path, true); else if (rows[index + 1]) focusTreePath(rows[index + 1].dataset.path ?? "");
+    if (!state.expanded.has(path)) void toggleDirectory(path, true);
+    else if (rows[index + 1]) focusTreePath(rows[index + 1].dataset.path ?? "");
     return;
   }
   if (event.key === "ArrowLeft") {
     event.preventDefault();
-    if (row.dataset.kind === "directory" && state.expanded.has(path)) void toggleDirectory(path, false); else focusTreePath(parentRelative(path));
+    if (row.dataset.kind === "directory" && state.expanded.has(path))
+      void toggleDirectory(path, false);
+    else focusTreePath(parentRelative(path));
     return;
   }
   if (event.key === "Enter" || event.key === " ") {
     event.preventDefault();
-    if (row.dataset.kind === "directory") void toggleDirectory(path); else void selectPath(path, true);
+    if (row.dataset.kind === "directory") void toggleDirectory(path);
+    else void selectPath(path, true);
     return;
   }
-  if (event.key.length === 1 && !event.metaKey && !event.ctrlKey && !event.altKey) {
-    clearTimeout(typeahead.timer); typeahead.value += event.key.toLocaleLowerCase();
-    typeahead.timer = setTimeout(() => { typeahead.value = ""; }, 600);
-    const match = [...rows.slice(index + 1), ...rows.slice(0, index + 1)].find((candidate) => candidate.querySelector(".tree-label, strong")?.textContent?.toLocaleLowerCase().startsWith(typeahead.value));
-    if (match) focusTreePath(match.dataset.path ?? "");
-  }
 }
+
+document.addEventListener("click", () => typeahead.click(), true);
+root.addEventListener("focusout", (event) => {
+  const tree = event.target.closest('[role="tree"]');
+  if (tree) typeahead.blur(!tree.contains(event.relatedTarget));
+});
 
 root.addEventListener("click", (event) => {
   const markdownLink = event.target.closest(".markdown-preview a[href]");
   if (markdownLink) {
     const href = markdownLink.getAttribute("href") ?? "";
     if (!href.startsWith("#") && isRelativeUrl(href)) {
-      event.preventDefault(); const path = resolveMarkdownPath(parentRelative(currentPath()), href); if (path) void selectPath(path, true);
+      event.preventDefault();
+      const path = resolveMarkdownPath(parentRelative(currentPath()), href);
+      if (path) void selectPath(path, true);
     }
     return;
   }
@@ -764,23 +1339,74 @@ root.addEventListener("click", (event) => {
   const action = button.dataset.action;
   if (action === "back") void moveHistory(-1);
   if (action === "forward") void moveHistory(1);
-  if (action === "up") void selectPath(parentRelative(currentPath()), true);
+  if (action === "up") void moveUp();
   if (action === "choose") void chooseFolder();
-  if (action === "new-folder") { state.newFolder = true; state.menuOpen = false; render(); }
-  if (action === "cancel-new-folder") { state.newFolder = false; render(); }
-  if (action === "menu") { state.menuOpen = !state.menuOpen; render(); }
-  if (action === "refresh") { state.menuOpen = false; void refreshAll(); }
-  if (action === "forget" && state.handle) void forgetExplorerRoot(state.handle).then(() => { cleanupWatchers(); state.handle = null; state.root = null; state.selected = null; render(); });
+  if (action === "new-folder") {
+    state.newFolder = true;
+    state.menuOpen = false;
+    render();
+  }
+  if (action === "cancel-new-folder") {
+    state.newFolder = false;
+    render();
+  }
+  if (action === "menu") {
+    state.menuOpen = !state.menuOpen;
+    render();
+  }
+  if (action === "refresh") {
+    state.menuOpen = false;
+    void refreshAll();
+  }
+  if (action === "forget" && state.location)
+    void forgetExplorerRoot(state.location).then(async () => {
+      await runtime.tab.setRoute({ route: "/" });
+      cleanupWatchers();
+      cleanupPdf();
+      state.location = null;
+      state.root = null;
+      state.selected = null;
+      render();
+    });
+  if ((action === "pdf-previous" || action === "pdf-next") && state.preview?.kind === "pdf") {
+    state.preview.page = clampPdfPage(
+      state.preview.page + (action === "pdf-next" ? 1 : -1),
+      state.preview.pageCount,
+    );
+    render();
+  }
   if (action === "save") void savePath();
   if (action === "reload-disk") {
     const draft = draftFor();
     if (draft?.conflict?.diskSource !== null && draft?.conflict?.diskSource !== undefined) {
-      const diskSource = draft.conflict.diskSource; state.drafts.set(currentPath(), makeDraft(diskSource)); state.preview = { ...state.preview, source: diskSource }; render();
+      const diskSource = draft.conflict.diskSource;
+      state.drafts.set(currentPath(), makeDraft(diskSource));
+      state.preview = { ...state.preview, source: diskSource };
+      render();
     }
   }
-  if (action === "keep-mine") { const draft = draftFor(); if (draft) { draft.conflict = null; draft.showDiff = false; draft.dirty = true; render(); } }
-  if (action === "compare-disk") { const draft = draftFor(); if (draft) { draft.showDiff = !draft.showDiff; render(); } }
-  if (action === "close-deleted") { state.drafts.delete(currentPath()); state.selected = null; state.preview = null; render(); }
+  if (action === "keep-mine") {
+    const draft = draftFor();
+    if (draft) {
+      draft.conflict = null;
+      draft.showDiff = false;
+      draft.dirty = true;
+      render();
+    }
+  }
+  if (action === "compare-disk") {
+    const draft = draftFor();
+    if (draft) {
+      draft.showDiff = !draft.showDiff;
+      render();
+    }
+  }
+  if (action === "close-deleted") {
+    state.drafts.delete(currentPath());
+    state.selected = null;
+    state.preview = null;
+    render();
+  }
   if (button.dataset.mode) {
     if (state.preview?.kind === "svg") state.svgMode = button.dataset.mode;
     else if (state.preview?.kind === "table") state.tableMode = button.dataset.mode;
@@ -788,35 +1414,56 @@ root.addEventListener("click", (event) => {
     render();
   }
   if (button.dataset.path !== undefined) {
-    const path = button.dataset.path; state.focusedPath = path;
-    if (button.dataset.kind === "directory") void toggleDirectory(path); else void selectPath(path, true);
+    const path = button.dataset.path;
+    state.focusedPath = path;
+    if (button.dataset.kind === "directory") void toggleDirectory(path);
+    else void selectPath(path, true);
   }
 });
 
 root.addEventListener("input", (event) => {
   if (!event.target.matches("[data-search]")) return;
-  state.query = event.target.value; clearTimeout(searchTimer);
-  searchTimer = setTimeout(() => void runSearch(event.target.value), 160);
+  void runSearch(event.target.value);
 });
 
 root.addEventListener("keydown", (event) => {
+  if (event.target.matches("[data-location]")) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.target.value = absoluteEntryPath(state.location, currentFolderPath());
+      event.target.blur();
+    }
+    return;
+  }
   if (event.target.matches("[data-search]")) {
-    if (event.key === "Escape" && state.query) { event.preventDefault(); clearTimeout(searchTimer); state.query = ""; state.searchResults = []; render(); }
-    else if (event.key === "Enter" && state.searchResults[0]) { event.preventDefault(); void selectPath(state.searchResults[0].relativePath, true); }
+    if (event.key === "Escape" && state.query) {
+      event.preventDefault();
+      void runSearch("");
+    } else if (event.key === "Enter" && state.searchResults[0]) {
+      event.preventDefault();
+      void selectPath(state.searchResults[0].relativePath, true);
+    }
     return;
   }
   const row = event.target.closest(".tree-row, .search-row");
   if (row) handleTreeKeydown(event, row);
   if (event.target.matches("[data-resizer]") && ["ArrowLeft", "ArrowRight"].includes(event.key)) {
-    event.preventDefault(); state.railWidth = Math.min(520, Math.max(180, state.railWidth + (event.key === "ArrowRight" ? 12 : -12)));
-    root.querySelector(".surface")?.style.setProperty("--rail-width", `${state.railWidth}px`); localStorage.setItem("explorer.railWidth", String(state.railWidth));
+    event.preventDefault();
+    state.railWidth = Math.min(
+      520,
+      Math.max(180, state.railWidth + (event.key === "ArrowRight" ? 12 : -12)),
+    );
+    root.querySelector(".surface")?.style.setProperty("--rail-width", `${state.railWidth}px`);
+    localStorage.setItem("explorer.railWidth", String(state.railWidth));
   }
 });
 
 root.addEventListener("pointerdown", (event) => {
   if (!event.target.matches("[data-resizer]")) return;
-  event.preventDefault(); resizing = { startX: event.clientX, width: state.railWidth };
-  event.target.setPointerCapture(event.pointerId); document.documentElement.classList.add("is-resizing");
+  event.preventDefault();
+  resizing = { startX: event.clientX, width: state.railWidth };
+  event.target.setPointerCapture(event.pointerId);
+  document.documentElement.classList.add("is-resizing");
 });
 
 root.addEventListener("pointermove", (event) => {
@@ -827,44 +1474,82 @@ root.addEventListener("pointermove", (event) => {
 
 root.addEventListener("pointerup", (event) => {
   if (!resizing) return;
-  resizing = null; event.target.releasePointerCapture?.(event.pointerId); document.documentElement.classList.remove("is-resizing");
+  resizing = null;
+  event.target.releasePointerCapture?.(event.pointerId);
+  document.documentElement.classList.remove("is-resizing");
   localStorage.setItem("explorer.railWidth", String(Math.round(state.railWidth)));
 });
 
 root.addEventListener("contextmenu", (event) => {
   const target = event.target.closest?.("button[data-path]");
-  if (!target || !runtime.contextMenu?.show) return;
+  if (!target || target.disabled || !runtime.contextMenu?.show) return;
   event.preventDefault();
-  const entry = { kind: target.dataset.kind === "directory" ? "directory" : "file", relativePath: target.dataset.path ?? "" };
+  const entry = {
+    kind: target.dataset.kind === "directory" ? "directory" : "file",
+    relativePath: target.dataset.path ?? "",
+  };
   const items = [
     { id: "open", label: "Open" },
     { id: "show-in-finder", label: "Show in Finder", separatorBefore: true },
-    ...(state.handle?.path ? [{ id: "trash", label: "Move to Trash", destructive: true }] : []),
+    ...(state.location?.path ? [{ id: "trash", label: "Move to Trash", destructive: true }] : []),
   ];
-  void runtime.contextMenu.show(items).then((action) => {
-    if (action === "open") return selectPath(entry.relativePath, true);
-    if (action === "show-in-finder") return showInFinder(entry);
-    if (action === "trash") return trashEntry(entry);
-  }).catch((error) => { state.error = friendlyError(error, "Explorer could not complete that file action."); render(); });
+  void runtime.contextMenu
+    .show(items)
+    .then((action) => {
+      if (action === "open") return selectPath(entry.relativePath, true);
+      if (action === "show-in-finder") return showInFinder(entry);
+      if (action === "trash") return trashEntry(entry);
+    })
+    .catch((error) => {
+      state.error = friendlyError(error, "Explorer could not complete that file action.");
+      render();
+    });
 });
 
 root.addEventListener("submit", (event) => {
+  if (event.target.matches("[data-location-form]")) {
+    event.preventDefault();
+    void navigateLocation(event.target.querySelector("[data-location]").value);
+    return;
+  }
   if (!event.target.matches("[data-new-folder]")) return;
-  event.preventDefault(); void createFolder(event.target);
+  event.preventDefault();
+  void createFolder(event.target);
 });
 
-window.addEventListener("keydown", (event) => {
-  if (runEditorHistoryShortcut(event, editorView)) {
-    event.preventDefault(); event.stopImmediatePropagation(); return;
+window.addEventListener(
+  "keydown",
+  (event) => {
+    if (runEditorHistoryShortcut(event, editorView)) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return;
+    }
+    if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "s") {
+      event.preventDefault();
+      void savePath();
+    }
+  },
+  true,
+);
+window.addEventListener("beforeunload", (event) => {
+  if (hasDirtyDrafts()) {
+    event.preventDefault();
+    event.returnValue = "";
   }
-  if ((event.metaKey || event.ctrlKey) && event.key.toLocaleLowerCase() === "s") { event.preventDefault(); void savePath(); }
-}, true);
-window.addEventListener("beforeunload", (event) => { if (hasDirtyDrafts()) { event.preventDefault(); event.returnValue = ""; } });
+});
+window.addEventListener("pagehide", cleanupPdf);
+window.addEventListener("pagehide", cleanupObjectUrl);
 
 runtime.tab.onNavigate(async ({ route, state: navigationState }) => {
-  if (route === "/open" && (navigationState?.path || navigationState?.id)) {
-    await activateHandle(navigationState);
+  if (route === "/open" && navigationState?.path) {
+    await activateLocation(navigationState);
   }
+});
+runtime.tab.handle("resources.open", async (navigationState) => {
+  await activateLocation(navigationState);
+  await runtime.tab.setRoute({ route: "/open", state: navigationState });
+  return { opened: true };
 });
 
 async function bootstrap() {
@@ -872,8 +1557,16 @@ async function bootstrap() {
   try {
     const initial = await restoreExplorerRoot();
     if (sequence !== activationSequence) return;
-    if (initial) await activateHandle(initial); else { state.loading = false; render(); }
-  } catch (error) { state.loading = false; state.error = friendlyError(error, "Explorer could not restore file access."); render(); }
+    if (initial) await activateLocation(initial);
+    else {
+      state.loading = false;
+      render();
+    }
+  } catch (error) {
+    state.loading = false;
+    state.error = friendlyError(error, "Explorer could not restore file access.");
+    render();
+  }
 }
 
 render();

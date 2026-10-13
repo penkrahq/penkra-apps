@@ -8,3 +8,5 @@ that file while keeping its siblings visible.
 The result returns the visible Explorer `tabId`. Snapshot that exact tab before claiming what the
 preview displayed or interacting with its controls. A missing path requires reopening the resource
 through Penkra.
+
+Opens in a new tab. Pass `--tab-id` from `tabs list` to open in that tab instead.

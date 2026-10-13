@@ -3,11 +3,9 @@
   "slug": "explorer",
   "name": "Explorer",
   "summary": "Browse, search, preview, and manage files through scoped Penkra access.",
-  "version": "0.2.13",
+  "version": "0.2.15",
   "compatibility": { "penkra": ">=0.11.11" },
-  "icons": [
-    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }
-  ],
+  "icons": [{ "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml" }],
   "entrypoints": { "tab": "app.html", "controller": "operations.js" },
   "operations": [
     {
@@ -28,7 +26,9 @@
         "required": ["tabId"],
         "additionalProperties": false
       },
-      "examples": [{ "name": "Open a local project directory", "input": { "path": "/Users/example/Penkra" } }],
+      "examples": [
+        { "name": "Open a local project directory", "input": { "path": "/Users/example/Penkra" } }
+      ],
       "handler": "resources.open"
     }
   ],
@@ -64,9 +64,13 @@
           ".log",
           ".md",
           ".mdown",
+          ".mp4",
+          ".m4v",
+          ".mov",
           ".mjs",
           ".mts",
           ".pdf",
+          ".ogv",
           ".php",
           ".png",
           ".properties",
@@ -83,6 +87,7 @@
           ".tsx",
           ".txt",
           ".webp",
+          ".webm",
           ".xml",
           ".yaml",
           ".yml",

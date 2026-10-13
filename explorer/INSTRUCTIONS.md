@@ -19,12 +19,15 @@ Use `penkra open` when the user gives a path or URL, so the Space's configured h
 it goes. Opening a file shows its containing directory with the file selected, so the user keeps the
 surrounding context — which is usually why they asked.
 
-`explorer resources.open` opens one exact path directly and returns its tab ID. Reach for it when
+An open without a target creates a new Explorer App tab. With `--tab-id`, it opens in that exact
+existing tab.
+
+`explorer resources.open` opens one exact path and returns its tab ID. Reach for it when
 Explorer is specifically what the user wants.
 
 ## What it can do
 
-Explorer edits supported text files, previews common text, image, and PDF formats, reveals entries
+Explorer edits supported text files, previews common text, image, PDF, and video formats, reveals entries
 in Finder, and moves entries to the operating-system Trash.
 
 Trash is recoverable and is the only removal Explorer performs. Moving something to Trash is still a

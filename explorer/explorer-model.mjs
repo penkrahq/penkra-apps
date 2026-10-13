@@ -1,10 +1,54 @@
 export const TEXT_EXTENSIONS = new Set([
-  "bash", "c", "cc", "conf", "cpp", "cs", "css", "csv", "go", "h", "hpp", "html", "ini",
-  "java", "js", "json", "json5", "jsonc", "jsx", "log", "md", "mdown", "mjs", "mts", "php",
-  "properties", "py", "rb", "rs", "scss", "sh", "sql", "toml", "ts", "tsv", "tsx", "txt",
-  "xml", "yaml", "yml", "zsh",
+  "bash",
+  "c",
+  "cc",
+  "conf",
+  "cpp",
+  "cs",
+  "css",
+  "csv",
+  "go",
+  "h",
+  "hpp",
+  "html",
+  "ini",
+  "java",
+  "js",
+  "json",
+  "json5",
+  "jsonc",
+  "jsx",
+  "log",
+  "md",
+  "mdown",
+  "mjs",
+  "mts",
+  "php",
+  "properties",
+  "py",
+  "rb",
+  "rs",
+  "scss",
+  "sh",
+  "sql",
+  "toml",
+  "ts",
+  "tsv",
+  "tsx",
+  "txt",
+  "xml",
+  "yaml",
+  "yml",
+  "zsh",
 ]);
 export const IMAGE_EXTENSIONS = new Set(["gif", "jpeg", "jpg", "png", "webp"]);
+export const VIDEO_MIME_TYPES = {
+  mp4: "video/mp4",
+  m4v: "video/mp4",
+  webm: "video/webm",
+  mov: "video/quicktime",
+  ogv: "video/ogg",
+};
 
 export function extensionOf(name) {
   const index = name.lastIndexOf(".");
@@ -19,8 +63,22 @@ export function previewKind(entry) {
   if (extension === "pdf") return "pdf";
   if (extension === "csv" || extension === "tsv") return "table";
   if (IMAGE_EXTENSIONS.has(extension)) return "image";
+  if (Object.hasOwn(VIDEO_MIME_TYPES, extension)) return "video";
   if (TEXT_EXTENSIONS.has(extension)) return "text";
   return "unsupported";
+}
+
+export function clampPdfPage(page, pageCount) {
+  const count = Number.isFinite(pageCount) ? Math.max(1, Math.floor(pageCount)) : 1;
+  const candidate = Number.isFinite(page) ? Math.floor(page) : 1;
+  return Math.min(count, Math.max(1, candidate));
+}
+
+export function pdfRenderScale(pageWidth, availableWidth, zoom = 1) {
+  const width = Number.isFinite(pageWidth) && pageWidth > 0 ? pageWidth : 1;
+  const available = Number.isFinite(availableWidth) && availableWidth > 0 ? availableWidth : width;
+  const normalizedZoom = Number.isFinite(zoom) ? Math.min(3, Math.max(0.5, zoom)) : 1;
+  return Math.min(1, available / width) * normalizedZoom;
 }
 
 export function looksLikeText(bytes, truncated = false) {
@@ -35,7 +93,10 @@ export function looksLikeText(bytes, truncated = false) {
 }
 
 export function joinRelative(...parts) {
-  return parts.flatMap((part) => String(part ?? "").split(/[\\/]+/)).filter((part) => part && part !== ".").join("/");
+  return parts
+    .flatMap((part) => String(part ?? "").split(/[\\/]+/))
+    .filter((part) => part && part !== ".")
+    .join("/");
 }
 
 export function parentRelative(path) {
@@ -49,18 +110,17 @@ export function treeRowIndent(depth) {
   return `${normalizedDepth * 16}px`;
 }
 
-export function finderRelativePath(entry) {
-  return entry.kind === "directory" ? entry.relativePath : parentRelative(entry.relativePath);
-}
-
 export function fileIconName(entry, expanded = false) {
   if (entry.kind === "directory") return expanded ? "folder-open" : "folder";
   const name = entry.name.toLowerCase();
   const extension = extensionOf(name);
   if ([".gitignore", ".gitattributes", ".gitmodules"].includes(name)) return "git";
-  if (/^(package-lock|bun|yarn|pnpm-lock|cargo)\./.test(name) || name.endsWith(".lock")) return "lock";
-  if (/^(tsconfig|jsconfig|vite\.config|vitest\.config|eslint\.config)/.test(name)) return "settings";
-  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "ico", "avif"].includes(extension)) return "image";
+  if (/^(package-lock|bun|yarn|pnpm-lock|cargo)\./.test(name) || name.endsWith(".lock"))
+    return "lock";
+  if (/^(tsconfig|jsconfig|vite\.config|vitest\.config|eslint\.config)/.test(name))
+    return "settings";
+  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "ico", "avif"].includes(extension))
+    return "image";
   if (extension === "pdf") return "pdf";
   if (["md", "mdown", "markdown", "rst"].includes(extension)) return "markdown";
   if (extension === "tsx") return "react_ts";
@@ -80,7 +140,8 @@ export function fileIconName(entry, expanded = false) {
 
 export function sortEntries(entries) {
   return [...entries].sort((left, right) => {
-    if (left.kind !== right.kind) return left.kind === "directory" ? -1 : 1;
+    if ((left.kind === "directory") !== (right.kind === "directory"))
+      return left.kind === "directory" ? -1 : 1;
     return left.name.localeCompare(right.name, undefined, { numeric: true, sensitivity: "base" });
   });
 }
@@ -98,5 +159,36 @@ export function matchesQuery(entry, query) {
 }
 
 export function escapeHtml(value) {
-  return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+export function createTreeTypeahead() {
+  let prefix = "";
+  const clear = () => {
+    prefix = "";
+  };
+  return {
+    click: clear,
+    blur: (leavesTree) => {
+      if (leavesTree) clear();
+    },
+    keydown: (event, rows, currentIndex) => {
+      if (event.key.length !== 1) {
+        clear();
+        return null;
+      }
+      if (event.key === " " || event.metaKey || event.ctrlKey || event.altKey) return null;
+      prefix += event.key.toLocaleLowerCase();
+      return (
+        [...rows.slice(currentIndex + 1), ...rows.slice(0, currentIndex + 1)].find((row) =>
+          row.name.toLocaleLowerCase().startsWith(prefix),
+        ) ?? null
+      );
+    },
+  };
 }
